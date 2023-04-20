@@ -109,7 +109,7 @@ describe('Container expiration policy project settings', () => {
     });
 
     describe('an admin is visiting the page', () => {
-      it('shows the admin part of the alert message', async () => {
+      it('shows the admin part of the alert', async () => {
         mountComponentWithApollo({
           provide: { ...defaultProvidedValues, isAdmin: true },
           resolver: jest.fn().mockResolvedValue(nullExpirationPolicyPayload()),

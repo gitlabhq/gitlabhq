@@ -56,6 +56,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
     end
 
     before do
+      stub_feature_flags(auto_merge_labels_mr_widget: false)
+
       visit project_merge_request_path(project, merge_request)
 
       page.within('.merge-request-tabs') do
@@ -185,6 +187,48 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       end
     end
 
+    context 'when a user created a merge request in the parent project with auto_merge_labels_mr_widget on' do
+      before do
+        stub_feature_flags(auto_merge_labels_mr_widget: true)
+
+        visit project_merge_request_path(project, merge_request)
+
+        page.within('.merge-request-tabs') do
+          click_link('Pipelines')
+        end
+      end
+
+      context 'when a user merges a merge request in the parent project', :sidekiq_might_not_need_inline do
+        before do
+          click_link 'Overview'
+          click_button 'Set to auto-merge'
+
+          wait_for_requests
+        end
+
+        context 'when detached merge request pipeline is pending' do
+          it 'waits the head pipeline' do
+            expect(page).to have_content('to be merged automatically when the pipeline succeeds')
+            expect(page).to have_button('Cancel auto-merge')
+          end
+        end
+
+        context 'when branch pipeline succeeds' do
+          before do
+            click_link 'Overview'
+            push_pipeline.reload.succeed!
+
+            wait_for_requests
+          end
+
+          it 'waits the head pipeline' do
+            expect(page).to have_content('to be merged automatically when the pipeline succeeds')
+            expect(page).to have_button('Cancel auto-merge')
+          end
+        end
+      end
+    end
+
     context 'when there are no `merge_requests` keyword in .gitlab-ci.yml' do
       let(:config) do
         {
@@ -243,6 +287,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
     before do
       forked_project.add_maintainer(user2)
+
+      stub_feature_flags(auto_merge_labels_mr_widget: false)
 
       visit project_merge_request_path(project, merge_request)
 

@@ -36,16 +36,19 @@ export default {
     storageKey() {
       return `${this.username}/frequent-projects`;
     },
-    viewAllItem() {
+    viewAllProps() {
       return {
-        link: this.viewAllLink,
-        title: s__('Navigation|View all projects'),
-        icon: 'project',
+        item: {
+          link: this.viewAllLink,
+          title: s__('Navigation|View all your projects'),
+          icon: 'project',
+        },
+        linkClasses: { 'dashboard-shortcuts-projects': true },
       };
     },
   },
   i18n: {
-    title: s__('Navigation|Frequent projects'),
+    title: s__('Navigation|Frequently visited projects'),
     searchTitle: s__('Navigation|Projects'),
     pristineText: s__('Navigation|Projects you visit often will appear here.'),
     noResultsText: s__('Navigation|No project matches found'),
@@ -62,7 +65,7 @@ export default {
     :search-results="searchResults"
   >
     <template #view-all-items>
-      <nav-item :item="viewAllItem" />
+      <nav-item v-bind="viewAllProps" />
     </template>
   </search-results>
   <frequent-items-list
@@ -73,7 +76,7 @@ export default {
     :pristine-text="$options.i18n.pristineText"
   >
     <template #view-all-items>
-      <nav-item :item="viewAllItem" />
+      <nav-item v-bind="viewAllProps" />
     </template>
   </frequent-items-list>
 </template>

@@ -19,6 +19,7 @@ export default () => {
     npmInstanceUrl,
     projectListUrl,
     groupListUrl,
+    settingsPath,
   } = el.dataset;
 
   const isGroupPage = pageType === 'groups';
@@ -48,6 +49,7 @@ export default () => {
         projectListUrl,
         groupListUrl,
         breadCrumbState,
+        settingsPath,
       },
       render(createElement) {
         return createElement(PackageRegistry);

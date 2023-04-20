@@ -5,7 +5,7 @@ module API
     class InstanceClusters < ::API::Base
       include PaginationParams
 
-      feature_category :kubernetes_management
+      feature_category :deployment_management
       urgency :low
 
       before do

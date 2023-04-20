@@ -37,7 +37,7 @@ module QA
         before do
           Flow::Login.sign_in
           project.visit!
-          Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+          Page::Project::Menu.perform(&:go_to_pipelines)
         end
 
         it 'can trigger pipeline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348011' do

@@ -85,7 +85,7 @@ describe('BranchesDropdown', () => {
       expect(findTagItem().exists()).toBe(false);
     });
 
-    it('does not have a email patches options', () => {
+    it('does not have a patches options', () => {
       createComponent({ canEmailPatches: false });
 
       expect(findEmailPatchesItem().exists()).toBe(false);

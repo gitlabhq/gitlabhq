@@ -11,6 +11,7 @@ module Gitlab
 
             def initialize(params, context)
               @location = params[:component]
+
               super
             end
 
@@ -48,9 +49,7 @@ module Gitlab
             end
 
             def validate_content!
-              return if content.present?
-
-              errors.push(component_result.message)
+              errors.push(component_result.message) unless content.present?
             end
 
             private

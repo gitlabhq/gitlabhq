@@ -16,7 +16,7 @@ You might want to use these templates:
 
 - For different stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
 - For every issue or merge request for a specific project, so the layout is consistent.
-- For a [Service Desk email template](service_desk.md#new-service-desk-issues).
+- For a [Service Desk email template](service_desk.md#use-a-custom-template-for-service-desk-issues).
 
 For description templates to work, they must be:
 
@@ -156,7 +156,7 @@ To set a default description template for merge requests, either:
 
   1. On the top bar, select **Main menu > Projects** and find your project.
   1. On the left sidebar, select **Settings > Merge requests**.
-  1. In the **Merge commit message template** section, fill in **Default description template for merge requests**.
+  1. In the **Default description template for merge requests** section, fill in the text area.
   1. Select **Save changes**.
 
 To set a default description template for issues, either:
@@ -167,9 +167,9 @@ To set a default description template for issues, either:
 - Users on GitLab Premium and higher: set the default template in project settings:
 
   1. On the top bar, select **Main menu > Projects** and find your project.
-  1. On the left sidebar, select **Settings**.
-  1. Expand **Default issue template**.
-  1. Fill in the **Default description template for issues** text area.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Default description template for issues**.
+  1. Fill in the text area.
   1. Select **Save changes**.
 
 Because GitLab merge request and issues support [Markdown](../markdown.md), you can use it to format

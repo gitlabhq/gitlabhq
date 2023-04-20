@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Chat', feature_category: :user_profile do
+RSpec.describe 'Profile > Chat', feature_category: :integrations do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -11,7 +11,12 @@ RSpec.describe 'Profile > Chat', feature_category: :user_profile do
 
   describe 'uses authorization link' do
     let(:params) do
-      { team_id: 'T00', team_domain: 'my_chat_team', user_id: 'U01', user_name: 'my_chat_user' }
+      {
+        team_id: 'f1924a8db44ff3bb41c96424cdc20676',
+        team_domain: 'my_chat_team',
+        user_id: 'ay5sq51sebfh58ktrce5ijtcwy',
+        user_name: 'my_chat_user'
+      }
     end
 
     let!(:authorize_url) { ChatNames::AuthorizeUserService.new(params).execute }
@@ -19,6 +24,13 @@ RSpec.describe 'Profile > Chat', feature_category: :user_profile do
 
     before do
       visit authorize_path
+    end
+
+    it 'names the integration correctly' do
+      expect(page).to have_content(
+        'An application called Mattermost slash commands is requesting access to your GitLab account'
+      )
+      expect(page).to have_content('Authorize Mattermost slash commands')
     end
 
     context 'clicks authorize' do

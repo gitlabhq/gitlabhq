@@ -98,12 +98,6 @@ describe('ErrorTrackingList', () => {
     });
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('loading', () => {
     beforeEach(() => {
       store.state.list.loading = true;
@@ -452,32 +446,34 @@ describe('ErrorTrackingList', () => {
 
   describe('When pagination is required', () => {
     describe('and previous cursor is not available', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         store.state.list.loading = false;
         delete store.state.list.pagination.previous;
         mountComponent();
       });
 
-      it('disables Prev button in the pagination', async () => {
+      it('disables Prev button in the pagination', () => {
         expect(findPagination().props('prevPage')).toBe(null);
         expect(findPagination().props('nextPage')).not.toBe(null);
       });
     });
     describe('and next cursor is not available', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         store.state.list.loading = false;
         delete store.state.list.pagination.next;
         mountComponent();
       });
 
-      it('disables Next button in the pagination', async () => {
+      it('disables Next button in the pagination', () => {
         expect(findPagination().props('prevPage')).not.toBe(null);
         expect(findPagination().props('nextPage')).toBe(null);
       });
     });
     describe('and the user is not on the first page', () => {
       describe('and the previous button is clicked', () => {
-        beforeEach(async () => {
+        const currentPage = 2;
+
+        beforeEach(() => {
           store.state.list.loading = false;
           mountComponent({
             stubs: {
@@ -485,15 +481,12 @@ describe('ErrorTrackingList', () => {
               GlPagination: false,
             },
           });
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({ pageValue: 2 });
-          await nextTick();
+          findPagination().vm.$emit('input', currentPage);
         });
 
         it('fetches the previous page of results', () => {
           expect(wrapper.find('.prev-page-item').attributes('aria-disabled')).toBe(undefined);
-          wrapper.vm.goToPrevPage();
+          findPagination().vm.$emit('input', currentPage - 1);
           expect(actions.fetchPaginatedResults).toHaveBeenCalled();
           expect(actions.fetchPaginatedResults).toHaveBeenLastCalledWith(
             expect.anything(),

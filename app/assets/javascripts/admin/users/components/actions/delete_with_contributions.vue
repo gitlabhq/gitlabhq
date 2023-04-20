@@ -1,5 +1,5 @@
 <script>
-import { GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { associationsCount } from '~/api/user_api';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from '../modals/delete_user_modal_event_hub';
@@ -9,7 +9,7 @@ export default {
     loading: __('Loading'),
   },
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
     GlLoadingIcon,
   },
   props: {
@@ -71,13 +71,15 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item :disabled="loading" :aria-busy="loading" @click.capture.native.stop="onClick">
-    <div v-if="loading" class="gl-display-flex gl-align-items-center">
-      <gl-loading-icon class="gl-mr-3" />
-      {{ $options.i18n.loading }}
-    </div>
-    <span v-else class="gl-text-red-500">
-      <slot></slot>
-    </span>
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item :disabled="loading" :aria-busy="loading" @action="onClick">
+    <template #list-item>
+      <div v-if="loading" class="gl-display-flex gl-align-items-center">
+        <gl-loading-icon class="gl-mr-3" />
+        {{ $options.i18n.loading }}
+      </div>
+      <span v-else class="gl-text-red-500">
+        <slot></slot>
+      </span>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

@@ -861,15 +861,29 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   end
 
   describe '#change_issue_type' do
-    let(:noteable) { create(:incident, project: project) }
+    context 'with issue' do
+      let_it_be_with_reload(:noteable) { create(:issue, project: project) }
 
-    subject { service.change_issue_type }
+      subject { service.change_issue_type('incident') }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'issue_type' }
+      it_behaves_like 'a system note' do
+        let(:action) { 'issue_type' }
+      end
+
+      it { expect(subject.note).to eq "changed type from incident to issue" }
     end
 
-    it { expect(subject.note).to eq "changed issue type to incident" }
+    context 'with work item' do
+      let_it_be_with_reload(:noteable) { create(:work_item, project: project) }
+
+      subject { service.change_issue_type('task') }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'issue_type' }
+      end
+
+      it { expect(subject.note).to eq "changed type from task to issue" }
+    end
   end
 
   describe '#hierarchy_changed' do

@@ -1,0 +1,38 @@
+<% project_name = @service_desk_setting.project.human_name %>
+<% email_address = @service_desk_setting.custom_email %>
+<% verify_email_address = @service_desk_setting.custom_email_address_for_verification %>
+
+<% if @verification.verified? %>
+  <%= s_("Notify|Email successfully verified") %>
+
+  <%= s_('Notify|Your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} was verified successfully.') % { email_address: email_address, project_link_start: '', project_name: project_name, project_link_end: '', strong_open: '', strong_close: '' } %>
+  
+  <%= s_('Notify|To enable the custom email address, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.') % { settings_link_start: '', settings_link_end: '' } %>
+<% else %>
+  <%= s_("Notify|Email could not be verified") %>
+
+  <%= s_('Notify|We could not verify your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end}.') % { email_address: email_address, project_link_start: '', project_name: project_name, project_link_end: '', strong_open: '', strong_close: '' } %>
+
+  <% if @verification.smtp_host_issue? %>
+    <%= s_('Notify|SMTP host issue:') %>
+    <%= s_('Notify|We were not able to make a connection to the specified host or there was an SSL issue.') %>
+  <% elsif @verification.invalid_credentials? %>
+    <%= s_('Notify|Invalid credentials:') %>
+    <%= s_('Notify|The given credentials (username and password) were rejected by the SMTP server.') %>
+  <% elsif @verification.mail_not_received_within_timeframe? %>
+    <%= s_('Notify|Verification email not received within timeframe:') %>
+    <%= s_('Notify|We did not receive the verification email we sent out to %{strong_open}%{email_address}%{strong_close} in time.') % { email_address: verify_email_address, strong_open: '', strong_close: '' } %>
+
+    <%= s_('Notify|We wait for 30 minutes for messages to appear in your instance\'s Service Desk inbox.') %>
+
+    <%= s_('Notify|Please check that your service provider supports email subaddressing and that you have set up email forwarding correctly.') %>
+  <% elsif @verification.incorrect_from? %>
+    <%= s_('Notify|Incorrect %{code_open}From%{code_end} header:') % { code_open: '', code_end: '' } %>
+    <%= s_('Notify|Check your forwarding settings and make sure the original email sender remains in the %{code_open}From%{code_end} header.') % { code_open: '', code_end: '' } %>
+  <% elsif @verification.incorrect_token? %>
+    <%= s_('Notify|Incorrect verification token:') %>
+    <%= s_('Notify|We could not verify that we received the email we sent to your email inbox.') %>
+  <% end %>
+
+  <%= s_('Notify|To restart the verification process, go to your %{settings_link_start}project\'s Service Desk settings page%{settings_link_end}.') % { settings_link_start: '', settings_link_end: '' } %>
+<% end %>

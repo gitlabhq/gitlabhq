@@ -72,22 +72,6 @@ To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [J
 1. Go to `http://localhost:9292`.
 1. Paste the token and select **Install GitLab.com Jira Cloud app**.
 
-### Troubleshooting
-
-If the app install failed, you might need to delete `jira_connect_installations` from your database.
-
-1. Open the [database console](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#access-postgresql).
-1. Run `TRUNCATE TABLE jira_connect_installations CASCADE;`.
-
-#### Not authorized to access the file
-
-If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK port public by following these steps:
-
-1. Open your GitLab workspace in Gitpod.
-1. When the GDK is running, select **Ports** in the bottom-right corner.
-1. On the left sidebar, select the port the GDK is listening to (typically `3000`).
-1. If the port is marked as private, select the lock icon to make it public.
-
 ## Test the GitLab OAuth authentication flow
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81126) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `jira_connect_oauth`. Disabled by default.
@@ -123,3 +107,21 @@ The following steps describe setting up an environment to test the GitLab OAuth 
 1. Scroll down and expand the GitLab for Jira App section.
 1. Go to [gitpod.io/variables](https://gitpod.io/variables).
 1. Paste the Application ID into the **Jira Connect Application ID** field and select **Save changes**.
+
+## Troubleshooting
+
+### App installation fails
+
+If the app installation fails, you might need to delete `jira_connect_installations` from your database.
+
+1. Open the [database console](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md#access-postgresql).
+1. Run `TRUNCATE TABLE jira_connect_installations CASCADE;`.
+
+### Not authorized to access the file
+
+If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK port public by following these steps:
+
+1. Open your GitLab workspace in Gitpod.
+1. When the GDK is running, select **Ports** in the bottom-right corner.
+1. On the left sidebar, select the port the GDK is listening to (typically `3000`).
+1. If the port is marked as private, select the lock icon to make it public.

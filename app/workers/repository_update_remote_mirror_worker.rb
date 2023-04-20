@@ -25,10 +25,12 @@ class RepositoryUpdateRemoteMirrorWorker
 
     # If the update is already running, wait for it to finish before running again
     # This will wait for a total of 90 seconds in 3 steps
-    in_lock(remote_mirror_update_lock(remote_mirror.id),
-            retries: 3,
-            ttl: remote_mirror.max_runtime,
-            sleep_sec: LOCK_WAIT_TIME) do
+    in_lock(
+      remote_mirror_update_lock(remote_mirror.id),
+      retries: 3,
+      ttl: remote_mirror.max_runtime,
+      sleep_sec: LOCK_WAIT_TIME
+    ) do
       update_mirror(remote_mirror, scheduled_time, tries)
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError

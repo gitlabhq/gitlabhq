@@ -84,6 +84,12 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:use_new_navigation).to(:user_preference) }
     it { is_expected.to delegate_method(:use_new_navigation=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:pinned_nav_items).to(:user_preference) }
+    it { is_expected.to delegate_method(:pinned_nav_items=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:achievements_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:achievements_enabled=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -175,6 +181,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
+    it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
+    it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
+    it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
 
     it do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
@@ -2089,7 +2098,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:incoming_email_token) { 'ilqx6jm1u945macft4eff0nw' }
 
     it 'returns incoming email token when supported' do
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(true)
 
       user = create(:user, incoming_email_token: incoming_email_token)
 
@@ -2097,7 +2106,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'returns `nil` when not supported' do
-      allow(Gitlab::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_issue_creation?).and_return(false)
 
       user = create(:user, incoming_email_token: incoming_email_token)
 
@@ -2362,6 +2371,18 @@ RSpec.describe User, feature_category: :user_profile do
           developer_group.add_developer(user)
 
           expect(user.forkable_namespaces).to contain_exactly(user.namespace, group, subgroup, developer_group)
+        end
+
+        it 'includes groups where the user has access via group shares to create projects' do
+          shared_group = create(:group)
+          create(:group_group_link, :maintainer,
+                shared_with_group: group,
+                shared_group: shared_group
+          )
+
+          expect(user.forkable_namespaces).to contain_exactly(
+            user.namespace, group, subgroup, shared_group
+          )
         end
       end
 
@@ -6815,7 +6836,8 @@ RSpec.describe User, feature_category: :user_profile do
             { user_type: :support_bot },
             { user_type: :security_bot },
             { user_type: :automation_bot },
-            { user_type: :admin_bot }
+            { user_type: :admin_bot },
+            { user_type: :llm_bot }
           ]
         end
 

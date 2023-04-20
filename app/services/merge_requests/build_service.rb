@@ -16,6 +16,8 @@ module MergeRequests
       merge_request.source_project = find_source_project
       merge_request.target_project = find_target_project
 
+      initialize_callbacks!(merge_request)
+
       process_params
 
       merge_request.compare_commits = []

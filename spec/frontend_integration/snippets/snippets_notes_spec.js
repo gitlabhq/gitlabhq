@@ -1,12 +1,13 @@
 import $ from 'jquery';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import axios from '~/lib/utils/axios_utils';
 import initGFMInput from '~/behaviors/markdown/gfm_auto_complete';
 import initDeprecatedNotes from '~/init_deprecated_notes';
-import { loadHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture } from 'helpers/fixtures';
 
 describe('Integration Snippets notes', () => {
-  beforeEach(async () => {
-    loadHTMLFixture('snippets/show.html');
+  beforeEach(() => {
+    setHTMLFixture(htmlSnippetsShow);
 
     // Check if we have to Load GFM Input
     const $gfmInputs = $('.js-gfm-input:not(.js-gfm-input-initialized)');

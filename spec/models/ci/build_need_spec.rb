@@ -74,7 +74,7 @@ RSpec.describe Ci::BuildNeed, model: true, feature_category: :continuous_integra
         stub_current_partition_id
       end
 
-      it 'creates build needs successfully', :aggregate_failures do
+      it 'creates build needs successfully', :aggregate_failures, :ci_partitionable do
         ci_build.needs_attributes = [
           { name: "build", artifacts: true },
           { name: "build2", artifacts: true },

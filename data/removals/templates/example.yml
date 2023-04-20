@@ -14,9 +14,7 @@
 #
 - title: "Feature A is removed."  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
   announcement_milestone: "XX.YY"  # (required) The milestone when this feature was deprecated.
-  announcement_date: "YYYY-MM-DD"  # (required) The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
   removal_milestone: "XX.YY"  # (required) The milestone when this feature is being removed.
-  removal_date: "YYYY-MM-DD"  # (required) This should almost always be the 22nd of a month (YYYY-MM-DD), the date of the milestone release when this feature will be removed.
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: exampleuser  # (required) GitLab username of the person reporting the removal
   stage: stage  # (required) String value of the stage that the feature was created in. e.g., Growth

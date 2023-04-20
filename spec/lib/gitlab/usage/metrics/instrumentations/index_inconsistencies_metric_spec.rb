@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::IndexInconsistenciesMet
     end
 
     let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
-    let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Validators::BaseValidator::Inconsistency }
+    let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
 
     let(:inconsistencies) do
       [

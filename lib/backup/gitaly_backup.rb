@@ -9,14 +9,15 @@ module Backup
     # @param [StringIO] progress IO interface to output progress
     # @param [Integer] max_parallelism max parallelism when running backups
     # @param [Integer] storage_parallelism max parallelism per storage (is affected by max_parallelism)
-    def initialize(progress, max_parallelism: nil, storage_parallelism: nil, incremental: false, backup_id: nil)
+    # @param [Boolean] incremental if incremental backups should be created.
+    def initialize(progress, max_parallelism: nil, storage_parallelism: nil, incremental: false)
       @progress = progress
       @max_parallelism = max_parallelism
       @storage_parallelism = storage_parallelism
       @incremental = incremental
     end
 
-    def start(type, backup_repos_path, backup_id: nil)
+    def start(type, backup_repos_path, backup_id: nil, remove_all_repositories: nil)
       raise Error, 'already started' if started?
 
       if type == :create && !incremental?
@@ -35,9 +36,13 @@ module Backup
       args = ['-layout', 'pointer']
       args += ['-parallel', @max_parallelism.to_s] if @max_parallelism
       args += ['-parallel-storage', @storage_parallelism.to_s] if @storage_parallelism
-      if type == :create
+
+      case type
+      when :create
         args += ['-incremental'] if incremental?
         args += ['-id', backup_id] if backup_id
+      when :restore
+        args += ['-remove-all-repositories', remove_all_repositories.join(',')] if remove_all_repositories
       end
 
       @input_stream, stdout, @thread = Open3.popen2(build_env, bin_path, command, '-path', backup_repos_path, *args)

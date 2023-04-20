@@ -63,6 +63,7 @@ function getPreviousDiscussion() {
 
 function handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions) {
   const discussion = getDiscussion();
+
   if (!isOverviewPage() && !discussion) {
     window.mrTabs?.eventHub.$once('NotesAppReady', () => {
       handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions);
@@ -71,9 +72,12 @@ function handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions) {
     window.mrTabs?.tabShown('show', undefined, false);
     return;
   }
-  const id = discussion.dataset.discussionId;
-  ctx.expandDiscussion({ discussionId: id });
-  scrollToElement(discussion, scrollOptions);
+
+  if (discussion) {
+    const id = discussion.dataset.discussionId;
+    ctx.expandDiscussion({ discussionId: id });
+    scrollToElement(discussion, scrollOptions);
+  }
 }
 
 export default {

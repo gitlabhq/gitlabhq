@@ -17,7 +17,7 @@ import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
-import SavedRepliesDropdown from './saved_replies_dropdown.vue';
+import CommentTemplatesDropdown from './comment_templates_dropdown.vue';
 
 export default {
   components: {
@@ -27,16 +27,19 @@ export default {
     GlTabs,
     GlTab,
     DrawioToolbarButton,
-    SavedRepliesDropdown,
+    CommentTemplatesDropdown,
+    AiActionsDropdown: () =>
+      import('ee_component/vue_shared/components/markdown/ai_actions_dropdown.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
-    newSavedRepliesPath: {
+    newCommentTemplatePath: {
       default: null,
     },
+    resourceGlobalId: { default: null },
   },
   props: {
     previewMarkdown: {
@@ -117,6 +120,9 @@ export default {
     mdCollapsibleSection() {
       const expandText = s__('MarkdownEditor|Click to expand');
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
+    },
+    showAiActions() {
+      return this.resourceGlobalId && this.glFeatures.summarizeComments;
     },
   },
   watch: {
@@ -269,6 +275,7 @@ export default {
               </gl-button>
             </gl-popover>
           </template>
+          <ai-actions-dropdown v-if="showAiActions" :resource-global-id="resourceGlobalId" />
           <toolbar-button
             tag="**"
             :button-title="
@@ -400,9 +407,9 @@ export default {
             :uploads-path="uploadsPath"
             :markdown-preview-path="markdownPreviewPath"
           />
-          <saved-replies-dropdown
-            v-if="newSavedRepliesPath && glFeatures.savedReplies"
-            :new-saved-replies-path="newSavedRepliesPath"
+          <comment-templates-dropdown
+            v-if="newCommentTemplatePath && glFeatures.savedReplies"
+            :new-comment-template-path="newCommentTemplatePath"
           />
           <toolbar-button
             v-if="!restrictedToolBarItems.includes('full-screen')"

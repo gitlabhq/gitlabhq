@@ -13,38 +13,45 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
         "spec/lib/gitlab/background_migration/a_spec.rb spec/lib/gitlab/background_migration/b_spec.rb " \
         "spec/models/a_spec.rb spec/models/b_spec.rb " \
         "spec/controllers/a_spec.rb spec/controllers/b_spec.rb " \
-        "spec/features/a_spec.rb spec/features/b_spec.rb"
+        "spec/features/a_spec.rb spec/features/b_spec.rb " \
+        "ee/spec/features/a_spec.rb"
     end
 
     let(:pipeline_template) { Tempfile.new(['pipeline_template', '.yml.erb']) }
     let(:pipeline_template_content) do
       <<~YAML
-      <% if rspec_files_per_test_level[:migration][:files].size > 0 %>
+      <% if test_suite_prefix.nil? && rspec_files_per_test_level[:migration][:files].size > 0 %>
       rspec migration:
       <% if rspec_files_per_test_level[:migration][:parallelization] > 1 %>
         parallel: <%= rspec_files_per_test_level[:migration][:parallelization] %>
       <% end %>
       <% end %>
-      <% if rspec_files_per_test_level[:background_migration][:files].size > 0 %>
+      <% if test_suite_prefix.nil? && rspec_files_per_test_level[:background_migration][:files].size > 0 %>
       rspec background_migration:
       <% if rspec_files_per_test_level[:background_migration][:parallelization] > 1 %>
         parallel: <%= rspec_files_per_test_level[:background_migration][:parallelization] %>
       <% end %>
       <% end %>
-      <% if rspec_files_per_test_level[:unit][:files].size > 0 %>
+      <% if test_suite_prefix.nil? && rspec_files_per_test_level[:unit][:files].size > 0 %>
       rspec unit:
       <% if rspec_files_per_test_level[:unit][:parallelization] > 1 %>
         parallel: <%= rspec_files_per_test_level[:unit][:parallelization] %>
       <% end %>
       <% end %>
-      <% if rspec_files_per_test_level[:integration][:files].size > 0 %>
+      <% if test_suite_prefix.nil? && rspec_files_per_test_level[:integration][:files].size > 0 %>
       rspec integration:
       <% if rspec_files_per_test_level[:integration][:parallelization] > 1 %>
         parallel: <%= rspec_files_per_test_level[:integration][:parallelization] %>
       <% end %>
       <% end %>
-      <% if rspec_files_per_test_level[:system][:files].size > 0 %>
+      <% if test_suite_prefix.nil? && rspec_files_per_test_level[:system][:files].size > 0 %>
       rspec system:
+      <% if rspec_files_per_test_level[:system][:parallelization] > 1 %>
+        parallel: <%= rspec_files_per_test_level[:system][:parallelization] %>
+      <% end %>
+      <% end %>
+      <% if test_suite_prefix == 'ee/' && rspec_files_per_test_level[:system][:files].size > 0 %>
+      rspec-ee system:
       <% if rspec_files_per_test_level[:system][:parallelization] > 1 %>
         parallel: <%= rspec_files_per_test_level[:system][:parallelization] %>
       <% end %>
@@ -65,7 +72,8 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
         "spec/controllers/a_spec.rb": 60.2,
         "spec/controllers/ab_spec.rb": 180.4,
         "spec/features/a_spec.rb": 360.1,
-        "spec/features/b_spec.rb": 180.5
+        "spec/features/b_spec.rb": 180.5,
+        "ee/spec/features/a_spec.rb": 180.5
       }
       JSON
     end
@@ -174,6 +182,53 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
               "rspec integration:\nrspec system:"
             )
         end
+      end
+    end
+
+    context 'when test_suite_prefix is given' do
+      subject do
+        described_class.new(
+          rspec_files_path: rspec_files.path,
+          pipeline_template_path: pipeline_template.path,
+          knapsack_report_path: knapsack_report.path,
+          test_suite_prefix: 'ee/'
+        )
+      end
+
+      it 'generates the pipeline config based on the test_suite_prefix' do
+        subject.generate!
+
+        expect(File.read("#{pipeline_template.path}.yml"))
+          .to eq("rspec-ee system:")
+      end
+    end
+
+    context 'when generated_pipeline_path is given' do
+      let(:custom_pipeline_filename) { Tempfile.new(['custom_pipeline_filename', '.yml']) }
+
+      around do |example|
+        example.run
+      ensure
+        custom_pipeline_filename.close
+        custom_pipeline_filename.unlink
+      end
+
+      subject do
+        described_class.new(
+          rspec_files_path: rspec_files.path,
+          pipeline_template_path: pipeline_template.path,
+          generated_pipeline_path: custom_pipeline_filename.path
+        )
+      end
+
+      it 'writes the pipeline config in the given generated_pipeline_path' do
+        subject.generate!
+
+        expect(File.read(custom_pipeline_filename.path))
+          .to eq(
+            "rspec migration:\nrspec background_migration:\nrspec unit:\n" \
+            "rspec integration:\nrspec system:"
+          )
       end
     end
 

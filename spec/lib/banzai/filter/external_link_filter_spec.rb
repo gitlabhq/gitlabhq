@@ -2,25 +2,25 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'an external link with rel attribute', feature_category: :team_planning do
-  it 'adds rel="nofollow" to external links' do
-    expect(doc.at_css('a')).to have_attribute('rel')
-    expect(doc.at_css('a')['rel']).to include 'nofollow'
-  end
-
-  it 'adds rel="noreferrer" to external links' do
-    expect(doc.at_css('a')).to have_attribute('rel')
-    expect(doc.at_css('a')['rel']).to include 'noreferrer'
-  end
-
-  it 'adds rel="noopener" to external links' do
-    expect(doc.at_css('a')).to have_attribute('rel')
-    expect(doc.at_css('a')['rel']).to include 'noopener'
-  end
-end
-
-RSpec.describe Banzai::Filter::ExternalLinkFilter do
+RSpec.describe Banzai::Filter::ExternalLinkFilter, feature_category: :team_planning do
   include FilterSpecHelper
+
+  shared_examples 'an external link with rel attribute' do
+    it 'adds rel="nofollow" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'nofollow'
+    end
+
+    it 'adds rel="noreferrer" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'noreferrer'
+    end
+
+    it 'adds rel="noopener" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'noopener'
+    end
+  end
 
   it 'ignores elements without an href attribute' do
     exp = act = %q(<a id="ignored">Ignore Me</a>)

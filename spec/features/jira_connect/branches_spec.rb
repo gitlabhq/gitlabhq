@@ -75,7 +75,7 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
     select_listbox_item(source_branch)
 
     fill_in 'Branch name', with: new_branch
-    click_on 'Create branch'
+    click_button 'Create branch'
 
     expect(page).to have_text('New branch was successfully created. You can now close this window and return to Jira.')
 

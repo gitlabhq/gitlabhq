@@ -30,7 +30,7 @@ module DatabaseEventTracking
     # that reports data asynchronously and does not impact performance nor carries a risk of
     # rollback in case of error
 
-    Gitlab::Tracking.event(
+    Gitlab::Tracking.database_event(
       self.class.to_s,
       "database_event_#{name}",
       label: self.class.table_name,

@@ -15,7 +15,7 @@ module BlobViewer
     end
 
     def package_name
-      @package_name ||= package_name_from_json('name')
+      @package_name ||= fetch_from_json('name')
     end
 
     def package_url

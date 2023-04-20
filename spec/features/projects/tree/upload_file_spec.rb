@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Multi-file editor upload file', :js, feature_category: :web_ide do
-  include WebIdeSpecHelpers
+  include Features::WebIdeSpecHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }

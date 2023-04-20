@@ -62,6 +62,7 @@ export default {
     },
     showTip() {
       return (
+        this.showLinksToggle &&
         this.showLinks &&
         this.showLinksActive &&
         !this.tipPreviouslyDismissed &&

@@ -27,6 +27,10 @@ module QA
             element :protected_tag_settings_content
           end
 
+          view 'app/views/projects/branch_rules/_show.html.haml' do
+            element :branch_rules_content
+          end
+
           def expand_deploy_tokens(&block)
             expand_content(:deploy_tokens_settings_content) do
               Settings::DeployTokens.perform(&block)
@@ -55,6 +59,10 @@ module QA
             expand_content(:protected_tag_settings_content) do
               ProtectedTags.perform(&block)
             end
+          end
+
+          def expand_branch_rules
+            expand_content(:branch_rules_content)
           end
 
           def expand_default_branch(&block)

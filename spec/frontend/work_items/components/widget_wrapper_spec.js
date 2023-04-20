@@ -30,7 +30,7 @@ describe('WidgetWrapper component', () => {
     expect(findWidgetBody().exists()).toBe(false);
   });
 
-  it('shows alert when list loading fails', () => {
+  it('shows an alert when list loading fails', () => {
     const error = 'Some error';
     createComponent({ error });
 

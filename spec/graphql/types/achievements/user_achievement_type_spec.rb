@@ -20,5 +20,5 @@ RSpec.describe GitlabSchema.types['UserAchievement'], feature_category: :user_pr
 
   it { expect(described_class.graphql_name).to eq('UserAchievement') }
   it { expect(described_class).to have_graphql_fields(fields) }
-  it { expect(described_class).to require_graphql_authorizations(:read_achievement) }
+  it { expect(described_class).to require_graphql_authorizations(:read_user_achievement) }
 end

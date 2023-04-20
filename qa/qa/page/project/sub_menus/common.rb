@@ -20,7 +20,7 @@ module QA
                 element :sidebar_menu_link
               end
 
-              view 'app/views/layouts/nav/_breadcrumbs.html.haml' do
+              view 'app/views/layouts/nav/_top_bar.html.haml' do
                 element :toggle_mobile_nav_button
               end
             end

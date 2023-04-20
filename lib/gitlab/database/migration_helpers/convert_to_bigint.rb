@@ -11,7 +11,9 @@ module Gitlab
         #
         # Once we are done with the PK conversions we can remove this.
         def com_or_dev_or_test_but_not_jh?
-          !Gitlab.jh? && (Gitlab.com? || Gitlab.dev_or_test_env?)
+          return true if Gitlab.dev_or_test_env?
+
+          Gitlab.com? && !Gitlab.jh?
         end
       end
     end

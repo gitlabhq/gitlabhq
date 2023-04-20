@@ -25,7 +25,7 @@ RSpec.describe Mutations::ContainerRepositories::Destroy do
           .to receive(:new).with(nil, user, event_name: :delete_repository, scope: :container).and_call_original
         expect(DeleteContainerRepositoryWorker).not_to receive(:perform_async)
 
-        expect { subject }.to change { ::Packages::Event.count }.by(1)
+        subject
         expect(container_repository.reload.delete_scheduled?).to be true
       end
     end

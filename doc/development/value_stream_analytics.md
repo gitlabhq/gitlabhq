@@ -221,6 +221,7 @@ graph LR;
   MergeRequestLastBuildFinished --> MergeRequestLabelRemoved;
   MergeRequestLabelAdded --> MergeRequestLabelAdded;
   MergeRequestLabelAdded --> MergeRequestLabelRemoved;
+  MergeRequestLabelAdded --> MergeRequestMerged;
   MergeRequestLabelRemoved --> MergeRequestLabelAdded;
   MergeRequestLabelRemoved --> MergeRequestLabelRemoved;
 ```

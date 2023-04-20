@@ -36,7 +36,7 @@ module Groups
 
     def by_permission_scope
       if permission_scope_create_projects?
-        target_user.manageable_groups(include_groups_with_developer_maintainer_access: true)
+        Groups::AcceptingProjectCreationsFinder.new(target_user).execute # rubocop: disable CodeReuse/Finder
       elsif permission_scope_transfer_projects?
         Groups::AcceptingProjectTransfersFinder.new(target_user).execute # rubocop: disable CodeReuse/Finder
       else

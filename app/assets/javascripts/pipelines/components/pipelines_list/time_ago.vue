@@ -41,7 +41,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column time-ago">
+  <div class="gl-display-flex gl-flex-direction-column gl-font-sm time-ago">
     <span
       v-if="showInProgress"
       class="gl-display-inline-flex gl-align-items-center"

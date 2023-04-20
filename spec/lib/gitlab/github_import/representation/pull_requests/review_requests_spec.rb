@@ -46,4 +46,27 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequests::ReviewRequest
       let(:review_requests) { described_class.from_json_hash(response) }
     end
   end
+
+  describe '#github_identifiers' do
+    it 'returns a hash with needed identifiers' do
+      review_requests = {
+        merge_request_iid: 2,
+        merge_request_id: merge_request_id,
+        users: [
+          { id: 4, login: 'alice' },
+          { id: 5, login: 'bob' }
+        ]
+      }
+
+      github_identifiers = {
+        merge_request_iid: 2,
+        requested_reviewers: %w[alice bob]
+      }
+
+      other_attributes = { merge_request_id: 123, something_else: '_something_else_' }
+      review_requests = described_class.new(review_requests.merge(other_attributes))
+
+      expect(review_requests.github_identifiers).to eq(github_identifiers)
+    end
+  end
 end

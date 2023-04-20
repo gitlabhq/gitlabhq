@@ -5,7 +5,6 @@ description: Total count of RubyGems packages delete events
 product_section: ops
 product_stage: package
 product_group: package
-product_category: package_registry
 value_type: number
 status: active
 milestone: '13.10'

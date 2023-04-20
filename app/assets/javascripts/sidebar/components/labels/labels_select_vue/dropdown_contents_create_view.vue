@@ -78,6 +78,7 @@ export default {
         v-model.trim="labelTitle"
         :placeholder="__('Name new label')"
         :autofocus="true"
+        data-testid="label-title"
       />
     </div>
     <div class="dropdown-content px-2">
@@ -113,6 +114,7 @@ export default {
         category="primary"
         variant="confirm"
         class="float-left d-flex align-items-center"
+        data-testid="create-click"
         @click="handleCreateClick"
       >
         <gl-loading-icon v-show="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />

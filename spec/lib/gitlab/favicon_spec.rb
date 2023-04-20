@@ -40,11 +40,19 @@ RSpec.describe Gitlab::Favicon, :request_store do
     end
   end
 
-  describe '.status_overlay' do
-    subject { described_class.status_overlay('favicon_status_created') }
+  describe '.ci_status_overlay' do
+    subject { described_class.ci_status_overlay('favicon_status_created') }
 
     it 'returns the overlay for the status' do
       expect(subject).to match_asset_path '/assets/ci_favicons/favicon_status_created.png'
+    end
+  end
+
+  describe '.mr_status_overlay' do
+    subject { described_class.mr_status_overlay('favicon_status_merged') }
+
+    it 'returns the overlay for the status' do
+      expect(subject).to match_asset_path '/assets/mr_favicons/favicon_status_merged.png'
     end
   end
 

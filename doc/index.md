@@ -2,7 +2,6 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
@@ -75,7 +74,7 @@ If you are coming to GitLab from another platform, the following information is 
 | Topic                                               | Description |
 |:----------------------------------------------------|:------------|
 | [Importing to GitLab](user/project/import/index.md) | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrating from SVN](user/project/import/svn.md)    | Convert a SVN repository to Git and GitLab. |
+| [Migrating from SVN](user/project/import/index.md#import-from-subversion)    | Convert a SVN repository to Git and GitLab. |
 
 ## Build an integration with GitLab
 

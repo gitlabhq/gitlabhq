@@ -6,12 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Automatic background verification **(PREMIUM SELF)**
 
-NOTE:
-Automatic background verification of repositories and wikis was added in
-GitLab EE 10.6 but is enabled by default only on GitLab EE 11.1. You can
-disable or enable this feature manually by following
-[these instructions](#disabling-or-enabling-the-automatic-background-verification).
-
 Automatic background verification ensures that the transferred data matches a
 calculated checksum. If the checksum of the data on the **primary** site matches checksum of the
 data on the **secondary** site, the data transferred successfully. Following a planned failover,
@@ -179,19 +173,5 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
 
 ## Current limitations
 
-Automatic background verification doesn't cover attachments, LFS objects,
-job artifacts, and user uploads in file storage. You can keep track of the
-progress to include them in [Geo: Verify all replicated data](https://gitlab.com/groups/gitlab-org/-/epics/1430).
-
-For now, you can verify their integrity
-manually by following [these instructions](../../raketasks/check.md) on both
-sites, and comparing the output between them.
-
-In GitLab EE 12.1, Geo calculates checksums for attachments, LFS objects, and
-archived traces on secondary sites after the transfer, compares it with the
-stored checksums, and rejects transfers if mismatched. Geo
-currently does not support an automatic way to verify these data if they have
-been synced before GitLab EE 12.1.
-
-Data in object storage is **not verified**, as the object store is responsible
-for ensuring the integrity of the data.
+For more information on what replication and verification methods are supported,
+see the [supported Geo data types](../replication/datatypes.md).

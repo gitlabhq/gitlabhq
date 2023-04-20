@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::AgentTokens::RevokeService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::AgentTokens::RevokeService, feature_category: :deployment_management do
   describe '#execute' do
     subject { described_class.new(token: agent_token, current_user: user).execute }
 

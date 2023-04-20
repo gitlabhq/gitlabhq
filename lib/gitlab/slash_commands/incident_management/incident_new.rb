@@ -5,7 +5,7 @@ module Gitlab
     module IncidentManagement
       class IncidentNew < IncidentCommand
         def self.help_message
-          'incident declare'
+          'incident declare *(Beta)*'
         end
 
         def self.allowed?(_project, _user)

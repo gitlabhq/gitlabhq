@@ -40,3 +40,5 @@
       = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f, protected_branch_entity: protected_branch_entity
     - c.footer do
       = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { qa_selector: 'protect_button' }, pajamas_button: true
+
+  .js-alert-protected-branch-created-container.gl-mb-5

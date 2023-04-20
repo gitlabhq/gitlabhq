@@ -50,6 +50,12 @@ RSpec.describe Admin::ApplicationsController do
     it { is_expected.to have_gitlab_http_status(:ok) }
     it { expect { subject }.to change { application.reload.secret } }
 
+    it 'returns the secret in json format' do
+      subject
+
+      expect(json_response['secret']).not_to be_nil
+    end
+
     context 'when renew fails' do
       before do
         allow_next_found_instance_of(Doorkeeper::Application) do |application|
@@ -58,7 +64,7 @@ RSpec.describe Admin::ApplicationsController do
       end
 
       it { expect { subject }.not_to change { application.reload.secret } }
-      it { is_expected.to redirect_to(admin_application_url(application)) }
+      it { is_expected.to have_gitlab_http_status(:unprocessable_entity) }
     end
   end
 

@@ -17,11 +17,7 @@ module QA
         merge_request.fork.remove_via_api!
       end
 
-      it 'can merge feature branch fork to mainline', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818', quarantine: {
-        only: :production,
-        type: :investigating,
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/372258'
-      } do
+      it 'can merge source branch from fork into upstream repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818' do
         merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|

@@ -35,6 +35,10 @@ export const initCommitsRefSwitcher = () => {
 
   const { projectId, ref, commitsPath, refType } = el.dataset;
   const commitsPathPrefix = commitsPath.match(COMMITS_PATH_REGEX)?.[0];
+  const generateRefDestinationUrl = (selectedRef, selectedRefType) => {
+    const commitsPathSuffix = selectedRefType ? `?ref_type=${selectedRefType}` : '';
+    return `${commitsPathPrefix}/${encodeURIComponent(selectedRef)}${commitsPathSuffix}`;
+  };
   const useSymbolicRefNames = Boolean(refType);
   return new Vue({
     el,
@@ -48,15 +52,11 @@ export const initCommitsRefSwitcher = () => {
         },
         on: {
           input(selected) {
-            if (useSymbolicRefNames) {
-              const matches = selected.match(/refs\/(heads|tags)\/(.+)/);
-              if (matches) {
-                visitUrl(`${commitsPathPrefix}/${matches[2]}?ref_type=${matches[1]}`);
-              } else {
-                visitUrl(`${commitsPathPrefix}/${selected}`);
-              }
+            const matches = selected.match(/refs\/(heads|tags)\/(.+)/);
+            if (useSymbolicRefNames && matches) {
+              visitUrl(generateRefDestinationUrl(matches[2], matches[1]));
             } else {
-              visitUrl(`${commitsPathPrefix}/${selected}`);
+              visitUrl(generateRefDestinationUrl(selected));
             }
           },
         },

@@ -1,19 +1,10 @@
 <script>
-import {
-  GlDropdown,
-  GlButton,
-  GlIcon,
-  GlForm,
-  GlFormGroup,
-  GlLink,
-  GlFormCheckbox,
-} from '@gitlab/ui';
+import { GlDropdown, GlButton, GlIcon, GlForm, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import { createAlert } from '~/alert';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Autosave from '~/autosave';
-import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -22,7 +13,6 @@ export default {
     GlIcon,
     GlForm,
     GlFormGroup,
-    GlLink,
     GlFormCheckbox,
     MarkdownField,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
@@ -102,9 +92,6 @@ export default {
     },
   },
   restrictedToolbarItems: ['full-screen'],
-  helpPagePath: helpPagePath('user/project/merge_requests/reviews/index.html', {
-    anchor: 'submit-a-review',
-  }),
 };
 </script>
 
@@ -126,14 +113,6 @@ export default {
       <gl-form-group label-for="review-note-body" label-class="gl-mb-2">
         <template #label>
           {{ __('Summary comment (optional)') }}
-          <gl-link
-            :href="$options.helpPagePath"
-            :aria-label="__('More information')"
-            target="_blank"
-            class="gl-ml-2"
-          >
-            <gl-icon name="question-o" />
-          </gl-link>
         </template>
         <div class="common-note-form gfm-form">
           <div

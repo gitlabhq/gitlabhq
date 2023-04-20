@@ -1,7 +1,6 @@
 ---
 stage: verify
 group: pipeline authoring
-comments: false
 description: 'Development workflow for a components repository'
 ---
 

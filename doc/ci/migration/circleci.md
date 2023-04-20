@@ -2,7 +2,6 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
 type: index, howto
 ---
 
@@ -292,8 +291,8 @@ Self-managed runners:
 GitLab.com shared runners:
 
 - Linux
-- [Windows](../runners/saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
-- [macOS](../runners/saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
+- [Windows](../runners/saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
+- [macOS](../runners/saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
 
 ### Machine and specific build environments
 
@@ -321,16 +320,14 @@ Example of the same job using `tags` in GitLab CI/CD:
 
 ```yaml
 windows job:
-  stage:
-    - build
+  stage: build
   tags:
     - windows
   script:
     - echo Hello, %USERNAME%!
 
 osx job:
-  stage:
-    - build
+  stage: build
   tags:
     - osx
   script:

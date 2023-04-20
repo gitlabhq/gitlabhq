@@ -29,7 +29,7 @@ fi
 ASSETS_IMAGE_NAME="gitlab-assets-ce"
 
 # `dev.gitlab-org` still has gitlab-ee.
-if [ "${CI_PROJECT_NAME}" = "gitlab" ] || [ "${CI_PROJECT_NAME}" = "gitlab-ee" ]; then
+if ([ "${CI_PROJECT_NAME}" = "gitlab" ] && [ "${FOSS_ONLY}" != "1" ]) || ([ "${CI_PROJECT_NAME}" = "gitlab-ee" ] && [ "${FOSS_ONLY}" != "1" ]); then
   ASSETS_IMAGE_NAME="gitlab-assets-ee"
 fi
 

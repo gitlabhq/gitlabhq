@@ -3,7 +3,7 @@
 - show_status_checks = @project.licensed_feature_available?(:external_status_checks)
 - show_approvers = @project.licensed_feature_available?(:merge_request_approvers)
 
-%section.settings.no-animate#branch-rules{ class: ('expanded' if expanded) }
+%section.settings.no-animate#branch-rules{ class: ('expanded' if expanded), data: { qa_selector: 'branch_rules_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Branch rules')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do

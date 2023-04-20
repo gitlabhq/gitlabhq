@@ -8,40 +8,32 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item, project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
+  let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
+  let(:work_items_path) { project_work_items_path(project, work_items_path: work_item.iid, iid_path: true) }
 
   context 'for signed in user' do
     before do
       project.add_developer(user)
 
       sign_in(user)
+
+      visit work_items_path
     end
 
-    context 'with internal id' do
-      before do
-        visit project_work_items_path(project, work_items_path: work_item.iid, iid_path: true)
+    it 'uses IID path in breadcrumbs' do
+      within('[data-testid="breadcrumb-current-link"]') do
+        expect(page).to have_link('Work Items', href: work_items_path)
       end
-
-      it_behaves_like 'work items title'
-      it_behaves_like 'work items status'
-      it_behaves_like 'work items assignees'
-      it_behaves_like 'work items labels'
-      it_behaves_like 'work items comments'
-      it_behaves_like 'work items description'
-      it_behaves_like 'work items milestone'
     end
 
-    context 'with global id' do
-      before do
-        stub_feature_flags(use_iid_in_work_items_path: false)
-        visit project_work_items_path(project, work_items_path: work_item.id)
-      end
-
-      it_behaves_like 'work items status'
-      it_behaves_like 'work items assignees'
-      it_behaves_like 'work items labels'
-      it_behaves_like 'work items comments'
-      it_behaves_like 'work items description'
-    end
+    it_behaves_like 'work items title'
+    it_behaves_like 'work items status'
+    it_behaves_like 'work items assignees'
+    it_behaves_like 'work items labels'
+    it_behaves_like 'work items comments', :issue
+    it_behaves_like 'work items description'
+    it_behaves_like 'work items milestone'
+    it_behaves_like 'work items notifications'
   end
 
   context 'for signed in owner' do
@@ -50,9 +42,31 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
       sign_in(user)
 
-      visit project_work_items_path(project, work_items_path: work_item.id)
+      visit work_items_path
     end
 
     it_behaves_like 'work items invite members'
+  end
+
+  context 'for guest users' do
+    before do
+      project.add_guest(user)
+
+      sign_in(user)
+
+      visit work_items_path
+    end
+
+    it_behaves_like 'work items comment actions for guest users'
+  end
+
+  context 'for user not signed in' do
+    before do
+      visit work_items_path
+    end
+
+    it 'actions dropdown is not displayed' do
+      expect(page).not_to have_selector('[data-testid="work-item-actions-dropdown"]')
+    end
   end
 end

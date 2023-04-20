@@ -164,19 +164,17 @@ module Notes
       track_note_creation_in_ipynb(note)
       track_note_creation_visual_review(note)
 
-      if Feature.enabled?(:route_hll_to_snowplow_phase4, project&.namespace) && note.for_commit?
-        metric_key_path = 'counts.commit_comment'
+      metric_key_path = 'counts.commit_comment'
 
-        Gitlab::Tracking.event(
-          'Notes::CreateService',
-          'create_commit_comment',
-          project: project,
-          namespace: project&.namespace,
-          user: user,
-          label: metric_key_path,
-          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
-        )
-      end
+      Gitlab::Tracking.event(
+        'Notes::CreateService',
+        'create_commit_comment',
+        project: project,
+        namespace: project&.namespace,
+        user: user,
+        label: metric_key_path,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
+      )
     end
 
     def tracking_data_for(note)

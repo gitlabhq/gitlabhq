@@ -1,5 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
-
 import { Node } from '@tiptap/core';
 
 const queryPlayableElement = (element, mediaType) => element.querySelector(mediaType);
@@ -44,7 +42,7 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: `.${this.options.mediaType}-container`,
+        tag: `.${this.options.mediaType}-container`, // eslint-disable-line @gitlab/require-i18n-strings
       },
     ];
   },

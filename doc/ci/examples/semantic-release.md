@@ -168,3 +168,18 @@ Then, install the module:
 ```shell
 npm install --save @gitlab-examples/semantic-release-npm
 ```
+
+## Troubleshooting
+
+### Deleted Git tags reappear
+
+A [Git tag](../../user/project/repository/tags/index.md) deleted from the repository
+can sometimes be recreated by `semantic-release` when GitLab runners use a cached
+version of the repository. If the job runs on a runner with a cached repository that
+still has the tag, `semantic-release` recreates the tag in the main repository.
+
+To avoid this behavior, you can either:
+
+- Configure the runner with [`GIT_STRATEGY: clone`](../runners/configure_runners.md#git-strategy).
+- Include the [`git fetch --prune-tags` command](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---prune-tags)
+  in your CI/CD script.

@@ -6,8 +6,8 @@ require 'fileutils'
 require_relative '../spec/support/helpers/gitaly_setup'
 
 # This script assumes tmp/tests/gitaly already contains the correct
-# Gitaly version. We just have to compile it and run its 'bundle
-# install'. We have this separate script for that to avoid bundle
+# Gitaly version. We just have to compile it.
+# We have this separate script for that to avoid bundle
 # poisoning in CI. This script should only be run in CI.
 class GitalyTestBuild
   include GitalySetup
@@ -16,14 +16,11 @@ class GitalyTestBuild
     # If we have the binaries from the cache, we can skip building them again
     if File.exist?(tmp_tests_gitaly_bin_dir)
       GitalySetup::LOGGER.debug "Gitaly binary already built. Skip building...\n"
-      # We still need to install the gems in that case
-      install_gitaly_gems
     else
       abort 'gitaly build failed' unless build_gitaly
     end
 
     ensure_gitlab_shell_secret!
-    check_gitaly_config!
 
     # Starting gitaly further validates its configuration
     gitaly_pid = start_gitaly

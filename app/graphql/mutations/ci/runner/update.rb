@@ -21,13 +21,18 @@ module Mutations
                  description: 'Indicates the runner is allowed to receive jobs.',
                  deprecated: { reason: :renamed, replacement: 'paused', milestone: '14.8' }
 
+        argument :associated_projects, [::Types::GlobalIDType[::Project]],
+                 required: false,
+                 description: 'Projects associated with the runner. Available only for project runners.',
+                 prepare: ->(global_ids, _ctx) { global_ids&.filter_map { |gid| gid.model_id.to_i } }
+
         field :runner,
               Types::Ci::RunnerType,
               null: true,
               description: 'Runner after mutation.'
 
         def resolve(id:, **runner_attrs)
-          runner = authorized_find!(id)
+          runner = authorized_find!(id: id)
 
           associated_projects_ids = runner_attrs.delete(:associated_projects)
 
@@ -38,10 +43,6 @@ module Mutations
           end
 
           response
-        end
-
-        def find_object(id)
-          GitlabSchema.find_by_gid(id)
         end
 
         private

@@ -12,9 +12,12 @@ module Gitlab
         def preload_authorizations(dast_profiles)
           return unless dast_profiles
 
-          projects = dast_profiles.map(&:project)
-          users = dast_profiles.filter_map { |dast_profile| dast_profile.dast_profile_schedule&.owner }
-          Preloaders::UsersMaxAccessLevelInProjectsPreloader.new(projects: projects, users: users).execute
+          project_users = dast_profiles.group_by(&:project).transform_values do |project_profiles|
+            project_profiles
+              .filter_map { |profile| profile.dast_profile_schedule&.owner }
+              .uniq
+          end
+          Preloaders::UsersMaxAccessLevelByProjectPreloader.new(project_users: project_users).execute
         end
       end
     end

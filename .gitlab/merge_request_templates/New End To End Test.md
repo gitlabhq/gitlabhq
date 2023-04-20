@@ -4,6 +4,26 @@
 Please link to the respective test case in the testcases project
 -->
 
+## How to set up and validate locally
+
+<!--
+In most cases this will be the command to run the test, e.g.:
+
+From the `qa` directory:
+```
+bundle install
+export WEBDRIVER_HEADLESS=false # If you'd like to watch the test in action
+export QA_GITLAB_URL="http://gdk.test:3000" # Only needed if GDK is not running on http://127.0.0.1:3000
+bundle exec rspec <path/to/spec.rb>
+```
+
+This may be particularly helpful if you're requesting reviews from engineers who aren't familiar with GitLab's E2E tests.
+
+Any other necessary setup should be included here as well, especially if it's an orchestrated test that requires a
+[special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html)
+to run locally against GDK.
+-->
+
 ### Checklist
 
 - [ ] Confirm the test has a [`testcase:` tag linking to an existing test case](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html#link-a-test-to-its-test-case-issue) in the test case project.

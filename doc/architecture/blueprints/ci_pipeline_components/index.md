@@ -8,6 +8,8 @@ owning-stage: "~devops::verify"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # CI/CD Catalog
 
 ## Summary
@@ -98,6 +100,7 @@ identifying abstract concepts and are subject to changes as we refine the design
 - **Catalog resource** is the single item displayed in the catalog. A components repository is a catalog resource.
 - **Version** is a specific revision of catalog resource. It maps to the released tag in the project,
   which allows components to be pinned to a specific revision.
+- **Steps** is a collection of instructions for how jobs can be executed.
 
 ## Definition of pipeline component
 
@@ -225,7 +228,8 @@ The version of the component can be (in order of highest priority first):
 
 1. A commit SHA - For example: `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`
 1. A tag - For example: `gitlab.com/gitlab-org/dast@1.0`
-1. A special moving target version that points to the most recent released tag - For example: `gitlab.com/gitlab-org/dast@~latest`
+1. A special moving target version that points to the most recent released tag. The target project must be
+explicitly marked as a [catalog resource](#catalog-resource) - For example: `gitlab.com/gitlab-org/dast@~latest`
 1. A branch name - For example: `gitlab.com/gitlab-org/dast@master`
 
 If a tag and branch exist with the same name, the tag takes precedence over the branch.
@@ -703,6 +707,6 @@ Domain experts:
 | Area                         | Who
 |------------------------------|------------------------|
 | Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Laura Montemayor-Rodriguez  |
+| Verify / Pipeline authoring  | Laura Montemayor       |
 
 <!-- vale gitlab.Spelling = YES -->

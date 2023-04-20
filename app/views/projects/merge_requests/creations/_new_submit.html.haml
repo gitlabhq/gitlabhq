@@ -10,12 +10,24 @@
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
 
-.mr-compare.merge-request.js-merge-request-new-submit{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
+.mr-compare.merge-request.js-merge-request-new-submit.gl-mt-5{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?
-    .commits-empty
-      %h4
-        = _("There are no commits yet.")
-      = custom_icon ('illustration_no_commits')
+    .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
+      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between
+        .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+          .fade-left= sprite_icon('chevron-lg-left', size: 12)
+          .fade-right= sprite_icon('chevron-lg-right', size: 12)
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.js-tabs-affix
+            %li.commits-tab.new-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
+                = _("Commits")
+                = gl_badge_tag @total_commit_count, { size: :sm }, { class: 'gl-tab-counter-badge' }
+
+    #diff-notes-app.tab-content
+      #new.commits.tab-pane.active
+        .commits-empty.gl-text-left.gl-my-5.gl-text-gray-500
+          %p
+            = _("There are no commits yet.")
   - else
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
       .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between

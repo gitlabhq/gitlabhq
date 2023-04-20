@@ -41,8 +41,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_users, -> (users) { where(user: users) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
-  scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
-  scope :owner_is_human, -> { includes(:user).where(user: { user_type: :human }) }
+  scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
+  scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
   scope :last_used_before, -> (date) { where("last_used_at <= ?", date) }
   scope :last_used_after, -> (date) { where("last_used_at >= ?", date) }
 

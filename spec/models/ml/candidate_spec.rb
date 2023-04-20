@@ -3,58 +3,79 @@
 require 'spec_helper'
 
 RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops do
-  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, name: 'candidate0') }
+  let_it_be(:candidate) { create(:ml_candidates, :with_metrics_and_params, :with_artifact, name: 'candidate0') }
   let_it_be(:candidate2) do
     create(:ml_candidates, experiment: candidate.experiment, user: create(:user), name: 'candidate2')
   end
 
-  let_it_be(:candidate_artifact) do
-    FactoryBot.create(:generic_package,
-                      name: candidate.package_name,
-                      version: candidate.package_version,
-                      project: candidate.project)
-  end
-
-  let(:project) { candidate.experiment.project }
+  let(:project) { candidate.project }
 
   describe 'associations' do
     it { is_expected.to belong_to(:experiment) }
+    it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:package) }
     it { is_expected.to have_many(:params) }
     it { is_expected.to have_many(:metrics) }
     it { is_expected.to have_many(:metadata) }
   end
 
+  describe 'modules' do
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :internal_id }
+      let(:instance) { build(:ml_candidates, experiment: candidate.experiment) }
+      let(:scope) { :project }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :ml_candidates }
+    end
+  end
+
   describe 'default values' do
-    it { expect(described_class.new.iid).to be_present }
+    it { expect(described_class.new.eid).to be_present }
+  end
+
+  describe '.destroy' do
+    let_it_be(:candidate_to_destroy) do
+      create(:ml_candidates, :with_metrics_and_params, :with_metadata, :with_artifact)
+    end
+
+    it 'destroys metrics, params and metadata, but not the artifact', :aggregate_failures do
+      expect { candidate_to_destroy.destroy! }
+        .to change { Ml::CandidateMetadata.count }.by(-2)
+        .and change { Ml::CandidateParam.count }.by(-2)
+        .and change { Ml::CandidateMetric.count }.by(-2)
+        .and not_change { Packages::Package.count }
+    end
   end
 
   describe '.artifact_root' do
     subject { candidate.artifact_root }
 
-    it { is_expected.to eq("/ml_candidate_#{candidate.id}/-/") }
-  end
-
-  describe '.package_name' do
-    subject { candidate.package_name }
-
-    it { is_expected.to eq("ml_candidate_#{candidate.id}") }
+    it { is_expected.to eq("/#{candidate.package_name}/#{candidate.iid}/") }
   end
 
   describe '.package_version' do
     subject { candidate.package_version }
 
-    it { is_expected.to eq('-') }
+    it { is_expected.to eq(candidate.iid) }
+  end
+
+  describe '.eid' do
+    let_it_be(:eid) { SecureRandom.uuid }
+
+    let_it_be(:candidate3) do
+      build(:ml_candidates, :with_metrics_and_params, name: 'candidate0', eid: eid)
+    end
+
+    subject { candidate3.eid }
+
+    it { is_expected.to eq(eid) }
   end
 
   describe '.artifact' do
     let(:tested_candidate) { candidate }
 
     subject { tested_candidate.artifact }
-
-    before do
-      candidate_artifact
-    end
 
     context 'when has logged artifacts' do
       it 'returns the package' do
@@ -69,21 +90,26 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     end
   end
 
-  describe '.artifact_lazy' do
-    context 'when candidates have same the same iid' do
-      before do
-        BatchLoader::Executor.clear_current
-      end
+  describe '#by_project_id_and_eid' do
+    let(:project_id) { candidate.experiment.project_id }
+    let(:eid) { candidate.eid }
 
-      it 'loads the correct artifacts', :aggregate_failures do
-        candidate.artifact_lazy
-        candidate2.artifact_lazy
+    subject { described_class.with_project_id_and_eid(project_id, eid) }
 
-        expect(Packages::Package).to receive(:joins).once.and_call_original # Only one database call
+    context 'when eid exists', 'and belongs to project' do
+      it { is_expected.to eq(candidate) }
+    end
 
-        expect(candidate.artifact.name).to eq(candidate.package_name)
-        expect(candidate2.artifact).to be_nil
-      end
+    context 'when eid exists', 'and does not belong to project' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when eid does not exist' do
+      let(:eid) { 'a' }
+
+      it { is_expected.to be_nil }
     end
   end
 
@@ -93,18 +119,18 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
 
     subject { described_class.with_project_id_and_iid(project_id, iid) }
 
-    context 'when iid exists', 'and belongs to project' do
+    context 'when internal_id exists', 'and belongs to project' do
       it { is_expected.to eq(candidate) }
     end
 
-    context 'when iid exists', 'and does not belong to project' do
+    context 'when internal_id exists', 'and does not belong to project' do
       let(:project_id) { non_existing_record_id }
 
       it { is_expected.to be_nil }
     end
 
-    context 'when iid does not exist' do
-      let(:iid) { 'a' }
+    context 'when internal_id does not exist' do
+      let(:iid) { non_existing_record_id }
 
       it { is_expected.to be_nil }
     end

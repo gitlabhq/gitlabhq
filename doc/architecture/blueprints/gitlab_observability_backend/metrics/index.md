@@ -8,6 +8,8 @@ owning-stage: "~monitor::observability"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # GitLab Observability Backend - Metrics
 
 ## Summary

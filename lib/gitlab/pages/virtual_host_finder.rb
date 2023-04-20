@@ -27,10 +27,9 @@ module Gitlab
       attr_reader :host
 
       def by_unique_domain(name)
-        return unless Feature.enabled?(:pages_unique_domain)
-
         project = Project.by_pages_enabled_unique_domain(name)
 
+        return unless Feature.enabled?(:pages_unique_domain, project)
         return unless project&.pages_deployed?
 
         ::Pages::VirtualDomain.new(projects: [project])

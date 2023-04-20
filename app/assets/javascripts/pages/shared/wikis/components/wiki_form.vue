@@ -128,6 +128,9 @@ export default {
     };
   },
   computed: {
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
     noContent() {
       return !this.content.trim();
     },
@@ -351,6 +354,8 @@ export default {
             :enable-content-editor="isMarkdownFormat"
             :enable-preview="isMarkdownFormat"
             :autofocus="pageInfo.persisted"
+            :enable-autocomplete="true"
+            :autocomplete-data-sources="autocompleteDataSources"
             :drawio-enabled="true"
             @contentEditor="notifyContentEditorActive"
             @markdownField="notifyContentEditorInactive"

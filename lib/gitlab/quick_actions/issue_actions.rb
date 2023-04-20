@@ -259,7 +259,8 @@ module Gitlab
             current_user.can?(:"set_#{quick_action_target.issue_type}_metadata", quick_action_target)
         end
         command :promote_to_incident do
-          @updates[:issue_type] = "incident"
+          @updates[:issue_type] = :incident
+          @updates[:work_item_type] = ::WorkItems::Type.default_by_type(:incident)
         end
 
         desc { _('Add customer relation contacts') }

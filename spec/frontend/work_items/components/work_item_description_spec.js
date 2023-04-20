@@ -116,10 +116,7 @@ describe('WorkItemDescription', () => {
         supportsQuickActions: true,
         renderMarkdownPath: markdownPreviewPath(fullPath, iid),
         quickActionsDocsPath: wrapper.vm.$options.quickActionsDocsPath,
-      });
-
-      expect(findMarkdownEditor().vm.$attrs).toMatchObject({
-        'autocomplete-data-sources': autocompleteDataSources(fullPath, iid),
+        autocompleteDataSources: autocompleteDataSources(fullPath, iid),
       });
     });
   });
@@ -179,7 +176,7 @@ describe('WorkItemDescription', () => {
             }),
           });
 
-          expect(findEditedAt().props()).toEqual({
+          expect(findEditedAt().props()).toMatchObject({
             updatedAt: lastEditedAt,
             updatedByName: lastEditedBy.name,
             updatedByPath: lastEditedBy.webPath,

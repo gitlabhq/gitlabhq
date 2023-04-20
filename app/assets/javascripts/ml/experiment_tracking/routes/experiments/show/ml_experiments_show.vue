@@ -12,6 +12,7 @@ import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import ExperimentHeader from './components/experiment_header.vue';
 import {
   LIST_KEY_CREATED_AT,
   BASE_SORT_FIELDS,
@@ -30,8 +31,13 @@ export default {
     IncubationAlert,
     RegistrySearch,
     KeysetPagination,
+    ExperimentHeader,
   },
   props: {
+    experiment: {
+      type: Object,
+      required: true,
+    },
     candidates: {
       type: Array,
       required: true,
@@ -124,6 +130,14 @@ export default {
     hasItems() {
       return this.candidates.length > 0;
     },
+    deleteButtonInfo() {
+      return {
+        deletePath: this.experiment.path,
+        deleteConfirmationText: translations.DELETE_EXPERIMENT_CONFIRMATION_MESSAGE,
+        actionPrimaryText: translations.DELETE_EXPERIMENT_PRIMARY_ACTION_LABEL,
+        modalTitle: translations.DELETE_EXPERIMENT_MODAL_TITLE,
+      };
+    },
   },
   methods: {
     submitFilters() {
@@ -156,6 +170,8 @@ export default {
       :feature-name="$options.constants.FEATURE_NAME"
       :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
     />
+
+    <experiment-header :title="experiment.name" :delete-info="deleteButtonInfo" />
 
     <registry-search
       :filters="filters"

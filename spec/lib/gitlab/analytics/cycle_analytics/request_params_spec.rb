@@ -17,9 +17,23 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RequestParams, feature_categor
         expect(attributes).to match(hash_including({
           namespace: {
             name: project.name,
-            full_path: project.full_path
+            full_path: project.full_path,
+            type: "Project"
           }
         }))
+      end
+
+      context 'with a subgroup project' do
+        let_it_be(:sub_group) { create(:group, parent: root_group) }
+        let_it_be_with_refind(:subgroup_project) { create(:project, group: sub_group) }
+        let(:namespace) { subgroup_project.project_namespace }
+
+        it 'includes the correct group_path' do
+          expect(attributes).to match(hash_including({
+            group_path: "groups/#{subgroup_project.namespace.full_path}",
+            full_path: subgroup_project.full_path
+          }))
+        end
       end
     end
   end

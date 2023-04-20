@@ -19,7 +19,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :subgroups do
     page.find("[data-testid='group-#{group.id}-dropdown-button'").click
   end
 
-  it_behaves_like 'a dashboard page with sidebar', :dashboard_groups_path, :groups
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_groups_path, :groups
 
   it 'shows groups user is member of' do
     group.add_owner(user)

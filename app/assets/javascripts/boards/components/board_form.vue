@@ -226,12 +226,10 @@ export default {
           }
           this.cancel();
 
-          if (!this.isApolloBoard) {
-            const param = getParameterByName('group_by')
-              ? `?group_by=${getParameterByName('group_by')}`
-              : '';
-            updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
-          }
+          const param = getParameterByName('group_by')
+            ? `?group_by=${getParameterByName('group_by')}`
+            : '';
+          updateHistory({ url: `${this.boardBaseUrl}/${getIdFromGraphQLId(board.id)}${param}` });
         } catch {
           this.setError({ message: this.$options.i18n.saveErrorMessage });
         } finally {

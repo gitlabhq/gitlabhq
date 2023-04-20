@@ -22,12 +22,27 @@ module Gitlab
           self.with_suppressed(false, &blk)
         end
 
+        # This method will temporary ignore the given tables in a current transaction
+        # This is meant to disable `PreventCrossDB` check for some well known failures
+        def self.temporary_ignore_tables_in_transaction(tables, url:, &blk)
+          return yield unless context&.dig(:ignored_tables)
+
+          begin
+            prev_ignored_tables = context[:ignored_tables]
+            context[:ignored_tables] = prev_ignored_tables + tables
+            yield
+          ensure
+            context[:ignored_tables] = prev_ignored_tables
+          end
+        end
+
         def self.begin!
           super
 
           context.merge!({
             transaction_depth_by_db: Hash.new { |h, k| h[k] = 0 },
-            modified_tables_by_db: Hash.new { |h, k| h[k] = Set.new }
+            modified_tables_by_db: Hash.new { |h, k| h[k] = Set.new },
+            ignored_tables: []
           })
         end
 
@@ -57,7 +72,7 @@ module Gitlab
             if context[:transaction_depth_by_db][database] == 0
               context[:modified_tables_by_db][database].clear
 
-              # Attempt to troubleshoot  https://gitlab.com/gitlab-org/gitlab/-/issues/351531
+              # Attempt to troubleshoot https://gitlab.com/gitlab-org/gitlab/-/issues/351531
               ::CrossDatabaseModification::TransactionStackTrackRecord.log_gitlab_transactions_stack(action: :end_of_transaction)
             elsif context[:transaction_depth_by_db][database] < 0
               context[:transaction_depth_by_db][database] = 0
@@ -78,6 +93,9 @@ module Gitlab
           # created and this causes lots of spec failures
           # https://gitlab.com/gitlab-org/gitlab/-/issues/343394
           tables -= %w[plans gitlab_subscriptions]
+
+          # Ignore some tables
+          tables -= context[:ignored_tables].to_a
 
           return if tables.empty?
 

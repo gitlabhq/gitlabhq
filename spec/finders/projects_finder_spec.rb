@@ -14,7 +14,7 @@ RSpec.describe ProjectsFinder do
     end
 
     let_it_be(:internal_project) do
-      create(:project, :internal, :merge_requests_disabled, group: group, name: 'B', path: 'B')
+      create(:project, :internal, :merge_requests_disabled, group: group, name: 'B', path: 'B', updated_at: 4.days.ago)
     end
 
     let_it_be(:public_project) do
@@ -130,6 +130,52 @@ RSpec.describe ProjectsFinder do
           let(:params) { { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } }
 
           it { is_expected.to eq([internal_project]) }
+        end
+      end
+
+      describe 'filter by updated_at' do
+        context 'when updated_before is present' do
+          let(:params) { { updated_before: 2.days.ago } }
+
+          it { is_expected.to contain_exactly(internal_project) }
+        end
+
+        context 'when updated_after is present' do
+          let(:params) { { updated_after: 2.days.ago } }
+
+          it { is_expected.not_to include(internal_project) }
+        end
+
+        context 'when both updated_before and updated_after are present' do
+          let(:params) { { updated_before: 2.days.ago, updated_after: 6.days.ago } }
+
+          it { is_expected.to contain_exactly(internal_project) }
+
+          context 'when updated_after > updated_before' do
+            let(:params) { { updated_after: 2.days.ago, updated_before: 6.days.ago } }
+
+            it { is_expected.to be_empty }
+
+            it 'does not query the DB' do
+              expect { subject.to_a }.to make_queries(0)
+            end
+          end
+
+          context 'when updated_after equals updated_before' do
+            let(:params) { { updated_after: internal_project.updated_at, updated_before: internal_project.updated_at } }
+
+            it 'allows an exact match' do
+              expect(subject).to contain_exactly(internal_project)
+            end
+          end
+
+          context 'when arguments are invalid datetimes' do
+            let(:params) { { updated_after: 'invalid', updated_before: 'inavlid' } }
+
+            it 'does not filter by updated_at' do
+              expect(subject).to contain_exactly(internal_project, public_project)
+            end
+          end
         end
       end
 

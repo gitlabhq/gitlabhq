@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTrace do
+RSpec.describe Ci::BuildTrace, feature_category: :continuous_integration do
   let(:build) { build_stubbed(:ci_build) }
   let(:state) { nil }
   let(:data) { StringIO.new('the-stream') }
@@ -13,7 +13,7 @@ RSpec.describe Ci::BuildTrace do
 
   subject { described_class.new(build: build, stream: stream, state: state) }
 
-  shared_examples 'delegates methods' do
+  describe 'delegated methods' do
     it { is_expected.to delegate_method(:state).to(:trace) }
     it { is_expected.to delegate_method(:append).to(:trace) }
     it { is_expected.to delegate_method(:truncated).to(:trace) }
@@ -25,7 +25,25 @@ RSpec.describe Ci::BuildTrace do
     it { is_expected.to delegate_method(:complete?).to(:build).with_prefix }
   end
 
-  it_behaves_like 'delegates methods'
+  describe 'FF sign_and_verify_ansi2json_state' do
+    before do
+      stub_feature_flags(sign_and_verify_ansi2json_state: false)
+    end
+
+    it 'calls convert with verify_state: true when enabled for project' do
+      build.project = create(:project)
+      stub_feature_flags(sign_and_verify_ansi2json_state: build.project)
+
+      expect(Gitlab::Ci::Ansi2json).to receive(:convert).with(stream.stream, state, verify_state: true)
+
+      described_class.new(build: build, stream: stream, state: state)
+    end
+
+    it 'calls convert with verify_state: false when disabled' do
+      expect(Gitlab::Ci::Ansi2json).to receive(:convert).with(stream.stream, state, verify_state: false)
+      described_class.new(build: build, stream: stream, state: state)
+    end
+  end
 
   it 'returns formatted trace' do
     expect(subject.lines).to eq(

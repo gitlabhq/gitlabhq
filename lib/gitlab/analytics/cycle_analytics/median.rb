@@ -38,7 +38,8 @@ module Gitlab
         end
 
         def median_duration_in_seconds
-          Arel::Nodes::Extract.new(percentile_cont, :epoch)
+          Arel::Nodes::NamedFunction.new('CAST',
+            [Arel::Nodes::Extract.new(percentile_cont, :epoch).as('double precision')])
         end
       end
     end

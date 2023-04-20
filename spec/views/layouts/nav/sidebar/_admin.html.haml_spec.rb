@@ -2,7 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/nav/sidebar/_admin' do
+RSpec.describe 'layouts/nav/sidebar/_admin', feature_category: :navigation do
+  let(:user) { build(:admin) }
+
+  before do
+    allow(user).to receive(:can_admin_all_resources?).and_return(true)
+    allow(view).to receive(:current_user).and_return(user)
+  end
+
   shared_examples 'page has active tab' do |title|
     it "activates #{title} tab" do
       render
@@ -32,7 +39,7 @@ RSpec.describe 'layouts/nav/sidebar/_admin' do
 
   context 'on projects' do
     before do
-      allow(controller).to receive(:controller_name).and_return('projects')
+      allow(controller).to receive(:controller_name).and_return('admin/projects')
       allow(controller).to receive(:controller_path).and_return('admin/projects')
     end
 

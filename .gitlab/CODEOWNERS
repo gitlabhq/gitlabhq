@@ -57,7 +57,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /ee/app/finders/ @gitlab-org/maintainers/database
 /rubocop/rubocop-migrations.yml @gitlab-org/maintainers/database
 
-^[Engineering Productivity]
+[Engineering Productivity]
 /.gitlab-ci.yml @gl-quality/eng-prod
 /.gitlab/ci/ @gl-quality/eng-prod
 /.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
@@ -84,26 +84,6 @@ Dangerfile @gl-quality/eng-prod
 ^[LDAP]
 /ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
-
-^[Templates]
-/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
-/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
-/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/DAST.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
-# Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
-/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 ^[Project Alias]
 /ee/app/models/project_alias.rb @patrickbajao
@@ -287,6 +267,14 @@ Dangerfile @gl-quality/eng-prod
 /spec/frontend/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
 /spec/frontend/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
 
+^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/components/dashboards_list.vue
+/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/
+/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/customizable_dashboard.vue
+/ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
+/ee/app/assets/javascripts/product_analytics/
+
 ^[Product Intelligence]
 /ee/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
 /ee/lib/ee/gitlab/usage_data.rb  @gitlab-org/analytics-section/product-intelligence/engineers
@@ -364,8 +352,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/services/namespaces/in_product_marketing_emails_service_spec.rb @gitlab-org/growth/engineers
 /app/workers/projects/record_target_platforms_worker.rb @gitlab-org/growth/engineers
 /spec/workers/projects/record_target_platforms_worker_spec.rb @gitlab-org/growth/engineers
-/ee/app/controllers/groups/feature_discovery_moments_controller.rb @gitlab-org/growth/engineers
-/ee/spec/requests/groups/feature_discovery_moments_spec.rb @gitlab-org/growth/engineers
 
 ^[Legal]
 /config/dependency_decisions.yml @gitlab-org/legal-reviewers
@@ -390,12 +376,12 @@ Dangerfile @gl-quality/eng-prod
 /lib/gitlab/utils.rb @gitlab-com/gl-security/appsec
 
 ^[Gitaly]
-lib/gitlab/git_access.rb @proglottis @toon @zj-gitlab
-lib/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
-ee/lib/ee/gitlab/git_access.rb @proglottis @toon @zj-gitlab
-ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon @zj-gitlab
-ee/lib/ee/gitlab/checks/** @proglottis @toon @zj-gitlab
-lib/gitlab/checks/** @proglottis @toon @zj-gitlab
+lib/gitlab/git_access.rb @proglottis @toon
+lib/gitlab/git_access_*.rb @proglottis @toon
+ee/lib/ee/gitlab/git_access.rb @proglottis @toon
+ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon
+ee/lib/ee/gitlab/checks/** @proglottis @toon
+lib/gitlab/checks/** @proglottis @toon
 
 ^[Documentation Directories]
 /doc/ @gl-docsteam
@@ -447,11 +433,19 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/logs/index.md @msedlakjakubowski
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls
-/doc/administration/monitoring/ @msedlakjakubowski
+/doc/administration/monitoring/github_imports.md @eread
+/doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
+/doc/administration/monitoring/index.md @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
+/doc/administration/monitoring/performance/gitlab_configuration.md @msedlakjakubowski
+/doc/administration/monitoring/performance/grafana_configuration.md @msedlakjakubowski
+/doc/administration/monitoring/performance/index.md @jglassman1
 /doc/administration/monitoring/performance/performance_bar.md @jglassman1
 /doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/index.md @axil
+/doc/administration/monitoring/prometheus/pgbouncer_exporter.md @aqualls
+/doc/administration/monitoring/prometheus/postgres_exporter.md @aqualls
+/doc/administration/monitoring/prometheus/registry_exporter.md @marcel.amirault
 /doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
 /doc/administration/nfs.md @axil
 /doc/administration/object_storage.md @axil
@@ -461,7 +455,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/operations/moving_repositories.md @eread
 /doc/administration/package_information/ @axil
 /doc/administration/packages/ @marcel.amirault
-/doc/administration/pages/ @ashrafkhamis
 /doc/administration/polling.md @axil
 /doc/administration/postgresql/ @aqualls
 /doc/administration/postgresql/multiple_databases.md @lciutacu
@@ -480,6 +473,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/server_hooks.md @eread
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
+/doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil
 /doc/administration/snippets/ @aqualls
 /doc/administration/static_objects_external_storage.md @ashrafkhamis
@@ -490,7 +484,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/administration/troubleshooting/postgresql.md @aqualls
 /doc/administration/uploads.md @axil
 /doc/administration/user_settings.md @jglassman1
-/doc/administration/wikis/ @ashrafkhamis
 /doc/api/access_requests.md @jglassman1
 /doc/api/admin_sidekiq_queues.md @axil
 /doc/api/alert_management_alerts.md @msedlakjakubowski
@@ -551,7 +544,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/group_relations_export.md @eread
 /doc/api/group_releases.md @phillipwells
 /doc/api/group_repository_storage_moves.md @ashrafkhamis
-/doc/api/group_wikis.md @ashrafkhamis
 /doc/api/groups.md @lciutacu
 /doc/api/import.md @eread
 /doc/api/index.md @ashrafkhamis
@@ -588,8 +580,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/openapi/ @ashrafkhamis
 /doc/api/packages.md @marcel.amirault
 /doc/api/packages/ @marcel.amirault
-/doc/api/pages.md @ashrafkhamis
-/doc/api/pages_domains.md @ashrafkhamis
 /doc/api/personal_access_tokens.md @eread
 /doc/api/pipeline_schedules.md @drcatherinepope
 /doc/api/pipeline_triggers.md @drcatherinepope
@@ -651,7 +641,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
-/doc/api/wikis.md @ashrafkhamis
+/doc/architecture/blueprints/cells/ @lciutacu
 /doc/architecture/blueprints/database/scalability/patterns/ @aqualls
 /doc/architecture/blueprints/database_scaling/ @aqualls
 /doc/ci/ @drcatherinepope
@@ -674,7 +664,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/ci/pipeline_editor/ @marcel.amirault
 /doc/ci/pipelines/downstream_pipelines.md @marcel.amirault
 /doc/ci/pipelines/index.md @marcel.amirault
-/doc/ci/pipelines/job_artifacts.md @marcel.amirault
 /doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
 /doc/ci/pipelines/pipeline_artifacts.md @marcel.amirault
 /doc/ci/quick_start/ @marcel.amirault
@@ -715,9 +704,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/developing_with_solargraph.md @aqualls
 /doc/development/development_processes.md @sselhorn
 /doc/development/distributed_tracing.md @msedlakjakubowski
+/doc/development/distribution/ @axil
 /doc/development/documentation/ @sselhorn
 /doc/development/export_csv.md @eread
-/doc/development/fe_guide/content_editor.md @ashrafkhamis
 /doc/development/fe_guide/customizable_dashboards.md @lciutacu
 /doc/development/fe_guide/dark_mode.md @sselhorn
 /doc/development/fe_guide/graphql.md @sselhorn
@@ -758,12 +747,11 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/omnibus.md @axil
 /doc/development/organization/ @lciutacu
 /doc/development/packages/ @marcel.amirault
-/doc/development/pages/ @ashrafkhamis
 /doc/development/permissions.md @jglassman1
 /doc/development/policies.md @jglassman1
 /doc/development/project_templates.md @aqualls
 /doc/development/prometheus_metrics.md @msedlakjakubowski
-/doc/development/real_time.md @msedlakjakubowski
+/doc/development/real_time.md @jglassman1
 /doc/development/rubocop_development_guide.md @sselhorn
 /doc/development/search/ @ashrafkhamis
 /doc/development/sec/ @rdickenson
@@ -775,7 +763,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/development/testing_guide/ @sselhorn
 /doc/development/value_stream_analytics.md @lciutacu
 /doc/development/value_stream_analytics/ @lciutacu
-/doc/development/wikis.md @ashrafkhamis
 /doc/development/work_items.md @msedlakjakubowski
 /doc/development/work_items_widgets.md @msedlakjakubowski
 /doc/development/workhorse/ @aqualls
@@ -816,6 +803,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/raketasks/spdx.md @rdickenson
 /doc/raketasks/x509_signatures.md @aqualls
 /doc/security/ @jglassman1
+/doc/security/email_verification.md @phillipwells
 /doc/subscriptions/ @fneill
 /doc/subscriptions/gitlab_dedicated/ @drcatherinepope
 /doc/topics/authentication/ @jglassman1
@@ -827,6 +815,9 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/topics/plan_and_track.md @msedlakjakubowski
 /doc/topics/your_work.md @sselhorn
 /doc/tutorials/ @kpaizee
+/doc/tutorials/create_compliance_pipeline.md @eread
+/doc/tutorials/fuzz_testing_tutorial.md @rdickenson
+/doc/tutorials/scan_result_policy.md @rdickenson
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
 /doc/user/admin_area/analytics/ @lciutacu
@@ -843,7 +834,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/admin_area/monitoring/ @msedlakjakubowski
 /doc/user/admin_area/reporting/git_abuse_rate_limit.md @phillipwells
 /doc/user/admin_area/reporting/spamcheck.md @axil
-/doc/user/admin_area/review_abuse_reports.md @jglassman1
+/doc/user/admin_area/review_abuse_reports.md @phillipwells
 /doc/user/admin_area/settings/account_and_limit_settings.md @aqualls
 /doc/user/admin_area/settings/continuous_integration.md @drcatherinepope
 /doc/user/admin_area/settings/deprecated_api_rate_limits.md @aqualls
@@ -865,6 +856,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/admin_area/settings/rate_limit_on_projects_api.md @lciutacu
 /doc/user/admin_area/settings/rate_limit_on_users_api.md @jglassman1
 /doc/user/admin_area/settings/scim_setup.md @jglassman1
+/doc/user/admin_area/settings/security_and_compliance.md @rdickenson
 /doc/user/admin_area/settings/terraform_limits.md @phillipwells
 /doc/user/admin_area/settings/third_party_offers.md @lciutacu
 /doc/user/admin_area/settings/usage_statistics.md @lciutacu
@@ -872,35 +864,38 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson
-/doc/user/application_security/policies/ @dianalogan
 /doc/user/asciidoc.md @aqualls
 /doc/user/award_emojis.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
+/doc/user/compliance/ @rdickenson
 /doc/user/compliance/compliance_report/ @eread
 /doc/user/compliance/index.md @eread
-/doc/user/compliance/license_approval_policies.md @dianalogan
-/doc/user/compliance/license_check_rules.md @dianalogan
-/doc/user/compliance/license_compliance/ @rdickenson
-/doc/user/compliance/license_list.md @rdickenson
-/doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/discussions/ @aqualls
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/feature_flags.md @sselhorn
-/doc/user/group/ @lciutacu
+/doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
+/doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @eread
+/doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread
+/doc/user/group/index.md @lciutacu
+/doc/user/group/insights/ @lciutacu
 /doc/user/group/issues_analytics/ @msedlakjakubowski
 /doc/user/group/iterations/ @msedlakjakubowski
+/doc/user/group/manage.md @lciutacu
+/doc/user/group/moderate_users.md @phillipwells
 /doc/user/group/planning_hierarchy/ @msedlakjakubowski
 /doc/user/group/reporting/ @phillipwells
 /doc/user/group/repositories_analytics/ @drcatherinepope
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @jglassman1
 /doc/user/group/settings/ @jglassman1
+/doc/user/group/subgroups/ @lciutacu
+/doc/user/group/value_stream_analytics/ @lciutacu
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @fneill
 /doc/user/markdown.md @msedlakjakubowski
@@ -912,18 +907,19 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/permissions.md @jglassman1
 /doc/user/product_analytics/ @lciutacu
 /doc/user/profile/account/ @jglassman1
+/doc/user/profile/achievements.md @lciutacu
+/doc/user/profile/comment_templates.md @aqualls
 /doc/user/profile/contributions_calendar.md @lciutacu
 /doc/user/profile/index.md @jglassman1
 /doc/user/profile/notifications.md @msedlakjakubowski
 /doc/user/profile/personal_access_tokens.md @jglassman1
-/doc/user/profile/saved_replies.md @aqualls
 /doc/user/profile/user_passwords.md @jglassman1
 /doc/user/project/autocomplete_characters.md @aqualls
 /doc/user/project/badges.md @lciutacu
 /doc/user/project/changelogs.md @aqualls
 /doc/user/project/clusters/ @phillipwells
 /doc/user/project/code_intelligence.md @aqualls
-/doc/user/project/code_owners.md @aqualls
+/doc/user/project/codeowners/ @aqualls
 /doc/user/project/deploy_boards.md @phillipwells
 /doc/user/project/deploy_keys/ @phillipwells
 /doc/user/project/deploy_tokens/ @phillipwells
@@ -948,7 +944,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/merge_requests/status_checks.md @eread
 /doc/user/project/milestones/ @msedlakjakubowski
 /doc/user/project/organize_work_with_projects.md @lciutacu
-/doc/user/project/pages/ @ashrafkhamis
 /doc/user/project/protected_branches.md @aqualls
 /doc/user/project/protected_tags.md @aqualls
 /doc/user/project/push_options.md @aqualls
@@ -967,10 +962,10 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/project/settings/import_export_troubleshooting.md @eread
 /doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
+/doc/user/project/system_notes.md @aqualls
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/web_ide_beta/ @ashrafkhamis
-/doc/user/project/wiki/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
 /doc/user/public_access.md @lciutacu
 /doc/user/report_abuse.md @phillipwells
@@ -982,6 +977,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
+/doc/user/workspace/quick_start/ @ashrafkhamis
 # End rake-managed-docs-block
 
 [Authentication and Authorization]
@@ -1229,127 +1225,148 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /lib/tasks/gitlab/password.rake @gitlab-org/manage/authentication-and-authorization/approvers
 /lib/tasks/tokens.rake @gitlab-org/manage/authentication-and-authorization/approvers
 
-^[Verify]
-/app/**/ci/ @gitlab-org/maintainers/cicd-verify
-/app/controllers/admin/jobs_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/admin/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/admin/runners_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/artifacts_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/build_artifacts_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/builds_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/jobs_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/runner_setup_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/pipeline_schedules_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/pipelines_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/pipelines_settings_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/runner_projects_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/runners_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/triggers_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/controllers/projects/variables_controller.rb @gitlab-org/maintainers/cicd-verify
-/app/models/commit_status.rb @gitlab-org/maintainers/cicd-verify
-/app/models/external_pull_request.rb @gitlab-org/maintainers/cicd-verify
-/app/models/generic_commit_status.rb @gitlab-org/maintainers/cicd-verify
-/app/models/namespace_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
-/app/models/project_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
-/app/presenters/commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
-/app/presenters/generic_commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
-/app/validators/json_schemas/build_metadata_id_tokens.json @gitlab-org/maintainers/cicd-verify
-/app/views/projects/artifacts/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/generic_commit_statuses/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/app/views/projects/triggers/ @gitlab-org/maintainers/cicd-verify
-/app/workers/build_hooks_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/build_queue_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/build_success_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/ci_platform_metrics_update_cron_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/create_pipeline_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/expire_build_artifacts_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_hooks_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_metrics_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_notification_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_process_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/pipeline_schedule_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/run_pipeline_schedule_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/stuck_ci_jobs_worker.rb @gitlab-org/maintainers/cicd-verify
-/app/workers/update_external_pull_requests_worker.rb @gitlab-org/maintainers/cicd-verify
-/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/lib/api/commit_statuses.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/**/ci/ @gitlab-org/maintainers/cicd-verify
-/ee/app/**/merge_trains/ @gitlab-org/maintainers/cicd-verify
-/ee/app/models/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/finders/merge_trains_finder.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/services/auto_merge/merge_train_service.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/services/system_notes/merge_train_service.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/ee/admin/runners_controller.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/ee/projects/pipelines_controller.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/ee/app/controllers/projects/subscriptions_controller.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/models/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/helpers/ee/projects/pipeline_helper.rb @gitlab-org/maintainers/cicd-verify
-/ee/app/views/ci_minutes_usage_mailer/ @gitlab-org/maintainers/cicd-verify
-/ee/app/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/ee/app/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
-/ee/app/workers/clear_shared_runners_minutes_worker.rb @gitlab-org/maintainers/cicd-verify
-/ee/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/ee/lib/ee/api/entities/merge_train.rb @gitlab-org/maintainers/cicd-verify
-/spec/**/ci @gitlab-org/maintainers/cicd-verify
-/spec/controllers/admin/jobs_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/admin/runner_projects_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/admin/runners_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/artifacts_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/jobs_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/requests/runner_setup_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/pipeline_schedules_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/requests/projects/pipelines_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/pipelines_settings_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/projects/runners_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/controllers/groups/variables_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/commit_status_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/external_pull_request_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/generic_commit_status_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/namespace_ci_cd_setting_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/models/project_ci_cd_setting_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/presenters/commit_status_presenter_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/pipeline_schedules/ @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/pipelines/ @gitlab-org/maintainers/cicd-verify
-/spec/views/projects/settings/ci_cd/ @gitlab-org/maintainers/cicd-verify
-/spec/workers/build_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/build_queue_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/build_success_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/ci_platform_metrics_update_cron_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/create_pipeline_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/expire_build_artifacts_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_hooks_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_metrics_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_notification_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_process_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/pipeline_schedule_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/run_pipeline_schedule_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/stuck_ci_jobs_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/spec/workers/update_external_pull_requests_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/**/ci @gitlab-org/maintainers/cicd-verify
-/ee/spec/**/merge_trains @gitlab-org/maintainers/cicd-verify
-/ee/spec/models/merge_train_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/finders/merge_trains_finder_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/services/auto_merge/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/services/system_notes/merge_train_service_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/controllers/projects/subscriptions_controller_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/helpers/ee/projects/pipeline_helper_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb @gitlab-org/maintainers/cicd-verify
-/ee/spec/lib/**/ci/ @gitlab-org/maintainers/cicd-verify
-/**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
-/ee/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
-/ee/app/assets/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @fulfillment-group/utilization-group/fe
+[Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan 
+# Verify Backend
+/**/app/**/ci/
+/**/lib/**/ci/
+/**/spec/**/ci/
+/**/app/**/merge_trains/
+/**/spec/**/merge_trains/
+/app/controllers/admin/jobs_controller.rb
+/app/controllers/admin/runner_projects_controller.rb
+/app/controllers/admin/runners_controller.rb
+/app/controllers/projects/artifacts_controller.rb
+/app/controllers/projects/build_artifacts_controller.rb
+/app/controllers/projects/builds_controller.rb
+/app/controllers/projects/jobs_controller.rb
+/app/controllers/runner_setup_controller.rb
+/app/controllers/projects/pipeline_schedules_controller.rb
+/app/controllers/projects/pipelines_controller.rb
+/app/controllers/projects/pipelines_settings_controller.rb
+/app/controllers/projects/runner_projects_controller.rb
+/app/controllers/projects/runners_controller.rb
+/app/controllers/projects/triggers_controller.rb
+/app/controllers/projects/variables_controller.rb
+/app/models/commit_status.rb
+/app/models/external_pull_request.rb
+/app/models/generic_commit_status.rb
+/app/models/namespace_ci_cd_setting.rb
+/app/models/project_ci_cd_setting.rb
+/app/models/projects/build_artifacts_size_refresh.rb
+/app/presenters/commit_status_presenter.rb
+/app/presenters/generic_commit_status_presenter.rb
+/app/services/projects/refresh_build_artifacts_size_statistics_service.rb
+/app/uploaders/job_artifact_uploader.rb
+/app/validators/json_schemas/build_metadata_id_tokens.json
+/app/views/projects/artifacts/
+/app/views/projects/generic_commit_statuses/
+/app/views/projects/jobs/
+/app/views/projects/pipeline_schedules/
+/app/views/projects/pipelines/
+/app/views/projects/triggers/
+/app/workers/build_hooks_worker.rb
+/app/workers/build_queue_worker.rb
+/app/workers/build_success_worker.rb
+/app/workers/ci_platform_metrics_update_cron_worker.rb
+/app/workers/create_pipeline_worker.rb
+/app/workers/expire_build_artifacts_worker.rb
+/app/workers/pipeline_hooks_worker.rb
+/app/workers/pipeline_metrics_worker.rb
+/app/workers/pipeline_notification_worker.rb
+/app/workers/pipeline_process_worker.rb
+/app/workers/pipeline_schedule_worker.rb
+/app/workers/projects/refresh_build_artifacts_size_statistics_worker.rb
+/app/workers/run_pipeline_schedule_worker.rb
+/app/workers/stuck_ci_jobs_worker.rb
+/app/workers/update_external_pull_requests_worker.rb
+/lib/api/commit_statuses.rb
+/ee/app/finders/merge_trains_finder.rb
+/ee/app/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service.rb
+/ee/app/services/auto_merge/merge_train_service.rb
+/ee/app/services/system_notes/merge_train_service.rb
+/ee/app/controllers/ee/admin/runners_controller.rb
+/ee/app/controllers/ee/projects/pipelines_controller.rb
+/ee/app/controllers/projects/pipelines/
+/ee/app/controllers/projects/subscriptions_controller.rb
+/ee/app/helpers/ee/projects/pipeline_helper.rb
+/ee/app/views/ci_minutes_usage_mailer/
+/ee/app/views/projects/pipelines/
+/ee/app/views/projects/settings/ci_cd/
+/ee/app/workers/clear_shared_runners_minutes_worker.rb
+/ee/lib/api/merge_trains.rb
+/ee/lib/ee/api/entities/merge_train.rb
+/ee/spec/requests/api/merge_trains_spec.rb
+/spec/controllers/admin/jobs_controller_spec.rb
+/spec/controllers/admin/runner_projects_controller_spec.rb
+/spec/controllers/admin/runners_controller_spec.rb
+/spec/controllers/projects/artifacts_controller_spec.rb
+/spec/controllers/projects/jobs_controller_spec.rb
+/spec/requests/runner_setup_controller_spec.rb
+/spec/controllers/projects/pipeline_schedules_controller_spec.rb
+/spec/requests/projects/pipelines_controller_spec.rb
+/spec/controllers/projects/pipelines_settings_controller_spec.rb
+/spec/controllers/projects/runners_controller_spec.rb
+/spec/controllers/groups/variables_controller_spec.rb
+/spec/models/commit_status_spec.rb
+/spec/models/external_pull_request_spec.rb
+/spec/models/generic_commit_status_spec.rb
+/spec/models/namespace_ci_cd_setting_spec.rb
+/spec/models/project_ci_cd_setting_spec.rb
+/spec/presenters/commit_status_presenter_spec.rb
+/spec/views/projects/jobs/
+/spec/views/projects/pipeline_schedules/
+/spec/views/projects/pipelines/
+/spec/views/projects/settings/ci_cd/
+/spec/workers/build_hooks_worker_spec.rb
+/spec/workers/build_queue_worker_spec.rb
+/spec/workers/build_success_worker_spec.rb
+/spec/workers/ci_platform_metrics_update_cron_worker_spec.rb
+/spec/workers/create_pipeline_worker_spec.rb
+/spec/workers/expire_build_artifacts_worker_spec.rb
+/spec/workers/pipeline_hooks_worker_spec.rb
+/spec/workers/pipeline_metrics_worker_spec.rb
+/spec/workers/pipeline_notification_worker_spec.rb
+/spec/workers/pipeline_process_worker_spec.rb
+/spec/workers/pipeline_schedule_worker_spec.rb
+/spec/workers/run_pipeline_schedule_worker_spec.rb
+/spec/workers/stuck_ci_jobs_worker_spec.rb
+/spec/workers/update_external_pull_requests_worker_spec.rb
+/ee/spec/finders/merge_trains_finder_spec.rb
+/ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb
+/ee/spec/services/auto_merge/merge_train_service_spec.rb
+/ee/spec/services/system_notes/merge_train_service_spec.rb
+/ee/spec/controllers/projects/subscriptions_controller_spec.rb
+/ee/spec/helpers/ee/projects/pipeline_helper_spec.rb
+/ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb
+
+# Verify Frontend
+/**/spec/frontend/**/ci/       @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/ci/            @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/pipelines/     @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/jobs/          @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/token_access/  @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/admin/application_settings/runner_token_expiration/  @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
+
+# CI/CD templates
+/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
+/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
+/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
+/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/DAST.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
+# Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
+/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 [Manage::Workspace]
 lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers
@@ -1421,10 +1438,26 @@ ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-ap
 /lib/gitlab/audit_json_logger.rb @gitlab-org/govern/compliance
 
 [Fulfillment::Utilization]
-/ee/app/assets/javascripts/usage_quotas/components/ @fulfillment-group/utilization-group/fe
-/ee/app/assets/javascripts/usage_quotas/seats/ @fulfillment-group/utilization-group/fe
-/ee/app/assets/javascripts/usage_quotas/storage/ @fulfillment-group/utilization-group/fe
+/ee/app/assets/javascripts/usage_quotas/components/ @sheldonled @aalakkad @kpalchyk
+/ee/app/assets/javascripts/usage_quotas/seats/ @sheldonled @aalakkad @kpalchyk
+/ee/app/assets/javascripts/usage_quotas/storage/ @sheldonled @aalakkad @kpalchyk
 
 [Manage::Foundations]
 /lib/sidebars/ @gitlab-org/manage/foundations/engineering
 /ee/lib/sidebars/ @gitlab-org/manage/foundations/engineering
+
+# JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
+
+[JH Frontend] @jihulab/maintainers/frontend
+/jh/app/assets/
+/jh/*.scss
+/jh/*.js
+/jh/*.vue
+
+[JH Rails Backend] @jihulab/maintainers/rails-backend
+/jh/*.rb
+/jh/*.rake
+/jh/qa/ @jihulab/maintainers/quality
+
+[JH Technical Writer] @jihulab/maintainers/technical-writer
+/jh/doc/

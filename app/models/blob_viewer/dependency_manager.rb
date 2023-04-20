@@ -38,8 +38,10 @@ module BlobViewer
       end
     end
 
-    def package_name_from_json(key)
-      json_data[key]
+    def fetch_from_json(...)
+      json_data.dig(...)
+    rescue TypeError
+      nil
     end
 
     def package_name_from_method_call(name)

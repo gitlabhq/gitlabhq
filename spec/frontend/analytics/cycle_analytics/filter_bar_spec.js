@@ -85,7 +85,7 @@ describe('Filter bar', () => {
     return shallowMount(FilterBar, {
       store: initialStore,
       propsData: {
-        groupPath: 'foo',
+        namespacePath: 'foo',
       },
       stubs: {
         UrlSync,

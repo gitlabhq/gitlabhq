@@ -5,7 +5,6 @@ description: When the core features were computed
 product_section: analytics
 product_stage: analytics
 product_group: product_intelligence
-product_category: collection
 value_type: string
 status: active
 milestone: "13.0"

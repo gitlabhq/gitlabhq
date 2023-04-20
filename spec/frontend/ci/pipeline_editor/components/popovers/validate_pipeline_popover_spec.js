@@ -20,7 +20,7 @@ describe('ValidatePopover component', () => {
   const findFeedbackLink = () => wrapper.findByTestId('feedback-link');
 
   describe('template', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent({
         stubs: { GlLink, GlSprintf },
       });

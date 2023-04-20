@@ -16,6 +16,9 @@ module QA
                                                                         QA::Runtime::Env.personal_access_token)
         end
 
+        QA::Runtime::Logger.info("Browser: #{QA::Runtime::Env.browser}")
+        QA::Runtime::Logger.info("Browser version: #{QA::Runtime::Env.browser_version}")
+
         # The login page could take some time to load the first time it is visited.
         # We visit the login page and wait for it to properly load only once before the tests.
         QA::Runtime::Logger.info("Performing sanity check for environment!")

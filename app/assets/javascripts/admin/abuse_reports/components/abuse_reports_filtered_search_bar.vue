@@ -8,7 +8,7 @@ import {
   SORT_OPTIONS,
   isValidSortKey,
 } from '~/admin/abuse_reports/constants';
-import { buildFilteredSearchCategoryToken } from '~/admin/abuse_reports/utils';
+import { buildFilteredSearchCategoryToken, isValidStatus } from '~/admin/abuse_reports/utils';
 
 export default {
   name: 'AbuseReportsFilteredSearchBar',
@@ -32,7 +32,7 @@ export default {
     // Backend shows open reports by default if status param is not specified.
     // To match that behavior, update the current URL to include status=open
     // query when no status query is specified on load.
-    if (!query.status) {
+    if (!isValidStatus(query.status)) {
       query.status = 'open';
       updateHistory({ url: setUrlParams(query), replace: true });
     }

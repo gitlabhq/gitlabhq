@@ -10,15 +10,6 @@ module Packages
       ::Packages::Event.counters_for(event_scope, event_name, originator_type).each do |event_name|
         ::Gitlab::UsageDataCounters::PackageEventCounter.count(event_name)
       end
-
-      if Feature.enabled?(:collect_package_events) && Gitlab::Database.read_write?
-        ::Packages::Event.create!(
-          event_type: event_name,
-          originator: current_user&.id,
-          originator_type: originator_type,
-          event_scope: event_scope
-        )
-      end
     end
 
     def originator_type

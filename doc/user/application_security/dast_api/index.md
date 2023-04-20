@@ -998,6 +998,14 @@ repository's root as `.gitlab/gitlab-dast-api-config.yml`.
 The following profiles are pre-defined in the default configuration file. Profiles
 can be added, removed, and modified by creating a custom configuration.
 
+#### Passive
+
+- Application Information Check
+- Cleartext Authentication Check
+- JSON Hijacking Check
+- Sensitive Information Check
+- Session Cookie Check
+
 #### Quick
 
 - Application Information Check

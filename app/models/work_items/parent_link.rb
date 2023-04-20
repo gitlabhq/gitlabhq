@@ -41,6 +41,10 @@ module WorkItems
       def relative_positioning_parent_column
         :work_item_parent_id
       end
+
+      def for_work_item(work_item)
+        find_or_initialize_by(work_item: work_item)
+      end
     end
 
     private

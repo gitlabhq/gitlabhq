@@ -3,6 +3,7 @@ import {
   ICON_GROUP,
   ICON_SUBGROUP,
 } from '~/super_sidebar/components/global_search/constants';
+
 import {
   PROJECTS_CATEGORY,
   GROUPS_CATEGORY,
@@ -77,89 +78,106 @@ export const MOCK_SEARCH_CONTEXT_FULL = {
 
 export const MOCK_DEFAULT_SEARCH_OPTIONS = [
   {
-    html_id: 'default-issues-assigned',
-    title: MSG_ISSUES_ASSIGNED_TO_ME,
-    url: `${MOCK_ISSUE_PATH}/?assignee_username=${MOCK_USERNAME}`,
+    text: MSG_ISSUES_ASSIGNED_TO_ME,
+    href: `${MOCK_ISSUE_PATH}/?assignee_username=${MOCK_USERNAME}`,
   },
   {
-    html_id: 'default-issues-created',
-    title: MSG_ISSUES_IVE_CREATED,
-    url: `${MOCK_ISSUE_PATH}/?author_username=${MOCK_USERNAME}`,
+    text: MSG_ISSUES_IVE_CREATED,
+    href: `${MOCK_ISSUE_PATH}/?author_username=${MOCK_USERNAME}`,
   },
   {
-    html_id: 'default-mrs-assigned',
-    title: MSG_MR_ASSIGNED_TO_ME,
-    url: `${MOCK_MR_PATH}/?assignee_username=${MOCK_USERNAME}`,
+    text: MSG_MR_ASSIGNED_TO_ME,
+    href: `${MOCK_MR_PATH}/?assignee_username=${MOCK_USERNAME}`,
   },
   {
-    html_id: 'default-mrs-reviewer',
-    title: MSG_MR_IM_REVIEWER,
-    url: `${MOCK_MR_PATH}/?reviewer_username=${MOCK_USERNAME}`,
+    text: MSG_MR_IM_REVIEWER,
+    href: `${MOCK_MR_PATH}/?reviewer_username=${MOCK_USERNAME}`,
   },
   {
-    html_id: 'default-mrs-created',
-    title: MSG_MR_IVE_CREATED,
-    url: `${MOCK_MR_PATH}/?author_username=${MOCK_USERNAME}`,
+    text: MSG_MR_IVE_CREATED,
+    href: `${MOCK_MR_PATH}/?author_username=${MOCK_USERNAME}`,
   },
 ];
-
+export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
+  {
+    text: 'scoped-in-project',
+    scope: MOCK_PROJECT.name,
+    scopeCategory: PROJECTS_CATEGORY,
+    icon: ICON_PROJECT,
+    href: MOCK_PROJECT.path,
+  },
+  {
+    text: 'scoped-in-group',
+    scope: MOCK_GROUP.name,
+    scopeCategory: GROUPS_CATEGORY,
+    icon: ICON_GROUP,
+    href: MOCK_GROUP.path,
+  },
+  {
+    text: 'scoped-in-all',
+    description: MSG_IN_ALL_GITLAB,
+    href: MOCK_ALL_PATH,
+  },
+];
 export const MOCK_SCOPED_SEARCH_OPTIONS = [
   {
-    html_id: 'scoped-in-project',
+    text: 'scoped-in-project',
     scope: MOCK_PROJECT.name,
     scopeCategory: PROJECTS_CATEGORY,
     icon: ICON_PROJECT,
     url: MOCK_PROJECT.path,
   },
   {
-    html_id: 'scoped-in-project-long',
+    text: 'scoped-in-project-long',
     scope: MOCK_PROJECT_LONG.name,
     scopeCategory: PROJECTS_CATEGORY,
     icon: ICON_PROJECT,
     url: MOCK_PROJECT_LONG.path,
   },
   {
-    html_id: 'scoped-in-group',
+    text: 'scoped-in-group',
     scope: MOCK_GROUP.name,
     scopeCategory: GROUPS_CATEGORY,
     icon: ICON_GROUP,
     url: MOCK_GROUP.path,
   },
   {
-    html_id: 'scoped-in-subgroup',
+    text: 'scoped-in-subgroup',
     scope: MOCK_SUBGROUP.name,
     scopeCategory: GROUPS_CATEGORY,
     icon: ICON_SUBGROUP,
     url: MOCK_SUBGROUP.path,
   },
   {
-    html_id: 'scoped-in-all',
+    text: 'scoped-in-all',
     description: MSG_IN_ALL_GITLAB,
     url: MOCK_ALL_PATH,
   },
 ];
 
-export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
-  {
-    html_id: 'scoped-in-project',
-    scope: MOCK_PROJECT.name,
-    scopeCategory: PROJECTS_CATEGORY,
-    icon: ICON_PROJECT,
-    url: MOCK_PROJECT.path,
-  },
-  {
-    html_id: 'scoped-in-group',
-    scope: MOCK_GROUP.name,
-    scopeCategory: GROUPS_CATEGORY,
-    icon: ICON_GROUP,
-    url: MOCK_GROUP.path,
-  },
-  {
-    html_id: 'scoped-in-all',
-    description: MSG_IN_ALL_GITLAB,
-    url: MOCK_ALL_PATH,
-  },
-];
+export const MOCK_SCOPED_SEARCH_GROUP = {
+  items: [
+    {
+      text: 'scoped-in-project',
+      scope: MOCK_PROJECT.name,
+      scopeCategory: PROJECTS_CATEGORY,
+      icon: ICON_PROJECT,
+      href: MOCK_PROJECT.path,
+    },
+    {
+      text: 'scoped-in-group',
+      scope: MOCK_GROUP.name,
+      scopeCategory: GROUPS_CATEGORY,
+      icon: ICON_GROUP,
+      href: MOCK_GROUP.path,
+    },
+    {
+      text: 'scoped-in-all',
+      description: MSG_IN_ALL_GITLAB,
+      href: MOCK_ALL_PATH,
+    },
+  ],
+};
 
 export const MOCK_AUTOCOMPLETE_OPTIONS_RES = [
   {
@@ -168,8 +186,10 @@ export const MOCK_AUTOCOMPLETE_OPTIONS_RES = [
     label: 'Gitlab Org / MockProject1',
     value: 'MockProject1',
     url: 'project/1',
+    avatar_url: '/project/avatar/1/avatar.png',
   },
   {
+    avatar_url: '/groups/avatar/1/avatar.png',
     category: 'Groups',
     id: 1,
     label: 'Gitlab Org / MockGroup1',
@@ -177,6 +197,7 @@ export const MOCK_AUTOCOMPLETE_OPTIONS_RES = [
     url: 'group/1',
   },
   {
+    avatar_url: '/project/avatar/2/avatar.png',
     category: 'Projects',
     id: 2,
     label: 'Gitlab Org / MockProject2',
@@ -193,31 +214,30 @@ export const MOCK_AUTOCOMPLETE_OPTIONS_RES = [
 export const MOCK_AUTOCOMPLETE_OPTIONS = [
   {
     category: 'Projects',
-    html_id: 'autocomplete-Projects-0',
     id: 1,
     label: 'Gitlab Org / MockProject1',
     value: 'MockProject1',
     url: 'project/1',
+    avatar_url: '/project/avatar/1/avatar.png',
   },
   {
     category: 'Groups',
-    html_id: 'autocomplete-Groups-1',
     id: 1,
     label: 'Gitlab Org / MockGroup1',
     value: 'MockGroup1',
     url: 'group/1',
+    avatar_url: '/groups/avatar/1/avatar.png',
   },
   {
     category: 'Projects',
-    html_id: 'autocomplete-Projects-2',
     id: 2,
     label: 'Gitlab Org / MockProject2',
     value: 'MockProject2',
     url: 'project/2',
+    avatar_url: '/project/avatar/2/avatar.png',
   },
   {
     category: 'Help',
-    html_id: 'autocomplete-Help-3',
     label: 'GitLab Help',
     url: 'help/gitlab',
   },
@@ -225,51 +245,64 @@ export const MOCK_AUTOCOMPLETE_OPTIONS = [
 
 export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
   {
-    category: 'Groups',
-    data: [
+    name: 'Groups',
+    items: [
       {
         category: 'Groups',
-        html_id: 'autocomplete-Groups-1',
-
         id: 1,
         label: 'Gitlab Org / MockGroup1',
+        namespace: 'Gitlab Org / MockGroup1',
         value: 'MockGroup1',
-        url: 'group/1',
+        text: 'MockGroup1',
+        href: 'group/1',
+        avatar_url: '/groups/avatar/1/avatar.png',
+        avatar_size: 32,
+        entity_id: 1,
+        entity_name: 'MockGroup1',
       },
     ],
   },
   {
-    category: 'Projects',
-    data: [
+    name: 'Projects',
+    items: [
       {
         category: 'Projects',
-        html_id: 'autocomplete-Projects-0',
-
         id: 1,
         label: 'Gitlab Org / MockProject1',
+        namespace: 'Gitlab Org / MockProject1',
         value: 'MockProject1',
-        url: 'project/1',
+        text: 'MockProject1',
+        href: 'project/1',
+        avatar_url: '/project/avatar/1/avatar.png',
+        avatar_size: 32,
+        entity_id: 1,
+        entity_name: 'MockProject1',
       },
       {
         category: 'Projects',
-        html_id: 'autocomplete-Projects-2',
-
         id: 2,
-        label: 'Gitlab Org / MockProject2',
         value: 'MockProject2',
-        url: 'project/2',
+        label: 'Gitlab Org / MockProject2',
+        namespace: 'Gitlab Org / MockProject2',
+        text: 'MockProject2',
+        href: 'project/2',
+        avatar_url: '/project/avatar/2/avatar.png',
+        avatar_size: 32,
+        entity_id: 2,
+        entity_name: 'MockProject2',
       },
     ],
   },
   {
-    category: 'Help',
-    data: [
+    name: 'Help',
+    items: [
       {
         category: 'Help',
-        html_id: 'autocomplete-Help-3',
-
         label: 'GitLab Help',
-        url: 'help/gitlab',
+        text: 'GitLab Help',
+        href: 'help/gitlab',
+        avatar_size: 16,
+        entity_name: 'GitLab Help',
       },
     ],
   },
@@ -278,33 +311,50 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
 export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
   {
     category: 'Groups',
-    html_id: 'autocomplete-Groups-1',
     id: 1,
     label: 'Gitlab Org / MockGroup1',
     value: 'MockGroup1',
-    url: 'group/1',
+    text: 'MockGroup1',
+    href: 'group/1',
+    namespace: 'Gitlab Org / MockGroup1',
+    avatar_url: '/groups/avatar/1/avatar.png',
+    avatar_size: 32,
+    entity_id: 1,
+    entity_name: 'MockGroup1',
   },
   {
+    avatar_size: 32,
+    avatar_url: '/project/avatar/1/avatar.png',
     category: 'Projects',
-    html_id: 'autocomplete-Projects-0',
+    entity_id: 1,
+    entity_name: 'MockProject1',
+    href: 'project/1',
     id: 1,
     label: 'Gitlab Org / MockProject1',
+    namespace: 'Gitlab Org / MockProject1',
+    text: 'MockProject1',
     value: 'MockProject1',
-    url: 'project/1',
   },
   {
+    avatar_size: 32,
+    avatar_url: '/project/avatar/2/avatar.png',
     category: 'Projects',
-    html_id: 'autocomplete-Projects-2',
+    entity_id: 2,
+    entity_name: 'MockProject2',
+    href: 'project/2',
     id: 2,
     label: 'Gitlab Org / MockProject2',
+    namespace: 'Gitlab Org / MockProject2',
+    text: 'MockProject2',
     value: 'MockProject2',
-    url: 'project/2',
   },
   {
+    avatar_size: 16,
+    entity_name: 'GitLab Help',
     category: 'Help',
-    html_id: 'autocomplete-Help-3',
     label: 'GitLab Help',
-    url: 'help/gitlab',
+    text: 'GitLab Help',
+    href: 'help/gitlab',
   },
 ];
 
@@ -315,14 +365,16 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_HELP = [
       {
         html_id: 'autocomplete-Help-1',
         category: 'Help',
+        text: 'Rake Tasks Help',
         label: 'Rake Tasks Help',
-        url: '/help/raketasks/index',
+        href: '/help/raketasks/index',
       },
       {
         html_id: 'autocomplete-Help-2',
         category: 'Help',
+        text: 'System Hooks Help',
         label: 'System Hooks Help',
-        url: '/help/system_hooks/system_hooks',
+        href: '/help/system_hooks/system_hooks',
       },
     ],
   },

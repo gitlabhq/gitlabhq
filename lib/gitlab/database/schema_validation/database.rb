@@ -18,6 +18,10 @@ module Gitlab
           trigger_map[trigger_name]
         end
 
+        def fetch_table_by_name(table_name)
+          table_map[table_name]
+        end
+
         def index_exists?(index_name)
           index_map[index_name].present?
         end
@@ -26,12 +30,20 @@ module Gitlab
           trigger_map[trigger_name].present?
         end
 
+        def table_exists?(table_name)
+          fetch_table_by_name(table_name).present?
+        end
+
         def indexes
           index_map.values
         end
 
         def triggers
           trigger_map.values
+        end
+
+        def tables
+          table_map.values
         end
 
         private
@@ -56,6 +68,14 @@ module Gitlab
             end
         end
 
+        def table_map
+          @table_map ||= fetch_tables.transform_values! do |stmt|
+            columns = stmt.map { |column| SchemaObjects::Column.new(Adapters::ColumnDatabaseAdapter.new(column)) }
+
+            SchemaObjects::Table.new(stmt.first['table_name'], columns)
+          end
+        end
+
         def fetch_indexes
           sql = <<~SQL
             SELECT indexname, indexdef
@@ -77,6 +97,28 @@ module Gitlab
           SQL
 
           connection.select_rows(sql, nil, schemas).to_h
+        end
+
+        def fetch_tables
+          sql = <<~SQL
+            SELECT
+              table_information.relname  AS table_name,
+              col_information.attname AS column_name,
+              col_information.attnotnull AS not_null,
+              format_type(col_information.atttypid, col_information.atttypmod) AS data_type,
+              pg_get_expr(col_default_information.adbin, col_default_information.adrelid) AS column_default
+            FROM pg_attribute AS col_information
+            JOIN pg_class     AS table_information  ON col_information.attrelid = table_information.oid
+            JOIN pg_namespace AS schema_information ON table_information.relnamespace = schema_information.oid
+            LEFT JOIN pg_attrdef   AS col_default_information ON col_information.attrelid = col_default_information.adrelid
+              AND col_information.attnum = col_default_information.adnum
+            WHERE NOT col_information.attisdropped
+            AND col_information.attnum > 0
+            AND table_information.relkind IN ('r', 'p')
+            AND schema_information.nspname IN ($1, $2)
+          SQL
+
+          connection.exec_query(sql, nil, schemas).group_by { |row| row['table_name'] }
         end
       end
     end

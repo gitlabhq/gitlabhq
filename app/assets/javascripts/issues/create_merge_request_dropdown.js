@@ -432,7 +432,7 @@ export default class CreateMergeRequestDropdown {
     let xhr = null;
     event.preventDefault();
 
-    if (isConfidentialIssue() && !event.target.classList.contains('js-create-target')) {
+    if (isConfidentialIssue() && !event.currentTarget.classList.contains('js-create-target')) {
       this.droplab.hooks.forEach((hook) => hook.list.toggle());
 
       return;
@@ -442,9 +442,9 @@ export default class CreateMergeRequestDropdown {
       return;
     }
 
-    if (event.target.dataset.action === CREATE_MERGE_REQUEST) {
+    if (event.currentTarget.dataset.action === CREATE_MERGE_REQUEST) {
       xhr = this.createMergeRequest();
-    } else if (event.target.dataset.action === CREATE_BRANCH) {
+    } else if (event.currentTarget.dataset.action === CREATE_BRANCH) {
       xhr = this.createBranch();
     }
 

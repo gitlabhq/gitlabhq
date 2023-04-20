@@ -78,6 +78,24 @@ RSpec.describe AbuseReportsFinder, '#execute' do
         expect(subject).to match_array([abuse_report_2])
       end
     end
+
+    context 'when value is not a valid status' do
+      let(:params) { { status: 'partial' } }
+
+      it 'defaults to returning open abuse reports' do
+        expect(subject).to match_array([abuse_report_1])
+      end
+    end
+
+    context 'when abuse_reports_list feature flag is disabled' do
+      before do
+        stub_feature_flags(abuse_reports_list: false)
+      end
+
+      it 'does not filter by status' do
+        expect(subject).to match_array([abuse_report_1, abuse_report_2])
+      end
+    end
   end
 
   context 'when params[:category] is present' do

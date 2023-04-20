@@ -74,7 +74,8 @@ and [templates](examples/index.md#cicd-templates).
 
 ### Documentation for pipeline types
 
-Some pipeline types have their own detailed usage guides that you should read
+Branch pipelines are the most basic type.
+Other pipeline types have their own detailed usage guides that you should read
 if you are using that type:
 
 - [Multi-project pipelines](pipelines/downstream_pipelines.md#multi-project-pipelines): Have your pipeline trigger
@@ -269,6 +270,7 @@ This message is shown if the [merge request pipeline](pipelines/merge_request_pi
 [merged results pipeline](pipelines/merged_results_pipelines.md),
 or [merge train pipeline](pipelines/merge_trains.md)
 has failed or been canceled.
+This does not happen when a basic branch pipeline fails.
 
 If a merge request pipeline or merged result pipeline was canceled or failed, you can:
 

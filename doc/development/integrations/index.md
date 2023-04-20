@@ -23,9 +23,11 @@ if you need clarification or spot any outdated information.
    - For example, `Integrations::FooBar` in `app/models/integrations/foo_bar.rb`.
    - For certain types of integrations, you can also build on these base classes:
      - `Integrations::BaseChatNotification`
+     - `Integrations::BaseCi`
      - `Integrations::BaseIssueTracker`
      - `Integrations::BaseMonitoring`
      - `Integrations::BaseSlashCommands`
+     - `Integrations::BaseThirdPartyWiki`
    - For integrations that primarily trigger HTTP calls to external services, you can
      also use the `Integrations::HasWebHook` concern. This reuses the [webhook functionality](../../user/project/integrations/webhooks.md)
      in GitLab through an associated `ServiceHook` model, and automatically records request logs
@@ -36,9 +38,6 @@ if you need clarification or spot any outdated information.
    ```ruby
    has_one :foo_bar_integration, class_name: 'Integrations::FooBar'
    ```
-
-1. TEMPORARY: Accommodate the current migration to [rename "services" to "integrations"](#rename-services-to-integrations):
-   - Add the integration's camel-cased name (`'FooBar'`) to `Gitlab::Integrations::StiType::NAMESPACED_INTEGRATIONS`.
 
 ### Define properties
 
@@ -237,9 +236,7 @@ module Integrations
 end
 ```
 
-### Expose the integration in the API
-
-#### REST API
+### Expose the integration in the REST API
 
 To expose the integration in the [REST API](../../api/integrations.md):
 
@@ -257,46 +254,6 @@ Sensitive fields are not exposed over the API. Sensitive fields are those fields
 - `secret`
 - `token`
 - `webhook`
-
-#### GraphQL API
-
-Integrations use the `Types::Projects::ServiceType` type by default,
-which only exposes the `type` and `active` properties.
-
-To expose additional properties, you can write a class implementing `ServiceType`:
-
-```ruby
-# in app/graphql/types/project/services/foo_bar_service_type.rb
-module Types
-  module Projects
-    module Services
-      class FooBarServiceType < BaseObject
-        graphql_name 'FooBarService'
-        implements(Types::Projects::ServiceType)
-        authorize :read_project
-
-        field :frobinity,
-            GraphQL::Types::Float,
-            null: true,
-            description: 'The level of frobinity.'
-
-        field :foo_label,
-            GraphQL::Types::String,
-            null: true,
-            description: 'The foo label to apply.'
-      end
-    end
-  end
-end
-```
-
-Each property you want to expose should have a field defined for it. You can also expose any public instance method of the integration.
-
-Contact a member of the Integrations team to discuss the best authorization.
-
-Reference documentation for GraphQL is automatically generated.
-
-You can also refer to our [GraphQL API style guide](../api_graphql_styleguide.md).
 
 ## Availability of integrations
 
@@ -345,26 +302,8 @@ The strings should use the integration name as [namespace](../i18n/externalizati
 
 ## Ongoing migrations and refactorings
 
-The Integrations team is in the process of some larger migrations that developers should be aware of.
-
-### [Rename "services" to "integrations"](https://gitlab.com/groups/gitlab-org/-/epics/2504)
-
-The "integrations" in GitLab were historically called "services", which frequently caused
-confusion with our "service" classes in `app/services`. We sometimes also called
-them "project services" because they were initially only available on projects, which is
-not the case anymore.
-
-We decided to change the naming from "services" and "project services" to "integrations".
-This refactoring is an ongoing effort, and there are still references to the old names in some places.
-
-Developers should be especially aware that we still use the old class names for the STI column
-`integrations.type`. For example, a class `Integrations::FooBar` still stores
-the old name `FooBarService` in the database. This mapping is handled via `Gitlab::Integrations::StiType`
-and should be mostly transparent to the rest of the app.
-
-### [Consolidate integration settings](https://gitlab.com/groups/gitlab-org/-/epics/3955)
-
-We want to unify the way integration properties are defined.
+Developers should be aware that the Integrations team is in the process of
+[unifying the way integration properties are defined](https://gitlab.com/groups/gitlab-org/-/epics/3955).
 
 ## Integration examples
 

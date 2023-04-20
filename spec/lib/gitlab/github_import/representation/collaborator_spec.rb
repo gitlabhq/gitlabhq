@@ -20,6 +20,17 @@ RSpec.describe Gitlab::GithubImport::Representation::Collaborator, feature_categ
       it 'includes the role' do
         expect(collaborator.role_name).to eq('maintainer')
       end
+
+      describe '#github_identifiers' do
+        it 'returns a hash with needed identifiers' do
+          expect(collaborator.github_identifiers).to eq(
+            {
+              id: 42,
+              login: 'alice'
+            }
+          )
+        end
+      end
     end
   end
 

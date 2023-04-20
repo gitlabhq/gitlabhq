@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User creates release', :js, feature_category: :continuous_delivery do
-  include Spec::Support::Helpers::Features::ReleasesHelpers
+  include Features::ReleasesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:milestone_1) { create(:milestone, project: project, title: '1.1') }
@@ -36,6 +36,7 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
   it 'defaults the "Create from" dropdown to the project\'s default branch' do
     select_new_tag_name(tag_name)
 
+    expect(page).to have_button(project.default_branch)
     expect(page.find('[data-testid="create-from-field"] .ref-selector button')).to have_content(project.default_branch)
   end
 
@@ -123,13 +124,12 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
     let(:new_page_url) { new_project_release_path(project, tag_name: 'v1.1.0') }
 
     it 'creates release with preselected tag' do
-      page.within '[data-testid="tag-name-field"]' do
-        expect(page).to have_text('v1.1.0')
-      end
+      expect(page).to have_button 'v1.1.0'
+
+      open_tag_popover 'v1.1.0'
 
       expect(page).not_to have_selector('[data-testid="create-from-field"]')
 
-      fill_release_title("test release")
       click_button('Create release')
 
       wait_for_all_requests

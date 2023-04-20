@@ -20,14 +20,20 @@ export default {
 <template>
   <gl-accordion-item :title="$options.i18n.IMAGE">
     <div class="gl-display-flex">
-      <gl-form-group class="gl-flex-grow-1 gl-mr-3" :label="$options.i18n.IMAGE_NAME">
+      <gl-form-group
+        class="gl-flex-grow-1 gl-flex-basis-half gl-mr-3"
+        :label="$options.i18n.IMAGE_NAME"
+      >
         <gl-form-input
           :value="job.image.name"
           data-testid="image-name-input"
           @input="$emit('update-job', 'image.name', $event)"
         />
       </gl-form-group>
-      <gl-form-group class="gl-flex-grow-1" :label="$options.i18n.IMAGE_ENTRYPOINT">
+      <gl-form-group
+        class="gl-flex-grow-1 gl-flex-basis-half"
+        :label="$options.i18n.IMAGE_ENTRYPOINT"
+      >
         <gl-form-input
           :value="job.image.entrypoint.join(' ')"
           data-testid="image-entrypoint-input"

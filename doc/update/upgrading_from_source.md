@@ -2,7 +2,6 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
 ---
 
 # Upgrading Community Edition and Enterprise Edition from source **(FREE SELF)**
@@ -59,21 +58,10 @@ sudo service gitlab stop
 
 ### 3. Update Ruby
 
-From GitLab 15.10, we only support Ruby 3.0 or higher and dropped support for Ruby 2.7. Be sure to upgrade if necessary.
+From GitLab 15.10, we only support Ruby 3.0.x and dropped support for Ruby 2.7. Be sure to upgrade if necessary.
 You can check which version you are running with `ruby -v`.
 
-Download Ruby and compile it:
-
-```shell
-mkdir /tmp/ruby && cd /tmp/ruby
-curl --remote-name --location --progress-bar "https://cache.ruby-lang.org/pub/ruby/3.0/ruby-3.0.5.tar.gz"
-echo '9afc6380a027a4fe1ae1a3e2eccb6b497b9c5ac0631c12ca56f9b7beb4848776 ruby-3.0.5.tar.gz' | sha256sum -c - && tar xzf ruby-3.0.5.tar.gz
-cd ruby-2.7.6
-
-./configure --disable-install-rdoc --enable-shared
-make
-sudo make install
-```
+[Install Ruby](https://www.ruby-lang.org/en/documentation/installation/).
 
 ### 4. Update Node.js
 
@@ -335,8 +323,8 @@ sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workh
 ```
 
 NOTE:
-If you get any errors concerning Rack attack, see the [13.0](#1301) specific
-upgrade instructions.
+If you get any errors concerning Rack attack, see the [13.1](index.md#custom-rack-attack-initializers)
+specific changes.
 
 ### 13. Update Gitaly
 
@@ -405,85 +393,12 @@ If all items are green, then congratulations, the upgrade is complete!
 This is an optional step. If you [installed the product documentation](../install/installation.md#install-the-product-documentation),
 see how to [upgrade to a later version](../administration/docs_self_host.md#upgrade-the-product-documentation-to-a-later-version).
 
-## Version specific upgrading instructions
+## Version specific changes
 
-This section contains upgrading instructions for specific versions. When
-present, first follow the upgrading guidelines for all versions. If the version
-you are upgrading to is not listed here, then no additional steps are required.
-
-<!--
-Example:
-
-### 11.8.0
-
-Additional instructions here.
--->
-
-### 15.9.0
-
-With the addition of `gitlab-sshd` the Kerberos headers are needed to build GitLab Shell.
-
-```shell
-sudo apt install libkrb5-dev
-```
-
-### 15.0.0
-
-Support for more than one database has been added to GitLab. [As part of this](https://gitlab.com/gitlab-org/gitlab/-/issues/338182),
-`config/database.yml` must include a database name in the database configuration.
-The `main: database` must be first. If an invalid or deprecated syntax is used, an error is generated
-during application start:
-
-```plaintext
-ERROR: This installation of GitLab uses unsupported 'config/database.yml'.
-The main: database needs to be defined as a first configuration item instead of primary. (RuntimeError)
-```
-
-Previously, the `config/database.yml` file looked like the following:
-
-```yaml
-production:
-  adapter: postgresql
-  encoding: unicode
-  database: gitlabhq_production
-  ...
-```
-
-Starting with GitLab 15.0, it must define a `main` database first:
-
-```yaml
-production:
-  main:
-    adapter: postgresql
-    encoding: unicode
-    database: gitlabhq_production
-    ...
-```
-
-### 14.5.0
-
-As part of [enabling real-time issue assignees](https://gitlab.com/gitlab-org/gitlab/-/issues/330117), Action Cable is now enabled by default, and requires `config/cable.yml` to be present.
-You can configure this by running:
-
-```shell
-cd /home/git/gitlab
-
-sudo -u git -H cp config/cable.yml.example config/cable.yml
-
-# Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
-sudo -u git -H editor config/cable.yml
-```
-
-### 13.0.1
-
-As part of [deprecating Rack Attack throttles on Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4750), the Rack Attack initializer on GitLab
-was renamed from [`config/initializers/rack_attack_new.rb` to `config/initializers/rack_attack.rb`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33072).
-If this file exists on your installation, consider creating a backup before updating:
-
-```shell
-cd /home/git/gitlab
-cp config/initializers/rack_attack.rb ~/config/initializers/rack_attack_backup.rb
-```
+Upgrading versions might need some manual intervention. For more information,
+[check the version you are upgrading to](index.md#version-specific-upgrading-instructions)
+for additional steps required for all GitLab installations, and for
+steps that apply to self-compiled (source) installations.
 
 ## Troubleshooting
 

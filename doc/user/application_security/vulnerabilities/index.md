@@ -8,10 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13561) in GitLab 13.0.
 
-Each vulnerability in a project has a Vulnerability Page, containing details of the
-vulnerability. The details included vary according to the type of vulnerability.
-
-Details of each vulnerability include:
+Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
+including:
 
 - Description
 - When it was detected
@@ -20,17 +18,13 @@ Details of each vulnerability include:
 - Linked issues
 - Actions log
 
-In GitLab 14.3 and later, if the scanner determined the vulnerability to be a false positive, an
-alert message is included at the top of the vulnerability's page.
+If the scanner determined the vulnerability to be a false positive, an alert message is included at
+the top of the vulnerability's page.
 
-On the vulnerability's page, you can:
-
-- [Change the vulnerability's status](#change-status-of-a-vulnerability).
-- [Create an issue](#creating-an-issue-for-a-vulnerability).
-- [Link issues to the vulnerability](#linking-a-vulnerability-to-issues).
-- [Resolve the vulnerability](#resolve-a-vulnerability) if a solution is
-  available.
-- [View security training specific to the detected vulnerability](#view-security-training-for-a-vulnerability).
+When a vulnerability is no longer detected in a project's default branch, you should
+change its status to **Resolved**. This ensures that if it is accidentally reintroduced in a future
+merge, it is reported again as a new record. To change the status of multiple vulnerabilities, use
+the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#activity-filter).
 
 ## Vulnerability status values
 
@@ -38,16 +32,24 @@ A vulnerability's status can be:
 
 - **Detected**: The default state for a newly discovered vulnerability. Appears as "Needs triage" in the UI.
 - **Confirmed**: A user has seen this vulnerability and confirmed it to be accurate.
-- **Dismissed**: A user has seen this vulnerability and dismissed it because it is not accurate or otherwise not to be resolved.
-- **Resolved**: The vulnerability has been fixed or is no longer present.
+- **Dismissed**: A user has seen this vulnerability and dismissed it because it is not accurate or
+  otherwise not to be resolved. Dismissed vulnerabilities are ignored if detected in subsequent
+  scans.
+- **Resolved**: The vulnerability has been fixed or is no longer present. Resolved vulnerabilities
+  that are reintroduced and detected by subsequent scans have a _new_ vulnerability record created.
 
-Dismissed vulnerabilities are ignored if detected in subsequent scans. Resolved vulnerabilities that
-are reintroduced and detected by subsequent scans have a _new_ vulnerability record created. When an
-existing vulnerability is no longer detected in a project's `default` branch, you should change its
-status to **Resolved**. This ensures that if it is accidentally reintroduced in a future merge, it
-is reported again as a new record. You can use the Vulnerability Report's
-[Activity filter](../vulnerability_report/index.md#activity-filter) to select all vulnerabilities that are
-no longer detected, and change their status.
+## Vulnerability dismissal reasons
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 with a feature flag named `dismissal_reason`.
+> - Enabled on GitLab.com in GitLab 15.11. For self-managed customers, [contact Support](https://about.gitlab.com/support/) if you would like to use this feature in GitLab 15.11.
+
+When dismissing a vulnerability, one of the following reasons must be chosen to clarify why it is being dismissed:
+
+- **Acceptable risk**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk.
+- **False positive**: An error in reporting in which a test result incorrectly indicates the presence of a vulnerability in a system when the vulnerability is not present.
+- **Mitigating control**: A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system.
+- **Used in tests**: The finding is not a vulnerability because it is part of a test or is test data.
+- **Not applicable**: The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated.
 
 ## Change status of a vulnerability
 
@@ -57,9 +59,13 @@ To change a vulnerability's status from its Vulnerability Page:
 1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Status** dropdown list select a status, then select **Change status**.
+
+   In GitLab 15.11 and later, you must select a [dismissal reason](#vulnerability-dismissal-reasons) when you change a vulnerability's status to **Dismissed**.
+
 1. Optionally, at the bottom of the page, add a comment to the log entry.
 
-The Actions log records each status change along with which user changed the status and the time of the change.
+Details of the status change, including who made the change and when, are recorded in the
+vulnerability's action log.
 
 ## Creating an issue for a vulnerability
 

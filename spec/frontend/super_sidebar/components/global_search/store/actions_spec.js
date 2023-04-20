@@ -16,9 +16,7 @@ import {
   MOCK_ISSUE_PATH,
 } from '../mock_data';
 
-jest.mock('~/alert');
-
-describe('Header Search Store Actions', () => {
+describe('Global Search Store Actions', () => {
   let state;
   let mock;
 

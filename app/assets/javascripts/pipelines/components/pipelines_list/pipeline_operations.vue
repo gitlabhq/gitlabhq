@@ -36,12 +36,10 @@ export default {
     };
   },
   computed: {
-    actions() {
-      if (!this.pipeline || !this.pipeline.details) {
-        return [];
-      }
-      const { details } = this.pipeline;
-      return [...(details.manual_actions || []), ...(details.scheduled_actions || [])];
+    hasActions() {
+      return (
+        this.pipeline?.details?.has_manual_actions || this.pipeline?.details?.has_scheduled_actions
+      );
     },
     isCancelling() {
       return this.cancelingPipeline === this.pipeline.id;
@@ -75,7 +73,7 @@ export default {
 <template>
   <div class="gl-text-right">
     <div class="btn-group">
-      <pipelines-manual-actions v-if="actions.length > 0" :actions="actions" />
+      <pipelines-manual-actions v-if="hasActions" :iid="pipeline.iid" />
 
       <gl-button
         v-if="pipeline.flags.retryable"

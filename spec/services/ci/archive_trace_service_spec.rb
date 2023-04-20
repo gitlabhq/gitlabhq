@@ -63,19 +63,6 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
       end
     end
 
-    context 'when job does not have trace' do
-      let(:job) { create(:ci_build, :success) }
-
-      it 'leaves a warning message in sidekiq log' do
-        expect(Sidekiq.logger).to receive(:warn).with(
-          class: Ci::ArchiveTraceWorker.name,
-          message: 'The job does not have live trace but going to be archived.',
-          job_id: job.id)
-
-        subject
-      end
-    end
-
     context 'when the job is out of archival attempts' do
       before do
         create(:ci_build_trace_metadata,
@@ -144,23 +131,6 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
         expect(Sidekiq.logger).to receive(:warn).with(
           class: Ci::ArchiveTraceWorker.name,
           message: 'The job can not be archived right now.',
-          job_id: job.id)
-
-        subject
-      end
-    end
-
-    context 'when job failed to archive trace but did not raise an exception' do
-      before do
-        allow_next_instance_of(Gitlab::Ci::Trace) do |instance|
-          allow(instance).to receive(:archive!) {}
-        end
-      end
-
-      it 'leaves a warning message in sidekiq log' do
-        expect(Sidekiq.logger).to receive(:warn).with(
-          class: Ci::ArchiveTraceWorker.name,
-          message: 'The job does not have archived trace after archiving.',
           job_id: job.id)
 
         subject

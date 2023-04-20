@@ -189,7 +189,7 @@ describe('Global Search Searchable Dropdown', () => {
         findGlDropdown().vm.$emit('show');
       });
 
-      it('$emits @search and @first-open on the first open', async () => {
+      it('$emits @search and @first-open on the first open', () => {
         expect(wrapper.emitted('search')[0]).toStrictEqual(['']);
         expect(wrapper.emitted('first-open')[0]).toStrictEqual([]);
       });

@@ -5,13 +5,9 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics for groups **(PREMIUM)**
+# Value stream analytics **(FREE)**
 
-Value stream analytics measures the time it takes to go from an idea to production. It also helps businesses:
-
-- Visualize their end-to-end DevSecOps workstreams.
-- Identify and solve inefficiencies.
-- Optimize their workstreams to deliver more value, faster.
+Value stream analytics measures the time it takes to go from an idea to production.
 
 A **value stream** is the entire work process that delivers value to customers. For example,
 the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
@@ -25,11 +21,81 @@ Use value stream analytics to identify:
 - Long-running issues or merge requests.
 - Factors that cause your software development lifecycle to slow down.
 
-Value stream analytics is also available for [projects](../../analytics/value_stream_analytics.md).
+Value stream analytics helps businesses:
+
+- Visualize their end-to-end DevSecOps workstreams.
+- Identify and solve inefficiencies.
+- Optimize their workstreams to deliver more value, faster.
+
+Value stream analytics is available for projects and groups.
+
+## Feature availability
+
+Value stream analytics offers different features at the project and group level for FOSS and licensed versions.
+
+- On GitLab Free, value stream analytics does not aggregate data. It queries the database directly where the date range filter is applied to the creation date of issues and merge request. You can view value stream analytics with pre-defined default stages.
+- On GitLab Premium, value stream analytics aggregates data and applies the date range filter on the end event. You can also create, edit, and delete value streams.
+
+|Feature|Group level (licensed)|Project level (licensed)|Project level (FOSS)|
+|-|-|-|-|
+|Create custom value streams|Yes|Yes|no, only one value stream (default) is present with the default stages|
+|Create custom stages|Yes|Yes|No|
+|Filtering (for example, by author, label, milestone)|Yes|Yes|Yes|
+|Stage time chart|Yes|Yes|No|
+|Total time chart|Yes|Yes|No|
+|Task by type chart|Yes|No|No|
+|DORA Metrics|Yes|Yes|No|
+|Cycle time and lead time summary (Key metrics)|Yes|Yes|No|
+|New issues, commits, and deploys (Key metrics)|Yes, excluding commits|Yes|Yes|
+|Uses aggregated backend|Yes|Yes|No|
+|Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
+|Authorization|At least reporter|At least reporter|Can be public|
 
 ## How value stream analytics works
 
-### How value stream analytics aggregates data
+Value stream analytics calculates the duration of every stage of your software development process.
+
+Value stream analytics is made of three core objects:
+
+- A **value stream** contains a value stream stage list.
+- Each value stream stage list contains one or more **stages**.
+- Each stage has two **events**: start and stop.
+
+### Value stream stages
+
+A stage represents an event pair (start and end events) with additional metadata, such as the name of the stage. You can configure the stages in the pairing rules defined in the backend.
+
+### Value streams
+
+Value streams are container objects for the stages. You can have multiple value streams per group, to focus on different aspects of the DevOps lifecycle.
+
+### Value stream stage events
+
+Events are the smallest building blocks of the value stream analytics feature. A stage consists of a start event and an end event.
+
+The following stage events are available:
+
+- Issue closed
+- Issue created
+- Issue first added to board
+- Issue first associated with milestone
+- Issue first mentioned
+- Issue label added
+- Issue label removed
+- MR closed
+- MR merged
+- MR created
+- MR first commit time
+- MR first deployed
+- MR label added
+- MR label removed
+- MR last pipeline duration
+
+These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
+
+To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
+
+### How value stream analytics aggregates data **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
@@ -133,12 +199,14 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 
 Prerequisites:
 
-- You must have at least the Reporter role to view value stream analytics for groups.
-- You must create a [custom value stream](#create-a-value-stream-with-gitlab-default-stages). Value stream analytics only shows custom value streams created for your group.
+- You must have at least the Reporter role.
+- You must create a [custom value stream](#create-a-value-stream-with-gitlab-default-stages). Value stream analytics only shows custom value streams created for your group or project.
 
-To view value stream analytics for your group:
+To view value stream analytics for your group or project:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -166,30 +234,11 @@ The table shows a list of related workflow items for the selected stage. Based o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
-The **Overview** page in value stream analytics shows key metrics and DORA metrics of group performance. Based on the filter you select,
-the dashboard automatically aggregates DORA metrics and displays the current status of the value stream. Select a DORA metric to view its chart.
-
-Prerequisite:
-
-- To view deployment metrics, you must have a
-[production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
-
-To view the DORA metrics and key metrics:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Optional. Filter the results:
-   1. Select the **Filter results** text box.
-   1. Select a parameter.
-   1. Select a value or enter text to refine the results.
-   1. To adjust the date range:
-      - In the **From** field, select a start date.
-      - In the **To** field, select an end date.
-Key metrics and DORA metrics display below the **Filter results** text box.
+The **Overview** page in value stream analytics displays key metrics and DORA metrics of group performance.
 
 ### Key metrics
 
-The **Overview** page shows the following key metrics that measure team performance:
+Value stream analytics includes the following key metrics:
 
 - **Lead time**: Median time from when the issue was created to when it was closed.
 - **Cycle time**: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
@@ -205,19 +254,48 @@ The **Overview** page shows the following key metrics that measure team performa
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355304) time to restore service tile in GitLab 15.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357071) change failure rate tile in GitLab 15.0.
 
-The value stream analytics **Overview** dashboard displays the following [DORA](../../../user/analytics/dora_metrics.md) metrics:
+Value stream analytics includes the following [DORA](../../../user/analytics/dora_metrics.md) metrics:
 
-- Deployment Frequency.
-- Lead time for changes.
-- Time to restore service.
-- Change failure rate.
+- Deployment frequency
+- Lead time for changes
+- Time to restore service
+- Change failure rate
 
 DORA metrics are calculated based on data from the
 [DORA API](../../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
 
+If you have a GitLab Premium or Ultimate subscription:
+
+- The number of successful deployments is calculated with DORA data.
+- The data is filtered based on environment and environment tier.
+
 NOTE:
 In GitLab 13.9 and later, deployment frequency metrics are calculated based on when the deployment was finished.
 In GitLab 13.8 and earlier, deployment frequency metrics are calculated based on when the deployment was created.
+
+## View key and DORA metrics
+
+Prerequisite:
+
+- To view deployment metrics, you must have a
+[production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
+
+To view the DORA metrics and key metrics:
+
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+   Key metrics and DORA metrics display below the **Filter results** text box.
+1. Optional. Filter the results:
+   1. Select the **Filter results** text box.
+      Based on the filter you select, the dashboard automatically aggregates DORA metrics and displays the status of the value stream.
+   1. Select a parameter.
+   1. Select a value or enter text to refine the results.
+   1. To adjust the date range:
+      - In the **From** field, select a start date.
+      - In the **To** field, select an end date.
+1. Select a DORA metric to view its chart.
 
 ## View metrics for each development stage
 
@@ -228,7 +306,9 @@ Value stream analytics shows the median time spent by issues or merge requests i
 
 To view the median time spent in each stage by a group:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -243,7 +323,24 @@ NOTE:
 The date range selector filters items by the event time. The event time is when the
 selected stage finished for the given item.
 
-## Create a value stream
+## View tasks by type **(PREMIUM)**
+
+The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
+
+The chart uses the global page filters to display data based on the selected
+group and time frame.
+
+To view tasks by type:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
+1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list
+   and select **Issues** or **Merge Requests**.
+1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
+   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
+
+## Create a value stream **(PREMIUM)**
 
 ### Create a value stream with GitLab default stages
 
@@ -252,7 +349,9 @@ selected stage finished for the given item.
 When you create a value stream, you can use GitLab default stages and hide or re-order them. You can also
 create custom stages in addition to those provided in the default template.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. Select **Create new Value Stream**.
 1. Enter a name for the value stream.
@@ -276,7 +375,9 @@ If you have recently upgraded to GitLab Premium, it can take up to 30 minutes fo
 
 When you create a value stream, you can create and add custom stages that align with your own development workflows.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. Select **Create value stream**.
 1. For each stage:
@@ -304,13 +405,15 @@ In the example above, two independent value streams are set up for two teams tha
 
 The first value stream uses standard timestamp-based events for defining the stages. The second value stream uses label events.
 
-## Edit a value stream
+## Edit a value stream **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value Stream**.
 1. In the upper-right corner, select the dropdown list, then select a value stream.
 1. Next to the value stream dropdown list, select **Edit**.
@@ -323,21 +426,22 @@ After you create a value stream, you can customize it to suit your purposes. To 
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.
 
-## Delete a value stream
+## Delete a value stream **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
 
 To delete a custom value stream:
 
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value Stream**.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. In the upper-right corner, select the dropdown list, then select the value stream you would like to delete.
 1. Select **Delete (name of value stream)**.
 1. To confirm, select **Delete**.
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
-## View number of days for a cycle to complete
+## View number of days for a cycle to complete **(PREMIUM)**
 
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
@@ -345,7 +449,9 @@ To delete a custom value stream:
 The **Total time chart** shows the average number of days it takes for development cycles to complete.
 The chart shows data for the last 500 workflow items.
 
-1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the top bar, select **Main menu**, and:
+   - For a project, select **Projects** and find your project.
+   - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
 1. Above the **Filter results** box, select a stage:
    - To view a summary of the cycle time for all stages, select **Overview**.
@@ -358,23 +464,42 @@ The chart shows data for the last 500 workflow items.
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
 
-## View tasks by type
+## Access permissions for value stream analytics
 
-The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
+Access permissions for value stream analytics depend on the project type.
 
-The chart uses the global page filters to display data based on the selected
-group, projects, and time frame.
-
-To view tasks by type:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Analytics > Value stream**.
-1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
-1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list
-   and select **Issues** or **Merge Requests**.
-1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
-   and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
+| Project type | Permissions                            |
+|--------------|----------------------------------------|
+| Public       | Anyone can access.                     |
+| Internal     | Any authenticated user can access.     |
+| Private      | Any member Guest and above can access. |
 
 ## Troubleshooting
 
-See [Value stream analytics for projects](../../analytics/value_stream_analytics.md#troubleshooting).
+### 100% CPU utilization by Sidekiq `cronjob:analytics_cycle_analytics`
+
+It is possible that value stream analytics background jobs
+strongly impact performance by monopolizing CPU resources.
+
+To recover from this situation:
+
+1. Disable the feature for all projects in [the Rails console](../../../administration/operations/rails_console.md),
+   and remove existing jobs:
+
+   ```ruby
+   Project.find_each do |p|
+     p.analytics_access_level='disabled';
+     p.save!
+   end
+
+   Analytics::CycleAnalytics::GroupStage.delete_all
+   Analytics::CycleAnalytics::Aggregation.delete_all
+   ```
+
+1. Configure a [Sidekiq routing](../../../administration/sidekiq/processing_specific_job_classes.md)
+   with for example a single `feature_category=value_stream_management`
+   and multiple `feature_category!=value_stream_management` entries.
+   Find other relevant queue metadata in the
+   [Enterprise Edition list](../../../administration/sidekiq/processing_specific_job_classes.md#list-of-available-job-classes).
+1. Enable value stream analytics for one project after another.
+   You might need to tweak the Sidekiq routing further according to your performance requirements.

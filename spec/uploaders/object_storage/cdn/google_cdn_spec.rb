@@ -99,9 +99,10 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
     let(:path) { '/path/to/file.txt' }
     let(:expiration) { (Time.current + 10.minutes).utc.to_i }
     let(:cdn_query_params) { "Expires=#{expiration}&KeyName=#{key_name}" }
+    let(:encoded_path) { Addressable::URI.encode_component(path, Addressable::URI::CharacterClasses::PATH) }
 
     def verify_signature(url, unsigned_url)
-      expect(url).to start_with("#{options[:url]}#{path}")
+      expect(url).to start_with("#{options[:url]}#{encoded_path}")
 
       uri = Addressable::URI.parse(url)
       query = uri.query_values
@@ -113,6 +114,16 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
         expect(query['Expires'].to_i).to be > 0
         expect(query['KeyName']).to eq(key_name)
         expect(signature).to eq(Base64.urlsafe_encode64(computed_signature))
+      end
+    end
+
+    context 'with UTF-8 characters in path' do
+      let(:path) { "/path/to/©️job🧪" }
+      let(:url) { subject.signed_url(path) }
+      let(:unsigned_url) { "#{options[:url]}#{encoded_path}?#{cdn_query_params}" }
+
+      it 'returns a valid signed URL' do
+        verify_signature(url, unsigned_url)
       end
     end
 

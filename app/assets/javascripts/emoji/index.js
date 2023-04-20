@@ -232,8 +232,8 @@ export function emojiImageTag(name, src) {
     title: `:${name}:`,
     alt: `:${name}:`,
     src,
-    width: '20',
-    height: '20',
+    width: '16',
+    height: '16',
     align: 'absmiddle',
   });
 

@@ -6,7 +6,6 @@ description: Count of unique users per week who load the conflict resolution pag
 product_section: 'TBD'
 product_stage: create
 product_group: code_review
-product_category: code_review
 value_type: number
 status: active
 milestone: "13.12"

@@ -77,7 +77,7 @@ export default {
       class="issuable-milestone gl-mr-3"
       data-testid="issuable-milestone"
     >
-      <gl-link v-gl-tooltip :href="milestoneLink" :title="milestoneDate">
+      <gl-link v-gl-tooltip :href="milestoneLink" :title="milestoneDate" class="gl-font-sm">
         <gl-icon name="clock" />
         {{ issue.milestone.title }}
       </gl-link>

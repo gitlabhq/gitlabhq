@@ -35,6 +35,8 @@ module QA
     private
 
     def mark_as_resolved(payload, http)
+      sleep 3 # To ensure create and end time are different
+
       if http
         payload[:end_time] = Time.now
       else

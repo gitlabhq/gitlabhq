@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -42,6 +42,33 @@ To enable the agent server on a single node:
 
 For additional configuration options, see the **Enable GitLab KAS** section of the
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-config-template/gitlab.rb.template).
+
+##### Configure KAS to listen on a UNIX socket
+
+If you use GitLab behind a proxy, KAS might not work correctly. You can resolve this issue on a single-node installation, you can configure KAS to listen on a UNIX socket.
+
+To configure KAS to listen on a UNIX socket:
+
+1. Create a directory for the KAS sockets:
+
+   ```shell
+   sudo mkdir -p /var/opt/gitlab/gitlab-kas/sockets/
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_kas['internal_api_listen_network'] = 'unix'
+   gitlab_kas['internal_api_listen_address'] = '/var/opt/gitlab/gitlab-kas/sockets/internal-api.socket'
+   gitlab_kas['private_api_listen_network'] = 'unix'
+   gitlab_kas['private_api_listen_address'] = '/var/opt/gitlab/gitlab-kas/sockets/private-api.socket'
+   gitlab_kas['env'] = {
+     'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
+     'OWN_PRIVATE_API_URL' => 'unix:///var/opt/gitlab/gitlab-kas/sockets/private-api.socket'
+   }
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
 #### Enable on multiple nodes
 

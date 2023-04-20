@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::VariablesResolver, feature_category: :pipeline_composition do
+RSpec.describe Resolvers::Ci::VariablesResolver, feature_category: :secrets_management do
   include GraphqlHelpers
 
   describe '#resolve' do

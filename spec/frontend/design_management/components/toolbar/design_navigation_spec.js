@@ -1,9 +1,18 @@
 /* global Mousetrap */
 import 'mousetrap';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlButtonGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import DesignNavigation from '~/design_management/components/toolbar/design_navigation.vue';
 import { DESIGN_ROUTE_NAME } from '~/design_management/router/constants';
+import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import {
+  getDesignListQueryResponse,
+  designListQueryResponseNodes,
+} from '../../mock_data/apollo_mock';
 
 const push = jest.fn();
 const $router = {
@@ -18,11 +27,23 @@ const $route = {
 describe('Design management pagination component', () => {
   let wrapper;
 
-  function createComponent() {
+  const buildMockHandler = (nodes = designListQueryResponseNodes) => {
+    return jest.fn().mockResolvedValue(getDesignListQueryResponse({ designs: nodes }));
+  };
+
+  const createMockApolloProvider = (handler) => {
+    Vue.use(VueApollo);
+
+    return createMockApollo([[getDesignListQuery, handler]]);
+  };
+
+  function createComponent({ propsData = {}, handler = buildMockHandler() } = {}) {
     wrapper = shallowMount(DesignNavigation, {
       propsData: {
         id: '2',
+        ...propsData,
       },
+      apolloProvider: createMockApolloProvider(handler),
       mocks: {
         $router,
         $route,
@@ -30,48 +51,45 @@ describe('Design management pagination component', () => {
     });
   }
 
-  beforeEach(() => {
-    createComponent();
-  });
+  const findGlButtonGroup = () => wrapper.findComponent(GlButtonGroup);
 
-  it('hides components when designs are empty', () => {
+  it('hides components when designs are empty', async () => {
+    createComponent({ handler: buildMockHandler([]) });
+    await waitForPromises();
+
+    expect(findGlButtonGroup().exists()).toBe(false);
     expect(wrapper.element).toMatchSnapshot();
   });
 
   it('renders navigation buttons', async () => {
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData({
-      designCollection: { designs: [{ id: '1' }, { id: '2' }] },
-    });
+    createComponent({ handler: buildMockHandler() });
+    await waitForPromises();
 
-    await nextTick();
+    expect(findGlButtonGroup().exists()).toBe(true);
     expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('keyboard buttons navigation', () => {
-    beforeEach(() => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        designCollection: { designs: [{ filename: '1' }, { filename: '2' }, { filename: '3' }] },
-      });
-    });
+    it('routes to previous design on Left button', async () => {
+      createComponent({ propsData: { id: designListQueryResponseNodes[1].filename } });
+      await waitForPromises();
 
-    it('routes to previous design on Left button', () => {
       Mousetrap.trigger('left');
       expect(push).toHaveBeenCalledWith({
         name: DESIGN_ROUTE_NAME,
-        params: { id: '1' },
+        params: { id: designListQueryResponseNodes[0].filename },
         query: {},
       });
     });
 
-    it('routes to next design on Right button', () => {
+    it('routes to next design on Right button', async () => {
+      createComponent({ propsData: { id: designListQueryResponseNodes[1].filename } });
+      await waitForPromises();
+
       Mousetrap.trigger('right');
       expect(push).toHaveBeenCalledWith({
         name: DESIGN_ROUTE_NAME,
-        params: { id: '3' },
+        params: { id: designListQueryResponseNodes[2].filename },
         query: {},
       });
     });

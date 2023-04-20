@@ -1,5 +1,3 @@
-/* eslint-disable func-names */
-
 import $ from 'jquery';
 import Api from '~/api';
 import { humanize } from '~/lib/utils/text_utility';
@@ -49,6 +47,7 @@ export default class CreateLabelDropdown {
   addBinding() {
     const self = this;
 
+    // eslint-disable-next-line func-names
     this.$colorSuggestions.on('click', function (e) {
       const $this = $(this);
       self.addColorValue(e, $this);

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
 > - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.
-> - [ID tokens](../yaml/index.md) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+> - [ID tokens](../yaml/index.md#id_tokens) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) to
 give your build and deployment jobs access to cloud credentials and services.
@@ -18,6 +18,10 @@ in the CI/CD job allowing you to follow a scalable and least-privilege security 
 
 In GitLab 15.6 and earlier, you must use `CI_JOB_JWT_V2` instead of an ID token,
 but it is not customizable. In GitLab 14.6 an earlier you must use the `CI_JOB_JWT`, which has limited support.
+
+NOTE:
+`CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and are scheduled to be removed in GitLab 16.0. Use [ID tokens](../yaml/index.md#id_tokens) instead.
 
 ## Requirements
 
@@ -50,61 +54,7 @@ as a starting point, and for more information about supply chain attacks, see
 
 ## How it works
 
-Each job can be configured with ID tokens, which are provided as a CI/CD variable. These JWTs can be used to authenticate with the OIDC-supported cloud provider such as AWS, Azure, GCP, or Vault.
-
-The following fields are included in the JWT:
-
-| Field                   | When   | Description |
-| ----------------------- | ------ | ----------- |
-| `aud`                   | Always | Specified in the [ID tokens](../yaml/index.md#id_tokens) configuration |
-| `jti`                   | Always | Unique identifier for this token |
-| `iss`                   | Always | Issuer, the domain of your GitLab instance |
-| `iat`                   | Always | Issued at |
-| `nbf`                   | Always | Not valid before |
-| `exp`                   | Always | Expires at |
-| `sub`                   | Always |`project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` |
-| `namespace_id`          | Always | Use this to scope to group or user level namespace by ID |
-| `namespace_path`        | Always | Use this to scope to group or user level namespace by path |
-| `project_id`            | Always | Use this to scope to project by ID |
-| `project_path`          | Always | Use this to scope to project by path |
-| `user_id`               | Always | ID of the user executing the job |
-| `user_login`            | Always | Username of the user executing the job |
-| `user_email`            | Always | Email of the user executing the job |
-| `pipeline_id`           | Always | ID of this pipeline |
-| `pipeline_source`       | Always | [Pipeline source](../jobs/job_control.md#common-if-clauses-for-rules) |
-| `job_id`                | Always | ID of this job |
-| `ref`                   | Always | Git ref for this job |
-| `ref_type`              | Always | Git ref type, either `branch` or `tag` |
-| `ref_protected`         | Always | `true` if this Git ref is protected, `false` otherwise |
-| `environment`           | Job is creating a deployment | Environment this job deploys to ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
-| `environment_protected` | Job is creating a deployment |`true` if deployed environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
-
-```json
-{
-  "jti": "c82eeb0c-5c6f-4a33-abf5-4c474b92b558",
-  "iss": "https://gitlab.example.com",
-  "aud": "https://vault.example.com",
-  "iat": 1585710286,
-  "nbf": 1585798372,
-  "exp": 1585713886,
-  "sub": "project_path:mygroup/myproject:ref_type:branch:ref:main",
-  "namespace_id": "1",
-  "namespace_path": "mygroup",
-  "project_id": "22",
-  "project_path": "mygroup/myproject",
-  "user_id": "42",
-  "user_login": "myuser",
-  "user_email": "myuser@example.com",
-  "pipeline_id": "1212",
-  "pipeline_source": "web",
-  "job_id": "1212",
-  "ref": "auto-deploy-2020-04-01",
-  "ref_type": "branch",
-  "ref_protected": "true",
-  "environment": "production",
-  "environment_protected": "true"
-}
-```
+Each job can be configured with ID tokens, which are provided as a CI/CD variable containing the [token payload](../secrets/id_token_authentication.md#token-payload). These JWTs can be used to authenticate with the OIDC-supported cloud provider such as AWS, Azure, GCP, or Vault.
 
 ### Authorization workflow
 

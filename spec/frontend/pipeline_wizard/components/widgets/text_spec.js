@@ -123,7 +123,7 @@ describe('Pipeline Wizard - Text Widget', () => {
     expect(findGlFormGroup().classes()).toContain('is-invalid');
   });
 
-  it('does not update validation if not required', async () => {
+  it('does not update validation if not required', () => {
     createComponent({
       pattern: null,
       validate: true,

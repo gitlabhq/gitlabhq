@@ -144,8 +144,11 @@ RSpec.describe Ci::SecureFile do
 
   describe '#update_metadata!' do
     it 'assigns the expected metadata when a parsable .cer file is supplied' do
-      file = create(:ci_secure_file, name: 'file1.cer',
-                                     file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.cer')))
+      file = create(
+        :ci_secure_file,
+        name: 'file1.cer',
+        file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.cer'))
+      )
       file.update_metadata!
 
       file.reload
@@ -157,8 +160,11 @@ RSpec.describe Ci::SecureFile do
     end
 
     it 'assigns the expected metadata when a parsable .p12 file is supplied' do
-      file = create(:ci_secure_file, name: 'file1.p12',
-                                     file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.p12')))
+      file = create(
+        :ci_secure_file,
+        name: 'file1.p12',
+        file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.p12'))
+      )
       file.update_metadata!
 
       file.reload
@@ -170,10 +176,11 @@ RSpec.describe Ci::SecureFile do
     end
 
     it 'assigns the expected metadata when a parsable .mobileprovision file is supplied' do
-      file = create(:ci_secure_file, name: 'file1.mobileprovision',
-                                     file: CarrierWaveStringFile.new(
-                                       fixture_file('ci_secure_files/sample.mobileprovision')
-                                     ))
+      file = create(
+        :ci_secure_file,
+        name: 'file1.mobileprovision',
+        file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.mobileprovision'))
+      )
       file.update_metadata!
 
       file.reload

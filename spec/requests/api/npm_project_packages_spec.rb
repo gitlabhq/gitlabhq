@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
+  include ExclusiveLeaseHelpers
+
   include_context 'npm api setup'
 
   shared_examples 'accept get request on private project with access to package registry for everyone' do
@@ -224,15 +226,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           context 'with access token' do
             it_behaves_like 'a package tracking event', 'API::NpmPackages', 'push_package'
 
-            it 'creates npm package with file' do
-              expect { subject }
-                .to change { project.packages.count }.by(1)
-                .and change { Packages::PackageFile.count }.by(1)
-                .and change { Packages::Tag.count }.by(1)
-                .and change { Packages::Npm::Metadatum.count }.by(1)
-
-              expect(response).to have_gitlab_http_status(:ok)
-            end
+            it_behaves_like 'a successful package creation'
           end
 
           it 'creates npm package with file with job token' do
@@ -368,12 +362,13 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
         end
       end
 
-      context 'with a too large metadata structure' do
-        let(:package_name) { "@#{group.path}/my_package_name" }
-        let(:params) do
-          upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
-            h['versions']['1.2.3']['test'] = 'test' * 10000
-          end
+      context 'when the lease to create a package is already taken' do
+        let(:version) { '1.0.1' }
+        let(:params) { upload_params(package_name: package_name, package_version: version) }
+        let(:lease_key) { "packages:npm:create_package_service:packages:#{project.id}_#{package_name}_#{version}" }
+
+        before do
+          stub_exclusive_lease_taken(lease_key, timeout: Packages::Npm::CreatePackageService::DEFAULT_LEASE_TIMEOUT)
         end
 
         it_behaves_like 'not a package tracking event'
@@ -383,7 +378,95 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             .not_to change { project.packages.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(response.body).to include('Validation failed: Package json structure is too large')
+          expect(response.body).to include('Could not obtain package lease.')
+        end
+      end
+
+      context 'with a too large metadata structure' do
+        let(:package_name) { "@#{group.path}/my_package_name" }
+
+        ::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS.each do |field|
+          context "when a large value for #{field} is set" do
+            let(:params) do
+              upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
+                h['versions']['1.2.3'][field] = 'test' * 10000
+              end
+            end
+
+            it_behaves_like 'a successful package creation'
+          end
+        end
+
+        context 'when the large field is not one of the ignored fields' do
+          let(:params) do
+            upload_params(package_name: package_name, package_version: '1.2.3').tap do |h|
+              h['versions']['1.2.3']['test'] = 'test' * 10000
+            end
+          end
+
+          it_behaves_like 'not a package tracking event'
+
+          it 'returns an error' do
+            expect { upload_package_with_token }
+              .not_to change { project.packages.count }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to include('Validation failed: Package json structure is too large')
+          end
+        end
+      end
+
+      context 'when the Npm-Command in headers is deprecate' do
+        let(:package_name) { "@#{group.path}/my_package_name" }
+        let(:headers) { build_token_auth_header(token.plaintext_token).merge('Npm-Command' => 'deprecate') }
+        let(:params) do
+          {
+            'id' => project.id.to_s,
+            'package_name' => package_name,
+            'versions' => {
+              '1.0.1' => {
+                'name' => package_name,
+                'deprecated' => 'This version is deprecated'
+              },
+              '1.0.2' => {
+                'name' => package_name
+              }
+            }
+          }
+        end
+
+        subject(:request) { put api("/projects/#{project.id}/packages/npm/#{package_name.sub('/', '%2f')}"), params: params, headers: headers }
+
+        context 'when the user is not authorized to destroy the package' do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'does not call DeprecatePackageService' do
+            expect(::Packages::Npm::DeprecatePackageService).not_to receive(:new)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when the user is authorized to destroy the package' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'calls DeprecatePackageService with the correct arguments' do
+            expect(::Packages::Npm::DeprecatePackageService).to receive(:new).with(project, params) do
+              double.tap do |service|
+                expect(service).to receive(:execute).with(async: true)
+              end
+            end
+
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end

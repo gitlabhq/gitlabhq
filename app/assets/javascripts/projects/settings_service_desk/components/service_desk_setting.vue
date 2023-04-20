@@ -102,12 +102,12 @@ export default {
     },
     emailSuffixHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
-        anchor: 'configuring-a-custom-email-address-suffix',
+        anchor: 'configure-a-custom-email-address-suffix',
       });
     },
     customEmailAddressHelpUrl() {
       return helpPagePath('user/project/service_desk.html', {
-        anchor: 'using-a-custom-email-address',
+        anchor: 'use-a-custom-email-address',
       });
     },
   },

@@ -14,6 +14,7 @@ issues:
 - resource_milestone_events
 - resource_state_events
 - resource_iteration_events
+- assignment_events
 - sent_notifications
 - sentry_issue
 - issuable_severity
@@ -180,6 +181,7 @@ merge_requests:
 - resource_milestone_events
 - resource_state_events
 - resource_iteration_events
+- assignment_events
 - label_links
 - labels
 - last_edited_by
@@ -216,7 +218,7 @@ merge_requests:
 - approver_groups
 - approved_by_users
 - draft_notes
-- merge_train
+- merge_train_car
 - blocks_as_blocker
 - blocks_as_blockee
 - blocking_merge_requests
@@ -260,6 +262,11 @@ ci_pipelines:
 - statuses
 - statuses_order_id_desc
 - latest_statuses_ordered_by_stage
+- latest_statuses
+- all_jobs
+- current_jobs
+- all_processable_jobs
+- current_processable_jobs
 - builds
 - bridges
 - processables
@@ -308,7 +315,6 @@ ci_pipelines:
 - latest_builds_report_results
 - messages
 - pipeline_artifacts
-- latest_statuses
 - dast_profile
 - dast_profiles_pipeline
 - dast_site_profile
@@ -396,8 +402,8 @@ builds:
 - job_artifacts_cluster_image_scanning
 - job_artifacts_cyclonedx
 - job_artifacts_requirements_v2
-- runner_machine
-- runner_machine_build
+- runner_manager
+- runner_manager_build
 - runner_session
 - trace_metadata
 - terraform_state_versions
@@ -493,6 +499,7 @@ container_repositories:
 - project
 - name
 project:
+- catalog_resource
 - external_status_checks
 - base_tags
 - project_topics
@@ -706,13 +713,14 @@ project:
 - packages
 - package_files
 - rpm_repository_files
+- npm_metadata_caches
 - packages_cleanup_policy
 - alerting_setting
 - project_setting
 - webide_pipelines
 - reviews
 - incident_management_setting
-- merge_trains
+- merge_train_cars
 - designs
 - project_aliases
 - external_pull_requests
@@ -724,6 +732,7 @@ project:
 - downstream_project_subscriptions
 - service_desk_setting
 - service_desk_custom_email_verification
+- service_desk_custom_email_credential
 - security_setting
 - import_failures
 - container_expiration_policy
@@ -779,6 +788,7 @@ project:
 - sbom_occurrences
 - analytics_dashboards_configuration_project
 - analytics_dashboards_pointer
+- design_management_repository
 award_emoji:
 - awardable
 - user
@@ -865,6 +875,7 @@ incident_management_setting:
 - project
 merge_trains:
 - project
+merge_train_cars:
 - merge_request
 boards:
 - group
@@ -998,3 +1009,22 @@ resource_iteration_events:
 iterations_cadence:
   - group
   - iterations
+catalog_resource:
+  - project
+approval_rules:
+  - users
+  - groups
+  - group_users
+  - security_orchestration_policy_configuration
+  - protected_branches
+  - approval_merge_request_rule_sources
+  - approval_merge_request_rules
+  - approval_project_rules_users
+  - approval_project_rules_protected_branches
+  - scan_result_policy_read
+approval_project_rules_users:
+  - user
+  - approval_project_rule
+approval_project_rules_protected_branches:
+  - protected_branch
+  - approval_project_rule

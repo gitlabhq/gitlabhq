@@ -182,13 +182,13 @@ describe('DeleteBlobModal', () => {
         await fillForm({ targetText: '', commitText: '' });
       });
 
-      it('disables submit button', async () => {
+      it('disables submit button', () => {
         expect(findModal().props('actionPrimary').attributes).toEqual(
           expect.objectContaining({ disabled: true }),
         );
       });
 
-      it('does not submit form', async () => {
+      it('does not submit form', () => {
         findModal().vm.$emit('primary', { preventDefault: () => {} });
         expect(submitSpy).not.toHaveBeenCalled();
       });
@@ -202,13 +202,13 @@ describe('DeleteBlobModal', () => {
         });
       });
 
-      it('enables submit button', async () => {
+      it('enables submit button', () => {
         expect(findModal().props('actionPrimary').attributes).toEqual(
           expect.objectContaining({ disabled: false }),
         );
       });
 
-      it('submits form', async () => {
+      it('submits form', () => {
         findModal().vm.$emit('primary', { preventDefault: () => {} });
         expect(submitSpy).toHaveBeenCalled();
       });

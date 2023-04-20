@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Editor
+group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -22,6 +22,7 @@ do more day-to-day tasks in Visual Studio Code, such as:
   and paste snippets to, and from, your editor.
 - [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)
   without cloning them.
+- [Receive Code Suggestions](code_suggestions.md)
 
 ## Download the extension
 
@@ -34,6 +35,7 @@ you can [configure](https://marketplace.visualstudio.com/items?itemName=GitLab.g
 
 - [Features to display or hide](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
 - [Self-signed certificate](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#self-signed-certificates) information.
+- [Code Suggestions](code_suggestions.md)
 
 ## Report issues with the extension
 
@@ -44,5 +46,4 @@ Report any issues, bugs, or feature requests in the
 
 - [Download the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - [Extension documentation](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md)
-- The extension source code is available in the
-  [`gitlab-vscode-extension`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/) project.
+- [View source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)

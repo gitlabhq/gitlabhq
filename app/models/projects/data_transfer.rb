@@ -13,6 +13,14 @@ module Projects
     belongs_to :namespace
 
     scope :current_month, -> { where(date: beginning_of_month) }
+    scope :with_project_between_dates, ->(project, from, to) {
+      where(project: project, date: from..to)
+    }
+    scope :with_namespace_between_dates, ->(namespace, from, to) {
+      where(namespace: namespace, date: from..to)
+        .group(:date, :namespace_id)
+        .order(date: :desc)
+    }
 
     counter_attribute :repository_egress, returns_current: true
     counter_attribute :artifacts_egress, returns_current: true

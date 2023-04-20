@@ -216,6 +216,8 @@ The following actions on groups generate group audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
 - An environment is protected or unprotected.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
+- Changes to Code Suggestions.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405295) in GitLab 15.11.
 
 ### Project events
 
@@ -316,47 +318,61 @@ The following actions on projects generate project audit events:
 
 ### GitLab agent for Kubernetes events
 
-The following actions on projects generate agent audit events:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) in GitLab 15.10.
 
-- A cluster agent token is created.
-  Introduced in GitLab 15.9
-- A cluster agent token is revoked.
-  Introduced in GitLab 15.9
+GitLab generates audit events when a cluster agent token is created or revoked.
 
 ### Instance events **(PREMIUM SELF)**
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16826) in GitLab 13.5, audit events for failed second-factor authentication attempt.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6, audit events for when a user is approved using the Admin Area.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6, audit events for when a user's personal access token is successfully or unsuccessfully created or revoked.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9, audit events for when a user requests access to an instance or is rejected using the Admin Area.
+
 The following user actions on a GitLab instance generate instance audit events:
 
-- Sign-in events and the authentication type (such as standard, LDAP, or OmniAuth)
-- Failed sign-ins
-- Added SSH key
-- Added or removed email
-- Changed password
-- Ask for password reset
-- Grant OAuth access
-- Started or stopped user impersonation
-- Changed username. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7797) in GitLab 12.8.
-- User was deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8.
-- User was added. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8.
-- User requests access to an instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9.
-- User was approved using the Admin Area. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276250) in GitLab 13.6.
-- User was rejected using the Admin Area. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298783) in GitLab 13.9.
-- User was blocked using the Admin Area. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/251) in GitLab 12.8.
-- User was blocked using the API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25872) in GitLab 12.9.
-- Failed second-factor authentication attempt. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16826) in
-  GitLab 13.5.
-- A user's personal access token was successfully created or revoked.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6.
-- A failed attempt to create or revoke a user's personal access token.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276921) in GitLab 13.6.
+- Sign-in events and the authentication type such as standard, LDAP, or OmniAuth.
+- Failed sign-ins.
+- Added SSH key.
+- Added or removed email.
+- Changed password.
+- Ask for password reset.
+- Grant OAuth access.
+- Started or stopped user impersonation.
+- Changed username.
+- User was added or deleted.
+- User requests access to an instance.
+- User was approved, rejected, or blocked using the Admin Area.
+- User was blocked using the API.
+- Failed second-factor authentication attempt.
+- A user's personal access token was successfully or unsuccessfully created or revoked.
 - Administrator added or removed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) in GitLab 14.1.
 - Removed SSH key. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1.
 - Added or removed GPG key. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1.
 - A user's two-factor authentication was disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
   GitLab 15.1.
 - Enabled Admin Mode. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) in GitLab 15.7.
+- All [group events](#group-events) and [project events](#project-events).
+- User was unblocked using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115727) in GitLab 15.11.
+- User was banned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) in GitLab 15.11.
+- User was unbanned using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116221) in GitLab 15.11.
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
+
+### GitLab Runner events
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335509) in GitLab 14.8, audit events for when a runner is registered.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) in GitLab 14.9, audit events for when a runner is unregistered.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) in GitLab 14.9, audit events for when a runner is assigned to or unassigned from a project.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355637) in GitLab 15.0, audit events for when a runner registration token is reset.
+
+GitLab generates audit events for the following GitLab Runner actions:
+
+- Instance, group, or project runner is registered.
+- Instance, group, or project runner is unregistered.
+- Runner is assigned to or unassigned from a project.
+- Instance, group, or project runner registration token is reset.
+  [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102579) in GitLab 15.6.
 
 ## "Deleted User" events
 
@@ -373,6 +389,7 @@ Some events are not tracked in audit events. The following epics and issues prop
 - [Group settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/475).
 - [Instance-level settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/476).
 - [Deployment Approval activity](https://gitlab.com/gitlab-org/gitlab/-/issues/354782).
+- [Approval rules processing by a non GitLab user](https://gitlab.com/gitlab-org/gitlab/-/issues/407384).
 
 If you don't see the event you want in any of the epics, you can either:
 

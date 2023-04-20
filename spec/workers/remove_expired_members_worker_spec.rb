@@ -35,8 +35,10 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
 
         new_job = Sidekiq::Worker.jobs.last
 
-        expect(new_job).to include('meta.project' => expired_project_member.project.full_path,
-                                   'meta.user' => expired_project_member.user.username)
+        expect(new_job).to include(
+          'meta.project' => expired_project_member.project.full_path,
+          'meta.user' => expired_project_member.user.username
+        )
       end
     end
 
@@ -60,8 +62,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
           worker.perform
 
           expect(
-            Users::GhostUserMigration.where(user: expired_project_bot,
-                                            initiator_user: nil)
+            Users::GhostUserMigration.where(user: expired_project_bot, initiator_user: nil)
           ).to be_exists
         end
       end
@@ -116,8 +117,10 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
 
         new_job = Sidekiq::Worker.jobs.last
 
-        expect(new_job).to include('meta.root_namespace' => expired_group_member.group.full_path,
-                                   'meta.user' => expired_group_member.user.username)
+        expect(new_job).to include(
+          'meta.root_namespace' => expired_group_member.group.full_path,
+          'meta.user' => expired_group_member.user.username
+        )
       end
     end
 

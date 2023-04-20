@@ -7,7 +7,7 @@ export default {
   },
   props: {
     count: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     href: {

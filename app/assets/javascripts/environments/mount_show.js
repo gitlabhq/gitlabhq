@@ -92,7 +92,9 @@ export const initPage = async () => {
     el,
     apolloProvider: apolloProvider(),
     router,
-    provide: {},
+    provide: {
+      projectPath: dataSet.projectFullPath,
+    },
     render(createElement) {
       return createElement('router-view');
     },

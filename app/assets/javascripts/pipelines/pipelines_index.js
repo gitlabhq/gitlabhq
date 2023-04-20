@@ -1,5 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import {
   parseBoolean,
   historyReplaceState,
@@ -13,6 +15,11 @@ import PipelinesStore from './stores/pipelines_store';
 
 Vue.use(Translate);
 Vue.use(GlToast);
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
   const el = document.querySelector(selector);
@@ -38,22 +45,22 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     projectId,
     defaultBranchName,
     params,
-    ciRunnerSettingsPath,
-    anyRunnersAvailable,
     iosRunnersAvailable,
     registrationToken,
+    fullPath,
   } = el.dataset;
 
   return new Vue({
     el,
+    apolloProvider,
     provide: {
       pipelineEditorPath,
       artifactsEndpoint,
       artifactsEndpointPlaceholder,
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
-      ciRunnerSettingsPath,
-      anyRunnersAvailable: parseBoolean(anyRunnersAvailable),
       iosRunnersAvailable: parseBoolean(iosRunnersAvailable),
+      fullPath,
+      manualActionsLimit: 50,
     },
     data() {
       return {

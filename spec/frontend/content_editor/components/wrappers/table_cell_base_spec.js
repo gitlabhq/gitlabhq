@@ -13,7 +13,7 @@ describe('content/components/wrappers/table_cell_base', () => {
   let editor;
   let node;
 
-  const createWrapper = async (propsData = { cellType: 'td' }) => {
+  const createWrapper = (propsData = { cellType: 'td' }) => {
     wrapper = shallowMountExtended(TableCellBaseWrapper, {
       propsData: {
         editor,
@@ -118,7 +118,7 @@ describe('content/components/wrappers/table_cell_base', () => {
       },
     );
 
-    it('does not allow deleting rows and columns', async () => {
+    it('does not allow deleting rows and columns', () => {
       expect(findDropdownItemWithLabelExists('Delete row')).toBe(false);
       expect(findDropdownItemWithLabelExists('Delete column')).toBe(false);
     });
@@ -173,7 +173,7 @@ describe('content/components/wrappers/table_cell_base', () => {
         await nextTick();
       });
 
-      it('does not allow adding a row before the header', async () => {
+      it('does not allow adding a row before the header', () => {
         expect(findDropdownItemWithLabelExists('Insert row before')).toBe(false);
       });
 

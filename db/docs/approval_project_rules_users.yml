@@ -1,6 +1,7 @@
 ---
 table_name: approval_project_rules_users
-classes: []
+classes:
+- ApprovalProjectRulesUser
 feature_categories:
 - source_code_management
 description: Keeps connection between user and a project approval rule

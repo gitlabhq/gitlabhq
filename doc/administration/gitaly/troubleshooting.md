@@ -85,7 +85,7 @@ check for an SSL or TLS problem:
 ```
 
 Check whether `Verify return code` field indicates a
-[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl.html).
+[known Omnibus GitLab configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
 check [certificate requirements](configure_gitaly.md#certificate-requirements) for Gitaly.
@@ -122,27 +122,6 @@ sudo cat /proc/$PID/environ | tr '\0' '\n' | grep ^CORRELATION_ID=
 
 This method isn't reliable for `git cat-file` processes, because Gitaly
 internally pools and re-uses those across RPCs.
-
-### Observing `gitaly-ruby` traffic
-
-[`gitaly-ruby`](configure_gitaly.md#gitaly-ruby) is an internal implementation detail of Gitaly,
-so, there's not that much visibility into what goes on inside
-`gitaly-ruby` processes.
-
-If you have Prometheus set up to scrape your Gitaly process, you can see
-request rates and error codes for individual RPCs in `gitaly-ruby` by
-querying `grpc_client_handled_total`.
-
-All gRPC calls made by `gitaly-ruby` itself are internal calls from the main Gitaly process to one of its `gitaly-ruby`
-sidecars.
-
-Assuming your `grpc_client_handled_total` counter only observes Gitaly,
-the following query shows you RPCs are (most likely) internally
-implemented as calls to `gitaly-ruby`:
-
-```prometheus
-sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
-```
 
 ### Repository changes fail with a `401 Unauthorized` error
 
@@ -492,7 +471,7 @@ in sync so the token check succeeds.
 This check helps identify the root cause of `permission denied`
 [errors being logged by Praefect](#permission-denied-errors-appearing-in-gitaly-or-praefect-logs-when-accessing-repositories).
 
-For offline environments where access to public [`pool.ntp.org`](https://pool.ntp.org) servers is not possible, the Praefect `check` sub-command fails this
+For offline environments where access to public `pool.ntp.org` servers is not possible, the Praefect `check` sub-command fails this
 check with an error message similar to:
 
 ```plaintext

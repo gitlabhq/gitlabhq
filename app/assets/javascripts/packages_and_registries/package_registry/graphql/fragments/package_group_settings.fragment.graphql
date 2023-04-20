@@ -1,0 +1,8 @@
+fragment GroupPackageSettings on Group {
+  id
+  packageSettings {
+    mavenPackageRequestsForwarding
+    npmPackageRequestsForwarding
+    pypiPackageRequestsForwarding
+  }
+}

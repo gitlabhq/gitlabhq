@@ -11,6 +11,8 @@ module Namespaces
     alias_attribute :namespace_id, :parent_id
     has_one :project, foreign_key: :project_namespace_id, inverse_of: :project_namespace
 
+    delegate :execute_hooks, :execute_integrations, to: :project, allow_nil: true
+
     def self.sti_name
       'Project'
     end

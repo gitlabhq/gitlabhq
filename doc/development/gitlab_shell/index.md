@@ -217,6 +217,6 @@ sequenceDiagram
 
 ## Related topics
 
-- [LICENSE](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/LICENSE).
+- [LICENSE](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/LICENSE)
 - [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/PROCESS.md)
 - [Using the GitLab Shell chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)

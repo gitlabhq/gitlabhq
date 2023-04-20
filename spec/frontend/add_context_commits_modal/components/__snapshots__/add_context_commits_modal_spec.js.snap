@@ -6,8 +6,9 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
   body-class="add-review-item pt-0"
   cancel-variant="light"
   dismisslabel="Close"
-  modalclass=""
+  modalclass="add-review-item-modal"
   modalid="add-review-item"
+  nofocusonshow="true"
   ok-disabled="true"
   ok-title="Save changes"
   scrollable="true"
@@ -27,9 +28,13 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
       <div
         class="gl-mt-3"
       >
-        <gl-search-box-by-type-stub
+        <gl-filtered-search-stub
+          availabletokens="[object Object],[object Object],[object Object]"
+          class="flex-grow-1"
           clearbuttontitle="Clear"
-          placeholder="Search by commit title or SHA"
+          placeholder="Search or filter commits"
+          searchbuttonattributes="[object Object]"
+          searchinputattributes="[object Object]"
           value=""
         />
          

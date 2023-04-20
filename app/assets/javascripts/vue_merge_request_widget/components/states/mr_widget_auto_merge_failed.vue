@@ -54,7 +54,13 @@ export default {
 };
 </script>
 <template>
-  <state-container :mr="mr" status="failed" :actions="actions">
+  <state-container
+    status="failed"
+    :actions="actions"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <span class="gl-font-weight-bold">
       <template v-if="mergeError">{{ mergeError }}</template>
       {{ s__('mrWidget|This merge request failed to be merged automatically') }}

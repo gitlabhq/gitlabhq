@@ -173,7 +173,7 @@ export default {
       </p>
     </template>
     <template v-else-if="!hasPipeline">
-      <gl-loading-icon size="md" />
+      <gl-loading-icon size="sm" />
       <p
         class="gl-flex-grow-1 gl-display-flex gl-ml-3 gl-mb-0"
         data-testid="monitoring-pipeline-message"
@@ -187,7 +187,7 @@ export default {
           class="gl-display-flex gl-align-items-center gl-ml-2"
         >
           <gl-icon
-            name="question"
+            name="question-o"
             :aria-label="__('Link to go to GitLab pipeline documentation')"
           />
         </gl-link>
@@ -251,7 +251,7 @@ export default {
               </span>
               {{ pipelineCoverageJobNumberText }}
               <span ref="pipelineCoverageQuestion">
-                <gl-icon name="question" :size="12" />
+                <gl-icon name="question-o" :size="12" />
               </span>
               <gl-tooltip
                 :target="() => $refs.pipelineCoverageQuestion"

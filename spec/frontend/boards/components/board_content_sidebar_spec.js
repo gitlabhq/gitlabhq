@@ -1,10 +1,15 @@
 import { GlDrawer } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 import SidebarDropdownWidget from 'ee_else_ce/sidebar/components/sidebar_dropdown_widget.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+
+import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { ISSUABLE } from '~/boards/constants';
@@ -14,12 +19,20 @@ import SidebarSeverityWidget from '~/sidebar/components/severity/sidebar_severit
 import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
-import { mockActiveIssue, mockIssue, mockIssueGroupPath, mockIssueProjectPath } from '../mock_data';
+import { mockActiveIssue, mockIssue, rawIssue } from '../mock_data';
 
 Vue.use(Vuex);
+Vue.use(VueApollo);
 describe('BoardContentSidebar', () => {
   let wrapper;
   let store;
+
+  const mockSetActiveBoardItemResolver = jest.fn();
+  const mockApollo = createMockApollo([], {
+    Mutation: {
+      setActiveBoardItem: mockSetActiveBoardItemResolver,
+    },
+  });
 
   const createStore = ({ mockGetters = {}, mockActions = {} } = {}) => {
     store = new Vuex.Store({
@@ -32,54 +45,35 @@ describe('BoardContentSidebar', () => {
         activeBoardItem: () => {
           return { ...mockActiveIssue, epic: null };
         },
-        groupPathForActiveIssue: () => mockIssueGroupPath,
-        projectPathForActiveIssue: () => mockIssueProjectPath,
-        isSidebarOpen: () => true,
         ...mockGetters,
       },
       actions: mockActions,
     });
   };
 
-  const createComponent = () => {
-    /*
-      Dynamically imported components (in our case ee imports)
-      aren't stubbed automatically in VTU v1:
-      https://github.com/vuejs/vue-test-utils/issues/1279.
+  const createComponent = ({ isApolloBoard = false } = {}) => {
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: activeBoardItemQuery,
+      data: {
+        activeBoardItem: rawIssue,
+      },
+    });
 
-      This requires us to additionally mock apollo or vuex stores.
-    */
-    wrapper = shallowMount(BoardContentSidebar, {
+    wrapper = shallowMountExtended(BoardContentSidebar, {
+      apolloProvider: mockApollo,
       provide: {
         canUpdate: true,
         rootPath: '/',
         groupId: 1,
         issuableType: TYPE_ISSUE,
         isGroupBoard: false,
+        isApolloBoard,
       },
       store,
       stubs: {
         GlDrawer: stubComponent(GlDrawer, {
           template: '<div><slot name="header"></slot><slot></slot></div>',
         }),
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            participants: {
-              loading: false,
-            },
-            currentIteration: {
-              loading: false,
-            },
-            iterations: {
-              loading: false,
-            },
-            attributesList: {
-              loading: false,
-            },
-          },
-        },
       },
     });
   };
@@ -101,9 +95,11 @@ describe('BoardContentSidebar', () => {
     });
   });
 
-  it('does not render GlDrawer when isSidebarOpen is false', () => {
-    createStore({ mockGetters: { isSidebarOpen: () => false } });
+  it('does not render GlDrawer when no active item is set', async () => {
+    createStore({ mockGetters: { activeBoardItem: () => ({ id: '', iid: '' }) } });
     createComponent();
+
+    await nextTick();
 
     expect(wrapper.findComponent(GlDrawer).props('open')).toBe(false);
   });
@@ -166,7 +162,7 @@ describe('BoardContentSidebar', () => {
       createComponent();
     });
 
-    it('calls toggleBoardItem with correct parameters', async () => {
+    it('calls toggleBoardItem with correct parameters', () => {
       wrapper.findComponent(GlDrawer).vm.$emit('close');
 
       expect(toggleBoardItem).toHaveBeenCalledTimes(1);
@@ -187,6 +183,29 @@ describe('BoardContentSidebar', () => {
 
     it('renders SidebarSeverityWidget', () => {
       expect(wrapper.findComponent(SidebarSeverityWidget).exists()).toBe(true);
+    });
+  });
+
+  describe('Apollo boards', () => {
+    beforeEach(async () => {
+      createStore();
+      createComponent({ isApolloBoard: true });
+      await nextTick();
+    });
+
+    it('calls setActiveBoardItemMutation on close', async () => {
+      wrapper.findComponent(GlDrawer).vm.$emit('close');
+
+      await waitForPromises();
+
+      expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
+        {},
+        {
+          boardItem: null,
+        },
+        expect.anything(),
+        expect.anything(),
+      );
     });
   });
 });

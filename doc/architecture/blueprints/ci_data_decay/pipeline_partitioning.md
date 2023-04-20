@@ -1,5 +1,4 @@
 ---
-comments: false
 status: ongoing
 creation-date: "2022-05-31"
 authors: [ "@grzesiek" ]
@@ -8,6 +7,8 @@ approvers: [ "@jreporter", "@cheryl.li" ]
 owning-stage: "~devops::verify"
 description: 'Pipeline data partitioning design'
 ---
+
+<!-- vale gitlab.FutureTense = NO -->
 
 # Pipeline data partitioning design
 

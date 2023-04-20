@@ -260,7 +260,7 @@ describe('Monitoring store actions', () => {
         });
       });
 
-      it('does not show an alert error when showErrorBanner is disabled', async () => {
+      it('does not show an alert when showErrorBanner is disabled', async () => {
         state.showErrorBanner = false;
 
         await result();

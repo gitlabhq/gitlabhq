@@ -80,7 +80,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Sidekiq guidelines](sidekiq/index.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)
 - [Advanced search integration docs](advanced_search.md)
-- [Working with merge request diffs](diffs.md)
+- [Working with merge request diffs](merge_request_concepts/diffs/index.md)
 - [Approval Rules](merge_request_concepts/approval_rules.md)
 - [Repository mirroring](repository_mirroring.md)
 - [Uploads development guide](uploads/index.md)
@@ -130,9 +130,8 @@ See [database guidelines](database/index.md).
 
 The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
 
-- [Jira app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/jira.md)
-- [Slack app development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/slack.md)
-- [ZenTao development](https://gitlab.com/gitlab-org/manage/integrations/team/-/blob/main/integrations/zentao.md)
+- [Jira app development](https://gitlab.com/gitlab-org/manage/integrate/team/-/blob/main/integrations/jira.md)
+- [GitLab for Slack app development](https://gitlab.com/gitlab-org/manage/integrate/team/-/blob/main/integrations/slack.md)
 
 ## Testing guides
 

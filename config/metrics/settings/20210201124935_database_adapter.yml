@@ -7,7 +7,6 @@ description: This metric only returns a value of PostgreSQL in supported version
 product_section: enablement
 product_stage: enablement
 product_group: enablement_distribution
-product_category: collection
 value_type: string
 status: active
 time_frame: none

@@ -1,12 +1,14 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import {
+  PACKAGE_FORWARDING_SECURITY_DESCRIPTION,
   PACKAGE_FORWARDING_SETTINGS_HEADER,
   PACKAGE_FORWARDING_SETTINGS_DESCRIPTION,
   PACKAGE_FORWARDING_FORM_BUTTON,
   PACKAGE_FORWARDING_FIELDS,
   MAVEN_FORWARDING_FIELDS,
+  REQUEST_FORWARDING_HELP_PAGE_PATH,
 } from '~/packages_and_registries/settings/group/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
@@ -20,12 +22,15 @@ export default {
   name: 'PackageForwardingSettings',
   i18n: {
     PACKAGE_FORWARDING_FORM_BUTTON,
+    PACKAGE_FORWARDING_SECURITY_DESCRIPTION,
     PACKAGE_FORWARDING_SETTINGS_HEADER,
     PACKAGE_FORWARDING_SETTINGS_DESCRIPTION,
   },
   components: {
     ForwardingSettings,
     GlButton,
+    GlLink,
+    GlSprintf,
     SettingsBlock,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -150,6 +155,9 @@ export default {
       this.$set(this.workingCopy, type, value);
     },
   },
+  links: {
+    REQUEST_FORWARDING_HELP_PAGE_PATH,
+  },
 };
 </script>
 
@@ -157,9 +165,14 @@ export default {
   <settings-block>
     <template #title> {{ $options.i18n.PACKAGE_FORWARDING_SETTINGS_HEADER }}</template>
     <template #description>
-      <span data-testid="description">
+      <span class="gl-display-block gl-mb-2" data-testid="description">
         {{ $options.i18n.PACKAGE_FORWARDING_SETTINGS_DESCRIPTION }}
       </span>
+      <gl-sprintf :message="$options.i18n.PACKAGE_FORWARDING_SECURITY_DESCRIPTION">
+        <template #docLink="{ content }">
+          <gl-link :href="$options.links.REQUEST_FORWARDING_HELP_PAGE_PATH">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
     </template>
     <template #default>
       <form @submit.prevent="submit">

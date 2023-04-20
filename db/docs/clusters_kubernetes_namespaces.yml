@@ -3,7 +3,7 @@ table_name: clusters_kubernetes_namespaces
 classes:
 - Clusters::KubernetesNamespace
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: "(Deprecated) A Kubernetes namespace in a GitLab managed Kubernetes cluster"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e3ca493876ab71ed29817a0af436fc563f564bbe
 milestone: '11.5'

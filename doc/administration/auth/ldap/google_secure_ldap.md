@@ -18,6 +18,8 @@ The steps below cover:
 - Configuring the Secure LDAP Client in the Google administrator console.
 - Required GitLab configuration.
 
+Secure LDAP is only available on specific Google Workspace editions. For more information, see the [Google Secure LDAP service documentation](https://support.google.com/a/answer/9048516).
+
 ## Configuring Google LDAP client
 
 1. Go to <https://admin.google.com/Dashboard> and sign in as a Google Workspace domain administrator.
@@ -88,7 +90,7 @@ values obtained during the LDAP client configuration earlier:
        encryption: 'simple_tls'
        verify_certificates: true
        retry_empty_result_with_codes: [80]
-
+       base: "DC=example,DC=com"
        tls_options:
          cert: |
            -----BEGIN CERTIFICATE-----
@@ -152,7 +154,7 @@ values obtained during the LDAP client configuration earlier:
      servers:
        main: # 'main' is the GitLab 'provider ID' of this LDAP server
          label: 'Google Secure LDAP'
-
+         base: "DC=example,DC=com"
          host: 'ldap.google.com'
          port: 636
          uid: 'uid'

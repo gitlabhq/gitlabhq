@@ -35,7 +35,7 @@ describe('content_editor/components/formatting_toolbar', () => {
     ${'bullet-list'}  | ${{ contentType: 'bulletList', iconName: 'list-bulleted', label: 'Add a bullet list', editorCommand: 'toggleBulletList' }}
     ${'ordered-list'} | ${{ contentType: 'orderedList', iconName: 'list-numbered', label: 'Add a numbered list', editorCommand: 'toggleOrderedList' }}
     ${'task-list'}    | ${{ contentType: 'taskList', iconName: 'list-task', label: 'Add a checklist', editorCommand: 'toggleTaskList' }}
-    ${'image'}        | ${{}}
+    ${'attachment'}   | ${{}}
     ${'table'}        | ${{}}
     ${'more'}         | ${{}}
   `('given a $testId toolbar control', ({ testId, controlProps }) => {

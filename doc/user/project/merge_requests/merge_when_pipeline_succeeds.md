@@ -147,3 +147,11 @@ merge-request-pipeline-job:
 Instead, use branch (`push`) pipelines or merge request pipelines, when possible.
 For details on avoiding two pipelines for a single merge request, read the
 [`rules` documentation](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines).
+
+### Merged results pipeline allows merge, despite a failed branch pipeline
+
+When [the **Pipelines must succeed** setting](#require-a-successful-pipeline-for-merge)
+is combined with
+[the **Merged results pipelines** feature](../../../ci/pipelines/merged_results_pipelines.md),
+failed branch pipeline may be ignored.
+[Issue 385841](https://gitlab.com/gitlab-org/gitlab/-/issues/385841) is open to track this.

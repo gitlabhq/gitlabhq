@@ -57,7 +57,7 @@ dont-interrupt-me:
         --volume $CI_PROJECT_DIR/test_output:/home/gdk/gdk/gitlab/qa/tmp:z \
         --volume $CI_PROJECT_DIR/logs/gdk:/home/gdk/gdk/log \
         --volume $CI_PROJECT_DIR/logs/gitlab:/home/gdk/gdk/gitlab/log \
-        ${QA_GDK_IMAGE} "${CI_COMMIT_REF_SLUG}" "$TEST_GDK_TAGS --tag ~requires_praefect" || true
+        ${QA_GDK_IMAGE} "${CI_COMMIT_SHA}" "$TEST_GDK_TAGS --tag ~requires_praefect" || true
     - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk_and_tests\r\e[0K"
   allow_failure: true
 

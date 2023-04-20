@@ -135,11 +135,13 @@ To add links to other accounts:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Main settings** section, add your information from:
-   - Discord ([User ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-))
-   - LinkedIn
-   - Skype
-   - Twitter
+1. In the **Main settings** section, add your:
+   - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
+   - LinkedIn profile name.
+   - Skype username.
+   - Twitter @username.
+
+   Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.
 
 ## Show private contributions on your user profile page
@@ -164,7 +166,7 @@ To specify your pronouns:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronouns** text box, enter your pronouns.
+1. In the **Pronouns** text box, enter your pronouns. The text must be 50 characters or less.
 1. Select **Update profile settings**.
 
 ## Add your name pronunciation
@@ -178,7 +180,7 @@ To add your name pronunciation:
 
 1. On the top bar, in the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. In the **Pronunciation** text box, enter how your name is pronounced.
+1. In the **Pronunciation** text box, enter how your name is pronounced. The pronunciation must be plain text and 255 characters or less.
 1. Select **Update profile settings**.
 
 ## Set your current status
@@ -224,25 +226,7 @@ To set the busy status indicator, either:
   1. Select **Edit profile**.
   1. In the **Current status** section, select the **Set yourself as busy** checkbox.
 
-  The busy status is displayed in the user interface.
-
-  Username:
-
-  | Profile page | Settings menu | User popovers |
-  | --- | --- | --- |
-  | ![Busy status - profile page](img/busy_indicator_profile_page_v13_6.png) | ![Busy status - settings menu](img/busy_indicator_settings_menu_v13_6.png) | ![Busy status - user popovers](img/busy_indicator_user_popovers_v13_6.png) |
-
-  Issue and merge request sidebar:
-
-  | Sidebar| Collapsed sidebar |
-  | --- | --- |
-  | ![Busy status - sidebar](img/busy_indicator_sidebar_v13_9.png) | ![Busy status - sidebar collapsed](img/busy_indicator_sidebar_collapsed_v13_9.png) |
-
-  Notes:
-
-  | Notes | Note headers |
-  | --- | --- |
-  | ![Busy status - notes](img/busy_indicator_notes_v13_9.png) | ![Busy status - note header](img/busy_indicator_note_header_v13_9.png) |
+  The busy status is displayed next to your name, every time your name is shown in the user interface.
 
 ## Set your time zone
 

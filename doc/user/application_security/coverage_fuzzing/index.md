@@ -15,6 +15,9 @@ We recommend that you use fuzz testing in addition to the other security scanner
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Coverage Fuzzing](https://www.youtube.com/watch?v=bbIenVVcjW0).
+
 ## Coverage-guided fuzz testing process
 
 The fuzz testing process:
@@ -145,7 +148,7 @@ Each fuzzing step outputs these artifacts:
     previous jobs.
 
 You can download the JSON report file from the CI/CD pipelines page. For more information, see
-[Downloading artifacts](../../../ci/pipelines/job_artifacts.md#download-job-artifacts).
+[Downloading artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
 ## Corpus registry
 
@@ -222,7 +225,7 @@ Prerequisites:
 
 ## Coverage-guided fuzz testing report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Alpha feature](../../../policy/alpha-beta-support.md#alpha-features).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Experiment](../../../policy/alpha-beta-support.md#experiment).
 
 For detailed information about the `gl-coverage-fuzzing-report.json` file's format, read the
 [schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).

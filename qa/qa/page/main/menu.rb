@@ -4,14 +4,21 @@ module QA
   module Page
     module Main
       class Menu < Page::Base
-        prepend Mobile::Page::Main::Menu if Runtime::Env.mobile_layout?
+        # We need to check phone_layout? instead of mobile_layout? here
+        # since tablets have the regular top navigation bar
+        prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
+
+        if Runtime::Env.super_sidebar_enabled?
+          prepend SubMenus::CreateNewMenu
+          include SubMenus::SuperSidebar::ContextSwitcher
+        end
 
         if QA::Runtime::Env.super_sidebar_enabled?
           # Define alternative navbar (super sidebar) which does not yet implement all the same elements
           view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
             element :navbar, required: true # TODO: rename to sidebar once it's default implementation
-            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
-            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
+            element :user_menu, required: !Runtime::Env.phone_layout?
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
@@ -22,12 +29,12 @@ module QA
           view 'app/views/layouts/header/_default.html.haml' do
             element :navbar, required: true
             element :canary_badge_link
-            element :user_avatar_content, required: !QA::Runtime::Env.mobile_layout?
-            element :user_menu, required: !QA::Runtime::Env.mobile_layout?
+            element :user_avatar_content, required: !Runtime::Env.phone_layout?
+            element :user_menu, required: !Runtime::Env.phone_layout?
             element :stop_impersonation_link
-            element :issues_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-            element :merge_requests_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
-            element :todos_shortcut_button, required: !QA::Runtime::Env.mobile_layout?
+            element :issues_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :merge_requests_shortcut_button, required: !Runtime::Env.phone_layout?
+            element :todos_shortcut_button, required: !Runtime::Env.phone_layout?
           end
 
           view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
@@ -56,10 +63,6 @@ module QA
           element :menu_item_link
         end
 
-        view 'app/views/layouts/_search.html.haml' do
-          element :search_term_field
-        end
-
         view 'app/views/layouts/_header_search.html.haml' do
           element :search_box
         end
@@ -75,16 +78,44 @@ module QA
         view 'app/helpers/nav/new_dropdown_helper.rb' do
           element :global_new_group_link
           element :global_new_project_link
+          element :global_new_snippet_link
         end
 
         view 'app/assets/javascripts/nav/components/new_nav_toggle.vue' do
           element :new_navigation_toggle
         end
 
+        def go_to_projects
+          return click_element(:nav_item_link, submenu_item: 'Projects') if Runtime::Env.super_sidebar_enabled?
+
+          click_element(:sidebar_menu_link, menu_item: 'Projects')
+        end
+
         def go_to_groups
-          within_groups_menu do
-            click_element(:menu_item_link, title: 'View all groups')
+          return click_element(:nav_item_link, submenu_item: 'Groups') if Runtime::Env.super_sidebar_enabled?
+
+          # Use new functionality to visit Groups where possible
+          if has_element?(:sidebar_menu_link, menu_item: 'Groups')
+            click_element(:sidebar_menu_link, menu_item: 'Groups')
+          else
+            # Otherwise fallback to previous functionality
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/403589
+            # and related issues
+            within_groups_menu do
+              click_element(:menu_item_link, title: 'View all groups')
+            end
           end
+        end
+
+        def go_to_snippets
+          return click_element(:nav_item_link, submenu_item: 'Snippets') if Runtime::Env.super_sidebar_enabled?
+
+          click_element(:sidebar_menu_link, menu_item: 'Snippets')
+        end
+
+        def go_to_create_project
+          click_element(:new_menu_toggle)
+          click_element(:global_new_project_link)
         end
 
         def go_to_create_group
@@ -92,19 +123,9 @@ module QA
           click_element(:global_new_group_link)
         end
 
-        def go_to_projects
-          within_projects_menu do
-            click_element(:menu_item_link, title: 'View all projects')
-          end
-        end
-
-        def go_to_snippets
-          click_element(:sidebar_menu_link, menu_item: 'Snippets')
-        end
-
-        def go_to_create_project
+        def go_to_create_snippet
           click_element(:new_menu_toggle)
-          click_element(:global_new_project_link)
+          click_element(:global_new_snippet_link)
         end
 
         def go_to_menu_dropdown_option(option_name)
@@ -129,7 +150,7 @@ module QA
         end
 
         def go_to_admin_area
-          click_admin_area
+          Runtime::Env.super_sidebar_enabled? ? super : click_admin_area
 
           return unless has_text?('Enter Admin Mode', wait: 1.0)
 
@@ -146,7 +167,7 @@ module QA
         end
 
         def signed_in_as_user?(user)
-          return false if has_no_personal_area?
+          return false unless has_personal_area?
 
           within_user_menu do
             has_element?(:user_profile_link, text: /#{user.username}/)

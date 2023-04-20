@@ -48,7 +48,7 @@ describe('Bulk import resolvers', () => {
   };
 
   let results;
-  beforeEach(async () => {
+  beforeEach(() => {
     axiosMockAdapter = new MockAdapter(axios);
     client = createClient();
 

@@ -331,7 +331,7 @@ describe('IssuableItem', () => {
       });
     });
 
-    it('renders spam icon when issuable is hidden', async () => {
+    it('renders spam icon when issuable is hidden', () => {
       wrapper = createComponent({ issuable: { ...mockIssuable, hidden: true } });
 
       const hiddenIcon = wrapper.findComponent(GlIcon);

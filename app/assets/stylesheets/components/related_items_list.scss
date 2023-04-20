@@ -55,14 +55,14 @@ $item-remove-button-space: 42px;
   .item-weight .board-card-info-icon {
     min-width: $gl-padding;
     cursor: help;
+
+    &:focus {
+      @include gl-focus;
+    }
   }
 
   .confidential-icon {
     color: $orange-500;
-  }
-
-  .item-title-wrapper {
-    max-width: calc(100% - #{$item-remove-button-space});
   }
 
   .item-title {

@@ -16,6 +16,8 @@ export default {
       result({ data }) {
         const { mergeRequest } = data.project;
 
+        this.disableCommittersApproval = data.project.mergeRequestsDisableCommittersApproval;
+
         this.mr.setApprovals(mergeRequest);
       },
       error() {
@@ -29,6 +31,7 @@ export default {
     return {
       alerts: [],
       approvals: {},
+      disableCommittersApproval: false,
     };
   },
   methods: {

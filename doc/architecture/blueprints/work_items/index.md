@@ -8,6 +8,8 @@ owning-stage: "~devops::plan"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Work Items
 
 This document is a work-in-progress. Some aspects are not documented, though we expect to add them in the future.

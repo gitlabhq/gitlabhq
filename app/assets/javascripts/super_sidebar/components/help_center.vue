@@ -5,6 +5,11 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
+import Tracking from '~/tracking';
+import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS } from '../constants';
+
+// Left offset required for the dropdown to be aligned with the super sidebar
+const DROPDOWN_X_OFFSET = -4;
 
 export default {
   components: {
@@ -14,6 +19,7 @@ export default {
     GlDisclosureDropdownGroup,
     GitlabVersionCheckBadge,
   },
+  mixins: [Tracking.mixin({ property: 'nav_help_menu' })],
   i18n: {
     help: __('Help'),
     support: __('Support'),
@@ -46,21 +52,63 @@ export default {
               text: this.$options.i18n.version,
               href: helpPagePath('update/index'),
               version: `${this.sidebarData.gitlab_version.major}.${this.sidebarData.gitlab_version.minor}`,
+              extraAttrs: {
+                ...this.trackingAttrs('version_help_dropdown'),
+              },
             },
           ],
         },
         helpLinks: {
           items: [
-            { text: this.$options.i18n.help, href: helpPagePath() },
-            { text: this.$options.i18n.support, href: this.sidebarData.support_path },
-            { text: this.$options.i18n.docs, href: 'https://docs.gitlab.com' },
-            { text: this.$options.i18n.plans, href: `${PROMO_URL}/pricing` },
-            { text: this.$options.i18n.forum, href: 'https://forum.gitlab.com/' },
+            {
+              text: this.$options.i18n.help,
+              href: helpPagePath(),
+              extraAttrs: {
+                ...this.trackingAttrs('help'),
+              },
+            },
+            {
+              text: this.$options.i18n.support,
+              href: this.sidebarData.support_path,
+              extraAttrs: {
+                ...this.trackingAttrs('support'),
+              },
+            },
+            {
+              text: this.$options.i18n.docs,
+              href: 'https://docs.gitlab.com',
+              extraAttrs: {
+                ...this.trackingAttrs('gitlab_documentation'),
+              },
+            },
+            {
+              text: this.$options.i18n.plans,
+              href: `${PROMO_URL}/pricing`,
+              extraAttrs: {
+                ...this.trackingAttrs('compare_gitlab_plans'),
+              },
+            },
+            {
+              text: this.$options.i18n.forum,
+              href: 'https://forum.gitlab.com/',
+              extraAttrs: {
+                ...this.trackingAttrs('community_forum'),
+              },
+            },
             {
               text: this.$options.i18n.contribute,
               href: helpPagePath('', { anchor: 'contributing-to-gitlab' }),
+              extraAttrs: {
+                ...this.trackingAttrs('contribute_to_gitlab'),
+              },
             },
-            { text: this.$options.i18n.feedback, href: 'https://about.gitlab.com/submit-feedback' },
+            {
+              text: this.$options.i18n.feedback,
+              href: 'https://about.gitlab.com/submit-feedback',
+              extraAttrs: {
+                ...this.trackingAttrs('submit_feedback'),
+              },
+            },
           ],
         },
         helpActions: {
@@ -70,6 +118,9 @@ export default {
               action: this.showKeyboardShortcuts,
               extraAttrs: {
                 class: 'js-shortcuts-modal-trigger',
+                'data-track-action': 'click_button',
+                'data-track-label': 'keyboard_shortcuts_help',
+                'data-track-property': HELP_MENU_TRACKING_DEFAULTS['data-track-property'],
               },
               shortcut: '?',
             },
@@ -79,6 +130,11 @@ export default {
               count:
                 this.showWhatsNewNotification &&
                 this.sidebarData.whats_new_most_recent_release_items_count,
+              extraAttrs: {
+                'data-track-action': 'click_button',
+                'data-track-label': 'whats_new',
+                'data-track-property': HELP_MENU_TRACKING_DEFAULTS['data-track-property'],
+              },
             },
           ].filter(Boolean),
         },
@@ -118,12 +174,40 @@ export default {
         this.toggleWhatsNewDrawer();
       }
     },
+
+    trackingAttrs(label) {
+      return {
+        ...HELP_MENU_TRACKING_DEFAULTS,
+        'data-track-label': label,
+      };
+    },
+
+    trackDropdownToggle(show) {
+      this.track('click_toggle', {
+        label: show ? 'show_help_dropdown' : 'hide_help_dropdown',
+      });
+    },
+  },
+  popperOptions: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
+        },
+      },
+    ],
   },
 };
 </script>
 
 <template>
-  <gl-disclosure-dropdown ref="dropdown">
+  <gl-disclosure-dropdown
+    ref="dropdown"
+    :popper-options="$options.popperOptions"
+    @shown="trackDropdownToggle(true)"
+    @hidden="trackDropdownToggle(false)"
+  >
     <template #toggle>
       <gl-button category="tertiary" icon="question-o" class="btn-with-notification">
         <span v-if="showWhatsNewNotification" class="notification-dot-info"></span>

@@ -94,7 +94,7 @@ describe('JiraIssuesImportStatus', () => {
     });
   });
 
-  describe('alert message', () => {
+  describe('alert', () => {
     it('is hidden when dismissed', async () => {
       wrapper = mountComponent({
         shouldShowInProgressAlert: true,

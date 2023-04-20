@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::CreateService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::CreateService, feature_category: :deployment_management do
   let(:access_token) { 'xxx' }
   let(:project) { create(:project) }
   let(:user) { create(:user) }
@@ -50,7 +50,7 @@ RSpec.describe Clusters::CreateService, feature_category: :kubernetes_management
     end
 
     context 'when project has a cluster' do
-      include_context 'valid cluster create params'
+      include_context 'with valid cluster create params'
       let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it 'creates another cluster' do

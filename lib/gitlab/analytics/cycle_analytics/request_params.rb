@@ -93,6 +93,8 @@ module Gitlab
             attrs[:stage] = stage_data_attributes.to_json if stage_id.present?
             attrs[:namespace] = namespace_attributes
             attrs[:enable_tasks_by_type_chart] = 'false'
+            attrs[:enable_customizable_stages] = 'false'
+            attrs[:enable_projects_filter] = 'false'
             attrs[:default_stages] = Gitlab::Analytics::CycleAnalytics::DefaultStages.all.map do |stage_params|
               ::Analytics::CycleAnalytics::StagePresenter.new(stage_params)
             end.to_json
@@ -114,7 +116,7 @@ module Gitlab
 
           {
             project_id: project.id,
-            group_path: project.group&.path,
+            group_path: project.group ? "groups/#{project.group&.full_path}" : nil,
             request_path: url_helpers.project_cycle_analytics_path(project),
             full_path: project.full_path
           }
@@ -145,7 +147,8 @@ module Gitlab
 
           {
             name: project.name,
-            full_path: project.full_path
+            full_path: project.full_path,
+            type: namespace.type
           }
         end
 

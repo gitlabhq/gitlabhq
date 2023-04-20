@@ -59,7 +59,7 @@ The process of configuring review apps is as follows:
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/index.md) `${CI_COMMIT_REF_SLUG}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-app-button) for your project.
-1. Optionally, set a job that [manually stops](../environments/index.md#stop-an-environment) the review apps.
+1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the review apps.
 
 ### Enable review app button
 
@@ -193,12 +193,17 @@ After you have the route mapping set up, it takes effect in the following locati
 
   ![View on environment button in file view](img/view_on_env_blob.png)
 
-## Visual Reviews **(PREMIUM)**
+<!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
+## Visual Reviews (deprecated) **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), `anonymous_visual_review_feedback`, disabled by default.
 > - It's disabled on GitLab.com.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387751) in GitLab 15.8
+and is planned for removal in 17.0. This change is a breaking change.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -305,3 +310,5 @@ the user must enter a [personal access token](../../user/profile/personal_access
 with `api` scope before submitting feedback.
 
 This same method can be used to require authentication for any public projects.
+
+<!--- end_remove -->

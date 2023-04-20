@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
-  include WebIdeSpecHelpers
+  include Features::WebIdeSpecHelpers
   include RepoHelpers
   include ListboxHelpers
 

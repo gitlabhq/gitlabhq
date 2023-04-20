@@ -99,7 +99,7 @@ module Gitlab
         validate_duplicate_needs!(name, needs)
 
         needs.each do |need|
-          validate_job_dependency!(name, need[:name], 'need')
+          validate_job_dependency!(name, need[:name], 'need', optional: need[:optional])
         end
       end
 
@@ -109,8 +109,13 @@ module Gitlab
         end
       end
 
-      def validate_job_dependency!(name, dependency, dependency_type = 'dependency')
+      def validate_job_dependency!(name, dependency, dependency_type = 'dependency', optional: false)
         unless @jobs[dependency.to_sym]
+          # Here, we ignore the optional needed job if it is not in the result YAML due to the `include`
+          # rules. In `lib/gitlab/ci/pipeline/seed/build.rb`, we use `optional` again to ignore the
+          # optional needed job in case it is excluded from the pipeline due to the job's rules.
+          return if optional
+
           error!("#{name} job: undefined #{dependency_type}: #{dependency}")
         end
 

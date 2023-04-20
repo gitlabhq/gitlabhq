@@ -1,6 +1,5 @@
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 
@@ -21,7 +20,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     isHighlighted: {
       type: Boolean,
@@ -69,7 +67,6 @@ export default {
       return this.content.split('\n');
     },
     pageSearchString() {
-      if (!this.glFeatures.fileLineBlame) return '';
       const page = getPageParamValue(this.number);
       return getPageSearchString(this.blamePath, page);
     },
@@ -106,7 +103,6 @@ export default {
           class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
         >
           <a
-            v-if="glFeatures.fileLineBlame"
             class="gl-user-select-none gl-shadow-none! file-line-blame"
             :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
           ></a>

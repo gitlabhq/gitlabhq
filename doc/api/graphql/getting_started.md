@@ -286,6 +286,24 @@ We've asked for the note details, but it doesn't exist anymore, so we get `null`
 More about mutations:
 [GraphQL Documentation](https://graphql.org/learn/queries/#mutations).
 
+### Update project settings
+
+You can update multiple project settings in a single GraphQL mutation.
+This example is a workaround for [the major change](../../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed)
+in `CI_JOB_TOKEN` scoping behavior.
+
+```graphql
+mutation DisableCI_JOB_TOKENscope {
+  projectCiCdSettingsUpdate(input:{fullPath: "<namespace>/<project-name>", inboundJobTokenScopeEnabled: false, jobTokenScopeEnabled: false}) {
+    ciCdSettings {
+      inboundJobTokenScopeEnabled
+      jobTokenScopeEnabled
+    }
+    errors 
+  }
+}
+```
+
 ### Introspective queries
 
 Clients can query the GraphQL endpoint for information about its own schema.

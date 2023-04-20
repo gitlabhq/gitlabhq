@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectMember < Member
-  extend ::Gitlab::Utils::Override
   SOURCE_TYPE = 'Project'
   SOURCE_TYPE_FORMAT = /\AProject\z/.freeze
 
@@ -21,40 +20,6 @@ class ProjectMember < Member
   end
 
   class << self
-    # Add members to projects with passed access option
-    #
-    # access can be an integer representing a access code
-    # or symbol like :maintainer representing role
-    #
-    # Ex.
-    #   add_members_to_projects(
-    #     project_ids,
-    #     user_ids,
-    #     ProjectMember::MAINTAINER
-    #   )
-    #
-    #   add_members_to_projects(
-    #     project_ids,
-    #     user_ids,
-    #     :maintainer
-    #   )
-    #
-    def add_members_to_projects(project_ids, users, access_level, current_user: nil, expires_at: nil)
-      self.transaction do
-        project_ids.each do |project_id|
-          project = Project.find(project_id)
-
-          Members::Projects::CreatorService.add_members( # rubocop:disable CodeReuse/ServiceClass
-            project,
-            users,
-            access_level,
-            current_user: current_user,
-            expires_at: expires_at
-          )
-        end
-      end
-    end
-
     def truncate_teams(project_ids)
       ProjectMember.transaction do
         members = ProjectMember.where(source_id: project_ids)
@@ -176,12 +141,6 @@ class ProjectMember < Member
     run_after_commit_or_now do
       notification_service.accept_project_invite(self)
     end
-
-    super
-  end
-
-  def after_decline_invite
-    notification_service.decline_project_invite(self)
 
     super
   end

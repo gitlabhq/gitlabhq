@@ -35,9 +35,6 @@ export default {
       );
     },
   },
-  toggleLinkCommandParams: {
-    href: '',
-  },
 };
 </script>
 <template>
@@ -122,8 +119,7 @@ export default {
         data-testid="link"
         content-type="link"
         icon-name="link"
-        editor-command="toggleLink"
-        :editor-command-params="$options.toggleLinkCommandParams"
+        editor-command="editLink"
         category="tertiary"
         size="medium"
         :label="__('Insert link')"

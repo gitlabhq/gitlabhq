@@ -40,7 +40,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       refPath
       retryable
       retried
-      runnerMachine
+      runnerManager
       scheduledAt
       schedulingType
       shortSha
@@ -55,6 +55,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       playPath
       canPlayJob
       scheduled
+      trace
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

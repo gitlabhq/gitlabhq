@@ -198,22 +198,22 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
     let_it_be(:agent_authorizations_without_env) do
       [
-        create(:agent_group_authorization, agent: create(:cluster_agent, project: other_project), group: group),
-        create(:agent_project_authorization, agent: create(:cluster_agent, project: project), project: project),
-        Clusters::Agents::ImplicitAuthorization.new(agent: create(:cluster_agent, project: project))
+        create(:agent_ci_access_group_authorization, agent: create(:cluster_agent, project: other_project), group: group),
+        create(:agent_ci_access_project_authorization, agent: create(:cluster_agent, project: project), project: project),
+        Clusters::Agents::Authorizations::CiAccess::ImplicitAuthorization.new(agent: create(:cluster_agent, project: project))
       ]
     end
 
     let_it_be(:agent_authorizations_with_review_and_production_env) do
       [
         create(
-          :agent_group_authorization,
+          :agent_ci_access_group_authorization,
           agent: create(:cluster_agent, project: other_project),
           group: group,
           environments: ['production', 'review/*']
         ),
         create(
-          :agent_project_authorization,
+          :agent_ci_access_project_authorization,
           agent: create(:cluster_agent, project: project),
           project: project,
           environments: ['production', 'review/*']
@@ -224,13 +224,13 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     let_it_be(:agent_authorizations_with_staging_env) do
       [
         create(
-          :agent_group_authorization,
+          :agent_ci_access_group_authorization,
           agent: create(:cluster_agent, project: other_project),
           group: group,
           environments: ['staging']
         ),
         create(
-          :agent_project_authorization,
+          :agent_ci_access_project_authorization,
           agent: create(:cluster_agent, project: project),
           project: project,
           environments: ['staging']

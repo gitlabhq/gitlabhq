@@ -1,55 +1,100 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlModal } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import BoldText from '~/vue_merge_request_widget/components/bold_text.vue';
 import WidgetRebase from '~/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
+import rebaseQuery from '~/vue_merge_request_widget/queries/states/rebase.query.graphql';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 import toast from '~/vue_shared/plugins/global_toast';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
 let wrapper;
+const showMock = jest.fn();
 
-function createWrapper(propsData, provideData) {
-  wrapper = mount(WidgetRebase, {
+const mockPipelineNodes = [
+  {
+    id: '1',
+    project: {
+      id: '2',
+      fullPath: 'user/forked',
+    },
+  },
+];
+
+const mockQueryHandler = ({
+  rebaseInProgress = false,
+  targetBranch = '',
+  pushToSourceBranch = false,
+  nodes = mockPipelineNodes,
+} = {}) =>
+  jest.fn().mockResolvedValue({
+    data: {
+      project: {
+        id: '1',
+        mergeRequest: {
+          id: '2',
+          rebaseInProgress,
+          targetBranch,
+          userPermissions: {
+            pushToSourceBranch,
+          },
+          pipelines: {
+            nodes,
+          },
+        },
+      },
+    },
+  });
+
+const createMockApolloProvider = (handler) => {
+  Vue.use(VueApollo);
+
+  return createMockApollo([[rebaseQuery, handler]]);
+};
+
+function createWrapper({ propsData = {}, provideData = {}, handler = mockQueryHandler() } = {}) {
+  wrapper = shallowMountExtended(WidgetRebase, {
+    apolloProvider: createMockApolloProvider(handler),
     provide: {
       ...provideData,
     },
-    propsData,
-    data() {
-      return {
-        state: {
-          rebaseInProgress: propsData.mr.rebaseInProgress,
-          targetBranch: propsData.mr.targetBranch,
-          userPermissions: {
-            pushToSourceBranch: propsData.mr.canPushToSourceBranch,
-          },
-          pipelines: propsData.mr.pipelines,
-        },
-      };
+    propsData: {
+      mr: {},
+      service: {},
+      ...propsData,
     },
-    mocks: {
-      $apollo: {
-        queries: {
-          state: { loading: false },
+    stubs: {
+      StateContainer,
+      GlModal: stubComponent(GlModal, {
+        methods: {
+          show: showMock,
         },
-      },
+      }),
     },
   });
 }
 
 describe('Merge request widget rebase component', () => {
-  const findRebaseMessage = () => wrapper.find('[data-testid="rebase-message"]');
+  const findRebaseMessage = () => wrapper.findByTestId('rebase-message');
+  const findBoldText = () => wrapper.findComponent(BoldText);
   const findRebaseMessageText = () => findRebaseMessage().text();
-  const findStandardRebaseButton = () => wrapper.find('[data-testid="standard-rebase-button"]');
-  const findRebaseWithoutCiButton = () => wrapper.find('[data-testid="rebase-without-ci-button"]');
+  const findStandardRebaseButton = () => wrapper.findByTestId('standard-rebase-button');
+  const findRebaseWithoutCiButton = () => wrapper.findByTestId('rebase-without-ci-button');
   const findModal = () => wrapper.findComponent(GlModal);
 
   describe('while rebasing', () => {
-    it('should show progress message', () => {
+    it('should show progress message', async () => {
       createWrapper({
-        mr: { rebaseInProgress: true },
-        service: {},
+        handler: mockQueryHandler({ rebaseInProgress: true }),
       });
+
+      await waitForPromises();
 
       expect(findRebaseMessageText()).toContain('Rebase in progress');
     });
@@ -59,95 +104,110 @@ describe('Merge request widget rebase component', () => {
     const rebaseMock = jest.fn().mockResolvedValue();
     const pollMock = jest.fn().mockResolvedValue({});
 
-    it('renders the warning message', () => {
+    it('renders the warning message', async () => {
       createWrapper({
-        mr: {
+        handler: mockQueryHandler({
           rebaseInProgress: false,
-          canPushToSourceBranch: true,
-        },
-        service: {
-          rebase: rebaseMock,
-          poll: pollMock,
-        },
+          pushToSourceBranch: false,
+        }),
       });
 
-      const text = findRebaseMessageText();
+      await waitForPromises();
 
-      expect(text).toContain('Merge blocked');
-      expect(text.replace(/\s\s+/g, ' ')).toContain(
+      expect(findBoldText().props('message')).toContain('Merge blocked');
+      expect(findBoldText().props('message').replace(/\s\s+/g, ' ')).toContain(
         'the source branch must be rebased onto the target branch',
       );
     });
 
     it('renders an error message when rebasing has failed', async () => {
       createWrapper({
-        mr: {
-          rebaseInProgress: false,
-          canPushToSourceBranch: true,
+        propsData: {
+          service: {
+            rebase: jest.fn().mockRejectedValue({
+              response: {
+                data: {
+                  merge_error: 'Something went wrong!',
+                },
+              },
+            }),
+          },
         },
-        service: {
-          rebase: rebaseMock,
-          poll: pollMock,
-        },
+        handler: mockQueryHandler({ pushToSourceBranch: true }),
       });
+      await waitForPromises();
 
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ rebasingError: 'Something went wrong!' });
+      findStandardRebaseButton().vm.$emit('click');
 
-      await nextTick();
+      await waitForPromises();
       expect(findRebaseMessageText()).toContain('Something went wrong!');
     });
 
     describe('Rebase buttons', () => {
-      beforeEach(() => {
+      it('renders both buttons', async () => {
         createWrapper({
-          mr: {
-            rebaseInProgress: false,
-            canPushToSourceBranch: true,
-          },
-          service: {
-            rebase: rebaseMock,
-            poll: pollMock,
-          },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
         });
-      });
 
-      it('renders both buttons', () => {
+        await waitForPromises();
+
         expect(findRebaseWithoutCiButton().exists()).toBe(true);
         expect(findStandardRebaseButton().exists()).toBe(true);
       });
 
       it('starts the rebase when clicking', async () => {
-        findStandardRebaseButton().vm.$emit('click');
+        createWrapper({
+          propsData: {
+            service: {
+              rebase: rebaseMock,
+              poll: pollMock,
+            },
+          },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
+        });
 
-        await nextTick();
+        await waitForPromises();
+
+        findStandardRebaseButton().vm.$emit('click');
 
         expect(rebaseMock).toHaveBeenCalledWith({ skipCi: false });
       });
 
       it('starts the CI-skipping rebase when clicking on "Rebase without CI"', async () => {
-        findRebaseWithoutCiButton().vm.$emit('click');
+        createWrapper({
+          propsData: {
+            service: {
+              rebase: rebaseMock,
+              poll: pollMock,
+            },
+          },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
+        });
 
-        await nextTick();
+        await waitForPromises();
+
+        findRebaseWithoutCiButton().vm.$emit('click');
 
         expect(rebaseMock).toHaveBeenCalledWith({ skipCi: true });
       });
     });
 
     describe('Rebase when pipelines must succeed is enabled', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createWrapper({
-          mr: {
-            rebaseInProgress: false,
-            canPushToSourceBranch: true,
-            onlyAllowMergeIfPipelineSucceeds: true,
+          propsData: {
+            mr: {
+              onlyAllowMergeIfPipelineSucceeds: true,
+            },
+            service: {
+              rebase: rebaseMock,
+              poll: pollMock,
+            },
           },
-          service: {
-            rebase: rebaseMock,
-            poll: pollMock,
-          },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
         });
+
+        await waitForPromises();
       });
 
       it('renders only the rebase button', () => {
@@ -165,19 +225,22 @@ describe('Merge request widget rebase component', () => {
     });
 
     describe('Rebase when pipelines must succeed and skipped pipelines are considered successful are enabled', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createWrapper({
-          mr: {
-            rebaseInProgress: false,
-            canPushToSourceBranch: true,
-            onlyAllowMergeIfPipelineSucceeds: true,
-            allowMergeOnSkippedPipeline: true,
+          propsData: {
+            mr: {
+              onlyAllowMergeIfPipelineSucceeds: true,
+              allowMergeOnSkippedPipeline: true,
+            },
+            service: {
+              rebase: rebaseMock,
+              poll: pollMock,
+            },
           },
-          service: {
-            rebase: rebaseMock,
-            poll: pollMock,
-          },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
         });
+
+        await waitForPromises();
       });
 
       it('renders both rebase buttons', () => {
@@ -203,51 +266,36 @@ describe('Merge request widget rebase component', () => {
     });
 
     describe('security modal', () => {
-      it('displays modal and rebases after confirming', () => {
-        createWrapper(
-          {
+      it('displays modal and rebases after confirming', async () => {
+        createWrapper({
+          propsData: {
             mr: {
-              rebaseInProgress: false,
-              canPushToSourceBranch: true,
               sourceProjectFullPath: 'user/forked',
               targetProjectFullPath: 'root/original',
-              pipelines: {
-                nodes: [
-                  {
-                    id: '1',
-                    project: {
-                      id: '2',
-                      fullPath: 'user/forked',
-                    },
-                  },
-                ],
-              },
             },
             service: {
               rebase: rebaseMock,
               poll: pollMock,
             },
           },
-          { canCreatePipelineInTargetProject: true },
-        );
+          provideData: { canCreatePipelineInTargetProject: true },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
+        });
 
-        findModal().vm.show = jest.fn();
+        await waitForPromises();
 
         findStandardRebaseButton().vm.$emit('click');
-
-        expect(findModal().vm.show).toHaveBeenCalled();
+        expect(showMock).toHaveBeenCalled();
 
         findModal().vm.$emit('primary');
 
         expect(rebaseMock).toHaveBeenCalled();
       });
 
-      it('does not display modal', () => {
-        createWrapper(
-          {
+      it('does not display modal', async () => {
+        createWrapper({
+          propsData: {
             mr: {
-              rebaseInProgress: false,
-              canPushToSourceBranch: true,
               sourceProjectFullPath: 'user/forked',
               targetProjectFullPath: 'root/original',
             },
@@ -256,14 +304,15 @@ describe('Merge request widget rebase component', () => {
               poll: pollMock,
             },
           },
-          { canCreatePipelineInTargetProject: false },
-        );
+          provideData: { canCreatePipelineInTargetProject: false },
+          handler: mockQueryHandler({ pushToSourceBranch: true }),
+        });
 
-        findModal().vm.show = jest.fn();
+        await waitForPromises();
 
         findStandardRebaseButton().vm.$emit('click');
 
-        expect(findModal().vm.show).not.toHaveBeenCalled();
+        expect(showMock).not.toHaveBeenCalled();
         expect(rebaseMock).toHaveBeenCalled();
       });
     });
@@ -273,41 +322,40 @@ describe('Merge request widget rebase component', () => {
     const exampleTargetBranch = 'fake-branch-to-test-with';
 
     describe('UI text', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createWrapper({
-          mr: {
-            rebaseInProgress: false,
-            canPushToSourceBranch: false,
+          handler: mockQueryHandler({
+            pushToSourceBranch: false,
             targetBranch: exampleTargetBranch,
-          },
-          service: {},
+          }),
         });
+
+        await waitForPromises();
       });
 
       it('renders a message explaining user does not have permissions', () => {
-        const text = findRebaseMessageText();
-
-        expect(text).toContain('Merge blocked:');
-        expect(text).toContain('the source branch must be rebased');
+        expect(findBoldText().props('message')).toContain('Merge blocked');
+        expect(findBoldText().props('message')).toContain('the source branch must be rebased');
       });
 
       it('renders the correct target branch name', () => {
-        const text = findRebaseMessageText();
-
-        expect(text).toContain('Merge blocked:');
-        expect(text).toContain('the source branch must be rebased onto the target branch.');
+        expect(findBoldText().props('message')).toContain('Merge blocked:');
+        expect(findBoldText().props('message')).toContain(
+          'the source branch must be rebased onto the target branch.',
+        );
       });
     });
 
-    it('does render the "Rebase without pipeline" button', () => {
+    it('does render the "Rebase without pipeline" button', async () => {
       createWrapper({
-        mr: {
+        handler: mockQueryHandler({
           rebaseInProgress: false,
-          canPushToSourceBranch: false,
+          pushToSourceBranch: false,
           targetBranch: exampleTargetBranch,
-        },
-        service: {},
+        }),
       });
+
+      await waitForPromises();
 
       expect(findRebaseWithoutCiButton().exists()).toBe(true);
     });
@@ -317,24 +365,27 @@ describe('Merge request widget rebase component', () => {
     it('checkRebaseStatus', async () => {
       jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
       createWrapper({
-        mr: {},
-        service: {
-          rebase() {
-            return Promise.resolve();
-          },
-          poll() {
-            return Promise.resolve({
-              data: {
-                rebase_in_progress: false,
-                should_be_rebased: false,
-                merge_error: null,
-              },
-            });
+        propsData: {
+          service: {
+            rebase() {
+              return Promise.resolve();
+            },
+            poll() {
+              return Promise.resolve({
+                data: {
+                  rebase_in_progress: false,
+                  should_be_rebased: false,
+                  merge_error: null,
+                },
+              });
+            },
           },
         },
       });
 
-      wrapper.vm.rebase();
+      await waitForPromises();
+
+      findRebaseWithoutCiButton().vm.$emit('click');
 
       // Wait for the rebase request
       await nextTick();

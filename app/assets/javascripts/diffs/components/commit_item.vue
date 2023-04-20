@@ -1,5 +1,5 @@
 <script>
-import { GlButtonGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
@@ -30,6 +30,7 @@ export default {
     CommitPipelineStatus,
     GlButtonGroup,
     GlButton,
+    GlFormCheckbox,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -117,12 +118,11 @@ export default {
       </div>
       <div>
         <div class="d-flex float-left align-items-center align-self-start">
-          <input
+          <gl-form-checkbox
             v-if="isSelectable"
-            class="gl-mr-3"
-            type="checkbox"
             :checked="checked"
-            @change="$emit('handleCheckboxChange', $event.target.checked)"
+            class="gl-mt-3"
+            @change="$emit('handleCheckboxChange', !checked)"
           />
           <user-avatar-link
             :link-href="authorUrl"

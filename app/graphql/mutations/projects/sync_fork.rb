@@ -7,8 +7,6 @@ module Mutations
 
       include FindsProject
 
-      authorize :push_code
-
       argument :project_path, GraphQL::Types::ID,
         required: true,
         description: 'Full path of the project to initialize.'
@@ -22,9 +20,12 @@ module Mutations
         description: 'Updated fork details.'
 
       def resolve(project_path:, target_branch:)
-        project = authorized_find!(project_path)
+        project = authorized_find!(project_path, target_branch)
 
-        return respond(nil, ['Feature flag is disabled']) unless Feature.enabled?(:synchronize_fork, project)
+        return respond(nil, ['Feature flag is disabled']) unless Feature.enabled?(:synchronize_fork,
+          project.fork_source)
+
+        return respond(nil, ['Target branch does not exist']) unless project.repository.branch_exists?(target_branch)
 
         details_resolver = Resolvers::Projects::ForkDetailsResolver.new(object: project, context: context, field: nil)
         details = details_resolver.resolve(ref: target_branch)
@@ -55,6 +56,14 @@ module Mutations
 
       def respond(details, errors)
         { details: details, errors: errors }
+      end
+
+      def authorized_find!(project_path, target_branch)
+        project = find_object(project_path)
+
+        return project if ::Gitlab::UserAccess.new(current_user, container: project).can_update_branch?(target_branch)
+
+        raise_resource_not_available_error!
       end
     end
   end

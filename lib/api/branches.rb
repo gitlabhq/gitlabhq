@@ -14,7 +14,7 @@ module API
 
     before do
       require_repository_enabled!
-      authorize! :read_code, user_project
+      authorize_read_code!
     end
 
     rescue_from Gitlab::Git::Repository::NoRepository do

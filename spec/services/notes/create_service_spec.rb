@@ -136,7 +136,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           let(:action) { 'create_commit_comment' }
           let(:label) { 'counts.commit_comment' }
           let(:namespace) { project.namespace }
-          let(:feature_flag_name) { :route_hll_to_snowplow_phase4 }
         end
       end
 

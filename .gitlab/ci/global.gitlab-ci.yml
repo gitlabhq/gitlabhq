@@ -2,11 +2,13 @@
   retry:
     max: 2  # This is confusing but this means "3 runs at max".
     when:
-      - unknown_failure
       - api_failure
-      - runner_system_failure
+      - data_integrity_failure
       - job_execution_timeout
+      - runner_system_failure
+      - scheduler_failure
       - stuck_or_timeout_failure
+      - unknown_failure
 
 .default-utils-before_script:
   before_script:
@@ -37,22 +39,12 @@
   <<: *ruby-gems-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
-.gitaly-ruby-gems-cache: &gitaly-ruby-gems-cache
-  key: "gitaly-ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
-  paths:
-    - vendor/gitaly-ruby/
-  policy: pull
-
-.gitaly-ruby-gems-cache-push: &gitaly-ruby-gems-cache-push
-  <<: *gitaly-ruby-gems-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
-
 .gitaly-binaries-cache: &gitaly-binaries-cache
   key:
     files:
       - GITALY_SERVER_VERSION
       - lib/gitlab/setup_helper.rb
-    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}"
   paths:
     - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
     - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install/
@@ -64,7 +56,6 @@
     - ${TMP_TEST_FOLDER}/gitaly/Makefile
     - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
     - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
-    - ${TMP_TEST_FOLDER}/gitaly/ruby/
   policy: pull
 
 .go-pkg-cache: &go-pkg-cache
@@ -138,14 +129,12 @@
 .setup-test-env-cache:
   cache:
     - *ruby-gems-cache
-    - *gitaly-ruby-gems-cache
     - *gitaly-binaries-cache
     - *go-pkg-cache
 
 .setup-test-env-cache-push:
   cache:
     - *ruby-gems-cache-push
-    - *gitaly-ruby-gems-cache-push
     - *go-pkg-cache-push
 
 .gitaly-binaries-cache-push:
@@ -160,7 +149,6 @@
 .rails-cache:
   cache:
     - *ruby-gems-cache
-    - *gitaly-ruby-gems-cache
 
 .static-analysis-cache:
   cache:
@@ -229,7 +217,6 @@
     - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
 
-
 .use-pg12:
   services:
     - name: postgres:12
@@ -247,6 +234,15 @@
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "13"
+
+.use-pg14:
+  services:
+    - name: postgres:14
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.2-alpine
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "14"
 
 .use-pg12-es7-ee:
   services:
@@ -278,9 +274,24 @@
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
     ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
-.use-pg12-es8-ee:
+.use-pg14-es7-ee:
   services:
-    - name: postgres:12
+    - name: postgres:14
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.2-alpine
+    - name: elasticsearch:7.17.6
+      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "14"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg13-es8-ee:
+  services:
+    - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
     - name: elasticsearch:8.6.2
@@ -288,15 +299,31 @@
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
-    PG_VERSION: "12"
+    PG_VERSION: "13"
     ES_SETTING_DISCOVERY_TYPE: "single-node"
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
     ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
-.use-pg12-opensearch1-ee:
+.use-pg14-es8-ee:
   services:
-    - name: postgres:12
+    - name: postgres:14
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.0-alpine
+    - name: elasticsearch:8.6.2
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "14"
+    ES_SETTING_DISCOVERY_TYPE: "single-node"
+    ES_SETTING_XPACK_SECURITY_ENABLED: "false"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg13-opensearch1-ee:
+  services:
+    - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
     - name: opensearchproject/opensearch:1.3.5
@@ -306,13 +333,13 @@
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
-    PG_VERSION: "12"
+    PG_VERSION: "13"
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
     ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 
-.use-pg12-opensearch2-ee:
+.use-pg13-opensearch2-ee:
   services:
-    - name: postgres:12
+    - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
     - name: opensearchproject/opensearch:2.2.1
@@ -322,7 +349,39 @@
       alias: zoekt-ci-image
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
-    PG_VERSION: "12"
+    PG_VERSION: "13"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg14-opensearch1-ee:
+  services:
+    - name: postgres:14
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.0-alpine
+    - name: opensearchproject/opensearch:1.3.5
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "14"
+    ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
+    ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
+
+.use-pg14-opensearch2-ee:
+  services:
+    - name: postgres:14
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.0-alpine
+    - name: opensearchproject/opensearch:2.2.1
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.0
+      alias: zoekt-ci-image
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "14"
     ZOEKT_INDEX_BASE_URL: http://zoekt-ci-image:6060
     ZOEKT_SEARCH_BASE_URL: http://zoekt-ci-image:6070
 

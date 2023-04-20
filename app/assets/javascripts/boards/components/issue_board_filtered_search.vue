@@ -52,6 +52,11 @@ export default {
       required: false,
       default: () => {},
     },
+    isSwimlanesOn: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     tokensCE() {
@@ -203,6 +208,7 @@ export default {
     data-testid="issue-board-filtered-search"
     :tokens="tokens"
     :board="board"
+    :is-swimlanes-on="isSwimlanesOn"
     @setFilters="$emit('setFilters', $event)"
   />
 </template>

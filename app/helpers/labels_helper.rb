@@ -80,27 +80,20 @@ module LabelsHelper
 
   def suggested_colors
     {
+      '#cc338b' => s_('SuggestedColors|Magenta-pink'),
+      '#dc143c' => s_('SuggestedColors|Crimson'),
+      '#c21e56' => s_('SuggestedColors|Rose red'),
+      '#cd5b45' => s_('SuggestedColors|Dark coral'),
+      '#ed9121' => s_('SuggestedColors|Carrot orange'),
+      '#eee600' => s_('SuggestedColors|Titanium yellow'),
       '#009966' => s_('SuggestedColors|Green-cyan'),
       '#8fbc8f' => s_('SuggestedColors|Dark sea green'),
-      '#3cb371' => s_('SuggestedColors|Medium sea green'),
-      '#00b140' => s_('SuggestedColors|Green screen'),
-      '#013220' => s_('SuggestedColors|Dark green'),
       '#6699cc' => s_('SuggestedColors|Blue-gray'),
-      '#0000ff' => s_('SuggestedColors|Blue'),
       '#e6e6fa' => s_('SuggestedColors|Lavender'),
       '#9400d3' => s_('SuggestedColors|Dark violet'),
       '#330066' => s_('SuggestedColors|Deep violet'),
-      '#808080' => s_('SuggestedColors|Gray'),
       '#36454f' => s_('SuggestedColors|Charcoal grey'),
-      '#f7e7ce' => s_('SuggestedColors|Champagne'),
-      '#c21e56' => s_('SuggestedColors|Rose red'),
-      '#cc338b' => s_('SuggestedColors|Magenta-pink'),
-      '#dc143c' => s_('SuggestedColors|Crimson'),
-      '#ff0000' => s_('SuggestedColors|Red'),
-      '#cd5b45' => s_('SuggestedColors|Dark coral'),
-      '#eee600' => s_('SuggestedColors|Titanium yellow'),
-      '#ed9121' => s_('SuggestedColors|Carrot orange'),
-      '#c39953' => s_('SuggestedColors|Aztec Gold')
+      '#808080' => s_('SuggestedColors|Gray')
     }
   end
 

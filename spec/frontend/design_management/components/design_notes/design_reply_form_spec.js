@@ -1,7 +1,9 @@
 import { GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import Autosave from '~/autosave';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import createNoteMutation from '~/design_management/graphql/mutations/create_note.mutation.graphql';
@@ -17,11 +19,14 @@ import {
   mockNoteSubmitFailureMutationResponse,
 } from '../../mock_data/apollo_mock';
 
+Vue.use(VueApollo);
+
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/autosave');
 
 describe('Design reply form component', () => {
   let wrapper;
+  let mockApollo;
 
   const findTextarea = () => wrapper.find('textarea');
   const findSubmitButton = () => wrapper.findComponent({ ref: 'submitButton' });
@@ -32,14 +37,10 @@ describe('Design reply form component', () => {
   const mockComment = 'New comment';
   const mockDiscussionId = 'gid://gitlab/Discussion/6466a72f35b163f3c3e52d7976a09387f2c573e8';
   const createNoteMutationData = {
-    mutation: createNoteMutation,
-    update: expect.anything(),
-    variables: {
-      input: {
-        noteableId: mockNoteableId,
-        discussionId: mockDiscussionId,
-        body: mockComment,
-      },
+    input: {
+      noteableId: mockNoteableId,
+      discussionId: mockDiscussionId,
+      body: mockComment,
     },
   };
 
@@ -49,14 +50,15 @@ describe('Design reply form component', () => {
   const metaKey = {
     metaKey: true,
   };
-  const mutationHandler = jest.fn().mockResolvedValue();
+  const mockMutationHandler = jest.fn().mockResolvedValue(mockNoteSubmitSuccessMutationResponse);
 
   function createComponent({
     props = {},
     mountOptions = {},
     data = {},
-    mutation = mutationHandler,
+    mutationHandler = mockMutationHandler,
   } = {}) {
+    mockApollo = createMockApollo([[createNoteMutation, mutationHandler]]);
     wrapper = mount(DesignReplyForm, {
       propsData: {
         designNoteMutation: createNoteMutation,
@@ -67,11 +69,7 @@ describe('Design reply form component', () => {
         ...props,
       },
       ...mountOptions,
-      mocks: {
-        $apollo: {
-          mutate: mutation,
-        },
-      },
+      apolloProvider: mockApollo,
       data() {
         return {
           ...data,
@@ -85,6 +83,7 @@ describe('Design reply form component', () => {
   });
 
   afterEach(() => {
+    mockApollo = null;
     confirmAction.mockReset();
   });
 
@@ -125,9 +124,8 @@ describe('Design reply form component', () => {
     ${'gid://gitlab/DiffDiscussion/123'} | ${123}
   `(
     'initializes autosave support on discussion with proper key',
-    async ({ discussionId, shortDiscussionId }) => {
+    ({ discussionId, shortDiscussionId }) => {
       createComponent({ props: { discussionId } });
-      await nextTick();
 
       expect(Autosave).toHaveBeenCalledWith(expect.any(Element), [
         'Discussion',
@@ -138,9 +136,8 @@ describe('Design reply form component', () => {
   );
 
   describe('when form has no text', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
-      await nextTick();
     });
 
     it('submit button is disabled', () => {
@@ -151,11 +148,10 @@ describe('Design reply form component', () => {
       key       | keyData
       ${'ctrl'} | ${ctrlKey}
       ${'meta'} | ${metaKey}
-    `('does not perform mutation on textarea $key+enter keydown', async ({ keyData }) => {
+    `('does not perform mutation on textarea $key+enter keydown', ({ keyData }) => {
       findTextarea().trigger('keydown.enter', keyData);
 
-      await nextTick();
-      expect(mutationHandler).not.toHaveBeenCalled();
+      expect(mockMutationHandler).not.toHaveBeenCalled();
     });
 
     it('emits cancelForm event on pressing escape button on textarea', () => {
@@ -182,22 +178,20 @@ describe('Design reply form component', () => {
         noteableId: mockNoteableId,
         discussionId: mockDiscussionId,
       };
-      const successfulMutation = jest.fn().mockResolvedValue(mockNoteSubmitSuccessMutationResponse);
+
       createComponent({
         props: {
-          designNoteMutation: createNoteMutation,
           mutationVariables: mockMutationVariables,
           value: mockComment,
         },
-        mutation: successfulMutation,
       });
 
       findSubmitButton().vm.$emit('click');
 
-      await nextTick();
-      expect(successfulMutation).toHaveBeenCalledWith(createNoteMutationData);
+      expect(mockMutationHandler).toHaveBeenCalledWith(createNoteMutationData);
 
       await waitForPromises();
+
       expect(wrapper.emitted('note-submit-complete')).toEqual([
         [mockNoteSubmitSuccessMutationResponse],
       ]);
@@ -212,20 +206,17 @@ describe('Design reply form component', () => {
         noteableId: mockNoteableId,
         discussionId: mockDiscussionId,
       };
-      const successfulMutation = jest.fn().mockResolvedValue(mockNoteSubmitSuccessMutationResponse);
+
       createComponent({
         props: {
-          designNoteMutation: createNoteMutation,
           mutationVariables: mockMutationVariables,
           value: mockComment,
         },
-        mutation: successfulMutation,
       });
 
       findTextarea().trigger('keydown.enter', keyData);
 
-      await nextTick();
-      expect(successfulMutation).toHaveBeenCalledWith(createNoteMutationData);
+      expect(mockMutationHandler).toHaveBeenCalledWith(createNoteMutationData);
 
       await waitForPromises();
       expect(wrapper.emitted('note-submit-complete')).toEqual([
@@ -240,7 +231,7 @@ describe('Design reply form component', () => {
           designNoteMutation: createNoteMutation,
           value: mockComment,
         },
-        mutation: failedMutation,
+        mutationHandler: failedMutation,
         data: {
           errorMessage: 'error',
         },
@@ -260,7 +251,7 @@ describe('Design reply form component', () => {
       ${false}     | ${false}     | ${UPDATE_NOTE_ERROR}
     `(
       'return proper error message on error in case of isDiscussion is $isDiscussion and isNewComment is $isNewComment',
-      async ({ isDiscussion, isNewComment, errorMessage }) => {
+      ({ isDiscussion, isNewComment, errorMessage }) => {
         createComponent({ props: { isDiscussion, isNewComment } });
 
         expect(wrapper.vm.getErrorMessage()).toBe(errorMessage);
@@ -275,12 +266,11 @@ describe('Design reply form component', () => {
       expect(wrapper.emitted('cancel-form')).toHaveLength(1);
     });
 
-    it('opens confirmation modal on Escape key when text has changed', async () => {
+    it('opens confirmation modal on Escape key when text has changed', () => {
       createComponent();
 
       findTextarea().setValue(mockComment);
 
-      await nextTick();
       findTextarea().trigger('keyup.esc');
 
       expect(confirmAction).toHaveBeenCalled();
@@ -292,7 +282,6 @@ describe('Design reply form component', () => {
       createComponent({ props: { value: mockComment } });
       findTextarea().setValue('Comment changed');
 
-      await nextTick();
       findTextarea().trigger('keyup.esc');
 
       expect(confirmAction).toHaveBeenCalled();
@@ -306,10 +295,8 @@ describe('Design reply form component', () => {
 
       createComponent({ props: { value: mockComment } });
       findTextarea().setValue('Comment changed');
-      await nextTick();
 
       findTextarea().trigger('keyup.esc');
-      await nextTick();
 
       expect(confirmAction).toHaveBeenCalled();
       await waitForPromises();

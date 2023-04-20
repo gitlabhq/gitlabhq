@@ -26,8 +26,7 @@ module Ci
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
       key: Settings.attr_encrypted_db_key_base_32,
-      encode: false,
-      encode_vi: false
+      encode: false
 
     before_validation :set_default_values
 

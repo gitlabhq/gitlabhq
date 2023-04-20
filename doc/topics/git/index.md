@@ -30,7 +30,7 @@ The following resources can help you get started with Git:
 - [Git Basics](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
 - [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 - [How to install Git](how_to_install_git/index.md)
-- [Git terminology](terminology.md)
+- [Git concepts](terminology.md)
 - [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
 - [GitLab Git Cheat Sheet (download)](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
 - Commits:
@@ -82,7 +82,6 @@ If you have problems with Git, the following may help:
 ## Branching strategies
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
-- [Develop on a feature branch](feature_branch_development.md)
 - [GitLab Flow](../gitlab_flow.md)
 - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)

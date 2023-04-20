@@ -9,7 +9,7 @@ RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
     sign_in(user)
   end
 
-  it_behaves_like 'a dashboard page with sidebar', :activity_dashboard_path, :activity
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :activity_dashboard_path, :activity
 
   context 'tabs' do
     it 'shows Your Activity' do

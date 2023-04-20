@@ -1,0 +1,45 @@
+# This is a template for announcing a feature deprecation or other important planned change.
+#
+# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# Deprecations and other future breaking changes must be announced at least
+# three releases prior to removal.
+#
+# Breaking changes must happen in a major release.
+#
+# See the OPTIONAL END OF SUPPORT FIELDS section below if an End of Support period also applies.
+#
+# For more information please refer to the handbook documentation here:
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
+#
+# Please delete this line and above before submitting your merge request.
+#
+# REQUIRED FIELDS
+#
+- title: "Geo: Project repository redownload is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.11"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
+  reporter: mkozono  # (required) GitLab username of the person reporting the change
+  stage: "Enablement"  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388868  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In secondary Geo sites, the button to "Redownload" a project repository is
+    deprecated. The redownload logic has inherent data consistency issues which
+    are difficult to resolve when encountered. The button will be removed in
+    GitLab 16.0.
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers: ["Premium", "Ultimate"] # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

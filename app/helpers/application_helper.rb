@@ -281,7 +281,11 @@ module ApplicationHelper
   end
 
   def startup_css_enabled?
-    !params.has_key?(:no_startup_css)
+    !Feature.enabled?(:remove_startup_css) && !params.has_key?(:no_startup_css)
+  end
+
+  def sign_in_with_redirect?
+    current_page?(new_user_session_path) && session[:user_return_to].present?
   end
 
   def outdated_browser?
@@ -316,6 +320,7 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
+    class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar
     class_names << system_message_class
     class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com?
 

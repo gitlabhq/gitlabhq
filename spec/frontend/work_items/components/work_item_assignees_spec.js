@@ -318,7 +318,7 @@ describe('WorkItemAssignees component', () => {
       return waitForPromises();
     });
 
-    it('renders `Assign myself` button', async () => {
+    it('renders `Assign myself` button', () => {
       findTokenSelector().trigger('mouseover');
       expect(findAssignSelfButton().exists()).toBe(true);
     });

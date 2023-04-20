@@ -8,6 +8,8 @@ owning-stage: "~devops::enablement"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Cells
 
 This document is a work-in-progress and represents a very early state of the Cells design. Significant aspects are not documented, though we expect to add them in the future.
@@ -73,7 +75,6 @@ Organizations work under the following assumptions:
 #### Organization properties
 
 - Top-level namespaces belong to organizations
-- Users can be members of different organizations
 - Organizations are isolated from each other by default meaning that cross-namespace features will only work for namespaces that exist within a single organization
 - User namespaces must not belong to an organization
 
@@ -81,9 +82,7 @@ Discouraged synonyms: Billable entities, customers
 
 ### Top-Level namespace
 
-A top-level namespace is the logical object container in the code that represents all groups, subgroups and projects that belong to an organization.
-
-A top-level namespace is the root of nested collection namespaces and projects. The namespace and its related entities form a tree-like hierarchy: Namespaces are the nodes of the tree, projects are the leaves.
+Top-level namespace is the name given to the top most group of all other groups. Groups and projects are nested underneath the top-level namespace.
 
 Example:
 
@@ -92,7 +91,9 @@ Example:
 - `gitlab-org` is a `top-level namespace`; the root for all groups and projects of an organization
 - `gitlab` is a `project`; a project of the organization.
 
-Top-level namespaces may [be replaced by organizations](https://gitlab.com/gitlab-org/gitlab/-/issues/368237#high-level-goals). This proposal only uses the term top-level namespaces as the organization definition is ongoing.
+The top-level namespace has served as the defacto Organization entity. With the creation of Organization, top-level namespaces will be [nested underneath Organizations](https://gitlab.com/gitlab-org/gitlab/-/issues/394796).
+
+Over time there won't be a distinction between a top level namespace and a group. All features that make Top-level namespaces different from groups will move to Organization.
 
 Discouraged synonyms: Root-level namespace
 
@@ -105,14 +106,15 @@ Discouraged synonyms: Root-level namespace
 
 ### Users
 
-Users are available globally and not restricted to a single Cell. Users can be members of many different organizations with varying permissions. Inside organizations, users can create multiple top-level namespaces. User activity is not limited to a single organization but their contributions (for example TODOs) are only aggregated within an organization. This avoids the need for aggregating across cells.
+Users are available globally and not restricted to a single Cell. Users belong to a single organization, but can participate in many organizations through group and project membership with varying permissions. Inside organizations, users can create multiple top-level namespaces. User activity is not limited to a single organization but their contributions (for example TODOs) are only aggregated within an organization. This avoids the need for aggregating across cells.
 
 #### User properties
 
 - Users are shared globally across all Cells
 - Users can create multiple top-level namespaces
 - Users can be a member of multiple top-level namespaces
-- Users can be a member of multiple organizations
+- Users belong to one organization. See [!395736](https://gitlab.com/gitlab-org/gitlab/-/issues/395736)
+- Users can be members of groups and projects in different organizations
 - Users can administer organizations
 - User activity is aggregated in an organization
 - Every user has one personal namespace
@@ -164,11 +166,16 @@ self-managed instances.
 
 A number of technical issues need to be resolved to implement Cells (in no particular order). This section will be expanded.
 
-1. How are users of an organization routed to the correct Cell?
-1. How do users authenticate?
+1. How are Cells provisioned? - [Design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641)
+1. What is a Cells topology? - [Design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641)
+1. How are users of an organization routed to the correct Cell? -
+1. How do users authenticate with Cells and Organizations? - [Design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/395736)
 1. How are Cells rebalanced?
-1. How are Cells provisioned?
 1. How can Cells implement disaster recovery capabilities?
+
+## Decision log
+
+- 2022-03-15: Google Cloud as the cloud service. [Reference](https://gitlab.com/gitlab-org/gitlab/-/issues/396641#note_1314932272)
 
 ## Cross-section impact
 
@@ -232,87 +239,6 @@ We can't ship the entire Cells architecture in one go - it is too large. Instead
 1. Create new organizations on `cell`
 1. Migrate existing organizations from `cell` to `cell`
 1. Add additional Cell capabilities (DR, Regions)
-
-### Iteration 0: Introduce organizations
-
-In the first iteration, we introduce the concept of an organization
-as a way to group top-level namespaces together. Support for organizations **does not require any Cells work** but having them will make all subsequent iterations of Cells simpler. This is mainly because we can group top-level namespaces for a single organization onto a Cell. Within an organization all interactions work as normal but we eliminate any cross-organizational interactions except in well defined cases (e.g. forking).
-
-This means that we don't have a large number of cross-cell interactions.
-
-Introducing organizations allows GitLab to move towards a multi-tenant system that is similar to Discord's with a single user account but many different "servers" - our organizations - that allow users to switch context. This model harmonizes the UX across self-managed and our SaaS Platforms and is a good fit for Cells.
-
-Organizations solve the following problems:
-
-1. We can group top-level namespaces by organization. It is very similar to the initial concept of "instance groups". For example these two top-level namespaces would belong to the organization `GitLab`:
-    1. `https://gitlab.com/gitlab-org/`
-    1. `https://gitlab.com/gitlab-com/`
-1. We can isolate organizations from each other. Top-level namespaces of the same organization can interact within organizations but are not allowed to interact with other namespaces in other organizations. This is useful for customers because it means an organization provides clear boundaries - similar to a self-managed instance. This means we don't have to aggregate user dashboards across everything and can locally scope them to organizations.
-1. We don't need to define hierarchies inside an organization. It is a container that could be filled with whatever hierarchy / entity set makes sense (organization, top-level namespaces etc.)
-1. Self-managed instances would set a default organization.
-1. Organizations can control user-profiles in a central way. This could be achieved by having an organization specific user-profile. Such a profile makes it possible for the organization administrators to control the user role in a company, enforce user emails, or show a graphical indicator of a user being part of the organization. An example would be a "GitLab Employee stamp" on comments.
-
-![Move to Organizations](images/iteration0-organizations-introduction.png)
-
-#### Why would customers opt-in to Organizations?
-
-By introducing organizations and Cells we can improve the reliability, performance and availability of our SaaS Platforms.
-
-The first iteration of organizations would also have some benefits by providing more isolation. A simple example would be that `@` mentions could be scoped to an organization.
-
-Future iterations would create additional value but are beyond the scope of this blueprint.
-
-Organizations will likely be required in the future as well.
-
-#### Initial user experience
-
-1. We create a default `GitLab.com public` organization and assign all public top-level namespaces to it. This allows existing users to access all the data on GitLab.com, exactly as it does now.
-1. Any user wanting to opt-in to the benefits of organizations will need to set a single default organization. Any attempts for these users to load a global page like `/dashboard` will end up redirecting to `/-/organizations/<DEFAULT_ORGANIZATION>/dashboard`.
-1. New users that opted in to organizations will only ever see data that is related to a single organization. Upon login, data is shown for the default organization. It will be clear to the user how they can switch to a different organization. Users can still navigate to the `GitLab.com` organization but they won't see TODOs from their new organizations in any such views. Instead they'd need to navigate directly to `/organizations/my-company/-/dashboard`.
-
-### Migrating to Organizations
-
-Existing customers could also opt-in to migrate their existing top-level paid namespaces to become part of an organization. In most cases this will be a 1-to-1 mapping. But in some cases it may allow a customer to move multiple top-level namespaces into one organization (for example GitLab).
-
-Migrating to Organizations would be optional. We could even recruit a few beta testers early on to see if this works for them. GitLab itself could dogfood organizations and we'd surface a lot of issues restricting interactions with other namespaces.
-
-## Iteration 1 - Introduce Cell US 0
-
-### GitLab.com as Cell US0
-
-GitLab.com will be treated as the first cell `Cell US 0`. It will be unique and much larger compared to newly created cells. All existing top-level namespaces and organizations will remain on `Cell US 0` in the first iteration.
-
-### Users are globally available
-
-Users are globally available and the same for all cells. This means that user data needs to be handled separately, for example via decomposition, see [!95941](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95941).
-
-### Cell groundwork
-
-In this iteration, we'll lay all the groundwork to support a second Cell for new organizations. This will be transparent to customers.
-
-## Iteration 2 - Introduce Cell US 1
-
-### Add new organizations to Cell US 1
-
-After we are ready to support a second Cell, newly created organizations are located by default on `Cell US 1`. The user experience for organizations is already well established.
-
-### Migrate existing organizations from Cell US 0 to Cell US 1
-
-We know that we'll have to move organizations from `Cell US 0` to other cells to reduce its size and ultimately retire the existing GitLab.com architecture.
-
-By introducing organizations early, we should be able to draw strong "boundaries" across organizations and support migrating existing organizations to a new Cell.
-
-This is likely going to be GitLab itself - if we can dogfood this, we are likely going to be successful with other organizations as well.
-
-## Iteration 3 - Introduce Regions
-
-We can now leverage the Cells architecture to introduce Regions.
-
-## Iteration 4 - Introduce cross-organizational interactions as needed
-
-Based on user research, we may want to change certain features to work across organizations. Examples include:
-
-- Specific features allow for cross-organization interactions, for example forking, search.
 
 ## Technical Proposals
 

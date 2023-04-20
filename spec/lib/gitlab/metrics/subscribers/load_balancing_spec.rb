@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feature_category: :pods do
+RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feature_category: :cell do
   let(:subscriber) { described_class.new }
 
   describe '#caught_up_replica_pick' do

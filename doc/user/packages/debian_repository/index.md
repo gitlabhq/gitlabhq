@@ -98,8 +98,11 @@ with one of the following:
 
 ## Create a Distribution
 
-On the project-level, Debian packages are published using *Debian Distributions*. To publish
-packages on the group level, create a distribution with the same `codename`.
+At the project level, Debian packages are published with **Debian distributions**. At the
+group level, Debian packages are aggregated from the projects in the group provided that:
+
+- The project visibility is set to `public`.
+- The Debian `codename` for the group matches the Debian `codename` for the project.
 
 To create a project-level distribution using a personal access token:
 
@@ -162,9 +165,9 @@ EOF
 dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 ```
 
-## Directly upload a package
+## Upload a package with explicit distribution and component
 
-> Direct upload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+> Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
 
 When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
 distribution `codename` and target `component` as parameters with
@@ -173,7 +176,8 @@ For example, to upload to component `main` of distribution `sid` using a persona
 
 ```shell
 curl --request PUT --user "<username>:<personal_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/?distribution=sid&component=main" \
+  --get --data "distribution=sid" --data "component=main" \
+  "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/" \
   --upload-file  /path/to/your.deb
 ```
 

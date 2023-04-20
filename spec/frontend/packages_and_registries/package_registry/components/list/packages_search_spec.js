@@ -54,7 +54,7 @@ describe('Package Search', () => {
     expect(findRegistrySearch().exists()).toBe(true);
   });
 
-  it('registry search is mounted after mount', async () => {
+  it('registry search is mounted after mount', () => {
     mountComponent();
 
     expect(findRegistrySearch().exists()).toBe(false);

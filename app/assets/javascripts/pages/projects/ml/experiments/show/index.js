@@ -9,6 +9,7 @@ const initShowExperiment = () => {
   }
 
   const props = {
+    experiment: JSON.parse(element.dataset.experiment),
     candidates: JSON.parse(element.dataset.candidates),
     metricNames: JSON.parse(element.dataset.metrics),
     paramNames: JSON.parse(element.dataset.params),

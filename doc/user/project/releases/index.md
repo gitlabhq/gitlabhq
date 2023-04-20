@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -80,10 +80,11 @@ To create a release in the Releases page:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
      results in a validation error.
    - Enter a new Git tag name.
-     1. From the **Create from** dropdown list, select a branch or commit SHA to use when
+     1. From the **Create tag** popover, select a branch or commit SHA to use when
         creating the new tag.
      1. Optional. In the **Set tag message** text box, enter a message to create an
         [annotated tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging#_annotated_tags).
+     1. Select **Save**.
 1. Optional. Enter additional information about the release, including:
    - [Title](release_fields.md#title).
    - [Milestones](#associate-milestones-with-a-release).

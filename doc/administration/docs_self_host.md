@@ -265,8 +265,5 @@ To upgrade to a later version [using your own web-server](#self-host-the-product
 
 If you self-host the product documentation:
 
-- The version dropdown list displays additional versions that don't exist. Selecting
-  these versions displays a `404 Not Found` page.
-- The search displays results from `docs.gitlab.com` and not the local site.
 - By default, the landing page redirects to the
   respective version (for example, `/14.5/`). This causes the landing page <https://docs.gitlab.com> to not be displayed.

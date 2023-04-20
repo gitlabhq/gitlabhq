@@ -144,6 +144,7 @@ describe('the graph view selector component', () => {
         createComponent({
           props: {
             showLinks: true,
+            type: LAYER_VIEW,
           },
           data: {
             showLinksActive: true,
@@ -162,6 +163,18 @@ describe('the graph view selector component', () => {
         await findHoverTip().find('button').trigger('click');
         expect(wrapper.emitted().dismissHoverTip).toHaveLength(1);
       });
+
+      it('is displayed at first then hidden on swith to STAGE_VIEW then displayed on switch to LAYER_VIEW', async () => {
+        expect(findHoverTip().exists()).toBe(true);
+        expect(findHoverTip().text()).toBe(wrapper.vm.$options.i18n.hoverTipText);
+
+        await findStageViewButton().trigger('click');
+        expect(findHoverTip().exists()).toBe(false);
+
+        await findLayerViewButton().trigger('click');
+        expect(findHoverTip().exists()).toBe(true);
+        expect(findHoverTip().text()).toBe(wrapper.vm.$options.i18n.hoverTipText);
+      });
     });
 
     describe('when links are live and it has been previously dismissed', () => {
@@ -170,6 +183,7 @@ describe('the graph view selector component', () => {
           props: {
             showLinks: true,
             tipPreviouslyDismissed: true,
+            type: LAYER_VIEW,
           },
           data: {
             showLinksActive: true,
@@ -187,6 +201,7 @@ describe('the graph view selector component', () => {
         createComponent({
           props: {
             showLinks: true,
+            type: LAYER_VIEW,
           },
           data: {
             showLinksActive: false,

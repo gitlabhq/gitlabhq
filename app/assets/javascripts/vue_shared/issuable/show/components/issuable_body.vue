@@ -139,7 +139,7 @@ export default {
 
 <template>
   <div class="issue-details issuable-details">
-    <div class="detail-page-description js-detail-page-description content-block gl-pt-2">
+    <div class="detail-page-description js-detail-page-description content-block gl-pt-4">
       <issuable-edit-form
         v-if="editFormVisible"
         :issuable="issuable"

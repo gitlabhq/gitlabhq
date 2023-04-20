@@ -229,9 +229,6 @@ export default {
       context: {
         isSingleRequest: true,
       },
-      skip() {
-        return this.isEpicBoard;
-      },
     },
   },
   created() {
@@ -426,7 +423,7 @@ export default {
         <div v-if="list.maxIssueCount !== 0">
           •
           <gl-sprintf :message="__('%{issuesSize} with a limit of %{maxIssueCount}')">
-            <template #issuesSize>{{ itemsTooltipLabel }}</template>
+            <template #issuesSize>{{ itemsCount }}</template>
             <template #maxIssueCount>{{ list.maxIssueCount }}</template>
           </gl-sprintf>
         </div>

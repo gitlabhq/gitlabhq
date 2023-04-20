@@ -182,7 +182,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     AnchorData.new(
       true,
-      statistic_icon('deployments') +
+      statistic_icon('rocket-launch') +
       n_('%{strong_start}%{release_count}%{strong_end} Release', '%{strong_start}%{release_count}%{strong_end} Releases', releases_count).html_safe % {
         release_count: number_with_delimiter(releases_count),
         strong_start: '<strong class="project-stat-value">'.html_safe,

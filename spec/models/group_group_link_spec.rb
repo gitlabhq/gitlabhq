@@ -5,9 +5,29 @@ require 'spec_helper'
 RSpec.describe GroupGroupLink do
   let_it_be(:group) { create(:group) }
   let_it_be(:shared_group) { create(:group) }
-  let_it_be(:group_group_link) do
-    create(:group_group_link, shared_group: shared_group,
-                              shared_with_group: group)
+
+  describe 'validation' do
+    let_it_be(:group_group_link) do
+      create(:group_group_link, shared_group: shared_group,
+                                shared_with_group: group)
+    end
+
+    it { is_expected.to validate_presence_of(:shared_group) }
+
+    it do
+      is_expected.to(
+        validate_uniqueness_of(:shared_group_id)
+          .scoped_to(:shared_with_group_id)
+          .with_message('The group has already been shared with this group'))
+    end
+
+    it { is_expected.to validate_presence_of(:shared_with_group) }
+    it { is_expected.to validate_presence_of(:group_access) }
+
+    it do
+      is_expected.to(
+        validate_inclusion_of(:group_access).in_array(Gitlab::Access.values))
+    end
   end
 
   describe 'relations' do
@@ -16,42 +36,51 @@ RSpec.describe GroupGroupLink do
   end
 
   describe 'scopes' do
-    describe '.non_guests' do
-      let!(:group_group_link_reporter) { create :group_group_link, :reporter }
-      let!(:group_group_link_maintainer) { create :group_group_link, :maintainer }
-      let!(:group_group_link_owner) { create :group_group_link, :owner }
-      let!(:group_group_link_guest) { create :group_group_link, :guest }
-
-      it 'returns all records which are greater than Guests access' do
-        expect(described_class.non_guests).to match_array([
-                                                            group_group_link_reporter, group_group_link,
-                                                            group_group_link_maintainer, group_group_link_owner
-                                                          ])
-      end
-    end
-
-    describe '.with_owner_or_maintainer_access' do
+    context 'for scopes fetching records based on access levels' do
+      let_it_be(:group_group_link_guest) { create :group_group_link, :guest }
+      let_it_be(:group_group_link_reporter) { create :group_group_link, :reporter }
+      let_it_be(:group_group_link_developer) { create :group_group_link, :developer }
       let_it_be(:group_group_link_maintainer) { create :group_group_link, :maintainer }
       let_it_be(:group_group_link_owner) { create :group_group_link, :owner }
-      let_it_be(:group_group_link_reporter) { create :group_group_link, :reporter }
-      let_it_be(:group_group_link_guest) { create :group_group_link, :guest }
 
-      it 'returns all records which have OWNER or MAINTAINER access' do
-        expect(described_class.with_owner_or_maintainer_access).to match_array([
-                                                                                 group_group_link_maintainer,
-                                                                                 group_group_link_owner
-                                                                               ])
+      describe '.non_guests' do
+        it 'returns all records which are greater than Guests access' do
+          expect(described_class.non_guests).to match_array([
+                                                              group_group_link_reporter, group_group_link_developer,
+                                                              group_group_link_maintainer, group_group_link_owner
+                                                            ])
+        end
       end
-    end
 
-    describe '.with_owner_access' do
-      let_it_be(:group_group_link_maintainer) { create :group_group_link, :maintainer }
-      let_it_be(:group_group_link_owner) { create :group_group_link, :owner }
-      let_it_be(:group_group_link_reporter) { create :group_group_link, :reporter }
-      let_it_be(:group_group_link_guest) { create :group_group_link, :guest }
+      describe '.with_owner_or_maintainer_access' do
+        it 'returns all records which have OWNER or MAINTAINER access' do
+          expect(described_class.with_owner_or_maintainer_access).to match_array([
+                                                                                   group_group_link_maintainer,
+                                                                                   group_group_link_owner
+                                                                                 ])
+        end
+      end
 
-      it 'returns all records which have OWNER access' do
-        expect(described_class.with_owner_access).to match_array([group_group_link_owner])
+      describe '.with_owner_access' do
+        it 'returns all records which have OWNER access' do
+          expect(described_class.with_owner_access).to match_array([group_group_link_owner])
+        end
+      end
+
+      describe '.with_developer_access' do
+        it 'returns all records which have DEVELOPER access' do
+          expect(described_class.with_developer_access).to match_array([group_group_link_developer])
+        end
+      end
+
+      describe '.with_developer_maintainer_owner_access' do
+        it 'returns all records which have DEVELOPER, MAINTAINER or OWNER access' do
+          expect(described_class.with_developer_maintainer_owner_access).to match_array([
+            group_group_link_developer,
+            group_group_link_owner,
+            group_group_link_maintainer
+          ])
+        end
       end
     end
 
@@ -93,6 +122,15 @@ RSpec.describe GroupGroupLink do
       let_it_be(:sub_shared_group) { create(:group, parent: shared_group) }
       let_it_be(:other_group) { create(:group) }
 
+      let_it_be(:group_group_link_1) do
+        create(
+          :group_group_link,
+          shared_group: shared_group,
+          shared_with_group: group,
+          group_access: Gitlab::Access::DEVELOPER
+        )
+      end
+
       let_it_be(:group_group_link_2) do
         create(
           :group_group_link,
@@ -125,7 +163,7 @@ RSpec.describe GroupGroupLink do
 
         expect(described_class.all.count).to eq(4)
         expect(distinct_group_group_links.count).to eq(2)
-        expect(distinct_group_group_links).to include(group_group_link)
+        expect(distinct_group_group_links).to include(group_group_link_1)
         expect(distinct_group_group_links).not_to include(group_group_link_2)
         expect(distinct_group_group_links).not_to include(group_group_link_3)
         expect(distinct_group_group_links).to include(group_group_link_4)
@@ -133,27 +171,9 @@ RSpec.describe GroupGroupLink do
     end
   end
 
-  describe 'validation' do
-    it { is_expected.to validate_presence_of(:shared_group) }
-
-    it do
-      is_expected.to(
-        validate_uniqueness_of(:shared_group_id)
-          .scoped_to(:shared_with_group_id)
-          .with_message('The group has already been shared with this group'))
-    end
-
-    it { is_expected.to validate_presence_of(:shared_with_group) }
-    it { is_expected.to validate_presence_of(:group_access) }
-
-    it do
-      is_expected.to(
-        validate_inclusion_of(:group_access).in_array(Gitlab::Access.values))
-    end
-  end
-
   describe '#human_access' do
     it 'delegates to Gitlab::Access' do
+      group_group_link = create(:group_group_link, :reporter)
       expect(Gitlab::Access).to receive(:human_access).with(group_group_link.group_access)
 
       group_group_link.human_access
@@ -161,6 +181,8 @@ RSpec.describe GroupGroupLink do
   end
 
   describe 'search by group name' do
+    let_it_be(:group_group_link) { create(:group_group_link, :reporter, shared_with_group: group) }
+
     it { expect(described_class.search(group.name)).to eq([group_group_link]) }
     it { expect(described_class.search('not-a-group-name')).to be_empty }
   end

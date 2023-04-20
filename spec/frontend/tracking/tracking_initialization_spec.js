@@ -52,14 +52,11 @@ describe('Tracking', () => {
         hostname: 'app.test.com',
         cookieDomain: '.test.com',
         appId: '',
-        userFingerprint: false,
         respectDoNotTrack: true,
-        forceSecureTracker: true,
         eventMethod: 'post',
         contexts: { webPage: true, performanceTiming: true },
         formTracking: false,
         linkClickTracking: false,
-        pageUnloadTimer: 10,
         formTrackingConfig: {
           fields: { allow: [] },
           forms: { allow: [] },
@@ -80,8 +77,14 @@ describe('Tracking', () => {
 
     it('should activate features based on what has been enabled', () => {
       initDefaultTrackers();
-      expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', 'GitLab', [standardContext]);
+      expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', {
+        minimumVisitLength: 30,
+        heartbeatDelay: 30,
+      });
+      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', {
+        title: 'GitLab',
+        context: [standardContext],
+      });
       expect(snowplowSpy).toHaveBeenCalledWith('setDocumentTitle', 'GitLab');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
@@ -131,10 +134,10 @@ describe('Tracking', () => {
 
       it('includes those contexts alongside the standard context', () => {
         initDefaultTrackers();
-        expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', 'GitLab', [
-          standardContext,
-          ...experimentContexts,
-        ]);
+        expect(snowplowSpy).toHaveBeenCalledWith('trackPageView', {
+          title: 'GitLab',
+          context: [standardContext, ...experimentContexts],
+        });
       });
     });
   });

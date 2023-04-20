@@ -10,8 +10,8 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :team_planni
 
   before do
     # The following two conditions equate to Gitlab::ServiceDesk.supported == true
-    allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-    allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
 
     project.add_maintainer(user)
     sign_in(user)

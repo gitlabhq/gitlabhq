@@ -5,7 +5,6 @@ description: A weekly count of distinct RubyGems packages published using a depl
 product_section: ops
 product_stage: package
 product_group: package
-product_category: package_registry
 value_type: number
 status: active
 milestone: '13.10'

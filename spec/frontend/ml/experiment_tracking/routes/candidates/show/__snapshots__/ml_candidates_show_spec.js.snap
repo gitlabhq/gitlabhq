@@ -2,99 +2,36 @@
 
 exports[`MlCandidatesShow renders correctly 1`] = `
 <div>
+  <incubation-alert-stub
+    featurename="Machine learning experiment tracking"
+    linktofeedbackissue="https://gitlab.com/gitlab-org/gitlab/-/issues/381660"
+  />
+   
   <div
-    class="gl-alert gl-alert-warning"
+    class="detail-page-header gl-flex-wrap"
   >
-    <svg
-      aria-hidden="true"
-      class="gl-icon s16 gl-alert-icon"
-      data-testid="warning-icon"
-      role="img"
-    >
-      <use
-        href="#warning"
-      />
-    </svg>
-     
     <div
-      aria-live="assertive"
-      class="gl-alert-content"
-      role="alert"
+      class="detail-page-header-body"
     >
-      <h2
-        class="gl-alert-title"
-      >
-        Machine learning experiment tracking is in incubating phase
-      </h2>
-       
-      <div
-        class="gl-alert-body"
+      <h1
+        class="page-title gl-font-size-h-display flex-fill"
       >
         
-  GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited.
-  
-        <a
-          class="gl-link"
-          href="https://about.gitlab.com/handbook/engineering/incubation/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Learn more about incubating features
-        </a>
-      </div>
+        Model candidate details
+      
+      </h1>
        
-      <div
-        class="gl-alert-actions"
-      >
-        <a
-          class="btn gl-alert-action btn-confirm btn-md gl-button"
-          href="https://gitlab.com/gitlab-org/gitlab/-/issues/381660"
-        >
-          <!---->
-           
-          <!---->
-            
-          <span
-            class="gl-button-text"
-          >
-            
-          Give feedback on this feature
-        
-          </span>
-        </a>
-      </div>
+      <delete-button-stub
+        actionprimarytext="Delete candidate"
+        deleteconfirmationtext="Deleting this candidate will delete the associated parameters, metrics, and metadata."
+        deletepath="path_to_candidate"
+        modaltitle="Delete candidate?"
+      />
     </div>
-     
-    <button
-      aria-label="Dismiss"
-      class="btn gl-dismiss-btn btn-default btn-sm gl-button btn-default-tertiary btn-icon"
-      type="button"
-    >
-      <!---->
-       
-      <svg
-        aria-hidden="true"
-        class="gl-button-icon gl-icon s16"
-        data-testid="close-icon"
-        role="img"
-      >
-        <use
-          href="#close"
-        />
-      </svg>
-        
-      <!---->
-    </button>
   </div>
    
-  <h3>
-    
-    Model candidate details
-  
-  </h3>
-   
   <table
-    class="candidate-details"
+    class="candidate-details gl-w-full"
   >
     <tbody>
       <tr
@@ -143,12 +80,9 @@ exports[`MlCandidatesShow renders correctly 1`] = `
         </td>
          
         <td>
-          <a
-            class="gl-link"
-            href="#"
-          >
+          <gl-link-stub>
             The Experiment
-          </a>
+          </gl-link-stub>
         </td>
       </tr>
        
@@ -162,12 +96,11 @@ exports[`MlCandidatesShow renders correctly 1`] = `
         </td>
          
         <td>
-          <a
-            class="gl-link"
+          <gl-link-stub
             href="path_to_artifact"
           >
             Artifacts
-          </a>
+          </gl-link-stub>
         </td>
       </tr>
        

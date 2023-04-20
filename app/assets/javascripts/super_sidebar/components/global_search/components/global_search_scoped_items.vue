@@ -1,47 +1,26 @@
 <script>
-import { GlDropdownItem, GlIcon, GlToken } from '@gitlab/ui';
+import { GlIcon, GlToken, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
 import { s__, sprintf } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
-import { SCOPED_SEARCH_ITEM_ARIA_LABEL } from '~/vue_shared/global_search/constants';
 import { SCOPE_TOKEN_MAX_LENGTH } from '../constants';
 
 export default {
-  name: 'HeaderSearchScopedItems',
-  i18n: {
-    SCOPED_SEARCH_ITEM_ARIA_LABEL,
-  },
+  name: 'GlobalSearchScopedItems',
   components: {
-    GlDropdownItem,
     GlIcon,
     GlToken,
-  },
-  props: {
-    currentFocusedOption: {
-      type: Object,
-      required: false,
-      default: () => null,
-    },
+    GlDisclosureDropdownGroup,
   },
   computed: {
     ...mapState(['search']),
-    ...mapGetters(['scopedSearchOptions', 'autocompleteGroupedSearchOptions']),
+    ...mapGetters(['scopedSearchGroup']),
   },
   methods: {
-    isOptionFocused(option) {
-      return this.currentFocusedOption?.html_id === option.html_id;
-    },
-    ariaLabel(option) {
-      return sprintf(this.$options.i18n.SCOPED_SEARCH_ITEM_ARIA_LABEL, {
-        search: this.search,
-        description: option.description || option.icon,
-        scope: option.scope || '',
-      });
-    },
-    titleLabel(option) {
+    titleLabel(item) {
       return sprintf(s__('GlobalSearch|in %{scope}'), {
         search: this.search,
-        scope: option.scope || option.description,
+        scope: item.scope || item.description,
       });
     },
     getTruncatedScope(scope) {
@@ -53,35 +32,23 @@ export default {
 
 <template>
   <div>
-    <gl-dropdown-item
-      v-for="option in scopedSearchOptions"
-      :id="option.html_id"
-      :ref="option.html_id"
-      :key="option.html_id"
-      class="gl-max-w-full"
-      :class="{ 'gl-bg-gray-50': isOptionFocused(option) }"
-      :aria-selected="isOptionFocused(option)"
-      :aria-label="ariaLabel(option)"
-      tabindex="-1"
-      :href="option.url"
-      :title="titleLabel(option)"
-    >
-      <span
-        ref="token-text-content"
-        class="gl-display-flex gl-justify-content-start search-text-content gl-line-height-24 gl-align-items-start gl-flex-direction-row gl-w-full"
-      >
-        <gl-icon name="search" class="gl-flex-shrink-0 gl-mr-2 gl-relative gl-pt-2" />
-        <span class="gl-flex-grow-1 gl-relative">
-          <gl-token
-            class="in-dropdown-scope-help has-icon gl-flex-shrink-0 gl-relative gl-white-space-nowrap gl-float-right gl-mr-n3!"
-            :view-only="true"
+    <ul class="gl-m-0 gl-p-0 gl-pb-2 gl-list-style-none">
+      <gl-disclosure-dropdown-group :group="scopedSearchGroup" bordered class="gl-mt-0!">
+        <template #list-item="{ item }">
+          <span
+            class="gl-display-flex gl-align-items-center gl-line-height-24 gl-flex-direction-row gl-w-full"
           >
-            <gl-icon v-if="option.icon" :name="option.icon" class="gl-mr-2" />
-            <span>{{ getTruncatedScope(titleLabel(option)) }}</span>
-          </gl-token>
-          {{ search }}
-        </span>
-      </span>
-    </gl-dropdown-item>
+            <gl-icon name="search" class="gl-flex-shrink-0 gl-mr-2 gl-pt-2 gl-mt-n2" />
+            <span class="gl-flex-grow-1">
+              <gl-token class="gl-flex-shrink-0 gl-white-space-nowrap gl-float-right" view-only>
+                <gl-icon v-if="item.icon" :name="item.icon" class="gl-mr-2" />
+                <span>{{ getTruncatedScope(titleLabel(item)) }}</span>
+              </gl-token>
+              {{ search }}
+            </span>
+          </span>
+        </template>
+      </gl-disclosure-dropdown-group>
+    </ul>
   </div>
 </template>

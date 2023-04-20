@@ -55,13 +55,13 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
 
   describe 'run_id' do
     it 'is the iid as string' do
-      expect(subject[:run_id]).to eq(candidate.iid.to_s)
+      expect(subject[:run_id]).to eq(candidate.eid.to_s)
     end
   end
 
   describe 'run_uuid' do
     it 'is the iid as string' do
-      expect(subject[:run_uuid]).to eq(candidate.iid.to_s)
+      expect(subject[:run_uuid]).to eq(candidate.eid.to_s)
     end
   end
 

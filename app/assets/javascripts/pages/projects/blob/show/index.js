@@ -8,6 +8,7 @@ import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
+import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
@@ -16,6 +17,7 @@ import createStore from '~/code_navigation/store';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -44,6 +46,7 @@ const initRefSwitcher = () => {
           projectId,
           value: refType ? joinPaths('refs', refType, ref) : ref,
           useSymbolicRefNames: true,
+          queryParams: { sort: 'updated_desc' },
         },
         on: {
           input(selectedRef) {
@@ -58,7 +61,15 @@ const initRefSwitcher = () => {
 initRefSwitcher();
 
 if (viewBlobEl) {
-  const { blobPath, projectPath, targetBranch, originalBranch } = viewBlobEl.dataset;
+  const {
+    blobPath,
+    projectPath,
+    targetBranch,
+    originalBranch,
+    resourceId,
+    userId,
+    explainCodeAvailable,
+  } = viewBlobEl.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -69,6 +80,9 @@ if (viewBlobEl) {
     provide: {
       targetBranch,
       originalBranch,
+      resourceId,
+      userId,
+      explainCodeAvailable: parseBoolean(explainCodeAvailable),
     },
     render(createElement) {
       return createElement(BlobContentViewer, {
@@ -86,6 +100,47 @@ if (viewBlobEl) {
   new BlobViewer(); // eslint-disable-line no-new
   initBlob();
 }
+
+const initForkInfo = () => {
+  const forkEl = document.getElementById('js-fork-info');
+  if (!forkEl) {
+    return null;
+  }
+  const {
+    projectPath,
+    selectedBranch,
+    sourceName,
+    sourcePath,
+    sourceDefaultBranch,
+    canSyncBranch,
+    aheadComparePath,
+    behindComparePath,
+    canUserCreateMrInFork,
+    createMrPath,
+  } = forkEl.dataset;
+  return new Vue({
+    el: forkEl,
+    apolloProvider,
+    render(h) {
+      return h(ForkInfo, {
+        props: {
+          canSyncBranch: parseBoolean(canSyncBranch),
+          projectPath,
+          selectedBranch,
+          sourceName,
+          sourcePath,
+          sourceDefaultBranch,
+          aheadComparePath,
+          behindComparePath,
+          canUserCreateMrInFork,
+          createMrPath,
+        },
+      });
+    },
+  });
+};
+
+initForkInfo();
 
 const CommitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
 const statusLink = document.querySelector('.commit-actions .ci-status-link');

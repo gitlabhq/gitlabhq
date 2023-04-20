@@ -39,6 +39,12 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
           it { is_expected.to respond_with(:success) }
         end
 
+        context "HEAD, valid file" do
+          let(:id) { 'HEAD/README.md' }
+
+          it { is_expected.to respond_with(:success) }
+        end
+
         context "valid branch, invalid file" do
           let(:id) { 'master/invalid-path.rb' }
 

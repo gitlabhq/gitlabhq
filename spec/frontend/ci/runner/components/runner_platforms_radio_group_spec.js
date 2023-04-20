@@ -84,7 +84,7 @@ describe('RunnerPlatformsRadioGroup', () => {
     text            | href
     ${'Docker'}     | ${DOCKER_HELP_URL}
     ${'Kubernetes'} | ${KUBERNETES_HELP_URL}
-  `('provides link to "$text" docs', async ({ text, href }) => {
+  `('provides link to "$text" docs', ({ text, href }) => {
     const radio = findFormRadioByText(text);
 
     expect(radio.findComponent(GlLink).attributes()).toEqual({

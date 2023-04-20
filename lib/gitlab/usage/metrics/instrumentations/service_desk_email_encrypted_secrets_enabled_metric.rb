@@ -6,7 +6,7 @@ module Gitlab
       module Instrumentations
         class ServiceDeskEmailEncryptedSecretsEnabledMetric < GenericMetric
           value do
-            Gitlab::ServiceDeskEmail.encrypted_secrets.active?
+            Gitlab::Email::ServiceDeskEmail.encrypted_secrets.active?
           end
         end
       end

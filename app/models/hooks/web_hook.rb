@@ -133,7 +133,7 @@ class WebHook < ApplicationRecord
   def reset_url_variables
     interpolated_url_was = interpolated_url(decrypt_url_was, url_variables_were)
 
-    return if url_variables_were.empty? || interpolated_url_was == interpolated_url
+    return if url_variables_were.blank? || interpolated_url_was == interpolated_url
 
     self.url_variables = {} if url_changed? && url_variables_were.to_a.intersection(url_variables.to_a).any?
   end

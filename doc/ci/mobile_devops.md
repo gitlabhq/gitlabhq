@@ -17,22 +17,23 @@ Mobile DevOps is still in development, but you can:
 - [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
 - [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
 
-## Code Signing
+## Code signing
 
-[Project-level Secure Files](secure_files/index.md) makes it easier to manage key stores, provision profiles,
+With [project-level secure files](secure_files/index.md), you can manage key stores and provision profiles
 and signing certificates directly in a GitLab project.
 
-For a guided walkthrough of this feature, watch the [video demo](https://youtu.be/O7FbJu3H2YM).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Project-level secure files demo](https://youtu.be/O7FbJu3H2YM).
 
-## Review Apps for Mobile
+## Review apps for mobile
 
-You can use [Review Apps](review_apps/index.md) to preview changes directly from a merge request.
-Review Apps for Mobile brings that capability to mobile developers through an integration
-with [Appetize](https://appetize.io/).
+You can use [review apps](review_apps/index.md) to preview changes directly from a merge request.
+This feature is possible through an integration with [Appetize.io](https://appetize.io/).
 
-Watch a [video walkthrough](https://youtu.be/X15mI19TXa4) of this feature, or visit the
-[setup instructions](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/15)
-to get started.
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Review apps for mobile setup instructions](https://youtu.be/X15mI19TXa4).
+
+To get started, see the [setup instructions](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/15).
 
 ## Mobile SAST
 
@@ -40,3 +41,12 @@ You can use [Static Application Security Testing (SAST)](../user/application_sec
 to run static analyzers on code to check for known security vulnerabilities. Mobile SAST
 expands this functionality for mobile teams with an [experimental SAST feature](../user/application_security/sast/index.md#experimental-features)
 based on [Mobile Security Framework (MobSF)](https://github.com/MobSF/Mobile-Security-Framework-MobSF).
+
+## Automated releases
+
+With the [Apple App Store integration](../user/project/integrations/apple_app_store.md), you can configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com/) to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Apple App Store integration demo](https://youtu.be/CwzAWVgJeK8).
+
+With the [Google Play integration](../user/project/integrations/google_play.md), you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console) to build and release apps for Android devices.

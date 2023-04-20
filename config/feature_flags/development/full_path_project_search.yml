@@ -1,8 +1,0 @@
----
-name: full_path_project_search
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388473
-milestone: '15.9'
-type: development
-group: group::threat insights
-default_enabled: true

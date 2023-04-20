@@ -1,9 +1,11 @@
-import { GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { s__ } from '~/locale';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
@@ -30,6 +32,7 @@ describe('PackagesListApp', () => {
     emptyListIllustration: 'emptyListIllustration',
     isGroupPage: true,
     fullPath: 'gitlab-org',
+    settingsPath: 'settings-path',
   };
 
   const PackageList = {
@@ -49,6 +52,7 @@ describe('PackagesListApp', () => {
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
+  const findSettingsLink = () => wrapper.findComponent(GlButton);
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
@@ -71,13 +75,17 @@ describe('PackagesListApp', () => {
         GlLoadingIcon,
         GlSprintf,
         GlLink,
+        PackageTitle,
         PackageList,
         DeletePackages,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
 
-  const waitForFirstRequest = async () => {
+  const waitForFirstRequest = () => {
     // emit a search update so the query is executed
     findSearch().vm.$emit('update', { sort: 'NAME_DESC', filters: [] });
     return waitForPromises();
@@ -100,6 +108,52 @@ describe('PackagesListApp', () => {
     expect(findPackageTitle().props()).toMatchObject({
       count: 2,
       helpUrl: PACKAGE_HELP_URL,
+    });
+  });
+
+  describe('link to settings', () => {
+    describe('when settings path is not provided', () => {
+      beforeEach(() => {
+        mountComponent({
+          provide: {
+            ...defaultProvide,
+            settingsPath: '',
+          },
+        });
+      });
+
+      it('is not rendered', () => {
+        expect(findSettingsLink().exists()).toBe(false);
+      });
+    });
+
+    describe('when settings path is provided', () => {
+      const label = s__('PackageRegistry|Configure in settings');
+
+      beforeEach(() => {
+        mountComponent();
+      });
+
+      it('is rendered', () => {
+        expect(findSettingsLink().exists()).toBe(true);
+      });
+
+      it('has the right icon', () => {
+        expect(findSettingsLink().props('icon')).toBe('settings');
+      });
+
+      it('has the right attributes', () => {
+        expect(findSettingsLink().attributes()).toMatchObject({
+          'aria-label': label,
+          href: defaultProvide.settingsPath,
+        });
+      });
+
+      it('sets tooltip with right label', () => {
+        const tooltip = getBinding(findSettingsLink().element, 'gl-tooltip');
+
+        expect(tooltip.value).toBe(label);
+      });
     });
   });
 
@@ -141,6 +195,11 @@ describe('PackagesListApp', () => {
         list: expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
         isLoading: false,
         pageInfo: expect.objectContaining({ endCursor: pagination().endCursor }),
+        groupSettings: expect.objectContaining({
+          mavenPackageRequestsForwarding: true,
+          npmPackageRequestsForwarding: true,
+          pypiPackageRequestsForwarding: true,
+        }),
       });
     });
 
@@ -190,6 +249,16 @@ describe('PackagesListApp', () => {
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({ isGroupPage, [sortType]: 'NAME_DESC' }),
       );
+    });
+
+    it('list component has group settings prop set', () => {
+      expect(findListComponent().props()).toMatchObject({
+        groupSettings: expect.objectContaining({
+          mavenPackageRequestsForwarding: true,
+          npmPackageRequestsForwarding: true,
+          pypiPackageRequestsForwarding: true,
+        }),
+      });
     });
   });
 

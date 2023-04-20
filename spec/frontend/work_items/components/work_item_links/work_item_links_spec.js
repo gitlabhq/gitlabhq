@@ -179,7 +179,7 @@ describe('WorkItemLinks', () => {
     expect(findWorkItemLinkChildItems()).toHaveLength(4);
   });
 
-  it('shows alert when list loading fails', async () => {
+  it('shows an alert when list loading fails', async () => {
     const errorMessage = 'Some error';
     await createComponent({
       fetchHandler: jest.fn().mockRejectedValue(new Error(errorMessage)),

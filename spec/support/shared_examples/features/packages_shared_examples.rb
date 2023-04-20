@@ -30,6 +30,45 @@ RSpec.shared_examples 'package details link' do |property|
 
     expect(page).to have_content('Installation')
     expect(page).to have_content('Registry setup')
+    expect(page).to have_content('Other versions 0')
+  end
+
+  context 'with other versions' do
+    let_it_be(:npm_package1) { create(:npm_package, project: project, name: 'zzz', version: '1.1.0') }
+    let_it_be(:npm_package2) { create(:npm_package, project: project, name: 'zzz', version: '1.2.0') }
+
+    before do
+      page.within(packages_table_selector) do
+        first(:link, package.name).click
+      end
+    end
+
+    it 'shows tab with count' do
+      expect(page).to have_content('Other versions 2')
+    end
+
+    it 'visiting tab shows total on page' do
+      click_link 'Other versions'
+
+      expect(page).to have_content('2 versions')
+    end
+
+    it 'deleting version updates count' do
+      click_link 'Other versions'
+
+      find('[data-testid="delete-dropdown"]', match: :first).click
+      find('[data-testid="action-delete"]', match: :first).click
+      click_button('Permanently delete')
+
+      expect(page).to have_content 'Package deleted successfully'
+
+      expect(page).to have_content('Other versions 1')
+      expect(page).to have_content('1 version')
+
+      expect(page).not_to have_content('1.0.0')
+      expect(page).to have_content('1.1.0')
+      expect(page).to have_content('1.2.0')
+    end
   end
 end
 

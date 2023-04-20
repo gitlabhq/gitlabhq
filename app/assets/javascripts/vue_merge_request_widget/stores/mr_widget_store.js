@@ -1,5 +1,6 @@
 import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { badgeState } from '~/issuable/components/status_box.vue';
+import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN } from '~/issues/constants';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { machine } from '~/lib/utils/finite_state_machine';
 import {
@@ -121,7 +122,7 @@ export default class MergeRequestStore {
     this.ffOnlyEnabled = data.ff_only_enabled;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.mergeRequestState = data.state;
-    this.isOpen = this.mergeRequestState === 'opened';
+    this.isOpen = this.mergeRequestState === STATUS_OPEN;
     this.latestSHA = data.diff_head_sha;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
@@ -139,7 +140,7 @@ export default class MergeRequestStore {
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked =
       data.only_allow_merge_if_pipeline_succeeds && pipelineStatus?.group === 'manual';
-    this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
+    this.faviconOverlayPath = data.favicon_overlay_path;
     this.terraformReportsPath = data.terraform_reports_path;
     this.testResultsPath = data.test_reports_path;
     this.accessibilityReportPath = data.accessibility_report_path;
@@ -236,11 +237,11 @@ export default class MergeRequestStore {
       this.state = getStateKey.call(this);
     } else {
       switch (this.mergeRequestState) {
-        case 'merged':
-          this.state = 'merged';
+        case STATUS_MERGED:
+          this.state = STATUS_MERGED;
           break;
-        case 'closed':
-          this.state = 'closed';
+        case STATUS_CLOSED:
+          this.state = STATUS_CLOSED;
           break;
         default:
           this.state = null;

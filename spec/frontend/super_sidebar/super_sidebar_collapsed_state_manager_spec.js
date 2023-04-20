@@ -1,16 +1,14 @@
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { sidebarState } from '~/super_sidebar/constants';
 import {
   SIDEBAR_COLLAPSED_CLASS,
   SIDEBAR_COLLAPSED_COOKIE,
   SIDEBAR_COLLAPSED_COOKIE_EXPIRATION,
   toggleSuperSidebarCollapsed,
   initSuperSidebarCollapsedState,
-  bindSuperSidebarCollapsedEvents,
   findPage,
-  findSidebar,
-  findToggles,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 
 const { xl, sm } = breakpoints;
@@ -33,7 +31,6 @@ describe('Super Sidebar Collapsed State Manager', () => {
     setHTMLFixture(`
       <div class="page-with-super-sidebar">
         <aside class="super-sidebar"></aside>
-        <button class="js-super-sidebar-toggle"></button>
       </div>
     `);
   });
@@ -61,8 +58,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
         toggleSuperSidebarCollapsed(collapsed, saveCookie);
 
         pageHasCollapsedClass(hasClass);
-        expect(findSidebar().ariaHidden).toBe(collapsed);
-        expect(findSidebar().inert).toBe(collapsed);
+        expect(sidebarState.isCollapsed).toBe(collapsed);
 
         if (saveCookie && windowWidth >= xl) {
           expect(setCookie).toHaveBeenCalledWith(SIDEBAR_COLLAPSED_COOKIE, collapsed, {
@@ -73,29 +69,6 @@ describe('Super Sidebar Collapsed State Manager', () => {
         }
       },
     );
-
-    describe('focus', () => {
-      it.each`
-        collapsed | isUserAction
-        ${false}  | ${true}
-        ${false}  | ${false}
-        ${true}   | ${true}
-        ${true}   | ${false}
-      `(
-        'when collapsed is $collapsed, isUserAction is $isUserAction',
-        ({ collapsed, isUserAction }) => {
-          const sidebar = findSidebar();
-          jest.spyOn(sidebar, 'focus');
-          toggleSuperSidebarCollapsed(collapsed, false, isUserAction);
-
-          if (!collapsed && isUserAction) {
-            expect(sidebar.focus).toHaveBeenCalled();
-          } else {
-            expect(sidebar.focus).not.toHaveBeenCalled();
-          }
-        },
-      );
-    });
   });
 
   describe('initSuperSidebarCollapsedState', () => {
@@ -115,42 +88,6 @@ describe('Super Sidebar Collapsed State Manager', () => {
 
         pageHasCollapsedClass(hasClass);
         expect(setCookie).not.toHaveBeenCalled();
-      },
-    );
-  });
-
-  describe('bindSuperSidebarCollapsedEvents', () => {
-    it.each`
-      windowWidth | cookie       | hasClass
-      ${xl}       | ${undefined} | ${true}
-      ${sm}       | ${undefined} | ${true}
-      ${xl}       | ${'true'}    | ${false}
-      ${sm}       | ${'true'}    | ${false}
-    `(
-      'toggle click sets page class to `page-with-super-sidebar-collapsed` when windowWidth is $windowWidth and cookie value is $cookie',
-      ({ windowWidth, cookie, hasClass }) => {
-        setHTMLFixture(`
-          <div class="page-with-super-sidebar ${cookie ? SIDEBAR_COLLAPSED_CLASS : ''}">
-            <aside class="super-sidebar"></aside>
-            <button class="js-super-sidebar-toggle"></button>
-          </div>
-        `);
-        jest.spyOn(bp, 'windowWidth').mockReturnValue(windowWidth);
-        getCookie.mockReturnValue(cookie);
-
-        bindSuperSidebarCollapsedEvents();
-
-        findToggles()[0].click();
-
-        pageHasCollapsedClass(hasClass);
-
-        if (windowWidth >= xl) {
-          expect(setCookie).toHaveBeenCalledWith(SIDEBAR_COLLAPSED_COOKIE, !cookie, {
-            expires: SIDEBAR_COLLAPSED_COOKIE_EXPIRATION,
-          });
-        } else {
-          expect(setCookie).not.toHaveBeenCalled();
-        }
       },
     );
   });

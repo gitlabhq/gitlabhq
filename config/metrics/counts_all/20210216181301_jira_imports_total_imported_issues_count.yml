@@ -6,7 +6,6 @@ description: Count of total issues imported via the Jira Importer
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: jira_importer
 value_type: number
 status: active
 time_frame: all

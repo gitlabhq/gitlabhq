@@ -67,6 +67,17 @@ RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, featur
 
         expect(assigns(:migrations)).to match_array([main_database_migration])
       end
+
+      context 'for finalizing tab' do
+        let!(:finalizing_migration) { create(:batched_background_migration, :finalizing) }
+
+        it 'returns only finalizing migration' do
+          get admin_background_migrations_path(tab: 'finalizing')
+
+          expect(Gitlab::Database::BackgroundMigration::BatchedMigration.queued).not_to be_empty
+          expect(assigns(:migrations)).to match_array(Array.wrap(finalizing_migration))
+        end
+      end
     end
 
     context 'when multiple database is enabled', :add_ci_connection do

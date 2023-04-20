@@ -24,9 +24,18 @@ module Gitlab
         'favicon-blue.png'
       end
 
-      def status_overlay(status_name)
+      def ci_status_overlay(status_name)
         path = File.join(
           'ci_favicons',
+          "#{status_name}.png"
+        )
+
+        ActionController::Base.helpers.image_path(path, host: host)
+      end
+
+      def mr_status_overlay(status_name)
+        path = File.join(
+          'mr_favicons',
           "#{status_name}.png"
         )
 

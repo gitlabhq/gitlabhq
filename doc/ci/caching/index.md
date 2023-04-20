@@ -38,7 +38,7 @@ can't link to files outside it.
 - Subsequent jobs in later stages of the same pipeline can use artifacts.
 - Different projects cannot share artifacts.
 - Artifacts expire after 30 days by default. You can define a custom [expiration time](../yaml/index.md#artifactsexpire_in).
-- The latest artifacts do not expire if [keep latest artifacts](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) is enabled.
+- The latest artifacts do not expire if [keep latest artifacts](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) is enabled.
 - Use [dependencies](../yaml/index.md#dependencies) to control which jobs fetch the artifacts.
 
 ## Good caching practices
@@ -65,7 +65,7 @@ For runners to work with caches efficiently, you must do one of the following:
 ## Use multiple caches
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32814) in GitLab 13.10.
-> - [Feature Flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321877), in GitLab 13.12.
 
 You can have a maximum of four caches:
 
@@ -331,8 +331,8 @@ before_script:
 test:
   script:
     - python setup.py test
-    - pip install flake8
-    - flake8 .
+    - pip install ruff
+    - ruff --format=gitlab .
 ```
 
 ### Cache Ruby dependencies

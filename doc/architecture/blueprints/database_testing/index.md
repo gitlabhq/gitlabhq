@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: implemented
 creation-date: "2021-02-08"
 authors: [ "@abrandl" ]
 coach: "@glopezfernandez"
@@ -8,7 +8,14 @@ owning-stage: "~devops::data_stores"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Database Testing
+
+**Notice:** This blueprint has been partially implemented. We still plan to
+iterate on the tooling. The content below is a historical version of the
+blueprint, written prior to incorporating database testing into our development
+workflow.
 
 We have identified [common themes of reverted migrations](https://gitlab.com/gitlab-org/gitlab/-/issues/233391) and discovered failed migrations breaking in both production and staging even when successfully tested in a developer environment. We have also experienced production incidents even with successful testing in staging. These failures are quite expensive: they can have a significant effect on availability, block deployments, and generate incident escalations. These escalations must be triaged and either reverted or fixed forward. Often, this can take place without the original author's involvement due to time zones and/or the criticality of the escalation. With our increased deployment speeds and stricter uptime requirements, the need for improving database testing is critical, particularly earlier in the development process (shift left).
 
@@ -86,13 +93,13 @@ The short-term focus is on testing regular migrations (typically schema changes)
 
 In order to secure this process and meet compliance goals, the runner environment is treated as a *production* environment and similarly locked down, monitored and audited. Only Database Maintainers have access to the CI pipeline and its job output. Everyone else can only see the results and statistics posted back on the merge request.
 
-We implement a secured CI pipeline on <https://ops.gitlab.net> that adds the execution steps outlined above. The goal is to secure this pipeline to solve the following problem:
+We implement a secured CI pipeline on [Internal GitLab for Operations](https://ops.gitlab.net/users/sign_in) that adds the execution steps outlined above. The goal is to secure this pipeline to solve the following problem:
 
 Make sure we strongly protect production data, even though we allow everyone (GitLab team/developers) to execute arbitrary code on the thin-clone which contains production data.
 
 This is in principle achieved by locking down the GitLab Runner instance executing the code and its containers on a network level, such that no data can escape over the network. We make sure no communication can happen to the outside world from within the container executing the GitLab Rails code (and its database migrations).
 
-Furthermore, we limit the ability to view the results of the jobs (including the output printed from code) to Maintainer and Owner level on the <https://ops.gitlab.net> pipeline and provide only a high level summary back to the original MR. If there are issues or errors in one of the jobs run, the database Maintainer assigned to review the MR can check the original job for more details.
+Furthermore, we limit the ability to view the results of the jobs (including the output printed from code) to Maintainer and Owner level on the [Internal GitLab for Operations](https://ops.gitlab.net/users/sign_in) pipeline and provide only a high level summary back to the original MR. If there are issues or errors in one of the jobs run, the database Maintainer assigned to review the MR can check the original job for more details.
 
 With this step implemented, we already have the ability to execute database migrations on the thin-cloned GitLab.com database automatically from GitLab CI and provide feedback back to the merge request and the developer. The content of that feedback is expected to evolve over time and we can continuously add to this.
 

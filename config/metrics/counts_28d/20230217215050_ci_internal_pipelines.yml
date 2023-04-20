@@ -4,7 +4,6 @@ description: Total monthly (28D) pipelines in Gitlab repositories for all projec
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution
-product_category: continuous_integration
 value_type: number
 status: active
 milestone: "15.10"

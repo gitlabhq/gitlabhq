@@ -26,7 +26,7 @@ module QA
           def go_to_infrastructure_registry
             hover_registry do
               within_submenu do
-                click_link('Infrastructure Registry')
+                click_link('Terraform modules')
               end
             end
           end

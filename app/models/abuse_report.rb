@@ -3,8 +3,11 @@
 class AbuseReport < ApplicationRecord
   include CacheMarkdownField
   include Sortable
+  include Gitlab::FileTypeDetection
+  include WithUploads
 
   MAX_CHAR_LIMIT_URL = 512
+  MAX_FILE_SIZE = 1.megabyte
 
   cache_markdown_field :message, pipeline: :single_line
 
@@ -41,6 +44,10 @@ class AbuseReport < ApplicationRecord
 
   before_validation :filter_empty_strings_from_links_to_spam
   validate :links_to_spam_contains_valid_urls
+
+  mount_uploader :screenshot, AttachmentUploader
+  validates :screenshot, file_size: { maximum: MAX_FILE_SIZE }
+  validate :validate_screenshot_is_image
 
   scope :by_user_id, ->(id) { where(user_id: id) }
   scope :by_reporter_id, ->(id) { where(reporter_id: id) }
@@ -84,6 +91,20 @@ class AbuseReport < ApplicationRecord
     AbuseReportMailer.notify(id).deliver_later
   end
 
+  def screenshot_path
+    return unless screenshot
+    return screenshot.url unless screenshot.upload
+
+    asset_host = ActionController::Base.asset_host || Gitlab.config.gitlab.base_url
+    local_path = Gitlab::Routing.url_helpers.abuse_report_upload_path(
+      filename: screenshot.filename,
+      id: screenshot.upload.model_id,
+      model: 'abuse_report',
+      mounted_as: 'screenshot')
+
+    Gitlab::Utils.append_path(asset_host, local_path)
+  end
+
   private
 
   def filter_empty_strings_from_links_to_spam
@@ -112,5 +133,25 @@ class AbuseReport < ApplicationRecord
     end
   rescue ::Gitlab::UrlBlocker::BlockedUrlError
     errors.add(:links_to_spam, _('only supports valid HTTP(S) URLs'))
+  end
+
+  def filename
+    screenshot&.filename
+  end
+
+  def valid_image_extensions
+    Gitlab::FileTypeDetection::SAFE_IMAGE_EXT
+  end
+
+  def validate_screenshot_is_image
+    return if screenshot.blank?
+    return if image?
+
+    errors.add(
+      :screenshot,
+      format(
+        _('must match one of the following file types: %{extension_list}'),
+        extension_list: valid_image_extensions.to_sentence(last_word_connector: ' or '))
+    )
   end
 end

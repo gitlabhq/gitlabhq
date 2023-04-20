@@ -39,8 +39,11 @@ module WebHooks
       scope :disabled, -> do
         return none unless auto_disabling_enabled?
 
-        where('recent_failures > ? AND (disabled_until IS NULL OR disabled_until >= ?)',
-              FAILURE_THRESHOLD, Time.current)
+        where(
+          'recent_failures > ? AND (disabled_until IS NULL OR disabled_until >= ?)',
+          FAILURE_THRESHOLD,
+          Time.current
+        )
       end
 
       # A hook is executable if:
@@ -52,8 +55,12 @@ module WebHooks
       scope :executable, -> do
         return all unless auto_disabling_enabled?
 
-        where('recent_failures <= ? OR (recent_failures > ? AND (disabled_until IS NOT NULL) AND (disabled_until < ?))',
-              FAILURE_THRESHOLD, FAILURE_THRESHOLD, Time.current)
+        where(
+          'recent_failures <= ? OR (recent_failures > ? AND (disabled_until IS NOT NULL) AND (disabled_until < ?))',
+          FAILURE_THRESHOLD,
+          FAILURE_THRESHOLD,
+          Time.current
+        )
       end
     end
 

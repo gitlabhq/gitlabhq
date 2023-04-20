@@ -10,10 +10,10 @@ If you have problems with [migrating projects using file exports](import_export.
 
 ## Troubleshooting commands
 
-Finds information about the status of the import and further logs using the JID:
+Finds information about the status of the import and further logs using the JID,
+using the [Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
-# Rails console
 Project.find_by_full_path('group/project').import_state.slice(:jid, :status, :last_error)
 > {"jid"=>"414dec93f941a593ea1a6894", "status"=>"finished", "last_error"=>nil}
 ```
@@ -34,6 +34,27 @@ Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and
 
 - Ensure shared runners are enabled in both the source and destination projects.
 - Disable shared runners on the parent group when you import the project.
+
+## Users missing from imported project
+
+If users aren't imported with imported projects, see the [preserving user contributions](import_export.md#preserving-user-contributions) requirements.
+
+A common reason for missing users is that the [public email setting](../../profile/index.md#set-your-public-email) isn't configured for users.
+To resolve this issue, ask users to configure this setting using the GitLab UI.
+
+If there are too many users for manual configuration to be feasible,
+you can set all user profiles to use a public email address using the
+[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+User.where("public_email IS NULL OR public_email = '' ").find_each do |u|
+  next if u.bot?
+
+  puts "Setting #{u.username}'s currently empty public email to #{u.email}…"
+  u.public_email = u.email
+  u.save!
+end
+```
 
 ## Import workarounds for large repositories
 
@@ -153,12 +174,12 @@ Rather than attempting to push all changes at once, this workaround:
 
 You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data) or through [the API](../../../api/project_import_export.md). Exporting using these
 methods can sometimes fail without giving enough information to troubleshoot. In these cases,
-[open a rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
+[open a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
 [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/projects/import_export/export_service.rb).
 Execute each line individually, rather than pasting the entire block at once, so you can see any
 errors each command returns.
 
-```shell
+```ruby
 # User needs to have permission to export
 u = User.find_by_username('someuser')
 p = Project.find_by_full_path('some/project')

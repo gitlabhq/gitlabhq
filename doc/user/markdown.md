@@ -211,27 +211,44 @@ For more information, see the [Kroki integration](../administration/integration/
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emojis).
 
+::Tabs
+
+:::TabTitle Rendered Markdown
+
+<!-- vale gitlab.Markdown_emoji = NO -->
+
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">. Well we have a gift for you:
+
+<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/zap.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;"  title=":zap:" alt=":zap:">You can use emoji anywhere GitLab Flavored Markdown is supported. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/v.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":v:" alt=":v:">
+
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/bug.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":bug:" alt=":bug:"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speak_no_evil:" alt=":speak_no_evil:"> patches. If someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/snail.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":snail:" alt=":snail:"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":birthday:" alt=":birthday:">. People <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/heart.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":heart:" alt=":heart:"> you for that.
+
+If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":fearful:" alt=":fearful:">. You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:">. Just look up one of the supported codes.
+
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
+
+<!-- vale gitlab.Markdown_emoji = YES -->
+
+:::TabTitle Code
+
 ```markdown
-Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
+Sometimes you want to :monkey: around a bit and add some :star2: to your
+:speech_balloon:. Well we have a gift for you:
 
 :zap: You can use emoji anywhere GitLab Flavored Markdown is supported. :v:
 
-You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People :heart: you for that.
+You can use it to point out a :bug: or warn about :speak_no_evil: patches.
+And if someone improves your really :snail: code, send them some :birthday:.
+People :heart: you for that.
 
-If you're new to this, don't be :fearful:. You can join the emoji :family:. Just look up one of the supported codes.
+If you're new to this, don't be :fearful:. You can join the emoji :family:.
+Just look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/)
+for a list of all supported emoji codes. :thumbsup:
 ```
 
-Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. Well we have a gift for you:
-
-<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/zap.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">You can use emoji anywhere GitLab Flavored Markdown is supported. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/v.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">
-
-You can use it to point out a<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/bug.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> patches. If someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/snail.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. People <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/heart.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> you for that.
-
-If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/family.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. Just look up one of the supported codes.
-
-Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">
+::EndTabs
 
 #### Emojis and your operating system
 
@@ -248,6 +265,8 @@ to get full native emoji support. Ubuntu 18.04 (like many modern Linux distribut
 this font installed by default.
 
 <!-- vale gitlab.Spelling = YES -->
+
+To learn more about adding custom emojis, see [Custom emoji](award_emojis.md#custom-emojis).
 
 ### Front matter
 
@@ -362,6 +381,10 @@ _KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX.
 This syntax also works for the Asciidoctor `:stem: latexmath`. For details, see
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
+To prevent malicious activity, GitLab renders only the first 50 inline math instances.
+The number of math blocks is also limited based on render time. If the limit is exceeded,
+GitLab renders the excess math instances as text.
+
 Math written between dollar signs with backticks (``$`...`$``) or single dollar signs (`$...$`)
 is rendered inline with the text.
 
@@ -371,15 +394,15 @@ the language declared as `math` is rendered on a separate line:
 ````markdown
 This math is inline: $`a^2+b^2=c^2`$.
 
-This math is on a separate line:
+This math is on a separate line using a ```` ```math ```` block:
 
 ```math
 a^2+b^2=c^2
 ```
 
-This math is on a separate line: $$a^2+b^2=c^2$$
+This math is on a separate line using inline `$$`: $$a^2+b^2=c^2$$
 
-This math is on a separate line:
+This math is on a separate line using a `$$...$$` block:
 
 $$
 a^2+b^2=c^2
@@ -388,23 +411,15 @@ $$
 
 This math is inline: $`a^2+b^2=c^2`$.
 
-This math is on a separate line:
+This math is on a separate line using a ```` ```math ```` block:
 
 ```math
 a^2+b^2=c^2
 ```
 
-This math is on a separate line: $$a^2+b^2=c^2$$
+This math is on a separate line using inline `$$`: $$a^2+b^2=c^2$$
 
-This math is on a separate line:
-
-$$
-a^2+b^2=c^2
-$$
-
-This math is on a separate line: $$a^2+b^2=c^2$$
-
-This math is on a separate line:
+This math is on a separate line using a `$$...$$` block:
 
 $$
 a^2+b^2=c^2
@@ -736,13 +751,17 @@ you can quote that without having to manually prepend `>` to every line!
 
 ```
 
->>>
-If you paste a message from somewhere else
+<!--
+Use a standard blockquote here until https://gitlab.com/gitlab-org/gitlab/-/issues/390290
+gets properly fixed. The mixture of HTML comments and HTML tags
+trigger this problem.
+-->
 
-that spans multiple lines,
-
-you can quote that without having to manually prepend `>` to every line!
->>>
+> If you paste a message from somewhere else
+>
+> that spans multiple lines,
+>
+> you can quote that without having to manually prepend `>` to every line!
 
 ### Code spans and blocks
 
@@ -807,7 +826,7 @@ Tildes are OK too.
 If this section isn't rendered correctly,
 [view it in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
 
-GitLab uses the [Rouge Ruby library](http://rouge.jneen.net/) for more colorful syntax
+GitLab uses the [Rouge Ruby library](https://github.com/rouge-ruby/rouge) for more colorful syntax
 highlighting in code blocks. For a list of supported languages visit the
 [Rouge project wiki](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers).
 Syntax highlighting is supported only in code blocks, so you can't highlight inline code.

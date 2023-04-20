@@ -41,44 +41,45 @@ Meanwhile:
 - Your team saves time by not having to leave GitLab (or set up integrations) to follow up with
   your customer.
 
-## Configuring Service Desk
+## Configure Service Desk
 
-Users with Maintainer and higher access in a project can configure Service Desk.
+To start using Service Desk for a project, you must first turn it on.
+By default, Service Desk is turned off.
 
-Service Desk issues are [confidential](issues/confidential_issues.md), so they are
-only visible to project members.
+Prerequisites:
 
-If you have [templates](description_templates.md) in your repository, you can optionally select
-one from the selector menu to append it to all Service Desk issues.
+- You must have at least the Maintainer role for the project.
+- On GitLab self-managed, you must [set up incoming email](../../administration/incoming_email.md#set-it-up)
+  for the GitLab instance. You should use
+  [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
+  but you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
+  To do this, you must have administrator access.
 
 To enable Service Desk in your project:
 
-1. (GitLab self-managed only) [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance.
-   You should use [email sub-addressing](../../administration/incoming_email.md#email-sub-addressing),
-   but you can also use [catch-all mailboxes](../../administration/incoming_email.md#catch-all-mailbox).
-1. In a project, in the left sidebar, go to **Settings > General** and expand the **Service Desk** section.
-1. Enable the **Activate Service Desk** toggle. This reveals a unique email address to email issues
-   to the project.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Service Desk**.
+1. Turn on the **Activate Service Desk** toggle.
+1. Optional. Complete the fields.
+   - [Add a suffix](#configure-a-custom-email-address-suffix) to your Service Desk email address.
+   - If the list below **Template to append to all Service Desk issues** is empty, create a
+     [description template](description_templates.md) in your repository.
+1. Select **Save changes**.
 
-Service Desk is now enabled for this project! To access it in a project, in the left sidebar, select
-**Issues > Service Desk**.
+Service Desk is now enabled for this project.
+If anyone sends an email to the address available below **Email address to use for Support Desk**,
+GitLab creates a confidential issue with the email's content.
 
-WARNING:
-Anyone in your project can use the Service Desk email address to create an issue in this project, **regardless
-of their access level** to your GitLab instance.
+### Improve your project's security
 
-To improve your project's security, you should:
+To improve your Service Desk project's security, you should:
 
 - Put the Service Desk email address behind an alias on your email system so you can change it later.
 - [Enable Akismet](../../integration/akismet.md) on your GitLab instance to add spam checking to this service.
   Unblocked email spam can result in many spam issues being created.
 
-The unique internal email address is visible to project members at least
-the Reporter role in your GitLab instance.
-An external user (issue creator) cannot see the internal email address
-displayed in the information note.
-
-### Using customized email templates
+### Create customized email templates
 
 > - Moved from GitLab Premium to GitLab Free in 13.2.
 > - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
@@ -89,14 +90,6 @@ An email is sent to the author when:
 - A new note is created on a Service Desk issue.
 
 You can customize the body of these email messages with templates.
-Save your templates in the `.gitlab/service_desk_templates/`
-directory in your repository.
-
-With Service Desk, you can use templates for:
-
-- [Thank you emails](#thank-you-email)
-- [New note emails](#new-note-email)
-- [New Service Desk issues](#new-service-desk-issues)
 
 #### Email header and footer **(FREE SELF)**
 
@@ -109,7 +102,9 @@ visible in the email template. For more information, see
 #### Thank you email
 
 When a user submits an issue through Service Desk, GitLab sends a **thank you email**.
-You must name the template file `thank_you.md`.
+
+To create a custom email template, in the `.gitlab/service_desk_templates/`
+directory in your repository, create a file named `thank_you.md`.
 
 You can use these placeholders to be automatically replaced in each email:
 
@@ -126,7 +121,9 @@ the response email does not contain the issue link.
 #### New note email
 
 When a user-submitted issue receives a new comment, GitLab sends a **new note email**.
-You must name the template file `new_note.md`.
+
+To create a custom email template, in the `.gitlab/service_desk_templates/`
+directory in your repository, create a file named `new_note.md`.
 
 You can use these placeholders to be automatically replaced in each email:
 
@@ -138,7 +135,7 @@ You can use these placeholders to be automatically replaced in each email:
 - `%{SYSTEM_FOOTER}`: [system footer message](../admin_area/appearance.md#system-header-and-footer-messages)
 - `%{ADDITIONAL_TEXT}`: [custom additional text](../admin_area/settings/email.md#custom-additional-text)
 
-#### New Service Desk issues
+### Use a custom template for Service Desk issues
 
 You can select one [description template](description_templates.md#create-an-issue-template)
 **per project** to be appended to every new Service Desk issue's description.
@@ -151,44 +148,57 @@ You can set description templates at various levels:
 
 The templates are inherited. For example, in a project, you can also access templates set for the instance, or the project's parent groups.
 
+Prerequisite:
+
+- You must have [created a description template](description_templates.md#create-an-issue-template).
+
 To use a custom description template with Service Desk:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. [Create a description template](description_templates.md#create-an-issue-template).
-1. On the left sidebar, select **Settings > General > Service Desk**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
 
-### Using a custom email display name
+### Support Bot user
 
-You can customize the email display name. Emails sent from Service Desk have
+Behind the scenes, Service Desk works by the special Support Bot user creating issues.
+This user isn't a [billable user](../../subscriptions/self_managed/index.md#billable-users),
+so it does not count toward the license limit count.
+
+#### Change the Support Bot's display name
+
+You can change the display name of the Support Bot user. Emails sent from Service Desk have
 this name in the `From` header. The default display name is `GitLab Support Bot`.
 
 To edit the custom email display name:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General > Service Desk**.
-1. Enter a new name in **Email display name**.
-1. Select **Save Changes**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Service Desk**.
+1. Below **Email display name**, enter a new name.
+1. Select **Save changes**.
 
-### Using a custom email address **(FREE SELF)**
+### Use a custom email address **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
 
-It is possible to customize the email address used by Service Desk. To do this, you must configure
-a [custom mailbox](#configuring-a-custom-mailbox). If you want you can also configure a
-[custom suffix](#configuring-a-custom-email-address-suffix).
+You can use a custom email address with Service Desk.
 
-#### Configuring a custom mailbox
+To do this, you must configure
+a [custom mailbox](#configure-a-custom-mailbox). You can also configure a
+[custom suffix](#configure-a-custom-email-address-suffix).
+
+#### Configure a custom mailbox
 
 NOTE:
 On GitLab.com a custom mailbox is already configured with `contact-project+%{key}@incoming.gitlab.com` as the email address, you can still configure the
-[custom suffix](#configuring-a-custom-email-address-suffix) in project settings.
+[custom suffix](#configure-a-custom-email-address-suffix) in project settings.
 
 Service Desk uses the [incoming email](../../administration/incoming_email.md)
 configuration by default. However, by using the `service_desk_email` configuration,
 you can customize the mailbox used by Service Desk. This allows you to have
-a separate email address for Service Desk by also configuring a [custom suffix](#configuring-a-custom-email-address-suffix)
+a separate email address for Service Desk by also configuring a [custom suffix](#configure-a-custom-email-address-suffix)
 in project settings.
 
 Prerequisites:
@@ -255,7 +265,7 @@ The configuration options are the same as for configuring
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
 
 Instead of having the Service Desk email credentials stored in plaintext in the configuration files, you can optionally
-use an encrypted file for the Incoming email credentials.
+use an encrypted file for the incoming email credentials.
 
 Prerequisites:
 
@@ -384,7 +394,8 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 > - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 Service Desk can be configured to read Microsoft Exchange Online mailboxes with the Microsoft
-Graph API instead of IMAP. Follow the [documentation in the incoming email section for setting up an OAuth 2.0 application for Microsoft Graph](../../administration/incoming_email.md#microsoft-graph).
+Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
+[the same way as for incoming email](../../administration/incoming_email.md#microsoft-graph).
 
 - Example for Omnibus GitLab installations:
 
@@ -403,31 +414,43 @@ Graph API instead of IMAP. Follow the [documentation in the incoming email secti
   }
   ```
 
-For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments), configure the `azure_ad_endpoint` and `graph_endpoint` settings.
+For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+configure the `azure_ad_endpoint` and `graph_endpoint` settings.
 
 - Example for Microsoft Cloud for US Government:
 
 ```ruby
-  gitlab_rails['service_desk_email_inbox_options'] = {
-   'azure_ad_endpoint': 'https://login.microsoftonline.us',
-   'graph_endpoint': 'https://graph.microsoft.us',
-   'tenant_id': '<YOUR-TENANT-ID>',
-   'client_id': '<YOUR-CLIENT-ID>',
-   'client_secret': '<YOUR-CLIENT-SECRET>',
-   'poll_interval': 60  # Optional
-  }
+gitlab_rails['service_desk_email_inbox_options'] = {
+ 'azure_ad_endpoint': 'https://login.microsoftonline.us',
+ 'graph_endpoint': 'https://graph.microsoft.us',
+ 'tenant_id': '<YOUR-TENANT-ID>',
+ 'client_id': '<YOUR-CLIENT-ID>',
+ 'client_secret': '<YOUR-CLIENT-SECRET>',
+ 'poll_interval': 60  # Optional
 }
 ```
 
-The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+The Microsoft Graph API is not yet supported in source installations.
+For more information, see [issue 326169](https://gitlab.com/gitlab-org/gitlab/-/issues/326169).
 
-#### Configuring a custom email address suffix
+#### Configure a custom email address suffix
 
-You can set a custom suffix in your project's Service Desk settings after you have configured a [custom mailbox](#configuring-a-custom-mailbox).
-It can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+You can set a custom suffix in your project's Service Desk settings.
+
+A suffix can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 
 When configured, the custom suffix creates a new Service Desk email address, consisting of the
 `service_desk_email_address` setting and a key of the format: `<project_full_path>-<custom_suffix>`
+
+Prerequisites:
+
+- You must have configured a [custom mailbox](#configure-a-custom-mailbox).
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Service Desk**.
+1. Below **Email address suffix**, enter the suffix to use.
+1. Select **Save changes**.
 
 For example, suppose the `mygroup/myproject` project Service Desk settings has the following configured:
 
@@ -437,12 +460,22 @@ For example, suppose the `mygroup/myproject` project Service Desk settings has t
 The Service Desk email address for this project is: `contact+mygroup-myproject-support@example.com`.
 The [incoming email](../../administration/incoming_email.md) address still works.
 
-If you don't configure the custom suffix, the default project identification is used for identifying the project. You can see that email address in the project settings.
+If you don't configure a custom suffix, the default project identification is used for identifying
+the project.
 
-## Using Service Desk
+## Use Service Desk
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
 In these issues, you can also see our friendly neighborhood [Support Bot](#support-bot-user).
+
+### View Service Desk email address
+
+To check what the Service Desk email address is for your project:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > Service Desk**.
+
+The email address is available at the top of the issue list.
 
 ### As an end user (issue creator)
 
@@ -483,7 +516,32 @@ You can read and write comments as you usually do in GitLab:
 - The project's visibility (private, internal, public) does not affect Service Desk.
 - The path to the project, including its group or namespace, is shown in emails.
 
-#### Receiving files attached to comments as email attachments
+#### View Service Desk issues
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To view Service Desk issues:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > Service Desk**.
+
+### Email contents and formatting
+
+#### Special HTML formatting in HTML emails
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116809) in GitLab 15.11. Feature flag `service_desk_html_to_text_email_handler` removed.
+
+HTML emails show HTML formatting, such as:
+
+- Tables
+- Blockquotes
+- Images
+- Collapsible sections
+
+#### Files attached to comments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
@@ -497,28 +555,12 @@ attachments are sent as part of the email. In other cases, the email contains li
 
 In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
-#### Special HTML formatting in HTML emails
-
-<!-- When the feature flag is removed, delete this topic and add as a line in version history under one of the topics above this one.-->
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372301) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`.
-On GitLab.com, this feature is not available.
-
-When this feature is enabled, HTML emails correctly show additional HTML formatting, such as:
-
-- Tables
-- Blockquotes
-- Images
-- Collapsible sections
-
-#### Privacy considerations
+## Privacy considerations
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
 
-Service Desk issues are confidential, but the project owner can
+Service Desk issues are [confidential](issues/confidential_issues.md), so they are
+only visible to project members. The project owner can
 [make an issue public](issues/confidential_issues.md#modify-issue-confidentiality).
 When a Service Desk issue becomes public, the issue creator's and participants' email addresses are
 visible to signed-in users with at least the Reporter role for the project.
@@ -526,16 +568,17 @@ visible to signed-in users with at least the Reporter role for the project.
 In GitLab 15.8 and earlier, when a Service Desk issue becomes public, the issue creator's email
 address is disclosed to everyone who can view the project.
 
-### Support Bot user
+Anyone in your project can use the Service Desk email address to create an issue in this project, **regardless
+of their role** in the project.
 
-Behind the scenes, Service Desk works by the special Support Bot user creating issues. This user
-does not count toward the license limit count.
+The unique internal email address is visible to project members at least
+the Reporter role in your GitLab instance.
+An external user (issue creator) cannot see the internal email address
+displayed in the information note.
 
 ### Moving a Service Desk issue
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
-
-Service Desk issues can be moved like any other issue in GitLab.
 
 You can move a Service Desk issue the same way you
 [move a regular issue](issues/managing_issues.md#move-an-issue) in GitLab.

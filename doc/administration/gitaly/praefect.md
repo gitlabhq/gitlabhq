@@ -1033,7 +1033,7 @@ For more information on Gitaly server configuration, see our
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Disable all other services on the Praefect node
+   # Disable all other services on the Gitaly node
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
@@ -1181,10 +1181,7 @@ scope of the GitLab documentation.
 
 NOTE:
 The load balancer must be configured to accept traffic from the Gitaly nodes in
-addition to the GitLab nodes. Some requests handled by
-[`gitaly-ruby`](configure_gitaly.md#gitaly-ruby) sidecar processes call into the main Gitaly
-process. `gitaly-ruby` uses the Gitaly address set in the GitLab server's
-`git_data_dirs` setting to make this connection.
+addition to the GitLab nodes.
 
 We hope that if you're managing fault-tolerant systems like GitLab, you have a load balancer
 of choice already. Some examples include [HAProxy](https://www.haproxy.org/)

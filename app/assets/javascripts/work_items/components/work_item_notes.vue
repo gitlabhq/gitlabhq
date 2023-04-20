@@ -1,6 +1,7 @@
 <script>
 import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
@@ -14,7 +15,11 @@ import {
   WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import { getWorkItemNotesQuery } from '~/work_items/utils';
+import {
+  getWorkItemNotesQuery,
+  autocompleteDataSources,
+  markdownPreviewPath,
+} from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
@@ -48,6 +53,10 @@ export default {
       type: String,
       required: true,
     },
+    workItemIid: {
+      type: String,
+      required: true,
+    },
     queryVariables: {
       type: Object,
       required: true,
@@ -70,6 +79,16 @@ export default {
       required: false,
       default: false,
     },
+    assignees: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canSetWorkItemMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -78,6 +97,7 @@ export default {
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+      addNoteKey: uniqueId(`work-item-add-note-${this.workItemId}`),
     };
   },
   computed: {
@@ -102,6 +122,12 @@ export default {
     formAtTop() {
       return this.sortOrder === DESC;
     },
+    markdownPreviewPath() {
+      return markdownPreviewPath(this.fullPath, this.workItemIid);
+    },
+    autocompleteDataSources() {
+      return autocompleteDataSources(this.fullPath, this.workItemIid);
+    },
     workItemCommentFormProps() {
       return {
         queryVariables: this.queryVariables,
@@ -110,6 +136,9 @@ export default {
         fetchByIid: this.fetchByIid,
         workItemType: this.workItemType,
         sortOrder: this.sortOrder,
+        isNewDiscussion: true,
+        markdownPreviewPath: this.markdownPreviewPath,
+        autocompleteDataSources: this.autocompleteDataSources,
       };
     },
     notesArray() {
@@ -252,6 +281,9 @@ export default {
     filterDiscussions(filterValue) {
       this.discussionFilter = filterValue;
     },
+    updateKey() {
+      this.addNoteKey = uniqueId(`work-item-add-note-${this.workItemId}`);
+    },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
       // copied from discussions batch logic - every fetchMore call has a higher
@@ -335,12 +367,17 @@ export default {
     </div>
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
       <template v-if="!initialLoading">
-        <ul class="notes main-notes-list timeline gl-clearfix!">
-          <work-item-add-note
-            v-if="formAtTop && !commentsDisabled"
-            v-bind="workItemCommentFormProps"
-            @error="$emit('error', $event)"
-          />
+        <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
+          <ul class="notes notes-form timeline">
+            <work-item-add-note
+              v-bind="workItemCommentFormProps"
+              :key="addNoteKey"
+              @cancelEditing="updateKey"
+              @error="$emit('error', $event)"
+            />
+          </ul>
+        </div>
+        <ul class="notes main-notes-list timeline">
           <template v-for="discussion in notesArray">
             <system-note
               v-if="isSystemNote(discussion)"
@@ -357,23 +394,31 @@ export default {
                 :fetch-by-iid="fetchByIid"
                 :work-item-type="workItemType"
                 :is-modal="isModal"
+                :autocomplete-data-sources="autocompleteDataSources"
+                :markdown-preview-path="markdownPreviewPath"
+                :assignees="assignees"
+                :can-set-work-item-metadata="canSetWorkItemMetadata"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @error="$emit('error', $event)"
               />
             </template>
           </template>
 
-          <work-item-add-note
-            v-if="!formAtTop && !commentsDisabled"
-            v-bind="workItemCommentFormProps"
-            @error="$emit('error', $event)"
-          />
-
           <work-item-history-only-filter-note
             v-if="commentsDisabled"
             @changeFilter="filterDiscussions"
           />
         </ul>
+        <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
+          <ul class="notes notes-form timeline">
+            <work-item-add-note
+              v-bind="workItemCommentFormProps"
+              :key="addNoteKey"
+              @cancelEditing="updateKey"
+              @error="$emit('error', $event)"
+            />
+          </ul>
+        </div>
       </template>
 
       <template v-if="showLoadingMoreSkeleton">

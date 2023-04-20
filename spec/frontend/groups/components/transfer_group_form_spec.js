@@ -69,7 +69,7 @@ describe('Transfer group form', () => {
       expect(findHiddenInput().attributes('value')).toBeUndefined();
     });
 
-    it('does not render the alert message', () => {
+    it('does not render the alert', () => {
       expect(findAlert().exists()).toBe(false);
     });
 

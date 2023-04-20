@@ -63,6 +63,7 @@ dependency_scanning:
     - '**/npm-shrinkwrap.json'
     - '**/package-lock.json'
     - '**/yarn.lock'
+    - '**/pnpm-lock.yaml'
     - '**/packages.lock.json'
     - '**/conan.lock'
 

@@ -26,12 +26,8 @@ module Types
         null: false
 
       field :registry_egress, GraphQL::Types::BigInt,
-        description: 'Registery egress for that project in that period of time.',
+        description: 'Registry egress for that project in that period of time.',
         null: false
-
-      def total_egress
-        object.values.select { |x| x.is_a?(Integer) }.sum
-      end
     end
   end
 end

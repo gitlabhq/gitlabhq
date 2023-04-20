@@ -5,7 +5,6 @@ description: Weekly unique user count doing commits which contains the CI config
 product_section: ops
 product_stage: verify
 product_group: pipeline_authoring
-product_category: pipeline_authoring
 value_type: number
 status: active
 time_frame: 7d

@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Merge trains **(PREMIUM)**
 
+FLAG:
+In GitLab 15.11 and later, the **Start merge train** button is **Set to auto-merge** and the **Add to merge train** button is **Merge**. On self-managed GitLab, by default these changes are not available. To make them available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. On GitLab.com, this feature is not available.
+
 Use merge trains to queue merge requests and verify their changes work together before
 they are merged to the target branch.
 

@@ -82,7 +82,10 @@ When running in this method, you provide a container image that has the required
        image: openjdk:11-jre-slim
    ```
 
-1. Provide the Java classpath needed by your application. This includes your compatible build artifact from step 2, along with any additional dependencies. For this example, the build artifact is `build/libs/spring-boot-app-0.0.0.jar` and contains all needed dependencies. The variable `API_DISCOVERY_JAVA_CLASSPATH` is used to provide the classpath.
+1. Provide the Java class path needed by your application. This includes your compatible build
+   artifact from step 2, along with any additional dependencies. For this example, the build artifact
+   is `build/libs/spring-boot-app-0.0.0.jar` and contains all needed dependencies. The variable
+   `API_DISCOVERY_JAVA_CLASSPATH` is used to provide the class path.
 
    ```yaml
    api_discovery:
@@ -92,7 +95,10 @@ When running in this method, you provide a container image that has the required
            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
    ```
 
-1. [Optional] If the image provided is missing a dependency needed by API Discovery, it can be added using a `before_script`. In this example, the `openjdk:11-jre-slim` container doesn't include `curl` which is required by API Discovery. The dependency can be installed using the Debian package manager `apt` as shown below.
+1. Optional. If the image provided is missing a dependency needed by API Discovery, it can be added
+   using a `before_script`. In this example, the `openjdk:11-jre-slim` container doesn't include
+   `curl` which is required by API Discovery. The dependency can be installed using the Debian
+   package manager `apt`:
 
    ```yaml
    api_discovery:
@@ -104,7 +110,8 @@ When running in this method, you provide a container image that has the required
            - apt-get update && apt-get install -y curl
    ```
 
-1. [Optional] If the image provided doesn't automatically set the `JAVA_HOME` environment variable, or include `java` in the path, the `API_DISCOVERY_JAVA_HOME` variable can be used.
+1. Optional. If the image provided doesn't automatically set the `JAVA_HOME` environment variable,
+   or include `java` in the path, the `API_DISCOVERY_JAVA_HOME` variable can be used.
 
    ```yaml
    api_discovery:
@@ -115,7 +122,12 @@ When running in this method, you provide a container image that has the required
            API_DISCOVERY_JAVA_HOME: /opt/java
    ```
 
-1. [Optional] If the package registry at `API_DISCOVERY_PACKAGES` is not public, provide a token that has read access to the GitLab API and registry using the `API_DISCOVERY_PACKAGE_TOKEN` variable. This is not required if you are using `gitlab.com` and have not customized the `API_DISCOVERY_PACKAGES` variable. This example uses a [custom CI/CD variable](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) named `GITLAB_READ_TOKEN` to store the token.
+1. Optional. If the package registry at `API_DISCOVERY_PACKAGES` is not public, provide a token that
+   has read access to the GitLab API and registry using the `API_DISCOVERY_PACKAGE_TOKEN` variable.
+   This is not required if you are using `gitlab.com` and have not customized the `API_DISCOVERY_PACKAGES`
+   variable. The following example uses a
+   [custom CI/CD variable](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) named
+   `GITLAB_READ_TOKEN` to store the token.
 
    ```yaml
    api_discovery:
@@ -133,7 +145,7 @@ After the API Discovery job has successfully run, the OpenAPI document is availa
 - Linux container image.
 - Java versions 11 or 17 are officially supported, but other versions are likely compatible as well.
 - The `curl` command.
-- A shell at `/bin/sh` (like busybox sh or bash).
+- A shell at `/bin/sh` (like `busybox`, `sh`, or `bash`).
 
 ### Available CI/CD variables
 

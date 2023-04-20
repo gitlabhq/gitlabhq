@@ -83,6 +83,8 @@ module Ci
       Settings.cron_jobs['pipeline_schedule_worker']['cron']
     end
 
+    # Using destroy instead of before_destroy as we want nullify_dependent_associations_in_batches
+    # to run first and not in a transaction block. This prevents timeouts for schedules with numerous pipelines
     def destroy
       nullify_dependent_associations_in_batches
 

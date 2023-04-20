@@ -23,13 +23,13 @@ review merge requests in Visual Studio Code.
 
 ## Suggested reviewers **(ULTIMATE SAAS)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/alpha-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
+> - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
 
 GitLab can suggest reviewers. Using the changes in a merge request and a project's contribution graph, machine learning suggestions appear in the reviewer section of the right sidebar.
 
 ![Suggested Reviewers](img/suggested_reviewers_v15_9.png)
-
-This feature is currently in [Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta) behind a [feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/368356).
 
 For more information, see [Data usage in Suggested Reviewers](data_usage.md).
 
@@ -107,7 +107,7 @@ To download the changes included in a merge request as a patch file:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**.
 1. Select your merge request.
-1. In the upper-right corner, select **Code > Email patches**.
+1. In the upper-right corner, select **Code > Patches**.
 
 If you know the URL of the merge request, you can also download the patch from
 the command line by appending `.patch` to the URL. This example downloads the patch
@@ -172,7 +172,7 @@ If you have a review in progress, you can also add a comment from the **Overview
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
-below the name of each suggested reviewer. [Code Owners](../../code_owners.md) are displayed as `Codeowner` without group detail.
+below the name of each suggested reviewer. [Code Owners](../../codeowners/index.md) are displayed as `Codeowner` without group detail.
 
 This example shows reviewers and approval rules when creating a new merge request:
 

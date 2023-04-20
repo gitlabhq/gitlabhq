@@ -31,7 +31,7 @@ RSpec.describe Ci::Partitionable do
 
       ci_model.include(described_class)
       ci_model.partitionable scope: ->(r) { 1 },
-                             through: { table: :_test_table_name, flag: :some_flag }
+        through: { table: :_test_table_name, flag: :some_flag }
     end
 
     it { expect(ci_model.routing_table_name).to eq(:_test_table_name) }

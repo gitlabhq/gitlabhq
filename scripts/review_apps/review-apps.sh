@@ -273,11 +273,63 @@ function deploy() {
   retry "create_application_secret"
 
 cat > review_apps.values.yml <<EOF
+  ci:
+    branch: "${CI_COMMIT_REF_NAME}"
+    commit:
+      sha: "${CI_COMMIT_SHORT_SHA}"
+    job:
+      url: "${CI_JOB_URL}"
+    pipeline:
+      url: "${CI_PIPELINE_URL}"
+
   gitlab:
+    gitaly:
+      image:
+        repository: "${gitlab_gitaly_image_repository}"
+        tag: "${gitaly_image_tag}"
+    gitlab-shell:
+      image:
+        repository: "${gitlab_shell_image_repository}"
+        tag: "v${GITLAB_SHELL_VERSION}"
+    migrations:
+      image:
+        repository: "${gitlab_toolbox_image_repository}"
+        tag: "${CI_COMMIT_SHA}"
+    sidekiq:
+      annotations:
+        commit: "${CI_COMMIT_SHORT_SHA}"
+      image:
+        repository: "${gitlab_sidekiq_image_repository}"
+        tag: "${CI_COMMIT_SHA}"
+    toolbox:
+      image:
+        repository: "${gitlab_toolbox_image_repository}"
+        tag: "${CI_COMMIT_SHA}"
     webservice:
+      annotations:
+        commit: "${CI_COMMIT_SHORT_SHA}"
       extraEnv:
         REVIEW_APPS_ENABLED: "true"
         REVIEW_APPS_MERGE_REQUEST_IID: "${CI_MERGE_REQUEST_IID}"
+      image:
+        repository: "${gitlab_webservice_image_repository}"
+        tag: "${CI_COMMIT_SHA}"
+      workhorse:
+        image: "${gitlab_workhorse_image_repository}"
+        tag: "${CI_COMMIT_SHA}"
+
+  global:
+    hosts:
+      domain: "${REVIEW_APPS_DOMAIN}"
+      hostSuffix: "${HOST_SUFFIX}"
+    appConfig:
+      sentry:
+        dsn: "${REVIEW_APPS_SENTRY_DSN}"
+        # Boolean fields should be left without quotes
+        enabled: ${sentry_enabled}
+        environment: "review"
+
+  releaseOverride: "${release}"
 EOF
 
 HELM_CMD=$(cat << EOF
@@ -286,34 +338,7 @@ HELM_CMD=$(cat << EOF
     --create-namespace \
     --install \
     --wait \
-    -f review_apps.values.yml \
-    --timeout "${HELM_INSTALL_TIMEOUT:-20m}" \
-    --set ci.branch="${CI_COMMIT_REF_NAME}" \
-    --set ci.commit.sha="${CI_COMMIT_SHORT_SHA}" \
-    --set ci.job.url="${CI_JOB_URL}" \
-    --set ci.pipeline.url="${CI_PIPELINE_URL}" \
-    --set releaseOverride="${release}" \
-    --set global.hosts.hostSuffix="${HOST_SUFFIX}" \
-    --set global.hosts.domain="${REVIEW_APPS_DOMAIN}" \
-    --set global.appConfig.sentry.enabled="${sentry_enabled}" \
-    --set global.appConfig.sentry.dsn="${REVIEW_APPS_SENTRY_DSN}" \
-    --set global.appConfig.sentry.environment="review" \
-    --set gitlab.migrations.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.migrations.image.tag="${CI_COMMIT_SHA}" \
-    --set gitlab.gitaly.image.repository="${gitlab_gitaly_image_repository}" \
-    --set gitlab.gitaly.image.tag="${gitaly_image_tag}" \
-    --set gitlab.gitlab-shell.image.repository="${gitlab_shell_image_repository}" \
-    --set gitlab.gitlab-shell.image.tag="v${GITLAB_SHELL_VERSION}" \
-    --set gitlab.sidekiq.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
-    --set gitlab.sidekiq.image.repository="${gitlab_sidekiq_image_repository}" \
-    --set gitlab.sidekiq.image.tag="${CI_COMMIT_SHA}" \
-    --set gitlab.webservice.annotations.commit="${CI_COMMIT_SHORT_SHA}" \
-    --set gitlab.webservice.image.repository="${gitlab_webservice_image_repository}" \
-    --set gitlab.webservice.image.tag="${CI_COMMIT_SHA}" \
-    --set gitlab.webservice.workhorse.image="${gitlab_workhorse_image_repository}" \
-    --set gitlab.webservice.workhorse.tag="${CI_COMMIT_SHA}" \
-    --set gitlab.toolbox.image.repository="${gitlab_toolbox_image_repository}" \
-    --set gitlab.toolbox.image.tag="${CI_COMMIT_SHA}"
+    --timeout "${HELM_INSTALL_TIMEOUT:-20m}"
 EOF
 )
 
@@ -325,18 +350,27 @@ EOF
 )
 fi
 
+# Important: the `-f` calls are ordered. They should not be changed.
+#
+# The `base_config_file` contains the default values for the chart, and the
+# `review_apps.values.yml` contains the overrides we want to apply specifically
+# for this review app deployment.
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
     --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
     -f "${base_config_file}" \
+    -f review_apps.values.yml \
     -v "${HELM_LOG_VERBOSITY:-1}" \
     "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )
 
   # Pretty-print the command for display
-  echoinfo "Deploying with:"
+  echoinfo "Deploying with helm command:"
   echo "${HELM_CMD}" | sed 's/    /\n\t/g'
+
+  echoinfo "Content of review_apps.values.yml:"
+  cat review_apps.values.yml
 
   retry "eval \"${HELM_CMD}\""
 }

@@ -174,7 +174,7 @@ describe('note_app', () => {
   });
 
   describe('while fetching data', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = mountComponent();
     });
 

@@ -1,8 +1,7 @@
 ---
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 'Learn how to administer GitLab Pages.'
 ---
 
 # GitLab Pages administration **(FREE SELF)**
@@ -247,20 +246,20 @@ control over how the Pages daemon runs and serves content in your environment.
 | `enable`                                | Enable or disable GitLab Pages on the current system. |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
 | `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
-| `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: 30 s). |
-| `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10 s). |
-| `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30 s). |
-| `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600 s). |
-| `gitlab_cache_refresh`                  | The interval at which a domain's configuration is set to be due to refresh (default: 60 s). |
-| `gitlab_cache_cleanup`                  | The interval at which expired items are removed from the cache (default: 60 s). |
-| `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: 30 s). |
-| `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: 1 s). |
+| `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: `30s`). |
+| `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: `10s`). |
+| `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: `30s`). |
+| `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: `600s`). |
+| `gitlab_cache_refresh`                  | The interval at which a domain's configuration is set to be due to refresh (default: `60s`). |
+| `gitlab_cache_cleanup`                  | The interval at which expired items are removed from the cache (default: `60s`). |
+| `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: `30s`). |
+| `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: `1s`). |
 | `gitlab_retrieval_retries`              | The maximum number of times to retry to resolve a domain's configuration via the API (default: 3). |
 | `domain_config_source`                  | This parameter was removed in 14.0, on earlier versions it can be used to enable and test API domain configuration source |
 | `gitlab_id`                             | The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `gitlab_secret`                         | The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
-| `auth_cookie_session_timeout`           | Authentication cookie session timeout in seconds (default: 600 s). A value of `0` means the cookie is deleted after the browser session ends. |
+| `auth_cookie_session_timeout`           | Authentication cookie session timeout in seconds (default: `10m`). A value of `0` means the cookie is deleted after the browser session ends. |
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
 | `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
@@ -514,7 +513,7 @@ internet connectivity is gated by a proxy. To use a proxy for GitLab Pages:
 ### Using a custom Certificate Authority (CA)
 
 When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md) and
-the [online view of HTML job artifacts](../../ci/pipelines/job_artifacts.md#download-job-artifacts)
+the [online view of HTML job artifacts](../../ci/jobs/job_artifacts.md#download-job-artifacts)
 fails to work if the custom CA is not recognized.
 
 This usually results in this error:
@@ -540,22 +539,22 @@ archive. You can modify the cache behavior by changing the following configurati
 
 | Setting | Description |
 | ------- | ----------- |
-| `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is 60 s. |
-| `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is 30 s. |
-| `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is 30 s. |
+| `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is `60s`. |
+| `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is `30s`. |
+| `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is `30s`. |
 | `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30 s. |
-| `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is 30 m. |
+| `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is `30m`. |
 
 #### ZIP cache refresh example
 
 Archives are refreshed in the cache (extending the time they are held in memory) if they're accessed
 before `zip_cache_expiration`, and the time left before expiring is less than or equal to
-`zip_cache_refresh`. For example, if `archive.zip` is accessed at time 0 s, it expires in 60 s (the
-default for `zip_cache_expiration`). In the example below, if the archive is opened again after 15 s
-it is **not** refreshed because the time left for expiry (45 s) is greater than `zip_cache_refresh`
-(default 30 s). However, if the archive is accessed again after 45 s (from the first time it was
+`zip_cache_refresh`. For example, if `archive.zip` is accessed at time `0s`, it expires in `60s` (the
+default for `zip_cache_expiration`). In the example below, if the archive is opened again after `15s`
+it is **not** refreshed because the time left for expiry (`45s`) is greater than `zip_cache_refresh`
+(default `30s`). However, if the archive is accessed again after `45s` (from the first time it was
 opened) it's refreshed. This extends the time the archive remains in memory from
-`45s + zip_cache_expiration (60s)`, for a total of 105 s.
+`45s + zip_cache_expiration (60s)`, for a total of `105s`.
 
 After an archive reaches `zip_cache_expiration`, it's marked as expired and removed on the next
 `zip_cache_cleanup` interval.
@@ -710,6 +709,15 @@ To set the maximum number of GitLab Pages custom domains for a project:
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.
 1. Select **Save changes**.
 
+## Set maximum number of files per GitLab Pages website
+
+The total number of file entries (including directories and symlinks) is limited to `200,000` per GitLab Pages website.
+
+You can update the limit in your self-managed instance using the
+[GitLab Rails console](../operations/rails_console.md#starting-a-rails-console-session).
+
+For more information, see [GitLab application limits](../instance_limits.md#number-of-files-per-gitlab-pages-website).
+
 ## Running GitLab Pages on a separate server
 
 You can run the GitLab Pages daemon on a separate server to decrease the load on
@@ -818,7 +826,7 @@ From [GitLab 13.3 to GitLab 13.12](#domain-source-configuration-before-140) GitL
 
 Starting from [GitLab 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages uses API
 by default and fails to start if it can't connect to it.
-For common issues, see the [troubleshooting section](#failed-to-connect-to-the-internal-gitlab-api).
+For common issues, see [troubleshooting](troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
@@ -895,7 +903,7 @@ configuration is tried to be resolved automatically before reporting an error.
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5577) in GitLab 13.6.
 
-[Read more about using object storage with GitLab](../object_storage.md).
+For more information, see [object storage](../object_storage.md).
 
 ### Object storage settings
 
@@ -917,7 +925,7 @@ If you want to stop using and disconnect the NFS server, you need to
 #### S3-compatible connection settings
 
 In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+[consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 This section describes the earlier configuration format.
 
 See [the available connection settings for different providers](../object_storage.md#connection-settings).
@@ -1100,8 +1108,8 @@ In GitLab 14.0 a number of breaking changes were introduced which may require so
 The steps below describe the best way to migrate without causing any downtime for your GitLab instance.
 
 A GitLab instance running on a single server typically upgrades to 14.0 smoothly, and there should be minimal issues after the upgrade is complete.
-Regardless, we recommend everyone follow the migration steps to ensure a successful upgrade.
-If at any point you run into issues, consult the [troubleshooting section](#troubleshooting).
+Regardless, you should follow the migration steps to ensure a successful upgrade.
+For common issues, see [troubleshooting](troubleshooting.md).
 
 If your current GitLab version is lower than 13.12, then you must first update to 13.12.
 Updating directly to 14.0 is [not supported](../../update/index.md#upgrade-paths)
@@ -1185,312 +1193,6 @@ Rate limits are enforced using the following:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-<!-- ## Troubleshooting
+## Related topics
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them in
-the section below.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
-
-## Troubleshooting
-
-### How to see GitLab Pages logs
-
-You can see Pages daemon logs by running:
-
-```shell
-sudo gitlab-ctl tail gitlab-pages
-```
-
-You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
-
-### `unsupported protocol scheme \"\""`
-
-If you see the following error:
-
-```plaintext
-{"error":"failed to connect to internal Pages API: Get \"/api/v4/internal/pages/status\": unsupported protocol scheme \"\"","level":"warning","msg":"attempted to connect to the API","time":"2021-06-23T20:03:30Z"}
-```
-
-It means you didn't set the HTTP(S) protocol scheme in the Pages server settings.
-To fix it:
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['gitlab_server'] = "https://<your_pages_domain_name>"
-   gitlab_pages['internal_gitlab_server'] = "https://<your_pages_domain_name>"
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-### 502 error when connecting to GitLab Pages proxy when server does not listen over IPv6
-
-In some cases, NGINX might default to using IPv6 to connect to the GitLab Pages
-service even when the server does not listen over IPv6. You can identify when
-this is happening if you see something similar to the log entry below in the
-`gitlab_pages_error.log`:
-
-```plaintext
-2020/02/24 16:32:05 [error] 112654#0: *4982804 connect() failed (111: Connection refused) while connecting to upstream, client: 123.123.123.123, server: ~^(?<group>.*)\.pages\.example\.com$, request: "GET /-/group/project/-/jobs/1234/artifacts/artifact.txt HTTP/1.1", upstream: "http://[::1]:8090//-/group/project/-/jobs/1234/artifacts/artifact.txt", host: "group.example.com"
-```
-
-To resolve this, set an explicit IP and port for the GitLab Pages `listen_proxy` setting
-to define the explicit address that the GitLab Pages daemon should listen on:
-
-```ruby
-gitlab_pages['listen_proxy'] = '127.0.0.1:8090'
-```
-
-### Intermittent 502 errors or after a few days
-
-If you run Pages on a system that uses `systemd` and
-[`tmpfiles.d`](https://www.freedesktop.org/software/systemd/man/tmpfiles.d.html),
-you may encounter intermittent 502 errors trying to serve Pages with an error similar to:
-
-```plaintext
-dial tcp: lookup gitlab.example.com on [::1]:53: dial udp [::1]:53: connect: no route to host"
-```
-
-GitLab Pages creates a [bind mount](https://man7.org/linux/man-pages/man8/mount.8.html)
-inside `/tmp/gitlab-pages-*` that includes files like `/etc/hosts`.
-However, `systemd` may clean the `/tmp/` directory on a regular basis so the DNS
-configuration may be lost.
-
-To stop `systemd` from cleaning the Pages related content:
-
-1. Tell `tmpfiles.d` to not remove the Pages `/tmp` directory:
-
-   ```shell
-   echo 'x /tmp/gitlab-pages-*' >> /etc/tmpfiles.d/gitlab-pages-jail.conf
-   ```
-
-1. Restart GitLab Pages:
-
-   ```shell
-   sudo gitlab-ctl restart gitlab-pages
-   ```
-
-### Unable to access GitLab Pages
-
-If you can't access your GitLab Pages (such as receiving `502 Bad Gateway` errors, or a login loop)
-and in your Pages log shows this error:
-
-```plaintext
-"error":"retrieval context done: context deadline exceeded","host":"root.docs-cit.otenet.gr","level":"error","msg":"could not fetch domain information from a source"
-```
-
-1. Add the following to `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['internal_gitlab_server'] = 'http://localhost:8080'
-   ```
-
-1. Restart GitLab Pages:
-
-   ```shell
-   sudo gitlab-ctl restart gitlab-pages
-   ```
-
-### Failed to connect to the internal GitLab API
-
-If you see the following error:
-
-```plaintext
-ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="failed to connect to internal Pages API: HTTP status: 401"
-```
-
-If you are [Running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server)
-you must copy the `/etc/gitlab/gitlab-secrets.json` file
-from the **GitLab server** to the **Pages server** after upgrading to GitLab 13.3,
-as described in that section.
-
-Other reasons may include network connectivity issues between your
-**GitLab server** and your **Pages server** such as firewall configurations or closed ports.
-For example, if there is a connection timeout:
-
-```plaintext
-error="failed to connect to internal Pages API: Get \"https://gitlab.example.com:3000/api/v4/internal/pages/status\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)"
-```
-
-### Pages cannot communicate with an instance of the GitLab API
-
-If you use the default value for `domain_config_source=auto` and run multiple instances of GitLab
-Pages, you may see intermittent 502 error responses while serving Pages content. You may also see
-the following warning in the Pages logs:
-
-```plaintext
-WARN[0010] Pages cannot communicate with an instance of the GitLab API. Please sync your gitlab-secrets.json file https://gitlab.com/gitlab-org/gitlab-pages/-/issues/535#workaround. error="pages endpoint unauthorized"
-```
-
-This can happen if your `gitlab-secrets.json` file is out of date between GitLab Rails and GitLab
-Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](#running-gitlab-pages-on-a-separate-server),
-in all of your GitLab Pages instances.
-
-### Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
-
-Connections will time out when using a Network Load Balancer with client IP preservation enabled and [the request is looped back to the source server](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-troubleshooting.html#loopback-timeout).
-This can happen to GitLab instances with multiple servers
-running both the core GitLab application and GitLab Pages. This can also happen when a single
-container is running both the core GitLab application and GitLab Pages.
-
-AWS [recommends using an IP target type](https://aws.amazon.com/premiumsupport/knowledge-center/target-connection-fails-load-balancer/)
-to resolve this issue.
-
-Turning off [client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation)
-may resolve this issue when the core GitLab application and GitLab Pages run on the same host or
-container.
-
-### 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
-
-This problem most likely results from an [out-dated operating system](../package_information/supported_os.md#os-versions-that-are-no-longer-supported).
-The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
-This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
-Upgrading to an [officially supported operating system](https://about.gitlab.com/install/) is recommended.
-
-### The requested scope is invalid, malformed, or unknown
-
-This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Applications > GitLab Pages**.
-1. Edit the application.
-1. Under **Scopes**, ensure that the `api` scope is selected.
-1. Save your changes.
-
-When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server),
-this setting needs to be configured on the main GitLab server.
-
-### Workaround in case no wildcard DNS entry can be set
-
-If the wildcard DNS [prerequisite](#prerequisites) can't be met, you can still use GitLab Pages in a limited fashion:
-
-1. [Move](../../user/project/settings/index.md#transfer-a-project-to-another-namespace)
-   all projects you need to use Pages with into a single group namespace, for example `pages`.
-1. Configure a [DNS entry](#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
-1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.
-   Omit the group namespace here, because it automatically is prepended by GitLab.
-
-### Pages daemon fails with permission denied errors
-
-If `/tmp` is mounted with `noexec`, the Pages daemon fails to start with an error like:
-
-```plaintext
-{"error":"fork/exec /gitlab-pages: permission denied","level":"fatal","msg":"could not create pages daemon","time":"2021-02-02T21:54:34Z"}
-```
-
-In this case, change `TMPDIR` to a location that is not mounted with `noexec`. Add the following to
-`/etc/gitlab/gitlab.rb`:
-
-```ruby
-gitlab_pages['env'] = {'TMPDIR' => '<new_tmp_path>'}
-```
-
-Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab with
-`sudo gitlab-ctl restart`.
-
-### `The redirect URI included is not valid.` when using Pages Access Control
-
-You may see this error if `pages_external_url` was updated at some point of time. Verify the following:
-
-1. The **Callback URL**/Redirect URI in the GitLab Pages [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
-is using the protocol (HTTP or HTTPS) that `pages_external_url` is configured to use.
-1. The domain and path components of `Redirect URI` are valid: they should look like `projects.<pages_external_url>/auth`.
-
-### 500 error `cannot serve from disk`
-
-If you get a 500 response from Pages and encounter an error similar to:
-
-```plaintext
-ERRO[0145] cannot serve from disk                        error="gitlab: disk access is disabled via enable-disk=false" project_id=27 source_path="file:///shared/pages/@hashed/67/06/670671cd97404156226e507973f2ab8330d3022ca96e0c93bdbdb320c41adcaf/pages_deployments/14/artifacts.zip" source_type=zip
-```
-
-It means that GitLab Rails is telling GitLab Pages to serve content from a location on disk,
-however, GitLab Pages was configured to disable disk access.
-
-To enable disk access:
-
-1. Enable disk access for GitLab Pages in `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['enable_disk'] = true
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-### `httprange: new resource 403`
-
-If you see an error similar to:
-
-```plaintext
-{"error":"httprange: new resource 403: \"403 Forbidden\"","host":"root.pages.example.com","level":"error","msg":"vfs.Root","path":"/pages1/","time":"2021-06-10T08:45:19Z"}
-```
-
-And you run pages on the separate server syncing files via NFS, it may mean that
-the shared pages directory is mounted on a different path on the main GitLab server and the
-GitLab Pages server.
-
-In that case, it's highly recommended you to configure
-[object storage and migrate any existing pages data to it](#using-object-storage).
-
-Alternatively, you can mount the GitLab Pages shared directory to the same path on
-both servers.
-
-### GitLab Pages doesn't work after upgrading to GitLab 14.0 or above
-
-GitLab 14.0 introduces a number of changes to GitLab Pages which may require manual intervention.
-
-1. Firstly [follow the migration guide](#prepare-gitlab-pages-for-140).
-1. Try to upgrade to GitLab 14.3 or above. Some of the issues were fixed in GitLab 14.1, 14.2 and 14.3.
-1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
-
-WARNING:
-In GitLab 14.0-14.2 you can temporarily enable legacy storage and configuration mechanisms.
-
-To do that:
-
-1. Describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['use_legacy_storage'] = true
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-### GitLab Pages deploy job fails with error "is not a recognized provider"
-
-If the **pages** job succeeds but the **deploy** job gives the error "is not a recognized provider":
-
-![Pages Deploy Failure](img/pages_deploy_failure_v14_8.png)
-
-The error message `is not a recognized provider` could be coming from the `fog` gem that GitLab uses to connect to cloud providers for object storage.
-
-To fix that:
-
-1. Check your `gitlab.rb` file. If you have `gitlab_rails['pages_object_store_enabled']` enabled, but no bucket details have been configured, either:
-
-   - Configure object storage for your Pages deployments, following the [S3-compatible connection settings](#s3-compatible-connection-settings) guide.
-   - Store your deployments locally, by commenting out that line.
-
-1. Save the changes you made to your `gitlab.rb` file, then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-### 404 error `The page you're looking for could not be found`
-
-If you get a `404 Page Not Found` response from GitLab Pages:
-
-1. Check `.gitlab-ci.yml` contains the job `pages:`.
-1. Check the current project's pipeline to confirm the job `pages:deploy` is being run.
-
-Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.
+- [Troubleshooting GitLab Pages administration](troubleshooting.md)

@@ -59,7 +59,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'readWorkItem' => true,
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
-          'adminWorkItem' => true
+          'adminWorkItem' => true,
+          'adminParentLink' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -394,6 +395,135 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               hash_including(
                 'type' => 'NOTIFICATIONS',
                 'subscribed' => work_item.subscribed?(current_user, project)
+              )
+            )
+          )
+        end
+      end
+
+      describe 'currentUserTodos widget' do
+        let_it_be(:current_user) { developer }
+        let_it_be(:other_todo) { create(:todo, state: :pending, user: current_user) }
+
+        let_it_be(:done_todo) do
+          create(:todo, state: :done, target: work_item, target_type: work_item.class.name, user: current_user)
+        end
+
+        let_it_be(:pending_todo) do
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: current_user)
+        end
+
+        let_it_be(:other_user_todo) do
+          create(:todo, state: :pending, target: work_item, target_type: work_item.class.name, user: create(:user))
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetCurrentUserTodos {
+                currentUserTodos {
+                  nodes {
+                    id
+                    state
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        context 'with access' do
+          it 'returns widget information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => include(
+                hash_including(
+                  'type' => 'CURRENT_USER_TODOS',
+                  'currentUserTodos' => {
+                    'nodes' => match_array(
+                      [done_todo, pending_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+
+        context 'with filter' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              id
+              widgets {
+                type
+                ... on WorkItemWidgetCurrentUserTodos {
+                  currentUserTodos(state: done) {
+                    nodes {
+                      id
+                      state
+                    }
+                  }
+                }
+              }
+            GRAPHQL
+          end
+
+          it 'returns widget information' do
+            expect(work_item_data).to include(
+              'id' => work_item.to_gid.to_s,
+              'widgets' => include(
+                hash_including(
+                  'type' => 'CURRENT_USER_TODOS',
+                  'currentUserTodos' => {
+                    'nodes' => match_array(
+                      [done_todo].map { |t| { 'id' => t.to_gid.to_s, 'state' => t.state } }
+                    )
+                  }
+                )
+              )
+            )
+          end
+        end
+      end
+
+      describe 'award emoji widget' do
+        let_it_be(:emoji) { create(:award_emoji, name: 'star', awardable: work_item) }
+        let_it_be(:upvote) { create(:award_emoji, :upvote, awardable: work_item) }
+        let_it_be(:downvote) { create(:award_emoji, :downvote, awardable: work_item) }
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetAwardEmoji {
+                upvotes
+                downvotes
+                awardEmoji {
+                  nodes {
+                    name
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'AWARD_EMOJI',
+                'upvotes' => work_item.upvotes,
+                'downvotes' => work_item.downvotes,
+                'awardEmoji' => {
+                  'nodes' => match_array(
+                    [emoji, upvote, downvote].map { |e| { 'name' => e.name } }
+                  )
+                }
               )
             )
           )

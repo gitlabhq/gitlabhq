@@ -99,7 +99,7 @@ to authenticate with Kerberos tokens.
 
 #### Enable single sign-on
 
-Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+Configure the [common settings](omniauth.md#configure-common-settings)
 to add `kerberos` as a single sign-on provider. This enables Just-In-Time
 account provisioning for users who do not have an existing GitLab account.
 
@@ -357,6 +357,16 @@ larger than the default size of 8 kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
 ## Troubleshooting
+
+### Using Google Chrome with Kerberos authentication against Windows AD
+
+When you use Google Chrome to sign in to GitLab with Kerberos, you must enter your full username. For example, `username@domain.com`.
+
+If you do not enter your full username, the sign-in fails. Check the logs to see the following event message as evidence of this sign-in failure:
+
+```plain
+"message":"OmniauthKerberosController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested\nUnknown error"`.
+```
 
 ### Test connectivity between the GitLab and Kerberos servers
 

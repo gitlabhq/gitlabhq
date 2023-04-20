@@ -159,7 +159,7 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
     end
   end
 
-  describe 'partitioning' do
+  describe 'partitioning', :ci_partitionable do
     include Ci::PartitioningHelpers
 
     let_it_be(:pipeline) { create(:ci_pipeline) }

@@ -1,30 +1,25 @@
 import { GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { mockTracking } from 'helpers/tracking_helper';
 import { s__, sprintf } from '~/locale';
-import HeaderSearchApp from '~/super_sidebar/components/global_search/components/global_search.vue';
-import HeaderSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
-import HeaderSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
-import HeaderSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';
+import GlobalSearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
+import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
+import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
+import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
-  SEARCH_BOX_INDEX,
   ICON_PROJECT,
   ICON_GROUP,
   ICON_SUBGROUP,
   SCOPE_TOKEN_MAX_LENGTH,
   IS_SEARCHING,
-  IS_NOT_FOCUSED,
-  IS_FOCUSED,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
 } from '~/super_sidebar/components/global_search/constants';
-import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
-import { ENTER_KEY } from '~/lib/utils/keys';
-import { visitUrl } from '~/lib/utils/url_utility';
 import { truncate } from '~/lib/utils/text_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { ENTER_KEY } from '~/lib/utils/keys';
 import {
   MOCK_SEARCH,
   MOCK_SEARCH_QUERY,
@@ -32,6 +27,8 @@ import {
   MOCK_DEFAULT_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
   MOCK_SEARCH_CONTEXT_FULL,
+  MOCK_PROJECT,
+  MOCK_GROUP,
 } from '../mock_data';
 
 Vue.use(Vuex);
@@ -40,7 +37,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
 
-describe('HeaderSearchApp', () => {
+describe('GlobalSearchModal', () => {
   let wrapper;
 
   const actionSpies = {
@@ -49,21 +46,31 @@ describe('HeaderSearchApp', () => {
     clearAutocomplete: jest.fn(),
   };
 
-  const createComponent = (initialState, mockGetters) => {
+  const deafaultMockState = {
+    searchContext: {
+      project: MOCK_PROJECT,
+      group: MOCK_GROUP,
+    },
+  };
+
+  const createComponent = (initialState, mockGetters, stubs) => {
     const store = new Vuex.Store({
       state: {
+        ...deafaultMockState,
         ...initialState,
       },
       actions: actionSpies,
       getters: {
         searchQuery: () => MOCK_SEARCH_QUERY,
         searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
+        scopedSearchOptions: () => MOCK_SCOPED_SEARCH_OPTIONS,
         ...mockGetters,
       },
     });
 
-    wrapper = shallowMountExtended(HeaderSearchApp, {
+    wrapper = shallowMountExtended(GlobalSearchModal, {
       store,
+      stubs,
     });
   };
 
@@ -80,16 +87,13 @@ describe('HeaderSearchApp', () => {
     );
   };
 
-  const findHeaderSearchForm = () => wrapper.findByTestId('header-search-form');
-  const findHeaderSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
+  const findGlobalSearchForm = () => wrapper.findByTestId('global-search-form');
+  const findGlobalSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
   const findScopeToken = () => wrapper.findComponent(GlToken);
-  const findHeaderSearchInputKBD = () => wrapper.find('.keyboard-shortcut-helper');
-  const findHeaderSearchDropdown = () => wrapper.findByTestId('header-search-dropdown-menu');
-  const findHeaderSearchDefaultItems = () => wrapper.findComponent(HeaderSearchDefaultItems);
-  const findHeaderSearchScopedItems = () => wrapper.findComponent(HeaderSearchScopedItems);
-  const findHeaderSearchAutocompleteItems = () =>
-    wrapper.findComponent(HeaderSearchAutocompleteItems);
-  const findDropdownKeyboardNavigation = () => wrapper.findComponent(DropdownKeyboardNavigation);
+  const findGlobalSearchDefaultItems = () => wrapper.findComponent(GlobalSearchDefaultItems);
+  const findGlobalSearchScopedItems = () => wrapper.findComponent(GlobalSearchScopedItems);
+  const findGlobalSearchAutocompleteItems = () =>
+    wrapper.findComponent(GlobalSearchAutocompleteItems);
   const findSearchInputDescription = () => wrapper.find(`#${SEARCH_INPUT_DESCRIPTION}`);
   const findSearchResultsDescription = () => wrapper.findByTestId(SEARCH_RESULTS_DESCRIPTION);
 
@@ -99,16 +103,8 @@ describe('HeaderSearchApp', () => {
         createComponent();
       });
 
-      it('Header Search Input', () => {
-        expect(findHeaderSearchInput().exists()).toBe(true);
-      });
-
-      it('Header Search Input KBD hint', () => {
-        expect(findHeaderSearchInputKBD().exists()).toBe(true);
-        expect(findHeaderSearchInputKBD().text()).toContain('/');
-        expect(findHeaderSearchInputKBD().attributes('title')).toContain(
-          'Use the shortcut key <kbd>/</kbd> to start a search',
-        );
+      it('Global Search Input', () => {
+        expect(findGlobalSearchInput().exists()).toBe(true);
       });
 
       it('Search Input Description', () => {
@@ -121,26 +117,6 @@ describe('HeaderSearchApp', () => {
     });
 
     describe.each`
-      showDropdown | username         | showSearchDropdown
-      ${false}     | ${null}          | ${false}
-      ${false}     | ${MOCK_USERNAME} | ${false}
-      ${true}      | ${null}          | ${false}
-      ${true}      | ${MOCK_USERNAME} | ${true}
-    `('Header Search Dropdown', ({ showDropdown, username, showSearchDropdown }) => {
-      describe(`when showDropdown is ${showDropdown} and current_username is ${username}`, () => {
-        beforeEach(() => {
-          window.gon.current_username = username;
-          createComponent();
-          findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
-        });
-
-        it(`should${showSearchDropdown ? '' : ' not'} render`, () => {
-          expect(findHeaderSearchDropdown().exists()).toBe(showSearchDropdown);
-        });
-      });
-    });
-
-    describe.each`
       search         | showDefault | showScoped | showAutocomplete
       ${null}        | ${true}     | ${false}   | ${false}
       ${''}          | ${true}     | ${false}   | ${false}
@@ -148,71 +124,40 @@ describe('HeaderSearchApp', () => {
       ${'te'}        | ${false}    | ${false}   | ${true}
       ${'tes'}       | ${false}    | ${true}    | ${true}
       ${MOCK_SEARCH} | ${false}    | ${true}    | ${true}
-    `('Header Search Dropdown Items', ({ search, showDefault, showScoped, showAutocomplete }) => {
+    `('Global Search Result Items', ({ search, showDefault, showScoped, showAutocomplete }) => {
       describe(`when search is ${search}`, () => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
           createComponent({ search }, {});
-          findHeaderSearchInput().vm.$emit('click');
+          findGlobalSearchInput().vm.$emit('click');
         });
 
-        it(`should${showDefault ? '' : ' not'} render the Default Dropdown Items`, () => {
-          expect(findHeaderSearchDefaultItems().exists()).toBe(showDefault);
+        it(`should${showDefault ? '' : ' not'} render the Default Items`, () => {
+          expect(findGlobalSearchDefaultItems().exists()).toBe(showDefault);
         });
 
-        it(`should${showScoped ? '' : ' not'} render the Scoped Dropdown Items`, () => {
-          expect(findHeaderSearchScopedItems().exists()).toBe(showScoped);
+        it(`should${showScoped ? '' : ' not'} render the Scoped Items`, () => {
+          expect(findGlobalSearchScopedItems().exists()).toBe(showScoped);
         });
 
-        it(`should${showAutocomplete ? '' : ' not'} render the Autocomplete Dropdown Items`, () => {
-          expect(findHeaderSearchAutocompleteItems().exists()).toBe(showAutocomplete);
-        });
-
-        it(`should render the Dropdown Navigation Component`, () => {
-          expect(findDropdownKeyboardNavigation().exists()).toBe(true);
-        });
-
-        it(`should close the dropdown when press escape key`, async () => {
-          findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: 27 }));
-          await nextTick();
-          expect(findHeaderSearchDropdown().exists()).toBe(false);
-          expect(wrapper.emitted().expandSearchBar.length).toBe(1);
+        it(`should${showAutocomplete ? '' : ' not'} render the Autocomplete Items`, () => {
+          expect(findGlobalSearchAutocompleteItems().exists()).toBe(showAutocomplete);
         });
       });
     });
 
     describe.each`
-      username         | showDropdown | expectedDesc
-      ${null}          | ${false}     | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN}
-      ${null}          | ${true}      | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN}
-      ${MOCK_USERNAME} | ${false}     | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN}
-      ${MOCK_USERNAME} | ${true}      | ${HeaderSearchApp.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN}
-    `('Search Input Description', ({ username, showDropdown, expectedDesc }) => {
-      describe(`current_username is ${username} and showDropdown is ${showDropdown}`, () => {
-        beforeEach(() => {
-          window.gon.current_username = username;
-          createComponent();
-          findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
-        });
-
-        it(`sets description to ${expectedDesc}`, () => {
-          expect(findSearchInputDescription().text()).toBe(expectedDesc);
-        });
-      });
-    });
-
-    describe.each`
-      username         | showDropdown | search         | loading  | searchOptions                  | expectedDesc
-      ${null}          | ${true}      | ${''}          | ${false} | ${[]}                          | ${''}
-      ${MOCK_USERNAME} | ${false}     | ${''}          | ${false} | ${[]}                          | ${''}
-      ${MOCK_USERNAME} | ${true}      | ${''}          | ${false} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
-      ${MOCK_USERNAME} | ${true}      | ${''}          | ${true}  | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
-      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${false} | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${`Results updated. ${MOCK_SCOPED_SEARCH_OPTIONS.length} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.`}
-      ${MOCK_USERNAME} | ${true}      | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${HeaderSearchApp.i18n.SEARCH_RESULTS_LOADING}
+      username         | search         | loading  | searchOptions                  | expectedDesc
+      ${null}          | ${'gi'}        | ${false} | ${[]}                          | ${GlobalSearchModal.i18n.MIN_SEARCH_TERM}
+      ${MOCK_USERNAME} | ${'gi'}        | ${false} | ${[]}                          | ${GlobalSearchModal.i18n.MIN_SEARCH_TERM}
+      ${MOCK_USERNAME} | ${''}          | ${false} | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${`${MOCK_DEFAULT_SEARCH_OPTIONS.length} default results provided. Use the up and down arrow keys to navigate search results list.`}
+      ${MOCK_USERNAME} | ${MOCK_SEARCH} | ${true}  | ${MOCK_DEFAULT_SEARCH_OPTIONS} | ${GlobalSearchModal.i18n.SEARCH_RESULTS_LOADING}
+      ${MOCK_USERNAME} | ${MOCK_SEARCH} | ${false} | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${`Results updated. ${MOCK_SCOPED_SEARCH_OPTIONS.length} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.`}
+      ${MOCK_USERNAME} | ${MOCK_SEARCH} | ${true}  | ${MOCK_SCOPED_SEARCH_OPTIONS}  | ${GlobalSearchModal.i18n.SEARCH_RESULTS_LOADING}
     `(
       'Search Results Description',
-      ({ username, showDropdown, search, loading, searchOptions, expectedDesc }) => {
-        describe(`search is "${search}", loading is ${loading}, and showSearchDropdown is ${showDropdown}`, () => {
+      ({ username, search, loading, searchOptions, expectedDesc }) => {
+        describe(`search is "${search}" and loading is ${loading}`, () => {
           beforeEach(() => {
             window.gon.current_username = username;
             createComponent(
@@ -224,7 +169,6 @@ describe('HeaderSearchApp', () => {
                 searchOptions: () => searchOptions,
               },
             );
-            findHeaderSearchInput().vm.$emit(showDropdown ? 'click' : '');
           });
 
           it(`sets description to ${expectedDesc}`, () => {
@@ -253,7 +197,7 @@ describe('HeaderSearchApp', () => {
               searchOptions: () => searchOptions,
             },
           );
-          findHeaderSearchInput().vm.$emit('click');
+          findGlobalSearchInput().vm.$emit('click');
         });
 
         it(`${hasToken ? 'is' : 'is NOT'} rendered when data set has type "${
@@ -274,41 +218,30 @@ describe('HeaderSearchApp', () => {
 
     describe('form', () => {
       describe.each`
-        searchContext               | search         | searchOptions                 | isFocused
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${null}        | ${[]}                         | ${true}
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${[]}                         | ${true}
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${true}
-        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${false}
-        ${null}                     | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${true}
-        ${null}                     | ${null}        | ${MOCK_SCOPED_SEARCH_OPTIONS} | ${true}
-        ${null}                     | ${null}        | ${[]}                         | ${true}
-      `('wrapper', ({ searchContext, search, searchOptions, isFocused }) => {
+        searchContext               | search         | searchOptions
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${null}        | ${[]}
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${[]}
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS}
+        ${MOCK_SEARCH_CONTEXT_FULL} | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS}
+        ${null}                     | ${MOCK_SEARCH} | ${MOCK_SCOPED_SEARCH_OPTIONS}
+        ${null}                     | ${null}        | ${MOCK_SCOPED_SEARCH_OPTIONS}
+        ${null}                     | ${null}        | ${[]}
+      `('wrapper', ({ searchContext, search, searchOptions }) => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
           createComponent({ search, searchContext }, { searchOptions: () => searchOptions });
-          if (isFocused) {
-            findHeaderSearchInput().vm.$emit('click');
-          }
         });
 
         const isSearching = search?.length > SEARCH_SHORTCUTS_MIN_CHARACTERS;
 
         it(`classes ${isSearching ? 'contain' : 'do not contain'} "${IS_SEARCHING}"`, () => {
           if (isSearching) {
-            expect(findHeaderSearchForm().classes()).toContain(IS_SEARCHING);
+            expect(findGlobalSearchForm().classes()).toContain(IS_SEARCHING);
             return;
           }
           if (!isSearching) {
-            expect(findHeaderSearchForm().classes()).not.toContain(IS_SEARCHING);
+            expect(findGlobalSearchForm().classes()).not.toContain(IS_SEARCHING);
           }
-        });
-
-        it(`classes ${isSearching ? 'contain' : 'do not contain'} "${
-          isFocused ? IS_FOCUSED : IS_NOT_FOCUSED
-        }"`, () => {
-          expect(findHeaderSearchForm().classes()).toContain(
-            isFocused ? IS_FOCUSED : IS_NOT_FOCUSED,
-          );
         });
       });
     });
@@ -328,7 +261,7 @@ describe('HeaderSearchApp', () => {
             searchOptions: () => searchOptions,
           },
         );
-        findHeaderSearchInput().vm.$emit('click');
+        findGlobalSearchInput().vm.$emit('click');
       });
 
       it(`icon for data set type "${searchOptions[0]?.html_id}" ${
@@ -350,56 +283,15 @@ describe('HeaderSearchApp', () => {
 
   describe('events', () => {
     beforeEach(() => {
-      window.gon.current_username = MOCK_USERNAME;
       createComponent();
+      window.gon.current_username = MOCK_USERNAME;
     });
 
-    describe('Header Search Input', () => {
-      describe('when dropdown is closed', () => {
-        let trackingSpy;
-
-        beforeEach(() => {
-          trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-        });
-
-        it('onFocus opens dropdown and triggers snowplow event', async () => {
-          expect(findHeaderSearchDropdown().exists()).toBe(false);
-          findHeaderSearchInput().vm.$emit('focus');
-
-          await nextTick();
-
-          expect(findHeaderSearchDropdown().exists()).toBe(true);
-          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
-            label: 'global_search',
-            property: 'navigation_top',
-          });
-        });
-
-        it('onClick opens dropdown and triggers snowplow event', async () => {
-          expect(findHeaderSearchDropdown().exists()).toBe(false);
-          findHeaderSearchInput().vm.$emit('click');
-
-          await nextTick();
-
-          expect(findHeaderSearchDropdown().exists()).toBe(true);
-          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'focus_input', {
-            label: 'global_search',
-            property: 'navigation_top',
-          });
-        });
-
-        it('onClick followed by onFocus only triggers a single snowplow event', async () => {
-          findHeaderSearchInput().vm.$emit('click');
-          findHeaderSearchInput().vm.$emit('focus');
-
-          expect(trackingSpy).toHaveBeenCalledTimes(1);
-        });
-      });
-
+    describe('Global Search Input', () => {
       describe('onInput', () => {
         describe('when search has text', () => {
           beforeEach(() => {
-            findHeaderSearchInput().vm.$emit('input', MOCK_SEARCH);
+            findGlobalSearchInput().vm.$emit('input', MOCK_SEARCH);
           });
 
           it('calls setSearch with search term', () => {
@@ -417,7 +309,7 @@ describe('HeaderSearchApp', () => {
 
         describe('when search is emptied', () => {
           beforeEach(() => {
-            findHeaderSearchInput().vm.$emit('input', '');
+            findGlobalSearchInput().vm.$emit('input', '');
           });
 
           it('calls setSearch with empty term', () => {
@@ -433,83 +325,29 @@ describe('HeaderSearchApp', () => {
           });
         });
       });
-    });
 
-    describe('Dropdown Keyboard Navigation', () => {
-      beforeEach(() => {
-        findHeaderSearchInput().vm.$emit('click');
-      });
+      describe('Submitting a search', () => {
+        beforeEach(() => {
+          createComponent();
+        });
 
-      it('closes dropdown when @tab is emitted', async () => {
-        expect(findHeaderSearchDropdown().exists()).toBe(true);
-        findDropdownKeyboardNavigation().vm.$emit('tab');
+        it('onKey-enter submits a search', () => {
+          findGlobalSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
 
-        await nextTick();
+          expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
+        });
 
-        expect(findHeaderSearchDropdown().exists()).toBe(false);
-      });
-    });
-  });
+        describe('with less than min characters', () => {
+          beforeEach(() => {
+            createComponent({ search: 'x' });
+          });
 
-  describe('computed', () => {
-    describe.each`
-      MOCK_INDEX          | search
-      ${1}                | ${null}
-      ${SEARCH_BOX_INDEX} | ${'test'}
-      ${2}                | ${'test1'}
-    `('currentFocusedOption', ({ MOCK_INDEX, search }) => {
-      beforeEach(() => {
-        window.gon.current_username = MOCK_USERNAME;
-        createComponent({ search });
-        findHeaderSearchInput().vm.$emit('click');
-      });
+          it('onKey-enter will NOT submit a search', () => {
+            findGlobalSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
 
-      it(`when currentFocusIndex changes to ${MOCK_INDEX} updates the data to searchOptions[${MOCK_INDEX}]`, () => {
-        findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
-        expect(wrapper.vm.currentFocusedOption).toBe(MOCK_DEFAULT_SEARCH_OPTIONS[MOCK_INDEX]);
-      });
-    });
-  });
-
-  describe('Submitting a search', () => {
-    describe('with no currentFocusedOption', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('onKey-enter submits a search', () => {
-        findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-
-        expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
-      });
-    });
-
-    describe('with less than min characters and no dropdown results', () => {
-      beforeEach(() => {
-        createComponent({ search: 'x' });
-      });
-
-      it('onKey-enter will NOT submit a search', () => {
-        findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-
-        expect(visitUrl).not.toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
-      });
-    });
-
-    describe('with currentFocusedOption', () => {
-      const MOCK_INDEX = 1;
-
-      beforeEach(() => {
-        window.gon.current_username = MOCK_USERNAME;
-        createComponent();
-        findHeaderSearchInput().vm.$emit('click');
-      });
-
-      it('onKey-enter clicks the selected dropdown item rather than submitting a search', () => {
-        findDropdownKeyboardNavigation().vm.$emit('change', MOCK_INDEX);
-
-        findHeaderSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-        expect(visitUrl).toHaveBeenCalledWith(MOCK_DEFAULT_SEARCH_OPTIONS[MOCK_INDEX].url);
+            expect(visitUrl).not.toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
+          });
+        });
       });
     });
   });

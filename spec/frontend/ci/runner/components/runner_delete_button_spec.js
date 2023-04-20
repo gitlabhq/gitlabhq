@@ -124,15 +124,15 @@ describe('RunnerDeleteButton', () => {
   });
 
   describe('Immediately after the delete button is clicked', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       findModal().vm.$emit('primary');
     });
 
-    it('The button has a loading state', async () => {
+    it('The button has a loading state', () => {
       expect(findBtn().props('loading')).toBe(true);
     });
 
-    it('The stale tooltip is removed', async () => {
+    it('The stale tooltip is removed', () => {
       expect(getTooltip()).toBe('');
     });
   });
@@ -255,15 +255,15 @@ describe('RunnerDeleteButton', () => {
     });
 
     describe('Immediately after the button is clicked', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         findModal().vm.$emit('primary');
       });
 
-      it('The button has a loading state', async () => {
+      it('The button has a loading state', () => {
         expect(findBtn().props('loading')).toBe(true);
       });
 
-      it('The stale tooltip is removed', async () => {
+      it('The stale tooltip is removed', () => {
         expect(getTooltip()).toBe('');
       });
     });

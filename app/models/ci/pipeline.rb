@@ -52,26 +52,39 @@ module Ci
     belongs_to :ci_ref, class_name: 'Ci::Ref', foreign_key: :ci_ref_id, inverse_of: :pipelines
 
     has_internal_id :iid, scope: :project, presence: false,
-                          track_if: -> { !importing? },
-                          ensure_if: -> { !importing? },
-                          init: ->(pipeline, scope) do
-                                  if pipeline
-                                    pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
-                                  elsif scope
-                                    ::Ci::Pipeline.where(**scope).maximum(:iid)
-                                  end
-                                end
+      track_if: -> { !importing? },
+      ensure_if: -> { !importing? },
+      init: ->(pipeline, scope) do
+        if pipeline
+          pipeline.project&.all_pipelines&.maximum(:iid) || pipeline.project&.all_pipelines&.count
+        elsif scope
+          ::Ci::Pipeline.where(**scope).maximum(:iid)
+        end
+      end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
+
+    #
+    # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to convert all CommitStatus related models to
+    # Ci:Job models. With that epic, we aim to replace `statuses` with `jobs`.
+    #
+    # DEPRECATED:
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses_ordered_by_stage, -> { latest.order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :latest_statuses, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :statuses_order_id_desc, -> { order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
       inverse_of: :pipeline
-    has_many :processables, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :bridges, class_name: 'Ci::Bridge', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :generic_commit_statuses, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'GenericCommitStatus'
+    #
+    # NEW:
+    has_many :all_jobs, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :current_jobs, -> { latest }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :all_processable_jobs, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :current_processable_jobs, -> { latest }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline
+
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
@@ -386,6 +399,7 @@ module Ci
     scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, -> (source) { where(source: source) }
+    scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
@@ -407,10 +421,14 @@ module Ci
     # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
     # for checking permission of the actor.
     scope :triggered_by_merge_request, -> (merge_request) do
-      where(source: :merge_request_event,
-            merge_request: merge_request,
-            project: [merge_request.source_project, merge_request.target_project])
+      where(
+        source: :merge_request_event,
+        merge_request: merge_request,
+        project: [merge_request.source_project, merge_request.target_project]
+      )
     end
+
+    scope :order_id_desc, -> { order(id: :desc) }
 
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
@@ -682,7 +700,7 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def lazy_ref_commit
-      BatchLoader.for(ref).batch do |refs, loader|
+      BatchLoader.for(ref).batch(key: project.id) do |refs, loader|
         next unless project.repository_exists?
 
         project.repository.list_commits_by_ref_name(refs).then do |commits|
@@ -843,8 +861,7 @@ module Ci
         when 'manual' then block
         when 'scheduled' then delay
         else
-          raise Ci::HasStatus::UnknownStatusError,
-                "Unknown status `#{new_status}`"
+          raise Ci::HasStatus::UnknownStatusError, "Unknown status `#{new_status}`"
         end
       end
     end
@@ -1319,7 +1336,7 @@ module Ci
 
     def cluster_agent_authorizations
       strong_memoize(:cluster_agent_authorizations) do
-        ::Clusters::AgentAuthorizationsFinder.new(project).execute
+        ::Clusters::Agents::Authorizations::CiAccess::Finder.new(project).execute
       end
     end
 

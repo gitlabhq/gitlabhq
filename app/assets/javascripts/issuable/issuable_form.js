@@ -6,12 +6,13 @@ import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility'
 import { queryToObject, objectToQuery } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import ZenMode from '~/zen_mode';
+import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 const MR_TARGET_BRANCH = 'merge_request[target_branch]';
 const DATA_ISSUES_NEW_PATH = 'data-new-issue-path';
 
-function organizeQuery(obj, isFallbackKey = false) {
+export function organizeQuery(obj, isFallbackKey = false) {
   if (!obj[MR_SOURCE_BRANCH] && !obj[MR_TARGET_BRANCH]) {
     return obj;
   }
@@ -83,11 +84,10 @@ export default class IssuableForm {
     this.searchTerm = getSearchTerm(form[0].getAttribute(DATA_ISSUES_NEW_PATH));
     this.fallbackKey = getFallbackKey();
     this.titleField = this.form.find('input[name*="[title]"]');
-    this.descriptionField = this.form.find('textarea[name*="[description]"]');
+    this.descriptionField = () => this.form.find('textarea[name*="[description]"]');
+    this.submitButton = this.form.find('.js-issuable-submit-button');
     this.draftCheck = document.querySelector('input.js-toggle-draft');
-    if (!(this.titleField.length && this.descriptionField.length)) {
-      return;
-    }
+    if (!this.titleField.length) return;
 
     this.autosaves = this.initAutosave();
     this.form.on('submit', this.handleSubmit);
@@ -99,7 +99,7 @@ export default class IssuableForm {
     if ($issuableDueDate.length) {
       const calendar = new Pikaday({
         field: $issuableDueDate.get(0),
-        theme: 'gitlab-theme animate-picker',
+        theme: 'gl-datepicker-theme animate-picker',
         format: 'yyyy-mm-dd',
         container: $issuableDueDate.parent().get(0),
         parse: (dateString) => parsePikadayDate(dateString),
@@ -125,13 +125,6 @@ export default class IssuableForm {
     );
     IssuableForm.addAutosave(
       autosaveMap,
-      'description',
-      this.form.find('textarea[name*="[description]"]').get(0),
-      this.searchTerm,
-      this.fallbackKey,
-    );
-    IssuableForm.addAutosave(
-      autosaveMap,
       'confidential',
       this.form.find('input:checkbox[name*="[confidential]"]').get(0),
       this.searchTerm,
@@ -148,7 +141,21 @@ export default class IssuableForm {
     return autosaveMap;
   }
 
-  handleSubmit() {
+  async handleSubmit(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const descriptionText = this.descriptionField().val();
+
+    if (containsSensitiveToken(descriptionText)) {
+      const confirmed = await confirmSensitiveAction(i18n.descriptionPrompt);
+      if (!confirmed) {
+        this.submitButton.removeAttr('disabled');
+        this.submitButton.removeClass('disabled');
+        return false;
+      }
+    }
+    form.submit();
     return this.resetAutosave();
   }
 

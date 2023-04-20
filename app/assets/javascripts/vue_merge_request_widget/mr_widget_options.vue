@@ -10,9 +10,9 @@ import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_wid
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { createAlert } from '~/alert';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
-import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -155,6 +155,10 @@ export default {
     },
   },
   mixins: [mergeRequestQueryVariablesMixin],
+  provide: {
+    expandDetailsTooltip: __('Expand merge details'),
+    collapseDetailsTooltip: __('Collapse merge details'),
+  },
   props: {
     mrData: {
       type: Object,
@@ -226,7 +230,7 @@ export default {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
     shouldRenderMergedPipeline() {
-      return this.mr.state === 'merged' && !isEmpty(this.mr.mergePipeline);
+      return this.mr.state === STATUS_MERGED && !isEmpty(this.mr.mergePipeline);
     },
     showMergePipelineForkWarning() {
       return Boolean(
@@ -264,7 +268,7 @@ export default {
       return (this.mr.humanAccess || '').toLowerCase();
     },
     hasMergeError() {
-      return this.mr.mergeError && this.state !== 'closed';
+      return this.mr.mergeError && this.state !== STATUS_CLOSED;
     },
     hasAlerts() {
       return this.hasMergeError || this.showMergePipelineForkWarning;
@@ -416,8 +420,8 @@ export default {
         );
     },
     setFaviconHelper() {
-      if (this.mr.ciStatusFaviconPath) {
-        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
+      if (this.mr.faviconOverlayPath) {
+        return setFaviconOverlay(this.mr.faviconOverlayPath);
       }
       return Promise.resolve();
     },
@@ -474,7 +478,6 @@ export default {
             el.innerHTML = res.data;
             document.body.appendChild(el);
             document.dispatchEvent(new CustomEvent('merged:UpdateActions'));
-            Project.initRefSwitcher();
           }
         })
         .catch(() =>

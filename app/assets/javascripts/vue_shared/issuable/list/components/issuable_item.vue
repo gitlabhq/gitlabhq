@@ -2,6 +2,7 @@
 import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
@@ -93,13 +94,13 @@ export default {
       return getTimeago().format(this.issuable.createdAt);
     },
     timestamp() {
-      if (this.issuable.state === 'closed' && this.issuable.closedAt) {
+      if (this.issuable.state === STATUS_CLOSED && this.issuable.closedAt) {
         return this.issuable.closedAt;
       }
       return this.issuable.updatedAt;
     },
     formattedTimestamp() {
-      if (this.issuable.state === 'closed' && this.issuable.closedAt) {
+      if (this.issuable.state === STATUS_CLOSED && this.issuable.closedAt) {
         return sprintf(__('closed %{timeago}'), {
           timeago: getTimeago().format(this.issuable.closedAt),
         });
@@ -226,7 +227,7 @@ export default {
         </gl-link>
         <span
           v-if="taskStatus"
-          class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-3"
+          class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-2 gl-font-sm"
           data-testid="task-status"
         >
           {{ taskStatus }}
@@ -265,7 +266,7 @@ export default {
                   :data-avatar-url="author.avatarUrl"
                   :href="author.webUrl"
                   data-testid="issuable-author"
-                  class="author-link js-user-link"
+                  class="author-link js-user-link gl-font-sm"
                 >
                   <span class="author">{{ author.name }}</span>
                 </gl-link>
@@ -285,8 +286,7 @@ export default {
           </span>
           <slot name="timeframe"></slot>
         </span>
-        &nbsp;
-        <span v-if="labels.length" role="group" :aria-label="__('Labels')">
+        <p v-if="labels.length" role="group" :aria-label="__('Labels')" class="gl-mt-1 gl-mb-0">
           <gl-label
             v-for="(label, index) in labels"
             :key="index"
@@ -295,10 +295,10 @@ export default {
             :description="label.description"
             :scoped="scopedLabel(label)"
             :target="labelTarget(label)"
-            :class="{ 'gl-ml-2': index }"
+            class="gl-mr-2"
             size="sm"
           />
-        </span>
+        </p>
       </div>
     </div>
     <div class="issuable-meta">
@@ -312,7 +312,7 @@ export default {
             :icon-size="16"
             :max-visible="4"
             img-css-classes="gl-mr-2!"
-            class="gl-align-items-center gl-display-flex gl-ml-3"
+            class="gl-align-items-center gl-display-flex"
           />
         </li>
         <slot name="statistics"></slot>

@@ -86,7 +86,6 @@ describe('Create Timeline events', () => {
       provide: {
         fullPath: 'group/project',
         issuableId: '1',
-        glFeatures: { incidentEventTags: true },
       },
       apolloProvider,
     });

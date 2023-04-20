@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection post-processing and revocation **(ULTIMATE SAAS)**
+# Secret Detection post-processing and revocation **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 > - [Disabled by default for GitLab personal access tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `gitlab_pat_auto_revocation`. Available to GitLab.com only.
@@ -32,53 +32,25 @@ GitLab supports post-processing for the following vendors and secrets:
 
 ## Feature availability
 
+> [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
+
 Credentials are only post-processed when Secret Detection finds them:
 
 - In public projects, because publicly exposed credentials pose an increased threat. Expansion to private projects is considered in [issue 391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379).
-- On the project [default branch](../../project/repository/branches/default.md), for technical reasons. Expansion to all branches is tracked in [issue 299212](https://gitlab.com/gitlab-org/gitlab/-/issues/299212).
 - In projects with GitLab Ultimate, for technical reasons. Expansion to all tiers is tracked in [issue 391763](https://gitlab.com/gitlab-org/gitlab/-/issues/391763).
 
-## High-level architecture
+## Partner program for leaked-credential notifications
 
-This diagram describes how a post-processing hook revokes a secret within the GitLab application:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    GitLab Rails->>+Sidekiq: gl-secret-detection-report.json
-    Sidekiq-->+Sidekiq: StoreSecurityReportsWorker
-    Sidekiq-->+Token Revocation API: GET revocable keys types
-    Token Revocation API-->>-Sidekiq: OK
-    Sidekiq->>+Token Revocation API: POST revoke revocable keys
-    Token Revocation API-->>-Sidekiq: ACCEPTED
-    Token Revocation API-->>+Receiver Service: revoke revocable keys
-    Receiver Service-->>+Token Revocation API: ACCEPTED
-```
-
-1. A pipeline with a Secret Detection job completes on the project's default branch, producing a scan
-   report (**1**).
-1. The report is processed (**2**) by an asynchronous worker, which communicates with an externally
-   deployed HTTP service (**3** and **4**) to determine which kinds of secrets can be automatically
-   revoked.
-1. The worker sends (**5** and **6**) the list of detected secrets which the Token Revocation API is able to
-   revoke.
-1. The Token Revocation API sends (**7** and **8**) each revocable token to their respective vendor's [receiver service](#integrate-your-cloud-provider-service-with-gitlabcom).
-
-See the [Token Revocation API](../../../development/sec/token_revocation_api.md) documentation for more
-information.
-
-## Integrate your cloud provider service with GitLab.com
-
-Third-party cloud and SaaS vendors interested in automated token revocation can
-[express integration interest by filling out this form](https://forms.gle/wWpvrtLRK21Q2WJL9).
-Vendors must [implement a revocation receiver service](#implement-a-revocation-receiver-service)
-which will be called by the Token Revocation API.
+GitLab notifies partners when credentials they issue are leaked in public repositories on GitLab.com.
+If you operate a cloud or SaaS product and you're interested in receiving these notifications, learn more in [epic 4944](https://gitlab.com/groups/gitlab-org/-/epics/4944).
+Partners must [implement a revocation receiver service](#implement-a-revocation-receiver-service),
+which is called by the Token Revocation API.
 
 ### Implement a revocation receiver service
 
 A revocation receiver service integrates with a GitLab instance's Token Revocation API to receive and respond
 to leaked token revocation requests. The service should be a publicly accessible HTTP API that is
-idempotent and rate-limited. Requests to your service from the Token Revocation API will follow the example
+idempotent and rate-limited. Requests to your service from the Token Revocation API look similar to the example
 below:
 
 ```plaintext
@@ -95,3 +67,32 @@ X-Gitlab-Token: MYSECRETTOKEN
 In this example, Secret Detection has determined that an instance of `my_api_token` has been leaked. The
 value of the token is provided to you, in addition to a publicly accessible URL to the raw content of the
 file containing the leaked token.
+
+## High-level architecture
+
+This diagram describes how a post-processing hook revokes a secret in the GitLab application:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    GitLab Rails-->+GitLab Rails: gl-secret-detection-report.json
+    GitLab Rails->>+Sidekiq: StoreScansService
+    Sidekiq-->+Sidekiq: ScanSecurityReportSecretsWorker
+    Sidekiq-->+Token Revocation API: GET revocable keys types
+    Token Revocation API-->>-Sidekiq: OK
+    Sidekiq->>+Token Revocation API: POST revoke revocable keys
+    Token Revocation API-->>-Sidekiq: ACCEPTED
+    Token Revocation API-->>+Receiver Service: revoke revocable keys
+    Receiver Service-->>+Token Revocation API: ACCEPTED
+```
+
+1. A pipeline with a Secret Detection job completes, producing a scan report (**1**).
+1. The report is processed (**2**) by a service class, which schedules an asynchronous worker if token revocation is possible.
+1. The asynchronous worker (**3**) communicates with an externally deployed HTTP service
+   (**4** and **5**) to determine which kinds of secrets can be automatically revoked.
+1. The worker sends (**6** and **7**) the list of detected secrets which the Token Revocation API is able to
+   revoke.
+1. The Token Revocation API sends (**8** and **9**) each revocable token to their respective vendor's [receiver service](#implement-a-revocation-receiver-service).
+
+See the [Token Revocation API](../../../development/sec/token_revocation_api.md) documentation for more
+information.

@@ -3,7 +3,6 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "How to create merge requests in GitLab."
-disqus_identifier: 'https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html'
 ---
 
 # Creating merge requests **(FREE)**
@@ -34,7 +33,8 @@ be associated with a given target branch at a time.
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
 The new branch, and later its merge request, are marked as related to this issue.
-After merging the merge request, the issue is closed automatically, unless [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
+After merging the merge request, the issue is closed automatically, unless
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing).
 You can see a **Create merge request** dropdown list below the issue description.
 
 NOTE:
@@ -50,7 +50,7 @@ instead of immediately creating the merge request.
 - Your project is private and the issue is confidential.
 
 To make this button appear, one possible workaround is to
-[remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).
+[remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
 After removal, the fork relationship cannot be restored. This project can no longer
 be able to receive or send merge requests to the source project, or other forks.
 
@@ -58,8 +58,8 @@ The dropdown list contains the options **Create merge request and branch** and *
 
 After selecting one of these options, a new branch or branch and merge request
 is created based on your project's [default branch](../repository/branches/default.md).
-The branch name is based on your project's branch name template. The default template
-is `%{id}-%{title}`. Supported variables for branch name templates are `%{id}` and `%{title}`.
+The branch name is based on your project's [branch name template](../repository/branches/index.md),
+but this value can be changed.
 
 When you select **Create branch** in an empty
 repository project, GitLab performs these actions:
@@ -151,9 +151,8 @@ You can create a merge request from your fork to contribute back to the main pro
 1. Select **Create merge request**.
 
 After your work is merged, if you don't intend to
-make any other contributions to the upstream project, you can unlink your
-fork from its upstream project. Go to **Settings > Advanced Settings** and
-[remove the forking relationship](../settings/index.md#remove-a-fork-relationship).
+make any other contributions to the upstream project, you can
+[unlink your fork](../repository/forking_workflow.md#unlink-a-fork) from its upstream project.
 
 For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
 

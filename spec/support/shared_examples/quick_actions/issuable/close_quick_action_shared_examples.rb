@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'close quick action' do |issuable_type|
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   before do
     project.add_maintainer(maintainer)

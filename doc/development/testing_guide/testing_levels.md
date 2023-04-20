@@ -55,6 +55,7 @@ records should use stubs/doubles as much as possible.
 | `lib/` | `spec/lib/` | RSpec | |
 | `lib/tasks/` | `spec/tasks/` | RSpec | |
 | `rubocop/` | `spec/rubocop/` | RSpec | |
+| `spec/support/` | `spec/support_specs/` | RSpec | |
 
 ### Frontend unit tests
 
@@ -65,7 +66,7 @@ that is not directly perceivable by a user.
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;
@@ -149,7 +150,7 @@ Component tests cover the state of a single component that is perceivable by a u
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;
@@ -243,7 +244,7 @@ Their abstraction level is comparable to how a user would interact with the UI.
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;
@@ -366,13 +367,12 @@ See also:
 
 - The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
 - System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
-- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/-/issues/26159) which aims at combining those guidelines with this page.
 
 ```mermaid
 graph RL
     plain[Plain JavaScript];
     Vue[Vue Components];
-    feature-flags[Feature Flags];
+    feature-flags[Feature flags];
     license-checks[License Checks];
 
     plain---Vuex;

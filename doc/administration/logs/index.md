@@ -686,14 +686,6 @@ Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 This file is at `/var/log/gitlab/gitlab-rails/grpc.log` for Omnibus GitLab
 packages. Native [gRPC](https://grpc.io/) logging used by Gitaly.
 
-### `gitaly_ruby_json.log`
-
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/2678) in GitLab 13.6.
-
-This file is at `/var/log/gitlab/gitaly/gitaly_ruby_json.log` and is
-produced by [`gitaly-ruby`](../gitaly/reference.md#gitaly-ruby). It contains an
-access log of gRPC calls made by Gitaly to `gitaly-ruby`.
-
 ### `gitaly_hooks.log`
 
 This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is
@@ -733,7 +725,7 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/importer.log`
 - Installations from source: `/home/git/gitlab/log/importer.log`
 
-It logs the progress of the import process.
+This file logs the progress of [project imports and migrations](../../user/project/import/index.md).
 
 ## `exporter.log`
 
@@ -828,6 +820,8 @@ Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/migrations.log`
 - Installations from source: `/home/git/gitlab/log/migrations.log`
+
+This file logs the progress of [database migrations](../raketasks/maintenance.md#display-status-of-database-migrations).
 
 ## `mail_room_json.log` (default)
 

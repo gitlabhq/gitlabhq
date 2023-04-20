@@ -92,23 +92,25 @@ RSpec.describe Users::UpdateCanonicalEmailService, feature_category: :user_profi
 
     context 'when the user email is not processable' do
       [nil, 'nonsense'].each do |invalid_address|
-        before do
-          user.email = invalid_address
-        end
+        context "with #{invalid_address}" do
+          before do
+            user.email = invalid_address
+          end
 
-        specify do
-          subject.execute
+          specify do
+            subject.execute
 
-          expect(user.user_canonical_email).to be_nil
-        end
+            expect(user.user_canonical_email).to be_nil
+          end
 
-        it 'preserves any existing record' do
-          user.email = nil
-          user.user_canonical_email = build(:user_canonical_email, canonical_email: other_email)
+          it 'preserves any existing record' do
+            user.email = nil
+            user.user_canonical_email = build(:user_canonical_email, canonical_email: other_email)
 
-          subject.execute
+            subject.execute
 
-          expect(user.user_canonical_email.canonical_email).to eq other_email
+            expect(user.user_canonical_email.canonical_email).to eq other_email
+          end
         end
       end
     end

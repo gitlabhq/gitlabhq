@@ -2,12 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe API::SidekiqMetrics, feature_category: :shared do
+RSpec.describe API::SidekiqMetrics, :aggregate_failures, feature_category: :shared do
   let(:admin) { create(:user, :admin) }
 
   describe 'GET sidekiq/*' do
+    %w[/sidekiq/queue_metrics /sidekiq/process_metrics /sidekiq/job_stats
+      /sidekiq/compound_metrics].each do |path|
+      it_behaves_like 'GET request permissions for admin mode' do
+        let(:path) { path }
+      end
+    end
+
     it 'defines the `queue_metrics` endpoint' do
-      get api('/sidekiq/queue_metrics', admin)
+      get api('/sidekiq/queue_metrics', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to match a_hash_including(
@@ -25,14 +32,14 @@ RSpec.describe API::SidekiqMetrics, feature_category: :shared do
     end
 
     it 'defines the `process_metrics` endpoint' do
-      get api('/sidekiq/process_metrics', admin)
+      get api('/sidekiq/process_metrics', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['processes']).to be_an Array
     end
 
     it 'defines the `job_stats` endpoint' do
-      get api('/sidekiq/job_stats', admin)
+      get api('/sidekiq/job_stats', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash
@@ -43,7 +50,7 @@ RSpec.describe API::SidekiqMetrics, feature_category: :shared do
     end
 
     it 'defines the `compound_metrics` endpoint' do
-      get api('/sidekiq/compound_metrics', admin)
+      get api('/sidekiq/compound_metrics', admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_a Hash

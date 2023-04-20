@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Issues::CloseService, feature_category: :team_planning do
   let(:project) { create(:project, :repository) }
+  let(:delegated_project) { project.project_namespace.project }
   let(:user) { create(:user, email: "user@example.com") }
   let(:user2) { create(:user, email: "user2@example.com") }
   let(:guest) { create(:user) }
@@ -201,32 +202,15 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       end
 
       it 'mentions closure via a merge request' do
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:close_issue).with(issue, user, { closed_via: closing_merge_request })
+        end
+
         close_issue
-
-        email = ActionMailer::Base.deliveries.last
-
-        expect(email.to.first).to eq(user2.email)
-        expect(email.subject).to include(issue.title)
-        expect(email.body.parts.map(&:body)).to all(include(closing_merge_request.to_reference))
       end
 
       it_behaves_like 'records an onboarding progress action', :issue_auto_closed do
         let(:namespace) { project.namespace }
-      end
-
-      context 'when user cannot read merge request' do
-        it 'does not mention merge request' do
-          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
-
-          close_issue
-
-          email = ActionMailer::Base.deliveries.last
-          body_text = email.body.parts.map(&:body).join(" ")
-
-          expect(email.to.first).to eq(user2.email)
-          expect(email.subject).to include(issue.title)
-          expect(body_text).not_to include(closing_merge_request.to_reference)
-        end
       end
 
       context 'updating `metrics.first_mentioned_in_commit_at`' do
@@ -264,31 +248,11 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
 
     context "closed by a commit", :sidekiq_might_not_need_inline do
       it 'mentions closure via a commit' do
-        perform_enqueued_jobs do
-          described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_commit)
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:close_issue).with(issue, user, { closed_via: "commit #{closing_commit.id}" })
         end
 
-        email = ActionMailer::Base.deliveries.last
-
-        expect(email.to.first).to eq(user2.email)
-        expect(email.subject).to include(issue.title)
-        expect(email.body.parts.map(&:body)).to all(include(closing_commit.id))
-      end
-
-      context 'when user cannot read the commit' do
-        it 'does not mention the commit id' do
-          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
-          perform_enqueued_jobs do
-            described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_commit)
-          end
-
-          email = ActionMailer::Base.deliveries.last
-          body_text = email.body.parts.map(&:body).join(" ")
-
-          expect(email.to.first).to eq(user2.email)
-          expect(email.subject).to include(issue.title)
-          expect(body_text).not_to include(closing_commit.id)
-        end
+        described_class.new(container: project, current_user: user).close_issue(issue, closed_via: closing_commit)
       end
     end
 
@@ -320,12 +284,12 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
         expect(issue.reload.closed_by_id).to be(user.id)
       end
 
-      it 'sends email to user2 about assign of new issue', :sidekiq_might_not_need_inline do
-        close_issue
+      it 'sends notification', :sidekiq_might_not_need_inline do
+        expect_next_instance_of(NotificationService::Async) do |service|
+          expect(service).to receive(:close_issue).with(issue, user, { closed_via: nil })
+        end
 
-        email = ActionMailer::Base.deliveries.last
-        expect(email.to.first).to eq(user2.email)
-        expect(email.subject).to include(issue.title)
+        close_issue
       end
 
       it 'creates resource state event about the issue being closed' do
@@ -434,10 +398,10 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       end
 
       it 'executes issue hooks' do
-        expect(project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
-        expect(project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
+        expect(delegated_project).to receive(:execute_hooks).with(expected_payload, :issue_hooks)
+        expect(delegated_project).to receive(:execute_integrations).with(expected_payload, :issue_hooks)
 
-        described_class.new(container: project, current_user: user).close_issue(issue)
+        described_class.new(container: delegated_project, current_user: user).close_issue(issue)
       end
     end
 
@@ -445,8 +409,8 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       it 'executes confidential issue hooks' do
         issue = create(:issue, :confidential, project: project)
 
-        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
-        expect(project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(delegated_project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(delegated_project).to receive(:execute_integrations).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(container: project, current_user: user).close_issue(issue)
       end

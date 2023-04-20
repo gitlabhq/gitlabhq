@@ -81,7 +81,7 @@ describe('Bulk import status poller', () => {
     expect(pollInstance.makeRequest).toHaveBeenCalled();
   });
 
-  it('when error occurs shows alert with error', () => {
+  it('when error occurs shows an alert with error', () => {
     const [[pollConfig]] = Poll.mock.calls;
     pollConfig.errorCallback();
     expect(createAlert).toHaveBeenCalled();

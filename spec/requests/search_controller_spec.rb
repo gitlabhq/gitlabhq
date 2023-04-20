@@ -66,13 +66,9 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
       let(:creation_args) { { name: 'project' } }
       let(:params) { { search: 'project', scope: 'projects' } }
       # some N+1 queries still exist
-      # each project requires 3 extra queries
-      #   - one count for forks
-      #   - one count for open MRs
-      #   - one count for open Issues
-      # there are 4 additional queries run for the logged in user:
-      # (1) user preferences, (1) user statuses, (1) user details, (1) users
-      let(:threshold) { 17 }
+      # 1 for users
+      # 1 for root ancestor for each project
+      let(:threshold) { 7 }
 
       it_behaves_like 'an efficient database result'
     end

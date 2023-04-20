@@ -1,19 +1,21 @@
 ---
-stage: Configure
-group: Configure
-info: A tutorial using Flux with Project Access Tokens
+stage: Deploy
+group: Environments
+info: A tutorial using Flux
 ---
 
 # Tutorial: Set up Flux for GitOps **(FREE)**
 
 This tutorial teaches you how to set up Flux for GitOps. You'll set up a sample project,
 complete a bootstrap Flux installation, and authenticate your installation with a
-[project access token](../../../project/settings/project_access_tokens.md).
+[project deploy token](../../../project/deploy_tokens/index.md).
 
-You can find the fully configured tutorial project [in this GitLab repository](https://gitlab.com/gitlab-org/configure/examples/flux/flux-config). It works in conjunction with [this repository](https://gitlab.com/gitlab-org/configure/examples/flux/web-app-manifests/-/tree/main), which contains the example Kubernetes manifests.
+You can find the fully configured tutorial project [in this GitLab repository](https://gitlab.com/gitlab-org/configure/examples/flux/flux-config).
+It works in conjunction with [this repository](https://gitlab.com/gitlab-org/configure/examples/flux/web-app-manifests/-/tree/main), which contains the example Kubernetes manifests.
 
-To set up Flux with a project access token:
+To set up Flux for GitOps:
 
+1. [Create a personal access token](#create-a-personal-access-token)
 1. [Create the Flux repository](#create-the-flux-repository)
 1. [Create the Kubernetes manifest repository](#create-the-kubernetes-manifest-repository)
 1. [Configure Flux to sync your manifests](#configure-flux-to-sync-your-manifests)
@@ -21,27 +23,31 @@ To set up Flux with a project access token:
 
 Prerequisites:
 
-- On GitLab SaaS, you must have the Premium or Ultimate tier to use a project access token.
-  On self-managed instances, you can have any tier.
-- Not recommended. You can authenticate with a [personal or group access token](flux.md#bootstrap-installation) in all tiers.
 - You must have a Kubernetes cluster running.
+
+## Create a personal access token
+
+To authenticate with the Flux CLI, you must create a personal access token
+with the `api` scope:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Access Tokens**.
+1. Enter a name and optional expiry date for the token.
+1. Select the `api` scope.
+1. Select **Create personal access token**.
+
+You can also use a [project](../../../project/settings/project_access_tokens.md) or [group access token](../../../group/settings/group_access_tokens.md) with the `api` scope.
 
 ## Create the Flux repository
 
-To start, create a Git repository, install Flux, and authenticate Flux with your repo:
+Create a Git repository, install Flux, and authenticate Flux with your repo:
 
 1. Make sure your `kubectl` is configured to access your cluster.
-1. [Install the Flux CLI](https://fluxcd.io/flux/installation/#install-the-flux-cli).
+1. [Install the Flux CLI](https://fluxcd.io/flux/installation/#install-the-flux-cli). You must install Flux v2 or higher.
 1. In GitLab, create a new empty project called `flux-config`.
-1. In the `flux-config` project, create a [project access token](../../../project/settings/project_access_tokens.md#create-a-project-access-token) with the following settings:
-
-   - From the **Select a role** dropdown list, select **Maintainer**.
-   - Under **Select scopes**, select the **API** and **write_repository** checkboxes.
-
-   Name the project token `flux-project-access-token`.
-
-1. From your shell, export a `GITLAB_TOKEN` environment variable with the value of your project access token.
-   For example, `export GITLAB_TOKEN=<flux-project-access-token>`.
+1. From your shell, export a `GITLAB_TOKEN` environment variable with the value of your personal access token.
+   For example, `export GITLAB_TOKEN=<personal-access-token>`.
 1. Run the `bootstrap` command. The exact command depends on whether you are
    creating the Flux repository under a GitLab user, group, or subgroup. For more information,
    see the [Flux bootstrap documentation](https://fluxcd.io/flux/installation/#gitlab-and-gitlab-enterprise).
@@ -54,11 +60,13 @@ To start, create a Git repository, install Flux, and authenticate Flux with your
      --repository=flux-config \
      --branch=main \
      --path=clusters/my-cluster
+     --deploy-token-auth
    ```
 
    This command installs Flux on the Kubernetes cluster and configures it to manage itself from the repository `flux-config`.
+   The command also automatically creates the project deploy token required to access the `flux-config` repository.
 
-Great work! You now have a repository, a project access token, and a Flux bootstrap installation authenticated to your repo. Any updates to your repo are automatically synced to the cluster.
+Great work! You now have a repository bootstrapped with a Flux configuration. Any updates to your repository are automatically synced to the cluster.
 
 ## Create the Kubernetes manifest repository
 
@@ -93,7 +101,7 @@ Next, create a repository for your Kubernetes manifests:
            - containerPort: 80
    ```
 
-1. In the new repository, [create a deploy token](../../../project/deploy_tokens/index.md#create-a-deploy-token) with only the **read_repository** scope.
+1. In the new repository, [create a deploy token](../../../project/deploy_tokens/index.md#create-a-deploy-token) with only the `read_repository` scope.
 1. Store your deploy token username and password somewhere safe.
 1. In Flux CLI, create a secret with your deploy token and point the secret to the new repository. For example:
 

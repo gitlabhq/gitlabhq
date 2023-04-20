@@ -14,9 +14,9 @@ module Gitlab
         @integration = integration
       end
 
-      def ping
-        options = { headers: headers.merge!('Accept': 'text/plain') }
-        response = Gitlab::HTTP.get(url('ping'), options)
+      def check_project_availability
+        options = { headers: headers.merge!('Accept': 'application/json') }
+        response = Gitlab::HTTP.head(url("projects?project_name=#{integration.project_name}"), options)
 
         { success: response.success? }
       end

@@ -19,7 +19,11 @@ module Gitlab
       def perform
         each_sub_batch do |sub_batch|
           sub_batch.each do |token|
-            token.update!(scopes: (YAML.safe_load(token.scopes) + ADMIN_MODE_SCOPE).uniq.to_yaml)
+            existing_scopes = YAML.safe_load(token.scopes, permitted_classes: [Symbol])
+            # making sure scopes are not mixed symbols and strings
+            stringified_scopes = existing_scopes.map(&:to_s)
+
+            token.update!(scopes: (stringified_scopes + ADMIN_MODE_SCOPE).uniq.to_yaml)
           end
         end
       end

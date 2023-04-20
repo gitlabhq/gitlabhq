@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { assertProps } from 'helpers/assert_props';
 
 import SlotSwitch from '~/vue_shared/components/slot_switch.vue';
 
@@ -26,7 +27,9 @@ describe('SlotSwitch', () => {
   });
 
   it('throws an error if activeSlotNames is missing', () => {
-    expect(createComponent).toThrow('[Vue warn]: Missing required prop: "activeSlotNames"');
+    expect(() => assertProps(SlotSwitch, {})).toThrow(
+      '[Vue warn]: Missing required prop: "activeSlotNames"',
+    );
   });
 
   it('renders no slots if activeSlotNames is empty', () => {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::AllJobsResolver do
+RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:successful_job) { create(:ci_build, :success, name: 'Job One') }

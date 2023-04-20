@@ -29,6 +29,7 @@ RSpec.describe DeployKeys::DeployKeyEntity do
         destroyed_when_orphaned: true,
         almost_orphaned: false,
         created_at: deploy_key.created_at,
+        expires_at: deploy_key.expires_at,
         updated_at: deploy_key.updated_at,
         can_edit: false,
         deploy_keys_projects: [

@@ -124,7 +124,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
   private
 
   def fill_and_submit_abuse_category_form(category = "They're posting spam.")
-    click_button 'Report abuse to administrator'
+    click_button 'Report abuse'
 
     choose category
     click_button 'Next'

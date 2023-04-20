@@ -78,7 +78,7 @@ RSpec.describe Notify do
       end
     end
 
-    context 'for issues' do
+    context 'for issues', feature_category: :team_planning do
       describe 'that are new' do
         subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
@@ -143,6 +143,8 @@ RSpec.describe Notify do
         it_behaves_like 'an unsubscribeable thread'
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'email with default notification reason'
+        it_behaves_like 'email with link to issue'
 
         it 'is sent as the author' do
           expect_sender(current_user)
@@ -151,9 +153,34 @@ RSpec.describe Notify do
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
-            is_expected.to have_body_text(previous_assignee.name)
-            is_expected.to have_body_text(assignee.name)
-            is_expected.to have_body_text(project_issue_path(project, issue))
+            is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>#{assignee.name}</strong>")
+            is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to #{assignee.name}")
+          end
+        end
+
+        context 'without new assignee' do
+          before do
+            issue.update!(assignees: [])
+          end
+
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
+          it 'uses "Unassigned" placeholder' do
+            is_expected.to have_body_text("Assignee changed from <strong>#{previous_assignee.name}</strong> to <strong>Unassigned</strong>")
+            is_expected.to have_plain_text_content("Assignee changed from #{previous_assignee.name} to Unassigned")
+          end
+        end
+
+        context 'without previous assignees' do
+          subject { described_class.reassigned_issue_email(recipient.id, issue.id, [], current_user.id) }
+
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
+          it 'uses short text' do
+            is_expected.to have_body_text("Assignee changed to <strong>#{assignee.name}</strong>")
+            is_expected.to have_plain_text_content("Assignee changed to #{assignee.name}")
           end
         end
 
@@ -266,6 +293,81 @@ RSpec.describe Notify do
             is_expected.to have_body_text(status)
             is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_issue_path(project, issue))
+          end
+        end
+      end
+
+      describe 'closed' do
+        subject { described_class.closed_issue_email(recipient.id, issue.id, current_user.id) }
+
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { issue }
+        end
+
+        it_behaves_like 'it should show Gmail Actions View Issue link'
+        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+        it_behaves_like 'email with default notification reason'
+        it_behaves_like 'email with link to issue'
+
+        it 'is sent as the author' do
+          expect_sender(current_user)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(issue, reply: true)
+            is_expected.to have_body_text("Issue was closed by #{current_user_sanitized}")
+            is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized}")
+          end
+        end
+
+        context 'via commit' do
+          let(:closing_commit) { project.commit }
+
+          subject { described_class.closed_issue_email(recipient.id, issue.id, current_user.id, closed_via: closing_commit.id) }
+
+          before do
+            allow(Ability).to receive(:allowed?).with(recipient, :mark_note_as_internal, anything).and_return(true)
+            allow(Ability).to receive(:allowed?).with(recipient, :download_code, project).and_return(true)
+          end
+
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
+          it 'has the correct subject and body' do
+            aggregate_failures do
+              is_expected.to have_referable_subject(issue, reply: true)
+              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} via #{closing_commit.id}")
+              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} via #{closing_commit.id}")
+            end
+          end
+        end
+
+        context 'via merge request' do
+          let(:closing_merge_request) { merge_request }
+
+          subject { described_class.closed_issue_email(recipient.id, issue.id, current_user.id, closed_via: closing_merge_request) }
+
+          before do
+            allow(Ability).to receive(:allowed?).with(recipient, :read_cross_project, :global).and_return(true)
+            allow(Ability).to receive(:allowed?).with(recipient, :mark_note_as_internal, anything).and_return(true)
+            allow(Ability).to receive(:allowed?).with(recipient, :read_merge_request, anything).and_return(true)
+          end
+
+          it_behaves_like 'email with default notification reason'
+          it_behaves_like 'email with link to issue'
+
+          it 'has the correct subject and body' do
+            aggregate_failures do
+              url = project_merge_request_url(project, closing_merge_request)
+              is_expected.to have_referable_subject(issue, reply: true)
+              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} via merge request " +
+                                            %(<a href="#{url}">#{closing_merge_request.to_reference}</a>))
+              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} via merge request " \
+                                                     "#{closing_merge_request.to_reference} (#{url})")
+            end
           end
         end
       end
@@ -1406,7 +1508,7 @@ RSpec.describe Notify do
         issue.issue_email_participants.create!(email: 'service.desk@example.com')
       end
 
-      describe 'thank you email' do
+      describe 'thank you email', feature_category: :service_desk do
         subject { described_class.service_desk_thank_you_email(issue.id) }
 
         it_behaves_like 'an unsubscribeable thread'
@@ -1459,16 +1561,19 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
+            let_it_be(:credentials) do
+              create(
+                :service_desk_custom_email_credential,
+                project: project
+              )
+            end
+
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
                 custom_email_enabled: true,
-                custom_email: 'supersupport@example.com',
-                custom_email_smtp_address: 'smtp.example.com',
-                custom_email_smtp_port: 587,
-                custom_email_smtp_username: 'supersupport@example.com',
-                custom_email_smtp_password: 'supersecret'
+                custom_email: 'supersupport@example.com'
               )
             end
 
@@ -1483,7 +1588,7 @@ RSpec.describe Notify do
         end
       end
 
-      describe 'new note email' do
+      describe 'new note email', feature_category: :service_desk do
         let_it_be(:first_note) { create(:discussion_note_on_issue, note: 'Hello world') }
 
         subject { described_class.service_desk_new_note_email(issue.id, first_note.id, 'service.desk@example.com') }
@@ -1520,16 +1625,19 @@ RSpec.describe Notify do
           end
 
           context 'when custom email is enabled' do
+            let_it_be(:credentials) do
+              create(
+                :service_desk_custom_email_credential,
+                project: project
+              )
+            end
+
             let_it_be(:settings) do
               create(
                 :service_desk_setting,
                 project: project,
                 custom_email_enabled: true,
-                custom_email: 'supersupport@example.com',
-                custom_email_smtp_address: 'smtp.example.com',
-                custom_email_smtp_port: 587,
-                custom_email_smtp_username: 'supersupport@example.com',
-                custom_email_smtp_password: 'supersecret'
+                custom_email: 'supersupport@example.com'
               )
             end
 
@@ -2342,22 +2450,5 @@ RSpec.describe Notify do
       expect(mail.subject).to eq('Go farther with GitLab')
       expect(mail.body.parts.first.to_s).to include('Start a GitLab Ultimate trial today in less than one minute, no credit card required.')
     end
-  end
-
-  def expect_sender(user, sender_email: nil)
-    sender = subject.header[:from].addrs[0]
-    expect(sender.display_name).to eq("#{user.name} (@#{user.username})")
-    expect(sender.address).to eq(sender_email.presence || gitlab_sender)
-  end
-
-  def expect_service_desk_custom_email_delivery_options(service_desk_setting)
-    expect(subject.delivery_method).to be_a Mail::SMTP
-    expect(subject.delivery_method.settings).to include(
-      address: service_desk_setting.custom_email_smtp_address,
-      port: service_desk_setting.custom_email_smtp_port,
-      user_name: service_desk_setting.custom_email_smtp_username,
-      password: service_desk_setting.custom_email_smtp_password,
-      domain: service_desk_setting.custom_email.split('@').last
-    )
   end
 end

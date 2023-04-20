@@ -97,7 +97,7 @@ module ApplicationSettingImplementation
         group_import_limit: 6,
         help_page_hide_commercial_content: false,
         help_page_text: nil,
-        help_page_documentation_base_url: nil,
+        help_page_documentation_base_url: 'https://docs.gitlab.com',
         hide_third_party_offers: false,
         housekeeping_enabled: true,
         housekeeping_full_repack_period: 50,

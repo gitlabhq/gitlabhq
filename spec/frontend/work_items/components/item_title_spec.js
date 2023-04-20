@@ -47,7 +47,7 @@ describe('ItemTitle', () => {
     expect(wrapper.emitted(eventName)).toBeDefined();
   });
 
-  it('renders only the text content from clipboard', async () => {
+  it('renders only the text content from clipboard', () => {
     const htmlContent = '<strong>bold text</strong>';
     const buildClipboardData = (data = {}) => ({
       clipboardData: {

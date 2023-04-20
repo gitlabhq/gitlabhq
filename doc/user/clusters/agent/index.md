@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -57,9 +57,9 @@ This workflow has a weaker security model and is not recommended for production 
 GitLab supports the following Kubernetes versions. You can upgrade your
 Kubernetes version to a supported version at any time:
 
+- 1.26 (support ends on March 22, 2024 or when 1.29 becomes supported)
 - 1.25 (support ends on October 22, 2023 or when 1.28 becomes supported)
 - 1.24 (support ends on July 22, 2023 or when 1.27 becomes supported)
-- 1.23 (support ends on February 22, 2023 or when 1.26 becomes supported)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.

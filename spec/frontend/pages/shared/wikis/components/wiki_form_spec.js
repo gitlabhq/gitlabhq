@@ -116,6 +116,7 @@ describe('WikiForm', () => {
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
+        markdownDocsPath: pageInfoPersisted.markdownHelpPath,
       }),
     );
 
@@ -123,10 +124,6 @@ describe('WikiForm', () => {
       id: 'wiki_content',
       name: 'wiki[content]',
     });
-
-    expect(markdownEditor.vm.$attrs['markdown-docs-path']).toEqual(
-      pageInfoPersisted.markdownHelpPath,
-    );
   });
 
   it.each`
@@ -307,7 +304,7 @@ describe('WikiForm', () => {
       expect(findFormat().element.getAttribute('disabled')).toBeDefined();
     });
 
-    it('sends tracking event when editor loads', async () => {
+    it('sends tracking event when editor loads', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, CONTENT_EDITOR_LOADED_ACTION, {
         label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
       });
@@ -321,7 +318,7 @@ describe('WikiForm', () => {
         await triggerFormSubmit();
       });
 
-      it('triggers tracking events on form submit', async () => {
+      it('triggers tracking events on form submit', () => {
         expect(trackingSpy).toHaveBeenCalledWith(undefined, SAVED_USING_CONTENT_EDITOR_ACTION, {
           label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
         });

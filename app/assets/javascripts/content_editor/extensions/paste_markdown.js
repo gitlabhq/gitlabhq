@@ -37,8 +37,18 @@ export default Extension.create({
 
             const { state, view } = editor;
             const { tr, selection } = state;
+            const { firstChild } = document.content;
+            const content =
+              document.content.childCount === 1 && firstChild.type.name === 'paragraph'
+                ? firstChild.content
+                : document.content;
 
-            tr.replaceWith(selection.from - 1, selection.to, document.content);
+            if (selection.to - selection.from > 0) {
+              tr.replaceWith(selection.from, selection.to, content);
+            } else {
+              tr.insert(selection.from, content);
+            }
+
             view.dispatch(tr);
           })
           .catch(() => {
@@ -53,13 +63,29 @@ export default Extension.create({
     };
   },
   addProseMirrorPlugins() {
+    let pasteRaw = false;
+
     return [
       new Plugin({
         key: new PluginKey('pasteMarkdown'),
         props: {
-          handlePaste: (_, event) => {
+          handleKeyDown: (_, event) => {
+            pasteRaw = event.key === 'v' && (event.metaKey || event.ctrlKey) && event.shiftKey;
+          },
+
+          handlePaste: (view, event) => {
             const { clipboardData } = event;
             const content = clipboardData.getData(TEXT_FORMAT);
+            const { state } = view;
+            const { tr, selection } = state;
+            const { from, to } = selection;
+
+            if (pasteRaw) {
+              tr.insertText(content.replace(/^\s+|\s+$/gm, ''), from, to);
+              view.dispatch(tr);
+              return true;
+            }
+
             const hasHTML = clipboardData.types.some((type) => type === HTML_FORMAT);
             const hasVsCode = clipboardData.types.some((type) => type === VS_CODE_FORMAT);
             const vsCodeMeta = hasVsCode ? JSON.parse(clipboardData.getData(VS_CODE_FORMAT)) : {};

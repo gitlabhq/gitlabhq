@@ -234,7 +234,7 @@ module TestEnv
   end
 
   def workhorse_dir
-    @workhorse_path ||= File.join('tmp', 'tests', 'gitlab-workhorse')
+    @workhorse_path ||= Rails.root.join('tmp', 'tests', 'gitlab-workhorse')
   end
 
   def with_workhorse(host, port, upstream, &blk)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :source_code_management do
   include DropzoneHelper
-  include Spec::Support::Helpers::Features::SnippetSpecHelpers
+  include Features::SnippetSpecHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) do

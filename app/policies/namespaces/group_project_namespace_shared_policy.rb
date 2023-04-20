@@ -17,5 +17,16 @@ module Namespaces
     rule { can?(:reporter_access) }.policy do
       enable :read_timelog_category
     end
+
+    rule { can?(:guest_access) }.policy do
+      enable :create_work_item
+      enable :read_work_item
+      enable :read_issue
+      enable :read_namespace
+    end
+
+    rule { can?(:create_work_item) }.enable :create_task
   end
 end
+
+Namespaces::GroupProjectNamespaceSharedPolicy.prepend_mod

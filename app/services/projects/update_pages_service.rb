@@ -90,7 +90,8 @@ module Projects
           file: file,
           file_count: deployment_update.entries_count,
           file_sha256: sha256,
-          ci_build_id: build.id
+          ci_build_id: build.id,
+          root_directory: build.options[:publish]
         )
 
         break if deployment.size != file.size || deployment.file.size != file.size

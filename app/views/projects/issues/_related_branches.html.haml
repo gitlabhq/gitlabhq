@@ -1,12 +1,24 @@
 - if @related_branches.any?
-  %h2.gl-font-lg
-    = pluralize(@related_branches.size, 'Related Branch')
-  %ul.related-merge-requests.gl-pl-0.gl-mb-3
-    - @related_branches.each do |branch|
-      %li.gl-display-flex.gl-align-items-center
-        - if branch[:pipeline_status].present?
-          %span.related-branch-ci-status
-            = render 'ci/status/icon', status: branch[:pipeline_status]
-        %span.related-branch-info
-          %strong
-            = link_to branch[:name], branch[:link], class: "ref-name"
+  - if @related_branches.any?
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-bg-gray-10 gl-mt-5 gl-mb-0' }, header_options: { class: 'gl-bg-white gl-pl-5 gl-pr-4 gl-py-4' } , body_options: { class: 'gl-py-3 gl-px-4' }) do |c|
+      - c.header do
+        %h3.card-title.h5.gl-my-0.gl-display-flex.gl-align-items-center.gl-flex-grow-1.gl-relative.gl-line-height-24
+          = link_to "", "#related-branches", class: "gl-link anchor position-absolute gl-text-decoration-none", "aria-hidden": true
+          = _('Related branches')
+          .gl-display-inline-flex.gl-mx-3.gl-text-gray-500
+            .gl-display-inline-flex.gl-align-items-center
+              = sprite_icon('branch', css_class: "gl-mr-2 gl-text-gray-500 gl-icon")
+              = @related_branches.size
+      - c.body do
+        %ul.related-merge-requests.content-list.gl-p-3!
+          - @related_branches.each do |branch|
+            %li.list-item{ class: "gl-py-0! gl-border-0!" }
+              .item-body.gl-display-flex.align-items-center.gl-px-3.gl-pr-2.gl-mx-n2
+                .item-contents.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-flex-grow-1.gl-min-h-7
+                  .item-title.gl-display-flex.mb-xl-0.gl-min-w-0
+                    - if branch[:pipeline_status].present?
+                      %span.related-branch-ci-status
+                        = render 'ci/status/icon', status: branch[:pipeline_status]
+                    %span.related-branch-info
+                      %strong
+                        = link_to branch[:name], branch[:link], class: "ref-name"

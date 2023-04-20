@@ -1,7 +1,3 @@
-// This is a false violation of @gitlab/no-runtime-template-compiler, since it
-// creates a new Vue instance by spreading a _valid_ Vue component definition
-// into the Vue constructor.
-/* eslint-disable @gitlab/no-runtime-template-compiler */
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import MrWidgetOptions from 'ee_else_ce/vue_merge_request_widget/mr_widget_options.vue';
@@ -33,6 +29,10 @@ export default () => {
   gl.mrWidgetData.gitlabLogo = gon.gitlab_logo;
   gl.mrWidgetData.defaultAvatarUrl = gon.default_avatar_url;
 
+  // This is a false violation of @gitlab/no-runtime-template-compiler, since it
+  // creates a new Vue instance by spreading a _valid_ Vue component definition
+  // into the Vue constructor.
+  // eslint-disable-next-line @gitlab/no-runtime-template-compiler
   const vm = new Vue({
     el: '#js-vue-mr-widget',
     provide: {

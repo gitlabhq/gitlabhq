@@ -302,10 +302,8 @@ Then you can use `yarn add` to install your packages.
 
 ## Related topics
 
-- For full helpful hints information, see the
-  [npm documentation](../npm_registry/index.md#helpful-hints).
-- For Yarn 1 to Yarn 2+ migration information see the
-  [Yarn Migration Guide](https://yarnpkg.com/getting-started/migration).
+- [npm documentation](../npm_registry/index.md#helpful-hints)
+- [Yarn Migration Guide](https://yarnpkg.com/getting-started/migration)
 
 ## Troubleshooting
 

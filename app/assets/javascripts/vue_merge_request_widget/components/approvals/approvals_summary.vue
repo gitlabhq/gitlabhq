@@ -1,4 +1,5 @@
 <script>
+import { GlLink, GlPopover } from '@gitlab/ui';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { n__, sprintf } from '~/locale';
 import {
@@ -12,6 +13,8 @@ import { getApprovalRuleNamesLeft } from 'ee_else_ce/vue_merge_request_widget/ma
 
 export default {
   components: {
+    GlLink,
+    GlPopover,
     UserAvatarList,
   },
   props: {
@@ -23,6 +26,11 @@ export default {
     approvalState: {
       type: Object,
       required: true,
+    },
+    disableCommittersApproval: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -101,6 +109,13 @@ export default {
         (approver) => getIdFromGraphQLId(approver.id) !== this.currentUserId,
       );
     },
+    currentUserHasCommitted() {
+      if (!this.currentUserId) return false;
+
+      return this.approvalState.committers?.nodes?.some(
+        (user) => getIdFromGraphQLId(user.id) === this.currentUserId,
+      );
+    },
     currentUserId() {
       return gon.current_user_id;
     },
@@ -115,10 +130,18 @@ export default {
       <span v-if="approvalLeftMessage">{{ message }}</span>
       <span v-else class="gl-font-weight-bold">{{ message }}</span>
       <user-avatar-list
-        class="gl-display-inline-block gl-vertical-align-middle gl-pt-1"
+        class="gl-display-inline-flex gl-vertical-align-middle"
         :img-size="24"
         :items="approvers"
       />
+    </template>
+    <template v-if="disableCommittersApproval && currentUserHasCommitted">
+      <gl-link id="cant-approve-popover" data-testid="commit-cant-approve" class="gl-cursor-help">{{
+        __("Why can't I approve?")
+      }}</gl-link>
+      <gl-popover target="cant-approve-popover">
+        {{ __("You can't approve because you added one or more commits to this merge request.") }}
+      </gl-popover>
     </template>
   </div>
 </template>

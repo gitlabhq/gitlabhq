@@ -1,5 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 
@@ -30,10 +31,10 @@ export default {
   },
   computed: {
     closesText() {
-      if (this.state === 'merged') {
+      if (this.state === STATUS_MERGED) {
         return s__('mrWidget|Closed');
       }
-      if (this.state === 'closed') {
+      if (this.state === STATUS_CLOSED) {
         return s__('mrWidget|Did not close');
       }
 

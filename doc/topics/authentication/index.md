@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Authentication **(FREE)**
 
-This page gathers all the resources for the topic **Authentication** within GitLab.
+This page gathers all the resources for the topic **Authentication** in GitLab.
 
 ## GitLab users
 
@@ -17,7 +17,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/blog/2016/06/22/gitlab-adds-support-for-u2f/)
   - [Security Webcast with Yubico](https://about.gitlab.com/blog/2016/08/31/gitlab-and-yubico-security-webcast/)
 - **Integrations:**
-  - [GitLab as OAuth2 authentication service provider](../../integration/oauth_provider.md)
+  - [GitLab as OAuth 2.0 authentication service provider](../../integration/oauth_provider.md)
   - [GitLab as OpenID Connect identity provider](../../integration/openid_connect_provider.md)
 
 ## GitLab administrators
@@ -38,7 +38,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## API
 
-- [OAuth 2 Tokens](../../api/rest/index.md#oauth2-tokens)
+- [OAuth 2.0 tokens](../../api/rest/index.md#oauth-20-tokens)
 - [Personal access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
 - [Project access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)
 - [Group access tokens](../../api/rest/index.md#personalprojectgroup-access-tokens)

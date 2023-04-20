@@ -2,8 +2,8 @@
 
 module QA
   RSpec.describe 'Package', :orchestrated, :skip_live_env, product_group: :container_registry, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390090',
-    type: :investigating
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/399556',
+    type: :flaky
   } do
     describe 'Self-managed Container Registry' do
       include Support::Helpers::MaskToken

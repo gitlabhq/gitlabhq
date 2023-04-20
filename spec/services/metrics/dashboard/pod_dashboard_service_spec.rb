@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Metrics::Dashboard::PodDashboardService, :use_clean_rails_memory_store_caching,
-  feature_category: :pods do
+  feature_category: :cell do
   include MetricsDashboardHelpers
 
   let_it_be(:user) { create(:user) }

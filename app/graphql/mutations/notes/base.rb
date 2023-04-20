@@ -13,12 +13,6 @@ module Mutations
             Types::Notes::NoteType,
             null: true,
             description: 'Note after mutation.'
-
-      private
-
-      def find_object(id:)
-        GitlabSchema.find_by_gid(id)
-      end
     end
   end
 end

@@ -1,9 +1,10 @@
 ---
 stage: enablement
 group: Tenant Scale
-comments: false
 description: 'Cells: Container Registry'
 ---
+
+<!-- vale gitlab.FutureTense = NO -->
 
 This document is a work-in-progress and represents a very early state of the
 Cells design. Significant aspects are not documented, though we expect to add

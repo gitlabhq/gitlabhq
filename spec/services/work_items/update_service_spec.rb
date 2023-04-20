@@ -44,6 +44,33 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
     end
 
+    context 'when applying quick actions' do
+      let(:opts) { { description: "/shrug" } }
+
+      context 'when work item type is not the default Issue' do
+        before do
+          task_type = WorkItems::Type.default_by_type(:task)
+          work_item.update_columns(issue_type: task_type.base_type, work_item_type_id: task_type.id)
+        end
+
+        it 'does not apply the quick action' do
+          expect do
+            update_work_item
+          end.to change(work_item, :description).to('/shrug')
+        end
+      end
+
+      context 'when work item type is the default Issue' do
+        let(:issue) { create(:work_item, :issue, description: '') }
+
+        it 'applies the quick action' do
+          expect do
+            update_work_item
+          end.to change(work_item, :description).to(' ¯\＿(ツ)＿/¯')
+        end
+      end
+    end
+
     context 'when title is changed' do
       let(:opts) { { title: 'changed' } }
 

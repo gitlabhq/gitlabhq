@@ -8,7 +8,9 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { humanize } from '~/lib/utils/text_utility';
 import { redirectTo } from '~/lib/utils/url_utility';
-import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
+import ManageViaMr, {
+  i18n,
+} from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 import { buildConfigureSecurityFeatureMockFactory } from './apollo_mocks';
 
@@ -17,6 +19,7 @@ jest.mock('~/lib/utils/url_utility');
 Vue.use(VueApollo);
 
 const projectFullPath = 'namespace/project';
+const ufErrorPrefix = 'Foo:';
 
 describe('ManageViaMr component', () => {
   let wrapper;
@@ -56,6 +59,10 @@ describe('ManageViaMr component', () => {
     );
   }
 
+  beforeEach(() => {
+    gon.uf_error_prefix = ufErrorPrefix;
+  });
+
   // This component supports different report types/mutations depending on
   // whether it's in a CE or EE context. This makes sure we are only testing
   // the ones available in the current test context.
@@ -72,15 +79,19 @@ describe('ManageViaMr component', () => {
       const buildConfigureSecurityFeatureMock = buildConfigureSecurityFeatureMockFactory(
         mutationId,
       );
-      const successHandler = jest.fn(async () => buildConfigureSecurityFeatureMock());
-      const noSuccessPathHandler = async () =>
+      const successHandler = jest.fn().mockResolvedValue(buildConfigureSecurityFeatureMock());
+      const noSuccessPathHandler = jest.fn().mockResolvedValue(
         buildConfigureSecurityFeatureMock({
           successPath: '',
-        });
-      const errorHandler = async () =>
-        buildConfigureSecurityFeatureMock({
-          errors: ['foo'],
-        });
+        }),
+      );
+      const errorHandler = (message = 'foo') => {
+        return Promise.resolve(
+          buildConfigureSecurityFeatureMock({
+            errors: [message],
+          }),
+        );
+      };
       const pendingHandler = () => new Promise(() => {});
 
       describe('when feature is configured', () => {
@@ -147,9 +158,12 @@ describe('ManageViaMr component', () => {
       });
 
       describe.each`
-        handler                 | message
-        ${noSuccessPathHandler} | ${`${featureName} merge request creation mutation failed`}
-        ${errorHandler}         | ${'foo'}
+        handler                                                | message
+        ${noSuccessPathHandler}                                | ${`${featureName} merge request creation mutation failed`}
+        ${errorHandler.bind(null, `${ufErrorPrefix} message`)} | ${'message'}
+        ${errorHandler.bind(null, 'Blah: message')}            | ${i18n.genericErrorText}
+        ${errorHandler.bind(null, 'message')}                  | ${i18n.genericErrorText}
+        ${errorHandler}                                        | ${i18n.genericErrorText}
       `('given an error response', ({ handler, message }) => {
         beforeEach(() => {
           const apolloProvider = createMockApolloProvider(mutation, handler);

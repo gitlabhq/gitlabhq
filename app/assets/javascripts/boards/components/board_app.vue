@@ -4,6 +4,7 @@ import { refreshCurrentPage, queryToObject } from '~/lib/utils/url_utility';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
+import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
 export default {
   components: {
@@ -11,7 +12,7 @@ export default {
     BoardSettingsSidebar,
     BoardTopBar,
   },
-  inject: ['initialBoardId', 'initialFilterParams'],
+  inject: ['initialBoardId', 'initialFilterParams', 'isIssueBoard', 'isApolloBoard'],
   data() {
     return {
       boardId: this.initialBoardId,
@@ -19,10 +20,30 @@ export default {
       isShowingEpicsSwimlanes: Boolean(queryToObject(window.location.search).group_by),
     };
   },
+  apollo: {
+    activeBoardItem: {
+      query: activeBoardItemQuery,
+      variables() {
+        return {
+          isIssue: this.isIssueBoard,
+        };
+      },
+      skip() {
+        return !this.isApolloBoard;
+      },
+    },
+  },
+
   computed: {
     ...mapGetters(['isSidebarOpen']),
     isSwimlanesOn() {
       return (gon?.licensed_features?.swimlanes && this.isShowingEpicsSwimlanes) ?? false;
+    },
+    isAnySidebarOpen() {
+      if (this.isApolloBoard) {
+        return this.activeBoardItem?.id;
+      }
+      return this.isSidebarOpen;
     },
   },
   created() {
@@ -45,7 +66,7 @@ export default {
 </script>
 
 <template>
-  <div class="boards-app gl-relative" :class="{ 'is-compact': isSidebarOpen }">
+  <div class="boards-app gl-relative" :class="{ 'is-compact': isAnySidebarOpen }">
     <board-top-bar
       :board-id="boardId"
       :is-swimlanes-on="isSwimlanesOn"

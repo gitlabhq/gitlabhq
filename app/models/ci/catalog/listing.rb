@@ -27,7 +27,7 @@ module Ci
       def projects_in_namespace_visible_to_user
         Project
           .in_namespace(namespace.self_and_descendant_ids)
-          .public_or_visible_to_user(current_user)
+          .public_or_visible_to_user(current_user, ::Gitlab::Access::DEVELOPER)
       end
     end
   end

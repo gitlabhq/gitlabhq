@@ -106,6 +106,19 @@ export default {
           ),
         });
       },
+      subscribeToMore: {
+        document() {
+          return this.dateQueries[this.issuableType].subscription;
+        },
+        variables() {
+          return {
+            issuableId: this.issuableId,
+          };
+        },
+        skip() {
+          return this.skipIssueDueDateSubscription;
+        },
+      },
     },
   },
   computed: {
@@ -162,6 +175,12 @@ export default {
     },
     dataTestId() {
       return this.dateType === dateTypes.start ? 'sidebar-start-date' : 'sidebar-due-date';
+    },
+    issuableId() {
+      return this.issuable.id;
+    },
+    skipIssueDueDateSubscription() {
+      return this.issuableType !== TYPE_ISSUE || !this.issuableId || this.isLoading;
     },
   },
   methods: {
@@ -302,6 +321,7 @@ export default {
         v-if="!isLoading"
         ref="datePicker"
         class="gl-relative"
+        :value="parsedDate"
         :min-date="minDate"
         :max-date="maxDate"
         :default-date="parsedDate"

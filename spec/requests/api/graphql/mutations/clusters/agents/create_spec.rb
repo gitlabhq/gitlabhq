@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Create a new cluster agent', feature_category: :kubernetes_management do
+RSpec.describe 'Create a new cluster agent', feature_category: :deployment_management do
   include GraphqlHelpers
 
   let(:project) { create(:project, :public, :repository) }

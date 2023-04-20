@@ -57,14 +57,25 @@ function createSuggestionPlugin({
       let component;
       let popup;
 
+      const onUpdate = (props) => {
+        component?.updateProps({ ...props, loading: false });
+
+        if (!props.clientRect) return;
+
+        popup?.[0].setProps({
+          getReferenceClientRect: props.clientRect,
+        });
+      };
+
       return {
-        onStart: (props) => {
+        onBeforeStart: (props) => {
           component = new VueRenderer(SuggestionsDropdown, {
             propsData: {
               ...props,
               char,
               nodeType,
               nodeProps,
+              loading: true,
             },
             editor: props.editor,
           });
@@ -84,17 +95,8 @@ function createSuggestionPlugin({
           });
         },
 
-        onUpdate(props) {
-          component?.updateProps(props);
-
-          if (!props.clientRect) {
-            return;
-          }
-
-          popup?.[0].setProps({
-            getReferenceClientRect: props.clientRect,
-          });
-        },
+        onStart: onUpdate,
+        onUpdate,
 
         onKeyDown(props) {
           if (props.event.key === 'Escape') {
@@ -118,12 +120,18 @@ function createSuggestionPlugin({
 export default Node.create({
   name: 'suggestions',
 
+  addOptions() {
+    return {
+      autocompleteDataSources: {},
+    };
+  },
+
   addProseMirrorPlugins() {
     return [
       createSuggestionPlugin({
         editor: this.editor,
         char: '@',
-        dataSource: gl.GfmAutoComplete?.dataSources.members,
+        dataSource: this.options.autocompleteDataSources.members,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'user',
@@ -133,7 +141,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '#',
-        dataSource: gl.GfmAutoComplete?.dataSources.issues,
+        dataSource: this.options.autocompleteDataSources.issues,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'issue',
@@ -143,7 +151,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '$',
-        dataSource: gl.GfmAutoComplete?.dataSources.snippets,
+        dataSource: this.options.autocompleteDataSources.snippets,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'snippet',
@@ -153,7 +161,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '~',
-        dataSource: gl.GfmAutoComplete?.dataSources.labels,
+        dataSource: this.options.autocompleteDataSources.labels,
         nodeType: 'reference_label',
         nodeProps: {
           referenceType: 'label',
@@ -163,7 +171,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '&',
-        dataSource: gl.GfmAutoComplete?.dataSources.epics,
+        dataSource: this.options.autocompleteDataSources.epics,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'epic',
@@ -173,7 +181,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '[vulnerability:',
-        dataSource: gl.GfmAutoComplete?.dataSources.vulnerabilities,
+        dataSource: this.options.autocompleteDataSources.vulnerabilities,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'vulnerability',
@@ -183,7 +191,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '!',
-        dataSource: gl.GfmAutoComplete?.dataSources.mergeRequests,
+        dataSource: this.options.autocompleteDataSources.mergeRequests,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'merge_request',
@@ -193,7 +201,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '%',
-        dataSource: gl.GfmAutoComplete?.dataSources.milestones,
+        dataSource: this.options.autocompleteDataSources.milestones,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'milestone',
@@ -203,7 +211,7 @@ export default Node.create({
       createSuggestionPlugin({
         editor: this.editor,
         char: '/',
-        dataSource: gl.GfmAutoComplete?.dataSources.commands,
+        dataSource: this.options.autocompleteDataSources.commands,
         nodeType: 'reference',
         nodeProps: {
           referenceType: 'command',

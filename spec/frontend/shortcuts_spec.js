@@ -119,10 +119,21 @@ describe('Shortcuts', () => {
   });
 
   describe('focusSearch', () => {
-    it('focuses the search bar', () => {
-      Shortcuts.focusSearch(createEvent('KeyboardEvent'));
+    describe('when super sidebar is NOT enabled', () => {
+      let originalGon;
+      beforeEach(() => {
+        originalGon = window.gon;
+        window.gon = { use_new_navigation: false };
+      });
 
-      expect(document.querySelector('#search').focus).toHaveBeenCalled();
+      afterEach(() => {
+        window.gon = originalGon;
+      });
+
+      it('focuses the search bar', () => {
+        Shortcuts.focusSearch(createEvent('KeyboardEvent'));
+        expect(document.querySelector('#search').focus).toHaveBeenCalled();
+      });
     });
   });
 });

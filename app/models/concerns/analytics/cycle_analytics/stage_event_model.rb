@@ -74,7 +74,7 @@ module Analytics
           query = <<~SQL
           INSERT INTO #{quoted_table_name}
           (
-            stage_event_hash_id, 
+            stage_event_hash_id,
             #{connection.quote_column_name(issuable_id_column)},
             group_id,
             project_id,

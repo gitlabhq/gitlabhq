@@ -387,10 +387,6 @@ module API
         authorize! :download_code, user_project
       end
 
-      def authorize_read_code!
-        authorize! :read_code, user_project
-      end
-
       def authorize_create_evidence!
         # extended in EE
       end

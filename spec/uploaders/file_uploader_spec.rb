@@ -13,9 +13,9 @@ RSpec.describe FileUploader do
 
   shared_examples 'builds correct legacy storage paths' do
     include_examples 'builds correct paths',
-                     store_dir: %r{awesome/project/\h+},
-                     upload_path: %r{\h+/<filename>},
-                     absolute_path: %r{#{described_class.root}/awesome/project/55dc16aa0edd05693fd98b5051e83321/foo.jpg}
+      store_dir: %r{awesome/project/\h+},
+      upload_path: %r{\h+/<filename>},
+      absolute_path: %r{#{described_class.root}/awesome/project/55dc16aa0edd05693fd98b5051e83321/foo.jpg}
   end
 
   context 'legacy storage' do
@@ -26,8 +26,8 @@ RSpec.describe FileUploader do
         let(:project) { build_stubbed(:project, namespace: group, name: 'project') }
 
         include_examples 'builds correct paths',
-                         store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
-                         upload_path: %r{\h+/<filename>}
+          store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+          upload_path: %r{\h+/<filename>}
       end
 
       context 'when only repositories are rolled out' do
@@ -47,8 +47,8 @@ RSpec.describe FileUploader do
 
     # always use hashed storage path for remote uploads
     it_behaves_like 'builds correct paths',
-                     store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
-                     upload_path: %r{@hashed/\h{2}/\h{2}/\h+/\h+/<filename>}
+      store_dir: %r{@hashed/\h{2}/\h{2}/\h+},
+      upload_path: %r{@hashed/\h{2}/\h{2}/\h+/\h+/<filename>}
   end
 
   describe 'initialize' do

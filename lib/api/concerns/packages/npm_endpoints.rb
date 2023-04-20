@@ -42,6 +42,10 @@ module API
                 present []
               end
             end
+
+            def generate_metadata_service(packages)
+              ::Packages::Npm::GenerateMetadataService.new(params[:package_name], packages)
+            end
           end
 
           params do
@@ -73,7 +77,10 @@ module API
 
               not_found! if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
+              track_package_event(:list_tags, :npm, project: project, namespace: project.namespace)
+
+              metadata = generate_metadata_service(packages).execute(only_dist_tags: true)
+              present ::Packages::Npm::PackagePresenter.new(metadata),
                       with: ::API::Entities::NpmPackageTag
             end
 
@@ -108,6 +115,8 @@ module API
                                                         .find_by_version(version)
                 not_found!('Package') unless package
 
+                track_package_event(:create_tag, :npm, project: project, namespace: project.namespace)
+
                 ::Packages::Npm::CreateTagService.new(package, tag).execute
 
                 no_content!
@@ -139,6 +148,8 @@ module API
                   .find_by_name(tag)
 
                 not_found!('Package tag') unless package_tag
+
+                track_package_event(:delete_tag, :npm, project: project, namespace: project.namespace)
 
                 ::Packages::RemoveTagService.new(package_tag).execute
 
@@ -186,7 +197,7 @@ module API
 
               not_found!('Packages') if packages.empty?
 
-              present ::Packages::Npm::PackagePresenter.new(package_name, packages),
+              present ::Packages::Npm::PackagePresenter.new(generate_metadata_service(packages).execute),
                 with: ::API::Entities::NpmPackage
             end
           end

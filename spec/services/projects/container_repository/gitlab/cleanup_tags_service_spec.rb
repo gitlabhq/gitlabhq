@@ -49,23 +49,23 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       let(:tags_page_size) { 2 }
 
       it_behaves_like 'when regex matching everything is specified',
-                      delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
+        delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
 
       it_behaves_like 'when regex matching everything is specified and latest is not kept',
-                      delete_expectations: [%w[latest A], %w[Ba Bb], %w[C D], %w[E]]
+        delete_expectations: [%w[latest A], %w[Ba Bb], %w[C D], %w[E]]
 
       it_behaves_like 'when delete regex matching specific tags is used'
 
       it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex'
 
       it_behaves_like 'with allow regex value',
-                      delete_expectations: [%w[A], %w[C D], %w[E]]
+        delete_expectations: [%w[A], %w[C D], %w[E]]
 
       it_behaves_like 'when keeping only N tags',
-                      delete_expectations: [%w[Bb]]
+        delete_expectations: [%w[Bb]]
 
       it_behaves_like 'when not keeping N tags',
-                      delete_expectations: [%w[A], %w[Ba Bb], %w[C]]
+        delete_expectations: [%w[A], %w[Ba Bb], %w[C]]
 
       context 'when removing keeping only 3' do
         let(:params) do
@@ -79,13 +79,13 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       end
 
       it_behaves_like 'when removing older than 1 day',
-                      delete_expectations: [%w[Ba Bb], %w[C]]
+        delete_expectations: [%w[Ba Bb], %w[C]]
 
       it_behaves_like 'when combining all parameters',
-                      delete_expectations: [%w[Bb], %w[C]]
+        delete_expectations: [%w[Bb], %w[C]]
 
       it_behaves_like 'when running a container_expiration_policy',
-                      delete_expectations: [%w[Bb], %w[C]]
+        delete_expectations: [%w[Bb], %w[C]]
 
       context 'with a timeout' do
         let(:params) do
@@ -113,7 +113,7 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
           end
 
           it_behaves_like 'when regex matching everything is specified',
-                          delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
+            delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
         end
       end
     end
@@ -122,32 +122,32 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       let(:tags_page_size) { 1000 }
 
       it_behaves_like 'when regex matching everything is specified',
-                      delete_expectations: [%w[A Ba Bb C D E]]
+        delete_expectations: [%w[A Ba Bb C D E]]
 
       it_behaves_like 'when delete regex matching specific tags is used'
 
       it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex'
 
       it_behaves_like 'with allow regex value',
-                      delete_expectations: [%w[A C D E]]
+        delete_expectations: [%w[A C D E]]
 
       it_behaves_like 'when keeping only N tags',
-                      delete_expectations: [%w[Ba Bb C]]
+        delete_expectations: [%w[Ba Bb C]]
 
       it_behaves_like 'when not keeping N tags',
-                      delete_expectations: [%w[A Ba Bb C]]
+        delete_expectations: [%w[A Ba Bb C]]
 
       it_behaves_like 'when removing keeping only 3',
-                      delete_expectations: [%w[Ba Bb C]]
+        delete_expectations: [%w[Ba Bb C]]
 
       it_behaves_like 'when removing older than 1 day',
-                      delete_expectations: [%w[Ba Bb C]]
+        delete_expectations: [%w[Ba Bb C]]
 
       it_behaves_like 'when combining all parameters',
-                      delete_expectations: [%w[Ba Bb C]]
+        delete_expectations: [%w[Ba Bb C]]
 
       it_behaves_like 'when running a container_expiration_policy',
-                      delete_expectations: [%w[Ba Bb C]]
+        delete_expectations: [%w[Ba Bb C]]
     end
 
     context 'with no tags page' do

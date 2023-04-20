@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TasksToBeDone
-  class BaseService < ::IssuableBaseService
+  class BaseService < ::BaseContainerService
     LABEL_PREFIX = 'tasks to be done'
 
     def initialize(container:, current_user:, assignee_ids: [])
@@ -19,8 +19,8 @@ module TasksToBeDone
         update_service = Issues::UpdateService.new(container: project, current_user: current_user, params: { add_assignee_ids: params[:assignee_ids] })
         update_service.execute(issue)
       else
-        build_service = Issues::BuildService.new(container: project, current_user: current_user, params: params)
-        create(build_service.execute)
+        create_service = Issues::CreateService.new(container: project, current_user: current_user, params: params, spam_params: nil)
+        create_service.execute
       end
     end
 

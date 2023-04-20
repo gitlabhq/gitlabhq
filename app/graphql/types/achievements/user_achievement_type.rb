@@ -5,7 +5,7 @@ module Types
     class UserAchievementType < BaseObject
       graphql_name 'UserAchievement'
 
-      authorize :read_achievement
+      authorize :read_user_achievement
 
       field :id,
         ::Types::GlobalIDType[::Achievements::UserAchievement],

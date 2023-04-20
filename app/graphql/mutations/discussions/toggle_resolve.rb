@@ -53,10 +53,6 @@ module Mutations
         end
       end
 
-      def find_object(id:)
-        GitlabSchema.find_by_gid(id)
-      end
-
       def resolve!(discussion)
         ::Discussions::ResolveService.new(
           discussion.project,

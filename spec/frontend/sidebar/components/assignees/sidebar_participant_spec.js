@@ -36,12 +36,13 @@ describe('Sidebar participant component', () => {
     createComponent();
 
     expect(findAvatar().props('label')).toBe(user.name);
+    expect(wrapper.text()).not.toContain('Busy');
   });
 
   it('shows `Busy` status when user is busy', () => {
     createComponent({ status: { availability: 'BUSY' } });
 
-    expect(findAvatar().props('label')).toBe(`${user.name} (Busy)`);
+    expect(wrapper.text()).toContain('Busy');
   });
 
   it('does not render a warning icon', () => {

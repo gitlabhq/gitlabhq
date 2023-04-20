@@ -18,9 +18,9 @@ module Ci
     extend ::Gitlab::Utils::Override
 
     add_authentication_token_field :token,
-                                   encrypted: :optional,
-                                   expires_at: :compute_token_expiration,
-                                   format_with_prefix: :prefix_for_new_and_legacy_runner
+      encrypted: :optional,
+      expires_at: :compute_token_expiration,
+      format_with_prefix: :prefix_for_new_and_legacy_runner
 
     enum access_level: {
       not_protected: 0,
@@ -70,7 +70,7 @@ module Ci
 
     TAG_LIST_MAX_LENGTH = 50
 
-    has_many :runner_machines, inverse_of: :runner
+    has_many :runner_managers, inverse_of: :runner
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects, disable_joins: true
@@ -134,7 +134,7 @@ module Ci
       belonging_to_group(group_self_and_ancestors_ids)
     }
 
-    scope :belonging_to_parent_group_of_project, -> (project_id) {
+    scope :belonging_to_parent_groups_of_project, -> (project_id) {
       raise ArgumentError, "only 1 project_id allowed for performance reasons" unless project_id.is_a?(Integer)
 
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
@@ -148,7 +148,7 @@ module Ci
       from_union(
         [
           belonging_to_project(project_id),
-          project.group_runners_enabled? ? belonging_to_parent_group_of_project(project_id) : nil,
+          project.group_runners_enabled? ? belonging_to_parent_groups_of_project(project_id) : nil,
           project.shared_runners
         ].compact,
         remove_duplicates: false
@@ -215,16 +215,14 @@ module Ci
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
-        error_message: 'Maximum job timeout has a value which could not be accepted'
+      error_message: 'Maximum job timeout has a value which could not be accepted'
 
     validates :maximum_timeout, allow_nil: true,
-                                numericality: { greater_than_or_equal_to: 600,
-                                                message: 'needs to be at least 10 minutes' }
+      numericality: { greater_than_or_equal_to: 600, message: 'needs to be at least 10 minutes' }
 
     validates :public_projects_minutes_cost_factor, :private_projects_minutes_cost_factor,
       allow_nil: false,
-      numericality: { greater_than_or_equal_to: 0.0,
-                      message: 'needs to be non-negative' }
+      numericality: { greater_than_or_equal_to: 0.0, message: 'needs to be non-negative' }
 
     validates :config, json_schema: { filename: 'ci_runner_config' }
 
@@ -498,14 +496,14 @@ module Ci
       end
     end
 
-    def ensure_machine(system_xid, &blk)
-      RunnerMachine.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+    def ensure_manager(system_xid, &blk)
+      RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s, &blk) # rubocop: disable Performance/ActiveRecordSubtransactionMethods
     end
 
     def registration_available?
       authenticated_user_registration_type? &&
         created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
-        !runner_machines.any?
+        !runner_managers.any?
     end
 
     private
@@ -595,7 +593,7 @@ module Ci
     end
 
     def exactly_one_group
-      unless runner_namespaces.one?
+      unless runner_namespaces.size == 1
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
     end

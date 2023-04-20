@@ -14,12 +14,16 @@ module Integrations
     # This pattern does not support cross-project references
     # The other code assumes that this pattern is a superset of all
     # overridden patterns. See ReferenceRegexes.external_pattern
-    def self.reference_pattern(only_long: false)
+    def self.base_reference_pattern(only_long: false)
       if only_long
         /(\b[A-Z][A-Z0-9_]*-)#{Gitlab::Regex.issue}/
       else
         /(\b[A-Z][A-Z0-9_]*-|#{Issue.reference_prefix})#{Gitlab::Regex.issue}/
       end
+    end
+
+    def reference_pattern(only_long: false)
+      self.class.base_reference_pattern(only_long: only_long)
     end
 
     def handle_properties

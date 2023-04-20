@@ -12,10 +12,12 @@ RSpec.describe EmojiHelper do
     subject { helper.emoji_icon(emoji_text, options) }
 
     it 'has no options' do
-      is_expected.to include('<gl-emoji',
-                             "title=\"#{emoji_text}\"",
-                             "data-name=\"#{emoji_text}\"",
-                             "data-unicode-version=\"#{unicode_version}\"")
+      is_expected.to include(
+        '<gl-emoji',
+        "title=\"#{emoji_text}\"",
+        "data-name=\"#{emoji_text}\"",
+        "data-unicode-version=\"#{unicode_version}\""
+      )
       is_expected.not_to include(aria_hidden_option)
     end
 
@@ -23,11 +25,13 @@ RSpec.describe EmojiHelper do
       let(:options) { { 'aria-hidden': true } }
 
       it 'applies aria-hidden' do
-        is_expected.to include('<gl-emoji',
-                               "title=\"#{emoji_text}\"",
-                               "data-name=\"#{emoji_text}\"",
-                               "data-unicode-version=\"#{unicode_version}\"",
-                               aria_hidden_option)
+        is_expected.to include(
+          '<gl-emoji',
+          "title=\"#{emoji_text}\"",
+          "data-name=\"#{emoji_text}\"",
+          "data-unicode-version=\"#{unicode_version}\"",
+          aria_hidden_option
+        )
       end
     end
   end

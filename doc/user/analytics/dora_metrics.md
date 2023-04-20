@@ -15,19 +15,15 @@ Using these metrics helps improve DevOps efficiency and communicate performance 
 
 DORA includes four key metrics, divided into two core areas of DevOps:
 
-- [Deployment Frequency](#deployment-frequency) and [Lead Time for Change](#lead-time-for-changes) measure team velocity.
-- [Change Failure Rate](#change-failure-rate) and [Time to Restore Service](#time-to-restore-service) measure stability.
+- [Deployment frequency](#deployment-frequency) and [Lead time for changes](#lead-time-for-changes) measure team velocity.
+- [Change failure rate](#change-failure-rate) and [Time to restore service](#time-to-restore-service) measure stability.
 
 For software leaders, tracking velocity alongside quality metrics ensures they're not sacrificing quality for speed.
 
-<div class="video-fallback">
-  For an overview, see <a href="https://www.youtube.com/watch?v=1BrcMV6rCDw">GitLab Speed Run: DORA metrics in GitLab One DevOps Platform</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/1BrcMV6rCDw" frameborder="0" allowfullscreen> </iframe>
-</figure>
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video explanation, see [DORA metrics: User analytics](https://www.youtube.com/watch?v=lM_FbVYuN8s) and [GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw).
 
-## DORA Metrics dashboard in Value Stream Analytics
+## DORA metrics dashboard in Value Stream Analytics
 
 The four DORA metrics are available out-of-the-box in the [Value Stream Analytics (VSA) overview dashboard](../group/value_stream_analytics/index.md#view-value-stream-analytics).
 This helps you visualize the engineering work in the context of end-to-end value delivery.
@@ -140,7 +136,7 @@ The DORA metrics are displayed on the following charts:
 
 The table below provides an overview of the DORA metrics' data aggregation in different charts.
 
-| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in CI/CD analytics charts | Data aggregation in Value stream analytics | Data aggregation in Custom insights reporting |
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in Value stream analytics | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
 |---------------------------|-------------------|-----------------------------------------------------|------------------------|-----------------------|----------|
 | Deployment frequency | Number of successful deployments | daily average per month | daily average | daily average | `day` (default) or `month` |
 | Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  median time |  `day` (default) or `month` |
@@ -157,6 +153,26 @@ Deployment frequency is calculated based on the deployments record, which is cre
 These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
 
 To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API. See also the documentation page for [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
+
+### Measure DORA metrics with Jira
+
+- Deployment frequency and Lead time for changes are calculated based on GitLab CI/CD and Merge Requests (MRs), and do not require Jira data.
+- Time to restore service and Change failure rate require GitLab incidents for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents).
+
+### Measure DORA Time to restore service and Change failure rate with external incidents
+
+[Time to restore service](#time-to-restore-service) and [Change failure rate](#change-failure-rate)
+require [GitLab incidents](../../operations/incident_management/manage_incidents.md) to calculate the metrics.
+
+For PagerDuty, you can set up a [webhook to automatically create a GitLab incident for each PagerDuty incident](../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook).
+This configuration requires you to make changes in both PagerDuty and GitLab.
+
+For others incident management tools, you can set up the
+[HTTP integration](../../operations/incident_management/integrations.md#http-endpoints),
+and use it to automatically:
+
+1. [Create an incident when an alert is triggered](../../operations/incident_management/manage_incidents.md#automatically-when-an-alert-is-triggered).
+1. [Close incidents via recovery alerts](../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts).
 
 ### Supported DORA metrics in GitLab
 

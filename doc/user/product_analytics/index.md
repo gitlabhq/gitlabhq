@@ -4,21 +4,30 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Product analytics **(ULTIMATE)**
+# Product analytics (Experiment) **(ULTIMATE)**
 
-> - Introduced in GitLab 15.4 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - Introduced in GitLab 15.4 as an [Experiment](../../policy/alpha-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
+> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
 
-## How Product Analytics works
+## How product analytics works
+
+Product analytics uses several tools:
+
+- [**Jitsu**](https://jitsu.com/docs) - A web and app event collection platform that provides a consistent API to collect user data and pass it through to ClickHouse.
+- [**ClickHouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
+- [**Cube.js**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
+
+The following diagram illustrates the product analytics flow:
 
 ```mermaid
 ---
@@ -41,25 +50,20 @@ flowchart TB
     end
 ```
 
-Product Analytics uses several tools:
-
-- [**Jitsu**](https://jitsu.com/docs) - A web and app event collection platform that provides a consistent API to collect user data and pass it through to Clickhouse.
-- [**Clickhouse**](https://clickhouse.com/docs) - A database suited to store, query, and retrieve analytical data.
-- [**Cube.js**](https://cube.dev/docs/) - An analytical graphing library that provides an API to run queries against the data stored in Clickhouse.
-
 ## Enable product analytics
 
 > - Introduced in GitLab 15.6 behind the [feature flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - Moved to be behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
+> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards` and `product_analytics_admin_settings`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-You can enable and configure product analytics to track events
-within your project applications on a self-managed instance.
+To track events in your project applications on a self-managed instance,
+you must enable and configure product analytics.
 
 Prerequisite:
 
@@ -71,31 +75,37 @@ Prerequisite:
 1. Select **Enable product analytics** and enter the configuration values.
    The following table shows the required configuration parameters and example values:
 
-    | Name                         | Value                                                      |
-    |------------------------------|------------------------------------------------------------|
-    | Jitsu host                   | `https://jitsu.gitlab.com`                                 |
-    | Jitsu project ID             | `g0maofw84gx5sjxgse2k`                                     |
-    | Jitsu administrator email    | `jitsu.admin@gitlab.com`                                   |
-    | Jitsu administrator password | `<your_password>`                                          |
-    | Clickhouse URL               | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
-    | Cube API URL                 | `https://cube.gitlab.com`                                  |
-    | Cube API key                 | `25718201b3e9...ae6bbdc62dbb`                              |
+    | Name                           | Value                                                      |
+    |--------------------------------|------------------------------------------------------------|
+    | Configurator connection string | `https://test:test@configurator.gitlab.com`                |
+    | Jitsu host                     | `https://jitsu.gitlab.com`                                 |
+    | Jitsu project ID               | `g0maofw84gx5sjxgse2k`                                     |
+    | Jitsu administrator email      | `jitsu.admin@gitlab.com`                                   |
+    | Jitsu administrator password   | `<your_password>`                                          |
+    | Collector host                 | `https://collector.gitlab.com`                             |
+    | ClickHouse URL                 | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
+    | Cube API URL                   | `https://cube.gitlab.com`                                  |
+    | Cube API key                   | `25718201b3e9...ae6bbdc62dbb`                              |
 
 1. Select **Save changes**.
 
 ## Product analytics dashboards
 
-> Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+> - Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-Each project can define an unlimited number of dashboards. These dashboards are defined using our YAML schema and stored
-in the `.gitlab/product_analytics/dashboards/` directory of a project repository. The name of the file is the name of the dashboard, and visualizations are shared across dashboards.
+Each project can have an unlimited number of dashboards.
+These dashboards are defined using the GitLab YAML schema, and stored in the `.gitlab/product_analytics/dashboards/` directory of a project repository.
+The name of the file is the name of the dashboard.
+Each dashboard can contain one or more visualizations (charts), which are shared across dashboards.
 
-Project maintainers can enforce approval rules on dashboard changes using features such as code owners and approval rules. Dashboards are versioned in source control with the rest of a project's code.
+Project maintainers can enforce approval rules on dashboard changes using features such as code owners and approval rules.
+Dashboards are versioned in source control with the rest of a project's code.
 
 ### View project dashboards
 
@@ -110,17 +120,25 @@ To view a list of product analytics dashboards for a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Analytics > Dashboards**.
+1. From the list of available dashboards, select the dashboard you want to view.
 
 ### Define a dashboard
 
 To define a dashboard:
 
-1. In `.gitlab/product_analytics/dashboards/`, create a directory named like the dashboard. Each dashboard should have its own directory.
-1. In the new directory, create a `.yaml` file with the same name as the directory. This file contains the dashboard definition, and must conform to the JSON schema defined in `ee/app/validators/json_schemas/product_analytics_dashboard.json`.
-1. In the `.gitlab/product_analytics/dashboards/visualizations/` directory, create a `yaml` file. This file defines the visualization type for the dashboard, and must conform to the schema in
+1. In `.gitlab/product_analytics/dashboards/`, create a directory named like the dashboard.
+
+    Each dashboard should have its own directory.
+1. In the new directory, create a `.yaml` file with the same name as the directory.
+
+    This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/product_analytics_dashboard.json`.
+1. In the `.gitlab/product_analytics/dashboards/visualizations/` directory, create a `.yaml` file.
+
+    This file defines the visualization type for the dashboard. It must conform to the schema in
  `ee/app/validators/json_schemas/product_analytics_visualization.json`.
 
-The example below includes three dashboards and one visualization that applies to all dashboards.
+For example, if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
+and one visualization (line chart) that applies to all dashboards, the file structure would be:
 
 ```plaintext
 .gitlab/product_analytics/dashboards
@@ -136,13 +154,13 @@ The example below includes three dashboards and one visualization that applies t
 
 ## Funnel analysis
 
-Funnel analysis can be used to understand the flow of users through your application and where
+Use funnel analysis to understand the flow of users through your application, and where
 users drop out of a predefined flow (for example, a checkout process or ticket purchase).
 
 Each product can also define an unlimited number of funnels.
-These funnels are defined using our YAML schema and stored in the `.gitlab/product_analytics/funnels/` directory of a project repository.
+Like dashboards, funnels are defined using the GitLab YAML schema, and stored in the `.gitlab/product_analytics/funnels/` directory of a project repository.
 
-Funnel definitions must include the keys `name`, `seconds_to_convert`, and an array of `steps`.
+Funnel definitions must include the keys `name` and `seconds_to_convert`, and an array of `steps`.
 
 | Key                  | Description                                              |
 |----------------------|----------------------------------------------------------|
@@ -159,6 +177,8 @@ Each step must include the keys `name`, `target`, and `action`.
 | `target` | The target of the step. (Because only `pageview` is supported, this should be a path.) |
 
 ### Example funnel definition
+
+The following example defines a funnel that tracks users who completed a purchase within one hour by going through three target pages:
 
 ```yaml
 name: completed_purchase
@@ -212,23 +232,33 @@ The `afterDate` filter is not supported. Please use `beforeDate` or `inDateRange
 
 Exporting the raw event data from the underlying storage engine can help you debug and create datasets for data analysis.
 
+Because Cube acts as an abstraction layer between the raw data and the API, the exported raw data has some caveats:
+
+- Data is grouped by the selected dimensions. Therefore, the exported data might be incomplete, unless including both `utcTime` and `userAnonymousId`.
+- Data is by default limited to 10,000 rows, but you can increase the limit to maximum 50,000 rows. If your dataset has more than 50,000 rows, you must paginate through the results by using the `limit` and `offset` parameters.
+- Data is always returned in JSON format. If you need it in a different format, you need to convert the JSON to the required format using a scripting language of your choice.
+
+[Issue 391683](https://gitlab.com/gitlab-org/gitlab/-/issues/391683) tracks efforts to implement a more scalable export solution.
+
 ### Export raw data with Cube queries
 
-You can [query the raw data with the REST API](../../api/product_analytics.md#send-query-request-to-cube) and convert the JSON output to any required format.
+You can [query the raw data with the REST API](../../api/product_analytics.md#send-query-request-to-cube),
+and convert the JSON output to any required format.
 
-You can export the raw data for a specific dimension by passing a list of dimensions to the `dimensions` key. For example, the following query outputs the raw data for the attributes listed:
+To export the raw data for a specific dimension, pass a list of dimensions to the `dimensions` key.
+For example, the following query outputs the raw data for the attributes listed:
 
 ```json
 POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
 
 {
+    "query":{
   "dimensions": [
     "TrackedEvents.docEncoding",
     "TrackedEvents.docHost",
     "TrackedEvents.docPath",
     "TrackedEvents.docSearch",
     "TrackedEvents.eventType",
-    "TrackedEvents.idsAjsAnonymousId",
     "TrackedEvents.localTzOffset",
     "TrackedEvents.pageTitle",
     "TrackedEvents.src",
@@ -238,16 +268,8 @@ POST /api/v4/projects/PROJECT_ID/product_analytics/request/load?queryType=multi
   "order": {
     "TrackedEvents.apiKey": "asc"
   }
+    }
 }
 ```
 
 If the request is successful, the returned JSON includes an array of rows of results.
-
-### Caveats
-
-Because Cube acts as an abstraction layer between the raw data and the API, the exported raw data has some caveats:
-
-- Data is grouped by the selected dimensions. Therefore, the exported data might be incomplete, unless including both `utcTime` and `userAnonymousId`.
-- Data is by default limited to 10,000 rows, but you can increase the limit to maximum 50,000 rows. If your dataset has more than 50,000 rows, you need to paginate through the results by using the `limit` and `offset` parameters.
-- Data is always returned in JSON format. If you need it in a different format, you need to convert the JSON to the required format using a scripting language of your choice.
-- [Issue 391683](https://gitlab.com/gitlab-org/gitlab/-/issues/391683) tracks the implementation of a more scalable export solution.

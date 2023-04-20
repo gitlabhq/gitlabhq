@@ -30,18 +30,110 @@ RSpec.shared_examples 'work items status' do
   end
 end
 
-RSpec.shared_examples 'work items comments' do
+RSpec.shared_examples 'work items comments' do |type|
   let(:form_selector) { '[data-testid="work-item-add-comment"]' }
+  let(:textarea_selector) { '[data-testid="work-item-add-comment"] #work-item-add-or-edit-comment' }
+  let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
+  let(:modifier_key) { is_mac ? :command : :control }
+  let(:comment) { 'Test comment' }
+
+  def set_comment
+    find(form_selector).fill_in(with: comment)
+  end
 
   it 'successfully creates and shows comments' do
-    click_button 'Add a reply'
+    set_comment
 
-    find(form_selector).fill_in(with: "Test comment")
     click_button "Comment"
 
     wait_for_requests
 
-    expect(page).to have_content "Test comment"
+    page.within(".main-notes-list") do
+      expect(page).to have_content comment
+    end
+  end
+
+  context 'for work item note actions signed in user with developer role' do
+    it 'shows work item note actions' do
+      set_comment
+
+      click_button "Comment"
+
+      wait_for_requests
+
+      page.within(".main-notes-list") do
+        expect(page).to have_selector('[data-testid="work-item-note-actions"]')
+
+        find('[data-testid="work-item-note-actions"]', match: :first).click
+
+        expect(page).to have_selector('[data-testid="copy-link-action"]')
+        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
+      end
+    end
+  end
+
+  it 'successfully posts comments using shortcut and checks if textarea is blank when reinitiated' do
+    set_comment
+
+    send_keys([modifier_key, :enter])
+
+    wait_for_requests
+
+    page.within(".main-notes-list") do
+      expect(page).to have_content comment
+    end
+
+    expect(find(textarea_selector)).to have_content ""
+  end
+
+  context 'when using quick actions' do
+    it 'autocompletes quick actions common to all work item types', :aggregate_failures do
+      click_reply_and_enter_slash
+
+      page.within('#at-view-commands') do
+        expect(page).to have_text("/title")
+        expect(page).to have_text("/shrug")
+        expect(page).to have_text("/tableflip")
+        expect(page).to have_text("/close")
+        expect(page).to have_text("/cc")
+      end
+    end
+
+    context 'when a widget is enabled' do
+      before do
+        WorkItems::Type.default_by_type(type).widget_definitions
+          .find_by_widget_type(:assignees).update!(disabled: false)
+      end
+
+      it 'autocompletes quick action for the enabled widget' do
+        click_reply_and_enter_slash
+
+        page.within('#at-view-commands') do
+          expect(page).to have_text("/assign")
+        end
+      end
+    end
+
+    context 'when a widget is disabled' do
+      before do
+        WorkItems::Type.default_by_type(type).widget_definitions
+          .find_by_widget_type(:assignees).update!(disabled: true)
+      end
+
+      it 'does not autocomplete quick action for the disabled widget' do
+        click_reply_and_enter_slash
+
+        page.within('#at-view-commands') do
+          expect(page).not_to have_text("/assign")
+        end
+      end
+    end
+
+    def click_reply_and_enter_slash
+      find(form_selector).fill_in(with: "/")
+
+      wait_for_all_requests
+    end
   end
 end
 
@@ -98,7 +190,7 @@ RSpec.shared_examples 'work items description' do
 
     wait_for_requests
 
-    page.within('.atwho-container') do
+    page.within('#at-view-commands') do
       expect(page).to have_text("title")
       expect(page).to have_text("shrug")
       expect(page).to have_text("tableflip")
@@ -140,7 +232,7 @@ RSpec.shared_examples 'work items description' do
 end
 
 RSpec.shared_examples 'work items invite members' do
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
 
   it 'successfully assigns the current user by searching' do
     # The button is only when the mouse is over the input
@@ -176,5 +268,42 @@ RSpec.shared_examples 'work items milestone' do
     set_milestone(find(milestone_dropdown_selector), 'No milestone')
 
     expect(page.find(milestone_dropdown_selector)).to have_text('Add to milestone')
+  end
+end
+
+RSpec.shared_examples 'work items comment actions for guest users' do
+  context 'for guest user' do
+    it 'hides other actions other than copy link' do
+      page.within(".main-notes-list") do
+        expect(page).to have_selector('[data-testid="work-item-note-actions"]')
+
+        find('[data-testid="work-item-note-actions"]', match: :first).click
+
+        expect(page).to have_selector('[data-testid="copy-link-action"]')
+        expect(page).not_to have_selector('[data-testid="assign-note-action"]')
+      end
+    end
+  end
+end
+
+RSpec.shared_examples 'work items notifications' do
+  let(:actions_dropdown_selector) { '[data-testid="work-item-actions-dropdown"]' }
+  let(:notifications_toggle_selector) { '[data-testid="notifications-toggle-action"] > button' }
+
+  it 'displays toast when notification is toggled' do
+    find(actions_dropdown_selector).click
+
+    page.within('[data-testid="notifications-toggle-form"]') do
+      expect(page).not_to have_css(".is-checked")
+
+      find(notifications_toggle_selector).click
+      wait_for_requests
+
+      expect(page).to have_css(".is-checked")
+    end
+
+    page.within('.gl-toast') do
+      expect(find('.toast-body')).to have_content(_('Notifications turned on.'))
+    end
   end
 end

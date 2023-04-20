@@ -212,7 +212,7 @@ describe('Incidents List', () => {
       });
     });
 
-    it('contains a link to the incident details page', async () => {
+    it('contains a link to the incident details page', () => {
       findTableRows().at(0).trigger('click');
       expect(visitUrl).toHaveBeenCalledWith(
         joinPaths(`/project/issues/incident`, mockIncidents[0].iid),

@@ -28,6 +28,17 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
     let(:role) { :maintainer }
 
     context 'Branch rules', :js do
+      it 'renders breadcrumbs' do
+        request
+
+        page.within '.breadcrumbs' do
+          expect(page).to have_link('Repository Settings', href: project_settings_repository_path(project))
+          expect(page).to have_link('Branch rules',
+            href: project_settings_repository_path(project, anchor: 'branch-rules'))
+          expect(page).to have_link('Details', href: '#')
+        end
+      end
+
       it 'renders branch rules page' do
         request
 

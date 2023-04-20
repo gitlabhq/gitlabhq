@@ -582,24 +582,28 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         let_it_be(:new_project) { create(:project, forked_from_project: project1) }
 
         let!(:new_merge_request) do
-          create(:merge_request,
-                :simple,
-                author: user,
-                created_at: 1.week.from_now,
-                updated_at: 1.week.from_now,
-                source_project: new_project,
-                target_project: new_project)
+          create(
+            :merge_request,
+            :simple,
+            author: user,
+            created_at: 1.week.from_now,
+            updated_at: 1.week.from_now,
+            source_project: new_project,
+            target_project: new_project
+          )
         end
 
         let!(:old_merge_request) do
-          create(:merge_request,
-                :simple,
-                author: user,
-                source_branch: 'feature_1',
-                created_at: 1.week.ago,
-                updated_at: 1.week.ago,
-                source_project: new_project,
-                target_project: new_project)
+          create(
+            :merge_request,
+            :simple,
+            author: user,
+            source_branch: 'feature_1',
+            created_at: 1.week.ago,
+            updated_at: 1.week.ago,
+            source_project: new_project,
+            target_project: new_project
+          )
         end
 
         before_all do

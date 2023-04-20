@@ -43,7 +43,7 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
       });
     });
 
-    it('transforms HTML returned by render function to a ProseMirror document', async () => {
+    it('transforms HTML returned by render function to a ProseMirror document', () => {
       const document = doc(p(bold(text)), comment(' some comment '));
 
       expect(result.document.toJSON()).toEqual(document.toJSON());

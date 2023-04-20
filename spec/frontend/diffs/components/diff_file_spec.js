@@ -306,7 +306,7 @@ describe('DiffFile', () => {
         markFileToBeRendered(store);
       });
 
-      it('should have the file content', async () => {
+      it('should have the file content', () => {
         expect(wrapper.findComponent(DiffContentComponent).exists()).toBe(true);
       });
 
@@ -316,7 +316,7 @@ describe('DiffFile', () => {
     });
 
     describe('toggle', () => {
-      it('should update store state', async () => {
+      it('should update store state', () => {
         jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
 
         toggleFile(wrapper);

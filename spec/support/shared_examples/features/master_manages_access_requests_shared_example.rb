@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'Maintainer manages access requests' do
-  include Spec::Support::Helpers::Features::MembersHelpers
+  include Features::MembersHelpers
 
   let(:user) { create(:user) }
   let(:maintainer) { create(:user) }

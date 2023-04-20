@@ -57,7 +57,8 @@ module Sidebars
         override :pill_count
         def pill_count
           strong_memoize(:pill_count) do
-            context.project.open_issues_count(context.current_user)
+            count = context.project.open_issues_count(context.current_user)
+            format_cached_count(1000, count)
           end
         end
 
@@ -85,6 +86,10 @@ module Sidebars
           can?(context.current_user, :read_issue, context.project)
         end
 
+        def multi_issue_boards?
+          context.project.multiple_issue_boards_available?
+        end
+
         def list_menu_item
           ::Sidebars::MenuItem.new(
             title: _('List'),
@@ -97,7 +102,11 @@ module Sidebars
         end
 
         def boards_menu_item
-          title = context.project.multiple_issue_boards_available? ? s_('IssueBoards|Boards') : s_('IssueBoards|Board')
+          title = if context.is_super_sidebar
+                    multi_issue_boards? ? s_('Issue boards') : s_('Issue board')
+                  else
+                    multi_issue_boards? ? s_('IssueBoards|Boards') : s_('IssueBoards|Board')
+                  end
 
           ::Sidebars::MenuItem.new(
             title: title,
@@ -122,8 +131,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Milestones'),
             link: project_milestones_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
-            super_sidebar_before: :service_desk,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
             active_routes: { controller: :milestones },
             item_id: :milestones
           )

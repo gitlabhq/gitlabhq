@@ -26,6 +26,9 @@ module QA
             file.name = "text-#{SecureRandom.hex(8)}.txt"
             file.content = 'New file'
           end
+        rescue StandardError => e
+          QA::Runtime::Logger.error("Full failure message: #{e.message}")
+          raise
         end.not_to raise_error
       end
 
@@ -42,6 +45,9 @@ module QA
             commit.commit_message = 'Add new file'
             commit.add_files([{ file_path: "text-#{SecureRandom.hex(8)}.txt", content: 'new file' }])
           end
+        rescue StandardError => e
+          QA::Runtime::Logger.error("Full failure message: #{e.message}")
+          raise
         end.not_to raise_error
       end
     end

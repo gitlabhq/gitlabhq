@@ -333,7 +333,7 @@ describe('IssuableListRoot', () => {
     describe('alert', () => {
       const error = 'oopsie!';
 
-      it('shows alert when there is an error', () => {
+      it('shows an alert when there is an error', () => {
         wrapper = createComponent({ props: { error } });
 
         expect(findAlert().text()).toBe(error);
@@ -504,7 +504,7 @@ describe('IssuableListRoot', () => {
       });
     });
 
-    it('has the page size change component', async () => {
+    it('has the page size change component', () => {
       expect(findPageSizeSelector().exists()).toBe(true);
     });
 

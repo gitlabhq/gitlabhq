@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers do
+RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers, feature_category: :database do
   include Database::PartitioningHelpers
   include Database::TriggerHelpers
   include Database::TableSchemaHelpers
+  include MigrationsHelpers
 
   let(:migration) do
     ActiveRecord::Migration.new.extend(described_class)
@@ -98,7 +99,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           migration.prepare_constraint_for_list_partitioning(table_name: source_table,
                                                              partitioning_column: partition_column,
                                                              parent_table_name: partitioned_table,
-                                                             initial_partitioning_value: min_date)
+                                                             initial_partitioning_value: min_date,
+                                                             async: false)
         end
       end
     end
@@ -484,17 +486,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     context 'when records exist in the source table' do
-      let(:migration_class) { '::Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
+      let(:migration_class) { described_class::MIGRATION }
       let(:sub_batch_size) { described_class::SUB_BATCH_SIZE }
-      let(:pause_seconds) { described_class::PAUSE_SECONDS }
       let!(:first_id) { source_model.create!(name: 'Bob', age: 20).id }
       let!(:second_id) { source_model.create!(name: 'Alice', age: 30).id }
       let!(:third_id) { source_model.create!(name: 'Sam', age: 40).id }
 
       before do
         stub_const("#{described_class.name}::BATCH_SIZE", 2)
-
-        expect(migration).to receive(:queue_background_migration_jobs_by_range_at_intervals).and_call_original
+        stub_const("#{described_class.name}::SUB_BATCH_SIZE", 1)
       end
 
       it 'enqueues jobs to copy each batch of data' do
@@ -503,13 +503,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         Sidekiq::Testing.fake! do
           migration.enqueue_partitioning_data_migration source_table
 
-          expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-
-          first_job_arguments = [first_id, second_id, source_table.to_s, partitioned_table, 'id']
-          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([migration_class, first_job_arguments])
-
-          second_job_arguments = [third_id, third_id, source_table.to_s, partitioned_table, 'id']
-          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([migration_class, second_job_arguments])
+          expect(migration_class).to have_scheduled_batched_migration(
+            table_name: source_table,
+            column_name: :id,
+            job_arguments: [partitioned_table],
+            batch_size: described_class::BATCH_SIZE,
+            sub_batch_size: described_class::SUB_BATCH_SIZE
+          )
         end
       end
     end

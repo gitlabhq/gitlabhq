@@ -1,4 +1,5 @@
 <script>
+import { v4 as uuidv4 } from 'uuid';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { CHART_CONTAINER_HEIGHT } from './constants';
 
@@ -17,6 +18,15 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    chartKey: uuidv4(),
+  }),
+  watch: {
+    chartData() {
+      // Re-render area chart when the data changes
+      this.chartKey = uuidv4();
+    },
+  },
   chartContainerHeight: CHART_CONTAINER_HEIGHT,
 };
 </script>
@@ -27,6 +37,7 @@ export default {
     </p>
     <gl-area-chart
       v-bind="$attrs"
+      :key="chartKey"
       responsive
       width="auto"
       :height="$options.chartContainerHeight"

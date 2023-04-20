@@ -7,20 +7,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # User file uploads **(FREE)**
 
+Users can upload files to:
+
+- Issues or merge requests in a project.
+- Epics in a group.
+
+GitLab generates direct URLs for these images with a random 32-character ID to prevent unauthorized users from guessing the URLs. This randomization offers some security for images containing sensitive information.
+
+## Access control for uploaded files
+
 > - Enforced authorization checks [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80117) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `enforce_auth_checks_on_uploads`. Disabled by default.
 > - Enforced authorization checks became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) in GitLab 15.3. Feature flag `enforce_auth_checks_on_uploads` removed.
 > - Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
 
-In private or internal projects, GitLab restricts access to uploaded files (such as PDFs)
-to authenticated users only. By default, image files are not subject to the same
-restriction, and unauthenticated users can use the URL to view the
-file. If you enable authorization checks for all media files, images
-receive the same protection and are viewable only by authenticated users.
+Access to non-image files uploaded to:
 
-Users can upload files to issues, merge requests, or comments in a project. Direct URLs
-to these images in GitLab contain a random 32-character ID to help prevent
-unauthorized users from guessing image URLs. This randomization provides some protection
-if an image contains sensitive information.
+- Issues or merge requests is determined by the project visibility.
+- Group epics is determined by the group visibility.
+
+For public projects or groups, anyone can access these files through the direct attachment URL, even if the issue, merge request, or epic is confidential.
+For private and internal projects, GitLab ensures only authenticated project members can access non-image file uploads, such as PDFs.
+By default, image files do not have the same restriction, and anyone can view them using the URL. To protect image files, [enable authorization checks for all media files](#enable-authorization-checks-for-all-media-files), making them viewable only by authenticated users.
 
 Authentication checks for images can cause display issues in the body of notification emails.
 Emails are frequently read from clients (such as Outlook, Apple Mail, or your mobile device)
@@ -29,8 +36,9 @@ the client is not authorized to GitLab.
 
 ## Enable authorization checks for all media files
 
-Non-image attachments (including PDFs) always require authentication to be viewed.
-You can use this setting to extend this protection to image files.
+Only authenticated project members can view non-image attachments (including PDFs) in private and internal projects.
+
+To apply authentication requirements to image files in private or internal projects:
 
 Prerequisite:
 
@@ -43,7 +51,9 @@ To configure authentication settings for all media files:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll to **Project visibility** and select **Require authentication to view media files**.
-   You cannot select this option for projects with **Public** visibility.
+
+NOTE:
+You cannot select this option for public projects.
 
 ## Delete uploaded files
 
@@ -69,6 +79,7 @@ mutation{
 ```
 
 Project members that do not have the Owner or Maintainer role cannot access this GraphQL endpoint.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_composition do
+RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_management do
   describe '.new' do
     it 'can be initialized with an array' do
       variable = { key: 'VAR', value: 'value', public: true, masked: false }

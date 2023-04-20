@@ -14,8 +14,7 @@ import {
   platformArchitectures,
 } from '~/ci/runner/components/registration/utils';
 
-const REGISTRATION_TOKEN = 'REGISTRATION_TOKEN';
-const DESCRIPTION = 'RUNNER';
+import { mockAuthenticationToken } from '../../mock_data';
 
 describe('registration utils', () => {
   beforeEach(() => {
@@ -33,8 +32,7 @@ describe('registration utils', () => {
         expect(
           registerCommand({
             platform,
-            registrationToken: REGISTRATION_TOKEN,
-            description: DESCRIPTION,
+            token: mockAuthenticationToken,
           }),
         ).toMatchSnapshot();
 
@@ -47,26 +45,6 @@ describe('registration utils', () => {
     },
   );
 
-  describe.each([LINUX_PLATFORM, MACOS_PLATFORM])('for "%s" platform', (platform) => {
-    it.each`
-      description       | parameter
-      ${'my runner'}    | ${"'my runner'"}
-      ${"bob's runner"} | ${"'bob'\\''s runner'"}
-    `('registerCommand escapes description `$description`', ({ description, parameter }) => {
-      expect(registerCommand({ platform, description })[2]).toBe(`  --description ${parameter}`);
-    });
-  });
-
-  describe.each([WINDOWS_PLATFORM])('for "%s" platform', (platform) => {
-    it.each`
-      description       | parameter
-      ${'my runner'}    | ${"'my runner'"}
-      ${"bob's runner"} | ${"'bob''s runner'"}
-    `('registerCommand escapes description `$description`', ({ description, parameter }) => {
-      expect(registerCommand({ platform, description })[2]).toBe(`  --description ${parameter}`);
-    });
-  });
-
   describe('for missing platform', () => {
     it('commandPrompt uses the default', () => {
       const expected = commandPrompt({ platform: DEFAULT_PLATFORM });
@@ -78,15 +56,13 @@ describe('registration utils', () => {
     it('registerCommand uses the default', () => {
       const expected = registerCommand({
         platform: DEFAULT_PLATFORM,
-        registrationToken: REGISTRATION_TOKEN,
+        token: mockAuthenticationToken,
       });
 
-      expect(registerCommand({ platform: null, registrationToken: REGISTRATION_TOKEN })).toEqual(
+      expect(registerCommand({ platform: null, token: mockAuthenticationToken })).toEqual(expected);
+      expect(registerCommand({ platform: undefined, token: mockAuthenticationToken })).toEqual(
         expected,
       );
-      expect(
-        registerCommand({ platform: undefined, registrationToken: REGISTRATION_TOKEN }),
-      ).toEqual(expected);
     });
 
     it('runCommand uses the default', () => {

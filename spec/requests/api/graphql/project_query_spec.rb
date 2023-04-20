@@ -120,6 +120,67 @@ RSpec.describe 'getting project information', feature_category: :projects do
     end
   end
 
+  describe 'is_catalog_resource' do
+    before do
+      project.add_owner(current_user)
+    end
+
+    let(:catalog_resource_query) do
+      <<~GRAPHQL
+        {
+          project(fullPath: "#{project.full_path}") {
+            isCatalogResource
+          }
+        }
+      GRAPHQL
+    end
+
+    context 'when the project is not a catalog resource' do
+      it 'is false' do
+        post_graphql(catalog_resource_query, current_user: current_user)
+
+        expect(graphql_data.dig('project', 'isCatalogResource')).to be(false)
+      end
+    end
+
+    context 'when the project is a catalog resource' do
+      before do
+        create(:catalog_resource, project: project)
+      end
+
+      it 'is true' do
+        post_graphql(catalog_resource_query, current_user: current_user)
+
+        expect(graphql_data.dig('project', 'isCatalogResource')).to be(true)
+      end
+    end
+
+    context 'for N+1 queries with isCatalogResource' do
+      let_it_be(:project1) { create(:project, group: group) }
+      let_it_be(:project2) { create(:project, group: group) }
+
+      it 'avoids N+1 database queries' do
+        pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/403634')
+        ctx = { current_user: current_user }
+
+        baseline_query = graphql_query_for(:project, { full_path: project1.full_path }, 'isCatalogResource')
+
+        query = <<~GQL
+          query {
+            a: #{query_graphql_field(:project, { full_path: project1.full_path }, 'isCatalogResource')}
+            b: #{query_graphql_field(:project, { full_path: project2.full_path }, 'isCatalogResource')}
+          }
+        GQL
+
+        control = ActiveRecord::QueryRecorder.new do
+          run_with_clean_state(baseline_query, context: ctx)
+        end
+
+        expect { run_with_clean_state(query, context: ctx) }.not_to exceed_query_limit(control)
+      end
+    end
+  end
+
   context 'when the user has reporter access to the project' do
     let(:statistics_query) do
       <<~GRAPHQL

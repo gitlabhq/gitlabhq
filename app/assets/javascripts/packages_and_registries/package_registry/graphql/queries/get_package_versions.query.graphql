@@ -1,0 +1,38 @@
+query getPackageVersions(
+  $id: PackagesPackageID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  package(id: $id) {
+    id
+    versions(after: $after, before: $before, first: $first, last: $last) {
+      count
+      nodes {
+        id
+        name
+        canDestroy
+        createdAt
+        packageType
+        version
+        status
+        _links {
+          webPath
+        }
+        tags(first: 1) {
+          nodes {
+            id
+            name
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}

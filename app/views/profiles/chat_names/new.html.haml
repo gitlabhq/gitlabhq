@@ -4,10 +4,10 @@
   .gl-max-w-80.gl-mx-auto.gl-mt-6
     = render Pajamas::CardComponent.new do |c|
       - c.header do
-        %h4.gl-m-0= s_('SlackIntegration|Authorize GitLab for Slack app (%{user}) to use your account?').html_safe % { user: @chat_name_params[:chat_name] }
+        %h4.gl-m-0= sprintf(s_('Integrations|Authorize %{integration_name} (%{user}) to use your account?'), { user: @chat_name_params[:chat_name], integration_name: @integration_name })
       - c.body do
         %p
-          = s_('SlackIntegration|An application called GitLab for Slack app is requesting access to your GitLab account. This application was created by GitLab Inc.')
+          = sprintf(s_('Integrations|An application called %{integration_name} is requesting access to your GitLab account. This application was created by GitLab Inc.'), { integration_name: @integration_name })
         %p
           = _('This application will be able to:')
           %ul

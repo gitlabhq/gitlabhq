@@ -168,7 +168,7 @@ describe('Board card component', () => {
   });
 
   describe('blocked', () => {
-    it('renders blocked icon if issue is blocked', async () => {
+    it('renders blocked icon if issue is blocked', () => {
       createWrapper({
         props: {
           item: {
@@ -487,7 +487,7 @@ describe('Board card component', () => {
   });
 
   describe('loading', () => {
-    it('renders loading icon', async () => {
+    it('renders loading icon', () => {
       createWrapper({
         props: {
           item: {

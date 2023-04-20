@@ -150,7 +150,13 @@ export default {
 };
 </script>
 <template>
-  <state-container :mr="mr" :actions="actions" status="merged">
+  <state-container
+    :actions="actions"
+    status="merged"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <mr-widget-author-time
       :action-text="s__('mrWidget|Merged by')"
       :author="mr.metrics.mergedBy"

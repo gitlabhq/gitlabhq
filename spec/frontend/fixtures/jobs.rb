@@ -48,49 +48,49 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
     let!(:with_artifact) { create(:ci_build, :success, name: 'with_artifact', job_artifacts: [artifact], pipeline: pipeline) }
     let!(:with_coverage) { create(:ci_build, :success, name: 'with_coverage', coverage: 40.0, pipeline: pipeline) }
 
-    fixtures_path = 'graphql/jobs/'
-    get_jobs_query = 'get_jobs.query.graphql'
-    full_path = 'frontend-fixtures/builds-project'
+    shared_examples 'graphql queries' do |path, jobs_query|
+      let_it_be(:variables) { {} }
 
-    let_it_be(:query) do
-      get_graphql_query_as_string("jobs/components/table/graphql/queries/#{get_jobs_query}")
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{path}/#{jobs_query}")
+      end
+
+      fixtures_path = 'graphql/jobs/'
+
+      it "#{fixtures_path}#{jobs_query}.json" do
+        post_graphql(query, current_user: user, variables: variables)
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{fixtures_path}#{jobs_query}.as_guest.json" do
+        guest = create(:user)
+        project.add_guest(guest)
+
+        post_graphql(query, current_user: guest, variables: variables)
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{fixtures_path}#{jobs_query}.paginated.json" do
+        post_graphql(query, current_user: user, variables: variables.merge({ first: 2 }))
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{fixtures_path}#{jobs_query}.empty.json" do
+        post_graphql(query, current_user: user, variables: variables.merge({ first: 0 }))
+
+        expect_graphql_errors_to_be_empty
+      end
     end
 
-    it "#{fixtures_path}#{get_jobs_query}.json" do
-      post_graphql(query, current_user: user, variables: {
-        fullPath: full_path
-      })
-
-      expect_graphql_errors_to_be_empty
+    it_behaves_like 'graphql queries', 'jobs/components/table/graphql/queries', 'get_jobs.query.graphql' do
+      let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
     end
 
-    it "#{fixtures_path}#{get_jobs_query}.as_guest.json" do
-      guest = create(:user)
-      project.add_guest(guest)
-
-      post_graphql(query, current_user: guest, variables: {
-        fullPath: full_path
-      })
-
-      expect_graphql_errors_to_be_empty
-    end
-
-    it "#{fixtures_path}#{get_jobs_query}.paginated.json" do
-      post_graphql(query, current_user: user, variables: {
-        fullPath: full_path,
-        first: 2
-      })
-
-      expect_graphql_errors_to_be_empty
-    end
-
-    it "#{fixtures_path}#{get_jobs_query}.empty.json" do
-      post_graphql(query, current_user: user, variables: {
-        fullPath: full_path,
-        first: 0
-      })
-
-      expect_graphql_errors_to_be_empty
+    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_all_jobs.query.graphql' do
+      let(:user) { create(:admin) }
     end
   end
 

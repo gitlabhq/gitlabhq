@@ -112,7 +112,7 @@ describe('access tokens', () => {
         );
       });
 
-      it('mounts component and sets `inputAttrs` prop', async () => {
+      it('mounts component and sets `inputAttrs` prop', () => {
         wrapper = createWrapper(initExpiresAtField());
         const component = wrapper.findComponent(ExpiresAtField);
 

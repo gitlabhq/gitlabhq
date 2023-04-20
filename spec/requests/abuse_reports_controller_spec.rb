@@ -11,6 +11,7 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
     attributes_for(:abuse_report) do |hash|
       hash[:user_id] = user.id
       hash[:category] = abuse_category
+      hash[:screenshot] = fixture_file_upload('spec/fixtures/dk.png')
     end
   end
 

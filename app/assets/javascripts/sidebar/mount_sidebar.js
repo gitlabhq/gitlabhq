@@ -148,7 +148,7 @@ function mountSidebarAssigneesWidget() {
     name: 'SidebarAssigneesRoot',
     apolloProvider,
     provide: {
-      canUpdate: editable,
+      canUpdate: parseBoolean(editable),
       directlyInviteMembers: Object.prototype.hasOwnProperty.call(
         el.dataset,
         'directlyInviteMembers',
@@ -162,7 +162,7 @@ function mountSidebarAssigneesWidget() {
           issuableType,
           issuableId: id,
           allowMultipleAssignees: !el.dataset.maxAssignees || el.dataset.maxAssignees > 1,
-          editable,
+          editable: parseBoolean(editable),
         },
         scopedSlots: {
           collapsed: ({ users }) =>
@@ -415,7 +415,7 @@ function mountSidebarDueDateWidget() {
     name: 'SidebarDueDateWidgetRoot',
     apolloProvider,
     provide: {
-      canUpdate: editable,
+      canUpdate: parseBoolean(editable),
     },
     render: (createElement) =>
       createElement(SidebarDueDateWidget, {
@@ -476,7 +476,7 @@ function mountIssuableLockForm(store) {
     render: (createElement) =>
       createElement(IssuableLockForm, {
         props: {
-          isEditable: editable,
+          isEditable: parseBoolean(editable),
         },
       }),
   });
@@ -523,7 +523,7 @@ function mountSidebarSubscriptionsWidget() {
     name: 'SidebarSubscriptionsWidgetRoot',
     apolloProvider,
     provide: {
-      canUpdate: editable,
+      canUpdate: parseBoolean(editable),
     },
     render: (createElement) =>
       createElement(SidebarSubscriptionsWidget, {
@@ -587,7 +587,7 @@ function mountSidebarSeverityWidget() {
     name: 'SidebarSeverityWidgetRoot',
     apolloProvider,
     provide: {
-      canUpdate: editable,
+      canUpdate: parseBoolean(editable),
     },
     render: (createElement) =>
       createElement(SidebarSeverityWidget, {
@@ -645,7 +645,7 @@ function mountCopyEmailToClipboard() {
   });
 }
 
-export function mountMoveIssuesButton() {
+export async function mountMoveIssuesButton() {
   const el = document.querySelector('.js-move-issues');
 
   if (!el) {
@@ -658,7 +658,7 @@ export function mountMoveIssuesButton() {
     el,
     name: 'MoveIssuesRoot',
     apolloProvider: new VueApollo({
-      defaultClient: gqlClient,
+      defaultClient: await gqlClient(),
     }),
     render: (createElement) =>
       createElement(MoveIssuesButton, {

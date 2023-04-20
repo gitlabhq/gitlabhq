@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable, product_group: :editor, quarantine: {
-    only: { subdomain: 'pre' },
-    type: :investigating,
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/378697'
-  } do
+  RSpec.describe 'Create', :reliable, product_group: :editor do
     describe 'Multiple file snippet' do
       let(:first_file_content) { 'First file content' }
       let(:second_file_content) { 'Second file content' }

@@ -1,0 +1,8 @@
+---
+name: namespace_limits_admin_dashboard
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115704
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/399220
+milestone: '15.11'
+type: development
+group: group::utilization
+default_enabled: false

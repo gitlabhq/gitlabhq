@@ -228,6 +228,34 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
         expect(local_file.to_hash).to include(:rspec)
       end
     end
+
+    context 'when interpolaton is being used' do
+      let(:local_file_content) do
+        <<~YAML
+          spec:
+            inputs:
+              website:
+          ---
+          test:
+            script: cap deploy $[[ inputs.website ]]
+        YAML
+      end
+
+      let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
+      let(:params) { { local: location, with: { website: 'gitlab.com' } } }
+
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:fetch_local_content)
+          .and_return(local_file_content)
+      end
+
+      it 'correctly interpolates the local template' do
+        expect(local_file).to be_valid
+        expect(local_file.to_hash)
+          .to eq({ test: { script: 'cap deploy gitlab.com' } })
+      end
+    end
   end
 
   describe '#metadata' do

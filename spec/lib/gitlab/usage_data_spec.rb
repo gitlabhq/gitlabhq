@@ -29,10 +29,8 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
       expect(subject[:usage_activity_by_stage_monthly])
         .to include(:configure, :create, :manage, :monitor, :plan, :release, :verify)
-      expect(subject[:usage_activity_by_stage][:create])
-        .not_to include(:merge_requests_users)
       expect(subject[:usage_activity_by_stage_monthly][:create])
-        .to include(:merge_requests_users)
+        .to include(:snippets)
     end
 
     it 'clears memoized values' do
@@ -715,7 +713,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
         expect(subject[:gravatar_enabled]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
         expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
-        expect(subject[:reply_by_email_enabled]).to eq(Gitlab::IncomingEmail.enabled?)
+        expect(subject[:reply_by_email_enabled]).to eq(Gitlab::Email::IncomingEmail.enabled?)
         expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
         expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
         expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
@@ -1021,24 +1019,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     end
   end
 
-  describe '.merge_requests_users', :clean_gitlab_redis_shared_state do
-    let(:time_period) { { created_at: 2.days.ago..time } }
-    let(:time) { Time.current }
-
-    before do
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 1, time: time)
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 1, time: time)
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 2, time: time)
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 3, time: time)
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:merge_request_action, values: 4, time: time - 3.days)
-      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:design_action, values: 5, time: time)
-    end
-
-    it 'returns the distinct count of users using merge requests (via events table) within the specified time period' do
-      expect(described_class.merge_requests_users(time_period)).to eq(3)
-    end
-  end
-
   def for_defined_days_back(days: [31, 3])
     days.each do |n|
       travel_to(n.days.ago) do
@@ -1067,7 +1047,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(result.duration).to be_an(Float)
     end
 
-    it 'records error and returns nil', :aggregated_errors do
+    it 'records error and returns nil', :aggregate_failures do
       allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
       result = described_class.with_metadata { raise }

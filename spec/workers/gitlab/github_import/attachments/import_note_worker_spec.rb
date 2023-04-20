@@ -19,6 +19,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportNoteWorker, feature_cate
       {
         'record_db_id' => rand(100),
         'record_type' => 'Note',
+        'noteable_type' => 'Issue',
         'text' => <<-TEXT
           Some text...
 

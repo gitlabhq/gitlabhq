@@ -14,20 +14,26 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
   let(:importable) { create(:group, parent: group) }
 
   include_context 'relation tree restorer shared context' do
-    let(:importable_name) { nil }
+    let(:importable_name) { 'groups/4353' }
   end
 
-  let(:path) { 'spec/fixtures/lib/gitlab/import_export/group_exports/no_children/group.json' }
+  let(:path) { Rails.root.join('spec/fixtures/lib/gitlab/import_export/group_exports/no_children/tree') }
   let(:relation_reader) do
-    Gitlab::ImportExport::Json::LegacyReader::File.new(
-      path,
-      relation_names: reader.group_relation_names)
+    Gitlab::ImportExport::Json::NdjsonReader.new(path)
   end
 
   let(:reader) do
     Gitlab::ImportExport::Reader.new(
       shared: shared,
-      config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.legacy_group_config_file).to_h
+      config: Gitlab::ImportExport::Config.new(config: Gitlab::ImportExport.group_config_file).to_h
+    )
+  end
+
+  let(:members_mapper) do
+    Gitlab::ImportExport::MembersMapper.new(
+      exported_members: relation_reader.consume_relation(importable_name, 'members').map(&:first),
+      user: user,
+      importable: importable
     )
   end
 
@@ -41,7 +47,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
       relation_factory: Gitlab::ImportExport::Group::RelationFactory,
       reader: reader,
       importable: importable,
-      importable_path: nil,
+      importable_path: importable_name,
       importable_attributes: attributes
     )
   end
@@ -62,20 +68,13 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
   end
 
   describe 'relation object saving' do
-    let(:importable) { create(:group) }
-    let(:relation_reader) do
-      Gitlab::ImportExport::Json::LegacyReader::File.new(
-        path,
-        relation_names: [:labels])
-    end
-
     before do
       allow(shared.logger).to receive(:info).and_call_original
       allow(relation_reader).to receive(:consume_relation).and_call_original
 
       allow(relation_reader)
         .to receive(:consume_relation)
-        .with(nil, 'labels')
+        .with(importable_name, 'labels')
         .and_return([[label, 0]])
     end
 

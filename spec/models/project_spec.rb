@@ -42,7 +42,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:protected_branches) }
     it { is_expected.to have_many(:exported_protected_branches) }
     it { is_expected.to have_one(:wiki_repository).class_name('Projects::WikiRepository').inverse_of(:project) }
+    it { is_expected.to have_one(:design_management_repository).class_name('DesignManagement::Repository').inverse_of(:project) }
     it { is_expected.to have_one(:slack_integration) }
+    it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
@@ -141,6 +143,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:rpm_repository_files).class_name('Packages::Rpm::RepositoryFile').inverse_of(:project).dependent(:destroy) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
+    it { is_expected.to have_many(:npm_metadata_caches).class_name('Packages::Npm::MetadataCache') }
     it { is_expected.to have_one(:packages_cleanup_policy).class_name('Packages::Cleanup::Policy').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
@@ -2283,8 +2286,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
 
     before do
-      allow(Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
-      allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
     end
 
     it 'is enabled' do
@@ -2324,7 +2327,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     context 'when service_desk_email is disabled' do
       before do
-        allow(::Gitlab::ServiceDeskEmail).to receive(:enabled?).and_return(false)
+        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:enabled?).and_return(false)
       end
 
       it_behaves_like 'with incoming email address'
@@ -2333,7 +2336,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when service_desk_email is enabled' do
       before do
         config = double(enabled: true, address: 'foo+%{key}@bar.com')
-        allow(::Gitlab::ServiceDeskEmail).to receive(:config).and_return(config)
+        allow(::Gitlab::Email::ServiceDeskEmail).to receive(:config).and_return(config)
       end
 
       context 'when project_key is set' do
@@ -2868,6 +2871,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     it 'returns the pages unique url' do
       expect(project.pages_unique_url).to eq('http://unique-domain.example.com')
+    end
+  end
+
+  describe '#pages_unique_host', feature_category: :pages do
+    let(:project_settings) { create(:project_setting, pages_unique_domain: 'unique-domain') }
+    let(:project) { build(:project, project_setting: project_settings) }
+    let(:domain) { 'example.com' }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return("http://#{domain}")
+    end
+
+    it 'returns the pages unique url' do
+      expect(project.pages_unique_host).to eq('unique-domain.example.com')
     end
   end
 
@@ -5805,8 +5823,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     let_it_be(:project) { create(:project) }
 
     it 'exposes API v4 URL' do
-      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
-      expect(project.api_variables.first[:value]).to include '/api/v4'
+      v4_variable = project.api_variables.find { |variable| variable[:key] == "CI_API_V4_URL" }
+
+      expect(v4_variable).not_to be_nil
+      expect(v4_variable[:key]).to eq 'CI_API_V4_URL'
+      expect(v4_variable[:value]).to end_with '/api/v4'
+    end
+
+    it 'exposes API GraphQL URL' do
+      graphql_variable = project.api_variables.find { |variable| variable[:key] == "CI_API_GRAPHQL_URL" }
+
+      expect(graphql_variable).not_to be_nil
+      expect(graphql_variable[:key]).to eq 'CI_API_GRAPHQL_URL'
+      expect(graphql_variable[:value]).to end_with '/api/graphql'
     end
 
     it 'contains a URL variable for every supported API version' do
@@ -5821,7 +5850,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       end
 
       expect(project.api_variables.map { |variable| variable[:key] })
-        .to contain_exactly(*required_variables)
+        .to include(*required_variables)
     end
   end
 
@@ -5919,7 +5948,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
       expect(InternalId).to receive(:flush_records!).with(project: project)
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
       expect(project).to receive(:set_full_path)
@@ -7431,6 +7460,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when feature flag `group_protected_branches` enabled' do
       before do
         stub_feature_flags(group_protected_branches: true)
+        stub_feature_flags(allow_protected_branches_for_group: true)
       end
 
       it 'return all protected branches' do
@@ -7441,6 +7471,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'when feature flag `group_protected_branches` disabled' do
       before do
         stub_feature_flags(group_protected_branches: false)
+        stub_feature_flags(allow_protected_branches_for_group: false)
       end
 
       it 'return only project-level protected branches' do
@@ -8567,6 +8598,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
         it { is_expected.to be_truthy }
       end
+    end
+  end
+
+  describe '#content_editor_on_issues_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :content_editor_on_issues_feature_flag_enabled? }
+      let(:feature_flag) { :content_editor_on_issues }
+      let(:subject_project) { group_project }
     end
   end
 

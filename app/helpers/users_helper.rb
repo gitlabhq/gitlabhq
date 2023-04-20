@@ -58,12 +58,21 @@ module UsersHelper
   end
 
   # Used to preload when you are rendering many projects and checking access
-  #
-  # rubocop: disable CodeReuse/ActiveRecord: `projects` can be array which also responds to pluck
   def load_max_project_member_accesses(projects)
-    current_user&.max_member_access_for_project_ids(projects.pluck(:id))
+    # There are two different request store paradigms for max member access and
+    # we need to preload both of them. One is keyed User the other is keyed by
+    # Project. See https://gitlab.com/gitlab-org/gitlab/-/issues/396822
+
+    # rubocop: disable CodeReuse/ActiveRecord: `projects` can be array which also responds to pluck
+    project_ids = projects.pluck(:id)
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    Preloaders::UserMaxAccessLevelInProjectsPreloader
+      .new(project_ids, current_user)
+      .execute
+
+    current_user&.max_member_access_for_project_ids(project_ids)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def max_project_member_access(project)
     current_user&.max_member_access_for_project(project.id) || Gitlab::Access::NO_ACCESS
@@ -182,7 +191,8 @@ module UsersHelper
       followees: user.followees.count,
       followers: user.followers.count,
       user_calendar_path: user_calendar_path(user, :json),
-      utc_offset: local_timezone_instance(user.timezone).now.utc_offset
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset,
+      user_id: user.id
     }
   end
 

@@ -13,6 +13,11 @@ module Routing
         glm_source
         glm_content
         _gl
+        utm_medium
+        utm_source
+        utm_campaign
+        utm_content
+        utm_budget
       ].freeze
 
       def initialize(request_object, group, project)

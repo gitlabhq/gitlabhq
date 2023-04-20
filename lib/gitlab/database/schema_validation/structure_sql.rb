@@ -19,12 +19,32 @@ module Gitlab
           triggers.find { |trigger| trigger.name == trigger_name }.present?
         end
 
+        def fetch_table_by_name(table_name)
+          tables.find { |table| table.name == table_name }
+        end
+
+        def table_exists?(table_name)
+          fetch_table_by_name(table_name).present?
+        end
+
         def indexes
           @indexes ||= map_with_default_schema(index_statements, SchemaObjects::Index)
         end
 
         def triggers
           @triggers ||= map_with_default_schema(trigger_statements, SchemaObjects::Trigger)
+        end
+
+        def tables
+          @tables ||= table_statements.map do |stmt|
+            table_name = stmt.relation.relname
+
+            columns = stmt.table_elts.select { |n| n.node == :column_def }.map do |column|
+              SchemaObjects::Column.new(Adapters::ColumnStructureSqlAdapter.new(table_name, column.column_def))
+            end
+
+            SchemaObjects::Table.new(table_name, columns)
+          end
         end
 
         private
@@ -37,6 +57,10 @@ module Gitlab
 
         def trigger_statements
           statements.filter_map { |s| s.stmt.create_trig_stmt }
+        end
+
+        def table_statements
+          statements.filter_map { |s| s.stmt.create_stmt }
         end
 
         def statements

@@ -33,7 +33,6 @@ describe('Header Search EventListener', () => {
     jest.mock('~/header_search', () => ({ initHeaderSearchApp: jest.fn() }));
     await eventHandler.apply(
       {
-        newHeaderSearchFeatureFlag: true,
         searchInputBox: document.querySelector('#search'),
       },
       [cleanEventListeners],
@@ -47,28 +46,11 @@ describe('Header Search EventListener', () => {
     jest.mock('~/header_search', () => ({ initHeaderSearchApp: mockVueApp }));
     await eventHandler.apply(
       {
-        newHeaderSearchFeatureFlag: true,
         searchInputBox: document.querySelector('#search'),
       },
       () => {},
     );
 
     expect(mockVueApp).toHaveBeenCalled();
-  });
-
-  it('attaches old vue dropdown when feature flag is disabled', async () => {
-    const mockLegacyApp = jest.fn(() => ({
-      onSearchInputFocus: jest.fn(),
-    }));
-    jest.mock('~/search_autocomplete', () => mockLegacyApp);
-    await eventHandler.apply(
-      {
-        newHeaderSearchFeatureFlag: false,
-        searchInputBox: document.querySelector('#search'),
-      },
-      () => {},
-    );
-
-    expect(mockLegacyApp).toHaveBeenCalled();
   });
 });

@@ -5,7 +5,6 @@ description: Number of feature flag toggles
 product_section: ops
 product_stage: release
 product_group: release
-product_category: feature_flags
 value_type: number
 status: active
 time_frame: all

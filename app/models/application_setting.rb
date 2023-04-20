@@ -26,6 +26,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   # rather than the persisted value.
   ADDRESSABLE_URL_VALIDATION_OPTIONS = { deny_all_requests_except_allowed: ->(settings) { settings.deny_all_requests_except_allowed } }.freeze
 
+  HUMANIZED_ATTRIBUTES = {
+    archive_builds_in_seconds: 'Archive job value'
+  }.freeze
+
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
@@ -336,7 +340,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :archive_builds_in_seconds,
             allow_nil: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 1.day.seconds }
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 1.day.seconds,
+              message: N_('must be at least 1 day')
+            }
 
   validates :local_markdown_version,
             allow_nil: true,
@@ -429,6 +437,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   validates :deny_all_requests_except_allowed,
             allow_nil: false,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :silent_mode_enabled,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   Gitlab::SSHPublicKey.supported_types.each do |type|
@@ -654,6 +665,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
             numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
+  validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
+
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -696,6 +709,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :telesign_customer_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :product_analytics_clickhouse_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -872,6 +887,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   private
+
+  def self.human_attribute_name(attribute, *options)
+    HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
+  end
 
   def parsed_grafana_url
     @parsed_grafana_url ||= Gitlab::Utils.parse_url(grafana_url)

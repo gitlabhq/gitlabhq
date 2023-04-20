@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
+RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :runner_fleet do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -35,7 +35,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
   describe 'GET /runners' do
     context 'authorized user' do
-      it 'returns response status and headers', :aggregate_failures do
+      it 'returns response status and headers' do
         get api('/runners', user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -53,7 +53,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         ]
       end
 
-      it 'filters runners by scope', :aggregate_failures do
+      it 'filters runners by scope' do
         create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
 
         get api('/runners?scope=paused', user)
@@ -112,7 +112,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'filters runners by tag_list', :aggregate_failures do
+      it 'filters runners by tag_list' do
         create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
         create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
 
@@ -134,17 +134,21 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   describe 'GET /runners/all' do
+    let(:path) { '/runners/all' }
+
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'authorized user' do
       context 'with admin privileges' do
         it 'returns response status and headers' do
-          get api('/runners/all', admin, admin_mode: true)
+          get api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
         end
 
         it 'returns all runners' do
-          get api('/runners/all', admin, admin_mode: true)
+          get api(path, admin, admin_mode: true)
 
           expect(json_response).to match_array [
             a_hash_including('description' => 'Project runner', 'is_shared' => false, 'active' => true, 'paused' => false, 'runner_type' => 'project_type'),
@@ -155,7 +159,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           ]
         end
 
-        it 'filters runners by scope', :aggregate_failures do
+        it 'filters runners by scope' do
           get api('/runners/all?scope=shared', admin, admin_mode: true)
 
           shared = json_response.all? { |r| r['is_shared'] }
@@ -166,7 +170,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(shared).to be_truthy
         end
 
-        it 'filters runners by scope', :aggregate_failures do
+        it 'filters runners by scope' do
           get api('/runners/all?scope=specific', admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -235,7 +239,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(response).to have_gitlab_http_status(:bad_request)
         end
 
-        it 'filters runners by tag_list', :aggregate_failures do
+        it 'filters runners by tag_list' do
           create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
           create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
 
@@ -249,7 +253,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
       context 'without admin privileges' do
         it 'does not return runners list' do
-          get api('/runners/all', user)
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -266,9 +270,13 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   describe 'GET /runners/:id' do
+    let(:path) { "/runners/#{project_runner.id}" }
+
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'admin user' do
       context 'when runner is shared' do
-        it "returns runner's details", :aggregate_failures do
+        it "returns runner's details" do
           get api("/runners/#{shared_runner.id}", admin)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -284,7 +292,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         context 'when unused runner is present' do
           let!(:unused_project_runner) { create(:ci_runner, :project, :without_projects) }
 
-          it 'deletes unused runner', :aggregate_failures do
+          it 'deletes unused runner' do
             expect do
               delete api("/runners/#{unused_project_runner.id}", admin, admin_mode: true)
 
@@ -293,29 +301,29 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           end
         end
 
-        it "returns runner's details", :aggregate_failures do
-          get api("/runners/#{project_runner.id}", admin, admin_mode: true)
+        it "returns runner's details" do
+          get api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['description']).to eq(project_runner.description)
         end
 
         it "returns the project's details for a project runner" do
-          get api("/runners/#{project_runner.id}", admin, admin_mode: true)
+          get api(path, admin, admin_mode: true)
 
           expect(json_response['projects'].first['id']).to eq(project.id)
         end
       end
 
       it 'returns 404 if runner does not exist' do
-        get api('/runners/0', admin, admin_mode: true)
+        get api("/runners/#{non_existing_record_id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context 'when the runner is a group runner' do
-      it "returns the runner's details", :aggregate_failures do
+      it "returns the runner's details" do
         get api("/runners/#{group_runner_a.id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -326,8 +334,8 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context "runner project's administrative user" do
       context 'when runner is not shared' do
-        it "returns runner's details", :aggregate_failures do
-          get api("/runners/#{project_runner.id}", user)
+        it "returns runner's details" do
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['description']).to eq(project_runner.description)
@@ -335,7 +343,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       end
 
       context 'when runner is shared' do
-        it "returns runner's details", :aggregate_failures do
+        it "returns runner's details" do
           get api("/runners/#{shared_runner.id}", user)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -346,7 +354,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'other authorized user' do
       it "does not return project runner's details" do
-        get api("/runners/#{project_runner.id}", user2)
+        get api(path, user2)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -354,7 +362,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'unauthorized user' do
       it "does not return project runner's details" do
-        get api("/runners/#{project_runner.id}")
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -362,6 +370,12 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   describe 'PUT /runners/:id' do
+    let(:path) { "/runners/#{project_runner.id}" }
+
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:params) { { description: 'test' } }
+    end
+
     context 'admin user' do
       # see https://gitlab.com/gitlab-org/gitlab-foss/issues/48625
       context 'single parameter update' do
@@ -373,7 +387,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(shared_runner.reload.description).to eq("#{description}_updated")
         end
 
-        it 'runner active state', :aggregate_failures do
+        it 'runner active state' do
           active = shared_runner.active
           update_runner(shared_runner.id, admin, active: !active)
 
@@ -381,7 +395,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(shared_runner.reload.active).to eq(!active)
         end
 
-        it 'runner paused state', :aggregate_failures do
+        it 'runner paused state' do
           active = shared_runner.active
           update_runner(shared_runner.id, admin, paused: active)
 
@@ -389,14 +403,14 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(shared_runner.reload.active).to eq(!active)
         end
 
-        it 'runner tag list', :aggregate_failures do
+        it 'runner tag list' do
           update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
         end
 
-        it 'unrelated runner attribute on an existing runner with too many tags', :aggregate_failures do
+        it 'unrelated runner attribute on an existing runner with too many tags' do
           # This test ensures that it is possible to update any attribute on a runner that currently fails the
           # validation that ensures that there aren't too many tags associated with a runner
           existing_invalid_shared_runner = build(:ci_runner, :instance, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" })
@@ -409,7 +423,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(existing_invalid_shared_runner.reload.active).to eq(!active)
         end
 
-        it 'runner untagged flag', :aggregate_failures do
+        it 'runner untagged flag' do
           # Ensure tag list is non-empty before setting untagged to false.
           update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
           update_runner(shared_runner.id, admin, run_untagged: 'false')
@@ -418,28 +432,28 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(shared_runner.reload.run_untagged?).to be(false)
         end
 
-        it 'runner unlocked flag', :aggregate_failures do
+        it 'runner unlocked flag' do
           update_runner(shared_runner.id, admin, locked: 'true')
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.locked?).to be(true)
         end
 
-        it 'runner access level', :aggregate_failures do
+        it 'runner access level' do
           update_runner(shared_runner.id, admin, access_level: 'ref_protected')
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.ref_protected?).to be_truthy
         end
 
-        it 'runner maximum timeout', :aggregate_failures do
+        it 'runner maximum timeout' do
           update_runner(shared_runner.id, admin, maximum_timeout: 1234)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.maximum_timeout).to eq(1234)
         end
 
-        it 'fails with no parameters', :aggregate_failures do
+        it 'fails with no parameters' do
           put api("/runners/#{shared_runner.id}", admin)
 
           shared_runner.reload
@@ -448,7 +462,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       end
 
       context 'when runner is shared' do
-        it 'updates runner', :aggregate_failures do
+        it 'updates runner' do
           description = shared_runner.description
           active = shared_runner.active
           runner_queue_value = shared_runner.ensure_runner_queue_value
@@ -476,7 +490,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       end
 
       context 'when runner is not shared' do
-        it 'updates runner', :aggregate_failures do
+        it 'updates runner' do
           description = project_runner.description
           runner_queue_value = project_runner.ensure_runner_queue_value
 
@@ -492,7 +506,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       end
 
       it 'returns 404 if runner does not exist' do
-        update_runner(0, admin, description: 'test')
+        update_runner(non_existing_record_id, admin, description: 'test')
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -515,14 +529,14 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
       context 'when runner is not shared' do
         it 'does not update project runner without access to it' do
-          put api("/runners/#{project_runner.id}", user2), params: { description: 'test' }
+          put api(path, user2), params: { description: 'test' }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
 
-        it 'updates project runner with access to it', :aggregate_failures do
+        it 'updates project runner with access to it' do
           description = project_runner.description
-          put api("/runners/#{project_runner.id}", admin, admin_mode: true), params: params
+          put api(path, admin, admin_mode: true), params: params
           project_runner.reload
 
           expect(project_runner.description).to eq('test')
@@ -533,7 +547,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'unauthorized user' do
       it 'does not delete project runner' do
-        put api("/runners/#{project_runner.id}")
+        put api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -541,27 +555,31 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   describe 'DELETE /runners/:id' do
+    let(:path) { "/runners/#{shared_runner.id}" }
+
+    it_behaves_like 'DELETE request permissions for admin mode'
+
     context 'admin user' do
       context 'when runner is shared' do
-        it 'deletes runner', :aggregate_failures do
+        it 'deletes runner' do
           expect_next_instance_of(Ci::Runners::UnregisterRunnerService, shared_runner, admin) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
           expect do
-            delete api("/runners/#{shared_runner.id}", admin, admin_mode: true)
+            delete api(path, admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { ::Ci::Runner.instance_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/runners/#{shared_runner.id}", admin) }
+          let(:request) { api(path, admin, admin_mode: true) }
         end
       end
 
       context 'when runner is not shared' do
-        it 'deletes used project runner', :aggregate_failures do
+        it 'deletes used project runner' do
           expect_next_instance_of(Ci::Runners::UnregisterRunnerService, project_runner, admin) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
@@ -574,12 +592,12 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
       end
 
-      it 'returns 404 if runner does not exist', :aggregate_failures do
+      it 'returns 404 if runner does not exist' do
         allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
           expect(service).not_to receive(:execute)
         end
 
-        delete api('/runners/0', admin, admin_mode: true)
+        delete api("/runners/#{non_existing_record_id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -588,7 +606,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
     context 'authorized user' do
       context 'when runner is shared' do
         it 'does not delete runner' do
-          delete api("/runners/#{shared_runner.id}", user)
+          delete api(path, user)
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
@@ -604,7 +622,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           expect(response).to have_gitlab_http_status(:forbidden)
         end
 
-        it 'deletes project runner for one owned project', :aggregate_failures do
+        it 'deletes project runner for one owned project' do
           expect do
             delete api("/runners/#{project_runner.id}", user)
 
@@ -659,7 +677,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
     end
 
     context 'unauthorized user' do
-      it 'does not delete project runner', :aggregate_failures do
+      it 'does not delete project runner' do
         allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
           expect(service).not_to receive(:execute)
         end
@@ -672,32 +690,38 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   describe 'POST /runners/:id/reset_authentication_token' do
+    let(:path) { "/runners/#{shared_runner.id}/reset_authentication_token" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:params) { {} }
+    end
+
     context 'admin user' do
-      it 'resets shared runner authentication token', :aggregate_failures do
+      it 'resets shared runner authentication token' do
         expect do
-          post api("/runners/#{shared_runner.id}/reset_authentication_token", admin, admin_mode: true)
+          post api(path, admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:success)
           expect(json_response).to eq({ 'token' => shared_runner.reload.token, 'token_expires_at' => nil })
         end.to change { shared_runner.reload.token }
       end
 
-      it 'returns 404 if runner does not exist', :aggregate_failures do
-        post api('/runners/0/reset_authentication_token', admin, admin_mode: true)
+      it 'returns 404 if runner does not exist' do
+        post api("/runners/#{non_existing_record_id}/reset_authentication_token", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context 'authorized user' do
-      it 'does not reset project runner authentication token without access to it', :aggregate_failures do
+      it 'does not reset project runner authentication token without access to it' do
         expect do
           post api("/runners/#{project_runner.id}/reset_authentication_token", user2)
           expect(response).to have_gitlab_http_status(:forbidden)
         end.not_to change { project_runner.reload.token }
       end
 
-      it 'resets project runner authentication token for owned project', :aggregate_failures do
+      it 'resets project runner authentication token for owned project' do
         expect do
           post api("/runners/#{project_runner.id}/reset_authentication_token", user)
 
@@ -706,7 +730,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end.to change { project_runner.reload.token }
       end
 
-      it 'does not reset group runner authentication token with guest access', :aggregate_failures do
+      it 'does not reset group runner authentication token with guest access' do
         expect do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_guest)
 
@@ -714,7 +738,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end.not_to change { group_runner_a.reload.token }
       end
 
-      it 'does not reset group runner authentication token with reporter access', :aggregate_failures do
+      it 'does not reset group runner authentication token with reporter access' do
         expect do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_reporter)
 
@@ -722,7 +746,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end.not_to change { group_runner_a.reload.token }
       end
 
-      it 'does not reset group runner authentication token with developer access', :aggregate_failures do
+      it 'does not reset group runner authentication token with developer access' do
         expect do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_developer)
 
@@ -730,7 +754,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end.not_to change { group_runner_a.reload.token }
       end
 
-      it 'does not reset group runner authentication token with maintainer access', :aggregate_failures do
+      it 'does not reset group runner authentication token with maintainer access' do
         expect do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_maintainer)
 
@@ -738,7 +762,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end.not_to change { group_runner_a.reload.token }
       end
 
-      it 'resets group runner authentication token with owner access', :aggregate_failures do
+      it 'resets group runner authentication token with owner access' do
         expect do
           post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
 
@@ -747,7 +771,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end.to change { group_runner_a.reload.token }
       end
 
-      it 'resets group runner authentication token with owner access with expiration time', :aggregate_failures, :freeze_time do
+      it 'resets group runner authentication token with owner access with expiration time', :freeze_time do
         expect(group_runner_a.reload.token_expires_at).to be_nil
 
         group.update!(runner_token_expiration_interval: 5.days)
@@ -764,9 +788,9 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
     end
 
     context 'unauthorized user' do
-      it 'does not reset authentication token', :aggregate_failures do
+      it 'does not reset authentication token' do
         expect do
-          post api("/runners/#{shared_runner.id}/reset_authentication_token")
+          post api(path)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end.not_to change { shared_runner.reload.token }
@@ -780,11 +804,14 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
     let_it_be(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
     let_it_be(:job_4) { create(:ci_build, :running, runner: project_runner, project: project) }
     let_it_be(:job_5) { create(:ci_build, :failed, runner: project_runner, project: project) }
+    let(:path) { "/runners/#{project_runner.id}/jobs" }
+
+    it_behaves_like 'GET request permissions for admin mode'
 
     context 'admin user' do
       context 'when runner exists' do
         context 'when runner is shared' do
-          it 'return jobs', :aggregate_failures do
+          it 'return jobs' do
             get api("/runners/#{shared_runner.id}/jobs", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -796,8 +823,8 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
 
         context 'when runner is a project runner' do
-          it 'return jobs', :aggregate_failures do
-            get api("/runners/#{project_runner.id}/jobs", admin, admin_mode: true)
+          it 'return jobs' do
+            get api(path, admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
@@ -807,7 +834,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           end
 
           context 'when user does not have authorization to see all jobs' do
-            it 'shows only jobs it has permission to see', :aggregate_failures do
+            it 'shows only jobs it has permission to see' do
               create(:ci_build, :running, runner: two_projects_runner, project: project)
               create(:ci_build, :running, runner: two_projects_runner, project: project2)
 
@@ -825,7 +852,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
 
         context 'when valid status is provided' do
-          it 'return filtered jobs', :aggregate_failures do
+          it 'return filtered jobs' do
             get api("/runners/#{project_runner.id}/jobs?status=failed", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -839,7 +866,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
         context 'when valid order_by is provided' do
           context 'when sort order is not specified' do
-            it 'return jobs in descending order', :aggregate_failures do
+            it 'return jobs in descending order' do
               get api("/runners/#{project_runner.id}/jobs?order_by=id", admin, admin_mode: true)
 
               expect(response).to have_gitlab_http_status(:ok)
@@ -852,7 +879,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
           end
 
           context 'when sort order is specified as asc' do
-            it 'return jobs sorted in ascending order', :aggregate_failures do
+            it 'return jobs sorted in ascending order' do
               get api("/runners/#{project_runner.id}/jobs?order_by=id&sort=asc", admin, admin_mode: true)
 
               expect(response).to have_gitlab_http_status(:ok)
@@ -949,8 +976,8 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
 
         context 'when runner is a project runner' do
-          it 'return jobs', :aggregate_failures do
-            get api("/runners/#{project_runner.id}/jobs", user)
+          it 'return jobs' do
+            get api(path, user)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
@@ -961,7 +988,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
 
         context 'when valid status is provided' do
-          it 'return filtered jobs', :aggregate_failures do
+          it 'return filtered jobs' do
             get api("/runners/#{project_runner.id}/jobs?status=failed", user)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -993,7 +1020,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'other authorized user' do
       it 'does not return jobs' do
-        get api("/runners/#{project_runner.id}/jobs", user2)
+        get api(path, user2)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1001,7 +1028,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'unauthorized user' do
       it 'does not return jobs' do
-        get api("/runners/#{project_runner.id}/jobs")
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1028,7 +1055,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
   describe 'GET /projects/:id/runners' do
     context 'authorized user with maintainer privileges' do
-      it 'returns response status and headers', :aggregate_failures do
+      it 'returns response status and headers' do
         get api('/runners/all', admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -1045,7 +1072,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         ]
       end
 
-      it 'filters runners by scope', :aggregate_failures do
+      it 'filters runners by scope' do
         get api("/projects/#{project.id}/runners?scope=specific", user)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -1103,7 +1130,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'filters runners by tag_list', :aggregate_failures do
+      it 'filters runners by tag_list' do
         create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
         create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
 
@@ -1184,7 +1211,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         end
       end
 
-      it 'filters runners by tag_list', :aggregate_failures do
+      it 'filters runners by tag_list' do
         create(:ci_runner, :group, description: 'Runner tagged with tag1 and tag2', groups: [group], tag_list: %w[tag1 tag2])
         create(:ci_runner, :group, description: 'Runner tagged with tag2', groups: [group], tag_list: %w[tag1])
 
@@ -1201,41 +1228,49 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   end
 
   describe 'POST /projects/:id/runners' do
+    let(:path) { "/projects/#{project.id}/runners" }
+
+    it_behaves_like 'POST request permissions for admin mode' do
+      let!(:new_project_runner) { create(:ci_runner, :project) }
+      let(:params) { { runner_id: new_project_runner.id } }
+      let(:failed_status_code) { :not_found }
+    end
+
     context 'authorized user' do
       let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
 
-      it 'enables project runner', :aggregate_failures do
+      it 'enables project runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
+          post api(path, user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(+1)
         expect(response).to have_gitlab_http_status(:created)
       end
 
-      it 'avoids changes when enabling already enabled runner', :aggregate_failures do
+      it 'avoids changes when enabling already enabled runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner.id }
+          post api(path, user), params: { runner_id: project_runner.id }
         end.to change { project.runners.count }.by(0)
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'does not enable locked runner', :aggregate_failures do
+      it 'does not enable locked runner' do
         project_runner2.update!(locked: true)
 
         expect do
-          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
+          post api(path, user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(0)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'does not enable shared runner' do
-        post api("/projects/#{project.id}/runners", user), params: { runner_id: shared_runner.id }
+        post api(path, user), params: { runner_id: shared_runner.id }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'does not enable group runner' do
-        post api("/projects/#{project.id}/runners", user), params: { runner_id: group_runner_a.id }
+        post api(path, user), params: { runner_id: group_runner_a.id }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1244,9 +1279,9 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
         context 'when project runner is used' do
           let!(:new_project_runner) { create(:ci_runner, :project) }
 
-          it 'enables any project runner', :aggregate_failures do
+          it 'enables any project runner' do
             expect do
-              post api("/projects/#{project.id}/runners", admin, admin_mode: true), params: { runner_id: new_project_runner.id }
+              post api(path, admin, admin_mode: true), params: { runner_id: new_project_runner.id }
             end.to change { project.runners.count }.by(+1)
             expect(response).to have_gitlab_http_status(:created)
           end
@@ -1256,9 +1291,9 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
               create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
             end
 
-            it 'does not enable project runner', :aggregate_failures do
+            it 'does not enable project runner' do
               expect do
-                post api("/projects/#{project.id}/runners", admin, admin_mode: true), params: { runner_id: new_project_runner.id }
+                post api(path, admin, admin_mode: true), params: { runner_id: new_project_runner.id }
               end.not_to change { project.runners.count }
               expect(response).to have_gitlab_http_status(:bad_request)
             end
@@ -1267,7 +1302,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       end
 
       it 'raises an error when no runner_id param is provided' do
-        post api("/projects/#{project.id}/runners", admin, admin_mode: true)
+        post api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -1277,7 +1312,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       let!(:new_project_runner) { create(:ci_runner, :project) }
 
       it 'does not enable runner without access to' do
-        post api("/projects/#{project.id}/runners", user), params: { runner_id: new_project_runner.id }
+        post api(path, user), params: { runner_id: new_project_runner.id }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1285,7 +1320,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'authorized user without permissions' do
       it 'does not enable runner' do
-        post api("/projects/#{project.id}/runners", user2)
+        post api(path, user2)
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1293,7 +1328,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
 
     context 'unauthorized user' do
       it 'does not enable runner' do
-        post api("/projects/#{project.id}/runners")
+        post api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1317,7 +1352,7 @@ RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
       end
 
       context 'when runner have one associated projects' do
-        it "does not disable project's runner", :aggregate_failures do
+        it "does not disable project's runner" do
           expect do
             delete api("/projects/#{project.id}/runners/#{project_runner.id}", user)
           end.to change { project.runners.count }.by(0)

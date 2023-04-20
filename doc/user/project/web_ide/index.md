@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Editor
+group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -296,7 +296,7 @@ An example `package.json`:
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/211685) from GitLab Ultimate to GitLab Free in 13.1.
 
 WARNING:
-Interactive Web Terminals for the Web IDE is currently in [**Beta**](../../../policy/alpha-beta-support.md#beta-features).
+Interactive Web Terminals for the Web IDE is currently in [Beta](../../../policy/alpha-beta-support.md#beta).
 GitLab.com shared runners [do not yet support Interactive Web Terminals](https://gitlab.com/gitlab-org/gitlab/-/issues/24674),
 so you must use your own private runner to make use of this feature.
 
@@ -450,7 +450,7 @@ when:
 - You select any area outside the file editor after editing a file.
 - A file or folder is created, deleted, or renamed.
 
-### Known issues
+## Known issues
 
 The Web IDE has a few limitations:
 
@@ -458,7 +458,9 @@ The Web IDE has a few limitations:
   active terminal at a time.
 - LFS files can be rendered and displayed but they cannot be updated and committed using the Web IDE. If an LFS file is modified and pushed to the repository, the LFS pointer in the repository is overwritten with the modified LFS file content.
 
-### Troubleshooting
+## Troubleshooting
+
+### Web terminals
 
 - If the terminal's text is gray and unresponsive, then the terminal has stopped
   and it can no longer be used. A stopped terminal can be restarted by selecting
@@ -466,7 +468,3 @@ The Web IDE has a few limitations:
 - If the terminal displays **Connection Failure**, then the terminal could not
   connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.
-
-## Related topics
-
-- [Web IDE Beta](../web_ide_beta/index.md)

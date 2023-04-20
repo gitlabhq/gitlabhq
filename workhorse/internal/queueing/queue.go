@@ -27,8 +27,9 @@ type queueMetrics struct {
 // newQueueMetrics prepares Prometheus metrics for queueing mechanism
 // name specifies name of the queue, used to label metrics with ConstLabel `queue_name`
 // timeout specifies the timeout of storing a request in queue - queueMetrics
-//         uses it to calculate histogram buckets for gitlab_workhorse_queueing_waiting_time
-//         metric
+//
+//	uses it to calculate histogram buckets for gitlab_workhorse_queueing_waiting_time
+//	metric
 func newQueueMetrics(name string, timeout time.Duration, reg prometheus.Registerer) *queueMetrics {
 	waitingTimeBuckets := []float64{
 		timeout.Seconds() * 0.01,

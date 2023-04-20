@@ -41,7 +41,7 @@ module DashboardHelper
 
       if doc_href.present?
         link_to_doc = link_to(
-          sprite_icon('question'),
+          sprite_icon('question-o'),
           doc_href,
           class: 'gl-ml-2',
           title: _('Documentation'),

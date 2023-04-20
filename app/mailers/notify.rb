@@ -132,8 +132,8 @@ class Notify < ApplicationMailer
 
     @reason = headers['X-GitLab-NotificationReason']
 
-    if Gitlab::IncomingEmail.enabled? && @sent_notification
-      headers['Reply-To'] = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key)).tap do |address|
+    if Gitlab::Email::IncomingEmail.enabled? && @sent_notification
+      headers['Reply-To'] = Mail::Address.new(Gitlab::Email::IncomingEmail.reply_address(reply_key)).tap do |address|
         address.display_name = reply_display_name(model)
       end
 
@@ -221,8 +221,8 @@ class Notify < ApplicationMailer
     return unless !@labels_url && @sent_notification && @sent_notification.unsubscribable?
 
     list_unsubscribe_methods = [unsubscribe_sent_notification_url(@sent_notification, force: true)]
-    if Gitlab::IncomingEmail.enabled? && Gitlab::IncomingEmail.supports_wildcard?
-      list_unsubscribe_methods << "mailto:#{Gitlab::IncomingEmail.unsubscribe_address(reply_key)}"
+    if Gitlab::Email::IncomingEmail.enabled? && Gitlab::Email::IncomingEmail.supports_wildcard?
+      list_unsubscribe_methods << "mailto:#{Gitlab::Email::IncomingEmail.unsubscribe_address(reply_key)}"
     end
 
     headers['List-Unsubscribe'] = list_unsubscribe_methods.map { |e| "<#{e}>" }.join(',')

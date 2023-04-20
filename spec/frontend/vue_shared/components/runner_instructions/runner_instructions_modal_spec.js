@@ -80,7 +80,7 @@ describe('RunnerInstructionsModal component', () => {
       await waitForPromises();
     });
 
-    it('should not show alert', async () => {
+    it('should not show alert', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
@@ -202,7 +202,7 @@ describe('RunnerInstructionsModal component', () => {
       expect(findAlert().exists()).toBe(true);
     });
 
-    it('should show alert when instructions cannot be loaded', async () => {
+    it('should show an alert when instructions cannot be loaded', async () => {
       createComponent();
       await waitForPromises();
 

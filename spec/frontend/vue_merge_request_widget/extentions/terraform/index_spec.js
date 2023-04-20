@@ -82,7 +82,7 @@ describe('Terraform extension', () => {
         ${'2 valid reports'}               | ${{ 0: validPlanWithName, 1: validPlanWithName }}                           | ${'2 Terraform reports were generated in your pipelines'} | ${''}
         ${'1 valid and 2 invalid reports'} | ${{ 0: validPlanWithName, 1: invalidPlanWithName, 2: invalidPlanWithName }} | ${'Terraform report was generated in your pipelines'}     | ${'2 Terraform reports failed to generate'}
       `('and received $responseType', ({ response, summaryTitle, summarySubtitle }) => {
-        beforeEach(async () => {
+        beforeEach(() => {
           mockPollingApi(HTTP_STATUS_OK, response, {});
           return createComponent();
         });

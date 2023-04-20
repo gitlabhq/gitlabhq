@@ -512,6 +512,20 @@ RSpec.describe 'Group', feature_category: :subgroups do
     end
   end
 
+  describe 'group README', :js do
+    context 'with gitlab-profile project and README.md' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, :readme, namespace: group) }
+
+      it 'renders README block on group page' do
+        visit group_path(group)
+        wait_for_requests
+
+        expect(page).to have_text('README.md')
+      end
+    end
+  end
+
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with

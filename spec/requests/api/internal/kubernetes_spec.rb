@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_management do
+RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_management do
   let(:jwt_auth_headers) do
     jwt_token = JWT.encode({ 'iss' => Gitlab::Kas::JWT_ISSUER }, Gitlab::Kas.secret, 'HS256')
 
@@ -147,6 +147,14 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
           projects: [
             { id: project.full_path, default_namespace: 'staging' }
           ]
+        },
+        user_access: {
+          groups: [
+            { id: group.full_path }
+          ],
+          projects: [
+            { id: project.full_path }
+          ]
         }
       }
     end
@@ -158,8 +166,10 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :kubernetes_manageme
         send_request(params: { agent_id: agent.id, agent_config: config })
 
         expect(response).to have_gitlab_http_status(:no_content)
-        expect(agent.authorized_groups).to contain_exactly(group)
-        expect(agent.authorized_projects).to contain_exactly(project)
+        expect(agent.ci_access_authorized_groups).to contain_exactly(group)
+        expect(agent.ci_access_authorized_projects).to contain_exactly(project)
+        expect(agent.user_access_authorized_groups).to contain_exactly(group)
+        expect(agent.user_access_authorized_projects).to contain_exactly(project)
       end
     end
 

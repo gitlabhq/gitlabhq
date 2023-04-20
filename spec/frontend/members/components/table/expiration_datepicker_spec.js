@@ -93,7 +93,7 @@ describe('ExpirationDatepicker', () => {
   });
 
   describe('when datepicker is changed', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
 
       findDatepicker().vm.$emit('input', new Date('2020-03-17'));

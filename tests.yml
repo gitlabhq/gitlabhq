@@ -102,3 +102,13 @@ mapping:
     test: ee/spec/config/metrics/every_metric_definition_spec.rb
   - source: ee/lib/ee/gitlab/usage_data_counters/known_events/.*.yml
     test: ee/spec/config/metrics/every_metric_definition_spec.rb
+
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/146
+  - source: config/feature_categories.yml
+    test: spec/db/docs_spec.rb
+  - source: config/feature_categories.yml
+    test: ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb
+
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360
+  - source: vendor/project_templates/.*
+    test: spec/lib/gitlab/project_template_spec.rb

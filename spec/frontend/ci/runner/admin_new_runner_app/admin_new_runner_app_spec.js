@@ -1,5 +1,3 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
@@ -11,14 +9,15 @@ import AdminNewRunnerApp from '~/ci/runner/admin_new_runner/admin_new_runner_app
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
+import {
+  PARAM_KEY_PLATFORM,
+  INSTANCE_TYPE,
+  DEFAULT_PLATFORM,
+  WINDOWS_PLATFORM,
+} from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { runnerCreateResult } from '../mock_data';
-
-const mockLegacyRegistrationToken = 'LEGACY_REGISTRATION_TOKEN';
-
-Vue.use(VueApollo);
+import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
 
 jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
 jest.mock('~/alert');
@@ -40,7 +39,7 @@ describe('AdminNewRunnerApp', () => {
   const createComponent = () => {
     wrapper = shallowMountExtended(AdminNewRunnerApp, {
       propsData: {
-        legacyRegistrationToken: mockLegacyRegistrationToken,
+        legacyRegistrationToken: mockRegistrationToken,
       },
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -58,7 +57,7 @@ describe('AdminNewRunnerApp', () => {
   describe('Shows legacy modal', () => {
     it('passes legacy registration to modal', () => {
       expect(findRunnerInstructionsModal().props('registrationToken')).toEqual(
-        mockLegacyRegistrationToken,
+        mockRegistrationToken,
       );
     });
 
@@ -76,8 +75,11 @@ describe('AdminNewRunnerApp', () => {
   });
 
   describe('Runner form', () => {
-    it('shows the runner create form', () => {
-      expect(findRunnerCreateForm().exists()).toBe(true);
+    it('shows the runner create form for an instance runner', () => {
+      expect(findRunnerCreateForm().props()).toEqual({
+        runnerType: INSTANCE_TYPE,
+        groupId: null,
+      });
     });
 
     describe('When a runner is saved', () => {
@@ -93,7 +95,7 @@ describe('AdminNewRunnerApp', () => {
       });
 
       it('redirects to the registration page', () => {
-        const url = `${mockCreatedRunner.registerAdminUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
+        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
 
         expect(redirectTo).toHaveBeenCalledWith(url);
       });
@@ -106,7 +108,7 @@ describe('AdminNewRunnerApp', () => {
       });
 
       it('redirects to the registration page with the platform', () => {
-        const url = `${mockCreatedRunner.registerAdminUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
+        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
 
         expect(redirectTo).toHaveBeenCalledWith(url);
       });

@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import RunnerStatusCell from '~/ci/runner/components/cells/runner_status_cell.vue';
 
 import RunnerStatusBadge from '~/ci/runner/components/runner_status_badge.vue';
@@ -20,7 +20,7 @@ describe('RunnerStatusCell', () => {
   const findPausedBadge = () => wrapper.findComponent(RunnerPausedBadge);
 
   const createComponent = ({ runner = {}, ...options } = {}) => {
-    wrapper = mount(RunnerStatusCell, {
+    wrapper = shallowMount(RunnerStatusCell, {
       propsData: {
         runner: {
           runnerType: INSTANCE_TYPE,
@@ -29,6 +29,10 @@ describe('RunnerStatusCell', () => {
           jobExecutionStatus: JOB_STATUS_IDLE,
           ...runner,
         },
+      },
+      stubs: {
+        RunnerStatusBadge,
+        RunnerPausedBadge,
       },
       ...options,
     });

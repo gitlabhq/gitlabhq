@@ -54,7 +54,7 @@ describe('Repository file preview component', () => {
     expect(handleLocationHash).toHaveBeenCalled();
   });
 
-  it('renders loading icon', async () => {
+  it('renders loading icon', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 });

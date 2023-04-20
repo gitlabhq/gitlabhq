@@ -75,8 +75,7 @@ exports[`registration utils for "linux" platform registerCommand is correct 1`] 
 Array [
   "gitlab-runner register",
   "  --url http://test.host",
-  "  --registration-token REGISTRATION_TOKEN",
-  "  --description 'RUNNER'",
+  "  --token MOCK_AUTHENTICATION_TOKEN",
 ]
 `;
 
@@ -130,8 +129,7 @@ exports[`registration utils for "osx" platform registerCommand is correct 1`] = 
 Array [
   "gitlab-runner register",
   "  --url http://test.host",
-  "  --registration-token REGISTRATION_TOKEN",
-  "  --description 'RUNNER'",
+  "  --token MOCK_AUTHENTICATION_TOKEN",
 ]
 `;
 
@@ -189,8 +187,7 @@ exports[`registration utils for "windows" platform registerCommand is correct 1`
 Array [
   ".\\\\gitlab-runner.exe register",
   "  --url http://test.host",
-  "  --registration-token REGISTRATION_TOKEN",
-  "  --description 'RUNNER'",
+  "  --token MOCK_AUTHENTICATION_TOKEN",
 ]
 `;
 

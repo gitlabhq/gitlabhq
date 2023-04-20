@@ -30,7 +30,7 @@ export default {
     UrlSync,
   },
   props: {
-    groupPath: {
+    namespacePath: {
       type: String,
       required: true,
     },
@@ -141,7 +141,7 @@ export default {
   <div>
     <filtered-search-bar
       class="gl-flex-grow-1"
-      :namespace="groupPath"
+      :namespace="namespacePath"
       recent-searches-storage-key="value-stream-analytics"
       :search-input-placeholder="__('Filter results')"
       :tokens="tokens"

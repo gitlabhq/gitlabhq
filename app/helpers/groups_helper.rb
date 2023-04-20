@@ -132,16 +132,6 @@ module GroupsHelper
     }
   end
 
-  def verification_for_group_creation_data
-    # overridden in EE
-    {}
-  end
-
-  def require_verification_for_namespace_creation_enabled?
-    # overridden in EE
-    false
-  end
-
   def group_name_and_path_app_data
     {
       base_path: root_url,
@@ -161,10 +151,31 @@ module GroupsHelper
       new_project_path: new_project_path(namespace_id: group.id),
       new_subgroup_illustration: image_path('illustrations/subgroup-create-new-sm.svg'),
       new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),
+      empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       empty_subgroup_illustration: image_path('illustrations/empty-state/empty-subgroup-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
+    }
+  end
+
+  def group_readme_app_data(group_readme)
+    {
+      web_path: group_readme.present.web_path,
+      name: group_readme.present.name
+    }
+  end
+
+  def show_group_readme?(group)
+    group.group_readme
+  end
+
+  def group_settings_readme_app_data(group)
+    {
+      group_readme_path: group.group_readme&.present&.web_path,
+      readme_project_path: group.readme_project&.present&.path_with_namespace,
+      group_path: group.full_path,
+      group_id: group.id
     }
   end
 

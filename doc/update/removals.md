@@ -34,6 +34,25 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 15.11
+
+### Exporting and importing projects in JSON format not supported
+
+GitLab previously created project file exports in JSON format. In GitLab 12.10, NDJSON was added as the preferred format.
+
+To support transitions, importing JSON-formatted project file exports was still possible if you configured the
+relevant feature flags.
+
+From GitLab 15.11, importing a JSON-formatted project file exports is not supported.
+
+### openSUSE Leap 15.3 packages
+
+Distribution support and security updates for openSUSE Leap 15.3 [ended December 2022](https://en.opensuse.org/Lifetime#Discontinued_distributions).
+
+Starting in GitLab 15.7 we started providing packages for openSUSE Leap 15.4, and in GitLab 15.11 we stopped providing packages for openSUSE Leap 15.3.
+
+To continue using GitLab, [upgrade](https://en.opensuse.org/SDB:System_upgrade) to openSUSE Leap 15.4.
+
 ## Removed in 15.9
 
 ### Live Preview no longer available in the Web IDE
@@ -43,6 +62,22 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The Live Preview feature of the Web IDE was intended to provide a client-side preview of static web applications. However, complex configuration steps and a narrow set of supported project types have limited its utility. With the introduction of the Web IDE Beta in GitLab 15.7, you can now connect to a full server-side runtime environment. With upcoming support for installing extensions in the Web IDE, we’ll also support more advanced workflows than those available with Live Preview. As of GitLab 15.9, Live Preview is no longer available in the Web IDE.
+
+### `omniauth-authentiq` gem no longer available
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+`omniauth-authentiq` is an OmniAuth strategy gem that was part of GitLab. The company providing authentication services, Authentiq, has shut down. Therefore the gem is being removed.
+
+### `omniauth-shibboleth` gem no longer available
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+`omniauth-shibboleth` is an OmniAuth strategy gem that was part of GitLab. The gem has not received security updates and does not meet GitLab quality guidance criteria. This gem was originally scheduled for removal by 14.1, but it was not removed at that time. The gem is being removed now.
 
 ## Removed in 15.8
 
@@ -54,6 +89,15 @@ If you want to preserve this functionality, you can follow one of these two path
 
 1. Fork the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) into the `chart/` path within your project
 1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy
+
+### Exporting and importing groups in JSON format not supported
+
+GitLab previously created group file exports in JSON format. In GitLab 13.10, NDJSON was added as the preferred format.
+
+To support transitions, importing JSON-formatted group file exports was still possible if you configured the
+relevant feature flags.
+
+From GitLab 15.8, importing a JSON-formatted group file exports is not supported.
 
 ### `artifacts:public` CI/CD keyword refactored
 
@@ -211,7 +255,7 @@ If your object storage provider does not support `background_upload`, please [mi
 
 #### Encrypted S3 buckets
 
-Additionally, this also breaks the use of [encrypted S3 buckets](https://docs.gitlab.com/ee/administration/object_storage.html#encrypted-s3-buckets) with [storage-specific configuration form](https://docs.gitlab.com/ee/administration/object_storage.html#storage-specific-configuration).
+Additionally, this also breaks the use of [encrypted S3 buckets](https://docs.gitlab.com/ee/administration/object_storage.html#encrypted-s3-buckets) with [storage-specific configuration form](https://docs.gitlab.com/ee/administration/object_storage.html#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form).
 
 If your S3 buckets have [SSE-S3 or SSE-KMS encryption enabled](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html), please [migrate your configuration to use consolidated object storage form](https://docs.gitlab.com/ee/administration/object_storage.html#transition-to-consolidated-form) before upgrading to GitLab 15.0. Otherwise, you may start getting `ETag mismatch` errors during objects upload.
 
@@ -229,7 +273,7 @@ Some users found that they could specify a path prefix to the bucket. In direct 
 
 If you have set a prefix, you can use a workaround to revert to background uploads:
 
-1. Continue to use [storage-specific configuration](https://docs.gitlab.com/ee/administration/object_storage.html#storage-specific-configuration).
+1. Continue to use [storage-specific configuration](https://docs.gitlab.com/ee/administration/object_storage.html#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form).
 1. In Omnibus GitLab, set the `GITLAB_LEGACY_BACKGROUND_UPLOADS` to re-enable background uploads:
 
     ```ruby

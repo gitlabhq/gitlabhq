@@ -15,10 +15,20 @@ module Projects
               path_to_artifact: link_to_artifact(candidate),
               experiment_name: candidate.experiment.name,
               path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),
+              path: link_to_details(candidate),
               status: candidate.status
             },
             metadata: candidate.metadata
           }
+        }
+
+        Gitlab::Json.generate(data)
+      end
+
+      def experiment_as_data(experiment)
+        data = {
+          name: experiment.name,
+          path: link_to_experiment(experiment.project, experiment)
         }
 
         Gitlab::Json.generate(data)

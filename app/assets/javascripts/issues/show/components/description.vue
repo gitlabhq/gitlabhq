@@ -1,6 +1,5 @@
 <script>
 import { GlToast } from '@gitlab/ui';
-import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
@@ -55,11 +54,6 @@ export default {
       required: true,
     },
     descriptionText: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    taskStatus: {
       type: String,
       required: false,
       default: '',
@@ -138,7 +132,10 @@ export default {
   },
   watch: {
     descriptionHtml(newDescription, oldDescription) {
-      if (!this.initialUpdate && newDescription !== oldDescription) {
+      if (
+        !this.initialUpdate &&
+        this.stripClientState(newDescription) !== this.stripClientState(oldDescription)
+      ) {
         this.animateChange();
       } else {
         this.initialUpdate = false;
@@ -148,16 +145,12 @@ export default {
         this.renderGFM();
       });
     },
-    taskStatus() {
-      this.updateTaskStatusText();
-    },
   },
   mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
 
     this.renderGFM();
-    this.updateTaskStatusText();
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
@@ -282,24 +275,6 @@ export default {
 
       this.$emit('taskListUpdateFailed');
     },
-    updateTaskStatusText() {
-      const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
-      const $issuableHeader = $('.issuable-meta');
-      const $tasks = $('#task_status', $issuableHeader);
-      const $tasksShort = $('#task_status_short', $issuableHeader);
-
-      if (taskRegexMatches) {
-        $tasks.text(this.taskStatus);
-        $tasksShort.text(
-          `${taskRegexMatches[1]}/${taskRegexMatches[2]} checklist item${
-            taskRegexMatches[2] > 1 ? 's' : ''
-          }`,
-        );
-      } else {
-        $tasks.text('');
-        $tasksShort.text('');
-      }
-    },
     createTaskListItemActions(provide) {
       const app = new Vue({
         el: document.createElement('div'),
@@ -348,6 +323,9 @@ export default {
         // Otherwise, the task item is a simple one where the task text exists as the last child
         listItem.append(element);
       }
+    },
+    stripClientState(description) {
+      return description.replaceAll('<details open="true">', '<details>');
     },
     async createTask({ taskTitle, taskDescription, oldDescription }) {
       try {

@@ -62,6 +62,60 @@ export const getActionsFromDeploymentNode = (deploymentNode, lastDeploymentName)
   );
 };
 
+export const getRollbackActionFromDeploymentNode = (deploymentNode, environment) => {
+  const { job, id } = deploymentNode;
+
+  if (!job) {
+    return null;
+  }
+  const isLastDeployment = id === environment.lastDeployment?.id;
+  const { webPath } = job;
+  return {
+    id,
+    name: environment.name,
+    lastDeployment: {
+      commit: deploymentNode.commit,
+      isLast: isLastDeployment,
+    },
+    retryUrl: `${webPath}/retry`,
+  };
+};
+
+const getDeploymentApprovalFromDeploymentNode = (deploymentNode, environment) => {
+  if (!environment.protectedEnvironments || environment.protectedEnvironments.nodes.length === 0) {
+    return {
+      isApprovalActionAvailable: false,
+    };
+  }
+
+  const protectedEnvironmentInfo = environment.protectedEnvironments.nodes[0];
+
+  const hasApprovalRules = protectedEnvironmentInfo.approvalRules.nodes?.length > 0;
+  const hasRequiredApprovals = protectedEnvironmentInfo.requiredApprovalCount > 0;
+
+  const isApprovalActionAvailable = hasRequiredApprovals || hasApprovalRules;
+  const requiredMultipleApprovalRulesApprovals = protectedEnvironmentInfo.approvalRules.nodes.reduce(
+    (requiredApprovals, rule) => {
+      return requiredApprovals + rule.requiredApprovals;
+    },
+    0,
+  );
+
+  const requiredApprovalCount = hasRequiredApprovals
+    ? protectedEnvironmentInfo.requiredApprovalCount
+    : requiredMultipleApprovalRulesApprovals;
+
+  return {
+    isApprovalActionAvailable,
+    deploymentIid: deploymentNode.iid,
+    environment: {
+      name: environment.name,
+      tier: environment.tier,
+      requiredApprovalCount,
+    },
+  };
+};
+
 /**
  * This function transforms deploymentNode object coming from GraphQL to object compatible with app/assets/javascripts/environments/environment_details/page.vue table
  * @param {Object} deploymentNode
@@ -82,5 +136,7 @@ export const convertToDeploymentTableRow = (deploymentNode, environment) => {
     created: deploymentNode.createdAt || '',
     deployed: deploymentNode.finishedAt || '',
     actions: getActionsFromDeploymentNode(deploymentNode, lastDeployment?.job?.name),
+    rollback: getRollbackActionFromDeploymentNode(deploymentNode, environment),
+    deploymentApproval: getDeploymentApprovalFromDeploymentNode(deploymentNode, environment),
   };
 };

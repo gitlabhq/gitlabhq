@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Statistics, 'Statistics', feature_category: :devops_reports do
+RSpec.describe API::Statistics, 'Statistics', :aggregate_failures, feature_category: :devops_reports do
   include ProjectForksHelper
   tables_to_analyze = %w[
     projects
@@ -21,6 +21,8 @@ RSpec.describe API::Statistics, 'Statistics', feature_category: :devops_reports 
   let(:path) { "/application/statistics" }
 
   describe "GET /application/statistics" do
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'when no user' do
       it "returns authentication error" do
         get api(path, nil)
@@ -43,7 +45,7 @@ RSpec.describe API::Statistics, 'Statistics', feature_category: :devops_reports 
       let(:admin) { create(:admin) }
 
       it 'matches the response schema' do
-        get api(path, admin)
+        get api(path, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('statistics')
@@ -66,7 +68,7 @@ RSpec.describe API::Statistics, 'Statistics', feature_category: :devops_reports 
           ApplicationRecord.connection.execute("ANALYZE #{table}")
         end
 
-        get api(path, admin)
+        get api(path, admin, admin_mode: true)
 
         expected_statistics = {
           issues: 2,

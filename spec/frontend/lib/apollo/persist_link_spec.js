@@ -56,7 +56,7 @@ describe('~/lib/apollo/persist_link', () => {
     expect(childFields.some((field) => field.name.value === '__persist')).toBe(false);
   });
 
-  it('decorates the response with `__persist: true` is there is `__persist` field in the query', async () => {
+  it('decorates the response with `__persist: true` is there is `__persist` field in the query', () => {
     const link = getPersistLink().concat(terminatingLink);
 
     subscription = execute(link, { query: QUERY_WITH_PERSIST_FIELD }).subscribe(({ data }) => {
@@ -64,7 +64,7 @@ describe('~/lib/apollo/persist_link', () => {
     });
   });
 
-  it('does not decorate the response with `__persist: true` is there if query is not persistent', async () => {
+  it('does not decorate the response with `__persist: true` is there if query is not persistent', () => {
     const link = getPersistLink().concat(terminatingLink);
 
     subscription = execute(link, { query: DEFAULT_QUERY }).subscribe(({ data }) => {

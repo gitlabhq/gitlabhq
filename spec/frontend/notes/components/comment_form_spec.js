@@ -5,6 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
@@ -27,6 +28,8 @@ jest.mock('~/alert');
 Vue.use(Vuex);
 
 describe('issue_comment_form component', () => {
+  useLocalStorageSpy();
+
   let store;
   let wrapper;
   let axiosMock;
@@ -646,6 +649,37 @@ describe('issue_comment_form component', () => {
           expect(findConfidentialNoteCheckbox().exists()).toBe(false);
         });
       });
+    });
+  });
+
+  describe('check sensitive tokens', () => {
+    const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
+    const nonSensitiveMessage = 'text';
+
+    it('should not save note when it contains sensitive token', () => {
+      mountComponent({
+        mountFunction: mount,
+        initialData: { note: sensitiveMessage },
+      });
+
+      jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+
+      clickCommentButton();
+
+      expect(wrapper.vm.saveNote).not.toHaveBeenCalled();
+    });
+
+    it('should save note it does not contain sensitive token', () => {
+      mountComponent({
+        mountFunction: mount,
+        initialData: { note: nonSensitiveMessage },
+      });
+
+      jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
+
+      clickCommentButton();
+
+      expect(wrapper.vm.saveNote).toHaveBeenCalled();
     });
   });
 

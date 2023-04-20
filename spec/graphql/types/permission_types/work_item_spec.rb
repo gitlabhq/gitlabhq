@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Types::PermissionTypes::WorkItem do
   it do
     expected_permissions = [
-      :read_work_item, :update_work_item, :delete_work_item, :admin_work_item
+      :read_work_item, :update_work_item, :delete_work_item, :admin_work_item,
+      :admin_parent_link
     ]
 
     expected_permissions.each do |permission|

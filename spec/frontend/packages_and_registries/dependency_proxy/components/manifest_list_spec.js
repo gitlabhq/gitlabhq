@@ -1,7 +1,6 @@
-import { GlKeysetPagination } from '@gitlab/ui';
+import { GlKeysetPagination, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ManifestRow from '~/packages_and_registries/dependency_proxy/components/manifest_row.vue';
-
 import Component from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
 import {
   proxyManifests,
@@ -14,6 +13,7 @@ describe('Manifests List', () => {
   const defaultProps = {
     manifests: proxyManifests(),
     pagination: pagination(),
+    loading: false,
   };
 
   const createComponent = (propsData = defaultProps) => {
@@ -24,6 +24,8 @@ describe('Manifests List', () => {
 
   const findRows = () => wrapper.findAllComponents(ManifestRow);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findMainArea = () => wrapper.findByTestId('main-area');
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   it('has the correct title', () => {
     createComponent();
@@ -42,6 +44,19 @@ describe('Manifests List', () => {
 
     expect(findRows().at(0).props()).toMatchObject({
       manifest: defaultProps.manifests[0],
+    });
+  });
+
+  describe('loading', () => {
+    it.each`
+      loading  | expectLoader | expectContent
+      ${false} | ${false}     | ${true}
+      ${true}  | ${true}      | ${false}
+    `('when loading is $loading', ({ loading, expectLoader, expectContent }) => {
+      createComponent({ ...defaultProps, loading });
+
+      expect(findSkeletonLoader().exists()).toBe(expectLoader);
+      expect(findMainArea().exists()).toBe(expectContent);
     });
   });
 

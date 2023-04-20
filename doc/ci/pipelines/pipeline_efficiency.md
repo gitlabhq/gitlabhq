@@ -147,7 +147,7 @@ with embedded metric charts and all valuable details to analyze the problem.
 
 Review the storage use of the following to help analyze costs and efficiency:
 
-- [Job artifacts](job_artifacts.md) and their [`expire_in`](../yaml/index.md#artifactsexpire_in)
+- [Job artifacts](../jobs/job_artifacts.md) and their [`expire_in`](../yaml/index.md#artifactsexpire_in)
   configuration. If kept for too long, storage usage grows and could slow pipelines down.
 - [Container registry](../../user/packages/container_registry/index.md) usage.
 - [Package registry](../../user/packages/package_registry/index.md) usage.

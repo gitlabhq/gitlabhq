@@ -8,6 +8,7 @@ import {
   formatSearchResultCount,
   getAggregationsUrl,
   prepareSearchAggregations,
+  addCountOverLimit,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import {
@@ -286,6 +287,20 @@ describe('Global Search Store Utils', () => {
       ${'has bad query'} | ${{ language: ['sdf', 'wrt'] }}      | ${SMALL_MOCK_AGGREGATIONS} | ${SMALL_MOCK_AGGREGATIONS}
     `('$description', ({ query, data, result }) => {
       expect(prepareSearchAggregations({ query }, data)).toStrictEqual(result);
+    });
+  });
+
+  describe('addCountOverLimit', () => {
+    it("should return '+' if count includes '+'", () => {
+      expect(addCountOverLimit('10+')).toEqual('+');
+    });
+
+    it("should return empty string if count does not include '+'", () => {
+      expect(addCountOverLimit('10')).toEqual('');
+    });
+
+    it('should return empty string if count is not provided', () => {
+      expect(addCountOverLimit()).toEqual('');
     });
   });
 });

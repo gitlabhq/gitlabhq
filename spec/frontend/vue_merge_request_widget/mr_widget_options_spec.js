@@ -470,15 +470,15 @@ describe('MrWidgetOptions', () => {
         });
 
         it('should call setFavicon method', async () => {
-          wrapper.vm.mr.ciStatusFaviconPath = overlayDataUrl;
+          wrapper.vm.mr.faviconOverlayPath = overlayDataUrl;
 
           await wrapper.vm.setFaviconHelper();
 
           expect(setFaviconOverlay).toHaveBeenCalledWith(overlayDataUrl);
         });
 
-        it('should not call setFavicon when there is no ciStatusFaviconPath', async () => {
-          wrapper.vm.mr.ciStatusFaviconPath = null;
+        it('should not call setFavicon when there is no faviconOverlayPath', async () => {
+          wrapper.vm.mr.faviconOverlayPath = null;
           await wrapper.vm.setFaviconHelper();
           expect(faviconElement.getAttribute('href')).toEqual(null);
         });
@@ -838,7 +838,7 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('security widget', () => {
-    const setup = async (hasPipeline) => {
+    const setup = (hasPipeline) => {
       const mrData = {
         ...mockData,
         ...(hasPipeline ? {} : { pipeline: null }),
@@ -853,7 +853,9 @@ describe('MrWidgetOptions', () => {
         apolloMock: [
           [
             securityReportMergeRequestDownloadPathsQuery,
-            async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
+            jest
+              .fn()
+              .mockResolvedValue({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
           ],
         ],
       });
@@ -1197,33 +1199,6 @@ describe('MrWidgetOptions', () => {
           'i_code_review_merge_request_widget_test_extension_count_expand_warning',
         );
       });
-
-      it.each`
-        widgetName             | nonStandardEvent
-        ${'WidgetCodeQuality'} | ${'i_testing_code_quality_widget_total'}
-        ${'WidgetTerraform'}   | ${'i_testing_terraform_widget_total'}
-        ${'WidgetIssues'}      | ${'i_testing_issues_widget_total'}
-        ${'WidgetTestSummary'} | ${'i_testing_summary_widget_total'}
-      `(
-        "sends non-standard events for the '$widgetName' widget",
-        async ({ widgetName, nonStandardEvent }) => {
-          const definition = {
-            ...workingExtension(),
-            name: widgetName,
-          };
-
-          registerExtension(definition);
-          createComponent();
-
-          await waitForPromises();
-
-          api.trackRedisHllUserEvent.mockClear();
-
-          findExtensionToggleButton().trigger('click');
-
-          expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(nonStandardEvent);
-        },
-      );
     });
 
     it('triggers the "full report clicked" events when the appropriate button is clicked', () => {

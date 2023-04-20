@@ -69,9 +69,14 @@ export default {
 
     <div v-if="!branchRules.length" data-testid="empty">{{ $options.i18n.emptyState }}</div>
 
-    <gl-button v-gl-modal="$options.modalId" class="gl-mt-5" category="secondary" variant="info">{{
-      $options.i18n.addBranchRule
-    }}</gl-button>
+    <gl-button
+      v-gl-modal="$options.modalId"
+      class="gl-mt-5"
+      data-qa-selector="add_branch_rule_button"
+      category="secondary"
+      variant="info"
+      >{{ $options.i18n.addBranchRule }}</gl-button
+    >
 
     <gl-modal
       :ref="$options.modalId"

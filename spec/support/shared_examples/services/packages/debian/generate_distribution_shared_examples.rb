@@ -207,7 +207,7 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
 
         check_component_file(current_time.round, 'contrib', :sources, nil, nil)
 
-        expected_main_amd64_size = expected_main_amd64_content.length
+        expected_main_amd64_size = expected_main_amd64_content.bytesize
         expected_main_amd64_sha256 = Digest::SHA256.hexdigest(expected_main_amd64_content)
 
         expected_main_amd64_di_size = expected_main_amd64_di_content.length

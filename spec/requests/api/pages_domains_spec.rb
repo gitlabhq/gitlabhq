@@ -35,6 +35,10 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
   end
 
   describe 'GET /pages/domains' do
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:path) { '/pages/domains' }
+    end
+
     context 'when pages is disabled' do
       before do
         allow(Gitlab.config.pages).to receive(:enabled).and_return(false)

@@ -1,11 +1,11 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from '../modals/delete_user_modal_event_hub';
 
 export default {
   components: {
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
   },
   props: {
     username: {
@@ -49,9 +49,11 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-item @click="onClick">
-    <span class="gl-text-red-500">
-      <slot></slot>
-    </span>
-  </gl-dropdown-item>
+  <gl-disclosure-dropdown-item @action="onClick">
+    <template #list-item>
+      <span class="gl-text-red-500">
+        <slot></slot>
+      </span>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

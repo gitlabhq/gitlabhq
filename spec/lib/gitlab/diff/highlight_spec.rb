@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Diff::Highlight do
+RSpec.describe Gitlab::Diff::Highlight, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Diff::Highlight do
     let(:code) { '<h2 onmouseover="alert(2)">Test</h2>' }
 
     before do
-      allow(Gitlab::Diff::InlineDiff).to receive(:for_lines).and_return([])
       allow_any_instance_of(Gitlab::Diff::Line).to receive(:text).and_return(code)
     end
 
@@ -118,18 +117,6 @@ RSpec.describe Gitlab::Diff::Highlight do
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
 
           expect { subject }.to raise_exception(RangeError)
-        end
-      end
-
-      context 'when `use_marker_ranges` feature flag is disabled' do
-        it 'returns the same result' do
-          with_feature_flag = described_class.new(diff_file, repository: project.repository).highlight
-
-          stub_feature_flags(use_marker_ranges: false)
-
-          without_feature_flag = described_class.new(diff_file, repository: project.repository).highlight
-
-          expect(with_feature_flag.map(&:rich_text)).to eq(without_feature_flag.map(&:rich_text))
         end
       end
 

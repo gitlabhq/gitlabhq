@@ -106,7 +106,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :integrations do
       visit admin_hooks_path
 
       click_button 'Test'
-      click_button 'Push events'
+      click_link 'Push events'
     end
 
     it { expect(page).to have_current_path(admin_hooks_path, ignore_query: true) }
@@ -142,7 +142,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :integrations do
 
         visit admin_hooks_path
         click_button 'Test'
-        click_button 'Merge request events'
+        click_link 'Merge request events'
 
         expect(page).to have_content 'Hook executed successfully'
       end

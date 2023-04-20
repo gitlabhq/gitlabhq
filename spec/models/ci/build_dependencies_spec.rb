@@ -7,10 +7,13 @@ RSpec.describe Ci::BuildDependencies do
   let_it_be(:project, reload: true) { create(:project, :repository) }
 
   let_it_be(:pipeline, reload: true) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.id,
-                         ref: project.default_branch,
-                         status: 'success')
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit.id,
+      ref: project.default_branch,
+      status: 'success'
+    )
   end
 
   let(:build_stage) { create(:ci_stage, name: 'build', pipeline: pipeline) }

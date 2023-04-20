@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { createRefModule } from '../ref/stores';
 import ReleaseEditNewApp from './components/app_edit_new.vue';
 import createStore from './stores';
 import createEditNewModule from './stores/modules/edit_new';
@@ -12,6 +13,7 @@ export default () => {
   const store = createStore({
     modules: {
       editNew: createEditNewModule({ ...el.dataset, isExistingRelease: false }),
+      ref: createRefModule(),
     },
   });
 

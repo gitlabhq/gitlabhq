@@ -103,7 +103,7 @@ To use the repository in the examples on this page:
 
 The project becomes available at `https://gitlab.com/<your-namespace>/sample-project/`.
 
-You can [fork](../user/project/repository/forking_workflow.md#creating-a-fork) any project you have access to.
+You can [fork](../user/project/repository/forking_workflow.md#create-a-fork) any project you have access to.
 
 ## Clone a repository
 

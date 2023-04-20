@@ -294,3 +294,17 @@ RSpec.shared_examples 'does not render a manage notifications link' do
     end
   end
 end
+
+RSpec.shared_examples 'email with default notification reason' do
+  it do
+    is_expected.to have_body_text("You're receiving this email because of your account")
+    is_expected.to have_plain_text_content("You're receiving this email because of your account")
+  end
+end
+
+RSpec.shared_examples 'email with link to issue' do
+  it do
+    is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
+    is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
+  end
+end

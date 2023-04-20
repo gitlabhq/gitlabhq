@@ -35,7 +35,7 @@ RSpec.describe API::Metrics::Dashboard::Annotations, feature_category: :metrics 
         end
 
         context 'with invalid parameters' do
-          it 'returns error messsage' do
+          it 'returns error message' do
             post api(url, user), params: { dashboard_path: '', starting_at: nil, description: nil }
 
             expect(response).to have_gitlab_http_status(:bad_request)

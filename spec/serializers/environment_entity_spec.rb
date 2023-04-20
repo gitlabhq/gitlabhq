@@ -109,11 +109,13 @@ RSpec.describe EnvironmentEntity do
 
     context 'when deployment platform is a cluster' do
       before do
-        create(:cluster,
-               :provided_by_gcp,
-               :project,
-               environment_scope: '*',
-               projects: [project])
+        create(
+          :cluster,
+          :provided_by_gcp,
+          :project,
+          environment_scope: '*',
+          projects: [project]
+        )
       end
 
       it 'includes cluster_type' do

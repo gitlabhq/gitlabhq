@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition do
+RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition, feature_category: :database do
   include Gitlab::Database::DynamicModelHelpers
   include Database::TableSchemaHelpers
 
-  let(:migration_context) { Gitlab::Database::Migration[2.0].new }
+  let(:migration_context) do
+    Gitlab::Database::Migration[2.0].new.tap do |migration|
+      migration.extend Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
+    end
+  end
 
   let(:connection) { migration_context.connection }
   let(:table_name) { '_test_table_to_partition' }
@@ -73,7 +77,9 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
   end
 
   describe "#prepare_for_partitioning" do
-    subject(:prepare) { converter.prepare_for_partitioning }
+    subject(:prepare) { converter.prepare_for_partitioning(async: async) }
+
+    let(:async) { false }
 
     it 'adds a check constraint' do
       expect { prepare }.to change {
@@ -83,9 +89,100 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
           .count
       }.from(0).to(1)
     end
+
+    context 'when it fails to add constraint' do
+      before do
+        allow(migration_context).to receive(:add_check_constraint)
+      end
+
+      it 'raises UnableToPartition error' do
+        expect { prepare }
+          .to raise_error(described_class::UnableToPartition)
+          .and change {
+            Gitlab::Database::PostgresConstraint
+              .check_constraints
+              .by_table_identifier(table_identifier)
+              .count
+          }.by(0)
+      end
+    end
+
+    context 'when async' do
+      let(:async) { true }
+
+      it 'adds a NOT VALID check constraint' do
+        expect { prepare }.to change {
+          Gitlab::Database::PostgresConstraint
+            .check_constraints
+            .by_table_identifier(table_identifier)
+            .count
+        }.from(0).to(1)
+
+        constraint =
+          Gitlab::Database::PostgresConstraint
+            .check_constraints
+            .by_table_identifier(table_identifier)
+            .last
+
+        expect(constraint.definition).to end_with('NOT VALID')
+      end
+
+      it 'adds a PostgresAsyncConstraintValidation record' do
+        expect { prepare }.to change {
+          Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation.count
+        }.from(0).to(1)
+
+        record = Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation.last
+        expect(record.name).to eq described_class::PARTITIONING_CONSTRAINT_NAME
+        expect(record).to be_check_constraint
+      end
+
+      context 'when constraint exists but is not valid' do
+        before do
+          converter.prepare_for_partitioning(async: true)
+        end
+
+        it 'validates the check constraint' do
+          expect { prepare }.to change {
+            Gitlab::Database::PostgresConstraint
+            .check_constraints
+            .by_table_identifier(table_identifier).first.constraint_valid?
+          }.from(false).to(true)
+        end
+
+        context 'when it fails to validate constraint' do
+          before do
+            allow(migration_context).to receive(:validate_check_constraint)
+          end
+
+          it 'raises UnableToPartition error' do
+            expect { prepare }
+              .to raise_error(described_class::UnableToPartition,
+                starting_with('Error validating partitioning constraint'))
+              .and change {
+                Gitlab::Database::PostgresConstraint
+                  .check_constraints
+                  .by_table_identifier(table_identifier)
+                  .count
+              }.by(0)
+          end
+        end
+      end
+
+      context 'when constraint exists and is valid' do
+        before do
+          converter.prepare_for_partitioning(async: false)
+        end
+
+        it 'raises UnableToPartition error' do
+          expect(Gitlab::AppLogger).to receive(:info).with(starting_with('Nothing to do'))
+          prepare
+        end
+      end
+    end
   end
 
-  describe '#revert_prepare_for_partitioning' do
+  describe '#revert_preparation_for_partitioning' do
     before do
       converter.prepare_for_partitioning
     end
@@ -102,11 +199,13 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
     end
   end
 
-  describe "#convert_to_zero_partition" do
+  describe "#partition" do
     subject(:partition) { converter.partition }
 
+    let(:async) { false }
+
     before do
-      converter.prepare_for_partitioning
+      converter.prepare_for_partitioning(async: async)
     end
 
     context 'when the primary key is incorrect' do
@@ -130,7 +229,15 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
       end
 
       it 'throws a reasonable error message' do
-        expect { partition }.to raise_error(described_class::UnableToPartition, /constraint /)
+        expect { partition }.to raise_error(described_class::UnableToPartition, /is not ready for partitioning./)
+      end
+    end
+
+    context 'when supporting check constraint is not valid' do
+      let(:async) { true }
+
+      it 'throws a reasonable error message' do
+        expect { partition }.to raise_error(described_class::UnableToPartition, /is not ready for partitioning./)
       end
     end
 
@@ -203,7 +310,7 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
         proc do
           allow(migration_context.connection).to receive(:add_foreign_key).and_call_original
           expect(migration_context.connection).to receive(:add_foreign_key).with(from_table, to_table, any_args)
-                                                                           .and_wrap_original(&fail_first_time)
+                                                                          .and_wrap_original(&fail_first_time)
         end
       end
 
@@ -231,9 +338,24 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
         end
       end
     end
+
+    context 'when table has LFK triggers' do
+      before do
+        migration_context.track_record_deletions(table_name)
+      end
+
+      it 'moves the trigger on the parent table', :aggregate_failures do
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+
+        expect { partition }.not_to raise_error
+
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+        expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
+      end
+    end
   end
 
-  describe '#revert_conversion_to_zero_partition' do
+  describe '#revert_partitioning' do
     before do
       converter.prepare_for_partitioning
       converter.partition
@@ -268,6 +390,22 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
     it 'moves sequences back to the original table' do
       expect { revert_conversion }.to change { converter.send(:sequences_owned_by, table_name).count }.from(0)
                                  .and change { converter.send(:sequences_owned_by, parent_table_name).count }.to(0)
+    end
+
+    context 'when table has LFK triggers' do
+      before do
+        migration_context.track_record_deletions(parent_table_name)
+        migration_context.track_record_deletions(table_name)
+      end
+
+      it 'restores the trigger on the partition', :aggregate_failures do
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+        expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
+
+        expect { revert_conversion }.not_to raise_error
+
+        expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
+      end
     end
   end
 end

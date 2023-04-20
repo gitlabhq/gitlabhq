@@ -6,6 +6,8 @@ module Gitlab
       class InstancePath
         include Gitlab::Utils::StrongMemoize
 
+        LATEST_VERSION_KEYWORD = '~latest'
+
         def self.match?(address)
           address.include?('@') && address.start_with?(Settings.gitlab_ci['component_fqdn'])
         end
@@ -39,9 +41,9 @@ module Gitlab
           File.join(component_dir, @content_filename).delete_prefix('/')
         end
 
-        # TODO: Add support when version is a released tag and "~latest" moving target
         def sha
           return unless project
+          return latest_version_sha if version == LATEST_VERSION_KEYWORD
 
           project.commit(version)&.id
         end
@@ -68,6 +70,12 @@ module Gitlab
           possible_paths.pop
 
           ::Project.where_full_path_in(possible_paths).take # rubocop: disable CodeReuse/ActiveRecord
+        end
+
+        def latest_version_sha
+          return unless catalog_resource = project&.catalog_resource
+
+          catalog_resource.latest_version&.sha
         end
       end
     end

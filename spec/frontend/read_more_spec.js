@@ -42,7 +42,7 @@ describe('Read more click-to-expand functionality', () => {
       nestedElement.click();
     });
 
-    it('removes the trigger element', async () => {
+    it('removes the trigger element', () => {
       expect(findTrigger()).toBe(null);
     });
   });

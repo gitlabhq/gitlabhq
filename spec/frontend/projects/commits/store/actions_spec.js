@@ -34,7 +34,7 @@ describe('Project commits actions', () => {
       ]));
   });
 
-  describe('shows an alert message when there is an error', () => {
+  describe('shows an alert when there is an error', () => {
     it('creates an alert', () => {
       const mockDispatchContext = { dispatch: () => {}, commit: () => {}, state };
       actions.receiveAuthorsError(mockDispatchContext);

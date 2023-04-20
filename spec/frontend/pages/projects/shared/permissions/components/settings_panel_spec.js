@@ -760,7 +760,7 @@ describe('Settings Panel', () => {
       expect(findEnvironmentsSettings().exists()).toBe(true);
     });
   });
-  describe('Feature Flags', () => {
+  describe('Feature flags', () => {
     it('should show the feature flags toggle', () => {
       wrapper = mountComponent({});
 

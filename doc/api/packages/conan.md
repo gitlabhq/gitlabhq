@@ -17,7 +17,7 @@ package registry, see the [Conan package registry documentation](../../user/pack
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See each route for details on how credentials are expected to be passed.
+See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
 
 NOTE:
 The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_compliance.md) is enabled.

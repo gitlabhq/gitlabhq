@@ -16,7 +16,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query']),
+    ...mapState(['query', 'useNewNavigation']),
     ...mapGetters(['currentScope']),
     ANY() {
       return this.filterData.filters.ANY;
@@ -56,7 +56,7 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0">{{ filterData.header }}</h5>
+    <h5 class="gl-mt-0" :class="{ 'gl-font-sm': useNewNavigation }">{{ filterData.header }}</h5>
     <gl-form-radio-group v-model="selectedFilter">
       <gl-form-radio v-for="f in filtersArray" :key="f.value" :value="f.value">
         {{ radioLabel(f) }}

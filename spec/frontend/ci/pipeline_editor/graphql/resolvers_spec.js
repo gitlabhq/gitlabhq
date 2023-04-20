@@ -34,7 +34,7 @@ describe('~/ci/pipeline_editor/graphql/resolvers', () => {
       });
 
       /* eslint-disable no-underscore-dangle */
-      it('lint data has correct type names', async () => {
+      it('lint data has correct type names', () => {
         expect(result.__typename).toBe('CiLintContent');
 
         expect(result.jobs[0].__typename).toBe('CiLintJob');

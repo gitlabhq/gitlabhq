@@ -2,6 +2,7 @@
 
 module ProjectsHelper
   include Gitlab::Utils::StrongMemoize
+  include CompareHelper
 
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
@@ -131,15 +132,20 @@ module ProjectsHelper
     source_default_branch = source_project.default_branch
 
     {
+      project_path: project.full_path,
+      selected_branch: ref,
       source_name: source_project.full_name,
       source_path: project_path(source_project),
       source_default_branch: source_default_branch,
+      can_sync_branch: ::Gitlab::UserAccess.new(current_user, container: project).can_update_branch?(ref).to_s,
       ahead_compare_path: project_compare_path(
         project, from: source_default_branch, to: ref, from_project_id: source_project.id
       ),
+      create_mr_path: create_mr_path(from: ref, source_project: project, to: source_default_branch, target_project: source_project),
       behind_compare_path: project_compare_path(
         source_project, from: ref, to: source_default_branch, from_project_id: project.id
-      )
+      ),
+      can_user_create_mr_in_fork: can_user_create_mr_in_fork(source_project)
     }
   end
 
@@ -159,6 +165,10 @@ module ProjectsHelper
 
   def visible_fork_source(project)
     project.fork_source if project.fork_source && can?(current_user, :read_project, project.fork_source)
+  end
+
+  def can_user_create_mr_in_fork(project)
+    can?(current_user, :create_merge_request_in, project)
   end
 
   def project_search_tabs?(tab)
@@ -835,6 +845,14 @@ end
 
 def can_admin_group_clusters?(project)
   project.group && project.group.clusters.any? && can?(current_user, :admin_cluster, project.group)
+end
+
+def can_view_branch_rules?
+  can?(current_user, :maintainer_access, @project)
+end
+
+def branch_rules_path
+  project_settings_repository_path(@project, anchor: 'js-branch-rules')
 end
 
 ProjectsHelper.prepend_mod_with('ProjectsHelper')

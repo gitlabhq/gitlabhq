@@ -158,7 +158,7 @@ export default {
                 >{{ instanceTitle }} ({{ instanceCount }})</span
               >
               <span ref="legend-icon" data-testid="legend-tooltip-target">
-                <gl-icon class="gl-text-blue-500 gl-ml-2" name="question" />
+                <gl-icon class="gl-text-blue-500 gl-ml-2" name="question-o" />
               </span>
               <gl-tooltip :target="() => $refs['legend-icon']" boundary="#content-body">
                 <div class="deploy-board-legend gl-display-flex gl-flex-direction-column">

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
-feature_category: :kubernetes_management do
+feature_category: :deployment_management do
   include ReactiveCachingHelpers
   include KubernetesHelpers
 
@@ -23,9 +23,6 @@ feature_category: :kubernetes_management do
   it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:integration_prometheus) }
-  it { is_expected.to have_one(:application_helm) }
-  it { is_expected.to have_one(:application_ingress) }
-  it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:cluster_project) }
   it { is_expected.to have_many(:deployment_clusters) }
@@ -35,8 +32,6 @@ feature_category: :kubernetes_management do
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
-  it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
-  it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
   it { is_expected.to be_namespace_per_environment }
@@ -47,15 +42,6 @@ feature_category: :kubernetes_management do
 
   it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :cluster }
-  end
-
-  describe 'applications have inverse_of: :cluster option' do
-    let(:cluster) { create(:cluster) }
-    let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-
-    it 'does not do a third query when referencing cluster again' do
-      expect { cluster.application_helm.cluster }.not_to exceed_query_limit(2)
-    end
   end
 
   describe '.enabled' do
@@ -692,102 +678,6 @@ feature_category: :kubernetes_management do
     end
   end
 
-  describe '.with_persisted_applications' do
-    let(:cluster) { create(:cluster) }
-    let!(:helm) { create(:clusters_applications_helm, :installed, cluster: cluster) }
-
-    it 'preloads persisted applications' do
-      query_rec = ActiveRecord::QueryRecorder.new do
-        described_class.with_persisted_applications.find_by_id(cluster.id).application_helm
-      end
-
-      expect(query_rec.count).to eq(1)
-    end
-  end
-
-  describe '#persisted_applications' do
-    let(:cluster) { create(:cluster) }
-
-    subject { cluster.persisted_applications }
-
-    context 'when all applications are created' do
-      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
-      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
-      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
-
-      it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, runner, jupyter, knative)
-      end
-    end
-
-    context 'when not all were created' do
-      let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
-      let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-
-      it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress)
-      end
-    end
-  end
-
-  describe '#applications' do
-    let_it_be(:cluster, reload: true) { create(:cluster) }
-
-    subject { cluster.applications }
-
-    context 'when none of applications are created' do
-      it 'returns a list of a new objects' do
-        is_expected.not_to be_empty
-      end
-    end
-
-    context 'when applications are created' do
-      let(:cluster) { create(:cluster, :with_all_applications) }
-
-      it 'returns a list of created applications', :aggregate_failures do
-        is_expected.to have_attributes(size: described_class::APPLICATIONS.size)
-        is_expected.to all(be_kind_of(::Clusters::Concerns::ApplicationCore))
-        is_expected.to all(be_persisted)
-      end
-    end
-  end
-
-  describe '#find_or_build_application' do
-    let_it_be(:cluster, reload: true) { create(:cluster) }
-
-    it 'rejects classes that are not applications' do
-      expect do
-        cluster.find_or_build_application(Project)
-      end.to raise_error(ArgumentError)
-    end
-
-    context 'when none of applications are created' do
-      it 'returns the new application', :aggregate_failures do
-        described_class::APPLICATIONS.values.each do |application_class|
-          application = cluster.find_or_build_application(application_class)
-
-          expect(application).to be_a(application_class)
-          expect(application).not_to be_persisted
-        end
-      end
-    end
-
-    context 'when application is persisted' do
-      let(:cluster) { create(:cluster, :with_all_applications) }
-
-      it 'returns the persisted application', :aggregate_failures do
-        described_class::APPLICATIONS.each_value do |application_class|
-          application = cluster.find_or_build_application(application_class)
-
-          expect(application).to be_kind_of(::Clusters::Concerns::ApplicationCore)
-          expect(application).to be_persisted
-        end
-      end
-    end
-  end
-
   describe '#allow_user_defined_namespace?' do
     subject { cluster.allow_user_defined_namespace? }
 
@@ -837,7 +727,7 @@ feature_category: :kubernetes_management do
   describe '#all_projects' do
     context 'cluster_type is project_type' do
       let(:project) { create(:project) }
-      let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+      let(:cluster) { create(:cluster, projects: [project]) }
 
       it 'returns projects' do
         expect(cluster.all_projects).to match_array [project]
@@ -847,7 +737,7 @@ feature_category: :kubernetes_management do
     context 'cluster_type is group_type' do
       let(:group) { create(:group) }
       let!(:project) { create(:project, group: group) }
-      let(:cluster) { create(:cluster_for_group, :with_installed_helm, groups: [group]) }
+      let(:cluster) { create(:cluster_for_group, groups: [group]) }
 
       it 'returns group projects' do
         expect(cluster.all_projects.ids).to match_array [project.id]
@@ -1426,36 +1316,6 @@ feature_category: :kubernetes_management do
     end
   end
 
-  describe '#knative_pre_installed?' do
-    subject(:knative_pre_installed?) { cluster.knative_pre_installed? }
-
-    before do
-      allow(cluster).to receive(:provider).and_return(provider)
-    end
-
-    context 'without provider' do
-      let(:provider) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with provider' do
-      let(:provider) { instance_double(Clusters::Providers::Aws, knative_pre_installed?: knative_pre_installed?) }
-
-      context 'with knative_pre_installed? set to true' do
-        let(:knative_pre_installed?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with knative_pre_installed? set to false' do
-        let(:knative_pre_installed?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
   describe '#platform_kubernetes_active?' do
     subject(:platform_kubernetes_active?) { cluster.platform_kubernetes_active? }
 
@@ -1510,96 +1370,6 @@ feature_category: :kubernetes_management do
 
       context 'with rbac? set to false' do
         let(:rbac?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
-  describe '#application_helm_available?' do
-    subject(:application_helm_available?) { cluster.application_helm_available? }
-
-    before do
-      allow(cluster).to receive(:application_helm).and_return(application_helm)
-    end
-
-    context 'without application_helm' do
-      let(:application_helm) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with application_helm' do
-      let(:application_helm) { instance_double(Clusters::Applications::Helm, available?: available?) }
-
-      context 'with available? set to true' do
-        let(:available?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with available? set to false' do
-        let(:available?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
-  describe '#application_ingress_available?' do
-    subject(:application_ingress_available?) { cluster.application_ingress_available? }
-
-    before do
-      allow(cluster).to receive(:application_ingress).and_return(application_ingress)
-    end
-
-    context 'without application_ingress' do
-      let(:application_ingress) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with application_ingress' do
-      let(:application_ingress) { instance_double(Clusters::Applications::Ingress, available?: available?) }
-
-      context 'with available? set to true' do
-        let(:available?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with available? set to false' do
-        let(:available?) { false }
-
-        it { is_expected.to eq(false) }
-      end
-    end
-  end
-
-  describe '#application_knative_available?' do
-    subject(:application_knative_available?) { cluster.application_knative_available? }
-
-    before do
-      allow(cluster).to receive(:application_knative).and_return(application_knative)
-    end
-
-    context 'without application_knative' do
-      let(:application_knative) {}
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with application_knative' do
-      let(:application_knative) { instance_double(Clusters::Applications::Knative, available?: available?) }
-
-      context 'with available? set to true' do
-        let(:available?) { true }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'with available? set to false' do
-        let(:available?) { false }
 
         it { is_expected.to eq(false) }
       end

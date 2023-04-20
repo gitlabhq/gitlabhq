@@ -55,7 +55,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
 
       it 'raises an error' do
         expect { parsed_deprecation }.to raise_error(ArgumentError,
-          '`alpha` and `deprecated` arguments cannot be passed at the same time'
+          '`experiment` and `deprecated` arguments cannot be passed at the same time'
         )
       end
     end

@@ -36,7 +36,8 @@ module QA
         @run_untagged = nil
         @name = "qa-runner-#{SecureRandom.hex(4)}"
         @executor = :shell
-        @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
+        @executor_image = "#{QA::Runtime::Env.container_registry_host}/
+          gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7"
       end
 
       # Initially we only support fabricate via API

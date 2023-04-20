@@ -30,7 +30,7 @@ module API
       end
 
       def assign_file_vars!
-        authorize! :read_code, user_project
+        authorize_read_code!
 
         @commit = user_project.commit(params[:ref])
         not_found!('Commit') unless @commit

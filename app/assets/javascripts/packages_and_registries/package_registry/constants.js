@@ -115,6 +115,10 @@ export const DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'delete_package_version';
 export const REQUEST_DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'request_delete_package_version';
 export const CANCEL_DELETE_PACKAGE_VERSION_TRACKING_ACTION = 'cancel_delete_package_version';
 
+export const FETCH_PACKAGE_VERSIONS_ERROR_MESSAGE = s__(
+  'PackageRegistry|Failed to load version data',
+);
+
 export const DELETE_PACKAGES_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while deleting packages.',
 );
@@ -122,6 +126,21 @@ export const DELETE_PACKAGES_SUCCESS_MESSAGE = s__('PackageRegistry|Packages del
 
 export const DELETE_PACKAGES_MODAL_TITLE = s__('PackageRegistry|Delete packages');
 export const DELETE_PACKAGE_MODAL_PRIMARY_ACTION = s__('PackageRegistry|Permanently delete');
+export const DELETE_PACKAGES_MODAL_DESCRIPTION = s__(
+  'PackageRegistry|You are about to delete %{count} packages. This operation is irreversible.',
+);
+export const DELETE_PACKAGE_WITH_REQUEST_FORWARDING_PRIMARY_ACTION = s__(
+  'PackageRegistry|Yes, delete package',
+);
+export const DELETE_PACKAGES_WITH_REQUEST_FORWARDING_PRIMARY_ACTION = s__(
+  'PackageRegistry|Yes, delete selected packages',
+);
+export const DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT = s__(
+  'PackageRegistry|Deleting this package while request forwarding is enabled for the project can pose a security risk. Do you want to delete the package anyway? %{docLinkStart}What are the risks?%{docLinkEnd}',
+);
+export const DELETE_PACKAGES_REQUEST_FORWARDING_MODAL_CONTENT = s__(
+  'PackageRegistry|Some of the selected package formats allow request forwarding. Deleting a package while request forwarding is enabled for the project can pose a security risk. Do you want to proceed with deleting the selected packages? %{docLinkStart}What are the risks?%{docLinkEnd}',
+);
 
 export const DELETE_PACKAGE_TEXT = s__('PackageRegistry|Delete package');
 export const DELETE_PACKAGE_SUCCESS_MESSAGE = s__('PackageRegistry|Package deleted successfully');
@@ -207,5 +226,9 @@ export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/inde
 export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/index');
 export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/index');
 export const PERSONAL_ACCESS_TOKEN_HELP_URL = helpPagePath('user/profile/personal_access_tokens');
+export const REQUEST_FORWARDING_HELP_PAGE_PATH = helpPagePath(
+  'user/packages/package_registry/supported_functionality',
+  { anchor: 'deleting-packages' },
+);
 
 export const GRAPHQL_PACKAGE_PIPELINES_PAGE_SIZE = 10;

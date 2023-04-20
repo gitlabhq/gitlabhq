@@ -1,14 +1,13 @@
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlApplicationSettingsAccountsAndLimit from 'test_fixtures/application_settings/accounts_and_limit.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initAccountAndLimitsSection, {
   PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE,
   PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE,
 } from '~/pages/admin/application_settings/account_and_limits';
 
 describe('AccountAndLimits', () => {
-  const FIXTURE = 'application_settings/accounts_and_limit.html';
-
   beforeEach(() => {
-    loadHTMLFixture(FIXTURE);
+    setHTMLFixture(htmlApplicationSettingsAccountsAndLimit);
     initAccountAndLimitsSection();
   });
 

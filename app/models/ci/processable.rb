@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Ci
+  # This class is a collection of common features between Ci::Build and Ci::Bridge.
+  # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to clarify class naming conventions.
   class Processable < ::CommitStatus
     include Gitlab::Utils::StrongMemoize
     include FromUnion

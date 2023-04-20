@@ -86,12 +86,10 @@ describe('AlertDetails', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
     mock.restore();
   });
 
+  const findTabs = () => wrapper.findByTestId('alertDetailsTabs');
   const findCreateIncidentBtn = () => wrapper.findByTestId('createIncidentBtn');
   const findViewIncidentBtn = () => wrapper.findByTestId('viewIncidentBtn');
   const findIncidentCreationAlert = () => wrapper.findByTestId('incidentCreationError');
@@ -107,7 +105,7 @@ describe('AlertDetails', () => {
       });
 
       it('shows an empty state', () => {
-        expect(wrapper.findByTestId('alertDetailsTabs').exists()).toBe(false);
+        expect(findTabs().exists()).toBe(false);
       });
     });
 
@@ -349,9 +347,7 @@ describe('AlertDetails', () => {
         ${1}  | ${'metrics'}
         ${2}  | ${'activity'}
       `('will navigate to the correct tab via $tabId', ({ index, tabId }) => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({ currentTabIndex: index });
+        findTabs().vm.$emit('input', index);
         expect($router.push).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });
       });
     });

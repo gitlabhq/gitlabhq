@@ -27,7 +27,7 @@ export default function initDiffsApp(store = notesStore) {
     store,
     apolloProvider,
     provide: {
-      newSavedRepliesPath: dataset.savedRepliesNewPath,
+      newCommentTemplatePath: dataset.newCommentTemplatePath,
     },
     data() {
       return {

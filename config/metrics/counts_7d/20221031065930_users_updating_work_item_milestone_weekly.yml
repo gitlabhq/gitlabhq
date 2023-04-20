@@ -4,7 +4,6 @@ description: Unique users updating a work item's milestone
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: team_planning
 value_type: number
 status: active
 milestone: "15.6"

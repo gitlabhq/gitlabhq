@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_workflow do
   include CookieHelper
-  include Spec::Support::Helpers::Features::SortingHelpers
+  include Features::SortingHelpers
 
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let!(:merge_request2) do

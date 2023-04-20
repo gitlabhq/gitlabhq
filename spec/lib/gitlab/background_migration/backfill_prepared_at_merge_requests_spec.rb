@@ -14,18 +14,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPreparedAtMergeRequests, :mi
     projects.create!(name: 'proj1', path: 'proj1', namespace_id: namespace.id, project_namespace_id: proj_namespace.id)
   end
 
-  let(:test_worker) do
-    described_class.new(
-      start_id: 1,
-      end_id: 100,
-      batch_table: :merge_requests,
-      batch_column: :id,
-      sub_batch_size: 10,
-      pause_ms: 0,
-      connection: ApplicationRecord.connection
-    )
-  end
-
   it 'updates merge requests with prepared_at nil' do
     time = Time.current
 
@@ -39,6 +27,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPreparedAtMergeRequests, :mi
       prepared_at: time, merge_status: 'checking')
     mr_5 = mr_table.create!(target_project_id: project.id, source_branch: 'master', target_branch: 'feature',
       prepared_at: time, merge_status: 'preparing')
+
+    test_worker = described_class.new(
+      start_id: mr_1.id,
+      end_id: [(mr_5.id + 1), 100].max,
+      batch_table: :merge_requests,
+      batch_column: :id,
+      sub_batch_size: 10,
+      pause_ms: 0,
+      connection: ApplicationRecord.connection
+    )
 
     expect(mr_1.prepared_at).to be_nil
     expect(mr_2.prepared_at).to be_nil

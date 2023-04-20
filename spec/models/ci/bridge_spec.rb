@@ -12,9 +12,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   let(:bridge) do
-    create(:ci_bridge, :variables, status: :created,
-                                   options: options,
-                                   pipeline: pipeline)
+    create(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline)
   end
 
   let(:options) do
@@ -39,16 +37,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     it 'returns true' do
       expect(bridge.retryable?).to eq(true)
-    end
-
-    context 'without ci_recreate_downstream_pipeline ff' do
-      before do
-        stub_feature_flags(ci_recreate_downstream_pipeline: false)
-      end
-
-      it 'returns false' do
-        expect(bridge.retryable?).to eq(false)
-      end
     end
   end
 
@@ -564,11 +552,13 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
       let!(:prepare3) { create(:ci_build, name: 'prepare3', pipeline: pipeline, stage_idx: 0) }
       let!(:bridge) do
-        create(:ci_bridge, pipeline: pipeline,
-                           stage_idx: 1,
-                           scheduling_type: 'dag',
-                           needs_attributes: [{ name: 'prepare1', artifacts: true },
-                                              { name: 'prepare2', artifacts: false }])
+        create(
+          :ci_bridge,
+          pipeline: pipeline,
+          stage_idx: 1,
+          scheduling_type: 'dag',
+          needs_attributes: [{ name: 'prepare1', artifacts: true }, { name: 'prepare2', artifacts: false }]
+        )
       end
 
       let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
@@ -581,7 +571,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
-  describe 'metadata partitioning', :ci_partitioning do
+  describe 'metadata partitioning', :ci_partitionable do
     let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
 
     let(:bridge) do

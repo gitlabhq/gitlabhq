@@ -15,7 +15,7 @@ namespace :gitlab do
         hash[feature_category] << {
           klass: controller.to_s,
           action: action,
-          source_location: source_location(controller, action)
+          source_location: src_location(controller, action)
         }
       end
 
@@ -28,7 +28,7 @@ namespace :gitlab do
         hash[feature_category] << {
           klass: klass.to_s,
           action: path,
-          source_location: source_location(klass)
+          source_location: src_location(klass)
         }
       end
 
@@ -40,7 +40,7 @@ namespace :gitlab do
         hash[feature_category] ||= []
         hash[feature_category] << {
           klass: worker.klass.name,
-          source_location: source_location(worker.klass.name)
+          source_location: src_location(worker.klass.name)
         }
       end
 
@@ -60,7 +60,14 @@ namespace :gitlab do
                      'database_tables' => database_tables)
     end
 
-    def source_location(klass, method = nil)
+    private
+
+    # Source location of the trace
+    # @param [Class] klass
+    # @param [Method,UnboundMethod] method
+    # @note This method was named `source_location` but this name shadowed Binding#source_location
+    # @note This method was made private as it is not being used elsewhere
+    def src_location(klass, method = nil)
       file, line =
         if method && klass.method_defined?(method)
           klass.instance_method(method).source_location

@@ -82,20 +82,8 @@ FactoryBot.define do
       sequence(:environment_scope) { |n| "production#{n}/*" }
     end
 
-    trait :with_installed_helm do
-      application_helm factory: %i(clusters_applications_helm installed)
-    end
-
     trait :with_installed_prometheus do
       integration_prometheus factory: %i(clusters_integrations_prometheus)
-    end
-
-    trait :with_all_applications do
-      application_helm factory: %i(clusters_applications_helm installed)
-      application_ingress factory: %i(clusters_applications_ingress installed)
-      application_runner factory: %i(clusters_applications_runner installed)
-      application_jupyter factory: %i(clusters_applications_jupyter installed)
-      application_knative factory: %i(clusters_applications_knative installed)
     end
 
     trait :with_domain do

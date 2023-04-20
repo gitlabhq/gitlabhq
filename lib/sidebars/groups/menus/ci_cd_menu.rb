@@ -21,9 +21,9 @@ module Sidebars
           'rocket'
         end
 
-        override :pick_into_super_sidebar?
-        def pick_into_super_sidebar?
-          true
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
         end
 
         private
@@ -34,6 +34,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Runners'),
             link: group_runners_path(context.group),
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::BuildMenu,
             active_routes: { controller: 'groups/runners' },
             item_id: :runners
           )

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class GroupMember < Member
-  extend ::Gitlab::Utils::Override
   include FromUnion
   include CreatedAtFilterable
 
@@ -36,10 +35,6 @@ class GroupMember < Member
 
   def self.access_level_roles
     Gitlab::Access.options_with_owner
-  end
-
-  def self.pluck_user_ids
-    pluck(:user_id)
   end
 
   def group
@@ -108,12 +103,6 @@ class GroupMember < Member
     end
 
     update_two_factor_requirement
-
-    super
-  end
-
-  def after_decline_invite
-    notification_service.decline_group_invite(self)
 
     super
   end

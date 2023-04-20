@@ -682,6 +682,12 @@ Settings.cron_jobs['users_migrate_records_to_ghost_user_in_batches_worker']['job
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['cron'] ||= '36 4 * * *'
 Settings.cron_jobs['ci_runners_stale_machines_cleanup_worker']['job_class'] = 'Ci::Runners::StaleMachinesCleanupCronWorker'
+Settings.cron_jobs['cleanup_dangling_debian_package_files_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['cron'] ||= '20 21 * * *'
+Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] = 'Packages::Debian::CleanupDanglingPackageFilesWorker'
+Settings.cron_jobs['global_metrics_update_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['global_metrics_update_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::GlobalMetricsUpdateWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= Settingslogic.new({})
@@ -762,9 +768,6 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
-  Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker'] ||= Settingslogic.new({})
-  Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['cron'] ||= '0 12 * * *'
-  Settings.cron_jobs['update_max_seats_used_for_gitlab_com_subscriptions_worker']['job_class'] = 'UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker'
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
@@ -841,6 +844,9 @@ Gitlab.ee do
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= Settingslogic.new({})
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'
     Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['job_class'] = 'Namespaces::FreeUserCap::BackfillNotificationJobsWorker'
+    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag'] ||= Settingslogic.new({})
+    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag']['cron'] ||= '*/5 * * * *'
+    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag']['job_class'] ||= 'Namespaces::FreeUserCap::BackfillNotificationClearingJobsWorker'
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= Settingslogic.new({})
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['job_class'] = 'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker'

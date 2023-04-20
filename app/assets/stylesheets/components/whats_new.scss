@@ -1,5 +1,5 @@
 .whats-new-drawer {
-  margin-top: $header-height;
+  margin-top: calc(#{$header-height} + #{$calc-application-bars-height});
   @include gl-shadow-none;
   overflow-y: hidden;
   width: 500px;
@@ -33,18 +33,6 @@
     top: 50%;
     transform: translateY(-50%);
   }
-}
-
-.with-performance-bar .whats-new-drawer {
-  margin-top: calc(#{$performance-bar-height} + #{$header-height});
-}
-
-.with-system-header .whats-new-drawer {
-  margin-top: calc(#{$system-header-height} + #{$header-height});
-}
-
-.with-performance-bar.with-system-header .whats-new-drawer {
-  margin-top: calc(#{$performance-bar-height} + #{$system-header-height} + #{$header-height});
 }
 
 .whats-new-item-title-link {

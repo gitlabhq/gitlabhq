@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification, query_analyzers: false,
-  feature_category: :pods do
+  feature_category: :cell do
   let_it_be(:pipeline, refind: true) { create(:ci_pipeline) }
   let_it_be(:project, refind: true) { create(:project) }
 
@@ -115,6 +115,18 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       it 'raises error' do
         Project.transaction do
           expect { run_queries }.to raise_error /Cross-database data modification/
+        end
+      end
+
+      context 'when ci_pipelines are ignored for cross modification' do
+        it 'does not raise error' do
+          Project.transaction do
+            expect do
+              described_class.temporary_ignore_tables_in_transaction(%w[ci_pipelines], url: 'TODO') do
+                run_queries
+              end
+            end.not_to raise_error
+          end
         end
       end
 

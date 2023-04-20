@@ -55,6 +55,26 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       end
     end
 
+    context 'when project is a catalog resource' do
+      let(:ref) { 'master' }
+      let!(:catalog_resource) { create(:catalog_resource, project: project) }
+
+      context 'and it is valid' do
+        let_it_be(:project) { create(:project, :repository, description: 'our components') }
+
+        it_behaves_like 'a successful release creation'
+      end
+
+      context 'and it is invalid' do
+        it 'raises an error and does not update the release' do
+          result = service.execute
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to eq('Project must have a description')
+        end
+      end
+    end
+
     context 'when ref is provided' do
       let(:ref) { 'master' }
       let(:tag_name) { 'foobar' }

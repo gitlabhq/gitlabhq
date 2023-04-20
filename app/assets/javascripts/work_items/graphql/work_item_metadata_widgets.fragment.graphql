@@ -36,4 +36,9 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
       }
     }
   }
+
+  ... on WorkItemWidgetNotifications {
+    type
+    subscribed
+  }
 }

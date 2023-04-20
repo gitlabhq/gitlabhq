@@ -412,7 +412,7 @@ describe('app_index.vue', () => {
       await createComponent();
     });
 
-    it('shows a toast', async () => {
+    it('shows a toast', () => {
       expect(toast).toHaveBeenCalledWith(
         sprintf(__('Release %{release} has been successfully deleted.'), {
           release,
@@ -420,7 +420,7 @@ describe('app_index.vue', () => {
       );
     });
 
-    it('clears session storage', async () => {
+    it('clears session storage', () => {
       expect(window.sessionStorage.getItem(key)).toBe(null);
     });
   });

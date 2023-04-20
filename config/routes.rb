@@ -24,10 +24,10 @@ InitializerConnections.raise_if_new_database_connection do
 
     use_doorkeeper do
       controllers applications: 'oauth/applications',
-                  authorized_applications: 'oauth/authorized_applications',
-                  authorizations: 'oauth/authorizations',
-                  token_info: 'oauth/token_info',
-                  tokens: 'oauth/tokens'
+        authorized_applications: 'oauth/authorized_applications',
+        authorizations: 'oauth/authorizations',
+        token_info: 'oauth/token_info',
+        tokens: 'oauth/tokens'
     end
     put '/oauth/applications/:id/renew(.:format)' => 'oauth/applications#renew', as: :renew_oauth_application
 
@@ -154,15 +154,16 @@ InitializerConnections.raise_if_new_database_connection do
 
         # Remote host can contain "." characters so it needs a constraint
         post 'remote/:remote_host(/*remote_path)',
-             as: :remote,
-             to: 'web_ide/remote_ide#index',
-             constraints: { remote_host: %r{[^/?]+} }
+          as: :remote,
+          to: 'web_ide/remote_ide#index',
+          constraints: { remote_host: %r{[^/?]+} }
       end
 
       draw :operations
       draw :jira_connect
 
       Gitlab.ee do
+        draw :remote_development
         draw :security
         draw :smartcard
         draw :trial
@@ -224,6 +225,8 @@ InitializerConnections.raise_if_new_database_connection do
       # Deprecated route for permanent failures
       # https://gitlab.com/gitlab-org/gitlab/-/issues/362606
       post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
+
+      get '/timelogs' => 'time_tracking/timelogs#index'
     end
     # End of the /-/ scope.
 

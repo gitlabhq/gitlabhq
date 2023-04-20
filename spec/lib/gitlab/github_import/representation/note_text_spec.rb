@@ -22,35 +22,45 @@ RSpec.describe Gitlab::GithubImport::Representation::NoteText do
   end
 
   describe '.from_db_record' do
-    context 'with Release' do
-      let(:record) { build_stubbed(:release, id: 42, description: 'Some text here..') }
+    let(:representation) { described_class.from_db_record(record) }
 
-      it_behaves_like 'a Note text data', 'Release' do
-        let(:representation) { described_class.from_db_record(record) }
+    context 'with Release' do
+      let(:record) { build_stubbed(:release, id: 42, description: 'Some text here..', tag: 'v1.0') }
+
+      it_behaves_like 'a Note text data', 'Release'
+
+      it 'includes tag' do
+        expect(representation.tag).to eq 'v1.0'
       end
     end
 
     context 'with Issue' do
-      let(:record) { build_stubbed(:issue, id: 42, description: 'Some text here..') }
+      let(:record) { build_stubbed(:issue, id: 42, iid: 2, description: 'Some text here..') }
 
-      it_behaves_like 'a Note text data', 'Issue' do
-        let(:representation) { described_class.from_db_record(record) }
+      it_behaves_like 'a Note text data', 'Issue'
+
+      it 'includes noteable iid' do
+        expect(representation.iid).to eq 2
       end
     end
 
     context 'with MergeRequest' do
-      let(:record) { build_stubbed(:merge_request, id: 42, description: 'Some text here..') }
+      let(:record) { build_stubbed(:merge_request, id: 42, iid: 2, description: 'Some text here..') }
 
-      it_behaves_like 'a Note text data', 'MergeRequest' do
-        let(:representation) { described_class.from_db_record(record) }
+      it_behaves_like 'a Note text data', 'MergeRequest'
+
+      it 'includes noteable iid' do
+        expect(representation.iid).to eq 2
       end
     end
 
     context 'with Note' do
-      let(:record) { build_stubbed(:note, id: 42, note: 'Some text here..') }
+      let(:record) { build_stubbed(:note, id: 42, note: 'Some text here..', noteable_type: 'Issue') }
 
-      it_behaves_like 'a Note text data', 'Note' do
-        let(:representation) { described_class.from_db_record(record) }
+      it_behaves_like 'a Note text data', 'Note'
+
+      it 'includes noteable type' do
+        expect(representation.noteable_type).to eq 'Issue'
       end
     end
   end
@@ -61,7 +71,8 @@ RSpec.describe Gitlab::GithubImport::Representation::NoteText do
         {
           'record_db_id' => 42,
           'record_type' => 'Release',
-          'text' => 'Some text here..'
+          'text' => 'Some text here..',
+          'tag' => 'v1.0'
         }
       end
 
@@ -70,11 +81,76 @@ RSpec.describe Gitlab::GithubImport::Representation::NoteText do
   end
 
   describe '#github_identifiers' do
-    it 'returns a hash with needed identifiers' do
-      record_id = rand(100)
-      representation = described_class.new(record_db_id: record_id, text: 'text')
+    let(:iid) { nil }
+    let(:tag) { nil }
+    let(:noteable_type) { nil }
+    let(:hash) do
+      {
+        'record_db_id' => 42,
+        'record_type' => record_type,
+        'text' => 'Some text here..',
+        'iid' => iid,
+        'tag' => tag,
+        'noteable_type' => noteable_type
+      }
+    end
 
-      expect(representation.github_identifiers).to eq({ db_id: record_id })
+    subject { described_class.from_json_hash(hash) }
+
+    context 'with Release' do
+      let(:record_type) { 'Release' }
+      let(:tag) { 'v1.0' }
+
+      it 'returns a hash with needed identifiers' do
+        expect(subject.github_identifiers).to eq(
+          {
+            db_id: 42,
+            tag: 'v1.0'
+          }
+        )
+      end
+    end
+
+    context 'with Issue' do
+      let(:record_type) { 'Issue' }
+      let(:iid) { 2 }
+
+      it 'returns a hash with needed identifiers' do
+        expect(subject.github_identifiers).to eq(
+          {
+            db_id: 42,
+            noteable_iid: 2
+          }
+        )
+      end
+    end
+
+    context 'with Merge Request' do
+      let(:record_type) { 'MergeRequest' }
+      let(:iid) { 3 }
+
+      it 'returns a hash with needed identifiers' do
+        expect(subject.github_identifiers).to eq(
+          {
+            db_id: 42,
+            noteable_iid: 3
+          }
+        )
+      end
+    end
+
+    context 'with Note' do
+      let(:record_type) { 'Note' }
+      let(:noteable_type) { 'MergeRequest' }
+
+      it 'returns a hash with needed identifiers' do
+        expect(subject.github_identifiers).to eq(
+          {
+            db_id: 42,
+            noteable_type: 'MergeRequest'
+          }
+        )
+      end
     end
   end
 end

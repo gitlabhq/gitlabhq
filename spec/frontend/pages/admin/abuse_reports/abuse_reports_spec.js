@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlAbuseReportsList from 'test_fixtures/abuse_reports/abuse_reports_list.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import AbuseReports from '~/pages/admin/abuse_reports/abuse_reports';
 
 describe('Abuse Reports', () => {
-  const FIXTURE = 'abuse_reports/abuse_reports_list.html';
   const MAX_MESSAGE_LENGTH = 500;
 
   let $messages;
@@ -15,7 +15,7 @@ describe('Abuse Reports', () => {
     $messages.filter((index, element) => element.innerText.indexOf(searchText) > -1).first();
 
   beforeEach(() => {
-    loadHTMLFixture(FIXTURE);
+    setHTMLFixture(htmlAbuseReportsList);
     new AbuseReports(); // eslint-disable-line no-new
     $messages = $('.abuse-reports .message');
   });

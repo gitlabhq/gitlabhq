@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -38,7 +38,7 @@ with GitLab, so it's up to developers to use a compatible client library and
 To create and enable a feature flag:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. Select **New feature flag**.
 1. Enter a name that starts with a letter and contains only lowercase letters, digits, underscores (`_`),
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
@@ -85,7 +85,7 @@ and the supported strategies are:
 - [User List](#user-list)
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
-or by editing an existing feature flag after creation by navigating to **Deployments > Feature Flags**
+or by editing an existing feature flag after creation by navigating to **Deployments > Feature flags**
 and selecting **Edit** (**{pencil}**).
 
 ### All users
@@ -181,7 +181,7 @@ For example:
 To create a user list:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. Select **View user lists**
 1. Select **New user list**.
 1. Enter a name for the list.
@@ -197,7 +197,7 @@ When viewing a list, you can rename it by selecting **Edit** (**{pencil}**).
 To add users to a user list:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. Select **Edit** (**{pencil}**) next to the list you want to add users to.
 1. Select **Add Users**.
 1. Enter the user IDs as a comma-separated list of values. For example,
@@ -211,7 +211,7 @@ To add users to a user list:
 To remove users from a user list:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. Select **Edit** (**{pencil}**) next to the list you want to change.
 1. Select **Remove** (**{remove}**) next to the ID you want to remove.
 
@@ -225,7 +225,7 @@ code so that you can clean it up when it's time to remove the feature flag.
 To search for code references of a feature flag:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. Edit the feature flag you want to remove.
 1. Select **More actions** (**{ellipsis_v}**).
 1. Select **Search code references**.
@@ -236,7 +236,7 @@ In [GitLab 13.0 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/8621)
 to disable a feature flag for a specific environment:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. For the feature flag you want to disable, select **Edit** (**{pencil}**).
 1. To disable the flag:
 
@@ -251,7 +251,7 @@ to disable a feature flag for a specific environment:
 To disable a feature flag for all environments:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. For the feature flag you want to disable, slide the Status toggle to **Disabled**.
 
 The feature flag is displayed on the **Disabled** tab.
@@ -266,7 +266,7 @@ Then prepare your application with a client library.
 To get the access credentials that your application needs to communicate with GitLab:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Deployments > Feature Flags**.
+1. On the left sidebar, select **Deployments > Feature flags**.
 1. Select **Configure** to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.

@@ -105,30 +105,36 @@ RSpec.describe Analytics::CycleAnalytics::Stage, feature_category: :value_stream
       }
     end
 
-    describe '#create' do
-      it_behaves_like 'Snowplow event tracking' do
-        let(:property) { 'create' }
-        let(:extra) { record_tracked_attributes }
-
-        subject(:new_group_stage) { stage }
+    context 'with database event tracking' do
+      before do
+        allow(Gitlab::Tracking).to receive(:database_event).and_call_original
       end
-    end
 
-    describe '#update', :freeze_time do
-      it_behaves_like 'Snowplow event tracking' do
-        subject(:create_group_stage) { stage.update!(name: 'st 2') }
+      describe '#create' do
+        it_behaves_like 'Snowplow event tracking', overrides: { tracking_method: :database_event } do
+          let(:property) { 'create' }
+          let(:extra) { record_tracked_attributes }
 
-        let(:extra) { record_tracked_attributes.merge('name' => 'st 2') }
-        let(:property) { 'update' }
+          subject(:new_group_stage) { stage }
+        end
       end
-    end
 
-    describe '#destroy' do
-      it_behaves_like 'Snowplow event tracking' do
-        subject(:delete_stage_group) { stage.destroy! }
+      describe '#update', :freeze_time do
+        it_behaves_like 'Snowplow event tracking', overrides: { tracking_method: :database_event } do
+          subject(:create_group_stage) { stage.update!(name: 'st 2') }
 
-        let(:extra) { record_tracked_attributes }
-        let(:property) { 'destroy' }
+          let(:extra) { record_tracked_attributes.merge('name' => 'st 2') }
+          let(:property) { 'update' }
+        end
+      end
+
+      describe '#destroy' do
+        it_behaves_like 'Snowplow event tracking', overrides: { tracking_method: :database_event } do
+          subject(:delete_stage_group) { stage.destroy! }
+
+          let(:extra) { record_tracked_attributes }
+          let(:property) { 'destroy' }
+        end
       end
     end
   end

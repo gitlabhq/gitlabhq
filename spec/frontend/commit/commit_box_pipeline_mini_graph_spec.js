@@ -83,7 +83,7 @@ describe('Commit box pipeline mini graph', () => {
       await createComponent();
     });
 
-    it('should not display loading state after the query is resolved', async () => {
+    it('should not display loading state after the query is resolved', () => {
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findPipelineMiniGraph().exists()).toBe(true);
     });

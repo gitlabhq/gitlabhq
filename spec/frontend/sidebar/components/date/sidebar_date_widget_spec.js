@@ -11,7 +11,12 @@ import SidebarInheritDate from '~/sidebar/components/date/sidebar_inherit_date.v
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import epicStartDateQuery from '~/sidebar/queries/epic_start_date.query.graphql';
 import issueDueDateQuery from '~/sidebar/queries/issue_due_date.query.graphql';
-import { issuableDueDateResponse, issuableStartDateResponse } from '../../mock_data';
+import issueDueDateSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
+import {
+  issuableDueDateResponse,
+  issuableStartDateResponse,
+  issueDueDateSubscriptionResponse,
+} from '../../mock_data';
 
 jest.mock('~/alert');
 
@@ -29,6 +34,7 @@ describe('Sidebar date Widget', () => {
   const createComponent = ({
     dueDateQueryHandler = jest.fn().mockResolvedValue(issuableDueDateResponse()),
     startDateQueryHandler = jest.fn().mockResolvedValue(issuableStartDateResponse()),
+    dueDateSubscriptionHandler = jest.fn().mockResolvedValue(issueDueDateSubscriptionResponse()),
     canInherit = false,
     dateType = undefined,
     issuableType = 'issue',
@@ -36,6 +42,7 @@ describe('Sidebar date Widget', () => {
     fakeApollo = createMockApollo([
       [issueDueDateQuery, dueDateQueryHandler],
       [epicStartDateQuery, startDateQueryHandler],
+      [issueDueDateSubscription, dueDateSubscriptionHandler],
     ]);
 
     wrapper = shallowMount(SidebarDateWidget, {
@@ -124,15 +131,27 @@ describe('Sidebar date Widget', () => {
 
     it('uses a correct prop to set the initial date and first day of the week for GlDatePicker', () => {
       expect(findDatePicker().props()).toMatchObject({
-        value: null,
+        value: new Date(date),
         autocomplete: 'off',
         defaultDate: expect.any(Object),
         firstDay: window.gon.first_day_of_week,
       });
     });
 
-    it('renders GlDatePicker', async () => {
+    it('renders GlDatePicker', () => {
       expect(findDatePicker().exists()).toBe(true);
+    });
+  });
+
+  describe('real time issue due date feature', () => {
+    it('should call the subscription', async () => {
+      const dueDateSubscriptionHandler = jest
+        .fn()
+        .mockResolvedValue(issueDueDateSubscriptionResponse());
+      createComponent({ dueDateSubscriptionHandler });
+      await waitForPromises();
+
+      expect(dueDateSubscriptionHandler).toHaveBeenCalled();
     });
   });
 
@@ -152,7 +171,7 @@ describe('Sidebar date Widget', () => {
     },
   );
 
-  it('does not render SidebarInheritDate when canInherit is true and date is loading', async () => {
+  it('does not render SidebarInheritDate when canInherit is true and date is loading', () => {
     createComponent({ canInherit: true });
 
     expect(wrapper.findComponent(SidebarInheritDate).exists()).toBe(false);

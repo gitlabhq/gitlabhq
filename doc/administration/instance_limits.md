@@ -126,7 +126,7 @@ Read more about [import/export rate limits](../user/admin_area/settings/import_e
 
 Limit the maximum daily member invitations allowed per group hierarchy.
 
-- GitLab.com: Free members may invite 20 members per day.
+- GitLab.com: Free members may invite 20 members per day, Premium trial and Ultimate trial members may invite 50 members per day.
 - Self-managed: Invites are not limited.
 
 ### Webhook rate limit
@@ -630,6 +630,42 @@ To update this limit to a new value on a self-managed installation, run the foll
 
 ```ruby
 Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
+```
+
+### Number of group level variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+
+The total number of group level CI/CD variables is limited at the instance level.
+This limit is checked each time a new group level variable is created. If a new variable
+would cause the total number of variables to exceed the limit, the new variable is not created.
+
+On self-managed instances this limit is defined for the `default` plan. By default,
+this limit is set to `30000`.
+
+To update this limit to a new value on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(group_ci_variables: 40000)
+```
+
+### Number of project level variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+
+The total number of project level CI/CD variables is limited at the instance level.
+This limit is checked each time a new project level variable is created. If a new variable
+would cause the total number of variables to exceed the limit, the new variable is not created.
+
+On self-managed instances this limit is defined for the `default` plan. By default,
+this limit is set to `8000`.
+
+To update this limit to a new value on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(project_ci_variables: 10000)
 ```
 
 ### Maximum file size per type of artifact

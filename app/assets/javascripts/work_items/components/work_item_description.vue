@@ -55,7 +55,6 @@ export default {
       isSubmitting: false,
       isSubmittingWithKeydown: false,
       descriptionText: '',
-      descriptionHtml: '',
       conflictedDescription: '',
       formFieldProps: {
         'aria-label': __('Description'),
@@ -81,12 +80,7 @@ export default {
       },
       result() {
         if (this.isEditing) {
-          if (this.descriptionText !== this.workItemDescription?.description) {
-            this.conflictedDescription = this.workItemDescription?.description;
-          }
-        } else {
-          this.descriptionText = this.workItemDescription?.description;
-          this.descriptionHtml = this.workItemDescription?.descriptionHtml;
+          this.checkForConflicts();
         }
       },
       error() {
@@ -148,6 +142,11 @@ export default {
     },
   },
   methods: {
+    checkForConflicts() {
+      if (this.descriptionText !== this.workItemDescription?.description) {
+        this.conflictedDescription = this.workItemDescription?.description;
+      }
+    },
     async startEditing() {
       this.isEditing = true;
 
@@ -254,7 +253,7 @@ export default {
         :autocomplete-data-sources="autocompleteDataSources"
         enable-autocomplete
         supports-quick-actions
-        init-on-autofocus
+        autofocus
         @input="setDescriptionText"
         @keydown.meta.enter="updateWorkItem"
         @keydown.ctrl.enter="updateWorkItem"

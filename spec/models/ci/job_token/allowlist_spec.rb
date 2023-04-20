@@ -16,10 +16,12 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
 
     context 'when no projects are added to the scope' do
       [:inbound, :outbound].each do |d|
-        let(:direction) { d }
+        context "with #{d}" do
+          let(:direction) { d }
 
-        it 'returns the project defining the scope' do
-          expect(projects).to contain_exactly(source_project)
+          it 'returns the project defining the scope' do
+            expect(projects).to contain_exactly(source_project)
+          end
         end
       end
     end
@@ -47,15 +49,17 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     subject { allowlist.add!(added_project, user: user) }
 
     [:inbound, :outbound].each do |d|
-      let(:direction) { d }
+      context "with #{d}" do
+        let(:direction) { d }
 
-      it 'adds the project' do
-        subject
+        it 'adds the project' do
+          subject
 
-        expect(allowlist.projects).to contain_exactly(source_project, added_project)
-        expect(subject.added_by_id).to eq(user.id)
-        expect(subject.source_project_id).to eq(source_project.id)
-        expect(subject.target_project_id).to eq(added_project.id)
+          expect(allowlist.projects).to contain_exactly(source_project, added_project)
+          expect(subject.added_by_id).to eq(user.id)
+          expect(subject.source_project_id).to eq(source_project.id)
+          expect(subject.target_project_id).to eq(added_project.id)
+        end
       end
     end
   end

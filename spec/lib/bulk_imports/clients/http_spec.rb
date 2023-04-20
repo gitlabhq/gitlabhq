@@ -261,7 +261,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
             .to_return(status: 401, body: "", headers: { 'Content-Type' => 'application/json' })
 
           expect { subject.instance_version }.to raise_exception(BulkImports::Error,
-            "Import aborted as the provided personal access token does not have the required 'api' scope or " \
+            "Personal access token does not have the required 'api' scope or " \
             "is no longer valid.")
         end
       end
@@ -273,7 +273,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
             .to_return(status: 403, body: "", headers: { 'Content-Type' => 'application/json' })
 
           expect { subject.instance_version }.to raise_exception(BulkImports::Error,
-            "Import aborted as the provided personal access token does not have the required 'api' scope or " \
+            "Personal access token does not have the required 'api' scope or " \
             "is no longer valid.")
         end
       end

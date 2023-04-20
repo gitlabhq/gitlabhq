@@ -15,19 +15,40 @@ describe('~/environments/environment_details/page.vue', () => {
 
   let wrapper;
 
-  const defaultWrapperParameters = {
-    resolvedData: resolvedEnvironmentDetails,
+  const emptyEnvironmentToRollbackData = { id: '', name: '', lastDeployment: null, retryUrl: '' };
+  const environmentToRollbackMock = jest.fn();
+
+  const mockResolvers = {
+    Query: {
+      environmentToRollback: environmentToRollbackMock,
+    },
   };
 
-  const createWrapper = ({ resolvedData } = defaultWrapperParameters) => {
-    const mockApollo = createMockApollo([
-      [getEnvironmentDetails, jest.fn().mockResolvedValue(resolvedData)],
-    ]);
+  const defaultWrapperParameters = {
+    resolvedData: resolvedEnvironmentDetails,
+    environmentToRollbackData: emptyEnvironmentToRollbackData,
+  };
+
+  const createWrapper = ({
+    resolvedData,
+    environmentToRollbackData,
+  } = defaultWrapperParameters) => {
+    const mockApollo = createMockApollo(
+      [[getEnvironmentDetails, jest.fn().mockResolvedValue(resolvedData)]],
+      mockResolvers,
+    );
+    environmentToRollbackMock.mockReturnValue(
+      environmentToRollbackData || emptyEnvironmentToRollbackData,
+    );
+    const projectFullPath = 'gitlab-group/test-project';
 
     return mountExtended(EnvironmentsDetailPage, {
       apolloProvider: mockApollo,
+      provide: {
+        projectPath: projectFullPath,
+      },
       propsData: {
-        projectFullPath: 'gitlab-group/test-project',
+        projectFullPath,
         environmentName: 'test-environment-name',
       },
     });
@@ -48,7 +69,7 @@ describe('~/environments/environment_details/page.vue', () => {
         wrapper = createWrapper();
         await waitForPromises();
       });
-      it('should render a table when query is loaded', async () => {
+      it('should render a table when query is loaded', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).not.toBe(true);
         expect(wrapper.findComponent(GlTableLite).exists()).toBe(true);
       });
@@ -60,7 +81,7 @@ describe('~/environments/environment_details/page.vue', () => {
         await waitForPromises();
       });
 
-      it('should render empty state component', async () => {
+      it('should render empty state component', () => {
         expect(wrapper.findComponent(GlTableLite).exists()).toBe(false);
         expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
       });

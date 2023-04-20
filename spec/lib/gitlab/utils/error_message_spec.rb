@@ -9,15 +9,20 @@ RSpec.describe Gitlab::Utils::ErrorMessage, feature_category: :error_tracking do
     end
   end
 
+  let(:message) { 'Something went wrong' }
+
   subject(:object) { klass.new }
 
-  describe 'error message' do
-    subject { object.to_user_facing(string) }
+  describe '#to_user_facing' do
+    it 'returns a user-facing error message with the UF prefix' do
+      expect(described_class.to_user_facing(message)).to eq("UF: #{message}")
+    end
+  end
 
-    let(:string) { 'Error Message' }
-
-    it "returns input prefixed with UF:" do
-      is_expected.to eq 'UF: Error Message'
+  describe '#prefixed_error_message' do
+    it 'returns a message with the given prefix' do
+      prefix = 'ERROR'
+      expect(described_class.prefixed_error_message(message, prefix)).to eq("#{prefix}: #{message}")
     end
   end
 end

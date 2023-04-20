@@ -47,7 +47,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def membershipable_members
-    query_members_via_project_namespace_enabled? ? project.namespace_members : project.members
+    project.namespace_members
   end
 
   def plain_source_type
@@ -67,15 +67,11 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def members_and_requesters
-    query_members_via_project_namespace_enabled? ? project.namespace_members_and_requesters : super
+    project.namespace_members_and_requesters
   end
 
   def requesters
-    query_members_via_project_namespace_enabled? ? project.namespace_requesters : super
-  end
-
-  def query_members_via_project_namespace_enabled?
-    Feature.enabled?(:project_members_index_by_project_namespace, project)
+    project.namespace_requesters
   end
 end
 

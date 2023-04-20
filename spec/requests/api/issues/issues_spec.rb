@@ -90,9 +90,13 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /issues/:id' do
+    let(:path) { "/issues/#{issue.id}" }
+
+    it_behaves_like 'GET request permissions for admin mode'
+
     context 'when unauthorized' do
       it 'returns unauthorized' do
-        get api("/issues/#{issue.id}")
+        get api(path)
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -101,7 +105,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     context 'when authorized' do
       context 'as a normal user' do
         it 'returns forbidden' do
-          get api("/issues/#{issue.id}", user)
+          get api(path, user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -110,7 +114,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       context 'as an admin' do
         context 'when issue exists' do
           it 'returns the issue', :aggregate_failures do
-            get api("/issues/#{issue.id}", admin, admin_mode: true)
+            get api(path, admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response.dig('author', 'id')).to eq(issue.author.id)
@@ -121,7 +125,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         context 'when issue does not exist' do
           it 'returns 404' do
-            get api("/issues/0", admin, admin_mode: true)
+            get api("/issues/#{non_existing_record_id}", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -1167,6 +1171,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   describe 'PUT /projects/:id/issues/:issue_iid' do
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { issue }
+    end
+
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:path) { "/projects/#{project.id}/issues/#{issue.iid}" }
+      let(:params) { { labels: 'label1', updated_at: Time.new(2000, 1, 1) } }
     end
 
     describe 'updated_at param' do

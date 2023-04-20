@@ -60,7 +60,7 @@ GitLab adds all troubleshooting information to the documentation, no matter how
 unlikely a user is to encounter a situation.
 
 GitLab Support maintains their own
-[troubleshooting content](../../../administration/index.md#support-team-documentation)
+[troubleshooting content](../../../administration/troubleshooting/index.md)
 in the GitLab documentation.
 
 ### The documentation includes all media types
@@ -717,6 +717,15 @@ This is overridden by the [documentation-specific punctuation rules](#punctuatio
 
 Links help the docs adhere to the
 [single source of truth](#documentation-is-the-single-source-of-truth-ssot) principle.
+
+However, you should avoid putting too many links on any page. Too many links can hinder readability.
+
+- Do not duplicate links on the same page. For example, on **Page A**, do not link to **Page B** multiple times.
+- Avoid multiple links in a single paragraph.
+- Avoid multiple links in a single task.
+- On any one page, try not to use more than 15 links to other pages.
+- Consider using [Related topics](../topic_types/index.md#related-topics) to reduce links that interrupt the flow of a task.
+- Try to avoid anchor links to sections on the same page. Let users rely on the right navigation instead.
 
 ### Links within the same repository
 
@@ -1449,7 +1458,7 @@ For tab titles, be brief and consistent. Ensure they are parallel, and start eac
 For example:
 
 - `Linux package (Omnibus)`, `Helm chart (Kubernetes)` (when documenting configuration edits, follow the
-  [configuration edits guide](#configuration-documentation-for-different-installation-methods))
+  [configuration edits guide](#how-to-document-different-installation-methods))
 - `15.1 and earlier`, `15.2 and later`
 
 Until we implement automated testing for broken links to tabs ([Issue 1355](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1355)), do not link directly to a single tab, even though they do have unique URL parameters.
@@ -1546,23 +1555,27 @@ If the document resides outside of the `doc/` directory, use the full path
 instead of the relative link:
 `https://docs.gitlab.com/ee/administration/restart_gitlab.html`.
 
-### Installation guide
+### How to document different installation methods
 
-In [step 2 of the installation guide](../../../install/installation.md#2-ruby),
-we install Ruby from source. To update the guide for a new Ruby version:
+GitLab supports five official installation methods. If you're referring to
+words as part of sentences and titles, use the following phrases:
 
-- Change the version throughout the code block.
-- Replace the sha256sum. It's available on the
-  [downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
+- Linux package
+- Helm chart
+- GitLab Operator
+- Docker
+- Self-compiled
 
-### Configuration documentation for different installation methods
-
-GitLab supports four installation methods:
+It's OK to add the explanatory parentheses when
+[using tabs](#use-tabs-to-describe-a-self-managed-configuration-procedure):
 
 - Linux package (Omnibus)
 - Helm chart (Kubernetes)
+- GitLab Operator (Kubernetes)
 - Docker
 - Self-compiled (source)
+
+### Use tabs to describe a self-managed configuration procedure
 
 Configuration procedures can require users to edit configuration files, reconfigure
 GitLab, or restart GitLab. In this case:
@@ -1576,8 +1589,8 @@ GitLab, or restart GitLab. In this case:
 - The final step to reconfigure or restart GitLab can be used verbatim since it's
   the same every time.
 
-You can copy and paste the following snippet when describing a configuration
-edit:
+When describing a configuration edit, you can use and edit to your liking the
+following snippet:
 
 <!-- markdownlint-disable tabs-blank-lines -->
 ````markdown

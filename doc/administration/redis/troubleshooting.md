@@ -113,14 +113,18 @@ To make sure your configuration is correct:
    redis.info
    ```
 
-   Keep this screen open and try to simulate a failover below.
+   Keep this screen open, and proceed to trigger a failover as described below.
 
-1. To simulate a failover on primary Redis, SSH into the Redis server and run:
+1. To trigger a failover on the primary Redis, SSH into the Redis server and run:
 
    ```shell
    # port must match your primary redis port, and the sleep time must be a few seconds bigger than defined one
     redis-cli -h localhost -p 6379 DEBUG sleep 20
    ```
+
+   WARNING:
+   This action affects services, and takes the instance down for up to 20 seconds. If successful, 
+   it should recover after that.
 
 1. Then back in the Rails console from the first step, run:
 

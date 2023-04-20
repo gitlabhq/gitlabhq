@@ -10,7 +10,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
       visit new_user_registration_path
     end
 
-    describe "#{field} validation", :js do
+    describe "#{field} validation" do
       it "does not show an error border if the user's fullname length is not longer than #{max_length} characters" do
         fill_in field, with: 'u' * max_length
 
@@ -44,7 +44,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
   end
 end
 
-RSpec.describe 'Signup', feature_category: :user_profile do
+RSpec.describe 'Signup', :js, feature_category: :user_profile do
   include TermsHelper
 
   let(:new_user) { build_stubbed(:user) }
@@ -71,7 +71,7 @@ RSpec.describe 'Signup', feature_category: :user_profile do
       stub_application_setting(require_admin_approval_after_user_signup: false)
     end
 
-    describe 'username validation', :js do
+    describe 'username validation' do
       before do
         visit new_user_registration_path
       end
@@ -356,6 +356,8 @@ RSpec.describe 'Signup', feature_category: :user_profile do
       visit new_user_registration_path
 
       fill_in_signup_form
+      wait_for_all_requests
+
       click_button 'Register'
 
       visit new_project_path
@@ -383,7 +385,7 @@ RSpec.describe 'Signup', feature_category: :user_profile do
       expect(page.body).not_to match(/#{new_user.password}/)
     end
 
-    context 'with invalid email', :js do
+    context 'with invalid email' do
       it_behaves_like 'user email validation' do
         let(:path) { new_user_registration_path }
       end

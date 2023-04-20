@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can configure an external Sidekiq instance by using the Sidekiq that's bundled in the GitLab package. Sidekiq requires connection to the Redis,
 PostgreSQL, and Gitaly instances.
 
-## Configure TCP access for PostgreSQL, Gitaly, and Redis
+## Configure TCP access for PostgreSQL, Gitaly, and Redis on the GitLab instance
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
@@ -56,7 +56,6 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
    redis['password'] = 'redis-password-goes-here'
    gitlab_rails['redis_password'] = 'redis-password-goes-here'
 
-   gitlab_rails['auto_migrate'] = false
    ```
 
 1. Run `reconfigure`:
@@ -69,18 +68,6 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
 
    ```shell
    sudo gitlab-ctl restart postgresql
-   ```
-
-1. After the restart, set `auto_migrate` to `true` or comment to use the default settings:
-
-   ```ruby
-   gitlab_rails['auto_migrate'] = true
-   ```
-
-1. Run `reconfigure` again:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
    ```
 
 ## Set up Sidekiq instance

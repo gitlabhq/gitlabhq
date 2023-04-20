@@ -403,63 +403,49 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
     it_behaves_like 'requires authentication'
 
-    it 'returns NOT FOUND when the feature is disabled' do
-      stub_feature_flags(import_project_from_remote_file_s3: false)
+    context 'when the response is successful' do
+      it 'schedules the import successfully' do
+        project = create(
+          :project,
+          namespace: user.namespace,
+          name: 'test-import',
+          path: 'test-import'
+        )
 
-      subject
+        service_response = ServiceResponse.success(payload: project)
+        expect_next(::Import::GitlabProjects::CreateProjectService)
+          .to receive(:execute)
+          .and_return(service_response)
 
-      expect(response).to have_gitlab_http_status(:not_found)
+        subject
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to include({
+          'id' => project.id,
+          'name' => 'test-import',
+          'name_with_namespace' => "#{user.namespace.name} / test-import",
+          'path' => 'test-import',
+          'path_with_namespace' => "#{user.namespace.path}/test-import"
+        })
+      end
     end
 
-    context 'when the feature flag is enabled' do
-      before do
-        stub_feature_flags(import_project_from_remote_file_s3: true)
-      end
+    context 'when the service returns an error' do
+      it 'fails to schedule the import' do
+        service_response = ServiceResponse.error(
+          message: 'Failed to import',
+          http_status: :bad_request
+        )
+        expect_next(::Import::GitlabProjects::CreateProjectService)
+          .to receive(:execute)
+          .and_return(service_response)
 
-      context 'when the response is successful' do
-        it 'schedules the import successfully' do
-          project = create(
-            :project,
-            namespace: user.namespace,
-            name: 'test-import',
-            path: 'test-import'
-          )
+        subject
 
-          service_response = ServiceResponse.success(payload: project)
-          expect_next(::Import::GitlabProjects::CreateProjectService)
-            .to receive(:execute)
-            .and_return(service_response)
-
-          subject
-
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response).to include({
-            'id' => project.id,
-            'name' => 'test-import',
-            'name_with_namespace' => "#{user.namespace.name} / test-import",
-            'path' => 'test-import',
-            'path_with_namespace' => "#{user.namespace.path}/test-import"
-          })
-        end
-      end
-
-      context 'when the service returns an error' do
-        it 'fails to schedule the import' do
-          service_response = ServiceResponse.error(
-            message: 'Failed to import',
-            http_status: :bad_request
-          )
-          expect_next(::Import::GitlabProjects::CreateProjectService)
-            .to receive(:execute)
-            .and_return(service_response)
-
-          subject
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({
-            'message' => 'Failed to import'
-          })
-        end
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({
+          'message' => 'Failed to import'
+        })
       end
     end
   end

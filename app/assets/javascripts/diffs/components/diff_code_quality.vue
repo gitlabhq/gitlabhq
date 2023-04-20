@@ -1,25 +1,17 @@
 <script>
-import { GlButton, GlIcon } from '@gitlab/ui';
-import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
+import { GlButton } from '@gitlab/ui';
 import { NEW_CODE_QUALITY_FINDINGS } from '../i18n';
+import DiffCodeQualityItem from './diff_code_quality_item.vue';
 
 export default {
   i18n: {
     newFindings: NEW_CODE_QUALITY_FINDINGS,
   },
-  components: { GlButton, GlIcon },
+  components: { GlButton, DiffCodeQualityItem },
   props: {
     codeQuality: {
       type: Array,
       required: true,
-    },
-  },
-  methods: {
-    severityClass(severity) {
-      return SEVERITY_CLASSES[severity] || SEVERITY_CLASSES.unknown;
-    },
-    severityIcon(severity) {
-      return SEVERITY_ICONS[severity] || SEVERITY_ICONS.unknown;
     },
   },
 };
@@ -37,23 +29,11 @@ export default {
       {{ $options.i18n.newFindings }}
     </h4>
     <ul class="gl-list-style-none gl-mb-0 gl-p-0">
-      <li
+      <diff-code-quality-item
         v-for="finding in codeQuality"
         :key="finding.description"
-        class="gl-pt-1 gl-pb-1 gl-font-regular gl-display-flex"
-      >
-        <span class="gl-mr-3">
-          <gl-icon
-            :size="12"
-            :name="severityIcon(finding.severity)"
-            :class="severityClass(finding.severity)"
-            class="codequality-severity-icon"
-          />
-        </span>
-        <span>
-          <span class="severity-copy">{{ finding.severity }}</span> - {{ finding.description }}
-        </span>
-      </li>
+        :finding="finding"
+      />
     </ul>
     <gl-button
       data-testid="diff-codequality-close"

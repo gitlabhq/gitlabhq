@@ -336,4 +336,4 @@ PUT /projects/:id/external_status_checks/:check_id
 
 ## Related topics
 
-- [External status checks](../user/project/merge_requests/status_checks.md).
+- [External status checks](../user/project/merge_requests/status_checks.md)

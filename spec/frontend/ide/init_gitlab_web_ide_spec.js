@@ -26,6 +26,7 @@ const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/webpack/assets/gitlab-web-ide/publ
 const TEST_FILE_PATH = 'foo/README.md';
 const TEST_MR_ID = '7';
 const TEST_MR_TARGET_PROJECT = 'gitlab-org/the-real-gitlab';
+const TEST_SIGN_IN_PATH = 'sign-in';
 const TEST_FORK_INFO = { fork_path: '/forky' };
 const TEST_IDE_REMOTE_PATH = '/-/ide/remote/:remote_host/:remote_path';
 const TEST_START_REMOTE_PARAMS = {
@@ -56,6 +57,7 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.editorFontSrcUrl = TEST_EDITOR_FONT_SRC_URL;
     el.dataset.editorFontFormat = TEST_EDITOR_FONT_FORMAT;
     el.dataset.editorFontFamily = TEST_EDITOR_FONT_FAMILY;
+    el.dataset.signInPath = TEST_SIGN_IN_PATH;
 
     document.body.append(el);
   };
@@ -109,6 +111,7 @@ describe('ide/init_gitlab_web_ide', () => {
         links: {
           userPreferences: TEST_USER_PREFERENCES_PATH,
           feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
+          signIn: TEST_SIGN_IN_PATH,
         },
         editorFont: {
           srcUrl: TEST_EDITOR_FONT_SRC_URL,

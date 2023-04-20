@@ -19,6 +19,8 @@ are very appreciative of the work done by translators and proofreaders!
   - Tsegaselassie Tadesse - [GitLab](https://gitlab.com/tsega), [Crowdin](https://crowdin.com/profile/tsegaselassi)
 - Arabic
   - Proofreaders needed.
+- Belarusian 
+  - Anton Katsuba - [GitLab](https://gitlab.com/coinvariant), [Crowdin](https://crowdin.com/profile/aerialfiddle)
 - Bosnian
   - Haris Delalić - [GitLab](https://gitlab.com/haris.delalic), [Crowdin](https://crowdin.com/profile/haris.delalic)
 - Bulgarian
@@ -126,6 +128,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Proofreaders needed.
 - Spanish
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
+  - David Elizondo - [GitLab](https://gitlab.com/daelmo), [Crowdin](https://crowdin.com/profile/daelmo)
 - Swedish
   - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [Crowdin](https://crowdin.com/profile/nlssn)
 - Turkish

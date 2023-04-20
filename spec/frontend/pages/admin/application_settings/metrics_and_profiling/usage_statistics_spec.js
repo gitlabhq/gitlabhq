@@ -1,18 +1,18 @@
+import htmlApplicationSettingsUsage from 'test_fixtures/application_settings/usage.html';
 import initSetHelperText, {
   HELPER_TEXT_SERVICE_PING_DISABLED,
   HELPER_TEXT_SERVICE_PING_ENABLED,
 } from '~/pages/admin/application_settings/metrics_and_profiling/usage_statistics';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 describe('UsageStatistics', () => {
-  const FIXTURE = 'application_settings/usage.html';
   let servicePingCheckBox;
   let servicePingFeaturesCheckBox;
   let servicePingFeaturesLabel;
   let servicePingFeaturesHelperText;
 
   beforeEach(() => {
-    loadHTMLFixture(FIXTURE);
+    setHTMLFixture(htmlApplicationSettingsUsage);
     initSetHelperText();
     servicePingCheckBox = document.getElementById('application_setting_usage_ping_enabled');
     servicePingFeaturesCheckBox = document.getElementById(

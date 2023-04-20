@@ -35,6 +35,7 @@ describe('Ref selector component', () => {
   const projectId = '8';
   const totalBranchesCount = 123;
   const totalTagsCount = 456;
+  const queryParams = { sort: 'updated_desc' };
 
   let wrapper;
   let branchesApiCallSpy;
@@ -736,6 +737,27 @@ describe('Ref selector component', () => {
       };
 
       expect(lastCallProps.matches).toMatchObject(expectedMatches);
+    });
+  });
+  describe('when queryParam prop is present', () => {
+    it('passes params to a branches API call', () => {
+      createComponent({ propsData: { queryParams } });
+
+      return waitForRequests().then(() => {
+        expect(branchesApiCallSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ params: { per_page: 20, search: '', sort: queryParams.sort } }),
+        );
+      });
+    });
+
+    it('does not pass params to tags API call', () => {
+      createComponent({ propsData: { queryParams } });
+
+      return waitForRequests().then(() => {
+        expect(tagsApiCallSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ params: { per_page: 20, search: '' } }),
+        );
+      });
     });
   });
 });

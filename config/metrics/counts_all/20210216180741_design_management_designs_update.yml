@@ -5,7 +5,6 @@ description: Number of updates to designs
 product_section: dev
 product_stage: plan
 product_group: product_planning
-product_category: design_management
 value_type: number
 status: active
 time_frame: all

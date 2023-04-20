@@ -41,6 +41,12 @@ RSpec.describe 'search/show', feature_category: :global_search do
 
       expect(rendered).not_to render_template('search/_results')
     end
+
+    it 'does render the sidebar' do
+      render
+
+      expect(rendered).to have_selector('#js-search-sidebar')
+    end
   end
 
   context 'unfurling support' do

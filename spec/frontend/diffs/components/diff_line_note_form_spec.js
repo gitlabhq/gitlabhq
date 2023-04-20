@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Vuex from 'vuex';
-import Autosave from '~/autosave';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import { createModules } from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -11,7 +10,6 @@ import { noteableDataMock } from 'jest/notes/mock_data';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
-jest.mock('~/autosave');
 
 describe('DiffLineNoteForm', () => {
   let wrapper;
@@ -77,7 +75,6 @@ describe('DiffLineNoteForm', () => {
   const findCommentForm = () => wrapper.findComponent(MultilineCommentForm);
 
   beforeEach(() => {
-    Autosave.mockClear();
     createComponent();
   });
 
@@ -98,19 +95,6 @@ describe('DiffLineNoteForm', () => {
       start: diffLines[1],
       end: diffLines[1],
     });
-  });
-
-  it('should init autosave', () => {
-    // we're using shallow mount here so there's no element to pass to Autosave
-    expect(Autosave).toHaveBeenCalledWith(undefined, [
-      'Note',
-      'Issue',
-      98,
-      undefined,
-      'DiffNote',
-      undefined,
-      '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
-    ]);
   });
 
   describe('when cancelling form', () => {
@@ -146,7 +130,6 @@ describe('DiffLineNoteForm', () => {
         await nextTick();
 
         expect(getSelectedLine().hasForm).toBe(false);
-        expect(Autosave.mock.instances[0].reset).toHaveBeenCalled();
       });
     });
 

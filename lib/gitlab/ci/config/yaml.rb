@@ -20,7 +20,8 @@ module Gitlab
               ::Gitlab::Config::Loader::MultiDocYaml.new(
                 content,
                 max_documents: MAX_DOCUMENTS,
-                additional_permitted_classes: AVAILABLE_TAGS
+                additional_permitted_classes: AVAILABLE_TAGS,
+                reject_empty: true
               ).load!
             else
               ::Gitlab::Config::Loader::Yaml

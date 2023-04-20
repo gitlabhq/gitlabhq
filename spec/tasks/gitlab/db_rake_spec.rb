@@ -25,7 +25,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:main_model) { ApplicationRecord }
 
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_database_exists(:ci)
       end
 
       it 'marks the migration complete on the given database' do
@@ -43,7 +43,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
 
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
@@ -130,7 +130,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:main_config) { double(:config, name: 'main') }
 
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_database_exists(:ci)
       end
 
       context 'when geo is not configured' do
@@ -259,7 +259,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:ci_config) { double(:config, name: 'ci') }
 
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
       end
@@ -349,6 +349,40 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           run_rake_task('gitlab:db:configure')
         end
       end
+    end
+  end
+
+  describe 'schema inconsistencies' do
+    let(:expected_value) do
+      [
+        { inconsistency_type: 'wrong_indexes', object_name: 'index_1' },
+        { inconsistency_type: 'missing_indexes', object_name: 'index_2' }
+      ]
+    end
+
+    let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
+    let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
+
+    let(:inconsistencies) do
+      [
+        instance_double(inconsistency_class, inspect: 'index_statement_1'),
+        instance_double(inconsistency_class, inspect: 'index_statement_2')
+      ]
+    end
+
+    let(:rake_output) do
+      <<~MSG
+        index_statement_1
+        index_statement_2
+      MSG
+    end
+
+    before do
+      allow(Gitlab::Database::SchemaValidation::Runner).to receive(:new).and_return(runner)
+    end
+
+    it 'prints the inconsistency message' do
+      expect { run_rake_task('gitlab:db:schema_checker:run') }.to output(rake_output).to_stdout
     end
   end
 
@@ -581,7 +615,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
 
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
 
@@ -653,7 +687,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     context 'with multiple databases' do
       before do
-        skip_unless_ci_uses_database_tasks
+        skip_if_shared_database(:ci)
       end
 
       context 'when running the multi-database variant' do
@@ -688,7 +722,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   describe 'reindex' do
     context 'with a single database' do
       before do
-        skip_if_multiple_databases_are_setup
+        skip_if_shared_database(:ci)
       end
 
       it 'delegates to Gitlab::Database::Reindexing' do
@@ -724,7 +758,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       context 'when the single database task is used' do
         before do
-          skip_unless_ci_uses_database_tasks
+          skip_if_shared_database(:ci)
         end
 
         it 'delegates to Gitlab::Database::Reindexing with a specific database' do
@@ -776,7 +810,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe 'execute_async_index_operations' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_shared_database(:ci)
     end
 
     it 'delegates ci task to Gitlab::Database::AsyncIndexes' do
@@ -850,7 +884,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe 'validate_async_constraints' do
     before do
-      skip_if_multiple_databases_not_setup
+      skip_if_shared_database(:ci)
     end
 
     it 'delegates ci task to Gitlab::Database::AsyncConstraints' do
@@ -1089,7 +1123,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   context 'with multiple databases', :reestablished_active_record_base do
     before do
-      skip_unless_ci_uses_database_tasks
+      skip_if_shared_database(:ci)
     end
 
     describe 'db:schema:dump against a single database' do
@@ -1169,14 +1203,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
 
     run_rake_task(test_task_name)
-  end
-
-  def skip_unless_ci_uses_database_tasks
-    skip "Skipping because database tasks won't run against the ci database" unless ci_database_tasks?
-  end
-
-  def ci_database_tasks?
-    !!ActiveRecord::Base.configurations.configs_for(env_name: Rails.env, name: 'ci')&.database_tasks?
   end
 
   def skip_unless_geo_configured

@@ -69,7 +69,7 @@ describe('LabelsSelectRoot', () => {
       ${'embedded'} | ${[...defaultClasses, 'is-embedded']}
     `(
       'renders component root element with CSS class `$cssClass` when variant is "$variant"',
-      async ({ variant, cssClass }) => {
+      ({ variant, cssClass }) => {
         createComponent({
           propsData: { variant },
         });

@@ -51,7 +51,6 @@ const createMainOutput = ({ outFile, cssKeys, type }) => ({
   htmlPaths: [
     path.join(FIXTURES_ROOT, `startup_css/project-${type}.html`),
     path.join(FIXTURES_ROOT, `startup_css/project-${type}-signed-out.html`),
-    path.join(FIXTURES_ROOT, `startup_css/project-${type}-search-ff-off.html`),
     path.join(FIXTURES_ROOT, `startup_css/project-${type}-super-sidebar.html`),
   ],
   cssKeys,

@@ -8,6 +8,8 @@ owning-stage: "~devops::create"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Remote Development
 
 ## Summary
@@ -68,17 +70,6 @@ Container/VM-based developer machines providing all the tools and dependencies n
 - A workspace should be a combination of resources that support cloud-based development environment.
 - Workspaces are constrained by the amount of resources provided to them.
 
-### Legacy Web IDE
-
-The current production [Web IDE](../../../user/project/web_ide/index.md).
-
-#### Legacy Web IDE properties
-
-An advanced editor with commit staging that currently supports:
-
-- [Live Preview](../../../user/project/web_ide/index.md#live-preview-removed)
-- [Interactive Web Terminals](../../../user/project/web_ide/index.md#interactive-web-terminals-for-the-web-ide)
-
 ### Web IDE
 
 VS Code for web - replacement of our current legacy Web IDE.
@@ -137,145 +128,6 @@ As a zero-install development environment that runs in your browser, Remote Deve
 
 GitLab.com is only hosted within the United States of America. Organizations located in other regions have voiced demand for local SaaS offerings. BYO infrastructure helps work in conjunction with [GitLab Regions](https://gitlab.com/groups/gitlab-org/-/epics/6037) because a user's workspace may be deployed within different geographies. The ability to deploy workspaces to different geographies might also help to solve data residency and compliance problems.
 
-## High-level architecture problems to solve
-
-A number of technical issues need to be resolved to implement a stable Remote Development offering. This section will be expanded.
-
-- Who is our main persona for BYO infrastructure?
-- How do users authenticate?
-- How do we support more than one IDE?
-- How are workspaces provisioned?
-- How can workspaces implement disaster recovery capabilities?
-- If we cannot use SSH, what are the viable alternatives for establishing a secure WebSocket connection?
-- Are we running into any limitations in functionality with the Web IDE by not having it running in the container itself? For example, are we going to get code completion, linting, and language server type features to work with our approach?
-- How will our environments be provisioned, managed, created, destroyed, etc.?
-- To what extent do we need to provide the user with a UI to interact with the provisioned environments?
-- How will the files inside the workspace get live updated based on changes in the Web IDE? Are we going to use a [CRDT](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type)-like setup to patch files in a container? Are we going to generate a diff and send it though a WebSocket connection?
-
-## Iteration plan
-
-We can't ship the entire Remote Development architecture in one go - it is too large. Instead, we are adopting an iteration plan that provides value along the way.
-
-- Use GitLab Agent for Kubernetes Remote Development Module.
-- Integrate Remote Development with the UI and Web IDE.
-- Improve security and usability.
-
-### High-level approach
-
-The nuts and bolts are being worked out at [Remote Development GA4K Architecture](https://gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs/-/blob/main/doc/architecture.md) to keep a SSoT. Once we have hammered out the details, we'll replace this section with the diagram in the above repository.
-
-### Iteration 0: [GitLab Agent for Kubernetes Remote Development Module (plumbing)](https://gitlab.com/groups/gitlab-org/-/epics/9138)
-
-#### Goals
-
-- Use the [GitLab Agent](../../../user/clusters/agent/index.md) integration.
-- Create a workspace in a Kubernetes cluster based on a `devfile` in a public repository.
-- Install the IDE and dependencies as defined.
-- Report the status of the environment (via the terminal or through an endpoint).
-- Connect to an IDE in the workspace.
-
-#### Requirements
-
-- Remote environment running on a Kubernetes cluster based on a `devfile` in a repo.
-
-These are **not** part of Iteration 0:
-
-- Authentication/authorization with GitLab and a user.
-- Integration of Remote Development with the GitLab UI and Web IDE.
-- Using GA4K instead of an Ingress controller.
-
-#### Assumptions
-
-- We will use [`devworkspace-operator` v0.17.0 (latest version)](https://github.com/devfile/devworkspace-operator/releases/tag/v0.17.0). A prerequisite is [`cert-manager`](https://github.com/devfile/devworkspace-operator#with-yaml-resources).
-- We have an Ingress controller ([Ingress-NGINX](https://github.com/kubernetes/ingress-nginx)), which is accessible over the network.
-- The initial server is stubbed.
-
-#### Success criteria
-
-- Using GA4K to communicate with the Kubernetes API from the `remote_dev` agent module.
-- All calls to the Kubernetes API are done through GA4K.
-- A workspace in a Kubernetes cluster created using DevWorkspace Operator.
-
-### Iteration 1: [Rails endpoints, authentication, and authorization](https://gitlab.com/groups/gitlab-org/-/epics/9323)
-
-#### Goals
-
-- Add endpoints in Rails to accept work from a user.
-- Poll Rails for work from KAS.
-- Add authentication and authorization to the workspaces created in the Kubernetes cluster.
-- Extend the GA4K `remote_dev` agent module to accept more types of work (get details of a workspace, list workspaces for a user, etc).
-- Build an editor injector for the GitLab fork of VS Code.
-
-#### Requirements
-
-- [GitLab Agent for Kubernetes Remote Development Module (plumbing)](https://gitlab.com/groups/gitlab-org/-/epics/9138) is complete.
-
-These are **not** part of Iteration 1:
-
-- Integration of Remote Development with the GitLab UI and Web IDE.
-- Using GA4K instead of an Ingress controller.
-
-#### Assumptions
-
-- TBA
-
-#### Success criteria
-
-- Poll Rails for work from KAS.
-- Rails endpoints to create/delete/get/list workspaces.
-- All requests are correctly authenticated and authorized except where the user has requested the traffic to be public (for example, opening a server while developing and making it public).
-- A user can create a workspace, start a server on that workspace, and have that traffic become private/internal/public.
-- We are using the GitLab fork of VS Code as an editor.
-
-### Iteration 2: [Integrate Remote Development with the UI and Web IDE](https://gitlab.com/groups/gitlab-org/-/epics/9169)
-
-#### Goals
-
-- Allow users full control of their workspaces via the GitLab UI.
-
-#### Requirements
-
-- [GitLab Agent for Kubernetes Remote Development Module](https://gitlab.com/groups/gitlab-org/-/epics/9138).
-
-These are **not** part of Iteration 2:
-
-- Usability improvements
-- Security improvements
-
-#### Success criteria
-
-- Be able to list/create/delete/stop/start/restart workspaces from the UI.
-- Be able to create workspaces for the user in the Web IDE.
-- Allow the Web IDE terminal to connect to different containers in the workspace.
-- Configure DevWorkspace Operator for user-expected configuration (30-minute workspace timeout, a separate persistent volume for each workspace that is deleted when the workspace is deleted, etc.).
-
-### Iteration 3: [Improve security and usability](https://gitlab.com/groups/gitlab-org/-/epics/9170)
-
-#### Goals
-
-- Improve security and usability of our Remote Development solution.
-
-#### Requirements
-
-- [Integrate Remote Development with the UI and Web IDE](https://gitlab.com/groups/gitlab-org/-/epics/9169) is complete.
-
-#### Assumptions
-
-- We are allowing for internal feedback and closed/early customer feedback that can be iterated on.
-- We have explored or are exploring the feasibility of using GA4K with Ingresses in [Solving Ingress problems for Remote Development](https://gitlab.com/gitlab-org/gitlab/-/issues/378998).
-- We have explored or are exploring Kata containers for providing root access to workspace users in [Investigate Kata Containers / Firecracker / gVisor](https://gitlab.com/gitlab-org/gitlab/-/issues/367043).
-- We have explored or are exploring how Ingress/Egress requests cannot be misused from [resources within or outside the cluster](https://gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs/-/blob/main/doc/securing-the-workspace.md) (security hardening).
-
-#### Success criteria
-
-Add options to:
-
-- Create different classes of workspaces (1gb-2cpu, 4gb-8cpu, etc.).
-- Vertically scale up workspace resources.
-- Inject secrets from a GitLab user/group/repository.
-- Configure timeouts of workspaces at multiple levels.
-- Allow users to expose endpoints in their workspace (for example, not allow anyone in the organization to expose any endpoint publicly).
-
 ## Market analysis
 
 We have conducted a market analysis to understand the broader market and what others can offer us by way of open-source libraries, integrations, or partnership opportunities. We have broken down the effort into a set of issues where we investigate each potential competitor/pathway/partnership as a spike.
@@ -283,19 +135,25 @@ We have conducted a market analysis to understand the broader market and what ot
 - [Market analysis](https://gitlab.com/groups/gitlab-org/-/epics/8131)
 - [YouTube results](https://www.youtube.com/playlist?list=PL05JrBw4t0KrRQhnSYRNh1s1mEUypx67-)
 
-### Next Steps
+### Implementation
 
-While our spike proved fruitful, we have paused this investigation until we reach our goals in [Viable Maturity](https://gitlab.com/groups/gitlab-org/-/epics/9190).
+- [Viable Maturity Epic](https://gitlab.com/groups/gitlab-org/-/epics/9190) to track progress.
+- [Documentation](https://gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs)
+explaining the architecture and implementation details.
 
-## Che versus a custom-built solution
+## Che vs. DevWorkspace Operatoor vs. Custom-Built Solution
 
-After an investigation into using [Che](https://gitlab.com/gitlab-org/gitlab/-/issues/366052) as our backend to accelerate Remote Development, we ultimately opted to [write our own custom-built solution](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97449#note_1131215629).
+After an investigation into using [Che](https://gitlab.com/gitlab-org/gitlab/-/issues/366052) as our backend to accelerate Remote Development, we ultimately opted to [write our own custom-built solution using DevWorkspace Operator](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97449#note_1131215629).
 
 Some advantages of us opting to write our own custom-built solution are:
 
 - We can still use the core DevWorkspace Operator and build on top of it.
 - It is easier to add support for other configurations apart from `devfile` in the future if the need arises.
 - We have the ability to choose which tech stack to use (for example, instead of using Traefik which is used in Che, explore NGINX itself or use GitLab Agent for Kubernetes).
+
+After writing our own custom-built solution using DevWorkspace Operator,
+we decided to [remove the dependency on DevWorkspace Operator](https://gitlab.com/groups/gitlab-org/-/epics/9895)
+and thus the transitive dependency of Cert Manager.
 
 ## Links
 
@@ -304,7 +162,7 @@ Some advantages of us opting to write our own custom-built solution are:
 - [Minimal Maturity epic](https://gitlab.com/groups/gitlab-org/-/epics/9189)
 - [Viable Maturity epic](https://gitlab.com/groups/gitlab-org/-/epics/9190)
 - [Complete Maturity epic](https://gitlab.com/groups/gitlab-org/-/epics/9191)
-- [Bi-weekly sync](https://docs.google.com/document/d/1hWVvksIc7VzZjG-0iSlzBnLpyr-OjwBVCYMxsBB3h_E/edit#)
+- [Remote Development sync](https://docs.google.com/document/d/1hWVvksIc7VzZjG-0iSlzBnLpyr-OjwBVCYMxsBB3h_E/edit#)
 - [Market analysis and architecture](https://gitlab.com/groups/gitlab-org/-/epics/8131)
 - [GA4K Architecture](https://gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs/-/blob/main/doc/architecture.md)
 - [BYO infrastructure](https://gitlab.com/groups/gitlab-org/-/epics/8290)

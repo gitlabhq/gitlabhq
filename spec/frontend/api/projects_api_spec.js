@@ -9,14 +9,11 @@ describe('~/api/projects_api.js', () => {
   let mock;
 
   const projectId = 1;
-  const setfullPathProjectSearch = (value) => {
-    window.gon.features.fullPathProjectSearch = value;
-  };
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    window.gon = { api_version: 'v7', features: { fullPathProjectSearch: true } };
+    window.gon = { api_version: 'v7' };
   });
 
   afterEach(() => {
@@ -68,17 +65,18 @@ describe('~/api/projects_api.js', () => {
         expect(data.data).toEqual(expectedProjects);
       });
     });
+  });
 
-    it('does not search namespaces if fullPathProjectSearch is disabled', () => {
-      setfullPathProjectSearch(false);
-      const expectedParams = { params: { per_page: 20, search: 'group/project1', simple: true } };
-      const query = 'group/project1';
+  describe('createProject', () => {
+    it('posts to the correct URL and returns the data', () => {
+      const body = { name: 'test project' };
+      const expectedUrl = '/api/v7/projects.json';
+      const expectedRes = { id: 999, name: 'test project' };
 
-      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, { data: expectedProjects });
+      mock.onPost(expectedUrl, body).replyOnce(HTTP_STATUS_OK, { data: expectedRes });
 
-      return projectsApi.getProjects(query, options).then(({ data }) => {
-        expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedParams);
-        expect(data.data).toEqual(expectedProjects);
+      return projectsApi.createProject(body).then(({ data }) => {
+        expect(data).toStrictEqual(expectedRes);
       });
     });
   });

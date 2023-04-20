@@ -68,6 +68,10 @@ class Admin::ProjectsController < Admin::ApplicationController
     result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     if result[:status] == :success
+      unless Gitlab::Utils.to_boolean(project_params['runner_registration_enabled'])
+        Ci::Runners::ResetRegistrationTokenService.new(@project, current_user).execute
+      end
+
       redirect_to [:admin, @project], notice: format(_("Project '%{project_name}' was successfully updated."), project_name: @project.name)
     else
       render "edit"
@@ -103,7 +107,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   def allowed_project_params
     [
       :description,
-      :name
+      :name,
+      :runner_registration_enabled
     ]
   end
 end

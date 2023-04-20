@@ -107,20 +107,6 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       expect_snowplow_tracking(user)
     end
 
-    context 'when FF is disabled' do
-      before do
-        stub_const("#{described_class}::MIGRATED_EVENTS", [])
-        allow(Feature).to receive(:enabled?).and_call_original
-        allow(Feature).to receive(:enabled?).with('route_hll_to_snowplow', anything).and_return(false)
-      end
-
-      it 'doesnt track snowplow event' do
-        get :index
-
-        expect_no_snowplow_event
-      end
-    end
-
     it 'tracks the event if DNT is not enabled' do
       stub_do_not_track('0')
 

@@ -24,8 +24,12 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillAdminModeScopeForPersonalAcc
     personal_access_tokens.create!(name: 'admin 4', user_id: admin.id, scopes: "---\n- admin_mode\n")
   end
 
-  let!(:pat_admin_2) { personal_access_tokens.create!(name: 'admin 5', user_id: admin.id, scopes: "---\n- read_api\n") }
-  let!(:pat_not_in_range) { personal_access_tokens.create!(name: 'admin 6', user_id: admin.id, scopes: "---\n- api\n") }
+  let!(:pat_with_symbol_in_scopes) do
+    personal_access_tokens.create!(name: 'admin 5', user_id: admin.id, scopes: "---\n- :api\n")
+  end
+
+  let!(:pat_admin_2) { personal_access_tokens.create!(name: 'admin 6', user_id: admin.id, scopes: "---\n- read_api\n") }
+  let!(:pat_not_in_range) { personal_access_tokens.create!(name: 'admin 7', user_id: admin.id, scopes: "---\n- api\n") }
 
   subject do
     described_class.new(
@@ -47,6 +51,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillAdminModeScopeForPersonalAcc
     expect(pat_revoked.reload.scopes).to eq("---\n- api\n")
     expect(pat_expired.reload.scopes).to eq("---\n- api\n")
     expect(pat_admin_mode.reload.scopes).to eq("---\n- admin_mode\n")
+    expect(pat_with_symbol_in_scopes.reload.scopes).to eq("---\n- api\n- admin_mode\n")
     expect(pat_admin_2.reload.scopes).to eq("---\n- read_api\n- admin_mode\n")
     expect(pat_not_in_range.reload.scopes).to eq("---\n- api\n")
   end

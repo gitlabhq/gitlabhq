@@ -733,7 +733,7 @@ test_job_2:
 
 ### `artifacts`
 
-Use `artifacts` to specify which files to save as [job artifacts](../pipelines/job_artifacts.md).
+Use `artifacts` to specify which files to save as [job artifacts](../jobs/job_artifacts.md).
 Job artifacts are a list of files and directories that are
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
@@ -751,7 +751,7 @@ artifacts from the jobs defined in the `needs` configuration.
 Job artifacts are only collected for successful jobs by default, and
 artifacts are restored after [caches](#cache).
 
-[Read more about artifacts](../pipelines/job_artifacts.md).
+[Read more about artifacts](../jobs/job_artifacts.md).
 
 #### `artifacts:paths`
 
@@ -790,7 +790,7 @@ This example creates an artifact with `.config` and all the files in the `binari
 **Related topics**:
 
 - To restrict which jobs a specific job fetches artifacts from, see [`dependencies`](#dependencies).
-- [Create job artifacts](../pipelines/job_artifacts.md#create-job-artifacts).
+- [Create job artifacts](../jobs/job_artifacts.md#create-job-artifacts).
 
 #### `artifacts:exclude`
 
@@ -829,7 +829,7 @@ subdirectories of `binaries/`.
 
 **Related topics**:
 
-- [Exclude files from job artifacts](../pipelines/job_artifacts.md#exclude-files-from-job-artifacts).
+- [Exclude files from job artifacts](../jobs/job_artifacts.md#without-excluded-files).
 
 #### `artifacts:expire_in`
 
@@ -839,12 +839,12 @@ subdirectories of `binaries/`.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276583) in GitLab 13.9, keeping latest job artifacts can be disabled instance-wide.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest pipeline artifacts are kept regardless of expiry time.
 
-Use `expire_in` to specify how long [job artifacts](../pipelines/job_artifacts.md) are stored before
+Use `expire_in` to specify how long [job artifacts](../jobs/job_artifacts.md) are stored before
 they expire and are deleted. The `expire_in` setting does not affect:
 
-- Artifacts from the latest job, unless keeping the latest job artifacts is:
-  - [Disabled at the project level](../pipelines/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-  - [Disabled instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+- Artifacts from the latest job, unless keeping the latest job artifacts is disabled
+  [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+  or [instance-wide](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 - [Pipeline artifacts](../pipelines/pipeline_artifacts.md). You can't specify an expiration date for
   pipeline artifacts. See [When pipeline artifacts are deleted](../pipelines/pipeline_artifacts.md#when-pipeline-artifacts-are-deleted)
   for more information.
@@ -890,7 +890,7 @@ job:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
 
 Use the `artifacts:expose_as` keyword to
-[expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#expose-job-artifacts-in-the-merge-request-ui).
+[expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -916,7 +916,7 @@ test:
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
 - If a directory is specified and there is more than one file in the directory,
-  the link is to the job [artifacts browser](../pipelines/job_artifacts.md#download-job-artifacts).
+  the link is to the job [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
 - If [GitLab Pages](../../administration/pages/index.md) is enabled, GitLab automatically
   renders the artifacts when the artifacts is a single file with one of these extensions:
   - `.html` or `.htm`
@@ -927,7 +927,7 @@ test:
 
 **Related topics**:
 
-- [Expose job artifacts in the merge request UI](../pipelines/job_artifacts.md#expose-job-artifacts-in-the-merge-request-ui).
+- [Expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 #### `artifacts:name`
 
@@ -958,7 +958,7 @@ job:
 
 **Related topics**:
 
-- [Use CI/CD variables to define the artifacts name](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name).
+- [Use CI/CD variables to define the artifacts name](../jobs/job_artifacts.md#with-a-dynamically-defined-name).
 
 #### `artifacts:public`
 
@@ -1053,7 +1053,7 @@ job:
 
 **Related topics**:
 
-- [Add untracked files to artifacts](../pipelines/job_artifacts.md#add-untracked-files-to-artifacts).
+- [Add untracked files to artifacts](../jobs/job_artifacts.md#with-untracked-files).
 
 #### `artifacts:when`
 
@@ -1512,6 +1512,7 @@ In this example:
 
 **Additional details**:
 
+- You can find parse examples in [Code Coverage](../testing/code_coverage.md#test-coverage-examples).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched
@@ -1626,7 +1627,7 @@ the [stage](#stages) precedence.
 
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
-  [deleted](../pipelines/job_artifacts.md#delete-job-artifacts), then the job fails.
+  [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
 
 ### `environment`
 
@@ -1734,7 +1735,7 @@ Use the `action` keyword to specify how the job interacts with the environment.
 |:----------|:----------------|
 | `start`   | Default value. Indicates that the job starts the environment. The deployment is created after the job starts. |
 | `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
-| `stop`    | Indicates that the job stops an environment. [Read more about stopping an environment](../environments/index.md#stop-an-environment). |
+| `stop`    | Indicates that the job stops an environment. [Read more about stopping an environment](../environments/index.md#stopping-an-environment). |
 | `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 | `access`  | Indicates that the job is only accessing the environment. It does not trigger deployments. [Read more about accessing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
 
@@ -2556,11 +2557,10 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 To need a job that sometimes does not exist in the pipeline, add `optional: true`
 to the `needs` configuration. If not defined, `optional: false` is the default.
 
-Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except) might not always
-be added to a pipeline. GitLab checks the `needs` relationships before starting a
-pipeline:
+Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except) and that are added with [`include`](#include)
+might not always be added to a pipeline. GitLab checks the `needs` relationships before starting a pipeline:
 
-- If the needs entry has `optional: true` and the needed job is present in the pipeline,
+- If the `needs` entry has `optional: true` and the needed job is present in the pipeline,
   the job waits for it to complete before starting.
 - If the needed job is not present, the job can start when all other needs requirements are met.
 - If the `needs` section contains only optional jobs, and none are added to the pipeline,
@@ -2613,9 +2613,9 @@ In this example:
 
 #### `needs:pipeline`
 
-You can mirror the pipeline status from an upstream pipeline to a bridge job by
+You can mirror the pipeline status from an upstream pipeline to a job by
 using the `needs:pipeline` keyword. The latest pipeline status from the default branch is
-replicated to the bridge job.
+replicated to the job.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2628,7 +2628,7 @@ replicated to the bridge job.
 **Example of `needs:pipeline`**:
 
 ```yaml
-upstream_bridge:
+upstream_status:
   stage: test
   needs:
     pipeline: other/project
@@ -3501,6 +3501,7 @@ docker build:
 - If the pipeline is a merge request pipeline, check `Dockerfile` for changes.
 - If `Dockerfile` has changed, add the job to the pipeline as a manual job, and the pipeline
   continues running even if the job is not triggered (`allow_failure: true`).
+- A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
 - If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
 - [`rules:changes:paths`](#ruleschangespaths) is the same as `rules:changes` without
   any subkeys.
@@ -3613,11 +3614,12 @@ job:
 
 - Glob patterns are interpreted with Ruby [`File.fnmatch`](https://docs.ruby-lang.org/en/2.7.0/File.html#method-c-fnmatch)
   with the flags `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
-- For performance reasons, GitLab matches a maximum of 10,000 `exists` patterns or
-  file paths. After the 10,000th check, rules with patterned globs always match.
-  In other words, `exists` always reports `true` if more than 10,000 checks
-  run. Repositories with less than 10,000 files might still be impacted if the `exists`
-  rules are checked more than 10,000 times.
+- For performance reasons, GitLab performs a maximum of 10,000 checks against
+  `exists` patterns or file paths. After the 10,000th check, rules with patterned
+  globs always match. In other words, the `exists` rule always assumes a match in
+  projects with more than 10,000 files, or if there are fewer than 10,000 files but
+  the `exists` rules are checked more than 10,000 times.
+- A maximum of 50 patterns or file paths can be defined per `rules:exists` section.
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
 
 #### `rules:allow_failure`
@@ -3963,9 +3965,9 @@ If `stage` is not defined, the job uses the `test` stage by default.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
-**Possible inputs**: An array including any number of stage names. Stage names can be:
+**Possible inputs**: A string, which can be a:
 
-- The [default stages](#stages).
+- [Default stage](#stages).
 - User-defined stages.
 
 **Example of `stage`**:

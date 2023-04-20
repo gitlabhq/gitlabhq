@@ -8,10 +8,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5067) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290039) in GitLab 14.1.
+> - Displaying total weight on the top of lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.11.
 
 Epic boards build on the existing [epic tracking functionality](index.md) and
 [labels](../../project/labels.md). Your epics appear as cards in vertical lists, organized by their assigned
 labels.
+
+On the top of each list, you can see the number of epics in the list (**{epic}**) and the total weight of all its epics (**{weight}**).
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=I1bFIAQBHB8">Epics and Issue Boards - Project Management</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/I1bFIAQBHB8" frameborder="0" allowfullscreen> </iframe>
+</figure>
 
 To view an epic board:
 
@@ -100,7 +110,7 @@ To remove a list from an epic board:
 1. Select **Remove list**. A confirmation dialog appears.
 1. Select **OK**.
 
-## Create an epic from an epic board
+### Create an epic from an epic board
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233568) in GitLab 14.0.
 
@@ -216,15 +226,3 @@ To edit the scope of an epic board:
    - Show or hide the Open and Closed columns.
    - Select other labels as the board's scope.
 1. Select **Save changes**.
-
-#### Display total weight on board lists
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `fe_epic_board_total_weight`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.9.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.10.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `fe_epic_board_total_weight`.
-On GitLab.com, this feature is available.
-
-When enabled, this feature displays total weight of all epics at the top of each list.

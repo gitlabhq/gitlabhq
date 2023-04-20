@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121) in GitLab 12.4.
 > - [Author Email added to the response body](https://gitlab.com/gitlab-org/gitlab/-/issues/386322) in GitLab 15.9.
+> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
 
 ## Instance Audit Events **(PREMIUM SELF)**
 
@@ -29,8 +30,8 @@ GET /audit_events
 | `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, or `Project`.  |
 | `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present. |
 
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
+This endpoint supports both offset-based and [keyset-based](rest/index.md#keyset-based-pagination) pagination. You should use keyset-based
+pagination when requesting consecutive pages of results.
 
 Read more on [pagination](rest/index.md#pagination).
 
@@ -137,7 +138,7 @@ Example response:
 ## Group Audit Events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34078) in GitLab 12.5.
-> - [Support for keyset pagination added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 The Group Audit Events API allows you to retrieve [group audit events](../administration/audit_events.md#group-events).
 This API cannot retrieve project audit events.
@@ -254,7 +255,7 @@ Example response:
 ## Project Audit Events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219238) in GitLab 13.1.
-> - [Support for keyset pagination added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
+> - Support for keyset pagination [added](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 The Project Audit Events API allows you to retrieve [project audit events](../administration/audit_events.md#project-events).
 

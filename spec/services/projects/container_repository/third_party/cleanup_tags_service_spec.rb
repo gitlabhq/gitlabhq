@@ -42,112 +42,112 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :c
     subject { service.execute }
 
     it_behaves_like 'when regex matching everything is specified',
-                    delete_expectations: [%w[A Ba Bb C D E]],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 6,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[A Ba Bb C D E]],
+      service_response_extra: {
+        before_truncate_size: 6,
+        after_truncate_size: 6,
+        before_delete_size: 6,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when regex matching everything is specified and latest is not kept',
-                    delete_expectations: [%w[A Ba Bb C D E latest]],
-                    service_response_extra: {
-                      before_truncate_size: 7,
-                      after_truncate_size: 7,
-                      before_delete_size: 7,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[A Ba Bb C D E latest]],
+      service_response_extra: {
+        before_truncate_size: 7,
+        after_truncate_size: 7,
+        before_delete_size: 7,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when delete regex matching specific tags is used',
-                    service_response_extra: {
-                      before_truncate_size: 2,
-                      after_truncate_size: 2,
-                      before_delete_size: 2,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      service_response_extra: {
+        before_truncate_size: 2,
+        after_truncate_size: 2,
+        before_delete_size: 2,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex',
-                    service_response_extra: {
-                      before_truncate_size: 1,
-                      after_truncate_size: 1,
-                      before_delete_size: 1,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      service_response_extra: {
+        before_truncate_size: 1,
+        after_truncate_size: 1,
+        before_delete_size: 1,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'with allow regex value',
-                    delete_expectations: [%w[A C D E]],
-                    service_response_extra: {
-                      before_truncate_size: 4,
-                      after_truncate_size: 4,
-                      before_delete_size: 4,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[A C D E]],
+      service_response_extra: {
+        before_truncate_size: 4,
+        after_truncate_size: 4,
+        before_delete_size: 4,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when keeping only N tags',
-                    delete_expectations: [%w[Bb Ba C]],
-                    service_response_extra: {
-                      before_truncate_size: 4,
-                      after_truncate_size: 4,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[Bb Ba C]],
+      service_response_extra: {
+        before_truncate_size: 4,
+        after_truncate_size: 4,
+        before_delete_size: 3,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when not keeping N tags',
-                    delete_expectations: [%w[A Ba Bb C]],
-                    service_response_extra: {
-                      before_truncate_size: 4,
-                      after_truncate_size: 4,
-                      before_delete_size: 4,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[A Ba Bb C]],
+      service_response_extra: {
+        before_truncate_size: 4,
+        after_truncate_size: 4,
+        before_delete_size: 4,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when removing keeping only 3',
-                    delete_expectations: [%w[Bb Ba C]],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[Bb Ba C]],
+      service_response_extra: {
+        before_truncate_size: 6,
+        after_truncate_size: 6,
+        before_delete_size: 3,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when removing older than 1 day',
-                    delete_expectations: [%w[Ba Bb C]],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[Ba Bb C]],
+      service_response_extra: {
+        before_truncate_size: 6,
+        after_truncate_size: 6,
+        before_delete_size: 3,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when combining all parameters',
-                    delete_expectations: [%w[Bb Ba C]],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[Bb Ba C]],
+      service_response_extra: {
+        before_truncate_size: 6,
+        after_truncate_size: 6,
+        before_delete_size: 3,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     it_behaves_like 'when running a container_expiration_policy',
-                    delete_expectations: [%w[Bb Ba C]],
-                    service_response_extra: {
-                      before_truncate_size: 6,
-                      after_truncate_size: 6,
-                      before_delete_size: 3,
-                      cached_tags_count: 0
-                    },
-                    supports_caching: true
+      delete_expectations: [%w[Bb Ba C]],
+      service_response_extra: {
+        before_truncate_size: 6,
+        after_truncate_size: 6,
+        before_delete_size: 3,
+        cached_tags_count: 0
+      },
+      supports_caching: true
 
     context 'when running a container_expiration_policy with caching' do
       let(:user) { nil }

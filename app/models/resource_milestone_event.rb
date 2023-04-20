@@ -4,6 +4,9 @@ class ResourceMilestoneEvent < ResourceTimeboxEvent
   belongs_to :milestone
 
   scope :include_relations, -> { includes(:user, milestone: [:project, :group]) }
+  scope :aliased_for_timebox_report, -> do
+    select("'timebox' AS event_type", "id", "created_at", "milestone_id AS value", "action", "issue_id")
+  end
 
   # state is used for issue and merge request states.
   enum state: Issue.available_states.merge(MergeRequest.available_states)

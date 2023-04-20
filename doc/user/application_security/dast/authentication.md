@@ -47,7 +47,7 @@ To run a DAST authenticated scan:
 
 - You have the username and password of the user you would like to authenticate as during the scan.
 - You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application.
-- You have satisfied the prerequisites depending on whether you're using [form authentication](#form-authentication) or [HTTP authentication]((#http-authentication).
+- You have satisfied the prerequisites depending on whether you're using [form authentication](#form-authentication) or [HTTP authentication](#http-authentication).
 - You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
 
 #### Form authentication
@@ -80,6 +80,7 @@ To run a DAST authenticated scan:
 | `DAST_SUBMIT_FIELD`                            | string                                    | The `id` or `name` of the element that when selected submits the login form or the password form of a multi-page login process. For example, `css:button[type='submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9894) in GitLab 12.4.                          |
 | `DAST_USERNAME` <sup>1</sup>                   | string                                    | The username to authenticate to in the website. Example: `admin`                                                                                                                                                                                                                     |
 | `DAST_USERNAME_FIELD` <sup>1</sup>             | string                                    | The selector of username field at the sign-in HTML form. Example: `name:username`                                                                                                                                                                                                    |
+| `DAST_AUTH_DISABLE_CLEAR_FIELDS`             | boolean                                    | Disables clearing of username and password fields before attempting manual login. Set to `false` by default.                                                                                                                                                                                                    |
 
 1. Available to an on-demand proxy-based DAST scan.
 1. Not available to proxy-based scans.

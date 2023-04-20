@@ -8,110 +8,63 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 ## Adding a new built-in project template
 
-This page provides instructions about how to contribute a
-[built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template).
+If you'd like to contribute a new built-in project template to be distributed with GitLab, please do the following:
 
-To contribute a built-in project template, you must complete the following tasks:
+1. Create a new public project with the project content you'd like to contribute in a namespace of your choosing. You can view a working example [here](https://gitlab.com/gitlab-org/project-templates/dotnetcore).
+   - Projects should be as simple as possible and free of any unnecessary assets or dependencies.
+1. When the project is ready for review, please create a new issue in [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) with a link to your project.
+   - In your issue, `@` mention the relevant Backend Engineering Manager and Product Manager for the [Create:Source Code group](https://about.gitlab.com/handbook/product/categories/#source-code-group).
 
-1. [Create a project template for GitLab review](#create-a-project-template-for-review)
-1. [Add the template SVG icon to GitLab SVGs](#add-the-template-svg-icon-to-gitlab-svgs)
-1. [Create a merge request with vendor details](#create-a-merge-request-with-vendor-details)
+To make the project template available when creating a new project, the vendoring process will have to be completed:
 
-You can contribute the following types of project templates:
+1. Create a working template ([example](https://gitlab.com/gitlab-org/project-templates/dotnetcore))
+   - 2 types of built-in templates are available within GitLab:
+     - **Normal templates**: Available in GitLab Core, Starter and above (this is the most common type of built-in template).
+       - To contribute a normal template:
+         - Add details of the template in the `localized_templates_table` method in `gitlab/lib/gitlab/project_template.rb`,
+         - Add details of the template in `spec/lib/gitlab/project_template_spec.rb`, in the test for the `all` method, and
+         - Add details of the template in `gitlab/app/assets/javascripts/projects/default_project_templates.js`.
+         - See MR [!25318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) for an example
+     - **Enterprise templates**: Introduced in GitLab 12.10, that are available only in GitLab Gold & Ultimate.
+       - To contribute an Enterprise template:
+         - Add details of the template in the `localized_ee_templates_table` method in `gitlab/ee/lib/ee/gitlab/project_template.rb`,
+         - Add details of the template in `gitlab/ee/spec/lib/gitlab/project_template_spec.rb`, in the `enterprise_templates` method, and
+         - Add details of the template in `gitlab/ee/app/assets/javascripts/projects/default_project_templates.js`.
+         - See MR [!28187](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28187) for an example.
 
-- Enterprise: For users with GitLab Premium and above.
-- Non-enterprise: For users with GitLab Free and above.
-
-### Prerequisites
-
-To add or update an existing template, you must have the following tools
-installed:
-
-- `wget`
-- `tar`
-
-### Create a project template for review
-
-1. In your selected namespace, create a public project.
-1. Add the project content you want to use in the template. Do not include unnecessary assets or dependencies. For an example,
-[see this project](https://gitlab.com/gitlab-org/project-templates/dotnetcore).
-1. When the project is ready for review, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues) with a link to your project.
-   In your issue, mention the Create:Source Code [Backend Engineering Manager and Product Manager](https://about.gitlab.com/handbook/product/categories/#source-code-group)
-   for the Templates feature.
-
-### Add the template SVG icon to GitLab SVGs
-
-If the project template has an SVG icon, you must add it to the
-[GitLab SVGs project](https://gitlab.com/gitlab-org/gitlab-svgs/-/blob/main/README.md#adding-icons-or-illustrations)
-before you can create a merge request with vendor details.
-
-### Create a merge request with vendor details
-
-Before GitLab can implement the project template, you must [create a merge request](../user/project/merge_requests/creating_merge_requests.md) in [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) that includes vendor details about the project.
-
-1. [Export the project](../user/project/settings/import_export.md#export-a-project-and-its-data)
-   and save the file as `<name>.tar.gz`, where `<name>` is the short name of the project.
-   Move this file to the root directory of `gitlab-org/gitlab`.
-1. In `gitlab-org/gitlab`, create and check out a new branch.
-1. Edit the following files to include the project template:
-   - For **non-Enterprise** project templates:
-     - In `lib/gitlab/project_template.rb`, add details about the template
-        in the `localized_templates_table` method. In the following example,
-        the short name of the project is `hugo`:
-
-        ```ruby
-        ProjectTemplate.new('hugo', 'Pages/Hugo', _('Everything you need to create a GitLab Pages site using Hugo'), 'https://gitlab.com/pages/hugo', 'illustrations/logos/hugo.svg'),
-        ```
-
-        If the project doesn't have an SVG icon, exclude `, 'illustrations/logos/hugo.svg'`.
-
-     - In `spec/support/helpers/project_template_test_helper.rb`, append the short name
-       of the template in the `all_templates` method.
-     - In `app/assets/javascripts/projects/default_project_templates.js`,
-        add details of the template. For example:
-
-        ```javascript
-        hugo: {
-          text: s__('ProjectTemplates|Pages/Hugo'),
-          icon: '.template-option .icon-hugo',
-        },
-        ```
-
-        If the project doesn't have an SVG icon, use `.icon-gitlab_logo`
-        instead.
-   - For **Enterprise** project templates:
-     - In `ee/lib/ee/gitlab/project_template.rb`, in the `localized_ee_templates_table` method, add details about the template. For example:
-
-        ```ruby
-        ::Gitlab::ProjectTemplate.new('hipaa_audit_protocol', 'HIPAA Audit Protocol', _('A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services'), 'https://gitlab.com/gitlab-org/project-templates/hipaa-audit-protocol', 'illustrations/logos/asklepian.svg')
-        ```
-
-     - In `ee/spec/lib/gitlab/project_template_spec.rb`, add the short name
-        of the template in the `.all` test.
-     - In `ee/app/assets/javascripts/projects/default_project_templates.js`,
-        add the template details. For example:
-
-        ```javascript
-        hipaa_audit_protocol: {
-          text: s__('ProjectTemplates|HIPAA Audit Protocol'),
-          icon: '.template-option .icon-hipaa_audit_protocol',
-        },
-        ```
-
-1. Run the following Rake task, where `<path>/<name>` is the
-   name you gave the template in `lib/gitlab/project_template.rb`:
+1. Run the following in the `gitlab` project, where `$name` is the name you gave the template in `gitlab/project_template.rb`:
 
    ```shell
-   bin/rake gitlab:update_project_templates\[<path>/<name>\]
+   bin/rake gitlab:update_project_templates[$name]
    ```
 
-1. Regenerate `gitlab.pot`:
+1. Run the `bundle_repo` script. Make sure to pass the correct arguments, or the script may damage the folder structure.
+1. Add exported project (`$name.tar.gz`) to `gitlab/vendor/project_templates` and remove the resulting build folders `tar-base` and `project`.
+1. Run `bin/rake gettext:regenerate` in the `gitlab` project and commit new `.pot` file.
+1. Add a changelog entry in the commit message (for example, `Changelog: added`).
+   For more information, see [Changelog entries](changelog.md).
+1. Add an icon to [`gitlab-svgs`](https://gitlab.com/gitlab-org/gitlab-svgs), as shown in
+   [this example](https://gitlab.com/gitlab-org/gitlab-svgs/merge_requests/195). If a logo
+   is not available for the project, use the default 'Tanuki' logo instead.
+1. Run `yarn run svgs` on `gitlab-svgs` project and commit result.
+1. Forward changes in `gitlab-svgs` project to master. This involves:
+   - Merging your MR in `gitlab-svgs`
+   - [The bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot/)
+     will pick the new release up and create an MR in `gitlab-org/gitlab`.
+1. Once the bot-created MR created above is merged, you can rebase your template MR onto the updated `master` to pick up the new svgs.
+1. Test everything is working.
 
-   ```shell
-   bin/rake gettext:regenerate
-   ```
+### Contributing an improvement to an existing template
 
-1. After you run the scripts, there is one new file in `vendor/project_templates/` and four changed files. Commit all changes and push your branch to update the merge request. For an example, see this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318).
+Existing templates are available in the [project-templates](https://gitlab.com/gitlab-org/project-templates)
+group.
+
+To contribute a change, please open a merge request in the relevant project
+and mention `@gitlab-org/manage/import/backend` when you are ready for a review.
+
+Then, if your merge request gets accepted, either open an issue on
+`gitlab` to ask for it to get updated, or open a merge request updating
+the vendored template using [these instructions](rake_tasks.md#update-project-templates).
 
 ### Test your built-in project with the GitLab Development Kit
 
@@ -123,17 +76,6 @@ Complete the following steps to test the project template in your own GitLab Dev
    ```shell
    bin/rake gitlab:update_project_templates\[<path>/<name>\]
    ```
-
-## Contribute an improvement to an existing template
-
-To update an existing built-in project template, changes are usually made to the existing template, found in the [project-templates](https://gitlab.com/gitlab-org/project-templates) group. A merge request is made directly against the template and the Create:Source Code [Backend Engineering Manager and Product Manager](https://about.gitlab.com/handbook/product/categories/#source-code-group) pinged for review.
-
-Sometimes it is necessary to completely replace the template files. In this case the process would be:
-
-1. Create a merge request in the relevant project of the `project-templates` and `pages` group and mention `@gitlab-org/manage/import/backend` when you are ready for a review.
-1. If your merge request is accepted, either:
-   - [Create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues) to ask for the template to get updated.
-   - [Create a merge request with vendor details](#create-a-merge-request-with-vendor-details) to update the template.
 
 ## For GitLab team members
 

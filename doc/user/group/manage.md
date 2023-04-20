@@ -8,6 +8,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use groups to manage one or more related projects at the same time.
 
+NOTE:
+Self-managed customers should create a top-level group so you can see an overview of
+your organization. For more information about efforts to create an
+organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+A top-level group can also have one complete
+[Security Dashboard and Center](../application_security/security_dashboard/index.md),
+[Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
+[Compliance Report](../compliance/compliance_report/index.md), and
+[Value stream analytics](../group/value_stream_analytics/index.md).
+
 ## View groups
 
 To view groups, on the top bar, select **Main menu > Groups > View all groups**.
@@ -237,6 +247,23 @@ To change this setting for a specific group:
 
 To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
 
+## Add Group README
+
+As a group owner or member, you can use a README to provide more information about your team, and invite users to contribute to your projects.
+The README is displayed on the group overview page, and can be changed in the group settings. All group members can edit the README.
+
+Prerequisite:
+
+- To create the README from the group settings, you must have the Owner role for the group.
+
+To add a group README:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
+1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
+1. In the Web IDE, edit and commit the `README.md` file.
+
 ## Change the owner of a group
 
 You can change the owner of a group. Each group must always have at least one
@@ -371,6 +398,7 @@ To transfer a group:
 > - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
 > - [Instance setting is inherited and enforced when disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 > - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
 [deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
@@ -398,8 +426,10 @@ To enable delayed deletion of projects in a group:
    - (GitLab 15.0 and earlier), **Enforce for all subgroups**.
 1. Select **Save changes**.
 
-NOTE:
-In GitLab 13.11 and above the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
+In GitLab 13.11 and later, the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md), inheritance can be overridden unless enforced by an ancestor.
+
+In GitLab 15.11 with the `always_perform_delayed_deletion` feature flag enabled, this setting is removed
+and all projects are deleted after the [retention period defined by the admin](../admin_area/settings/visibility_and_access_controls.md#retention-period).
 
 ## Disable email notifications
 
@@ -447,6 +477,10 @@ You can export a list of members in a group or subgroup as a CSV.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
+The output lists direct members and members inherited from the ancestor groups.
+For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
+[Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
+
 ## User cap for groups
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.
@@ -465,7 +499,7 @@ disabled for the group and its subgroups.
 
 Prerequisite:
 
-- You must be assigned the Owner role) for the group.
+- You must be assigned the Owner role for the group.
 
 To specify a user cap:
 
@@ -640,9 +674,28 @@ To view the merge request approval settings for a group:
 
 Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
+## Group Code Suggestions **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
+
+WARNING:
+This feature is in [Beta](/ee/policy/alpha-beta-support.md#beta). Code Suggestions use generative AI to suggest code while you're developing. Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed. Code Suggestions may produce [low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality). Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations). We look forward to hearing your feedback.
+
+This setting enables users in the group to access [Code Suggestions](../project/repository/code_suggestions.md).
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable Code Suggestions for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Code Suggestions** settings.
+1. Select **Save changes**.
+
 ## Group activity analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta-features).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 

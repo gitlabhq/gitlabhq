@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
+  include EverySidekiqWorkerTestHelper
+
   let(:workers_without_defaults) do
     Gitlab::SidekiqConfig.workers - Gitlab::SidekiqConfig::DEFAULT_WORKERS.values
   end
@@ -241,7 +243,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::DesignRepositorySyncWorker' => 1,
         'Geo::DestroyWorker' => 3,
         'Geo::EventWorker' => 3,
-        'Geo::FileRegistryRemovalWorker' => 3,
         'Geo::FileRemovalWorker' => 3,
         'Geo::ProjectSyncWorker' => 1,
         'Geo::RenameRepositoryWorker' => 3,
@@ -370,6 +371,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Namespaces::RefreshRootStatisticsWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
+        'Namespaces::FreeUserCap::NotificationClearingWorker' => false,
         'NewEpicWorker' => 3,
         'NewIssueWorker' => 3,
         'NewMergeRequestWorker' => 3,
@@ -407,6 +409,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'ProjectScheduleBulkRepositoryShardMovesWorker' => 3,
         'ProjectTemplateExportWorker' => false,
         'ProjectUpdateRepositoryStorageWorker' => 3,
+        'Projects::DeregisterSuggestedReviewersProjectWorker' => 3,
         'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,
@@ -477,9 +480,10 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'WebHooks::DestroyWorker' => 3,
         'WebHooks::LogExecutionWorker' => 3,
         'Wikis::GitGarbageCollectWorker' => false,
+        'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3
-      }
+      }.merge(extra_retry_exceptions)
     end
 
     it 'uses the default number of retries for new jobs' do
@@ -493,7 +497,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
     it 'uses specified numbers of retries for workers with exceptions encoded here', :aggregate_failures do
       retry_exception_workers.each do |worker|
         expect(worker.retries).to eq(retry_exceptions[worker.klass.to_s]),
-                                  "#{worker.klass} has #{worker.retries} retries, expected #{retry_exceptions[worker.klass]}"
+          "#{worker.klass} has #{worker.retries} retries, expected #{retry_exceptions[worker.klass]}"
       end
     end
   end

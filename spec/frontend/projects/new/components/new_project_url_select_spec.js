@@ -247,7 +247,7 @@ describe('NewProjectUrlSelect component', () => {
       eventHub.$emit('select-template', getIdFromGraphQLId(id), fullPath);
     });
 
-    it('filters the dropdown items to the selected group and children', async () => {
+    it('filters the dropdown items to the selected group and children', () => {
       const listItems = wrapper.findAll('li');
 
       expect(listItems).toHaveLength(3);

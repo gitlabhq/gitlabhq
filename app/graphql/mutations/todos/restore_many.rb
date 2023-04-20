@@ -2,7 +2,7 @@
 
 module Mutations
   module Todos
-    class RestoreMany < ::Mutations::Todos::Base
+    class RestoreMany < ::Mutations::BaseMutation
       graphql_name 'TodoRestoreMany'
 
       MAX_UPDATE_AMOUNT = 50

@@ -19,8 +19,8 @@ module Gitlab
         ].freeze
 
         def initialize(spec, args)
-          @spec = spec
-          @args = args
+          @spec = spec.to_h
+          @args = args.to_h
           @inputs = []
           @errors = []
 

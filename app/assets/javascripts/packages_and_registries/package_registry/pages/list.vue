@@ -1,5 +1,5 @@
 <script>
-import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { historyReplaceState } from '~/lib/utils/common_utils';
@@ -19,6 +19,7 @@ import PackageList from '~/packages_and_registries/package_registry/components/l
 
 export default {
   components: {
+    GlButton,
     GlEmptyState,
     GlLink,
     GlSprintf,
@@ -27,23 +28,26 @@ export default {
     PackageSearch,
     DeletePackages,
   },
-  inject: ['emptyListIllustration', 'isGroupPage', 'fullPath'],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  inject: ['emptyListIllustration', 'isGroupPage', 'fullPath', 'settingsPath'],
   data() {
     return {
-      packages: {},
+      packagesResource: {},
       sort: '',
       filters: {},
       mutationLoading: false,
     };
   },
   apollo: {
-    packages: {
+    packagesResource: {
       query: getPackagesQuery,
       variables() {
         return this.queryVariables;
       },
       update(data) {
-        return data[this.graphqlResource]?.packages ?? {};
+        return data[this.graphqlResource] ?? {};
       },
       skip() {
         return !this.sort;
@@ -51,6 +55,14 @@ export default {
     },
   },
   computed: {
+    packages() {
+      return this.packagesResource?.packages ?? {};
+    },
+    groupSettings() {
+      return this.isGroupPage
+        ? this.packagesResource?.packageSettings ?? {}
+        : this.packagesResource?.group?.packageSettings ?? {};
+    },
     queryVariables() {
       return {
         isGroupPage: this.isGroupPage,
@@ -83,7 +95,7 @@ export default {
         : this.$options.i18n.noResultsTitle;
     },
     isLoading() {
-      return this.$apollo.queries.packages.loading || this.mutationLoading;
+      return this.$apollo.queries.packagesResource.loading || this.mutationLoading;
     },
     refetchQueriesData() {
       return [
@@ -123,7 +135,7 @@ export default {
         after: this.pageInfo?.endCursor,
       };
 
-      this.$apollo.queries.packages.fetchMore({
+      this.$apollo.queries.packagesResource.fetchMore({
         variables,
         updateQuery: this.updateQuery,
       });
@@ -136,7 +148,7 @@ export default {
         before: this.pageInfo?.startCursor,
       };
 
-      this.$apollo.queries.packages.fetchMore({
+      this.$apollo.queries.packagesResource.fetchMore({
         variables,
         updateQuery: this.updateQuery,
       });
@@ -149,6 +161,7 @@ export default {
     noResultsText: s__(
       'PackageRegistry|Learn how to %{noPackagesLinkStart}publish and share your packages%{noPackagesLinkEnd} with GitLab.',
     ),
+    settingsText: s__('PackageRegistry|Configure in settings'),
   },
   links: {
     EMPTY_LIST_HELP_URL,
@@ -159,7 +172,16 @@ export default {
 
 <template>
   <div>
-    <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount" />
+    <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount">
+      <template v-if="settingsPath" #settings-link>
+        <gl-button
+          v-gl-tooltip="$options.i18n.settingsText"
+          icon="settings"
+          :href="settingsPath"
+          :aria-label="$options.i18n.settingsText"
+        />
+      </template>
+    </package-title>
     <package-search class="gl-mb-5" @update="handleSearchUpdate" />
 
     <delete-packages
@@ -170,6 +192,7 @@ export default {
     >
       <template #default="{ deletePackages }">
         <package-list
+          :group-settings="groupSettings"
           :list="packages.nodes"
           :is-loading="isLoading"
           :page-info="pageInfo"

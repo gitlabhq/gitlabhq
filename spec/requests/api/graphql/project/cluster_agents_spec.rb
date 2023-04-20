@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project.cluster_agents', feature_category: :kubernetes_management do
+RSpec.describe 'Project.cluster_agents', feature_category: :deployment_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :public) }

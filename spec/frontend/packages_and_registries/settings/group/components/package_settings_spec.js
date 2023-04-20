@@ -177,7 +177,7 @@ describe('Packages Settings', () => {
       });
     });
 
-    it('renders ExceptionsInput and assigns duplication allowness and exception props', async () => {
+    it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
       mountComponent({ mountFn: mountExtended });
 
       const { genericDuplicatesAllowed, genericDuplicateExceptionRegex } = packageSettings;
@@ -192,7 +192,7 @@ describe('Packages Settings', () => {
       });
     });
 
-    it('on update event calls the mutation', async () => {
+    it('on update event calls the mutation', () => {
       const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
       mountComponent({ mountFn: mountExtended, mutationResolver });
 

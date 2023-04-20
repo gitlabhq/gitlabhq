@@ -9,7 +9,7 @@ module Gitlab
 
         REASONS = {
           REASON_RENAMED => 'This was renamed.',
-          REASON_ALPHA => 'This feature is in Alpha. It can be changed or removed at any time.'
+          REASON_ALPHA => 'This feature is an Experiment. It can be changed or removed at any time.'
         }.freeze
 
         include ActiveModel::Validations
@@ -27,7 +27,7 @@ module Gitlab
           return unless options
 
           if alpha
-            raise ArgumentError, '`alpha` and `deprecated` arguments cannot be passed at the same time' \
+            raise ArgumentError, '`experiment` and `deprecated` arguments cannot be passed at the same time' \
               if deprecated
 
             options[:reason] = :alpha

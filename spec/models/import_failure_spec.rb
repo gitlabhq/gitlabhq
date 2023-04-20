@@ -56,7 +56,13 @@ RSpec.describe ImportFailure do
       it { is_expected.not_to allow_value({ ids: [123] }).for(:external_identifiers) }
 
       it 'allows up to 3 fields' do
-        is_expected.not_to allow_value({ note_id: 234, noteable_id: 345, noteable_type: 'MergeRequest', extra_attribute: 'abc' }).for(:external_identifiers)
+        is_expected.not_to allow_value({
+          note_id: 234,
+          noteable_id: 345,
+          noteable_type: 'MergeRequest',
+          object_type: 'pull_request',
+          extra_attribute: 'abc'
+        }).for(:external_identifiers)
       end
     end
   end

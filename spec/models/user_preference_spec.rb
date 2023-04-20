@@ -54,6 +54,13 @@ RSpec.describe UserPreference do
       it { is_expected.not_to allow_value(nil).for(:use_legacy_web_ide) }
       it { is_expected.not_to allow_value("").for(:use_legacy_web_ide) }
     end
+
+    describe 'pass_user_identities_to_ci_jwt' do
+      it { is_expected.to allow_value(true).for(:pass_user_identities_to_ci_jwt) }
+      it { is_expected.to allow_value(false).for(:pass_user_identities_to_ci_jwt) }
+      it { is_expected.not_to allow_value(nil).for(:pass_user_identities_to_ci_jwt) }
+      it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
+    end
   end
 
   describe 'notes filters global keys' do

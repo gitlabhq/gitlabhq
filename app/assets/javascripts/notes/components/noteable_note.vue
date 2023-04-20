@@ -13,6 +13,7 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '~/locale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -294,10 +295,9 @@ export default {
       this.isRequesting = false;
       this.oldContent = null;
       renderGFM(this.$refs.noteBody.$el);
-      this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },
-    formUpdateHandler({ noteText, callback, resolveDiscussion }) {
+    async formUpdateHandler({ noteText, callback, resolveDiscussion }) {
       const position = {
         ...this.note.position,
       };
@@ -319,6 +319,14 @@ export default {
       });
 
       if (this.isDraft) return;
+
+      if (containsSensitiveToken(noteText)) {
+        const confirmed = await confirmSensitiveAction();
+        if (!confirmed) {
+          callback();
+          return;
+        }
+      }
 
       const data = {
         endpoint: this.note.path,
@@ -383,7 +391,6 @@ export default {
         });
         if (!confirmed) return;
       }
-      this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {
         // eslint-disable-next-line vue/no-mutating-props
         this.note.note_html = this.oldContent;

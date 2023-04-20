@@ -19,7 +19,7 @@ export default {
     loadingAriaLabel: __('Loading'),
   },
   filterSearchBoxStyles:
-    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-gray-100 gl-border-b',
+    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-b gl-border-gray-100',
   components: {
     GlAlert,
     GlSkeletonLoader,
@@ -140,6 +140,19 @@ export default {
       this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
 
+      // all filters have been cleared reset query param
+      // and refetch jobs/count with defaults
+      if (!filters.length) {
+        updateHistory({
+          url: setUrlParams({ statuses: null }, window.location.href, true),
+        });
+
+        this.$apollo.queries.jobs.refetch({ statuses: null });
+        this.$apollo.queries.jobsCount.refetch({ statuses: null });
+
+        return;
+      }
+
       // Eventually there will be more tokens available
       // this code is written to scale for those tokens
       filters.forEach((filter) => {
@@ -223,7 +236,7 @@ export default {
 
     <jobs-table-empty-state v-else-if="showEmptyState" />
 
-    <jobs-table v-else :jobs="jobs.list" />
+    <jobs-table v-else :jobs="jobs.list" class="gl-table-no-top-border" />
 
     <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
       <gl-loading-icon

@@ -12,7 +12,6 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
-    it { is_expected.to belong_to(:iteration) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:work_item_type).class_name('WorkItems::Type') }
     it { is_expected.to belong_to(:moved_to).class_name('Issue') }
@@ -38,6 +37,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:issue_customer_relations_contacts) }
     it { is_expected.to have_many(:customer_relations_contacts) }
     it { is_expected.to have_many(:incident_management_timeline_events) }
+    it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::IssueAssignmentEvent').inverse_of(:issue) }
 
     describe 'versions.most_recent' do
       it 'returns the most recent version' do
@@ -161,7 +161,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         it 'is possible to change type only between selected types' do
           issue = create(:issue, old_type, project: reusable_project)
 
-          issue.work_item_type_id = WorkItems::Type.default_by_type(new_type).id
+          issue.assign_attributes(work_item_type: WorkItems::Type.default_by_type(new_type), issue_type: new_type)
 
           expect(issue.valid?).to eq(is_valid)
         end
@@ -255,7 +255,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     describe '#ensure_work_item_type' do
       let_it_be(:issue_type) { create(:work_item_type, :issue, :default) }
-      let_it_be(:task_type) { create(:work_item_type, :issue, :default) }
+      let_it_be(:incident_type) { create(:work_item_type, :incident, :default) }
       let_it_be(:project) { create(:project) }
 
       context 'when a type was already set' do
@@ -272,9 +272,9 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect(issue.work_item_type_id).to eq(issue_type.id)
           expect(WorkItems::Type).not_to receive(:default_by_type)
 
-          issue.update!(work_item_type: task_type, issue_type: 'task')
+          issue.update!(work_item_type: incident_type, issue_type: :incident)
 
-          expect(issue.work_item_type_id).to eq(task_type.id)
+          expect(issue.work_item_type_id).to eq(incident_type.id)
         end
 
         it 'ensures a work item type if updated to nil' do
@@ -301,10 +301,20 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect(issue.work_item_type_id).to be_nil
           expect(WorkItems::Type).not_to receive(:default_by_type)
 
-          issue.update!(work_item_type: task_type, issue_type: 'task')
+          issue.update!(work_item_type: incident_type, issue_type: :incident)
 
-          expect(issue.work_item_type_id).to eq(task_type.id)
+          expect(issue.work_item_type_id).to eq(incident_type.id)
         end
+      end
+    end
+
+    describe '#check_issue_type_in_sync' do
+      it 'raises an error if issue_type is out of sync' do
+        issue = build(:issue, issue_type: :issue, work_item_type: WorkItems::Type.default_by_type(:task))
+
+        expect do
+          issue.save!
+        end.to raise_error(Issue::IssueTypeOutOfSyncError)
       end
     end
 
@@ -1741,7 +1751,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'when project in user namespace' do
-      let(:project) { build_stubbed(:project_empty_repo) }
+      let(:project_namespace) { build_stubbed(:project_namespace) }
+      let(:project) { build_stubbed(:project_empty_repo, project_namespace: project_namespace) }
       let(:project_id) { project.id }
       let(:namespace_id) { nil }
 
@@ -1750,7 +1761,8 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     context 'when project in a group namespace' do
       let(:group) { create(:group) }
-      let(:project) { build_stubbed(:project_empty_repo, group: group) }
+      let(:project_namespace) { build_stubbed(:project_namespace) }
+      let(:project) { build_stubbed(:project_empty_repo, group: group, project_namespace: project_namespace) }
       let(:project_id) { nil }
       let(:namespace_id) { group.id }
 
@@ -1772,6 +1784,36 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'raises error when feature is invalid' do
       expect { issue.issue_type_supports?(:unkown_feature) }.to raise_error(ArgumentError)
     end
+
+    context 'when issue_type_uses_work_item_types_table feature flag is disabled' do
+      before do
+        stub_feature_flags(issue_type_uses_work_item_types_table: false)
+      end
+
+      it 'uses the issue_type column' do
+        expect(issue).to receive(:issue_type).and_call_original
+        expect(issue).not_to receive(:work_item_type).and_call_original
+
+        issue.issue_type_supports?(:assignee)
+      end
+    end
+
+    context 'when issue_type_uses_work_item_types_table feature flag is enabled' do
+      it 'uses the work_item_types table' do
+        expect(issue).not_to receive(:issue_type).and_call_original
+        expect(issue).to receive(:work_item_type).and_call_original
+
+        issue.issue_type_supports?(:assignee)
+      end
+
+      context 'when the issue is not persisted' do
+        it 'uses the default work item type' do
+          non_persisted_issue = build(:issue)
+
+          expect(non_persisted_issue.issue_type_supports?(:assignee)).to be_truthy
+        end
+      end
+    end
   end
 
   describe '#supports_time_tracking?' do
@@ -1785,7 +1827,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       before do
-        issue.update!(issue_type: issue_type)
+        issue.update!(issue_type: issue_type, work_item_type: WorkItems::Type.default_by_type(issue_type))
       end
 
       it do
@@ -1805,7 +1847,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     with_them do
       before do
-        issue.update!(issue_type: issue_type)
+        issue.update!(issue_type: issue_type, work_item_type: WorkItems::Type.default_by_type(issue_type))
       end
 
       it do
@@ -1918,5 +1960,11 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
       end
     end
+  end
+
+  describe '#work_item_type_with_default' do
+    subject { Issue.new.work_item_type_with_default }
+
+    it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end
 end

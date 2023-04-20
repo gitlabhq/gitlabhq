@@ -51,7 +51,7 @@ module Projects
     private
 
     def add_pages_unique_domain
-      if Feature.disabled?(:pages_unique_domain)
+      if Feature.disabled?(:pages_unique_domain, project)
         params[:project_setting_attributes]&.delete(:pages_unique_domain_enabled)
 
         return
@@ -120,6 +120,8 @@ module Projects
 
     def remove_unallowed_params
       params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, project)
+
+      params.delete(:runner_registration_enabled) if Gitlab::CurrentSettings.valid_runner_registrars.exclude?('project')
     end
 
     def after_update

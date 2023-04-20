@@ -26,6 +26,8 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
   context 'when there is active pipeline for merge request' do
     before do
       create(:ci_build, pipeline: pipeline)
+      stub_feature_flags(auto_merge_labels_mr_widget: false)
+
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
     end
@@ -98,6 +100,69 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
     end
   end
 
+  context 'when there is active pipeline for merge request with auto_merge_labels_mr_widget on' do
+    before do
+      create(:ci_build, pipeline: pipeline)
+      stub_feature_flags(auto_merge_labels_mr_widget: true)
+
+      sign_in(user)
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    describe 'enabling Merge when pipeline succeeds' do
+      shared_examples 'Set to auto-merge activator' do
+        it 'activates the Merge when pipeline succeeds feature' do
+          click_button "Set to auto-merge"
+
+          expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
+          expect(page).to have_content "Source branch will not be deleted"
+          expect(page).to have_selector ".js-cancel-auto-merge"
+          visit project_merge_request_path(project, merge_request) # Needed to refresh the page
+          expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
+        end
+      end
+
+      context "when enabled immediately" do
+        it_behaves_like 'Set to auto-merge activator'
+      end
+
+      context 'when enabled after it was previously canceled' do
+        before do
+          click_button "Set to auto-merge"
+
+          wait_for_requests
+
+          click_button "Cancel auto-merge"
+
+          wait_for_requests
+
+          expect(page).to have_content 'Set to auto-merge'
+        end
+
+        it_behaves_like 'Set to auto-merge activator'
+      end
+
+      context 'when it was enabled and then canceled' do
+        let(:merge_request) do
+          create(:merge_request_with_diffs,
+                 :merge_when_pipeline_succeeds,
+                 source_project: project,
+                 title: 'Bug NS-04',
+                 author: user,
+                 merge_user: user)
+        end
+
+        before do
+          merge_request.merge_params['force_remove_source_branch'] = '0'
+          merge_request.save!
+          click_button "Cancel auto-merge"
+        end
+
+        it_behaves_like 'Set to auto-merge activator'
+      end
+    end
+  end
+
   context 'when merge when pipeline succeeds is enabled' do
     let(:merge_request) do
       create(:merge_request_with_diffs, :simple, :merge_when_pipeline_succeeds,
@@ -112,6 +177,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
     end
 
     before do
+      stub_feature_flags(auto_merge_labels_mr_widget: false)
       sign_in user
       visit project_merge_request_path(project, merge_request)
     end
@@ -177,11 +243,53 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
     end
   end
 
+  context 'when merge when pipeline succeeds is enabled and auto_merge_labels_mr_widget on' do
+    let(:merge_request) do
+      create(:merge_request_with_diffs, :simple, :merge_when_pipeline_succeeds,
+             source_project: project,
+             author: user,
+             merge_user: user,
+             title: 'MepMep')
+    end
+
+    let!(:build) do
+      create(:ci_build, pipeline: pipeline)
+    end
+
+    before do
+      stub_feature_flags(auto_merge_labels_mr_widget: true)
+      sign_in user
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'allows to cancel the automatic merge' do
+      click_button "Cancel auto-merge"
+
+      expect(page).to have_button "Set to auto-merge"
+
+      refresh
+
+      expect(page).to have_content "canceled the automatic merge"
+    end
+  end
+
   context 'when pipeline is not active' do
     it 'does not allow to enable merge when pipeline succeeds' do
+      stub_feature_flags(auto_merge_labels_mr_widget: false)
+
       visit project_merge_request_path(project, merge_request)
 
       expect(page).not_to have_link 'Merge when pipeline succeeds'
+    end
+  end
+
+  context 'when pipeline is not active and auto_merge_labels_mr_widget on' do
+    it 'does not allow to enable merge when pipeline succeeds' do
+      stub_feature_flags(auto_merge_labels_mr_widget: true)
+
+      visit project_merge_request_path(project, merge_request)
+
+      expect(page).not_to have_link 'Set to auto-merge'
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
+RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category: :system_access do
   let_it_be(:path) { '/personal_access_tokens' }
 
   describe 'GET /personal_access_tokens' do
@@ -30,9 +30,13 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
       end
     end
 
+    # Since all user types pass the same test successfully, we can avoid using
+    # shared examples and test each user type separately for its expected
+    # returned value.
+
     context 'logged in as an Administrator' do
       let_it_be(:current_user) { create(:admin) }
-      let_it_be(:current_users_token) { create(:personal_access_token, user: current_user) }
+      let_it_be(:current_users_token) { create(:personal_access_token, :admin_mode, user: current_user) }
 
       it 'returns all PATs by default' do
         get api(path, current_user)
@@ -46,7 +50,7 @@ RSpec.describe API::PersonalAccessTokens, feature_category: :system_access do
         let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token.user) }
 
         it 'returns only PATs belonging to that user' do
-          get api(path, current_user), params: { user_id: token.user.id }
+          get api(path, current_user, admin_mode: true), params: { user_id: token.user.id }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response.count).to eq(2)

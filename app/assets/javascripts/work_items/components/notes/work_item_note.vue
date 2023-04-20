@@ -1,27 +1,26 @@
 <script>
-import { GlAvatarLink, GlAvatar, GlDropdown, GlDropdownItem, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
+import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_ASSIGNEES } from '~/work_items/constants';
+import Tracking from '~/tracking';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getWorkItemQuery } from '~/work_items/utils';
 import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
   name: 'WorkItemNoteThread',
-  i18n: {
-    moreActionsText: __('More actions'),
-    deleteNoteText: __('Delete comment'),
-    copyLinkText: __('Copy link'),
-  },
   components: {
     TimelineEntryItem,
     NoteBody,
@@ -29,15 +28,28 @@ export default {
     NoteActions,
     GlAvatar,
     GlAvatarLink,
-    GlDropdown,
-    GlDropdownItem,
     WorkItemCommentForm,
     EditedAt,
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
+  mixins: [Tracking.mixin()],
   props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    fetchByIid: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
+    workItemId: {
+      type: String,
+      required: true,
+    },
     note: {
       type: Object,
       required: true,
@@ -61,6 +73,25 @@ export default {
       required: false,
       default: false,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    assignees: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canSetWorkItemMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -68,6 +99,13 @@ export default {
     };
   },
   computed: {
+    tracking() {
+      return {
+        category: TRACKING_CATEGORY_SHOW,
+        label: 'work_item_note_actions',
+        property: `type_${this.workItemType}`,
+      };
+    },
     author() {
       return this.note.author;
     },
@@ -111,6 +149,28 @@ export default {
     hasAwardEmojiPermission() {
       return this.note.userPermissions.awardEmoji;
     },
+    isAuthorAnAssignee() {
+      return Boolean(this.assignees.filter((assignee) => assignee.id === this.author.id).length);
+    },
+  },
+  apollo: {
+    workItem: {
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+      },
+      skip() {
+        return !this.queryVariables.id && !this.queryVariables.iid;
+      },
+      error() {
+        this.$emit('error', i18n.fetchError);
+      },
+    },
   },
   methods: {
     showReplyForm() {
@@ -121,8 +181,8 @@ export default {
       updateDraft(this.autosaveKey, this.note.body);
     },
     async updateNote(newText) {
-      this.isEditing = false;
       try {
+        this.isEditing = false;
         await this.$apollo.mutate({
           mutation: updateWorkItemNoteMutation,
           variables: {
@@ -149,11 +209,67 @@ export default {
         Sentry.captureException(error);
       }
     },
+    getNewAssigneesAndWidget() {
+      let newAssignees = [];
+      if (this.isAuthorAnAssignee) {
+        newAssignees = this.assignees.filter(({ id }) => id !== this.author.id);
+      } else {
+        newAssignees = [...this.assignees, this.author];
+      }
+
+      const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
+
+      const assigneesWidgetIndex = this.workItem.widgets.findIndex(isAssigneesWidget);
+
+      const editedWorkItemWidgets = [...this.workItem.widgets];
+
+      editedWorkItemWidgets[assigneesWidgetIndex] = {
+        ...editedWorkItemWidgets[assigneesWidgetIndex],
+        assignees: {
+          nodes: newAssignees,
+        },
+      };
+
+      return {
+        newAssignees,
+        editedWorkItemWidgets,
+      };
+    },
     notifyCopyDone() {
       if (this.isModal) {
         navigator.clipboard.writeText(this.noteUrl);
       }
       toast(__('Link copied to clipboard.'));
+    },
+    async assignUserAction() {
+      const { newAssignees, editedWorkItemWidgets } = this.getNewAssigneesAndWidget();
+
+      try {
+        await this.$apollo.mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              assigneesWidget: {
+                assigneeIds: newAssignees.map(({ id }) => id),
+              },
+            },
+          },
+          optimisticResponse: {
+            workItemUpdate: {
+              errors: [],
+              workItem: {
+                ...this.workItem,
+                widgets: editedWorkItemWidgets,
+              },
+            },
+          },
+        });
+        this.track(`${this.isAuthorAnAssignee ? 'unassigned_user' : 'assigned_user'}`);
+      } catch (error) {
+        this.$emit('error', i18n.updateError);
+        Sentry.captureException(error);
+      }
     },
   },
 };
@@ -179,6 +295,11 @@ export default {
         :autosave-key="autosaveKey"
         :initial-value="note.body"
         :comment-button-text="__('Save comment')"
+        :autocomplete-data-sources="autocompleteDataSources"
+        :markdown-preview-path="markdownPreviewPath"
+        :work-item-id="workItemId"
+        :autofocus="isEditing"
+        class="gl-pl-3 gl-mt-3"
         @cancelEditing="isEditing = false"
         @submitForm="updateNote"
       />
@@ -199,32 +320,15 @@ export default {
               :show-reply="showReply"
               :show-edit="hasAdminPermission"
               :note-id="note.id"
+              :is-author-an-assignee="isAuthorAnAssignee"
+              :show-assign-unassign="canSetWorkItemMetadata"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
               @error="($event) => $emit('error', $event)"
+              @notifyCopyDone="notifyCopyDone"
+              @deleteNote="$emit('deleteNote')"
+              @assignUser="assignUserAction"
             />
-            <gl-dropdown
-              v-gl-tooltip
-              icon="ellipsis_v"
-              text-sr-only
-              right
-              :text="$options.i18n.moreActionsText"
-              :title="$options.i18n.moreActionsText"
-              category="tertiary"
-              no-caret
-            >
-              <gl-dropdown-item :data-clipboard-text="noteUrl" @click="notifyCopyDone">
-                <span>{{ $options.i18n.copyLinkText }}</span>
-              </gl-dropdown-item>
-              <gl-dropdown-item
-                v-if="hasAdminPermission"
-                variant="danger"
-                data-testid="delete-note-action"
-                @click="$emit('deleteNote')"
-              >
-                {{ $options.i18n.deleteNoteText }}
-              </gl-dropdown-item>
-            </gl-dropdown>
           </div>
         </div>
         <div class="timeline-discussion-body">

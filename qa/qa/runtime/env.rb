@@ -58,6 +58,22 @@ module QA
         browser == :chrome && interception_enabled?
       end
 
+      def release
+        ENV['RELEASE']
+      end
+
+      def release_registry_url
+        ENV['RELEASE_REGISTRY_URL']
+      end
+
+      def release_registry_username
+        ENV['RELEASE_REGISTRY_USERNAME']
+      end
+
+      def release_registry_password
+        ENV['RELEASE_REGISTRY_PASSWORD']
+      end
+
       def ci_job_url
         ENV['CI_JOB_URL']
       end
@@ -187,14 +203,38 @@ module QA
         ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end
 
+      def browser_version
+        ENV['QA_BROWSER_VERSION'] || 'latest'
+      end
+
       def remote_mobile_device_name
-        ENV['QA_REMOTE_MOBILE_DEVICE_NAME']
+        ENV['QA_REMOTE_MOBILE_DEVICE_NAME']&.downcase
+      end
+
+      def layout
+        ENV['QA_LAYOUT']&.downcase || ''
+      end
+
+      def tablet_layout?
+        return true if remote_mobile_device_name && !phone_layout?
+
+        layout.include?('tablet')
+      end
+
+      def phone_layout?
+        return true if layout.include?('phone')
+
+        return false unless remote_mobile_device_name
+
+        !(remote_mobile_device_name.include?('ipad') || remote_mobile_device_name.include?('tablet'))
       end
 
       def mobile_layout?
-        return false if ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].blank?
+        phone_layout? || tablet_layout? || remote_mobile_device_name
+      end
 
-        !(ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('ipad') || ENV['QA_REMOTE_MOBILE_DEVICE_NAME'].downcase.include?('tablet'))
+      def record_video?
+        enabled?(ENV['QA_RECORD_VIDEO'], default: false)
       end
 
       def user_username
@@ -210,11 +250,11 @@ module QA
       end
 
       def github_username
-        ENV['GITHUB_USERNAME']
+        ENV['QA_GITHUB_USERNAME']
       end
 
       def github_password
-        ENV['GITHUB_PASSWORD']
+        ENV['QA_GITHUB_PASSWORD']
       end
 
       def forker?
@@ -282,11 +322,11 @@ module QA
       end
 
       def jira_admin_username
-        ENV['JIRA_ADMIN_USERNAME']
+        ENV['QA_JIRA_ADMIN_USERNAME']
       end
 
       def jira_admin_password
-        ENV['JIRA_ADMIN_PASSWORD']
+        ENV['QA_JIRA_ADMIN_PASSWORD']
       end
 
       def jira_hostname
@@ -489,6 +529,10 @@ module QA
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
       end
 
+      def container_registry_host
+        ENV.fetch('QA_CONTAINER_REGISTRY_HOST', 'registry.gitlab.com')
+      end
+
       # ENV variables for authenticating against a private container registry
       # These need to be set if using the
       # Service::DockerRun::Mixins::ThirdPartyDocker module
@@ -535,6 +579,22 @@ module QA
         return unless missing_env.any?
 
         raise "Missing Slack env: #{missing_env.map(&:upcase).join(', ')}"
+      end
+
+      def one_p_email
+        ENV['QA_1P_EMAIL']
+      end
+
+      def one_p_password
+        ENV['QA_1P_PASSWORD']
+      end
+
+      def one_p_secret
+        ENV['QA_1P_SECRET']
+      end
+
+      def one_p_github_uuid
+        ENV['QA_1P_GITHUB_UUID']
       end
 
       private

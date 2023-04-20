@@ -1,11 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButton, GlLoadingIcon, GlTooltip } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { createWrapper } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { ACTION_FAILURE, UPSTREAM, DOWNSTREAM } from '~/pipelines/components/graph/constants';
 import LinkedPipelineComponent from '~/pipelines/components/graph/linked_pipeline.vue';
@@ -14,10 +13,9 @@ import RetryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.
 import CiStatus from '~/vue_shared/components/ci_icon.vue';
 import mockPipeline from './linked_pipelines_mock_data';
 
-Vue.use(VueApollo);
-
 describe('Linked pipeline', () => {
   let wrapper;
+  let requestHandlers;
 
   const downstreamProps = {
     pipeline: {
@@ -47,15 +45,28 @@ describe('Linked pipeline', () => {
   const findPipelineLink = () => wrapper.findByTestId('pipelineLink');
   const findRetryButton = () => wrapper.findByLabelText('Retry downstream pipeline');
 
-  const createWrapper = ({ propsData }) => {
-    const mockApollo = createMockApollo();
+  const defaultHandlers = {
+    cancelPipeline: jest.fn().mockResolvedValue({ data: { pipelineCancel: { errors: [] } } }),
+    retryPipeline: jest.fn().mockResolvedValue({ data: { pipelineRetry: { errors: [] } } }),
+  };
 
-    wrapper = extendedWrapper(
-      mount(LinkedPipelineComponent, {
-        propsData,
-        apolloProvider: mockApollo,
-      }),
-    );
+  const createMockApolloProvider = (handlers) => {
+    Vue.use(VueApollo);
+
+    requestHandlers = handlers;
+    return createMockApollo([
+      [CancelPipelineMutation, requestHandlers.cancelPipeline],
+      [RetryPipelineMutation, requestHandlers.retryPipeline],
+    ]);
+  };
+
+  const createComponent = ({ propsData, handlers = defaultHandlers }) => {
+    const mockApollo = createMockApolloProvider(handlers);
+
+    wrapper = mountExtended(LinkedPipelineComponent, {
+      propsData,
+      apolloProvider: mockApollo,
+    });
   };
 
   describe('rendered output', () => {
@@ -68,7 +79,7 @@ describe('Linked pipeline', () => {
     };
 
     beforeEach(() => {
-      createWrapper({ propsData: props });
+      createComponent({ propsData: props });
     });
 
     it('should render the project name', () => {
@@ -109,7 +120,7 @@ describe('Linked pipeline', () => {
 
   describe('upstream pipelines', () => {
     beforeEach(() => {
-      createWrapper({ propsData: upstreamProps });
+      createComponent({ propsData: upstreamProps });
     });
 
     it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
@@ -129,7 +140,7 @@ describe('Linked pipeline', () => {
   describe('downstream pipelines', () => {
     describe('styling', () => {
       beforeEach(() => {
-        createWrapper({ propsData: downstreamProps });
+        createComponent({ propsData: downstreamProps });
       });
 
       it('parent/child label container should exist', () => {
@@ -164,7 +175,7 @@ describe('Linked pipeline', () => {
                 pipeline: { ...mockPipeline, retryable: true },
               };
 
-              createWrapper({ propsData: retryablePipeline });
+              createComponent({ propsData: retryablePipeline });
             });
 
             it('does not show the retry or cancel button', () => {
@@ -175,14 +186,14 @@ describe('Linked pipeline', () => {
         });
 
         describe('on a downstream', () => {
+          const retryablePipeline = {
+            ...downstreamProps,
+            pipeline: { ...mockPipeline, retryable: true },
+          };
+
           describe('when retryable', () => {
             beforeEach(() => {
-              const retryablePipeline = {
-                ...downstreamProps,
-                pipeline: { ...mockPipeline, retryable: true },
-              };
-
-              createWrapper({ propsData: retryablePipeline });
+              createComponent({ propsData: retryablePipeline });
             });
 
             it('shows only the retry button', () => {
@@ -205,50 +216,51 @@ describe('Linked pipeline', () => {
             describe('and the retry button is clicked', () => {
               describe('on success', () => {
                 beforeEach(async () => {
-                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-                  jest.spyOn(wrapper.vm, '$emit');
                   await findRetryButton().trigger('click');
                 });
 
                 it('calls the retry mutation', () => {
-                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-                    mutation: RetryPipelineMutation,
-                    variables: {
-                      id: convertToGraphQLId(TYPENAME_CI_PIPELINE, mockPipeline.id),
-                    },
+                  expect(requestHandlers.retryPipeline).toHaveBeenCalledTimes(1);
+                  expect(requestHandlers.retryPipeline).toHaveBeenCalledWith({
+                    id: 'gid://gitlab/Ci::Pipeline/195',
                   });
                 });
 
-                it('emits the refreshPipelineGraph event', () => {
-                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('refreshPipelineGraph');
+                it('emits the refreshPipelineGraph event', async () => {
+                  await waitForPromises();
+                  expect(wrapper.emitted('refreshPipelineGraph')).toHaveLength(1);
                 });
               });
 
               describe('on failure', () => {
                 beforeEach(async () => {
-                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({ errors: [] });
-                  jest.spyOn(wrapper.vm, '$emit');
+                  createComponent({
+                    propsData: retryablePipeline,
+                    handlers: {
+                      retryPipeline: jest.fn().mockRejectedValue({ errors: [] }),
+                      cancelPipeline: jest.fn().mockRejectedValue({ errors: [] }),
+                    },
+                  });
+
                   await findRetryButton().trigger('click');
                 });
 
-                it('emits an error event', () => {
-                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('error', {
-                    type: ACTION_FAILURE,
-                  });
+                it('emits an error event', async () => {
+                  await waitForPromises();
+                  expect(wrapper.emitted('error')).toEqual([[{ type: ACTION_FAILURE }]]);
                 });
               });
             });
           });
 
           describe('when cancelable', () => {
-            beforeEach(() => {
-              const cancelablePipeline = {
-                ...downstreamProps,
-                pipeline: { ...mockPipeline, cancelable: true },
-              };
+            const cancelablePipeline = {
+              ...downstreamProps,
+              pipeline: { ...mockPipeline, cancelable: true },
+            };
 
-              createWrapper({ propsData: cancelablePipeline });
+            beforeEach(() => {
+              createComponent({ propsData: cancelablePipeline });
             });
 
             it('shows only the cancel button', () => {
@@ -271,34 +283,37 @@ describe('Linked pipeline', () => {
             describe('and the cancel button is clicked', () => {
               describe('on success', () => {
                 beforeEach(async () => {
-                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-                  jest.spyOn(wrapper.vm, '$emit');
                   await findCancelButton().trigger('click');
                 });
 
                 it('calls the cancel mutation', () => {
-                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-                  expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-                    mutation: CancelPipelineMutation,
-                    variables: {
-                      id: convertToGraphQLId(TYPENAME_CI_PIPELINE, mockPipeline.id),
-                    },
+                  expect(requestHandlers.cancelPipeline).toHaveBeenCalledTimes(1);
+                  expect(requestHandlers.cancelPipeline).toHaveBeenCalledWith({
+                    id: 'gid://gitlab/Ci::Pipeline/195',
                   });
                 });
-                it('emits the refreshPipelineGraph event', () => {
-                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('refreshPipelineGraph');
+                it('emits the refreshPipelineGraph event', async () => {
+                  await waitForPromises();
+                  expect(wrapper.emitted('refreshPipelineGraph')).toHaveLength(1);
                 });
               });
+
               describe('on failure', () => {
                 beforeEach(async () => {
-                  jest.spyOn(wrapper.vm.$apollo, 'mutate').mockRejectedValue({ errors: [] });
-                  jest.spyOn(wrapper.vm, '$emit');
+                  createComponent({
+                    propsData: cancelablePipeline,
+                    handlers: {
+                      retryPipeline: jest.fn().mockRejectedValue({ errors: [] }),
+                      cancelPipeline: jest.fn().mockRejectedValue({ errors: [] }),
+                    },
+                  });
+
                   await findCancelButton().trigger('click');
                 });
-                it('emits an error event', () => {
-                  expect(wrapper.vm.$emit).toHaveBeenCalledWith('error', {
-                    type: ACTION_FAILURE,
-                  });
+
+                it('emits an error event', async () => {
+                  await waitForPromises();
+                  expect(wrapper.emitted('error')).toEqual([[{ type: ACTION_FAILURE }]]);
                 });
               });
             });
@@ -311,7 +326,7 @@ describe('Linked pipeline', () => {
                 pipeline: { ...mockPipeline, cancelable: true, retryable: true },
               };
 
-              createWrapper({ propsData: pipelineWithTwoActions });
+              createComponent({ propsData: pipelineWithTwoActions });
             });
 
             it('only shows the cancel button', () => {
@@ -334,7 +349,7 @@ describe('Linked pipeline', () => {
             },
           };
 
-          createWrapper({ propsData: pipelineWithTwoActions });
+          createComponent({ propsData: pipelineWithTwoActions });
         });
 
         it('does not show any action button', () => {
@@ -355,7 +370,7 @@ describe('Linked pipeline', () => {
     `(
       '$pipelineType.columnTitle pipeline button icon should be $chevronPosition with $buttonBorderClasses if expanded state is $expanded',
       ({ pipelineType, chevronPosition, buttonBorderClasses, expanded }) => {
-        createWrapper({ propsData: { ...pipelineType, expanded } });
+        createComponent({ propsData: { ...pipelineType, expanded } });
         expect(findExpandButton().props('icon')).toBe(chevronPosition);
         expect(findExpandButton().classes()).toContain(buttonBorderClasses);
       },
@@ -363,7 +378,7 @@ describe('Linked pipeline', () => {
 
     describe('shadow border', () => {
       beforeEach(() => {
-        createWrapper({ propsData: downstreamProps });
+        createComponent({ propsData: downstreamProps });
       });
 
       it.each`
@@ -397,7 +412,7 @@ describe('Linked pipeline', () => {
     };
 
     beforeEach(() => {
-      createWrapper({ propsData: props });
+      createComponent({ propsData: props });
     });
 
     it('loading icon is visible', () => {
@@ -415,36 +430,35 @@ describe('Linked pipeline', () => {
     };
 
     beforeEach(() => {
-      createWrapper({ propsData: props });
+      createComponent({ propsData: props });
     });
 
     it('emits `pipelineClicked` event', () => {
-      jest.spyOn(wrapper.vm, '$emit');
       findButton().trigger('click');
 
-      expect(wrapper.emitted().pipelineClicked).toHaveLength(1);
+      expect(wrapper.emitted('pipelineClicked')).toHaveLength(1);
     });
 
-    it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, () => {
-      jest.spyOn(wrapper.vm.$root, '$emit');
-      findButton().trigger('click');
+    it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, async () => {
+      const root = createWrapper(wrapper.vm.$root);
+      await findButton().vm.$emit('click');
 
-      expect(wrapper.vm.$root.$emit.mock.calls[0]).toEqual([BV_HIDE_TOOLTIP]);
+      expect(root.emitted(BV_HIDE_TOOLTIP)).toHaveLength(1);
     });
 
     it('should emit downstreamHovered with job name on mouseover', () => {
       findLinkedPipeline().trigger('mouseover');
-      expect(wrapper.emitted().downstreamHovered).toStrictEqual([['test_c']]);
+      expect(wrapper.emitted('downstreamHovered')).toStrictEqual([['test_c']]);
     });
 
     it('should emit downstreamHovered with empty string on mouseleave', () => {
       findLinkedPipeline().trigger('mouseleave');
-      expect(wrapper.emitted().downstreamHovered).toStrictEqual([['']]);
+      expect(wrapper.emitted('downstreamHovered')).toStrictEqual([['']]);
     });
 
     it('should emit pipelineExpanded with job name and expanded state on click', () => {
       findExpandButton().trigger('click');
-      expect(wrapper.emitted().pipelineExpandToggle).toStrictEqual([['test_c', true]]);
+      expect(wrapper.emitted('pipelineExpandToggle')).toStrictEqual([['test_c', true]]);
     });
   });
 });

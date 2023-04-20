@@ -898,6 +898,14 @@ RSpec.describe Member, feature_category: :subgroups do
     end
   end
 
+  describe '.pluck_user_ids' do
+    let(:member) { create(:group_member) }
+
+    it 'plucks the user ids' do
+      expect(described_class.where(id: member).pluck_user_ids).to match([member.user_id])
+    end
+  end
+
   describe '#send_invitation_reminder' do
     subject { member.send_invitation_reminder(0) }
 

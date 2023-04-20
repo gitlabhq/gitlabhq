@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
 import {
   DEFAULT_PLATFORM,
   LINUX_PLATFORM,
@@ -28,20 +27,6 @@ const OS = {
   },
 };
 
-const escapedParam = (param, shell = 'bash') => {
-  let escaped;
-  if (shell === 'bash') {
-    // replace single-quotes by the sequence '\''
-    escaped = param.replaceAll("'", "'\\''");
-  } else if (shell === 'powershell') {
-    // replace single-quotes by the sequence ''
-    // https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.3
-    escaped = param.replaceAll("'", "''");
-  }
-  // surround with single quotes.
-  return `'${escaped}'`;
-};
-
 export const commandPrompt = ({ platform }) => {
   return (OS[platform] || OS[DEFAULT_PLATFORM]).commandPrompt;
 };
@@ -50,32 +35,19 @@ export const executable = ({ platform }) => {
   return (OS[platform] || OS[DEFAULT_PLATFORM]).executable;
 };
 
-const shell = ({ platform }) => {
-  return (OS[platform] || OS[DEFAULT_PLATFORM]).shell;
-};
-
-export const registerCommand = ({
-  platform,
-  url = gon.gitlab_url,
-  registrationToken,
-  description,
-}) => {
-  const lines = [`${executable({ platform })} register`];
+export const registerCommand = ({ platform, url = gon.gitlab_url, token }) => {
+  const lines = [`${executable({ platform })} register`]; // eslint-disable-line @gitlab/require-i18n-strings
   if (url) {
     lines.push(`  --url ${url}`);
   }
-  if (registrationToken) {
-    lines.push(`  --registration-token ${registrationToken}`);
-  }
-  if (description) {
-    const escapedDescription = escapedParam(description, shell({ platform }));
-    lines.push(`  --description ${escapedDescription}`);
+  if (token) {
+    lines.push(`  --token ${token}`);
   }
   return lines;
 };
 
 export const runCommand = ({ platform }) => {
-  return `${executable({ platform })} run`;
+  return `${executable({ platform })} run`; // eslint-disable-line @gitlab/require-i18n-strings
 };
 
 const importInstallScript = ({ platform = DEFAULT_PLATFORM }) => {

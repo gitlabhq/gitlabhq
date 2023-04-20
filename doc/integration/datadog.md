@@ -53,4 +53,4 @@ section of your Datadog account.
 
 ## Related topics
 
-- [Datadog CI Visibility](https://docs.datadoghq.com/continuous_integration/) documentation.
+- [Datadog CI Visibility documentation](https://docs.datadoghq.com/continuous_integration/)

@@ -5,7 +5,6 @@ description: Identifies the version of the external registry being used
 product_section: ops
 product_stage: package
 product_group: package
-product_category: container registry
 value_type: number
 status: active
 milestone: "<13.9"

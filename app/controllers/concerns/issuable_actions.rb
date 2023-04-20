@@ -76,7 +76,7 @@ module IssuableActions
       title_text: issuable.title,
       description: view_context.markdown_field(issuable, :description),
       description_text: issuable.description,
-      task_status: issuable.task_status,
+      task_completion_status: issuable.task_completion_status,
       lock_version: issuable.lock_version
     }
 
@@ -190,7 +190,7 @@ module IssuableActions
   end
 
   def discussion_cache_context
-    [current_user&.cache_key, project.team.human_max_access(current_user&.id)].join(':')
+    [current_user&.cache_key, project.team.human_max_access(current_user&.id), 'v2'].join(':')
   end
 
   def discussion_serializer

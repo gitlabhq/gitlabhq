@@ -9,20 +9,19 @@ class Projects::PipelinesController < Projects::ApplicationController
   urgency :low, [
     :index, :new, :builds, :show, :failures, :create,
     :stage, :retry, :dag, :cancel, :test_report,
-    :charts, :config_variables, :destroy, :status
+    :charts, :destroy, :status
   ]
 
   before_action :disable_query_limiting, only: [:create, :retry]
-  before_action :pipeline, except: [:index, :new, :create, :charts, :config_variables]
+  before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
   before_action :authorize_read_build!, only: [:index, :show]
   before_action :authorize_read_ci_cd_analytics!, only: [:charts]
-  before_action :authorize_create_pipeline!, only: [:new, :create, :config_variables]
+  before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
-  before_action :push_frontend_feature_flags, only: [:show]
 
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
@@ -46,7 +45,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   POLLING_INTERVAL = 10_000
 
   feature_category :continuous_integration, [
-    :charts, :show, :config_variables, :stage, :cancel, :retry,
+    :charts, :show, :stage, :cancel, :retry,
     :builds, :dag, :failures, :status,
     :index, :create, :new, :destroy
   ]
@@ -62,9 +61,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines_count = limited_pipelines_count(project)
 
     respond_to do |format|
-      format.html do
-        enable_runners_availability_section_experiment
-      end
+      format.html
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
@@ -217,18 +214,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
-  def config_variables
-    respond_to do |format|
-      format.json do
-        # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
-        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
-        result = Ci::ListConfigVariablesService.new(@project, current_user).execute(params[:sha])
-
-        result.nil? ? head(:no_content) : render(json: result)
-      end
-    end
-  end
-
   def downloadable_artifacts
     render json: Ci::DownloadableArtifactSerializer.new(
       project: project,
@@ -246,7 +231,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         @pipelines,
         disable_coverage: true,
         preload: true,
-        disable_manual_and_scheduled_actions: Feature.enabled?(:lazy_load_pipeline_dropdown_actions, @project)
+        disable_manual_and_scheduled_actions: true
       )
   end
 
@@ -332,17 +317,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.permit(:scope, :username, :ref, :status, :source)
   end
 
-  def enable_runners_availability_section_experiment
-    return unless current_user
-    return unless can?(current_user, :create_pipeline, project)
-    return if @pipelines_count.to_i > 0
-    return if helpers.has_gitlab_ci?(project)
-
-    experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
-      e.candidate {}
-    end
-  end
-
   def should_track_ci_cd_pipelines?
     params[:chart].blank? || params[:chart] == 'pipelines'
   end
@@ -369,10 +343,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def tracking_project_source
     project
-  end
-
-  def push_frontend_feature_flags
-    push_frontend_feature_flag(:refactor_ci_minutes_consumption, @project)
   end
 end
 

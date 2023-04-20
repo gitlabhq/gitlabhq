@@ -67,6 +67,7 @@ export const initGitlabWebIDE = async (el) => {
     links: {
       feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
       userPreferences: el.dataset.userPreferencesPath,
+      signIn: el.dataset.signInPath,
     },
     editorFont: {
       srcUrl: editorFontSrcUrl,

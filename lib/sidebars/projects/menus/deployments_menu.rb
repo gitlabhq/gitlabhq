@@ -47,9 +47,9 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Feature Flags'),
+            title: s_('FeatureFlags|Feature flags'),
             link: project_feature_flags_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             active_routes: { controller: :feature_flags },
             container_html_options: { class: 'shortcuts-feature-flags' },
             item_id: :feature_flags
@@ -64,7 +64,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Environments'),
             link: project_environments_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             active_routes: { controller: :environments },
             container_html_options: { class: 'shortcuts-environments' },
             item_id: :environments
@@ -80,7 +80,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Releases'),
             link: project_releases_path(context.project),
-            super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             item_id: :releases,
             active_routes: { controller: :releases },
             container_html_options: { class: 'shortcuts-deployments-releases' }

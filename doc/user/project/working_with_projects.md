@@ -328,7 +328,7 @@ download starts, the `insteadOf` configuration sends the traffic to the secondar
 
 - [Import a project](../../user/project/import/index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
-- [Fork a project](repository/forking_workflow.md#creating-a-fork).
+- [Fork a project](repository/forking_workflow.md#create-a-fork).
 - [Adjust project visibility and access levels](settings/index.md#configure-project-visibility-features-and-permissions).
 - [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)
 

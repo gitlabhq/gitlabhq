@@ -93,7 +93,7 @@ describe('UpdateUsername component', () => {
       await findNewUsernameInput().setValue(newUsername);
     });
 
-    it('confirmation modal contains proper header and body', async () => {
+    it('confirmation modal contains proper header and body', () => {
       const { modal } = findElements();
 
       expect(modal.props('title')).toBe('Change username?');

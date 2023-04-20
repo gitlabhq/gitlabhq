@@ -12,7 +12,7 @@ RSpec.describe 'Job Artifacts (GraphQL fixtures)' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:user) { create(:user) }
 
-    job_artifacts_query_path = 'artifacts/graphql/queries/get_job_artifacts.query.graphql'
+    job_artifacts_query_path = 'ci/artifacts/graphql/queries/get_job_artifacts.query.graphql'
 
     it "graphql/#{job_artifacts_query_path}.json" do
       create(:ci_build, :failed, :artifacts, :trace_artifact, pipeline: pipeline)

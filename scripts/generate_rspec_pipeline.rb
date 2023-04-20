@@ -43,12 +43,20 @@ class GenerateRspecPipeline
   DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS =
     DURATION_OF_THE_TEST_SUITE_IN_SECONDS / NUMBER_OF_TESTS_IN_TOTAL_IN_THE_TEST_SUITE
 
-  # rspec_files_path: A file containing RSpec files to run, separated by a space
   # pipeline_template_path: A YAML pipeline configuration template to generate the final pipeline config from
-  def initialize(pipeline_template_path:, rspec_files_path: nil, knapsack_report_path: nil)
+  # rspec_files_path: A file containing RSpec files to run, separated by a space
+  # knapsack_report_path: A file containing a Knapsack report
+  # test_suite_prefix: An optional test suite folder prefix (e.g. `ee/` or `jh/`)
+  # generated_pipeline_path: An optional filename where to write the pipeline config (defaults to
+  #                          `"#{pipeline_template_path}.yml"`)
+  def initialize(
+    pipeline_template_path:, rspec_files_path: nil, knapsack_report_path: nil, test_suite_prefix: nil,
+    generated_pipeline_path: nil)
     @pipeline_template_path = pipeline_template_path.to_s
     @rspec_files_path = rspec_files_path.to_s
     @knapsack_report_path = knapsack_report_path.to_s
+    @test_suite_prefix = test_suite_prefix
+    @generated_pipeline_path = generated_pipeline_path || "#{pipeline_template_path}.yml"
 
     raise ArgumentError unless File.exist?(@pipeline_template_path)
   end
@@ -56,11 +64,14 @@ class GenerateRspecPipeline
   def generate!
     if all_rspec_files.empty?
       info "Using #{SKIP_PIPELINE_YML_FILE} due to no RSpec files to run"
-      FileUtils.cp(SKIP_PIPELINE_YML_FILE, pipeline_filename)
+      FileUtils.cp(SKIP_PIPELINE_YML_FILE, generated_pipeline_path)
       return
     end
 
-    File.open(pipeline_filename, 'w') do |handle|
+    info "pipeline_template_path: #{pipeline_template_path}"
+    info "generated_pipeline_path: #{generated_pipeline_path}"
+
+    File.open(generated_pipeline_path, 'w') do |handle|
       pipeline_yaml = ERB.new(File.read(pipeline_template_path)).result_with_hash(**erb_binding)
       handle.write(pipeline_yaml.squeeze("\n").strip)
     end
@@ -68,7 +79,8 @@ class GenerateRspecPipeline
 
   private
 
-  attr_reader :pipeline_template_path, :rspec_files_path, :knapsack_report_path
+  attr_reader :pipeline_template_path, :rspec_files_path, :knapsack_report_path, :test_suite_prefix,
+    :generated_pipeline_path
 
   def info(text)
     $stdout.puts "[#{self.class.name}] #{text}"
@@ -78,12 +90,11 @@ class GenerateRspecPipeline
     @all_rspec_files ||= File.exist?(rspec_files_path) ? File.read(rspec_files_path).split(' ') : []
   end
 
-  def pipeline_filename
-    @pipeline_filename ||= "#{pipeline_template_path}.yml"
-  end
-
   def erb_binding
-    { rspec_files_per_test_level: rspec_files_per_test_level }
+    {
+      rspec_files_per_test_level: rspec_files_per_test_level,
+      test_suite_prefix: test_suite_prefix
+    }
   end
 
   def rspec_files_per_test_level
@@ -91,7 +102,7 @@ class GenerateRspecPipeline
       all_remaining_rspec_files = all_rspec_files.dup
       TEST_LEVELS.each_with_object(Hash.new { |h, k| h[k] = {} }) do |test_level, memo| # rubocop:disable Rails/IndexWith
         memo[test_level][:files] = all_remaining_rspec_files
-          .grep(Quality::TestLevel.new.regexp(test_level))
+          .grep(test_level_service.regexp(test_level, true))
           .tap { |files| files.each { |file| all_remaining_rspec_files.delete(file) } }
         memo[test_level][:parallelization] = optimal_nodes_count(test_level, memo[test_level][:files])
       end
@@ -125,10 +136,15 @@ class GenerateRspecPipeline
         remaining_knapsack_report = knapsack_report.dup
         TEST_LEVELS.each_with_object({}) do |test_level, memo|
           matching_data_per_test_level = remaining_knapsack_report
-            .select { |test_file, _| test_file.match?(Quality::TestLevel.new.regexp(test_level)) }
+            .select { |test_file, _| test_file.match?(test_level_service.regexp(test_level, true)) }
             .tap { |test_data| test_data.each { |file, _| remaining_knapsack_report.delete(file) } }
+
           memo[test_level] =
-            matching_data_per_test_level.values.sum / matching_data_per_test_level.keys.size
+            if matching_data_per_test_level.empty?
+              DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS
+            else
+              matching_data_per_test_level.values.sum / matching_data_per_test_level.keys.size
+            end
         end
       else
         TEST_LEVELS.each_with_object({}) do |test_level, memo| # rubocop:disable Rails/IndexWith
@@ -145,6 +161,10 @@ class GenerateRspecPipeline
         info "[ERROR] Knapsack report at #{knapsack_report_path} couldn't be parsed! Error:\n#{e}"
         {}
       end
+  end
+
+  def test_level_service
+    @test_level_service ||= Quality::TestLevel.new(test_suite_prefix)
   end
 end
 
@@ -164,6 +184,15 @@ if $PROGRAM_NAME == __FILE__
 
     opts.on("-k", "--knapsack-report-path path", String, "Path to a Knapsack report") do |value|
       options[:knapsack_report_path] = value
+    end
+
+    opts.on("-p", "--test-suite-prefix test_suite_prefix", String, "Test suite folder prefix") do |value|
+      options[:test_suite_prefix] = value
+    end
+
+    opts.on("-o", "--generated-pipeline-path generated_pipeline_path", String, "Path where to write the pipeline " \
+                                                                               "config") do |value|
+      options[:generated_pipeline_path] = value
     end
 
     opts.on("-h", "--help", "Prints this help") do

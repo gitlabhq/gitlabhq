@@ -73,7 +73,7 @@ module NavbarStructureHelper
     insert_after_sub_nav_item(
       _('Package Registry'),
       within: _('Packages and registries'),
-      new_sub_nav_item_name: _('Infrastructure Registry')
+      new_sub_nav_item_name: _('Terraform modules')
     )
   end
 
@@ -111,6 +111,14 @@ module NavbarStructureHelper
       _('Google Cloud'),
       within: _('Infrastructure'),
       new_sub_nav_item_name: _('AWS')
+    )
+  end
+
+  def insert_model_experiments_nav(within)
+    insert_after_sub_nav_item(
+      within,
+      within: _('Packages and registries'),
+      new_sub_nav_item_name: _('Model experiments')
     )
   end
 

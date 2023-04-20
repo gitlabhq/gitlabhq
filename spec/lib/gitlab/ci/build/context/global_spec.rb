@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Context::Global do
+RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_composition do
   let(:pipeline)       { create(:ci_pipeline) }
   let(:yaml_variables) { {} }
 
@@ -14,7 +14,14 @@ RSpec.describe Gitlab::Ci::Build::Context::Global do
     it { is_expected.to include('CI_PROJECT_PATH'    => pipeline.project.full_path) }
 
     it { is_expected.not_to have_key('CI_JOB_NAME') }
-    it { is_expected.not_to have_key('CI_BUILD_REF_NAME') }
+
+    context 'when FF `ci_remove_legacy_predefined_variables` is disabled' do
+      before do
+        stub_feature_flags(ci_remove_legacy_predefined_variables: false)
+      end
+
+      it { is_expected.not_to have_key('CI_BUILD_REF_NAME') }
+    end
 
     context 'with passed yaml variables' do
       let(:yaml_variables) { [{ key: 'SUPPORTED', value: 'parsed', public: true }] }

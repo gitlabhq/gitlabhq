@@ -15,20 +15,6 @@ module Gitlab
       Rails.root.join("public/-/emojis/#{EMOJI_VERSION}")
     end
 
-    def emoji_image_tag(name, src)
-      image_options = {
-        class: 'emoji',
-        src: src,
-        title: ":#{name}:",
-        alt: ":#{name}:",
-        height: 20,
-        width: 20,
-        align: 'absmiddle'
-      }
-
-      ActionController::Base.helpers.tag(:img, image_options)
-    end
-
     # CSS sprite fallback takes precedence over image fallback
     # @param [TanukiEmoji::Character] emoji
     # @param [Hash] options

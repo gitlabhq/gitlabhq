@@ -1,6 +1,6 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import { getByRole } from '@testing-library/dom';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+
 import HookTestDropdown from '~/webhooks/components/test_dropdown.vue';
 
 const mockItems = [
@@ -14,17 +14,14 @@ describe('HookTestDropdown', () => {
   let wrapper;
 
   const findDisclosure = () => wrapper.findComponent(GlDisclosureDropdown);
-  const clickItem = (itemText) => {
-    const item = getByRole(wrapper.element, 'button', { name: itemText });
-    item.dispatchEvent(new MouseEvent('click'));
-  };
 
   const createComponent = (props) => {
-    wrapper = mount(HookTestDropdown, {
+    wrapper = mountExtended(HookTestDropdown, {
       propsData: {
         items: mockItems,
         ...props,
       },
+      attachTo: document.body,
     });
   };
 
@@ -55,7 +52,7 @@ describe('HookTestDropdown', () => {
         });
       });
 
-      clickItem(mockItems[0].text);
+      wrapper.findByTestId('disclosure-dropdown-item').find('a').trigger('click');
 
       return railsEventPromise;
     });

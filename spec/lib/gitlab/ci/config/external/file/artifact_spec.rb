@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :pipeline_composition do
   let(:parent_pipeline) { create(:ci_pipeline) }
+  let(:project) { parent_pipeline.project }
   let(:variables) {}
   let(:context) do
-    Gitlab::Ci::Config::External::Context.new(variables: variables, parent_pipeline: parent_pipeline)
+    Gitlab::Ci::Config::External::Context
+      .new(variables: variables, parent_pipeline: parent_pipeline, project: project)
   end
 
   let(:external_file) { described_class.new(params, context) }
@@ -43,7 +45,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
     end
 
     describe 'when used in non child pipeline context' do
-      let(:parent_pipeline) { nil }
+      let(:context) { Gitlab::Ci::Config::External::Context.new }
       let(:params) { { artifact: 'generated.yml' } }
 
       let(:expected_error) do
@@ -201,7 +203,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
     it {
       is_expected.to eq(
-        context_project: nil,
+        context_project: project.full_path,
         context_sha: nil,
         type: :artifact,
         location: 'generated.yml',
@@ -218,13 +220,44 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
 
       it {
         is_expected.to eq(
-          context_project: nil,
+          context_project: project.full_path,
           context_sha: nil,
           type: :artifact,
           location: 'generated.yml',
           extra: { job_name: 'xxxxxxxxxxxxxxxxxxxxxxx' }
         )
       }
+    end
+  end
+
+  describe '#to_hash' do
+    context 'when interpolation is being used' do
+      let!(:job) { create(:ci_build, name: 'generator', pipeline: parent_pipeline) }
+      let!(:artifacts) { create(:ci_job_artifact, :archive, job: job) }
+      let!(:metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      before do
+        allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
+          allow(reader).to receive(:read).and_return(template)
+        end
+      end
+
+      let(:template) do
+        <<~YAML
+        spec:
+          inputs:
+            env:
+        ---
+        deploy:
+          script: deploy $[[ inputs.env ]]
+        YAML
+      end
+
+      let(:params) { { artifact: 'generated.yml', job: 'generator', with: { env: 'production' } } }
+
+      it 'correctly interpolates content' do
+        expect(external_file.to_hash).to eq({ deploy: { script: 'deploy production' } })
+      end
     end
   end
 end

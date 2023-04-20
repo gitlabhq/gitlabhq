@@ -334,12 +334,12 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
   describe 'Deployments' do
     let(:page) { Nokogiri::HTML.parse(rendered) }
 
-    describe 'Feature Flags' do
+    describe 'Feature flags' do
       it 'has a link to the feature flags page' do
         render
 
-        expect(page.at_css('.shortcuts-deployments').parent.css('[aria-label="Feature Flags"]')).not_to be_empty
-        expect(rendered).to have_link('Feature Flags', href: project_feature_flags_path(project))
+        expect(page.at_css('.shortcuts-deployments').parent.css('[aria-label="Feature flags"]')).not_to be_empty
+        expect(rendered).to have_link('Feature flags', href: project_feature_flags_path(project))
       end
 
       describe 'when the user does not have access' do
@@ -348,7 +348,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
         it 'does not have a link to the feature flags page' do
           render
 
-          expect(rendered).not_to have_link('Feature Flags')
+          expect(rendered).not_to have_link('Feature flags')
         end
       end
     end
@@ -567,11 +567,11 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       end
     end
 
-    describe 'Infrastructure Registry' do
-      it 'shows link to infrastructure registry page' do
+    describe 'Terraform modules' do
+      it 'shows link to terraform modules page' do
         render
 
-        expect(rendered).to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
+        expect(rendered).to have_link('Terraform modules', href: project_infrastructure_registry_index_path(project))
       end
 
       context 'when package registry config is disabled' do
@@ -580,7 +580,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
 
           render
 
-          expect(rendered).not_to have_link('Infrastructure Registry', href: project_infrastructure_registry_index_path(project))
+          expect(rendered).not_to have_link('Terraform modules', href: project_infrastructure_registry_index_path(project))
         end
       end
     end

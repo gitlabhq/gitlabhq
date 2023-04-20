@@ -186,7 +186,7 @@ export default {
     </template>
     <template #body>
       <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
-        <p class="gl-mb-3">
+        <p class="gl-mb-0 gl-py-2 gl-ml-3 gl-text-gray-500">
           {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
         </p>
       </div>

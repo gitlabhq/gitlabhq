@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'check_forced_decomposition initializer', feature_category: :pods do
+RSpec.describe 'check_forced_decomposition initializer', feature_category: :cell do
   subject(:check_forced_decomposition) do
     load Rails.root.join('config/initializers/check_forced_decomposition.rb')
   end

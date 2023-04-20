@@ -5,8 +5,6 @@ module Gitlab
     module RequestStoreCallbacks
       def self.install
         ::ActionCable::Server::Worker.set_callback :work, :around, &wrapper
-        ::ActionCable::Channel::Base.set_callback :subscribe, :around, &wrapper
-        ::ActionCable::Channel::Base.set_callback :unsubscribe, :around, &wrapper
       end
 
       def self.wrapper

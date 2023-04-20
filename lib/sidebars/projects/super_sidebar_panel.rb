@@ -13,14 +13,18 @@ module Sidebars
         @menus = []
 
         add_menu(Sidebars::StaticMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::ManageMenu.new(context))
         add_menu(Sidebars::Projects::SuperSidebarMenus::PlanMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::CodeMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::BuildMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::SecureMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::OperationsMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::MonitorMenu.new(context))
+        add_menu(Sidebars::Projects::SuperSidebarMenus::AnalyzeMenu.new(context))
 
+        # Pick old menus, will be obsolete once everything is in their own
+        # super sidebar menu
         pick_from_old_menus(old_menus)
-
-        insert_menu_before(
-          Sidebars::Projects::Menus::MonitorMenu,
-          Sidebars::Projects::SuperSidebarMenus::OperationsMenu.new(context)
-        )
 
         insert_menu_before(
           Sidebars::Projects::Menus::SettingsMenu,

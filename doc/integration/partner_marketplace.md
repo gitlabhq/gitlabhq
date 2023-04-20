@@ -60,7 +60,7 @@ To access the Marketplace API you need to:
 - Retrieve an OAuth access token.
 
 Marketplace API endpoints are secured with [OAuth 2.0](https://oauth.net/2/). OAuth is an authorization framework
-that grants 3rd party or client applications, like a GitLab Partner application, limited access to resources on an
+that grants 3rd party or client applications, like a Marketplace partner application, limited access to resources on an
 HTTP service, like the Customers Portal.
 
 OAuth 2.0 uses _grant types_ (or _flows_) that describe how a client application gets authorization in
@@ -72,14 +72,14 @@ own resources, instead of accessing resources on behalf of a user.
 
 ### Step 1: Request access
 
-Before you can use the Marketplace API, you must contact your GitLab Partner Manager or email [`partnerorderops`](mailto:partnerorderops@gitlab.com)
+Before you can use the Marketplace API, you must contact your Marketplace partner Manager or email [`partnerorderops`](mailto:partnerorderops@gitlab.com)
 to request access. After you request access, GitLab configures the following accounts and credentials for you:
 
 1. Client credentials. Marketplace APIs are secured with OAuth 2.0. The client credentials include the client ID and client secret
    that you need to retrieve the OAuth access token.
 1. Invoice owner account in Zuora system. Required for invoice processing.
 1. Distributor account in Salesforce system.
-1. Trading partner account in Salesforce system.
+1. Trading partner account in Salesforce system. GitLab adds the Trading Partner ID to a permitted list to pass the validations.
 
 ### Step 2: Retrieve an access token
 
@@ -121,7 +121,7 @@ curl \
 
 ## Create a new customer subscription
 
-To create a new customer subscription from a GitLab Partner client application,
+To create a new customer subscription from a Marketplace partner client application,
 
 - Make an authorized POST request to the
 [`/api/v1/marketplace/subscriptions`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/post_api_v1_marketplace_subscriptions)
@@ -129,8 +129,8 @@ endpoint in the Customers Portal with the following parameters in JSON format:
 
 | Parameter                | Type   | Required | Description                                                                                                                                          |
 |--------------------------|--------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `externalSubscriptionId` | string | yes      | ID of the subscription on the GitLab Partner system.                                                                                                 |
-| `tradingPartnerId`       | string | yes      | ID of the GitLab Partner account on the Customers Portal.                                                                                            |
+| `externalSubscriptionId` | string | yes      | ID of the subscription on the Marketplace partner system.                                                                                            |
+| `tradingPartnerId`       | string | yes      | ID of the Trading Partner account in Salesforce. Received from GitLab.                                                                               |
 | `customer`               | object | yes      | Information about the customer. Must include company name. Contact must include `firstName`, `lastName` and `email`. Address must include `country`. |
 | `orderLines`             | array  | yes      | Specifies the product purchased. Must include `quantity` and `productId`.                                                                            |
 
@@ -147,7 +147,7 @@ To get the status of a given subscription,
 [`/api/v1/marketplace/subscriptions/{external_subscription_id}`](https://customers.staging.gitlab.com/openapi_docs/marketplace#/marketplace/get_api_v1_marketplace_subscriptions__external_subscription_id_)
 endpoint in the Customers Portal.
 
-The request must include the GitLab partner system ID of the subscription to fetch the status for.
+The request must include the Marketplace partner system ID of the subscription to fetch the status for.
 
 If the request is successful, the response body contains the status of the subscription provision. The status can be:
 

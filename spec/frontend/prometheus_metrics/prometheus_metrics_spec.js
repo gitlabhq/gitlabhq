@@ -1,5 +1,6 @@
+import prometheusIntegration from 'test_fixtures/integrations/prometheus/prometheus_integration.html';
 import MockAdapter from 'axios-mock-adapter';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -8,10 +9,8 @@ import PrometheusMetrics from '~/prometheus_metrics/prometheus_metrics';
 import { metrics2 as metrics, missingVarMetrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {
-  const FIXTURE = 'integrations/prometheus/prometheus_integration.html';
-
   beforeEach(() => {
-    loadHTMLFixture(FIXTURE);
+    setHTMLFixture(prometheusIntegration);
   });
 
   describe('constructor', () => {

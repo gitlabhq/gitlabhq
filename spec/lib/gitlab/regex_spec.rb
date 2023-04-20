@@ -79,10 +79,10 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
 
     it {
       is_expected
-        .to eq("cannot start with a non-alphanumeric character except for periods or underscores, " \
-               "can contain only alphanumeric characters, forward slashes, periods, and underscores, " \
-               "cannot end with a period or forward slash, and has a relative path structure " \
-               "with no http protocol chars or leading or trailing forward slashes")
+        .to eq("must have a relative path structure with no HTTP " \
+               "protocol characters, or leading or trailing forward slashes. Path segments must not start or " \
+               "end with a special character, and must not contain consecutive special characters."
+              )
     }
   end
 
@@ -101,13 +101,14 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('good_for+you') }
     it { is_expected.not_to match('source/') }
     it { is_expected.not_to match('.source/full./path') }
+    it { is_expected.not_to match('.source/.full/.path') }
+    it { is_expected.not_to match('_source') }
+    it { is_expected.not_to match('.source') }
 
     it { is_expected.to match('source') }
-    it { is_expected.to match('.source') }
-    it { is_expected.to match('_source') }
     it { is_expected.to match('source/full') }
     it { is_expected.to match('source/full/path') }
-    it { is_expected.to match('.source/.full/.path') }
+    it { is_expected.to match('sou_rce/fu-ll/pa.th') }
     it { is_expected.to match('domain_namespace') }
     it { is_expected.to match('gitlab-migration-test') }
     it { is_expected.to match('1-project-path') }
@@ -115,10 +116,22 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('') } # it is possible to pass an empty string for destination_namespace in bulk_import POST request
   end
 
+  describe '.bulk_import_source_full_path_regex_message' do
+    subject { described_class.bulk_import_source_full_path_regex_message }
+
+    it {
+      is_expected
+        .to eq(
+          "must have a relative path structure with no HTTP " \
+          "protocol characters, or leading or trailing forward slashes. Path segments must not start or " \
+          "end with a special character, and must not contain consecutive special characters."
+        )
+    }
+  end
+
   describe '.bulk_import_source_full_path_regex' do
     subject { described_class.bulk_import_source_full_path_regex }
 
-    it { is_expected.not_to match('?gitlab') }
     it { is_expected.not_to match("Users's something") }
     it { is_expected.not_to match('/source') }
     it { is_expected.not_to match('http:') }
@@ -126,20 +139,32 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('example.com/?stuff=true') }
     it { is_expected.not_to match('example.com:5000/?stuff=true') }
     it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
-    it { is_expected.not_to match('_good_for_me!') }
-    it { is_expected.not_to match('good_for+you') }
     it { is_expected.not_to match('source/') }
-    it { is_expected.not_to match('.source/full./path') }
     it { is_expected.not_to match('') }
+    it { is_expected.not_to match('.source/full./path') }
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('group/@*%_my_other-project-----') }
+    it { is_expected.not_to match('_foog-for-me!') }
+    it { is_expected.not_to match('.source/full/path.') }
 
+    it { is_expected.to match('good_for+you') }
     it { is_expected.to match('source') }
     it { is_expected.to match('.source') }
     it { is_expected.to match('_source') }
     it { is_expected.to match('source/full') }
     it { is_expected.to match('source/full/path') }
-    it { is_expected.to match('.source/.full/.path') }
     it { is_expected.to match('domain_namespace') }
     it { is_expected.to match('gitlab-migration-test') }
+    it { is_expected.to match('source/full/path-') }
+    it { is_expected.to match('.source/full/path') }
+    it { is_expected.to match('.source/.full/.path') }
+    it { is_expected.to match('source/full/.path') }
+    it { is_expected.to match('source/full/..path') }
+    it { is_expected.to match('source/full/---1path') }
+    it { is_expected.to match('source/full/-___path') }
+    it { is_expected.to match('source/full/path---') }
+    it { is_expected.to match('group/__my_other-project-----') }
   end
 
   describe '.group_path_regex' do
@@ -1164,10 +1189,21 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
         MARKDOWN
       end
 
-      it { is_expected.to match(%(<section>\nsomething\n</section>)) }
-      it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
-      it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
-      it { expect(subject.match(markdown)[:html]).to eq expected }
+      describe 'normal regular expression' do
+        it { is_expected.to match(%(<section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
+        it { expect(subject.match(markdown)[:html]).to eq expected }
+      end
+
+      describe 'untrusted regular expression' do
+        subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED, multiline: true) }
+
+        it { is_expected.to match(%(<section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
+        it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
+        it { expect(subject.match(markdown)[:html]).to eq expected }
+      end
     end
 
     context 'HTML comment lines' do

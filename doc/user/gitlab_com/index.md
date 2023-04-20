@@ -65,7 +65,7 @@ The IP addresses for `mg.gitlab.com` are subject to change at any time.
 
 On GitLab.com, there's a mailbox configured for Service Desk with the email address:
 `contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
-[custom suffix](../project/service_desk.md#configuring-a-custom-email-address-suffix) in project
+[custom suffix](../project/service_desk.md#configure-a-custom-email-address-suffix) in project
 settings.
 
 ## Backups
@@ -128,13 +128,14 @@ Host gitlab.com
 Some settings for [GitLab Pages](../project/pages/index.md) differ from the
 [defaults for self-managed instances](../../administration/pages/index.md):
 
-| Setting                      | GitLab.com             |
-|------------------------------|------------------------|
-| Domain name                  | `gitlab.io`            |
-| IP address                   | `35.185.44.232`        |
-| Support for custom domains   | **{check-circle}** Yes |
-| Support for TLS certificates | **{check-circle}** Yes |
-| Maximum site size            | 1 GB                   |
+| Setting                                           | GitLab.com             |
+|---------------------------------------------------|------------------------|
+| Domain name                                       | `gitlab.io`            |
+| IP address                                        | `35.185.44.232`        |
+| Support for custom domains                        | **{check-circle}** Yes |
+| Support for TLS certificates                      | **{check-circle}** Yes |
+| Maximum site size                                 | 1 GB                   |
+| Number of custom domains per GitLab Pages website | 150                    |
 
 The maximum size of your Pages site depends on the maximum artifact size,
 which is part of [GitLab CI/CD](#gitlab-cicd).
@@ -152,7 +153,7 @@ the related documentation.
 | Artifacts maximum size (compressed)                                              | 1 GB                                                                                                                      | See [Maximum artifacts size](../../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size). |
 | Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)               | From June 22, 2020, deleted after 30 days unless otherwise specified (artifacts created before that date have no expiry). | See [Default artifacts expiration](../admin_area/settings/continuous_integration.md#default-artifacts-expiration). |
 | Scheduled Pipeline Cron                                                          | `*/5 * * * *`                                                                                                             | See [Pipeline schedules advanced configuration](../../administration/cicd.md#change-maximum-scheduled-pipeline-frequency). |
-| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, and unlimited otherwise.                                                 | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
+| Maximum jobs in active pipelines                                                 | `500` for Free tier, `1000` for all trial tiers, `20000` for Premium, and `100000` for Ultimate.                                                 | See [Number of jobs in active pipelines](../../administration/instance_limits.md#number-of-jobs-in-active-pipelines). |
 | Maximum CI/CD subscriptions to a project                                         | `2`                                                                                                                       | See [Number of CI/CD subscriptions to a project](../../administration/instance_limits.md#number-of-cicd-subscriptions-to-a-project). |
 | Maximum number of pipeline triggers in a project                                 | `25000` for Free tier, Unlimited for all paid tiers                                                                       | See [Limit the number of pipeline triggers](../../administration/instance_limits.md#limit-the-number-of-pipeline-triggers). |
 | Maximum pipeline schedules in projects                                           | `10` for Free tier, `50` for all paid tiers                                                                               | See [Number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules). |
@@ -189,7 +190,7 @@ the default value [is the same as for self-managed instances](../admin_area/sett
 | Setting                       | GitLab.com default |
 |-------------------------------|--------------------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
-| [Maximum import size](../project/settings/import_export.md#maximum-import-file-size)                        | 5 GB  |
+| [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                   | 5 GB  |
 | Maximum attachment size       | 100 MB              |
 
 If you are near or over the repository size limit, you can either

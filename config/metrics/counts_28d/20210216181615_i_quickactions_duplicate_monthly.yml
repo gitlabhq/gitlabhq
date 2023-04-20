@@ -6,7 +6,6 @@ description: Count of MAU using the `/duplicate` quick action to mark an issue a
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: issue_tracking
 value_type: number
 status: active
 time_frame: 28d

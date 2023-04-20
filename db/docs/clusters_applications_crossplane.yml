@@ -1,7 +1,7 @@
 ---
 table_name: clusters_applications_crossplane
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: "(Deprecated) A GitLab managed Crossplane installation in a Kubernetes cluster"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18797
 milestone: '12.5'

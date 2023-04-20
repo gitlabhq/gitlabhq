@@ -213,7 +213,7 @@ describe('CreateTokenModal', () => {
       await mockCreatedResponse(createAgentTokenErrorResponse);
     });
 
-    it('displays the error message', async () => {
+    it('displays the error message', () => {
       expect(findAlert().text()).toBe(
         createAgentTokenErrorResponse.data.clusterAgentTokenCreate.errors[0],
       );

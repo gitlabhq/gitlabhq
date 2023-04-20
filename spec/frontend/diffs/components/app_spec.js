@@ -11,6 +11,7 @@ import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
+import findingsDrawer from '~/diffs/components/shared/findings_drawer.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
@@ -174,7 +175,7 @@ describe('diffs/components/app', () => {
   });
 
   describe('codequality diff', () => {
-    it('does not fetch code quality data on FOSS', async () => {
+    it('does not fetch code quality data on FOSS', () => {
       createComponent();
       jest.spyOn(wrapper.vm, 'fetchCodequality');
       wrapper.vm.fetchData(false);
@@ -714,19 +715,27 @@ describe('diffs/components/app', () => {
       });
 
       it.each`
-        currentDiffFileId | targetFile
-        ${'123'}          | ${2}
-        ${'312'}          | ${1}
+        currentDiffFileId | targetFile | newFileByFile
+        ${'123'}          | ${2}       | ${false}
+        ${'312'}          | ${1}       | ${true}
       `(
         'calls navigateToDiffFileIndex with $index when $link is clicked',
-        async ({ currentDiffFileId, targetFile }) => {
-          createComponent({ fileByFileUserPreference: true }, ({ state }) => {
-            state.diffs.treeEntries = {
-              123: { type: 'blob', fileHash: '123' },
-              312: { type: 'blob', fileHash: '312' },
-            };
-            state.diffs.currentDiffFileId = currentDiffFileId;
-          });
+        async ({ currentDiffFileId, targetFile, newFileByFile }) => {
+          createComponent(
+            { fileByFileUserPreference: true },
+            ({ state }) => {
+              state.diffs.treeEntries = {
+                123: { type: 'blob', fileHash: '123', filePaths: { old: '1234', new: '123' } },
+                312: { type: 'blob', fileHash: '312', filePaths: { old: '3124', new: '312' } },
+              };
+              state.diffs.currentDiffFileId = currentDiffFileId;
+            },
+            {
+              glFeatures: {
+                singleFileFileByFile: newFileByFile,
+              },
+            },
+          );
 
           await nextTick();
 
@@ -736,9 +745,28 @@ describe('diffs/components/app', () => {
 
           await nextTick();
 
-          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
+          expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith({
+            index: targetFile - 1,
+            singleFile: newFileByFile,
+          });
         },
       );
+    });
+  });
+
+  describe('findings-drawer', () => {
+    it('does not render findings-drawer when codeQualityInlineDrawer flag is off', () => {
+      createComponent();
+      expect(wrapper.findComponent(findingsDrawer).exists()).toBe(false);
+    });
+
+    it('does render findings-drawer when codeQualityInlineDrawer flag is on', () => {
+      createComponent({}, () => {}, {
+        glFeatures: {
+          codeQualityInlineDrawer: true,
+        },
+      });
+      expect(wrapper.findComponent(findingsDrawer).exists()).toBe(true);
     });
   });
 });

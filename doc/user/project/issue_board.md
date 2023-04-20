@@ -53,7 +53,7 @@ the issue board feature.
 > - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to GitLab Free in 12.1.
 > - Multiple issue boards per group are available in GitLab Premium.
 
-Multiple issue boards allow for more than one issue board for a given project in GitLab Free or group in GitLab Premium and higher tiers.
+Multiple issue boards allow for more than one issue board for a given project in the Free tier or group in the Premium and Ultimate tier.
 This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.
@@ -97,9 +97,9 @@ Here are some common use cases for issue boards.
 
 For examples of using issue boards along with [epics](../group/epics/index.md),
 [issue health status](issues/managing_issues.md#health-status), and
-[scoped labels](labels.md#scoped-labels) for various Agile frameworks, check:
+[scoped labels](labels.md#scoped-labels) for various Agile frameworks, see:
 
-- The [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
+- [How to use GitLab for Agile portfolio planning and project management](https://about.gitlab.com/blog/2020/11/11/gitlab-for-agile-portfolio-planning-project-management/) blog post (November 2020)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [Cross-project Agile work management with GitLab](https://www.youtube.com/watch?v=5J0bonGoECs) (15 min, July 2020)
 
@@ -132,10 +132,17 @@ If you have the labels **Backend**, **Frontend**, **Staging**, and
 With [multiple issue boards](#multiple-issue-boards),
 each team can have their own board to organize their workflow individually.
 
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=2IaMXteKSD4">Portfolio Planning - Portfolio Management</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/2IaMXteKSD4" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
 #### Scrum team
 
 With multiple issue boards, each team has one board. Now you can move issues through each
-part of the process. For instance: **To Do**, **Doing**, and **Done**.
+part of the process. For example: **To Do**, **Doing**, and **Done**.
 
 #### Organization of topics
 
@@ -207,7 +214,7 @@ Prerequisites:
 - You must have at least the Reporter role for the project.
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
-of that issue's project or root group. This means the issue will be at the bottom of any issue list that
+of that issue's project or root group. This means the issue is at the bottom of any issue list that
 it appears in.
 
 When you visit a board, issues appear ordered in any list. You're able to change
@@ -225,6 +232,18 @@ board, for example.
 This ordering also affects [issue lists](issues/sorting_issue_lists.md).
 Changing the order in an issue board changes the ordering in an issue list,
 and vice versa.
+
+## Focus mode
+
+To enable or disable focus mode, in the upper-right corner, select **Toggle focus mode** (**{maximize}**).
+In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
+
+## Group issue boards
+
+Accessible at the group navigation level, a group issue board offers the same features as a project-level board.
+It can display issues from all projects that fall under the group and its descendant subgroups.
+
+Users on GitLab Free can use a single group issue board.
 
 ## GitLab Enterprise features for issue boards
 
@@ -245,7 +264,7 @@ This allows you to create unique boards according to your team's need.
 
 You can define the scope of your board when creating it or by selecting the **Edit board** button.
 After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
-filter through these in the search bar. In order to do that, you need to remove the desired scope
+filter through these in the search bar. To do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
 If you don't have editing permission in a board, you're still able to see the configuration by
@@ -254,14 +273,6 @@ selecting **View scope**.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of
 the configurable issue board feature.
-
-### Focus mode
-
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28597) to GitLab Free SaaS in 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212331) to GitLab Free self-managed in 13.0.
-
-To enable or disable focus mode, select the **Toggle focus mode** button (**{maximize}**) at the top
-right. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
 ### Sum of issue weights **(PREMIUM)**
 
@@ -272,13 +283,6 @@ belong to that list. This is useful when using boards for capacity allocation,
 especially in combination with [assignee lists](#assignee-lists).
 
 ![issue board summed weights](img/issue_board_summed_weights_v13_6.png)
-
-### Group issue boards
-
-Accessible at the group navigation level, a group issue board offers the same features as a project-level board.
-It can display issues from all projects that fall under the group and its descendant subgroups.
-
-Users on GitLab Free can use a single group issue board.
 
 ### Assignee lists **(PREMIUM)**
 
@@ -601,7 +605,7 @@ eventually pick it up. When they're done, they move it to **Done**, to close the
 issue.
 
 This process can be seen clearly when visiting an issue. With every move
-to another list, the label changes and a system note is recorded.
+to another list, the label changes and a [system note](system_notes.md) is recorded.
 
 ![issue board system notes](img/issue_board_system_notes_v13_6.png)
 

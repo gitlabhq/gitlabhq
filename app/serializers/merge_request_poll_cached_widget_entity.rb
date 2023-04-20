@@ -153,6 +153,19 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     end
   end
 
+  expose :favicon_overlay_path,
+    documentation: { type: 'string',
+                     example: '/assets/ci_favicons/favicon_status_success.png' } do |merge_request|
+    if merge_request.state == 'merged'
+      status_name = "favicon_status_#{merge_request.state}"
+      Gitlab::Favicon.mr_status_overlay(status_name)
+    else
+      pipeline = merge_request.actual_head_pipeline
+      status = pipeline&.detailed_status(request.current_user)
+      Gitlab::Favicon.ci_status_overlay(status.favicon) if status
+    end
+  end
+
   private
 
   delegate :current_user, to: :request

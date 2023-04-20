@@ -4,11 +4,14 @@
 default:
   interruptible: true
 
+workflow:
+  name: $PIPELINE_NAME
+
 include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 2.2.0
+    ref: 3.1.2
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -54,19 +57,13 @@ stages:
   stage: test
   tags:
     - e2e
-  needs:
-    - job: trigger-omnibus
-      optional: true
-    - job: download-knapsack-report
-      artifacts: true
-      optional: true
-    - job: check-release-set
   variables:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    GITLAB_QA_OPTS: $EXTRA_GITLAB_QA_OPTS
     # todo: remove in 16.1 milestone when not needed for backwards compatibility anymore
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
@@ -126,13 +123,22 @@ trigger-omnibus-env:
       echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_RUBY2_BUILD=${OMNIBUS_GITLAB_RUBY2_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-      echo "EE=$([[ $FOSS_ONLY == 'true' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
       cat $BUILD_ENV
   artifacts:
     reports:
       dotenv: $BUILD_ENV
+
+trigger-omnibus-env-ce:
+  extends:
+    - trigger-omnibus-env
+    - .rules:omnibus-build-ce
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build-assets-image as-if-foss
 
 trigger-omnibus:
   extends: .rules:omnibus-build
@@ -158,11 +164,22 @@ trigger-omnibus:
     RUBY3_BUILD: $OMNIBUS_GITLAB_RUBY3_BUILD
     RUBY2_BUILD: $OMNIBUS_GITLAB_RUBY2_BUILD
     CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
+    BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
     SKIP_QA_TEST: "true"
     ee: $EE
   trigger:
     project: gitlab-org/build/omnibus-gitlab-mirror
     strategy: depend
+
+trigger-omnibus-ce:
+  extends:
+    - trigger-omnibus
+    - .rules:omnibus-build-ce
+  variables:
+    # Override gitlab repository so that omnibus doesn't use foss repository for CE build
+    GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL
+  needs:
+    - trigger-omnibus-env-ce
 
 download-knapsack-report:
   extends:
@@ -216,27 +233,6 @@ _quarantine:
   stage: test
   variables:
     QA_RSPEC_TAGS: --tag quarantine
-
-# Temporary test job to support the effort of migrating to Super Sidebar
-# https://gitlab.com/groups/gitlab-org/-/epics/9044
-_super-sidebar-nav:
-  extends:
-    - .qa
-    - .parallel
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_KNAPSACK_REPORT_NAME: ee-instance
-    QA_TESTS: ""
-    QA_SUPER_SIDEBAR_ENABLED: "true"
-    QA_ALLURE_RESULTS_DIRECTORY: tmp/allure-results-super-sidebar
-    QA_EXPORT_TEST_METRICS: "false"
-    GITLAB_QA_OPTS: --set-feature-flags super_sidebar_nav=enabled
-    RSPEC_REPORT_OPTS: "--format documentation"
-    SKIP_REPORT_IN_ISSUES: "true"
-  allow_failure: true
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------
 # FF changes
@@ -308,7 +304,7 @@ decomposition-single-db-selective:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Instance::Image
-    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
+    GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -325,7 +321,7 @@ decomposition-multiple-db-selective:
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
-    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
+    GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -342,7 +338,7 @@ object-storage-selective:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage
+    GITLAB_QA_OPTS: --omnibus-config object_storage $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
@@ -360,7 +356,7 @@ object-storage-aws-selective:
     AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
     AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
     AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws $EXTRA_GITLAB_QA_OPTS
 object-storage-aws:
   extends: object-storage-aws-selective
   parallel: 2
@@ -374,7 +370,7 @@ object-storage-gcs-selective:
     GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
     GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
     GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs $EXTRA_GITLAB_QA_OPTS
 object-storage-gcs:
   extends: object-storage-gcs-selective
   parallel: 2
@@ -386,7 +382,7 @@ packages-selective:
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag packages
-    GITLAB_QA_OPTS: --omnibus-config packages
+    GITLAB_QA_OPTS: --omnibus-config packages $EXTRA_GITLAB_QA_OPTS
   rules:
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::Packages/
@@ -452,6 +448,15 @@ group-saml:
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
     - !reference [.rules:test:manual, rules]
 
+oauth:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::OAuth
+  rules:
+    - !reference [.rules:test:qa-default-branch, rules]
+    - if: $QA_SUITES =~ /Test::Integration::OAuth/
+    - !reference [.rules:test:manual, rules]
+
 instance-saml:
   extends: .qa
   variables:
@@ -465,8 +470,6 @@ jira:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Jira
-    JIRA_ADMIN_USERNAME: $QA_JIRA_ADMIN_USERNAME
-    JIRA_ADMIN_PASSWORD: $QA_JIRA_ADMIN_PASSWORD
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/
@@ -626,7 +629,7 @@ registry-object-storage-tls:
     QA_SCENARIO: Test::Integration::RegistryTLS
     QA_RSPEC_TAGS: ""
     GITLAB_TLS_CERTIFICATE: $QA_GITLAB_TLS_CERTIFICATE
-    GITLAB_QA_OPTS: --omnibus-config registry_object_storage
+    GITLAB_QA_OPTS: --omnibus-config registry_object_storage $EXTRA_GITLAB_QA_OPTS
 
 importers:
   extends: .qa
@@ -647,26 +650,9 @@ e2e-test-report:
     - .rules:report:allure-report
   stage: report
   variables:
-    ALLURE_JOB_NAME: e2e-package-and-test
     GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
-
-# Temporary separate test report for super-sidebar test job
-# TODO: remove once super-sidebar is on by default and enabled in tests
-# https://gitlab.com/groups/gitlab-org/-/epics/9044
-e2e-test-report-super-sidebar:
-  extends:
-    - .generate-allure-report-base
-  stage: report
-  needs:
-    - _super-sidebar-nav
-  variables:
-    ALLURE_JOB_NAME: e2e-super-sidebar
-    ALLURE_RESULTS_GLOB: gitlab-qa-run-*/**/allure-results-super-sidebar
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    - !reference [.rules:test:manual, rules]
 
 upload-knapsack-report:
   extends:

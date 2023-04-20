@@ -99,7 +99,7 @@ You can define URL variables directly using the REST API.
 ## Configure your webhook receiver endpoint
 
 Webhook receiver endpoints should be fast and stable.
-Slow and unstable receivers can be [disabled automatically](#failing-webhooks) to ensure system reliability. Webhooks that fail can lead to retries, [which cause duplicate events](#webhook-fails-or-multiple-webhook-requests-are-triggered).
+Slow and unstable receivers can be [disabled automatically](#failing-webhooks) to ensure system reliability. Webhooks that fail might lead to [duplicate events](#webhook-fails-or-multiple-webhook-requests-are-triggered).
 
 Endpoints should follow these best practices:
 
@@ -129,18 +129,17 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
 On GitLab.com, this feature is available.
 
-If a webhook fails repeatedly, it may be disabled automatically.
+Project or group webhooks that fail four consecutive times are automatically disabled.
 
-Webhooks that return response codes in the `5xx` range are understood to be failing
+Project or group webhooks that return response codes in the `5xx` range are understood to be failing
 intermittently and are temporarily disabled. These webhooks are initially disabled
-for 1 minute, which is extended on each retry up to a maximum of 24 hours.
+for one minute, which is extended on each subsequent failure up to a maximum of 24 hours.
 
-Webhooks that return response codes in the `4xx` range are understood to be
+Project or group webhooks that return response codes in the `4xx` range are understood to be
 misconfigured and are permanently disabled until you manually re-enable
 them yourself.
 
-See [Troubleshooting](#troubleshoot-webhooks) for more information on
-disabled webhooks and how to re-enable them.
+For more information about disabled webhooks, see [troubleshooting](#troubleshooting).
 
 ## Test a webhook
 
@@ -151,7 +150,7 @@ For example, to test `push events`, your project should have at least one commit
 
 NOTE:
 Testing is not supported for some types of events for project and groups webhooks.
-Read more in [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
+For more information, see [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
 
 Prerequisites:
 
@@ -259,7 +258,7 @@ Image URLs are not rewritten if:
 
 ## Events
 
-For more information about supported events for Webhooks, go to [Webhook events](webhook_events.md).
+For more information about supported events for webhooks, see [webhook events](webhook_events.md).
 
 ## Delivery headers
 
@@ -275,7 +274,7 @@ Webhook requests to your endpoint include the following headers:
 | `X-Gitlab-Event` | Name of the webhook type. Corresponds to [event types](webhook_events.md) but in the format `"<EVENT> Hook"`. | `"Push Hook"` |
 | `X-Gitlab-Event-UUID` | Unique ID per webhook that is not recursive. A hook is recursive if triggered by an earlier webhook that hit the GitLab instance. Recursive webhooks have the same value for this header. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
 
-## Troubleshoot webhooks
+## Troubleshooting
 
 > **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
 
@@ -293,8 +292,9 @@ To view the table:
 1. Scroll down to the webhooks.
 1. Each [failing webhook](#failing-webhooks) has a badge listing it as:
 
-   - **Failed to connect** if it is misconfigured, and needs manual intervention to re-enable it.
-   - **Fails to connect** if it is temporarily disabled and is retrying later.
+   - **Failed to connect** if it's misconfigured and must be manually re-enabled.
+   - **Fails to connect** if it's temporarily disabled and is automatically
+     re-enabled after the timeout limit has elapsed.
 
    ![Badges on failing webhooks](img/failed_badges.png)
 
@@ -330,8 +330,7 @@ Missing intermediate certificates are common causes of verification failure.
 
 ### Webhook fails or multiple webhook requests are triggered
 
-If you are receiving multiple webhook requests, the webhook might have timed out and
-been retried.
+If you're receiving multiple webhook requests, the webhook might have timed out.
 
 GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#other-limits). On self-managed GitLab instances, you can [change the webhook timeout limit](../../../administration/instance_limits.md#webhook-timeout).
 

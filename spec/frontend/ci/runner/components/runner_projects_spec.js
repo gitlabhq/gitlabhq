@@ -89,7 +89,7 @@ describe('RunnerProjects', () => {
       await waitForPromises();
     });
 
-    it('Shows a heading', async () => {
+    it('Shows a heading', () => {
       const expected = sprintf(I18N_ASSIGNED_PROJECTS, { projectCount: mockProjects.length });
 
       expect(findHeading().text()).toBe(expected);

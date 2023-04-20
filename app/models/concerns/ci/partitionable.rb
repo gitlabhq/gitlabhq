@@ -2,7 +2,7 @@
 
 module Ci
   ##
-  # This module implements a way to set the `partion_id` value on a dependent
+  # This module implements a way to set the `partition_id` value on a dependent
   # resource from a parent record.
   # Usage:
   #
@@ -36,7 +36,7 @@ module Ci
         Ci::Pipeline
         Ci::PendingBuild
         Ci::RunningBuild
-        Ci::RunnerMachineBuild
+        Ci::RunnerManagerBuild
         Ci::PipelineVariable
         Ci::Sources::Pipeline
         Ci::Stage

@@ -9,7 +9,6 @@ class User < ApplicationRecord
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
   include Avatarable
-  include Awareness
   include Referable
   include Sortable
   include CaseSensitivity
@@ -220,6 +219,7 @@ class User < ApplicationRecord
   has_many :abuse_reports,            dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport" # rubocop:disable Cop/ActiveRecordDependent
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :abuse_trust_scores,       class_name: 'Abuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -266,6 +266,8 @@ class User < ApplicationRecord
 
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
@@ -355,6 +357,7 @@ class User < ApplicationRecord
             :time_format_in_24h, :time_format_in_24h=,
             :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
             :view_diffs_file_by_file, :view_diffs_file_by_file=,
+            :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
             :tab_width, :tab_width=,
             :sourcegraph_enabled, :sourcegraph_enabled=,
             :gitpod_enabled, :gitpod_enabled=,
@@ -366,6 +369,8 @@ class User < ApplicationRecord
             :diffs_addition_color, :diffs_addition_color=,
             :use_legacy_web_ide, :use_legacy_web_ide=,
             :use_new_navigation, :use_new_navigation=,
+            :pinned_nav_items, :pinned_nav_items=,
+            :achievements_enabled, :achievements_enabled=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -923,6 +928,17 @@ class User < ApplicationRecord
       end
     end
 
+    def llm_bot
+      email_pattern = "llm-bot%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :llm_bot), 'GitLab-Llm-Bot', email_pattern) do |u|
+        u.bio = 'The Gitlab LLM bot used for fetching LLM-generated content'
+        u.name = 'GitLab LLM Bot'
+        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for llm-bot
+        u.confirmed_at = Time.zone.now
+      end
+    end
+
     def admin_bot
       email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
 
@@ -1074,8 +1090,6 @@ class User < ApplicationRecord
   end
 
   def two_factor_webauthn_enabled?
-    return false unless Feature.enabled?(:webauthn)
-
     (webauthn_registrations.loaded? && webauthn_registrations.any?) || (!webauthn_registrations.loaded? && webauthn_registrations.exists?)
   end
 
@@ -1703,10 +1717,11 @@ class User < ApplicationRecord
   def forkable_namespaces
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)
+      groups_allowing_project_creation = Groups::AcceptingProjectCreationsFinder.new(self).execute
 
       Namespace.from_union(
         [
-          manageable_groups(include_groups_with_developer_maintainer_access: true),
+          groups_allowing_project_creation,
           personal_namespace
         ])
     end
@@ -1972,7 +1987,7 @@ class User < ApplicationRecord
   end
 
   def enabled_incoming_email_token
-    incoming_email_token if Gitlab::IncomingEmail.supports_issue_creation?
+    incoming_email_token if Gitlab::Email::IncomingEmail.supports_issue_creation?
   end
 
   def sync_attribute?(attribute)
@@ -2196,6 +2211,10 @@ class User < ApplicationRecord
 
     namespace_commit_emails.find_by(namespace: project.project_namespace) ||
       namespace_commit_emails.find_by(namespace: project.root_namespace)
+  end
+
+  def trust_scores_for_source(source)
+    abuse_trust_scores.where(source: source)
   end
 
   protected

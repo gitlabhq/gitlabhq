@@ -18,7 +18,7 @@ package registry, see the [NuGet package registry documentation](../../user/pack
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md)
-for details on which headers and token types are supported.
+for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Package index
 

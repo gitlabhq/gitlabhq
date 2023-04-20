@@ -32,17 +32,17 @@ update-tests-metadata:
     - retrieve-tests-metadata
     - generate-frontend-fixtures-mapping
     - setup-test-env
-    - rspec migration pg12
+    - rspec migration pg13
     - rspec-all frontend_fixture
-    - rspec unit pg12
-    - rspec integration pg12
-    - rspec system pg12
-    - rspec background_migration pg12
-    - rspec-ee migration pg12
-    - rspec-ee unit pg12
-    - rspec-ee integration pg12
-    - rspec-ee system pg12
-    - rspec-ee background_migration pg12
+    - rspec unit pg13
+    - rspec integration pg13
+    - rspec system pg13
+    - rspec background_migration pg13
+    - rspec-ee migration pg13
+    - rspec-ee unit pg13
+    - rspec-ee integration pg13
+    - rspec-ee system pg13
+    - rspec-ee background_migration pg13
   script:
     - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh

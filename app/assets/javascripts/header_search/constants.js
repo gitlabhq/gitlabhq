@@ -31,3 +31,5 @@ export const IS_NOT_FOCUSED = 'is-not-focused';
 export const FETCH_TYPES = ['generic', 'search'];
 
 export const SEARCH_INPUT_FIELD_MAX_WIDTH = '640px';
+
+export const DROPDOWN_CLOSE_TIMEOUT = 200;

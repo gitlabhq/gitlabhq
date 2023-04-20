@@ -44,8 +44,8 @@ The following API resources are available in the project context:
 | [Environments](environments.md)                                         | `/projects/:id/environments`                                                                                                                                                                          |
 | [Error Tracking](error_tracking.md)                                     | `/projects/:id/error_tracking/settings`                                                                                                                                                               |
 | [Events](events.md)                                                     | `/projects/:id/events` (also available for users and standalone)                                                                                                                                      |
-| [Feature Flag User Lists](feature_flag_user_lists.md)                   | `/projects/:id/feature_flags_user_lists`                                                                                                                                                              |
-| [Feature Flags](feature_flags.md)                                       | `/projects/:id/feature_flags`                                                                                                                                                                         |
+| [Feature flag User Lists](feature_flag_user_lists.md)                   | `/projects/:id/feature_flags_user_lists`                                                                                                                                                              |
+| [Feature flags](feature_flags.md)                                       | `/projects/:id/feature_flags`                                                                                                                                                                         |
 | [Freeze Periods](freeze_periods.md)                                     | `/projects/:id/freeze_periods`                                                                                                                                                                        |
 | [Go Proxy](packages/go_proxy.md)                                        | `/projects/:id/packages/go`                                                                                                                                                                           |
 | [Helm repository](packages/helm.md)                                     | `/projects/:id/packages/helm_repository`                                                                                                                                                              |
@@ -163,7 +163,8 @@ The following API resources are available outside of project and group contexts 
 | [Geo Nodes](geo_nodes.md) **(PREMIUM SELF)**                                            | `/geo_nodes` |
 | [Group Activity Analytics](group_activity_analytics.md)                                 | `/analytics/group_activity/{issues_count}` |
 | [Group repository storage moves](group_repository_storage_moves.md) **(PREMIUM SELF)**  | `/group_repository_storage_moves` |
-| [Import repository from GitHub](import.md)                                              | `/import/github` |
+| [Import repository from GitHub](import.md#import-repository-from-github)                                              | `/import/github` |
+| [Import repository from Bitbucket Server](import.md#import-repository-from-bitbucket-server)                                              | `/import/bitbucket_server` |
 | [Instance clusters](instance_clusters.md) **(FREE SELF)**                               | `/admin/clusters` |
 | [Instance-level CI/CD variables](instance_level_ci_variables.md) **(FREE SELF)**        | `/admin/ci/variables` |
 | [Issues Statistics](issues_statistics.md)                                               | `/issues_statistics` (also available for groups and projects) |

@@ -17,7 +17,7 @@ export default {
     JobsTable,
   },
   inject: {
-    fullPath: {
+    projectPath: {
       default: '',
     },
     pipelineIid: {
@@ -56,7 +56,7 @@ export default {
   computed: {
     queryVariables() {
       return {
-        fullPath: this.fullPath,
+        fullPath: this.projectPath,
         iid: this.pipelineIid,
       };
     },

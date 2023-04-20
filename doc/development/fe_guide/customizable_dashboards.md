@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Customizable dashboards
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [Alpha feature](../../policy/alpha-beta-support.md#alpha-features).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [Experiment](../../policy/alpha-beta-support.md#experiment).
 
 Customizable dashboards provide a dashboard structure that allows users to create
 their own dashboards and commit the structure to a repository.

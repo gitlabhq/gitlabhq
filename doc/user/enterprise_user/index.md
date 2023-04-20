@@ -22,7 +22,7 @@ A user account is considered an enterprise account when:
 - [SCIM](../group/saml_sso/scim_setup.md) creates the user account on behalf of
   the group.
 
-A user can also [manually connect an identity provider (IdP) to a GitLab account whose email address matches the subscribing organization's domain](../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
+A user can also [manually connect an identity provider (IdP) to a GitLab account whose email address matches the subscribing organization's domain](../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 By selecting **Authorize** when connecting these two accounts, the user account
 with the matching email address is classified as an enterprise user. However, this
 user account does not have an **Enterprise** badge in GitLab.

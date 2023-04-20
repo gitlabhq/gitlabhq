@@ -63,7 +63,7 @@ describe('Commit form modal store actions', () => {
       );
     });
 
-    it('should show alert error and set error in state on fetchBranches failure', async () => {
+    it('should show an alert and set error in state on fetchBranches failure', async () => {
       jest.spyOn(axios, 'get').mockRejectedValue();
 
       await testAction(actions.fetchBranches, {}, state, [], [{ type: 'requestBranches' }]);

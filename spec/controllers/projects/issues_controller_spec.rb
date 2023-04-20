@@ -730,7 +730,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
         go(id: issue.iid)
 
         expect(json_response).to include('title_text', 'description', 'description_text')
-        expect(json_response).to include('task_status', 'lock_version')
+        expect(json_response).to include('task_completion_status', 'lock_version')
       end
     end
   end

@@ -1,6 +1,4 @@
 import { DEFAULT_PER_PAGE } from '~/api';
-import { createAlert } from '~/alert';
-import { __ } from '~/locale';
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
 
@@ -44,22 +42,12 @@ export function getUserStatus(id, options) {
   });
 }
 
-export function getUserProjects(userId, query, options, callback) {
+export function getUserProjects(userId, options) {
   const url = buildApiUrl(USER_PROJECTS_PATH).replace(':id', userId);
-  const defaults = {
-    search: query,
-    per_page: DEFAULT_PER_PAGE,
-  };
-  return axios
-    .get(url, {
-      params: { ...defaults, ...options },
-    })
-    .then(({ data }) => callback(data))
-    .catch(() =>
-      createAlert({
-        message: __('Something went wrong while fetching projects'),
-      }),
-    );
+
+  return axios.get(url, {
+    params: options,
+  });
 }
 
 export function updateUserStatus({ emoji, message, availability, clearStatusAfter }) {

@@ -117,10 +117,6 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
     - selector: ImportSpecifier[imported.name='GlSafeHtmlDirective']
       message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.'
-    # TODO: Remove this rule once GitLab UI no longer exports the deprecated alias.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/382424.
-    - selector: ImportSpecifier[imported.name='GlListbox']
-      message: 'Import GlCollapsibleListbox instead. The GlListbox name is deprecated.'
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:
@@ -139,6 +135,7 @@ overrides:
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off
+      'require-await': error
       'import/no-dynamic-require': off
       'no-import-assign': off
       'no-restricted-syntax':

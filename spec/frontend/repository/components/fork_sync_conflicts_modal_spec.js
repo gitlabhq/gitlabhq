@@ -36,7 +36,11 @@ describe('ConflictsModal', () => {
     expect(findInstructions().at(0).text()).toContain(propsConflictsModal.sourcePath);
   });
 
-  it('renders default branch name in a first intruction', () => {
+  it('renders default branch name in a first step intruction', () => {
     expect(findInstructions().at(0).text()).toContain(propsConflictsModal.sourceDefaultBranch);
+  });
+
+  it('renders selected branch name in a second step intruction', () => {
+    expect(findInstructions().at(1).text()).toContain(propsConflictsModal.selectedBranch);
   });
 });

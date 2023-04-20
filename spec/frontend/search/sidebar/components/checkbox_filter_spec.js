@@ -1,17 +1,22 @@
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { MOCK_QUERY, MOCK_LANGUAGE_AGGREGATIONS_BUCKETS } from 'jest/search/mock_data';
-import CheckboxFilter from '~/search/sidebar/components/checkbox_filter.vue';
+import CheckboxFilter, {
+  TRACKING_LABEL_CHECKBOX,
+  TRACKING_LABEL_SET,
+} from '~/search/sidebar/components/checkbox_filter.vue';
 
-import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { convertFiltersData } from '~/search/sidebar/utils';
 
 Vue.use(Vuex);
 
 describe('CheckboxFilter', () => {
   let wrapper;
+  let trackingSpy;
 
   const actionSpies = {
     setQuery: jest.fn(),
@@ -23,9 +28,10 @@ describe('CheckboxFilter', () => {
 
   const defaultProps = {
     filtersData: convertFiltersData(MOCK_LANGUAGE_AGGREGATIONS_BUCKETS),
+    trackingNamespace: 'testNameSpace',
   };
 
-  const createComponent = () => {
+  const createComponent = (Props = defaultProps) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
@@ -37,13 +43,13 @@ describe('CheckboxFilter', () => {
     wrapper = shallowMountExtended(CheckboxFilter, {
       store,
       propsData: {
-        ...defaultProps,
+        ...Props,
       },
     });
   };
 
-  beforeEach(() => {
-    createComponent();
+  afterEach(() => {
+    unmockTracking();
   });
 
   const findFormCheckboxGroup = () => wrapper.findComponent(GlFormCheckboxGroup);
@@ -52,6 +58,11 @@ describe('CheckboxFilter', () => {
   const fintAllCheckboxLabelCounts = () => wrapper.findAllByTestId('labelCount');
 
   describe('Renders correctly', () => {
+    beforeEach(() => {
+      createComponent();
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+    });
+
     it('renders form', () => {
       expect(findFormCheckboxGroup().exists()).toBe(true);
     });
@@ -76,15 +87,34 @@ describe('CheckboxFilter', () => {
   });
 
   describe('actions', () => {
-    it('triggers setQuery', () => {
-      const filter =
-        defaultProps.filtersData.filters[Object.keys(defaultProps.filtersData.filters)[0]].value;
-      findFormCheckboxGroup().vm.$emit('input', filter);
+    const checkedLanguageName = MOCK_LANGUAGE_AGGREGATIONS_BUCKETS[0].key;
 
+    beforeEach(() => {
+      defaultProps.filtersData = convertFiltersData(MOCK_LANGUAGE_AGGREGATIONS_BUCKETS.slice(0, 3));
+      CheckboxFilter.computed.selectedFilter.get = jest.fn(() => checkedLanguageName);
+
+      createComponent();
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+      findFormCheckboxGroup().vm.$emit('input', checkedLanguageName);
+    });
+
+    it('triggers setQuery', () => {
       expect(actionSpies.setQuery).toHaveBeenCalledWith(expect.any(Object), {
         key: languageFilterData.filterParam,
-        value: filter,
+        value: checkedLanguageName,
       });
+    });
+
+    it('sends tracking information when setQuery', () => {
+      findFormCheckboxGroup().vm.$emit('input', checkedLanguageName);
+      expect(trackingSpy).toHaveBeenCalledWith(
+        defaultProps.trackingNamespace,
+        TRACKING_LABEL_CHECKBOX,
+        {
+          label: TRACKING_LABEL_SET,
+          property: checkedLanguageName,
+        },
+      );
     });
   });
 });

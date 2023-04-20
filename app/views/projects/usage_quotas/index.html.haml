@@ -1,4 +1,5 @@
 - page_title s_("UsageQuota|Usage")
+- add_page_specific_style 'page_bundles/projects_usage_quotas'
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
@@ -17,10 +18,12 @@
     %a{ href: help_page_path('user/usage_quotas.md'), target: '_blank', rel: 'noopener noreferrer' }
       = s_('UsageQuota|Learn more about usage quotas') + '.'
 
-= gl_tabs_nav do
+= gl_tabs_nav({ id: 'js-project-usage-quotas-tabs' }) do
   = gl_tab_link_to '#storage-quota-tab', item_active: true do
     = s_('UsageQuota|Storage')
+  = render_if_exists 'projects/usage_quotas/transfer_tab_link'
 
 .tab-content
   .tab-pane.active#storage-quota-tab
     #js-project-storage-count-app{ data: { project_path: @project.full_path } }
+  = render_if_exists 'projects/usage_quotas/transfer_tab_content'

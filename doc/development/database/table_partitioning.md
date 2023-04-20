@@ -6,6 +6,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Database table partitioning
 
+WARNING:
+If you have questions not answered below, check for and add them
+to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398650).
+Tag `@gitlab-org/database-team/triage` and we'll get back to you with an
+answer as soon as possible. If you get an answer in Slack, document
+it on the issue as well so we can update this document in the future.
+
 Table partitioning is a powerful database feature that allows a table's
 data to be split into smaller physical tables that act as a single large
 table. If the application is designed to work with partitioning in mind,
@@ -32,31 +39,38 @@ several releases. Due to the limitations of partitioning and the related
 migrations, you should understand how partitioning fits your use case
 before attempting to leverage this feature.
 
-## Determining when to use partitioning
+## Determine when to use partitioning
 
 While partitioning can be very useful when properly applied, it's
 imperative to identify if the data and workload of a table naturally fit a
-partitioning scheme. There are a few details you have to understand
-to decide if partitioning is a good fit for your particular
-problem.
+partitioning scheme. Understand a few details to decide if partitioning
+is a good fit for your particular problem:
 
-First, a table is partitioned on a partition key, which is a column or
-set of columns which determine how the data is split across the
-partitions. The partition key is used by the database when reading or
-writing data, to decide which partitions must be accessed. The
-partition key should be a column that would be included in a `WHERE`
-clause on almost all queries accessing that table.
+- **Table partitioning**. A table is partitioned on a partition key, which is a
+  column or set of columns which determine how the data is split across the
+  partitions. The partition key is used by the database when reading or
+  writing data, to decide which partitions must be accessed. The
+  partition key should be a column that would be included in a `WHERE`
+  clause on almost all queries accessing that table.
 
-Second, it's necessary to understand the strategy the database uses
-to split the data across the partitions. The scheme supported by the
-GitLab migration helpers is date-range partitioning, where each partition
-in the table contains data for a single month. In this case, the partitioning
-key must be a timestamp or date column. In order for this type of
+- **How the data is split**. What strategy does the database use
+  to split the data across the partitions? The available choices are `range`,
+  `hash`, and `list`.
+
+## Determine the appropriate partitioning strategy
+
+The available partitioning strategy choices are `range`, `hash`, and `list`.
+
+### Range partitioning
+
+The scheme best supported by the GitLab migration helpers is date-range partitioning,
+where each partition in the table contains data for a single month. In this case,
+the partitioning key must be a timestamp or date column. For this type of
 partitioning to work well, most queries must access data in a
 certain date range.
 
-For a more concrete example, the `audit_events` table can be used, which
-was the first table to be partitioned in the application database
+For a more concrete example, consider using the `audit_events` table.
+It was the first table to be partitioned in the application database
 (scheduled for deployment with the GitLab 13.5 release). This
 table tracks audit entries of security events that happen in the
 application. In almost all cases, users want to see audit activity that
@@ -141,6 +155,31 @@ likely be acceptable, but on more complex queries the overhead can be
 substantial. Partitioning should only be leveraged if the access patterns
 of the data support the partitioning strategy, otherwise performance
 suffers.
+
+### Hash Partitioning
+
+Hash partitioning splits a logical table into a series of partitioned
+tables. Each partition corresponds to the ID range that matches
+a hash and remainder. For example, if partitioning `BY HASH(id)`, rows
+with `hash(id) % 64 == 1` would end up in the partition
+`WITH (MODULUS 64, REMAINDER 1)`.
+
+When hash partitioning, you must include a `WHERE hashed_column = ?` condition in
+every performance-sensitive query issued by the application. If this is not possible,
+hash partitioning may not be the correct fit for your use case.
+
+Hash partitioning has one main advantage: it is the only type of partitioning that
+can enforce uniqueness on a single numeric `id` column. (While also possible with
+range partitioning, it's rarely the correct choice).
+
+Hash partitioning has downsides:
+
+- The number of partitions must be known up-front.
+- It's difficult to move new data to an extra partition if current partitions become too large.
+- Range queries, such as `WHERE id BETWEEN ? and ?`, are unsupported.
+- Lookups by other keys, such as `WHERE other_id = ?`, are unsupported.
+
+For this reason, it's often best to choose a large number of hash partitions to accommodate future table growth.
 
 ## Partitioning a table (Range)
 
@@ -256,6 +295,18 @@ The final step of the migration makes the partitioned table ready
 for use by the application. This section will be updated when the
 migration helper is ready, for now development can be followed in the
 [Tracking Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241267).
+
+## Partitioning a table (Hash)
+
+Hash partitioning divides data into partitions based on a hash of their ID.
+It works well only if most queries against the table include a clause like `WHERE id = ?`,
+so that PostgreSQL can decide which partition to look in based on the ID or ids being requested.
+
+Another key downside is that hash partitioning does not allow adding additional partitions after table creation.
+The correct number of partitions must be chosen up-front.
+
+Hash partitioning is the only type of partitioning (aside from some complex uses of list partitioning) that can guarantee
+uniqueness of an ID across multiple partitions at the database level.
 
 ## Partitioning a table (List)
 
@@ -502,5 +553,50 @@ be cleaned up after the `table_name` is changed to the routing table.
 ```ruby
 class Model < ApplicationRecord
   self.sequence_name = 'model_id_seq'
+end
+```
+
+If the partitioning constraint migration takes [more than 10 minutes](../migration_style_guide.md#how-long-a-migration-should-take) to finish,
+it can be made to run asynchronously to avoid running the post-migration during busy hours.
+
+Prepend the following migration `AsyncPrepareTableConstraintsForListPartitioning`
+and use `async: true` option. This change marks the partitioning constraint as `NOT VALID`
+and enqueues a scheduled job to validate the existing data in the table during the weekend.
+
+Then the second post-migration `PrepareTableConstraintsForListPartitioning` only
+marks the partitioning constraint as validated, because the existing data is already
+tested during the previous weekend.
+
+For example:
+
+```ruby
+class AsyncPrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2.1]
+  include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
+
+  disable_ddl_transaction!
+
+  TABLE_NAME = :table_name
+  PARENT_TABLE_NAME = :p_table_name
+  FIRST_PARTITION = 100
+  PARTITION_COLUMN = :partition_id
+
+  def up
+    prepare_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION,
+      async: true
+    )
+  end
+
+  def down
+    revert_preparing_constraint_for_list_partitioning(
+      table_name: TABLE_NAME,
+      partitioning_column: PARTITION_COLUMN,
+      parent_table_name: PARENT_TABLE_NAME,
+      initial_partitioning_value: FIRST_PARTITION
+    )
+  end
 end
 ```

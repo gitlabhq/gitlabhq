@@ -17,3 +17,5 @@ module ProtectedBranchesHelper
     end
   end
 end
+
+ProtectedBranchesHelper.prepend_mod

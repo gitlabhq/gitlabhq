@@ -1,0 +1,16 @@
+- title: "Exporting and importing projects in JSON format not supported"
+  announcement_milestone: "15.10"
+  announcement_date: "2023-04-22"
+  removal_milestone: "15.11"
+  removal_date: "2023-04-22"
+  breaking_change: false
+  reporter: wortschi
+  stage: manage
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389888
+  body: |
+    GitLab previously created project file exports in JSON format. In GitLab 12.10, NDJSON was added as the preferred format.
+
+    To support transitions, importing JSON-formatted project file exports was still possible if you configured the
+    relevant feature flags.
+
+    From GitLab 15.11, importing a JSON-formatted project file exports is not supported.

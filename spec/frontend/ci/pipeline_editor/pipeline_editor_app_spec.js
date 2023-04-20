@@ -8,7 +8,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { objectToQuery, redirectTo } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
-import createStore from '~/ci/pipeline_editor/store';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
 import PipelineEditorMessages from '~/ci/pipeline_editor/components/ui/pipeline_editor_messages.vue';
@@ -81,9 +80,7 @@ describe('Pipeline editor app component', () => {
     provide = {},
     stubs = {},
   } = {}) => {
-    const store = createStore();
     wrapper = shallowMount(PipelineEditorApp, {
-      store,
       provide: { ...defaultProvide, ...provide },
       stubs,
       mocks: {
@@ -99,7 +96,7 @@ describe('Pipeline editor app component', () => {
     });
   };
 
-  const createComponentWithApollo = async ({
+  const createComponentWithApollo = ({
     provide = {},
     stubs = {},
     withUndefinedBranch = false,
@@ -255,10 +252,6 @@ describe('Pipeline editor app component', () => {
           .mockImplementation(jest.fn());
       });
 
-      it('available stages is updated', () => {
-        expect(wrapper.vm.$store.state.availableStages).toStrictEqual(['test', 'build']);
-      });
-
       it('shows pipeline editor home component', () => {
         expect(findEditorHome().exists()).toBe(true);
       });
@@ -267,7 +260,7 @@ describe('Pipeline editor app component', () => {
         expect(findAlert().exists()).toBe(false);
       });
 
-      it('ci config query is called with correct variables', async () => {
+      it('ci config query is called with correct variables', () => {
         expect(mockCiConfigData).toHaveBeenCalledWith({
           content: mockCiYml,
           projectPath: mockProjectFullPath,
@@ -294,7 +287,7 @@ describe('Pipeline editor app component', () => {
           .mockImplementation(jest.fn());
       });
 
-      it('shows an empty state and does not show editor home component', async () => {
+      it('shows an empty state and does not show editor home component', () => {
         expect(findEmptyState().exists()).toBe(true);
         expect(findAlert().exists()).toBe(false);
         expect(findEditorHome().exists()).toBe(false);

@@ -9,7 +9,9 @@ module Gitlab
         #
         class Default < Input::Arguments::Base
           def validate!
-            error('invalid specification') unless default.present?
+            return error('argument specification invalid') unless spec.key?(:default)
+
+            error('invalid default value') unless default.is_a?(String) || default.nil?
           end
 
           ##
@@ -35,6 +37,8 @@ module Gitlab
           end
 
           def self.matches?(spec)
+            return false unless spec.is_a?(Hash)
+
             spec.count == 1 && spec.each_key.first == :default
           end
         end

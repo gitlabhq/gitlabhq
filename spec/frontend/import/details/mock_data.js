@@ -1,0 +1,31 @@
+export const mockProject = {
+  id: 26,
+  name: 'acl',
+  fullPath: '/root/acl',
+  fullName: 'Administrator / acl',
+  refsUrl: '/root/acl/refs',
+  importSource: 'namespace/acl',
+  importStatus: 'finished',
+  humanImportStatusName: 'finished',
+  providerLink: 'https://github.com/namespace/acl',
+  relationType: null,
+  stats: {
+    fetched: {
+      note: 1,
+      issue: 2,
+      label: 5,
+      collaborator: 2,
+      pullRequest: 1,
+      pullRequestMergedBy: 1,
+    },
+    imported: {
+      note: 1,
+      issue: 2,
+      label: 6,
+      collaborator: 3,
+      pullRequest: 1,
+      pullRequestMergedBy: 1,
+      pullRequestReviewRequest: 1,
+    },
+  },
+};

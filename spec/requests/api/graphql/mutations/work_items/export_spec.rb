@@ -35,7 +35,7 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
     let(:current_user) { reporter }
     let(:input) do
       super().merge(
-        'selectedFields' => %w[TITLE AUTHOR TYPE AUTHOR_USERNAME CREATED_AT],
+        'selectedFields' => %w[TITLE DESCRIPTION AUTHOR TYPE AUTHOR_USERNAME CREATED_AT],
         'authorUsername' => 'admin',
         'iids' => [work_item.iid.to_s],
         'state' => 'opened',
@@ -47,7 +47,7 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
 
     it 'schedules export job with given arguments', :aggregate_failures do
       expected_arguments = {
-        selected_fields: ['title', 'author', 'type', 'author username', 'created_at'],
+        selected_fields: ['title', 'description', 'author', 'type', 'author username', 'created_at'],
         author_username: 'admin',
         iids: [work_item.iid.to_s],
         state: 'opened',

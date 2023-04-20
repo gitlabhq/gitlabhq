@@ -682,24 +682,20 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
-    describe "#unique_debian_package_name" do
+    describe "uniqueness for package type debian" do
       let!(:package) { create(:debian_package) }
-
-      it "will allow a Debian package with same project, name and version, but different distribution" do
-        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
-        expect(new_package).to be_valid
-      end
 
       it "will not allow a Debian package with same project, name, version and distribution" do
         new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
         new_package.debian_publication.distribution = package.debian_publication.distribution
         expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include('Debian package already exists in Distribution')
+        expect(new_package.errors.to_a).to include('Name has already been taken')
       end
 
-      it "will allow a Debian package with same project, name, version, but no distribution" do
+      it "will not allow a Debian package with same project, name, version, but no distribution" do
         new_package = build(:debian_package, project: package.project, name: package.name, version: package.version, published_in: nil)
-        expect(new_package).to be_valid
+        expect(new_package).not_to be_valid
+        expect(new_package.errors.to_a).to include('Name has already been taken')
       end
 
       context 'with pending_destruction package' do
@@ -713,7 +709,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
-    Packages::Package.package_types.keys.without('conan', 'debian').each do |pt|
+    Packages::Package.package_types.keys.without('conan').each do |pt|
       context "project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }
 
@@ -721,6 +717,15 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
           new_package = build("#{pt}_package", project: package.project, name: package.name, version: package.version)
           expect(new_package).not_to be_valid
           expect(new_package.errors.to_a).to include("Name has already been taken")
+        end
+
+        context 'with pending_destruction package' do
+          let!(:package) { create("#{pt}_package", :pending_destruction) }
+
+          it "will allow a #{pt} package with same project, name, version and package_type" do
+            new_package = build("#{pt}_package", project: package.project, name: package.name, version: package.version)
+            expect(new_package).to be_valid
+          end
         end
       end
     end
@@ -1400,6 +1405,38 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       expect(::Gitlab::Database::LoadBalancing::Session).to receive(:without_sticky_writes).and_call_original
       expect { subject }
         .to change(package, :last_downloaded_at).from(nil).to(instance_of(ActiveSupport::TimeWithZone))
+    end
+  end
+
+  describe "#publish_creation_event" do
+    let_it_be(:project) { create(:project) }
+
+    let(:version) { '-' }
+    let(:package_type) { :generic }
+
+    subject { described_class.create!(project: project, name: 'incoming', version: version, package_type: package_type) }
+
+    context 'when package is generic' do
+      it 'publishes an event' do
+        expect { subject }
+          .to publish_event(::Packages::PackageCreatedEvent)
+                .with({
+                  project_id: project.id,
+                  id: kind_of(Numeric),
+                  name: "incoming",
+                  version: "-",
+                  package_type: 'generic'
+                })
+      end
+    end
+
+    context 'when package is not generic' do
+      let(:package_type) { :debian }
+      let(:version) { 1 }
+
+      it 'does not create event' do
+        expect { subject }.not_to publish_event(::Packages::PackageCreatedEvent)
+      end
     end
   end
 end

@@ -148,6 +148,9 @@ export default {
 
       return now < autoStopDate;
     },
+    upcomingDeploymentIid() {
+      return this.environment.upcomingDeployment?.iid.toString() || '';
+    },
     autoStopPath() {
       return this.environment?.cancelAutoStopPath ?? '';
     },
@@ -173,7 +176,8 @@ export default {
       return this.glFeatures?.kasUserAccessProject;
     },
     hasRequiredAgentData() {
-      return this.agent.project && this.agent.id && this.agent.name;
+      const { project, id, name } = this.agent || {};
+      return project && id && name;
     },
     showKubernetesOverview() {
       return this.isKubernetesOverviewAvailable && this.hasRequiredAgentData;
@@ -223,7 +227,7 @@ export default {
           :icon="icon"
           :aria-label="label"
           size="small"
-          category="tertiary"
+          category="secondary"
           @click="toggleCollapse"
         />
         <gl-link
@@ -270,7 +274,6 @@ export default {
           <stop-component
             v-if="canStop"
             :environment="environment"
-            class="gl-z-index-2"
             data-track-action="click_button"
             data-track-label="environment_stop"
             graphql
@@ -351,7 +354,11 @@ export default {
             class="gl-pl-4"
           >
             <template #approval>
-              <environment-approval :environment="environment" @change="$emit('change')" />
+              <environment-approval
+                :deployment-iid="upcomingDeploymentIid"
+                :environment="environment"
+                @change="$emit('change')"
+              />
             </template>
           </deployment>
         </div>
@@ -368,6 +375,7 @@ export default {
           :agent-project-path="agent.project"
           :agent-name="agent.name"
           :agent-id="agent.id"
+          :namespace="agent.kubernetesNamespace"
         />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">

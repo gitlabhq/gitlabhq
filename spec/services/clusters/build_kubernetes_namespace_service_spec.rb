@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::BuildKubernetesNamespaceService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::BuildKubernetesNamespaceService, feature_category: :deployment_management do
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
   let(:environment) { create(:environment) }
   let(:project) { environment.project }

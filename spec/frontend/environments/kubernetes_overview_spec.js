@@ -1,19 +1,28 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { GlCollapse, GlButton } from '@gitlab/ui';
+import { GlCollapse, GlButton, GlAlert } from '@gitlab/ui';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
-
-const agent = {
-  project: 'agent-project',
-  id: '1',
-  name: 'agent-name',
-};
+import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
+import { agent } from './graphql/mock_data';
+import { mockKasTunnelUrl } from './mock_data';
 
 const propsData = {
   agentId: agent.id,
   agentName: agent.name,
   agentProjectPath: agent.project,
+  namespace: agent.kubernetesNamespace,
+};
+
+const provide = {
+  kasTunnelUrl: mockKasTunnelUrl,
+};
+
+const configuration = {
+  basePath: provide.kasTunnelUrl.replace(/\/$/, ''),
+  baseOptions: {
+    headers: { 'GitLab-Agent-Id': '1' },
+  },
 };
 
 describe('~/environments/components/kubernetes_overview.vue', () => {
@@ -22,10 +31,13 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
   const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findCollapseButton = () => wrapper.findComponent(GlButton);
   const findAgentInfo = () => wrapper.findComponent(KubernetesAgentInfo);
+  const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createWrapper = () => {
     wrapper = shallowMount(KubernetesOverview, {
       propsData,
+      provide,
     });
   };
 
@@ -57,6 +69,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
 
     it("doesn't render components when the collapse is not visible", () => {
       expect(findAgentInfo().exists()).toBe(false);
+      expect(findKubernetesPods().exists()).toBe(false);
     });
 
     it('opens on click', async () => {
@@ -70,15 +83,40 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
   });
 
   describe('when section is expanded', () => {
-    it('renders kubernetes agent info', async () => {
+    beforeEach(() => {
       createWrapper();
-      await toggleCollapse();
+      toggleCollapse();
+    });
 
+    it('renders kubernetes agent info', () => {
       expect(findAgentInfo().props()).toEqual({
         agentName: agent.name,
         agentId: agent.id,
         agentProjectPath: agent.project,
       });
+    });
+
+    it('renders kubernetes pods', () => {
+      expect(findKubernetesPods().props()).toEqual({
+        namespace: agent.kubernetesNamespace,
+        configuration,
+      });
+    });
+  });
+
+  describe('on cluster error', () => {
+    beforeEach(() => {
+      createWrapper();
+      toggleCollapse();
+    });
+
+    it('shows alert with the error message', async () => {
+      const error = 'Error message from pods';
+
+      findKubernetesPods().vm.$emit('cluster-error', error);
+      await nextTick();
+
+      expect(findAlert().text()).toBe(error);
     });
   });
 });

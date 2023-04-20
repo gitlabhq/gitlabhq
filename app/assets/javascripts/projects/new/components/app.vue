@@ -59,6 +59,10 @@ export default {
     SafeHtml,
   },
   props: {
+    rootPath: {
+      type: String,
+      required: true,
+    },
     projectsUrl: {
       type: String,
       required: true,
@@ -92,12 +96,14 @@ export default {
 
   computed: {
     initialBreadcrumbs() {
-      return [
-        this.parentGroupUrl
-          ? { text: this.parentGroupName, href: this.parentGroupUrl }
-          : { text: s__('ProjectsNew|Projects'), href: this.projectsUrl },
-        { text: s__('ProjectsNew|New project'), href: '#' },
-      ];
+      const breadcrumbs = this.parentGroupUrl
+        ? [{ text: this.parentGroupName, href: this.parentGroupUrl }]
+        : [
+            { text: s__('Navigation|Your work'), href: this.rootPath },
+            { text: s__('ProjectsNew|Projects'), href: this.projectsUrl },
+          ];
+      breadcrumbs.push({ text: s__('ProjectsNew|New project'), href: '#' });
+      return breadcrumbs;
     },
     availablePanels() {
       return this.isCiCdAvailable ? PANELS : PANELS.filter((p) => p.name !== CI_CD_PANEL);

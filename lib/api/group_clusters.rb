@@ -9,7 +9,7 @@ module API
       ensure_feature_enabled!
     end
 
-    feature_category :kubernetes_management
+    feature_category :deployment_management
     urgency :low
 
     params do

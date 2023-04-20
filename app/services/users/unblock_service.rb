@@ -27,3 +27,5 @@ module Users
     end
   end
 end
+
+Users::UnblockService.prepend_mod_with('Users::UnblockService')

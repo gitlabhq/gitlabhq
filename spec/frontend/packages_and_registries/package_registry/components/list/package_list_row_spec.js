@@ -132,7 +132,7 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('emits the delete event when the delete button is clicked', async () => {
+    it('emits the delete event when the delete button is clicked', () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
       findDeleteDropdown().vm.$emit('click');

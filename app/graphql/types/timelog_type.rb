@@ -49,6 +49,10 @@ module Types
           null: true,
           description: 'Summary of how the time was spent.'
 
+    field :project, Types::ProjectType,
+          null: false,
+          description: 'Target project of the timelog merge request or issue.'
+
     def user
       Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
     end

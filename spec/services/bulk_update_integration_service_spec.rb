@@ -56,14 +56,14 @@ RSpec.describe BulkUpdateIntegrationService, feature_category: :integrations do
     end
 
     it 'does not change the created_at timestamp' do
-      subgroup_integration.update_column(:created_at, Time.utc('2022-01-01'))
+      subgroup_integration.update_column(:created_at, Time.utc(2022, 1, 1))
 
       expect do
         described_class.new(subgroup_integration, batch).execute
       end.not_to change { integration.reload.created_at }
     end
 
-    it 'sets the updated_at timestamp to the current time', time_travel_to: Time.utc('2022-01-01') do
+    it 'sets the updated_at timestamp to the current time', time_travel_to: Time.utc(2022, 1, 1) do
       expect do
         described_class.new(subgroup_integration, batch).execute
       end.to change { integration.reload.updated_at }.to(Time.current)
@@ -85,14 +85,14 @@ RSpec.describe BulkUpdateIntegrationService, feature_category: :integrations do
       end
 
       it 'does not change the created_at timestamp' do
-        subgroup_integration.data_fields.update_column(:created_at, Time.utc('2022-01-02'))
+        subgroup_integration.data_fields.update_column(:created_at, Time.utc(2022, 1, 2))
 
         expect do
           described_class.new(subgroup_integration, batch).execute
         end.not_to change { integration.data_fields.reload.created_at }
       end
 
-      it 'sets the updated_at timestamp to the current time', time_travel_to: Time.utc('2022-01-01') do
+      it 'sets the updated_at timestamp to the current time', time_travel_to: Time.utc(2022, 1, 1) do
         expect do
           described_class.new(subgroup_integration, batch).execute
         end.to change { integration.data_fields.reload.updated_at }.to(Time.current)

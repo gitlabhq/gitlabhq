@@ -24,6 +24,7 @@
           order_by: 'last_activity_at',
           group_id: group_id,
           user_id: user_id,
+          with_shared: true.to_s,
           include_subgroups: true.to_s,
           membership: true.to_s,
           selected: @cluster.management_project_id } }

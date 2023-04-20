@@ -15,6 +15,9 @@ function k8s_resource_count() {
 SERVICES_COUNT_THRESHOLD=3000
 REVIEW_APPS_COUNT_THRESHOLD=200
 
+# One review app currently deploys 4 PVCs
+PVCS_COUNT_THRESHOLD=$((REVIEW_APPS_COUNT_THRESHOLD * 4))
+
 exit_with_error=false
 
 # In the current GKE cluster configuration, we should never go higher than 4096 services per cluster.
@@ -33,6 +36,12 @@ fi
 namespaces_count=$(kubectl get namespaces -A | wc -l | xargs)
 if [ "$(echo $(($namespaces_count - $review_apps_count)) | sed 's/-//')" -gt 30 ]; then
   >&2 echo "❌ [ERROR] Difference between namespaces and deployed review-apps is above 30 (${namespaces_count} namespaces and ${review_apps_count} review-apps)"
+  exit_with_error=true
+fi
+
+pvcs_count=$(kubectl get pvc -A | wc -l | xargs)
+if [ "${pvcs_count}" -gt "${PVCS_COUNT_THRESHOLD}" ]; then
+  >&2 echo "❌ [ERROR] PVCs are above ${PVCS_COUNT_THRESHOLD} (currently at ${pvcs_count})"
   exit_with_error=true
 fi
 

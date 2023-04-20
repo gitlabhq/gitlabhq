@@ -64,6 +64,7 @@ RSpec.describe ::Gitlab::SubscriptionPortal do
       :subscriptions_more_minutes_url | "#{staging_customers_url}/buy_pipeline_minutes"
       :subscriptions_more_storage_url | "#{staging_customers_url}/buy_storage"
       :subscriptions_manage_url | "#{staging_customers_url}/subscriptions"
+      :subscriptions_legacy_sign_in_url | "#{staging_customers_url}/customers/sign_in?legacy=true"
       :subscriptions_instance_review_url | "#{staging_customers_url}/instance_review"
       :subscriptions_gitlab_plans_url | "#{staging_customers_url}/gitlab_plans"
       :edit_account_url | "#{staging_customers_url}/customers/edit"

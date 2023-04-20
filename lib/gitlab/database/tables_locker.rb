@@ -8,6 +8,7 @@ module Gitlab
       def initialize(logger: nil, dry_run: false)
         @logger = logger
         @dry_run = dry_run
+        @result = []
       end
 
       def unlock_writes
@@ -19,6 +20,8 @@ module Gitlab
             unlock_writes_on_table(table_name, connection, database_name)
           end
         end
+
+        @result
       end
 
       # It locks the tables on the database where they don't belong. Also it unlocks the tables
@@ -38,25 +41,27 @@ module Gitlab
             end
           end
         end
+
+        @result
       end
 
       private
 
       # Unlocks the writes on the table and its partitions
       def unlock_writes_on_table(table_name, connection, database_name)
-        lock_writes_manager(table_name, connection, database_name).unlock_writes
+        @result << lock_writes_manager(table_name, connection, database_name).unlock_writes
 
         table_attached_partitions(table_name, connection) do |postgres_partition|
-          lock_writes_manager(postgres_partition.identifier, connection, database_name).unlock_writes
+          @result << lock_writes_manager(postgres_partition.identifier, connection, database_name).unlock_writes
         end
       end
 
       # It locks the writes on the table and its partitions
       def lock_writes_on_table(table_name, connection, database_name)
-        lock_writes_manager(table_name, connection, database_name).lock_writes
+        @result << lock_writes_manager(table_name, connection, database_name).lock_writes
 
         table_attached_partitions(table_name, connection) do |postgres_partition|
-          lock_writes_manager(postgres_partition.identifier, connection, database_name).lock_writes
+          @result << lock_writes_manager(postgres_partition.identifier, connection, database_name).lock_writes
         end
       end
 

@@ -143,7 +143,7 @@ describe('StatesTableActions', () => {
         return waitForPromises();
       });
 
-      it('opens the modal', async () => {
+      it('opens the modal', () => {
         expect(findCopyModal().exists()).toBe(true);
         expect(findCopyModal().isVisible()).toBe(true);
       });

@@ -54,8 +54,8 @@ of times the line was checked by tests.
 
 Uploading a test coverage report does not enable:
 
-- [Test coverage results in merge requests](../pipelines/settings.md#merge-request-test-coverage-results).
-- [Code coverage history](../pipelines/settings.md#view-code-coverage-history).
+- [Test coverage results in merge requests](code_coverage.md#view-code-coverage-results-in-the-mr).
+- [Code coverage history](code_coverage.md#view-history-of-project-code-coverage).
 
 You must configure these separately.
 
@@ -112,24 +112,14 @@ attempts to build the full path by:
 
 #### Path correction example
 
-As an example, a project with:
+As an example, a C# project with:
 
-- A full path of `test-org/test-project`.
+- A full path of `test-org/test-cs-project`.
 - The following files relative to the project root:
 
   ```shell
   Auth/User.cs
   Lib/Utils/User.cs
-  src/main/java
-  ```
-
-In the:
-
-- Cobertura XML, the `filename` attribute in the `class` element assumes the value is a relative
-  path to the project's root:
-
-  ```xml
-  <class name="packet.name" filename="src/main/java" line-rate="0.0" branch-rate="0.0" complexity="5">
   ```
 
 - `sources` from Cobertura XML, the following paths in the format
@@ -137,8 +127,8 @@ In the:
 
   ```xml
   <sources>
-    <source>/builds/test-org/test-project/Auth</source>
-    <source>/builds/test-org/test-project/Lib/Utils</source>
+    <source>/builds/test-org/test-cs-project/Auth</source>
+    <source>/builds/test-org/test-cs-project/Lib/Utils</source>
   </sources>
   ```
 
@@ -152,6 +142,29 @@ The parser:
 - For each `class` element, attempts to look for a match for each extracted `source` path up to
   100 iterations. If it reaches this limit without finding a matching path in the file tree, the
   class is not included in the final coverage report.
+
+Automatic class path correction also works for a Java project with:
+
+- A full path of `test-org/test-java-project`.
+- The following files relative to the project root:
+  
+  ```shell
+  src/main/java/com/gitlab/security_products/tests/App.java
+  ```
+
+- `sources` from Cobertura XML:
+
+  ```xml
+  <sources>
+    <source>/builds/test-org/test-java-project/src/main/java/</source>
+  </sources>
+  ```
+
+- `class` element with the `filename` value of `com/gitlab/security_products/tests/App.java`:
+
+  ```xml
+  <class name="com.gitlab.security_products.tests.App" filename="com/gitlab/security_products/tests/App.java" line-rate="0.0" branch-rate="0.0" complexity="6.0">
+  ```
 
 NOTE:
 Automatic class path correction only works on `source` paths in the format `<CI_BUILDS_DIR>/<PROJECT_FULL_PATH>/...`.

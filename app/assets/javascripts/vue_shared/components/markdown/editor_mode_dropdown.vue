@@ -23,7 +23,7 @@ export default {
       return this.value === 'markdown';
     },
     text() {
-      return this.markdownEditorSelected ? __('Viewing markdown') : __('Viewing rich text');
+      return this.markdownEditorSelected ? __('Editing markdown') : __('Editing rich text');
     },
   },
 };

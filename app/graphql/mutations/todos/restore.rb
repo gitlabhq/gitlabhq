@@ -2,7 +2,7 @@
 
 module Mutations
   module Todos
-    class Restore < ::Mutations::Todos::Base
+    class Restore < ::Mutations::BaseMutation
       graphql_name 'TodoRestore'
 
       authorize :update_todo

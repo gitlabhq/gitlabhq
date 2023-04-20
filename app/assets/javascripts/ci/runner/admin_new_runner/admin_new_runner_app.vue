@@ -6,7 +6,7 @@ import { s__ } from '~/locale';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import { DEFAULT_PLATFORM, PARAM_KEY_PLATFORM } from '../constants';
+import { DEFAULT_PLATFORM, PARAM_KEY_PLATFORM, INSTANCE_TYPE } from '../constants';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
@@ -34,21 +34,21 @@ export default {
   },
   methods: {
     onSaved(runner) {
-      const registerUrl = setUrlParams(
-        { [PARAM_KEY_PLATFORM]: this.platform },
-        runner.registerAdminUrl,
-      );
+      const params = { [PARAM_KEY_PLATFORM]: this.platform };
+      const ephemeralRegisterUrl = setUrlParams(params, runner.ephemeralRegisterUrl);
+
       saveAlertToLocalStorage({
         message: s__('Runners|Runner created.'),
         variant: VARIANT_SUCCESS,
       });
-      redirectTo(registerUrl);
+      redirectTo(ephemeralRegisterUrl);
     },
     onError(error) {
       createAlert({ message: error.message });
     },
   },
   modalId: 'runners-legacy-registration-instructions-modal',
+  INSTANCE_TYPE,
 };
 </script>
 
@@ -84,6 +84,6 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <runner-create-form @saved="onSaved" @error="onError" />
+    <runner-create-form :runner-type="$options.INSTANCE_TYPE" @saved="onSaved" @error="onError" />
   </div>
 </template>

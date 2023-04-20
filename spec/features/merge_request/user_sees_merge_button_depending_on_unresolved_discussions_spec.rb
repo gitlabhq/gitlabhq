@@ -21,7 +21,7 @@ feature_category: :code_review_workflow do
 
     context 'with unresolved threads' do
       it 'does not allow to merge' do
-        expect(page).not_to have_button 'Merge'
+        expect(page).not_to have_button('Merge', exact: true)
         expect(page).to have_content('all threads must be resolved')
       end
     end
@@ -33,7 +33,7 @@ feature_category: :code_review_workflow do
       end
 
       it 'allows MR to be merged' do
-        expect(page).to have_button 'Merge'
+        expect(page).to have_button('Merge', exact: true)
       end
     end
   end
@@ -46,7 +46,7 @@ feature_category: :code_review_workflow do
 
     context 'with unresolved threads' do
       it 'does not allow to merge' do
-        expect(page).to have_button 'Merge'
+        expect(page).to have_button('Merge', exact: true)
       end
     end
 
@@ -57,7 +57,7 @@ feature_category: :code_review_workflow do
       end
 
       it 'allows MR to be merged' do
-        expect(page).to have_button 'Merge'
+        expect(page).to have_button('Merge', exact: true)
       end
     end
   end

@@ -14,7 +14,8 @@ describe('UserMenu component', () => {
 
   const GlEmoji = { template: '<img/>' };
   const toggleNewNavEndpoint = invalidUrl;
-  const showDropdown = () => wrapper.findComponent(GlDisclosureDropdown).vm.$emit('shown');
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const showDropdown = () => findDropdown().vm.$emit('shown');
 
   const createWrapper = (userDataChanges = {}) => {
     wrapper = mountExtended(UserMenu, {
@@ -35,6 +36,14 @@ describe('UserMenu component', () => {
 
     trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
+
+  it('passes popper options to the dropdown', () => {
+    createWrapper();
+
+    expect(findDropdown().props('popperOptions')).toEqual({
+      modifiers: [{ name: 'offset', options: { offset: [-211, 4] } }],
+    });
+  });
 
   describe('Toggle button', () => {
     let toggle;
@@ -93,6 +102,14 @@ describe('UserMenu component', () => {
         expect(item.find('.js-set-status-modal-trigger').exists()).toBe(true);
       });
 
+      it('should close the dropdown when status modal opened', () => {
+        setItem({ can_update: true });
+        wrapper.vm.$refs.userDropdown.close = jest.fn();
+        expect(wrapper.vm.$refs.userDropdown.close).not.toHaveBeenCalled();
+        item.vm.$emit('action');
+        expect(wrapper.vm.$refs.userDropdown.close).toHaveBeenCalled();
+      });
+
       describe('renders correct label', () => {
         it.each`
           busy     | customized | label
@@ -117,22 +134,42 @@ describe('UserMenu component', () => {
           expect(findModalWrapper().exists()).toBe(true);
         });
 
-        it('sets default data attributes when status is not customized', () => {
-          setItem({ can_update: true });
-          expect(findModalWrapper().attributes()).toMatchObject({
-            'data-current-emoji': '',
-            'data-current-message': '',
-            'data-default-emoji': 'speech_balloon',
+        describe('when user cannot update status', () => {
+          it('sets default data attributes', () => {
+            setItem({ can_update: true });
+            expect(findModalWrapper().attributes()).toMatchObject({
+              'data-current-emoji': '',
+              'data-current-message': '',
+              'data-default-emoji': 'speech_balloon',
+            });
           });
         });
 
-        it('sets user status as data attributes when status is customized', () => {
-          setItem({ can_update: true, customized: true });
-          expect(findModalWrapper().attributes()).toMatchObject({
-            'data-current-emoji': userMenuMockStatus.emoji,
-            'data-current-message': userMenuMockStatus.message,
-            'data-current-availability': userMenuMockStatus.availability,
-            'data-current-clear-status-after': userMenuMockStatus.clear_after,
+        describe.each`
+          busy     | customized
+          ${true}  | ${true}
+          ${true}  | ${false}
+          ${false} | ${true}
+          ${false} | ${false}
+        `(`when user can update status`, ({ busy, customized }) => {
+          it(`and ${busy ? 'is busy' : 'is not busy'} and status ${
+            customized ? 'is' : 'is not'
+          } customized sets user status data attributes`, () => {
+            setItem({ can_update: true, busy, customized });
+            if (busy || customized) {
+              expect(findModalWrapper().attributes()).toMatchObject({
+                'data-current-emoji': userMenuMockStatus.emoji,
+                'data-current-message': userMenuMockStatus.message,
+                'data-current-availability': userMenuMockStatus.availability,
+                'data-current-clear-status-after': userMenuMockStatus.clear_after,
+              });
+            } else {
+              expect(findModalWrapper().attributes()).toMatchObject({
+                'data-current-emoji': '',
+                'data-current-message': '',
+                'data-default-emoji': 'speech_balloon',
+              });
+            }
           });
         });
       });
@@ -143,7 +180,7 @@ describe('UserMenu component', () => {
     let item;
 
     const setItem = ({ has_start_trial } = {}) => {
-      createWrapper({ trial: { has_start_trial } });
+      createWrapper({ trial: { has_start_trial, url: '' } });
       item = wrapper.findByTestId('start-trial-item');
     };
 
@@ -158,6 +195,15 @@ describe('UserMenu component', () => {
       it('does render the start trial menu item', () => {
         setItem({ has_start_trial: true });
         expect(item.exists()).toBe(true);
+      });
+    });
+
+    it('has Snowplow tracking attributes', () => {
+      setItem({ has_start_trial: true });
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'start_trial',
       });
     });
   });
@@ -202,17 +248,30 @@ describe('UserMenu component', () => {
         expect(item.exists()).toBe(true);
       });
 
-      it('tracks the Sentry event', () => {
-        setItem({ show_buy_pipeline_minutes: true });
-        showDropdown();
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          userMenuMockPipelineMinutes.tracking_attrs['track-action'],
-          {
-            label: userMenuMockPipelineMinutes.tracking_attrs['track-label'],
-            property: userMenuMockPipelineMinutes.tracking_attrs['track-property'],
-          },
-        );
+      describe('Snowplow tracking attributes to track item click', () => {
+        beforeEach(() => {
+          setItem({ show_buy_pipeline_minutes: true });
+        });
+
+        it('has attributes to track item click in scope of new nav', () => {
+          expect(item.find('a').attributes()).toMatchObject({
+            'data-track-property': 'nav_user_menu',
+            'data-track-action': 'click_link',
+            'data-track-label': 'buy_pipeline_minutes',
+          });
+        });
+
+        it('tracks the click on the item', () => {
+          item.vm.$emit('action');
+          expect(trackingSpy).toHaveBeenCalledWith(
+            undefined,
+            userMenuMockPipelineMinutes.tracking_attrs['track-action'],
+            {
+              label: userMenuMockPipelineMinutes.tracking_attrs['track-label'],
+              property: userMenuMockPipelineMinutes.tracking_attrs['track-property'],
+            },
+          );
+        });
       });
 
       describe('Callout & notification dot', () => {
@@ -292,32 +351,70 @@ describe('UserMenu component', () => {
   });
 
   describe('Edit profile item', () => {
-    it('should render a link to the profile page', () => {
+    let item;
+
+    beforeEach(() => {
       createWrapper();
-      const item = wrapper.findByTestId('edit-profile-item');
+      item = wrapper.findByTestId('edit-profile-item');
+    });
+
+    it('should render a link to the profile page', () => {
       expect(item.text()).toBe(UserMenu.i18n.editProfile);
       expect(item.find('a').attributes('href')).toBe(userMenuMockData.settings.profile_path);
+    });
+
+    it('has Snowplow tracking attributes', () => {
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'user_edit_profile',
+      });
     });
   });
 
   describe('Preferences item', () => {
-    it('should render a link to the profile page', () => {
+    let item;
+
+    beforeEach(() => {
       createWrapper();
-      const item = wrapper.findByTestId('preferences-item');
+      item = wrapper.findByTestId('preferences-item');
+    });
+
+    it('should render a link to the profile page', () => {
       expect(item.text()).toBe(UserMenu.i18n.preferences);
       expect(item.find('a').attributes('href')).toBe(
         userMenuMockData.settings.profile_preferences_path,
       );
     });
+
+    it('has Snowplow tracking attributes', () => {
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'user_preferences',
+      });
+    });
   });
 
   describe('GitLab Next item', () => {
     describe('on gitlab.com', () => {
-      it('should render a link to switch to GitLab Next', () => {
+      let item;
+
+      beforeEach(() => {
         createWrapper({ gitlab_com_but_not_canary: true });
-        const item = wrapper.findByTestId('gitlab-next-item');
+        item = wrapper.findByTestId('gitlab-next-item');
+      });
+      it('should render a link to switch to GitLab Next', () => {
         expect(item.text()).toBe(UserMenu.i18n.gitlabNext);
         expect(item.find('a').attributes('href')).toBe(userMenuMockData.canary_toggle_com_url);
+      });
+
+      it('has Snowplow tracking attributes', () => {
+        expect(item.find('a').attributes()).toMatchObject({
+          'data-track-property': 'nav_user_menu',
+          'data-track-action': 'click_link',
+          'data-track-label': 'switch_to_canary',
+        });
       });
     });
 
@@ -340,10 +437,23 @@ describe('UserMenu component', () => {
   });
 
   describe('Feedback item', () => {
-    it('should render feedback item with a link to a new GitLab issue', () => {
+    let item;
+
+    beforeEach(() => {
       createWrapper();
-      const feedbackItem = wrapper.findByTestId('feedback-item');
-      expect(feedbackItem.find('a').attributes('href')).toBe(UserMenu.feedbackUrl);
+      item = wrapper.findByTestId('feedback-item');
+    });
+
+    it('should render feedback item with a link to a new GitLab issue', () => {
+      expect(item.find('a').attributes('href')).toBe(UserMenu.feedbackUrl);
+    });
+
+    it('has Snowplow tracking attributes', () => {
+      expect(item.find('a').attributes()).toMatchObject({
+        'data-track-property': 'nav_user_menu',
+        'data-track-action': 'click_link',
+        'data-track-label': 'provide_nav_beta_feedback',
+      });
     });
   });
 
@@ -369,6 +479,15 @@ describe('UserMenu component', () => {
           userMenuMockData.sign_out_link,
         );
         expect(findSignOutGroup().find('a').attributes('data-method')).toBe('post');
+      });
+
+      it('should track Snowplow event on sign out', () => {
+        findSignOutGroup().vm.$emit('action');
+
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_link', {
+          label: 'user_sign_out',
+          property: 'nav_user_menu',
+        });
       });
     });
   });

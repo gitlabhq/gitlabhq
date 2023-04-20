@@ -55,19 +55,12 @@ module ClusterCleanupMethods
     cluster.make_cleanup_errored!("#{self.class.name} exceeded the execution limit")
   end
 
-  def cluster_applications_and_status(cluster)
-    cluster.persisted_applications
-      .map { |application| "#{application.name}:#{application.status_name}" }
-      .join(",")
-  end
-
   def log_exceeded_execution_limit_error(cluster)
     logger.error({
       exception: ExceededExecutionLimitError.name,
       cluster_id: cluster.id,
       class_name: self.class.name,
       cleanup_status: cluster.cleanup_status_name,
-      applications: cluster_applications_and_status(cluster),
       event: :failed_to_remove_cluster_and_resources,
       message: "exceeded execution limit of #{execution_limit} tries"
     })

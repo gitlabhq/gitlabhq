@@ -53,11 +53,6 @@ module Mutations
           raise_resource_not_available_error!
         end
       end
-
-      # method used by `authorized_find!(id: id)`
-      def find_object(id:)
-        GitlabSchema.find_by_gid(id)
-      end
     end
   end
 end

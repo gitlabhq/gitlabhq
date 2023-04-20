@@ -168,9 +168,8 @@ def generate_migration(definition)
         return unless foreign_key_exists?(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}")
 
         with_lock_retries do
-          execute('LOCK #{definition.to_table}, #{definition.from_table} IN ACCESS EXCLUSIVE MODE') if transaction_open?
-
-          remove_foreign_key_if_exists(:#{definition.from_table}, :#{definition.to_table}, name: "#{definition.name}")
+          remove_foreign_key_if_exists(:#{definition.from_table}, :#{definition.to_table},
+            name: "#{definition.name}", reverse_lock_order: true)
         end
       end
 

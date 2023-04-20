@@ -1,0 +1,8 @@
+---
+name: summarize_diff_quick_action
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117458
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407256
+milestone: '15.11'
+type: development
+group: group::code review
+default_enabled: false

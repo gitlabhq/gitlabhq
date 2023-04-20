@@ -153,7 +153,11 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border-b gl-pt-5 gl-pb-5 gl-display-flex gl-justify-content-space-between">
+  <div
+    class="gl-border-b gl-pt-5 gl-pb-5 gl-display-flex gl-justify-content-space-between"
+    data-qa-selector="branch_content"
+    :data-qa-branch-name="name"
+  >
     <div>
       <strong class="gl-font-monospace">{{ name }}</strong>
 
@@ -169,7 +173,7 @@ export default {
         <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
       </ul>
     </div>
-    <gl-button class="gl-align-self-start" :href="detailsPath">
+    <gl-button class="gl-align-self-start" data-qa-selector="details_button" :href="detailsPath">
       {{ $options.i18n.detailsButtonLabel }}</gl-button
     >
   </div>

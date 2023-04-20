@@ -172,9 +172,15 @@ RSpec.describe Gitlab::JwtAuthenticatable do
       end
 
       it 'raises an error if iat is invalid' do
-        encoded_message = JWT.encode(payload.merge(iat: 'wrong'), test_class.secret, 'HS256')
+        encoded_message = JWT.encode(payload.merge(iat: Time.current.to_i + 1), test_class.secret, 'HS256')
 
         expect { test_class.decode_jwt(encoded_message, iat_after: true) }.to raise_error(JWT::DecodeError)
+      end
+
+      it 'raises InvalidPayload exception if iat is a string' do
+        expect do
+          JWT.encode(payload.merge(iat: 'wrong'), test_class.secret, 'HS256')
+        end.to raise_error(JWT::InvalidPayload)
       end
 
       it 'raises an error if iat is absent' do

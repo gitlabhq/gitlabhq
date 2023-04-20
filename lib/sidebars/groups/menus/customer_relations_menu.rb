@@ -29,12 +29,18 @@ module Sidebars
           can_read_contact? || can_read_organization?
         end
 
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
+        end
+
         private
 
         def contacts_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Contacts'),
+            title: context.is_super_sidebar ? _('Customer contacts') : _('Contacts'),
             link: group_crm_contacts_path(context.group),
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: 'groups/crm/contacts' },
             item_id: :crm_contacts
           )
@@ -42,8 +48,9 @@ module Sidebars
 
         def organizations_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Organizations'),
+            title: context.is_super_sidebar ? _('Customer organizations') : _('Organizations'),
             link: group_crm_organizations_path(context.group),
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: 'groups/crm/organizations' },
             item_id: :crm_organizations
           )

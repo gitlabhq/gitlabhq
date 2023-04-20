@@ -117,15 +117,7 @@ module Namespaces
         traversal_ids.present?
       end
 
-      def use_traversal_ids_for_root_ancestor?
-        return false unless Feature.enabled?(:use_traversal_ids_for_root_ancestor)
-
-        traversal_ids.present?
-      end
-
       def root_ancestor
-        return super unless use_traversal_ids_for_root_ancestor?
-
         strong_memoize(:root_ancestor) do
           if association(:parent).loaded? && parent.present?
             # This case is possible when parent has not been persisted or we're inside a transaction.
@@ -133,7 +125,7 @@ module Namespaces
           elsif parent_id.nil?
             # There is no parent, so we are the root ancestor.
             self
-          elsif traversal_ids.present?
+          else
             Namespace.find_by(id: traversal_ids.first)
           end
         end

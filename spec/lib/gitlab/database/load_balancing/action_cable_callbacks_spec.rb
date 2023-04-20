@@ -2,18 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::ActionCableCallbacks, :request_store do
+RSpec.describe Gitlab::Database::LoadBalancing::ActionCableCallbacks, :request_store, feature_category: :shared do
   describe '.wrapper' do
-    it 'uses primary and then releases the connection and clears the session' do
+    it 'releases the connection and clears the session' do
       expect(Gitlab::Database::LoadBalancing).to receive(:release_hosts)
       expect(Gitlab::Database::LoadBalancing::Session).to receive(:clear_session)
 
-      described_class.wrapper.call(
-        nil,
-        lambda do
-          expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).to eq(true)
-        end
-      )
+      described_class.wrapper.call(nil, lambda {})
     end
 
     context 'with an exception' do

@@ -6,7 +6,7 @@ module GoogleApi
 
     before_action :validate_session_key!
 
-    feature_category :kubernetes_management
+    feature_category :deployment_management
     urgency :low
 
     ##

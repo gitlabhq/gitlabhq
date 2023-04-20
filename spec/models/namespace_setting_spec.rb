@@ -15,6 +15,8 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
   it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_values([:all, :ssh, :http]).with_suffix }
 
   describe "validations" do
+    it { is_expected.to validate_inclusion_of(:code_suggestions).in_array([true, false]) }
+
     describe "#default_branch_name_content" do
       let_it_be(:group) { create(:group) }
 

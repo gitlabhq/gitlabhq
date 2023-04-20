@@ -1,18 +1,13 @@
 ---
 # Importer events
 - name: github_import_project_start
-  redis_slot: import
   aggregation: weekly
 - name: github_import_project_success
-  redis_slot: import
   aggregation: weekly
 - name: github_import_project_failure
-  redis_slot: import
   aggregation: weekly
 - name: github_import_project_cancelled
-  redis_slot: import
   aggregation: weekly
 - name: github_import_project_partially_completed
-  redis_slot: import
   aggregation: weekly
 

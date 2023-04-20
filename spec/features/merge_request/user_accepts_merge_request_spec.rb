@@ -16,7 +16,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
     it 'when merge method is set to merge commit' do
       visit(merge_request_path(merge_request))
 
-      click_button('Merge')
+      click_merge_button
 
       puts merge_request.short_merged_commit_sha
 
@@ -31,7 +31,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
         visit(merge_request_path(merge_request))
 
-        click_button('Merge')
+        click_merge_button
 
         expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
       end
@@ -41,7 +41,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
         visit(merge_request_path(merge_request))
 
-        click_button('Merge')
+        click_merge_button
 
         expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
       end
@@ -55,7 +55,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
     it 'accepts a merge request' do
       check('Delete source branch')
-      click_button('Merge')
+      click_merge_button
 
       expect(page).to have_content('Changes merged into')
       expect(page).not_to have_selector('.js-remove-branch-button')
@@ -72,7 +72,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
     end
 
     it 'accepts a merge request' do
-      click_button('Merge')
+      click_merge_button
 
       expect(page).to have_content('Changes merged into')
       expect(page).to have_selector('.js-remove-branch-button')
@@ -90,7 +90,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
     it 'accepts a merge request' do
       check('Delete source branch')
-      click_button('Merge')
+      click_merge_button
 
       expect(page).to have_content('Changes merged into')
       expect(page).not_to have_selector('.js-remove-branch-button')
@@ -112,9 +112,15 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       find('[data-testid="widget_edit_commit_message"]').click
       fill_in('merge-message-edit', with: 'wow such merge')
 
-      click_button('Merge')
+      click_merge_button
 
       expect(page).to have_selector('.gl-badge', text: 'Merged')
+    end
+  end
+
+  def click_merge_button
+    page.within('.mr-state-widget') do
+      click_button 'Merge'
     end
   end
 end

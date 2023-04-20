@@ -69,11 +69,11 @@ module QA
           end
 
           def has_locked_artifact?
-            has_text?('will not be deleted')
+            has_element? :artifacts_locked_message_content
           end
 
           def has_unlocked_artifact?
-            has_text?('will be removed')
+            has_element? :artifacts_unlocked_message_content
           end
 
           private

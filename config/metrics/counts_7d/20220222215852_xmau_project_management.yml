@@ -1,7 +1,6 @@
 ---
 key_path: counts_weekly.aggregated_metrics.xmau_project_management
 description: Unique users interacting with Project Management features
-product_category: team planning
 product_section: dev
 product_stage: plan
 product_group: project_management

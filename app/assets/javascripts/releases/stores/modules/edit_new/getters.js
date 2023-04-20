@@ -4,6 +4,7 @@ import { hasContent } from '~/lib/utils/text_utility';
 import { getDuplicateItemsFromArray } from '~/lib/utils/array_utility';
 import { validateTag, ValidationResult } from '~/lib/utils/ref_validator';
 import { i18n } from '~/releases/constants';
+import { SEARCH, CREATE, EXISTING_TAG, NEW_TAG } from './constants';
 
 /**
  * @param {Object} link The link to test
@@ -169,10 +170,23 @@ export const releaseDeleteMutationVariables = (state) => ({
   },
 });
 
-export const formattedReleaseNotes = ({ includeTagNotes, release: { description }, tagNotes }) =>
-  includeTagNotes && tagNotes
-    ? `${description}\n\n### ${s__('Releases|Tag message')}\n\n${tagNotes}\n`
+export const formattedReleaseNotes = ({
+  includeTagNotes,
+  release: { description, tagMessage },
+  tagNotes,
+  showCreateFrom,
+}) => {
+  const notes = showCreateFrom ? tagMessage : tagNotes;
+  return includeTagNotes && notes
+    ? `${description}\n\n### ${s__('Releases|Tag message')}\n\n${notes}\n`
     : description;
+};
 
 export const releasedAtChanged = ({ originalReleasedAt, release }) =>
   originalReleasedAt !== release.releasedAt;
+
+export const isSearching = ({ step }) => step === SEARCH;
+export const isCreating = ({ step }) => step === CREATE;
+
+export const isExistingTag = ({ tagStep }) => tagStep === EXISTING_TAG;
+export const isNewTag = ({ tagStep }) => tagStep === NEW_TAG;

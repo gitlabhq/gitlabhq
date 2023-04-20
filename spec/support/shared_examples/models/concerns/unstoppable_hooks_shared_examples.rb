@@ -18,8 +18,12 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
         [3, nil],
         [3, 1.day.ago]
       ].map do |(recent_failures, disabled_until)|
-        create(hook_factory, **default_factory_arguments, recent_failures: recent_failures,
-disabled_until: disabled_until)
+        create(
+          hook_factory,
+          **default_factory_arguments,
+          recent_failures: recent_failures,
+          disabled_until: disabled_until
+        )
       end
     end
 

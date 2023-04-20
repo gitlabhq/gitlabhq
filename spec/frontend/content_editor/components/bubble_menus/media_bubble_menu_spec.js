@@ -100,11 +100,11 @@ describe.each`
       bubbleMenu = wrapper.findComponent(BubbleMenu);
     });
 
-    it('renders bubble menu component', async () => {
+    it('renders bubble menu component', () => {
       expect(bubbleMenu.classes()).toEqual(['gl-shadow', 'gl-rounded-base', 'gl-bg-white']);
     });
 
-    it('shows a clickable link to the image', async () => {
+    it('shows a clickable link to the image', () => {
       const link = wrapper.findComponent(GlLink);
       expect(link.attributes()).toEqual(
         expect.objectContaining({
@@ -202,7 +202,7 @@ describe.each`
         mediaAltInput = wrapper.findByTestId('media-alt');
       });
 
-      it('hides the link and copy/edit/remove link buttons', async () => {
+      it('hides the link and copy/edit/remove link buttons', () => {
         expectLinkButtonsToExist(false);
       });
 
@@ -225,7 +225,7 @@ describe.each`
           await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
         });
 
-        it(`updates prosemirror doc with new src to the ${mediaType}`, async () => {
+        it(`updates prosemirror doc with new src to the ${mediaType}`, () => {
           expect(tiptapEditor.getHTML()).toBe(mediaOutputHTML);
         });
 

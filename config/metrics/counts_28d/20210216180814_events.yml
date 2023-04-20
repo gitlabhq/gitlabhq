@@ -5,7 +5,6 @@ description: Number of distinct users who have generated a manage event by month
 product_section: dev
 product_stage: manage
 product_group: manage
-product_category:
 value_type: number
 status: active
 time_frame: 28d

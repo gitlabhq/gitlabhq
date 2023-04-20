@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store do
+RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, feature_category: :application_performance do
   let(:subscriber) { described_class.new }
   let(:counter) { double(:counter) }
   let(:data) { { 'result' => { 'data' => { 'event' => 'updated' } } } }
@@ -55,7 +55,6 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store do
       { event: :updated }
     end
 
-    let(:broadcasting) { 'issues:Z2lkOi8vZ2l0bGFiL0lzc3VlLzQ0Ng' }
     let(:payload) do
       {
         broadcasting: broadcasting,
@@ -64,14 +63,40 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store do
       }
     end
 
-    it 'tracks the broadcast event' do
+    before do
       allow(::Gitlab::Metrics).to receive(:counter).with(
         :action_cable_broadcasts_total, /broadcast/
       ).and_return(counter)
+    end
 
-      expect(counter).to receive(:increment)
+    context 'when broadcast is for a GraphQL event' do
+      let(:broadcasting) { 'graphql-event::issuableEpicUpdated:issuableId:Z2lkOi8vZ2l0bGFiL0lzc3VlLzM' }
 
-      subscriber.broadcast(event)
+      it 'tracks the event with broadcasting set to event topic' do
+        expect(counter).to receive(:increment).with({ broadcasting: 'graphql-event:issuableEpicUpdated' })
+
+        subscriber.broadcast(event)
+      end
+    end
+
+    context 'when broadcast is for a GraphQL channel subscription' do
+      let(:broadcasting) { 'graphql-subscription:09ae595a-45c4-4ae0-b765-4e503203211d' }
+
+      it 'strips out subscription ID from broadcasting' do
+        expect(counter).to receive(:increment).with({ broadcasting: 'graphql-subscription' })
+
+        subscriber.broadcast(event)
+      end
+    end
+
+    context 'when broadcast is something else' do
+      let(:broadcasting) { 'unknown-topic' }
+
+      it 'tracks the event as "other"' do
+        expect(counter).to receive(:increment).with({ broadcasting: 'other' })
+
+        subscriber.broadcast(event)
+      end
     end
   end
 

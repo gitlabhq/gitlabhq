@@ -57,7 +57,7 @@ module Clusters
       def authorized_projects(user_access)
         strong_memoize_with(:authorized_projects, user_access) do
           user_access.fetch(:projects, [])
-            .first(::Clusters::Agents::RefreshAuthorizationService::AUTHORIZED_ENTITY_LIMIT)
+            .first(::Clusters::Agents::Authorizations::CiAccess::RefreshService::AUTHORIZED_ENTITY_LIMIT)
             .map { |project| ::Project.find_by_full_path(project[:id]) }
             .select { |project| current_user.can?(:use_k8s_proxies, project) }
         end
@@ -66,7 +66,7 @@ module Clusters
       def authorized_groups(user_access)
         strong_memoize_with(:authorized_groups, user_access) do
           user_access.fetch(:groups, [])
-            .first(::Clusters::Agents::RefreshAuthorizationService::AUTHORIZED_ENTITY_LIMIT)
+            .first(::Clusters::Agents::Authorizations::CiAccess::RefreshService::AUTHORIZED_ENTITY_LIMIT)
             .map { |group| ::Group.find_by_full_path(group[:id]) }
             .select { |group| current_user.can?(:use_k8s_proxies, group) }
         end

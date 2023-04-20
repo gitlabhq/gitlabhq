@@ -12,7 +12,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
   let(:shared) { project.import_export_shared }
 
-  RSpec.shared_examples 'project tree restorer work properly' do |reader, ndjson_enabled|
+  RSpec.shared_examples 'project tree restorer work properly' do
     describe 'restore project tree' do
       before_all do
         # Using an admin for import, so we can check assignment of existing members
@@ -27,10 +27,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           @shared = @project.import_export_shared
 
           stub_all_feature_flags
-          stub_feature_flags(project_import_ndjson: ndjson_enabled)
 
           setup_import_export_config('complex')
-          setup_reader(reader)
+          setup_reader
 
           allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
           allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
@@ -606,23 +605,15 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       end
     end
 
-    context 'project.json file access check' do
+    context 'when expect tree structure is not present in the export path' do
       let(:user) { create(:user) }
-      let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
-      let(:project_tree_restorer) do
-        described_class.new(user: user, shared: shared, project: project)
-      end
+      let_it_be(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
 
-      let(:restored_project_json) { project_tree_restorer.restore }
+      it 'fails to restore the project' do
+        result = described_class.new(user: user, shared: shared, project: project).restore
 
-      it 'does not read a symlink' do
-        Dir.mktmpdir do |tmpdir|
-          setup_symlink(tmpdir, 'project.json')
-          allow(shared).to receive(:export_path).and_call_original
-
-          expect(project_tree_restorer.restore).to eq(false)
-          expect(shared.errors).to include('invalid import format')
-        end
+        expect(result).to eq(false)
+        expect(shared.errors).to include('invalid import format')
       end
     end
 
@@ -635,7 +626,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       context 'with a simple project' do
         before do
           setup_import_export_config('light')
-          setup_reader(reader)
+          setup_reader
 
           expect(restored_project_json).to eq(true)
         end
@@ -670,7 +661,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       context 'multiple pipelines reference the same external pull request' do
         before do
           setup_import_export_config('multi_pipeline_ref_one_external_pr')
-          setup_reader(reader)
+          setup_reader
 
           expect(restored_project_json).to eq(true)
         end
@@ -698,7 +689,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
         before do
           setup_import_export_config('light')
-          setup_reader(reader)
+          setup_reader
 
           expect(project).to receive(:merge_requests).and_call_original
           expect(project).to receive(:merge_requests).and_raise(exception)
@@ -715,7 +706,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
         before do
           setup_import_export_config('light')
-          setup_reader(reader)
+          setup_reader
 
           expect(project).to receive(:merge_requests).and_call_original
           expect(project).to receive(:merge_requests).and_raise(exception)
@@ -747,7 +738,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       context 'when the project has overridden params in import data' do
         before do
           setup_import_export_config('light')
-          setup_reader(reader)
+          setup_reader
         end
 
         it 'handles string versions of visibility_level' do
@@ -813,7 +804,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
         before do
           setup_import_export_config('group')
-          setup_reader(reader)
+          setup_reader
 
           expect(restored_project_json).to eq(true)
         end
@@ -849,7 +840,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
         before do
           setup_import_export_config('light')
-          setup_reader(reader)
+          setup_reader
         end
 
         it 'imports labels' do
@@ -885,7 +876,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
         before do
           setup_import_export_config('milestone-iid')
-          setup_reader(reader)
+          setup_reader
         end
 
         it 'preserves the project milestone IID' do
@@ -901,7 +892,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       context 'with external authorization classification labels' do
         before do
           setup_import_export_config('light')
-          setup_reader(reader)
+          setup_reader
         end
 
         it 'converts empty external classification authorization labels to nil' do
@@ -928,53 +919,16 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         described_class.new(user: user, shared: shared, project: project)
       end
 
-      before do
-        allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:exist?).and_return(true)
-        allow_any_instance_of(Gitlab::ImportExport::Json::NdjsonReader).to receive(:exist?).and_return(false)
-        allow_any_instance_of(Gitlab::ImportExport::Json::LegacyReader::File).to receive(:tree_hash) { tree_hash }
-      end
-
-      context 'no group visibility' do
-        let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
-
-        it 'uses the project visibility' do
-          expect(restorer.restore).to eq(true)
-          expect(restorer.project.visibility_level).to eq(visibility)
-        end
-      end
-
-      context 'with restricted internal visibility' do
-        describe 'internal project' do
-          let(:visibility) { Gitlab::VisibilityLevel::INTERNAL }
-
-          it 'uses private visibility' do
-            stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
-
-            expect(restorer.restore).to eq(true)
-            expect(restorer.project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
-          end
-        end
-      end
-
-      context 'with group visibility' do
+      describe 'visibility level' do
         before do
-          group = create(:group, visibility_level: group_visibility)
-          group.add_members([user], GroupMember::MAINTAINER)
-          project.update!(group: group)
-        end
+          setup_import_export_config('light')
 
-        context 'private group visibility' do
-          let(:group_visibility) { Gitlab::VisibilityLevel::PRIVATE }
-          let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
-
-          it 'uses the group visibility' do
-            expect(restorer.restore).to eq(true)
-            expect(restorer.project.visibility_level).to eq(group_visibility)
+          allow_next_instance_of(Gitlab::ImportExport::Json::NdjsonReader) do |relation_reader|
+            allow(relation_reader).to receive(:consume_attributes).and_return(tree_hash)
           end
         end
 
-        context 'public group visibility' do
-          let(:group_visibility) { Gitlab::VisibilityLevel::PUBLIC }
+        context 'no group visibility' do
           let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
 
           it 'uses the project visibility' do
@@ -983,21 +937,62 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           end
         end
 
-        context 'internal group visibility' do
-          let(:group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
-          let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
+        context 'with restricted internal visibility' do
+          describe 'internal project' do
+            let(:visibility) { Gitlab::VisibilityLevel::INTERNAL }
 
-          it 'uses the group visibility' do
-            expect(restorer.restore).to eq(true)
-            expect(restorer.project.visibility_level).to eq(group_visibility)
-          end
-
-          context 'with restricted internal visibility' do
-            it 'sets private visibility' do
+            it 'uses private visibility' do
               stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
 
               expect(restorer.restore).to eq(true)
               expect(restorer.project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+            end
+          end
+        end
+
+        context 'with group visibility' do
+          before do
+            group = create(:group, visibility_level: group_visibility)
+            group.add_members([user], GroupMember::MAINTAINER)
+            project.update!(group: group)
+          end
+
+          context 'private group visibility' do
+            let(:group_visibility) { Gitlab::VisibilityLevel::PRIVATE }
+            let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
+
+            it 'uses the group visibility' do
+              expect(restorer.restore).to eq(true)
+              expect(restorer.project.visibility_level).to eq(group_visibility)
+            end
+          end
+
+          context 'public group visibility' do
+            let(:group_visibility) { Gitlab::VisibilityLevel::PUBLIC }
+            let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
+
+            it 'uses the project visibility' do
+              expect(restorer.restore).to eq(true)
+              expect(restorer.project.visibility_level).to eq(visibility)
+            end
+          end
+
+          context 'internal group visibility' do
+            let(:group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
+            let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
+
+            it 'uses the group visibility' do
+              expect(restorer.restore).to eq(true)
+              expect(restorer.project.visibility_level).to eq(group_visibility)
+            end
+
+            context 'with restricted internal visibility' do
+              it 'sets private visibility' do
+                stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+
+                expect(restorer.restore).to eq(true)
+                expect(restorer.project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+              end
             end
           end
         end
@@ -1008,24 +1003,35 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
         let(:user2) { create(:user) }
         let(:project_members) do
           [
-            {
-              "id" => 2,
-              "access_level" => 40,
-              "source_type" => "Project",
-              "notification_level" => 3,
-              "user" => {
-                "id" => user2.id,
-                "email" => user2.email,
-                "username" => 'test'
-              }
-            }
+            [
+              {
+                "id" => 2,
+                "access_level" => 40,
+                "source_type" => "Project",
+                "notification_level" => 3,
+                "user" => {
+                  "id" => user2.id,
+                  "email" => user2.email,
+                  "username" => 'test'
+                }
+              },
+              0
+            ]
           ]
         end
 
-        let(:tree_hash) { { 'project_members' => project_members } }
-
         before do
           project.add_maintainer(user)
+
+          setup_import_export_config('light')
+
+          allow_next_instance_of(Gitlab::ImportExport::Json::NdjsonReader) do |relation_reader|
+            allow(relation_reader).to receive(:consume_relation).and_call_original
+
+            allow(relation_reader).to receive(:consume_relation)
+              .with('project', 'project_members')
+              .and_return(project_members)
+          end
         end
 
         it 'restores project members' do
@@ -1045,7 +1051,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
       before do
         setup_import_export_config('with_invalid_records')
-        setup_reader(reader)
+        setup_reader
 
         subject
       end
@@ -1138,13 +1144,5 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
     end
   end
 
-  context 'enable ndjson import' do
-    it_behaves_like 'project tree restorer work properly', :legacy_reader, true
-
-    it_behaves_like 'project tree restorer work properly', :ndjson_reader, true
-  end
-
-  context 'disable ndjson import' do
-    it_behaves_like 'project tree restorer work properly', :legacy_reader, false
-  end
+  it_behaves_like 'project tree restorer work properly'
 end

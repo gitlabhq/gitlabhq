@@ -421,7 +421,7 @@ To remove an issue from an epic:
    The **Remove issue** warning appears.
 1. Select **Remove**.
 
-![List of issues assigned to an epic](img/issue_list_v13_1.png)
+![List of issues assigned to an epic](img/issue_list_v15_11.png)
 
 ### Reorder issues assigned to an epic
 

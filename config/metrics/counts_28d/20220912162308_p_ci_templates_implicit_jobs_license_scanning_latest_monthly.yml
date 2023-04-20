@@ -5,7 +5,6 @@ description: Monthly counts for implicit License Scanning CI Latest template (Jo
 product_section: sec
 product_stage: secure
 product_group: composition_analysis
-product_category: license_scanning
 value_type: number
 status: removed
 milestone: '15.4'

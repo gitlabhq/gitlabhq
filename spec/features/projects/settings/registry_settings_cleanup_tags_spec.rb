@@ -32,10 +32,10 @@ feature_category: :projects do
     it 'shows available section' do
       subject
 
-      expect(find('.breadcrumbs')).to have_content('Clean up image tags')
+      expect(find('.breadcrumbs')).to have_content('Cleanup policies')
 
       section = find('[data-testid="container-expiration-policy-project-settings"]')
-      expect(section).to have_text 'Clean up image tags'
+      expect(section).to have_text 'Cleanup policies'
     end
 
     it 'passes axe automated accessibility testing' do

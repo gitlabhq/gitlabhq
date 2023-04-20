@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
-import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
 import * as types from './mutation_types';
 import {
@@ -140,8 +140,7 @@ export const fetchLanguageAggregation = ({ commit, state }) => {
   commit(types.REQUEST_AGGREGATIONS);
   return axios
     .get(getAggregationsUrl())
-    .then((result) => {
-      const { data } = result;
+    .then(({ data }) => {
       commit(types.RECEIVE_AGGREGATIONS_SUCCESS, prepareSearchAggregations(state, data));
     })
     .catch((e) => {

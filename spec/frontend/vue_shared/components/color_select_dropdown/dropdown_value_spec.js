@@ -31,12 +31,9 @@ describe('DropdownValue', () => {
       index | cssClass
       ${0}  | ${[]}
       ${1}  | ${['hide-collapsed']}
-    `(
-      'passes correct props to the ColorItem with CSS class `$cssClass`',
-      async ({ index, cssClass }) => {
-        expect(findColorItems().at(index).props()).toMatchObject(propsData.selectedColor);
-        expect(findColorItems().at(index).classes()).toEqual(cssClass);
-      },
-    );
+    `('passes correct props to the ColorItem with CSS class `$cssClass`', ({ index, cssClass }) => {
+      expect(findColorItems().at(index).props()).toMatchObject(propsData.selectedColor);
+      expect(findColorItems().at(index).classes()).toEqual(cssClass);
+    });
   });
 });

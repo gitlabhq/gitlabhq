@@ -1,6 +1,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
+import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
+import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import BoardCardInner from './board_card_inner.vue';
 
 export default {
@@ -9,7 +11,7 @@ export default {
     BoardCardInner,
   },
   mixins: [Tracking.mixin()],
-  inject: ['disabled', 'isApolloBoard'],
+  inject: ['disabled', 'isIssueBoard', 'isApolloBoard'],
   props: {
     list: {
       type: Object,
@@ -37,14 +39,30 @@ export default {
       default: true,
     },
   },
+  apollo: {
+    activeBoardItem: {
+      query: activeBoardItemQuery,
+      variables() {
+        return {
+          isIssue: this.isIssueBoard,
+        };
+      },
+      skip() {
+        return !this.isApolloBoard;
+      },
+    },
+  },
   computed: {
     ...mapState(['selectedBoardItems', 'activeId']),
+    activeItemId() {
+      return this.isApolloBoard ? this.activeBoardItem?.id : this.activeId;
+    },
     isActive() {
-      return this.item.id === this.activeId;
+      return this.item.id === this.activeItemId;
     },
     multiSelectVisible() {
       return (
-        !this.activeId &&
+        !this.activeItemId &&
         this.selectedBoardItems.findIndex((boardItem) => boardItem.id === this.item.id) > -1
       );
     },
@@ -83,9 +101,22 @@ export default {
       if (isMultiSelect && gon?.features?.boardMultiSelect) {
         this.toggleBoardItemMultiSelection(this.item);
       } else {
-        this.toggleBoardItem({ boardItem: this.item });
+        if (this.isApolloBoard) {
+          this.toggleItem();
+        } else {
+          this.toggleBoardItem({ boardItem: this.item });
+        }
         this.track('click_card', { label: 'right_sidebar' });
       }
+    },
+    toggleItem() {
+      this.$apollo.mutate({
+        mutation: setActiveBoardItemMutation,
+        variables: {
+          boardItem: this.item,
+          isIssue: this.isIssueBoard,
+        },
+      });
     },
   },
 };

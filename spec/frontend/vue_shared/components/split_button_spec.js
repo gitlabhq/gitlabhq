@@ -2,6 +2,7 @@ import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import { nextTick } from 'vue';
+import { assertProps } from 'helpers/assert_props';
 import SplitButton from '~/vue_shared/components/split_button.vue';
 
 const mockActionItems = [
@@ -42,12 +43,12 @@ describe('SplitButton', () => {
 
   it('fails for empty actionItems', () => {
     const actionItems = [];
-    expect(() => createComponent({ actionItems })).toThrow();
+    expect(() => assertProps(SplitButton, { actionItems })).toThrow();
   });
 
   it('fails for single actionItems', () => {
     const actionItems = [mockActionItems[0]];
-    expect(() => createComponent({ actionItems })).toThrow();
+    expect(() => assertProps(SplitButton, { actionItems })).toThrow();
   });
 
   it('renders actionItems', () => {

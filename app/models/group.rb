@@ -200,14 +200,27 @@ class Group < Namespace
       .where(project_authorizations: { user_id: user_ids })
   end
 
+  scope :with_project_creation_levels, -> (project_creation_levels) do
+    where(project_creation_level: project_creation_levels)
+  end
+
   scope :project_creation_allowed, -> do
-    permitted_levels = [
+    project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
       ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
       nil
     ]
 
-    where(project_creation_level: permitted_levels)
+    # When the value of application_settings.default_project_creation is set to `NO_ONE_PROJECT_ACCESS`,
+    # it means that a `nil` value for `groups.project_creation_level` is telling us:
+    # do not allow project creation in such groups.
+    # ie, `nil` is a placeholder value for inheriting the value from the ApplicationSetting.
+    # So we remove `nil` from the list when the application_setting's value is `NO_ONE_PROJECT_ACCESS`
+    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
+      project_creation_allowed_on_levels.delete(nil)
+    end
+
+    with_project_creation_levels(project_creation_allowed_on_levels)
   end
 
   scope :shared_into_ancestors, -> (group) do
@@ -551,7 +564,7 @@ class Group < Namespace
   # rubocop: enable CodeReuse/ServiceClass
 
   def users_ids_of_direct_members
-    direct_members.pluck(:user_id)
+    direct_members.pluck_user_ids
   end
 
   def user_ids_for_project_authorizations
@@ -892,6 +905,10 @@ class Group < Namespace
       Gitlab::CurrentSettings.group_runner_token_expiration_interval&.seconds,
       group_interval
     ].compact.min
+  end
+
+  def content_editor_on_issues_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:content_editor_on_issues)
   end
 
   def work_items_feature_flag_enabled?

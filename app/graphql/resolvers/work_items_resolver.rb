@@ -31,7 +31,7 @@ module Resolvers
     def preloads
       {
         work_item_type: :work_item_type,
-        web_url: { project: { namespace: :route } },
+        web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
         widgets: { work_item_type: :enabled_widget_definitions }
       }
     end
@@ -56,7 +56,8 @@ module Resolvers
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         labels: :labels,
         milestone: { milestone: [:project, :group] },
-        subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }]
+        subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }],
+        award_emoji: { award_emoji: :awardable }
       }
     end
 

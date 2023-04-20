@@ -22,7 +22,7 @@ module Resolvers
     alias_method :repository, :object
 
     def resolve(**args)
-      return unless repository.exists?
+      return if repository.empty?
 
       cursor = args.delete(:after)
       args[:ref] ||= :head

@@ -8,6 +8,8 @@ class ProtectedBranch < ApplicationRecord
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
 
   validate :validate_either_project_or_top_group
+  validates :name, presence: true
+  validates :name, uniqueness: { scope: [:project_id, :namespace_id] }, if: :name_changed?
 
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }
   scope :allowing_force_push, -> { where(allow_force_push: true) }
@@ -43,7 +45,7 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def self.allow_force_push?(project, ref_name)
-    if Feature.enabled?(:group_protected_branches, project.group)
+    if allow_protected_branches_for_group?(project.group)
       protected_branches = project.all_protected_branches.matching(ref_name)
 
       project_protected_branches, group_protected_branches = protected_branches.partition(&:project_id)
@@ -56,6 +58,10 @@ class ProtectedBranch < ApplicationRecord
     else
       project.protected_branches.allowing_force_push.matching(ref_name).any?
     end
+  end
+
+  def self.allow_protected_branches_for_group?(group)
+    Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
   end
 
   def self.any_protected?(project, ref_names)

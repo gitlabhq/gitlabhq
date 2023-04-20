@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import { badgeState } from '~/issuable/components/status_box.vue';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -81,6 +82,9 @@ export default {
       'hasDrafts',
     ]),
     ...mapState(['isToggleStateButtonLoading']),
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
     noteableDisplayName() {
       const displayNameMap = {
         [constants.ISSUE_NOTEABLE_TYPE]: this.$options.i18n.issue,
@@ -224,7 +228,7 @@ export default {
     handleSaveDraft() {
       this.handleSave({ isDraft: true });
     },
-    handleSave({ withIssueAction = false, isDraft = false } = {}) {
+    async handleSave({ withIssueAction = false, isDraft = false } = {}) {
       this.errors = [];
 
       if (this.note.length) {
@@ -244,6 +248,13 @@ export default {
 
         if (this.noteType === constants.DISCUSSION) {
           noteData.data.note.type = constants.DISCUSSION_NOTE;
+        }
+
+        if (containsSensitiveToken(this.note)) {
+          const confirmed = await confirmSensitiveAction();
+          if (!confirmed) {
+            return;
+          }
         }
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch
@@ -363,6 +374,7 @@ export default {
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"
+                :autocomplete-data-sources="autocompleteDataSources"
                 supports-quick-actions
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.meta.enter="handleEnter()"
@@ -399,10 +411,10 @@ export default {
                   {{ $options.i18n.internal }}
                   <gl-icon
                     v-gl-tooltip:tooltipcontainer.bottom
-                    name="question"
+                    name="question-o"
                     :size="16"
                     :title="$options.i18n.internalVisibility"
-                    class="gl-text-gray-500"
+                    class="gl-text-blue-500"
                   />
                 </gl-form-checkbox>
                 <comment-type-dropdown

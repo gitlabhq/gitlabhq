@@ -6,19 +6,19 @@ RSpec.describe PipelineMetricsWorker, feature_category: :continuous_integration 
   let(:project) { create(:project, :repository) }
 
   let!(:merge_request) do
-    create(:merge_request, source_project: project,
-                           source_branch: pipeline.ref,
-                           head_pipeline: pipeline)
+    create(:merge_request, source_project: project, source_branch: pipeline.ref, head_pipeline: pipeline)
   end
 
   let(:pipeline) do
-    create(:ci_empty_pipeline,
-           status: status,
-           project: project,
-           ref: 'master',
-           sha: project.repository.commit('master').id,
-           started_at: 1.hour.ago,
-           finished_at: Time.current)
+    create(
+      :ci_empty_pipeline,
+      status: status,
+      project: project,
+      ref: 'master',
+      sha: project.repository.commit('master').id,
+      started_at: 1.hour.ago,
+      finished_at: Time.current
+    )
   end
 
   let(:status) { 'pending' }

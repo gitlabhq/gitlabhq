@@ -369,7 +369,18 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :team_pla
     end
   end
 
-  context 'with a valid commit' do
+  context 'when public project repo with a valid commit' do
+    include_examples 'valid repository'
+  end
+
+  context 'when private project repo with a valid commit' do
+    let_it_be(:project) { create(:project, :repository, :private) }
+
+    before do
+      # user must have `read_code` ability
+      project.add_developer(user)
+    end
+
     include_examples 'valid repository'
   end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Debian::ProcessChangesService, feature_category: :package_registry do
@@ -55,7 +56,7 @@ RSpec.describe Packages::Debian::ProcessChangesService, feature_category: :packa
         it_behaves_like 'raises error with missing field', 'Distribution'
       end
 
-      context 'with existing package' do
+      context 'with existing package in the same distribution' do
         let_it_be_with_reload(:existing_package) do
           create(:debian_package, name: 'sample', version: '1.2.3~alpha2', project: distribution.project, published_in: distribution)
         end
@@ -64,10 +65,37 @@ RSpec.describe Packages::Debian::ProcessChangesService, feature_category: :packa
           expect { subject.execute }
             .to not_change { Packages::Package.count }
             .and not_change { Packages::PackageFile.count }
-            .and change(package_file, :package).to(existing_package)
+            .and change { package_file.package }.to(existing_package)
         end
 
-        context 'marked as pending_destruction' do
+        context 'and marked as pending_destruction' do
+          it 'does not re-use the existing package' do
+            existing_package.pending_destruction!
+
+            expect { subject.execute }
+              .to change { Packages::Package.count }.by(1)
+              .and not_change { Packages::PackageFile.count }
+          end
+        end
+      end
+
+      context 'with existing package in another distribution' do
+        let_it_be_with_reload(:existing_package) do
+          create(:debian_package, name: 'sample', version: '1.2.3~alpha2', project: distribution.project)
+        end
+
+        it 'raise ExtractionError' do
+          expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
+          expect { subject.execute }
+            .to not_change { Packages::Package.count }
+            .and not_change { Packages::PackageFile.count }
+            .and not_change { incoming.package_files.count }
+            .and raise_error(ArgumentError,
+              "Debian package #{existing_package.name} #{existing_package.version} exists " \
+              "in distribution #{existing_package.debian_distribution.codename}")
+        end
+
+        context 'and marked as pending_destruction' do
           it 'does not re-use the existing package' do
             existing_package.pending_destruction!
 

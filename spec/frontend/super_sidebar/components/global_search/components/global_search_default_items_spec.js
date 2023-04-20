@@ -1,13 +1,13 @@
-import { GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import HeaderSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
 import { MOCK_SEARCH_CONTEXT, MOCK_DEFAULT_SEARCH_OPTIONS } from '../mock_data';
 
 Vue.use(Vuex);
 
-describe('HeaderSearchDefaultItems', () => {
+describe('GlobalSearchDefaultItems', () => {
   let wrapper;
 
   const createComponent = (initialState, props) => {
@@ -21,19 +21,19 @@ describe('HeaderSearchDefaultItems', () => {
       },
     });
 
-    wrapper = shallowMount(HeaderSearchDefaultItems, {
+    wrapper = shallowMountExtended(GlobalSearchDefaultItems, {
       store,
       propsData: {
         ...props,
       },
+      stubs: {
+        GlDisclosureDropdownGroup,
+      },
     });
   };
 
-  const findDropdownHeader = () => wrapper.findComponent(GlDropdownSectionHeader);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findFirstDropdownItem = () => findDropdownItems().at(0);
-  const findDropdownItemTitles = () => findDropdownItems().wrappers.map((w) => w.text());
-  const findDropdownItemLinks = () => findDropdownItems().wrappers.map((w) => w.attributes('href'));
+  const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findItemsData = () => findItems().wrappers.map((w) => w.props('item'));
 
   describe('template', () => {
     describe('Dropdown items', () => {
@@ -42,26 +42,20 @@ describe('HeaderSearchDefaultItems', () => {
       });
 
       it('renders item for each option in defaultSearchOptions', () => {
-        expect(findDropdownItems()).toHaveLength(MOCK_DEFAULT_SEARCH_OPTIONS.length);
+        expect(findItems()).toHaveLength(MOCK_DEFAULT_SEARCH_OPTIONS.length);
       });
 
-      it('renders titles correctly', () => {
-        const expectedTitles = MOCK_DEFAULT_SEARCH_OPTIONS.map((o) => o.title);
-        expect(findDropdownItemTitles()).toStrictEqual(expectedTitles);
-      });
-
-      it('renders links correctly', () => {
-        const expectedLinks = MOCK_DEFAULT_SEARCH_OPTIONS.map((o) => o.url);
-        expect(findDropdownItemLinks()).toStrictEqual(expectedLinks);
+      it('provides the `item` prop to the `GlDisclosureDropdownItem` component', () => {
+        expect(findItemsData()).toStrictEqual(MOCK_DEFAULT_SEARCH_OPTIONS);
       });
     });
 
     describe.each`
-      group                     | project                     | dropdownTitle
+      group                     | project                     | groupHeader
       ${null}                   | ${null}                     | ${'All GitLab'}
       ${{ name: 'Test Group' }} | ${null}                     | ${'Test Group'}
       ${{ name: 'Test Group' }} | ${{ name: 'Test Project' }} | ${'Test Project'}
-    `('Dropdown Header', ({ group, project, dropdownTitle }) => {
+    `('Group Header', ({ group, project, groupHeader }) => {
       describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
         beforeEach(() => {
           createComponent({
@@ -72,29 +66,8 @@ describe('HeaderSearchDefaultItems', () => {
           });
         });
 
-        it(`should render as ${dropdownTitle}`, () => {
-          expect(findDropdownHeader().text()).toBe(dropdownTitle);
-        });
-      });
-    });
-
-    describe.each`
-      currentFocusedOption              | isFocused | ariaSelected
-      ${null}                           | ${false}  | ${undefined}
-      ${{ html_id: 'not-a-match' }}     | ${false}  | ${undefined}
-      ${MOCK_DEFAULT_SEARCH_OPTIONS[0]} | ${true}   | ${'true'}
-    `('isOptionFocused', ({ currentFocusedOption, isFocused, ariaSelected }) => {
-      describe(`when currentFocusedOption.html_id is ${currentFocusedOption?.html_id}`, () => {
-        beforeEach(() => {
-          createComponent({}, { currentFocusedOption });
-        });
-
-        it(`should${isFocused ? '' : ' not'} have gl-bg-gray-50 applied`, () => {
-          expect(findFirstDropdownItem().classes('gl-bg-gray-50')).toBe(isFocused);
-        });
-
-        it(`sets "aria-selected to ${ariaSelected}`, () => {
-          expect(findFirstDropdownItem().attributes('aria-selected')).toBe(ariaSelected);
+        it(`should render as ${groupHeader}`, () => {
+          expect(wrapper.text()).toContain(groupHeader);
         });
       });
     });

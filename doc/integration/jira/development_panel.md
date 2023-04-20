@@ -8,7 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/233149) from GitLab Premium to GitLab Free in 13.4.
 
-You can view GitLab activity from the Jira development panel.
+The Jira development panel connects all GitLab projects in a group or personal namespace
+where you can view GitLab activity.
 
 When you're in GitLab, you can refer to a Jira issue by ID.
 The [activity for that issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
@@ -33,7 +34,7 @@ The information displayed in the Jira development panel depends on where you men
 
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
-| Merge request title or description             | Link to the merge request                             |
+| Merge request title or description             | Link to the merge request<br>[GitLab 15.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/354373): Link to the branch |
 | Branch name                                    | Link to the branch                                    |
 | Commit message                                 | Link to the commit                                    |
 | [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |

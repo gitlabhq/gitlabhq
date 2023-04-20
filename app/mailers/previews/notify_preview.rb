@@ -213,6 +213,52 @@ class NotifyPreview < ActionMailer::Preview
     Notify.service_desk_thank_you_email(issue.id).message
   end
 
+  def service_desk_custom_email_verification_email
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      Notify.service_desk_custom_email_verification_email(service_desk_setting).message
+    end
+  end
+
+  def service_desk_verification_triggered_email
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      Notify.service_desk_verification_triggered_email(service_desk_setting, 'owner@example.com').message
+    end
+  end
+
+  def service_desk_verification_result_email_for_verified_state
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      custom_email_verification.update!(state: 1)
+
+      Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com').message
+    end
+  end
+
+  def service_desk_verification_result_email_for_incorrect_token_error
+    service_desk_verification_result_email_for_error_state(error: :incorrect_token)
+  end
+
+  def service_desk_verification_result_email_for_incorrect_from_error
+    service_desk_verification_result_email_for_error_state(error: :incorrect_from)
+  end
+
+  def service_desk_verification_result_email_for_mail_not_received_within_timeframe_error
+    service_desk_verification_result_email_for_error_state(error: :mail_not_received_within_timeframe)
+  end
+
+  def service_desk_verification_result_email_for_invalid_credentials_error
+    service_desk_verification_result_email_for_error_state(error: :invalid_credentials)
+  end
+
+  def service_desk_verification_result_email_for_smtp_host_issue_error
+    service_desk_verification_result_email_for_error_state(error: :smtp_host_issue)
+  end
+
   def merge_when_pipeline_succeeds_email
     Notify.merge_when_pipeline_succeeds_email(user.id, merge_request.id, user.id).message
   end
@@ -245,6 +291,53 @@ class NotifyPreview < ActionMailer::Preview
 
   def project
     @project ||= Project.first
+  end
+
+  def service_desk_verification_result_email_for_error_state(error:)
+    cleanup do
+      setup_service_desk_custom_email_objects
+
+      custom_email_verification.update!(state: 2, error: error)
+
+      Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com').message
+    end
+  end
+
+  def setup_service_desk_custom_email_objects
+    # Call accessors to ensure objects have been created
+    custom_email_credential
+    custom_email_verification
+
+    # Update associations in projects, because we access
+    # custom_email_credential and custom_email_verification via project
+    project.reset
+  end
+
+  def custom_email_verification
+    @custom_email_verification ||= project.service_desk_custom_email_verification || ServiceDesk::CustomEmailVerification.create!(
+      project: project,
+      token: 'XXXXXXXXXXXX',
+      triggerer: user,
+      triggered_at: Time.current,
+      state: 0
+    )
+  end
+
+  def custom_email_credential
+    @custom_email_credential ||= project.service_desk_custom_email_credential || ServiceDesk::CustomEmailCredential.create!(
+      project: project,
+      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::UrlBlocker resolves DNS
+      smtp_port: 587,
+      smtp_username: 'user@gmail.com',
+      smtp_password: 'supersecret'
+    )
+  end
+
+  def service_desk_setting
+    @service_desk_setting ||= project.service_desk_setting || ServiceDeskSetting.create!(
+      project: project,
+      custom_email: 'user@gmail.com'
+    )
   end
 
   def issue

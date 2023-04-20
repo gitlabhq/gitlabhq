@@ -121,7 +121,7 @@ RSpec.describe 'dev rake tasks' do
 
     context 'when a database is not found' do
       before do
-        skip_if_multiple_databases_not_setup
+        skip_if_shared_database(:ci)
       end
 
       it 'continues to next connection' do
@@ -135,7 +135,7 @@ RSpec.describe 'dev rake tasks' do
 
   context 'multiple databases' do
     before do
-      skip_if_multiple_databases_not_setup(:ci)
+      skip_if_shared_database(:ci)
     end
 
     context 'with a valid database' do

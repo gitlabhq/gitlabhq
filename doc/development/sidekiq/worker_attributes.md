@@ -242,7 +242,7 @@ can put unsustainable load on the primary database server. We therefore added th
 By configuring a worker's `data_consistency` field, we can then allow the scheduler to target read replicas
 under several strategies outlined below.
 
-## Trading immediacy for reduced primary load
+### Trading immediacy for reduced primary load
 
 We require Sidekiq workers to make an explicit decision around whether they need to use the
 primary database node for all reads and writes, or whether reads can be served from replicas. This is
@@ -259,7 +259,8 @@ that mostly or exclusively perform writes, or workers that read their own writes
 into data consistency issues should a stale record be read back from a replica. **Try to avoid
 these scenarios, since `:always` should be considered the exception, not the rule.**
 
-To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`.
+To allow for reads to be served from replicas, we added two additional consistency modes: `:sticky` and `:delayed`. A RuboCop rule
+reminds the developer when `:always` data consistency mode is used. If workers require the primary database, you can disable the rule in-line.
 
 When you declare either `:sticky` or `:delayed` consistency, workers become eligible for database
 load-balancing.
@@ -268,18 +269,17 @@ In both cases, if the replica is not up-to-date and the time from scheduling the
  the jobs sleep up to the minimum delay interval (0.8 seconds). This gives the replication process time to finish.
 The difference is in what happens when there is still replication lag after the delay: `sticky` workers
 switch over to the primary right away, whereas `delayed` workers fail fast and are retried once.
-If they still encounter replication lag, they also switch to the primary instead.
-**If your worker never performs any writes, it is strongly advised to apply one of these consistency settings,
-since it never needs to rely on the primary database node.**
+If the workers still encounter replication lag, they switch to the primary instead. **If your worker never performs any writes,
+it is strongly advised to apply `:sticky` or `:delayed` consistency settings, since the worker never needs to rely on the primary database node.**
 
 The table below shows the `data_consistency` attribute and its values, ordered by the degree to which
 they prefer read replicas and wait for replicas to catch up:
 
-| **Data Consistency**  | **Description**  |
-|--------------|-----------------------------|
-| `:always`    | The job is required to use the primary database (default). It should be used for workers that primarily perform writes, have strict requirements around data consistency when reading their own writes, or are cron jobs. |
-| `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
-| `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
+| **Data consistency**  | **Description**  | **Guideline** |
+|--------------|-----------------------------|----------|
+| `:always`    | The job is required to use the primary database (default). | It should be used for workers that primarily perform writes, have strict requirements around data consistency when reading their own writes, or are cron jobs. |
+| `:sticky`    | The job prefers replicas, but switches to the primary for writes or when encountering replication lag. | It should be used for jobs that require to be executed as fast as possible but can sustain a small initial queuing delay.  |
+| `:delayed`   | The job prefers replicas, but switches to the primary for writes. When encountering replication lag before the job starts, the job is retried once. If the replica is still not up to date on the next retry, it switches to the primary. | It should be used for jobs where delaying execution further typically does not matter, such as cache expiration or web hooks execution. |
 
 In all cases workers read either from a replica that is fully caught up,
 or from the primary node, so data consistency is always ensured.

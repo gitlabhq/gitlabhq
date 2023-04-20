@@ -4,7 +4,15 @@ import { stickyMonitor } from './lib/utils/sticky';
 
 export const initDiffStatsDropdown = (stickyTop) => {
   if (stickyTop) {
-    stickyMonitor(document.querySelector('.js-diff-files-changed'), stickyTop, false);
+    // We spend quite a bit of effort in our CSS to set the correct padding-top on the
+    // layout page, so we re-use the padding set there to determine at what height our
+    // element should be sticky
+    const pageLayout = document.querySelector('.layout-page');
+    const pageLayoutTopOffset = pageLayout
+      ? parseFloat(window.getComputedStyle(pageLayout).getPropertyValue('padding-top') || 0)
+      : 0;
+
+    stickyMonitor(document.querySelector('.js-diff-files-changed'), pageLayoutTopOffset, false);
   }
 
   const el = document.querySelector('.js-diff-stats-dropdown');

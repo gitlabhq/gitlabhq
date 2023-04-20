@@ -7,10 +7,13 @@ RSpec.describe Ci::BuildMetadata do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group, build_timeout: 2000) }
   let_it_be(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.id,
-                         ref: project.default_branch,
-                         status: 'success')
+    create(
+      :ci_pipeline,
+      project: project,
+      sha: project.commit.id,
+      ref: project.default_branch,
+      status: 'success'
+    )
   end
 
   let_it_be_with_reload(:runner) { create(:ci_runner) }

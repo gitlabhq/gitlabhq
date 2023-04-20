@@ -13,6 +13,10 @@ module Gitlab
             raise NoMethodError, "subclasses of #{self.class.name} must implement #{__method__}"
           end
 
+          def table_name
+            parsed_stmt.relation.relname
+          end
+
           def statement
             @statement ||= PgQuery.deparse_stmt(parsed_stmt)
           end

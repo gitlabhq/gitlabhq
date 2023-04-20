@@ -696,14 +696,45 @@ RSpec.describe ApplicationHelper do
   end
 
   describe 'stylesheet_link_tag_defer' do
-    it 'uses print stylesheet by default' do
+    it 'uses print stylesheet when feature flag disabled' do
+      stub_feature_flags(remove_startup_css: false)
+
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="print" href="/stylesheets/test.css" />')
+    end
+
+    it 'uses regular stylesheet when feature flag disabled' do
+      stub_feature_flags(remove_startup_css: true)
+
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
     end
 
     it 'uses regular stylesheet when no_startup_css param present' do
       allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
 
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+    end
+  end
+
+  describe 'sign_in_with_redirect?' do
+    context 'when on the sign-in page that redirects afterwards' do
+      before do
+        allow(helper).to receive(:current_page?).and_return(true)
+        session[:user_return_to] = true
+      end
+
+      it 'returns true' do
+        expect(helper.sign_in_with_redirect?).to be_truthy
+      end
+    end
+
+    context 'when on a non sign-in page' do
+      before do
+        allow(helper).to receive(:current_page?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(helper.sign_in_with_redirect?).to be_falsey
+      end
     end
   end
 end

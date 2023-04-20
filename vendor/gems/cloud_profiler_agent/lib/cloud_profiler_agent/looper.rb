@@ -49,6 +49,12 @@ module CloudProfilerAgent
         begin
           yield
         rescue ::Google::Cloud::Error => e
+          logger.error(
+            gcp_ruby_status: "error",
+            error: e.inspect,
+            **log_labels
+          )
+
           backoff = backoff_duration(e)
           if backoff.nil?
             iteration_time = @max_iteration_sec
@@ -68,6 +74,14 @@ module CloudProfilerAgent
             duration_s: elapsed,
             **log_labels
           )
+        rescue Exception => e # rubocop:disable Lint/RescueException
+          # We rescue exception here to make sure we log the error message, then we re-raise the exception.
+          logger.error(
+            gcp_ruby_status: "exception",
+            error: e.inspect,
+            **log_labels
+          )
+          raise e
         else
           iteration_time = @min_iteration_sec
         end

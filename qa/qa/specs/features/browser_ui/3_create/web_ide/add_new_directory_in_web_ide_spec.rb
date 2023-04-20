@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# TODO: remove this test when 'vscode_web_ide' feature flag is default enabled
 module QA
-  RSpec.describe 'Create', :skip_live_env, product_group: :editor do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'Add a directory in Web IDE' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -30,23 +29,18 @@ module QA
                 }
               ])
           end
-
           project.visit!
-
-          Page::Project::Show.perform(&:open_web_ide!)
         end
 
-        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347733' do
-          Page::Project::WebIDE::Edit.perform do |ide|
-            # Support::Waiter.wait_until(sleep_interval: 2, max_duration: 60, reload_page: page,
-            # retry_on_exception: true) do
-            #   expect(ide).to have_element(:commit_mode_tab)
-            # end
-            ide.wait_until_ide_loads
-            ide.add_directory(directory_name)
+        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386760' do
+          Page::Project::Show.perform(&:open_web_ide!)
+          Page::Project::WebIDE::VSCode.perform do |ide|
+            ide.wait_for_ide_to_load
+            ide.create_new_folder(directory_name)
+            ide.within_vscode_editor do
+              expect(page).to have_content('A file or folder first_directory already exists at this location.')
+            end
           end
-
-          expect(page).to have_content('The name "first_directory" is already taken in this directory.')
         end
       end
 
@@ -57,18 +51,15 @@ module QA
           Page::Project::Show.perform(&:open_web_ide!)
         end
 
-        it 'shows in the tree view but cannot be committed', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347732' do
-          Page::Project::WebIDE::Edit.perform do |ide|
-            ide.wait_until_ide_loads
-            ide.add_directory(directory_name)
-
-            expect(ide).to have_file(directory_name)
-            expect(ide).to have_folder_icon(directory_name)
-            expect(ide).not_to have_file_addition_icon(directory_name)
-
-            ide.switch_to_commit_tab
-
-            expect(ide).not_to have_file_to_commit(directory_name)
+        it 'shows successfully but not able to be committed',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761' do
+          Page::Project::WebIDE::VSCode.perform do |ide|
+            ide.wait_for_ide_to_load
+            ide.create_new_folder(directory_name)
+            ide.commit_and_push(directory_name)
+            ide.within_vscode_editor do
+              expect(page).to have_content('No changes found. Not able to commit.')
+            end
           end
         end
       end

@@ -79,12 +79,12 @@ describe('TooltipOnTruncate component', () => {
   };
 
   describe('when truncated', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       hasHorizontalOverflow.mockReturnValueOnce(true);
       createComponent();
     });
 
-    it('renders tooltip', async () => {
+    it('renders tooltip', () => {
       expect(hasHorizontalOverflow).toHaveBeenLastCalledWith(wrapper.element);
       expect(getTooltipValue()).toStrictEqual({
         title: MOCK_TITLE,
@@ -96,7 +96,7 @@ describe('TooltipOnTruncate component', () => {
   });
 
   describe('with default target', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       hasHorizontalOverflow.mockReturnValueOnce(false);
       createComponent();
     });

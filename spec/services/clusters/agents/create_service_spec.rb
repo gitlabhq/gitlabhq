@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::CreateService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::CreateService, feature_category: :deployment_management do
   subject(:service) { described_class.new(project, user) }
 
   let(:project) { create(:project, :public, :repository) }

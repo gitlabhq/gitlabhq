@@ -1,11 +1,12 @@
 import { GlAlert, GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
+import ExperimentHeader from '~/ml/experiment_tracking/routes/experiments/show/components/experiment_header.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlHelpers from '~/lib/utils/url_utility';
-import { MOCK_START_CURSOR, MOCK_PAGE_INFO, MOCK_CANDIDATES } from './mock_data';
+import { MOCK_START_CURSOR, MOCK_PAGE_INFO, MOCK_CANDIDATES, MOCK_EXPERIMENT } from './mock_data';
 
 describe('MlExperimentsShow', () => {
   let wrapper;
@@ -15,9 +16,10 @@ describe('MlExperimentsShow', () => {
     metricNames = [],
     paramNames = [],
     pageInfo = MOCK_PAGE_INFO,
+    experiment = MOCK_EXPERIMENT,
   ) => {
     wrapper = mountExtended(MlExperimentsShow, {
-      propsData: { candidates, metricNames, paramNames, pageInfo },
+      propsData: { experiment, candidates, metricNames, paramNames, pageInfo },
     });
   };
 
@@ -34,6 +36,8 @@ describe('MlExperimentsShow', () => {
   const findTableRows = () => findTable().findAll('tbody > tr');
   const findNthTableRow = (idx) => findTableRows().at(idx);
   const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col);
+  const findExperimentHeader = () => wrapper.findComponent(ExperimentHeader);
+
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;
 
@@ -44,7 +48,7 @@ describe('MlExperimentsShow', () => {
   });
 
   describe('default inputs', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createWrapper();
     });
 
@@ -54,6 +58,14 @@ describe('MlExperimentsShow', () => {
 
     it('does not show pagination', () => {
       expect(findPagination().exists()).toBe(false);
+    });
+
+    it('shows experiment header', () => {
+      expect(findExperimentHeader().exists()).toBe(true);
+    });
+
+    it('passes the correct title to experiment header', () => {
+      expect(findExperimentHeader().props('title')).toBe(MOCK_EXPERIMENT.name);
     });
 
     it('does not show table', () => {

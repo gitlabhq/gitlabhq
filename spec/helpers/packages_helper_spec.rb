@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PackagesHelper, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
+  include AdminModeHelper
 
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:base_url) { "#{Gitlab.config.gitlab.url}/api/v4/" }
@@ -125,6 +126,74 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
       end
 
       it { is_expected.to eq(expected_result) }
+    end
+  end
+
+  describe '#show_group_package_registry_settings' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    subject { helper.show_group_package_registry_settings(group) }
+
+    context 'with package registry config enabled' do
+      before do
+        stub_config(packages: { enabled: true })
+      end
+
+      context "with admin", :enable_admin_mode do
+        before do
+          allow(helper).to receive(:current_user) { admin }
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context "with owner" do
+        before do
+          group.add_owner(user)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      %i[maintainer developer reporter guest].each do |role|
+        context "with #{role}" do
+          before do
+            group.public_send("add_#{role}", user)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
+    end
+
+    context 'with package registry config disabled' do
+      before do
+        stub_config(packages: { enabled: false })
+      end
+
+      context "with admin", :enable_admin_mode do
+        before do
+          allow(helper).to receive(:current_user) { admin }
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      %i[owner maintainer developer reporter guest].each do |role|
+        context "with #{role}" do
+          before do
+            group.public_send("add_#{role}", user)
+          end
+
+          it { is_expected.to be(false) }
+        end
+      end
     end
   end
 end

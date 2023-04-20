@@ -83,7 +83,6 @@ module Sidebars
             title: _('Dependency Proxy'),
             link: group_dependency_proxy_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
-            super_sidebar_before: :packages_registry,
             active_routes: { controller: 'groups/dependency_proxies' },
             item_id: :dependency_proxy
           )

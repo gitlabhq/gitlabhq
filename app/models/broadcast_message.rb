@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-class BroadcastMessage < ApplicationRecord
+class BroadcastMessage < MainClusterwide::ApplicationRecord
   include CacheMarkdownField
   include Sortable
+  include IgnorableColumns
 
   ALLOWED_TARGET_ACCESS_LEVELS = [
     Gitlab::Access::GUEST,
@@ -11,6 +12,8 @@ class BroadcastMessage < ApplicationRecord
     Gitlab::Access::MAINTAINER,
     Gitlab::Access::OWNER
   ].freeze
+
+  ignore_column :namespace_id, remove_with: '16.0', remove_after: '2022-06-22'
 
   cache_markdown_field :message, pipeline: :broadcast_message, whitelisted: true
 

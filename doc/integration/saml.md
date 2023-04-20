@@ -19,7 +19,7 @@ To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group
 For more information on:
 
 - OmniAuth provider settings, see the [OmniAuth documentation](omniauth.md).
-- Commonly-used terms, see the [glossary of common terms](#glossary-of-common-terms).
+- Commonly-used terms, see the [glossary](#glossary).
 
 ## Configure SAML support in GitLab
 
@@ -28,7 +28,7 @@ For more information on:
 :::TabTitle Linux package (Omnibus)
 
 1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. To allow your users to use SAML to sign up without having to manually create
@@ -51,7 +51,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -98,7 +98,7 @@ For more information on:
 :::TabTitle Helm chart (Kubernetes)
 
 1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/charts/installation/tls.html).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. Export the Helm values:
@@ -134,7 +134,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -193,7 +193,7 @@ For more information on:
 :::TabTitle Docker
 
 1. Make sure GitLab is [configured with HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. To allow your users to use SAML to sign up without having to manually create
@@ -226,7 +226,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -278,7 +278,7 @@ For more information on:
 :::TabTitle Self-compiled (source)
 
 1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
-1. Edit the [common configuration file settings](omniauth.md#configure-common-settings)
+1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 1. To allow your users to use SAML to sign up without having to manually create
@@ -306,7 +306,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -382,7 +382,7 @@ To configure a SAML application on your IdP, you need at least the following inf
 
 - Assertion consumer service URL.
 - Issuer.
-- [`NameID`](../user/group/saml_sso/index.md#nameid).
+- [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
 - [Email address claim](#configure-assertions).
 
 For an example configuration, see [set up identity providers](#set-up-identity-providers).
@@ -653,7 +653,7 @@ IdPs, contact your provider's support.
 1. Complete the SAML general configuration. Enter:
    - `"Single sign-on URL"`: Use the assertion consumer service URL.
    - `"Audience URI"`: Use the issuer.
-   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
    - [Assertions](#configure-assertions).
 1. In the feedback section, enter that you're a customer and creating an
    app for internal use.
@@ -699,7 +699,7 @@ When configuring the Google Workspace SAML application, record the following inf
 |             | Value        | Description                                                                       |
 |-------------|--------------|-----------------------------------------------------------------------------------|
 | SSO URL     | Depends      | Google Identity Provider details. Set to the GitLab `idp_sso_target_url` setting. |
-| Certificate | Downloadable | Run `openssl x509 -in <your_certificate.crt> -noout -fingerprint` to generate the SHA1 fingerprint that can be used in the `idp_cert_fingerprint` setting.                         |
+| Certificate | Downloadable | Run `openssl x509 -in <your_certificate.crt> -noout -fingerprint -sha1` to generate the SHA1 fingerprint that can be used in the `idp_cert_fingerprint` setting.                         |
 
 Google Workspace Administrator also provides the IdP metadata, Entity ID, and SHA-256
 fingerprint. However, GitLab does not need this information to connect to the
@@ -2139,7 +2139,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
 By default, the local part of the email address in the SAML response is used to
 generate the user's GitLab username.
 
-Configure `nickname` in `attribute_statements` to specify one or more attributes that contain a user's desired username:
+Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in `attribute_statements` to specify one or more attributes that contain a user's desired username:
 
 ::Tabs
 
@@ -2442,7 +2442,7 @@ The value given is added to the current time at which the response is validated.
 Before setting the `uid` to a unique attribute, make sure that you have configured
 the following attributes so your SAML users cannot change them:
 
-- [`NameID`](../user/group/saml_sso/index.md#nameid).
+- [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
 - `Email` when used with `omniauth_auto_link_saml_user`.
 
 If users can change these attributes, they can sign in as other authorized users.
@@ -3120,12 +3120,12 @@ such as the following:
 | Sign SAML assertion | Optional | Validates the integrity of a SAML assertion. When active, signs the whole response. |
 | Check SAML request signature | Optional | Checks the signature on the SAML response. |
 | Default RelayState | Optional | Specifies the URL users should end up on after successfully signing in through SAML at your IdP. |
-| NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#nameid-format). |
+| NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#manage-user-saml-identity). |
 | Additional URLs | Optional | May include the issuer, identifier, or assertion consumer service URL in other fields on some providers. |
 
 For example configurations, see the [notes on specific providers](#set-up-identity-providers).
 
-## Glossary of common terms
+## Glossary
 
 | Term                           | Description |
 |--------------------------------|-------------|

@@ -199,7 +199,15 @@ module QA
         end
 
         def click_diffs_tab
-          click_element(:diffs_tab)
+          # Do not wait for spinner due to https://gitlab.com/gitlab-org/gitlab/-/issues/398584
+          click_element(:diffs_tab, skip_finished_loading_check: true)
+
+          # If the diff isn't available when we navigate to the Changes tab
+          # we must reload the page. https://gitlab.com/gitlab-org/gitlab/-/issues/398557
+          wait_until(reload: true, skip_finished_loading_check_on_refresh: true) do
+            QA::Runtime::Logger.debug('Ensuring that diff has loaded async')
+            has_element?(:file_tree_button, skip_finished_loading_check: true, wait: 1)
+          end
         end
 
         def click_pipeline_link

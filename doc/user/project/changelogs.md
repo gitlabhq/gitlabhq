@@ -313,5 +313,5 @@ an error is produced when generating a changelog.
 
 ## Related topics
 
-- [Changelog-related endpoints](../../api/repositories.md) in the Repositories API.
-- Developer documentation for [changelog entries](../../development/changelog.md) in GitLab.
+- [Changelog-related endpoints](../../api/repositories.md) in the Repositories API
+- Developer documentation for [changelog entries](../../development/changelog.md) in GitLab

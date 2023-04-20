@@ -18,12 +18,13 @@ module Gitlab
         end
 
         def encode
-          state = {
+          json = {
             offset: @last_line_offset,
             style: @current_line.style.to_h,
             open_sections: @open_sections
-          }
-          Base64.urlsafe_encode64(state.to_json)
+          }.to_json
+
+          Base64.urlsafe_encode64(json, padding: false)
         end
 
         def open_section(section, timestamp, options)
@@ -91,7 +92,20 @@ module Gitlab
           decoded_state = Base64.urlsafe_decode64(state)
           return unless decoded_state.present?
 
-          Gitlab::Json.parse(decoded_state)
+          ::Gitlab::Json.parse(decoded_state)
+        rescue ArgumentError, JSON::ParserError => error
+          # This rescue is so that we don't break during the rollout or rollback
+          # of `sign_and_verify_ansi2json_state`, because we may receive a
+          # signed state even when the flag is disabled, and this would result
+          # in invalid Base64 (ArgumentError) or invalid JSON in case the signed
+          # state happens to decode as valid Base64 (JSON::ParserError).
+          #
+          # Once the flag has been fully rolled out this should not
+          # be possible (it would imply a backend bug) and we not rescue from
+          # this.
+          ::Gitlab::AppLogger.warn(message: "#{self.class}: decode error", invalid_state: state, error: error)
+
+          nil
         end
       end
     end

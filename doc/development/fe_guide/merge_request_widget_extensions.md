@@ -329,7 +329,6 @@ To generate these known events for a single widget:
      1. `product_section` = `dev`
      1. `product_stage` = `create`
      1. `product_group` = `code_review`
-     1. `product_category` = `code_review`
      1. `introduced_by_url` = `'[your MR]'`
      1. `options.events` = (the event in the command from above that generated this file, like `i_code_review_merge_request_widget_test_reports_count_view`)
          - This value is how the telemetry events are linked to "metrics" so this is probably one of the more important values.

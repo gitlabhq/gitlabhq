@@ -9,20 +9,21 @@ RSpec.describe TodosHelper do
   let_it_be(:issue) { create(:issue, title: 'Issue 1', project: project) }
   let_it_be(:design) { create(:design, issue: issue) }
   let_it_be(:note) do
-    create(:note,
-           project: issue.project,
-           note: 'I am note, hear me roar')
+    create(:note, project: issue.project, note: 'I am note, hear me roar')
   end
 
   let_it_be(:group) { create(:group, :public, name: 'Group 1') }
 
   let_it_be(:design_todo) do
-    create(:todo, :mentioned,
-           user: user,
-           project: project,
-           target: design,
-           author: author,
-           note: note)
+    create(
+      :todo,
+      :mentioned,
+      user: user,
+      project: project,
+      target: design,
+      author: author,
+      note: note
+    )
   end
 
   let_it_be(:alert_todo) do
@@ -93,11 +94,14 @@ RSpec.describe TodosHelper do
 
     context 'when given a non-design todo' do
       let(:todo) do
-        build_stubbed(:todo, :assigned,
-        user: user,
-        project: issue.project,
-        target: issue,
-        author: author)
+        build_stubbed(
+          :todo,
+          :assigned,
+          user: user,
+          project: issue.project,
+          target: issue,
+          author: author
+        )
       end
 
       it 'returns the title' do
@@ -154,11 +158,13 @@ RSpec.describe TodosHelper do
 
     context 'when a user requests access to group' do
       let_it_be(:group_access_request_todo) do
-        create(:todo,
-               target_id: group.id,
-               target_type: group.class.polymorphic_name,
-               group: group,
-               action: Todo::MEMBER_ACCESS_REQUESTED)
+        create(
+          :todo,
+          target_id: group.id,
+          target_type: group.class.polymorphic_name,
+          group: group,
+          action: Todo::MEMBER_ACCESS_REQUESTED
+        )
       end
 
       it 'responds with access requests tab' do
@@ -295,7 +301,7 @@ RSpec.describe TodosHelper do
   end
 
   describe '#no_todos_messages' do
-    context 'when getting todos messsages' do
+    context 'when getting todos messages' do
       it 'return these sentences' do
         expected_sentences = [
           s_('Todos|Good job! Looks like you don\'t have anything left on your To-Do List'),

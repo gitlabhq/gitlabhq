@@ -19,10 +19,9 @@ export const i18n = {
     "ForksDivergence|Fetch the latest changes from the upstream repository's default branch:",
   ),
   step2Text: s__(
-    "ForksDivergence|Check out to a new branch, and merge the changes from the upstream project's default branch. You likely need to resolve conflicts during this step.",
+    "ForksDivergence|Check out to a branch, and merge the changes from the upstream project's default branch. You likely need to resolve conflicts during this step.",
   ),
   step3Text: s__('ForksDivergence|Push the updates to remote:'),
-  step4Text: s__("ForksDivergence|Create a merge request to your project's default branch."),
   copyToClipboard: __('Copy to clipboard'),
   close: __('Close'),
 };
@@ -53,11 +52,19 @@ export default {
       required: false,
       default: '',
     },
+    selectedBranch: {
+      type: String,
+      required: true,
+      default: '',
+    },
   },
   computed: {
     instructionsStep1() {
       const baseUrl = getBaseURL();
       return `git fetch ${baseUrl}${this.sourcePath} ${this.sourceDefaultBranch}`;
+    },
+    instructionsStep2() {
+      return `git checkout ${this.selectedBranch}\ngit merge FETCH_HEAD`;
     },
   },
   methods: {
@@ -69,9 +76,7 @@ export default {
     },
   },
   i18n,
-  instructionsStep2: 'git checkout -b &lt;new-branch-name&gt;\ngit merge FETCH_HEAD',
-  instructionsStep2Clipboard: 'git checkout -b <new-branch-name>\ngit merge FETCH_HEAD',
-  instructionsStep3: 'git commit\ngit push',
+  instructionsStep3: 'git push',
 };
 </script>
 <template>
@@ -100,14 +105,12 @@ export default {
       <b> {{ $options.i18n.step2 }}</b> {{ $options.i18n.step2Text }}
     </p>
     <div class="gl-display-flex gl-mb-4">
-      <pre
-        class="gl-w-full gl-mb-0 gl-mr-3"
-        data-testid="resolve-conflict-instructions"
-        v-html="$options.instructionsStep2 /* eslint-disable-line vue/no-v-html */"
-      ></pre>
+      <pre class="gl-w-full gl-mb-0 gl-mr-3" data-testid="resolve-conflict-instructions">{{
+        instructionsStep2
+      }}</pre>
       <modal-copy-button
         modal-id="fork-sync-conflicts-modal"
-        :text="$options.instructionsStep2Clipboard"
+        :text="instructionsStep2"
         :title="$options.i18n.copyToClipboard"
         class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
       />
@@ -127,9 +130,6 @@ export default {
         class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0 gl-ml-3"
       />
     </div>
-    <p>
-      <b> {{ $options.i18n.step4 }}</b> {{ $options.i18n.step4Text }}
-    </p>
     <template #modal-footer>
       <gl-button @click="hide" @keydown.esc="hide">{{ $options.i18n.close }}</gl-button>
     </template>

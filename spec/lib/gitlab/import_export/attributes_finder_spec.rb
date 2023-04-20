@@ -177,7 +177,8 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
       end
 
       def setup_yaml(hash)
-        allow(YAML).to receive(:load_file).with(test_config).and_return(hash)
+        allow(YAML).to receive(:safe_load_file)
+          .with(test_config, aliases: true, permitted_classes: [Symbol]).and_return(hash)
       end
     end
   end

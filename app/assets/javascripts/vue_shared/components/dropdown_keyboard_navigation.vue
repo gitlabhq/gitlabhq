@@ -27,6 +27,12 @@ export default {
       type: Number,
       required: true,
     },
+    /* enable possibility to cycle around */
+    enableCycle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   watch: {
     max() {
@@ -64,14 +70,33 @@ export default {
         return;
       }
 
-      const nextIndex = Math.max(this.min, Math.min(this.index + val, this.max));
+      let nextIndex = Math.max(this.min, Math.min(this.index + val, this.max));
 
-      // Return if the index didn't change
       if (nextIndex === this.index) {
-        return;
+        // Return if the index didn't change and cycle is not enabled
+        if (!this.enableCycle) {
+          return;
+        }
+        // Update nextIndex if the cycle is enabled
+        nextIndex = this.cycle(nextIndex, val);
       }
 
       this.$emit('change', nextIndex);
+    },
+    cycle(nextIndex, val) {
+      if (val === 1 && nextIndex === this.max) {
+        // if we are moving down +1 and we reached bottom (max)
+        // return top most index (min)
+        return this.min;
+      }
+
+      if (val === -1 && nextIndex === this.min) {
+        // if we are moving up -1 and we reached top (min)
+        // return bottom most index (max)
+        return this.max;
+      }
+
+      return nextIndex;
     },
   },
   render() {

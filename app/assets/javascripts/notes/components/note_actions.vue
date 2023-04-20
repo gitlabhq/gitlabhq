@@ -21,7 +21,7 @@ export default {
     editCommentLabel: __('Edit comment'),
     deleteCommentLabel: __('Delete comment'),
     moreActionsLabel: __('More actions'),
-    reportAbuse: __('Report abuse to administrator'),
+    reportAbuse: __('Report abuse'),
   },
   name: 'NoteActions',
   components: {
@@ -367,7 +367,7 @@ export default {
         @click="closeTooltip"
       />
       <!-- eslint-enable @gitlab/vue-no-data-toggle -->
-      <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
+      <ul class="dropdown-menu more-actions-dropdown dropdown-menu-right">
         <gl-dropdown-item
           v-if="canEdit"
           class="js-note-edit gl-sm-display-none!"

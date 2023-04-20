@@ -128,11 +128,11 @@ describe('Configure Feature Flags Modal', () => {
       expect(findSecondaryAction()).toBe(null);
     });
 
-    it('should not display regenerating instance ID', async () => {
+    it('should not display regenerating instance ID', () => {
       expect(findDangerGlAlert().exists()).toBe(false);
     });
 
-    it('should disable the project name input', async () => {
+    it('should disable the project name input', () => {
       expect(findProjectNameInput().exists()).toBe(false);
     });
   });
@@ -142,7 +142,7 @@ describe('Configure Feature Flags Modal', () => {
       factory({ hasRotateError: true });
     });
 
-    it('should display an error', async () => {
+    it('should display an error', () => {
       expect(wrapper.findByTestId('rotate-error').exists()).toBe(true);
       expect(wrapper.find('[name="warning"]').exists()).toBe(true);
     });
@@ -151,7 +151,7 @@ describe('Configure Feature Flags Modal', () => {
   describe('is rotating', () => {
     beforeEach(factory.bind(null, { isRotating: true }));
 
-    it('should disable the project name input', async () => {
+    it('should disable the project name input', () => {
       expect(findProjectNameInput().attributes('disabled')).toBe('true');
     });
   });

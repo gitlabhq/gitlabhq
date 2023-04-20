@@ -13,7 +13,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 
 This is the group-level documentation. For self-managed instances, see the [administration documentation](../../admin_area/reporting/git_abuse_rate_limit.md).
 
-Git abuse rate limiting is a feature to automatically [ban users](#unban-a-user) who download or clone more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../../user/profile/personal_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md). Access to unrelated groups is unaffected.
+Git abuse rate limiting is a feature to automatically ban users who download, clone, or fork more than a specified number of repositories of a group in a given time frame. Banned users cannot access the top-level group or any of its non-public subgroups via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../../user/profile/personal_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md). Access to unrelated groups is unaffected.
 
 Git abuse rate limiting does not apply to top-level group owners, [deploy tokens](../../../user/project/deploy_tokens/index.md), or [deploy keys](../../../user/project/deploy_keys/index.md).
 
@@ -36,26 +36,6 @@ If automatic banning is enabled, an email notification is sent when a user is ab
    1. Optional. Turn on the **Automatically ban users from this namespace when they exceed the specified limits** toggle to enable automatic banning.
 1. Select **Save changes**.
 
-## Unban a user
+## Related topics
 
-Prerequisites:
-
-- You must have the Owner role.
-
-1. On the left sidebar, select **Group information > Members**.
-1. Select the **Banned** tab.
-1. For the account you want to unban, select **Unban**.
-
-## Ban a user
-
-> [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8.
-
-Prerequisites:
-
-- You must have the Owner role.
-
-To manually ban a user:
-
-1. On the left sidebar, select **Group information > Members**.
-1. Next to the member you want to ban, select the vertical ellipsis (**{ellipsis_v}**).
-1. From the dropdown list, select **Ban member**.
+- [Ban and unban users](../moderate_users.md).

@@ -2,6 +2,7 @@
 
 module WorkItems
   class UpdateService < ::Issues::UpdateService
+    extend Gitlab::Utils::Override
     include WidgetableService
 
     def initialize(container:, current_user: nil, params: {}, spam_params: nil, widget_params: {})
@@ -25,6 +26,15 @@ module WorkItems
     end
 
     private
+
+    override :handle_quick_actions
+    def handle_quick_actions(work_item)
+      # Do not handle quick actions unless the work item is the default Issue.
+      # The available quick actions for a work item depend on its type and widgets.
+      return unless work_item.work_item_type.default_issue?
+
+      super
+    end
 
     def prepare_update_params(work_item)
       execute_widgets(

@@ -21,16 +21,16 @@ $border-radius-medium: 3px;
   }
 }
 
+.language-filter-checkbox {
+  .custom-control-label {
+    flex-grow: 1;
+  }
+}
+
 .search-sidebar {
   @include media-breakpoint-up(md) {
     min-width: $search-sidebar-min-width;
     max-width: $search-sidebar-max-width;
-  }
-
-  .language-filter-checkbox {
-    .custom-control-label {
-      flex-grow: 1;
-    }
   }
 
   .language-filter-max-height {

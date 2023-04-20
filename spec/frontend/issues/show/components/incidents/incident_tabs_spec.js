@@ -163,7 +163,7 @@ describe('Incident Tabs component', () => {
       mountComponent({ mount: mountExtended });
     });
 
-    it('shows only the summary tab by default', async () => {
+    it('shows only the summary tab by default', () => {
       expect(findActiveTabs()).toHaveLength(1);
       expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.summaryTitle);
     });

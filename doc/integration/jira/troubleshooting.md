@@ -4,14 +4,14 @@ group: Integrations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Jira integrations **(FREE)**
+# Troubleshooting Jira **(FREE)**
 
 This page contains a list of common issues you might encounter when working with Jira integrations.
 
 ## GitLab cannot comment on a Jira issue
 
 If GitLab cannot comment on Jira issues, make sure the Jira user you
-set up for the integration has permission to:
+set up for the [Jira integration](configure.md) has permission to:
 
 - Post comments on a Jira issue.
 - Transition the Jira issue.

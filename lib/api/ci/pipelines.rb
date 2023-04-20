@@ -69,13 +69,19 @@ module API
                               documentation: { example: 'asc' }
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys,
                               documentation: { example: 'push' }
+          optional :name,     types: String, desc: 'Filter pipelines by name',
+                              documentation: { example: 'Build pipeline' }
         end
         get ':id/pipelines', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
 
+          params.delete(:name) unless ::Feature.enabled?(:pipeline_name_in_api, user_project)
+
           pipelines = ::Ci::PipelinesFinder.new(user_project, current_user, params).execute
-          present paginate(pipelines), with: Entities::Ci::PipelineBasic, project: user_project
+          pipelines = pipelines.preload_pipeline_metadata if ::Feature.enabled?(:pipeline_name_in_api, user_project)
+
+          present paginate(pipelines), with: Entities::Ci::PipelineBasicWithMetadata, project: user_project
         end
 
         desc 'Create a new pipeline' do
@@ -119,7 +125,7 @@ module API
 
         desc 'Gets the latest pipeline for the project branch' do
           detail 'This feature was introduced in GitLab 12.3'
-          success status: 200, model: Entities::Ci::Pipeline
+          success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -133,12 +139,12 @@ module API
         get ':id/pipelines/latest', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, latest_pipeline
 
-          present latest_pipeline, with: Entities::Ci::Pipeline
+          present latest_pipeline, with: Entities::Ci::PipelineWithMetadata
         end
 
         desc 'Gets a specific pipeline for the project' do
           detail 'This feature was introduced in GitLab 8.11'
-          success status: 200, model: Entities::Ci::Pipeline
+          success status: 200, model: Entities::Ci::PipelineWithMetadata
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -151,7 +157,7 @@ module API
         get ':id/pipelines/:pipeline_id', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, pipeline
 
-          present pipeline, with: Entities::Ci::Pipeline
+          present pipeline, with: Entities::Ci::PipelineWithMetadata
         end
 
         desc 'Get pipeline jobs' do
@@ -225,7 +231,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
-        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_composition, urgency: :low do
+        get ':id/pipelines/:pipeline_id/variables', feature_category: :secrets_management, urgency: :low do
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable

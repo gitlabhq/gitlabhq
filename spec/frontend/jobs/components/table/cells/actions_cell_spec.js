@@ -122,7 +122,7 @@ describe('Job actions cell', () => {
     ${findPlayButton}   | ${'play'}   | ${playableJob}   | ${JobPlayMutation}   | ${playMutationHandler}   | ${playableJob.id}
     ${findRetryButton}  | ${'retry'}  | ${retryableJob}  | ${JobRetryMutation}  | ${retryMutationHandler}  | ${retryableJob.id}
     ${findCancelButton} | ${'cancel'} | ${cancelableJob} | ${JobCancelMutation} | ${cancelMutationHandler} | ${cancelableJob.id}
-  `('performs the $action mutation', async ({ button, jobType, mutationFile, handler, jobId }) => {
+  `('performs the $action mutation', ({ button, jobType, mutationFile, handler, jobId }) => {
     createComponent(jobType, [[mutationFile, handler]]);
 
     button().vm.$emit('click');

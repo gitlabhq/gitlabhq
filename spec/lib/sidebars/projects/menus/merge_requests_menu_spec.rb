@@ -51,7 +51,7 @@ RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :
 
   describe '#pill_count' do
     it 'returns zero when there are no open merge requests' do
-      expect(subject.pill_count).to eq 0
+      expect(subject.pill_count).to eq '0'
     end
 
     it 'memoizes the query' do
@@ -69,7 +69,16 @@ RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :
         create_list(:merge_request, 2, :unique_branches, source_project: project, author: user, state: :opened)
         create(:merge_request, source_project: project, state: :merged)
 
-        expect(subject.pill_count).to eq 2
+        expect(subject.pill_count).to eq '2'
+      end
+    end
+
+    describe 'formatting' do
+      it 'returns truncated digits for count value over 1000' do
+        create_list(:merge_request, 1001, :unique_branches, source_project: project, author: user, state: :opened)
+        create(:merge_request, source_project: project, state: :merged)
+
+        expect(subject.pill_count).to eq('1k')
       end
     end
   end

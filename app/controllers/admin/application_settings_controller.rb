@@ -234,6 +234,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:valid_runner_registrars]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
 
+    params[:application_setting][:package_metadata_purl_types]&.delete("")
+    params[:application_setting][:package_metadata_purl_types]&.map!(&:to_i)
+
     if params[:application_setting].key?(:required_instance_ci_template)
       if params[:application_setting][:required_instance_ci_template].empty?
         params[:application_setting][:required_instance_ci_template] = nil
@@ -276,6 +279,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_branch_name,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
+      package_metadata_purl_types: [],
       restricted_visibility_levels: [],
       repository_storages_weighted: {},
       valid_runner_registrars: []

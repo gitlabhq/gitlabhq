@@ -2,7 +2,13 @@ import { last } from 'lodash';
 import recentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 import { createAlert } from '~/alert';
-import { WORKSPACE_PROJECT } from '~/issues/constants';
+import {
+  STATUS_ALL,
+  STATUS_CLOSED,
+  STATUS_MERGED,
+  STATUS_OPEN,
+  WORKSPACE_PROJECT,
+} from '~/issues/constants';
 import {
   ENTER_KEY_CODE,
   BACKSPACE_KEY_CODE,
@@ -43,7 +49,7 @@ export default class FilteredSearchManager {
     this.isGroupAncestor = isGroupAncestor;
     this.isGroupDecendent = isGroupDecendent;
     this.useDefaultState = useDefaultState;
-    this.states = ['opened', 'closed', 'merged', 'all'];
+    this.states = [STATUS_OPEN, STATUS_CLOSED, STATUS_MERGED, STATUS_ALL];
 
     this.page = page;
     this.container = FilteredSearchContainer.container;
@@ -743,7 +749,7 @@ export default class FilteredSearchManager {
     const { tokens, searchToken } = this.getSearchTokens();
     let currentState = state || getParameterByName('state');
     if (!currentState && this.useDefaultState) {
-      currentState = 'opened';
+      currentState = STATUS_OPEN;
     }
     if (this.states.includes(currentState)) {
       paths.push(`state=${currentState}`);

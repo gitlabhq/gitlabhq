@@ -17,6 +17,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporte
     let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
 
     it 'imports each project merge request attachments' do
+      expect(project.merge_requests).to receive(:select).with(:id, :description, :iid).and_call_original
+
       expect_next_instances_of(
         Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2, false, *importer_attrs
       ) do |note_attachments_importer|

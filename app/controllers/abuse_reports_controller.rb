@@ -55,7 +55,7 @@ class AbuseReportsController < ApplicationController
   private
 
   def report_params
-    params.require(:abuse_report).permit(:message, :user_id, :category, :reported_from_url, links_to_spam: [])
+    params.require(:abuse_report).permit(:message, :user_id, :category, :reported_from_url, :screenshot, links_to_spam: [])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

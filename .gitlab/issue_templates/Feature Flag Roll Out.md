@@ -43,9 +43,9 @@ Are there any other stages or teams involved that need to be kept in the loop?
 
 <!-- What are the settings we need to configure in order to have this feature viable? -->
 
-<!-- 
+<!--
 Example below:
- 
+
 1. Enable service ping collection
    `ApplicationSetting.first.update(usage_ping_enabled: true)`
 -->
@@ -57,7 +57,7 @@ Example below:
 ### What can we monitor to detect problems with this?
 
 <!-- Which dashboards from https://dashboards.gitlab.net are most relevant? -->
-_Consider mentioning checks for 5xx errors or other anomalies like an increase in redirects 
+_Consider mentioning checks for 5xx errors or other anomalies like an increase in redirects
 (302 HTTP response status)_
 
 ### What can we check for monitoring production after rollouts?
@@ -66,7 +66,7 @@ _Consider adding links to check for Sentry errors, Production logs for 5xx, 302s
 
 ## Rollout Steps
 
-Note: Please make sure to run the chatops commands in the slack channel that gets impacted by the command. 
+Note: Please make sure to run the chatops commands in the slack channel that gets impacted by the command.
 
 ### Rollout on non-production environments
 
@@ -75,10 +75,14 @@ Note: Please make sure to run the chatops commands in the slack channel that get
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
 - [ ] Enable the feature globally on non-production environments.
     - [ ] `/chatops run feature set <feature-flag-name> true --dev --staging --staging-ref`
+    - If the feature flag causes QA end-to-end tests to fail:
+      - [ ] Disable the feature flag on staging to avoid blocking [deployments](https://about.gitlab.com/handbook/engineering/deployments-and-releases/deployments/).
 - [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
       The best environment to validate the feature in is [staging-canary](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#staging-canary)
       as this is the first environment deployed to. Note you will need to make sure you are configured to use canary as outlined [here](https://about.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/)
       when accessing the staging environment in order to make sure you are testing appropriately.
+
+For assistance with QA end-to-end test failures, please reach out via the `#quality` Slack channel. Note that QA test failures on staging-ref [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).  
 
 ### Specific rollout on production
 
@@ -104,7 +108,7 @@ For visibility, all `/chatops` commands that target production should be execute
 - [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production.
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.
 - [ ] Ensure that documentation has been updated ([More info](https://docs.gitlab.com/ee/development/documentation/feature_flags.html#features-that-became-enabled-by-default)).
-- [ ] Leave a comment on [the feature issue][main-issue] announcing estimated time when this feature flag will be enabled on GitLab.com. 
+- [ ] Leave a comment on [the feature issue][main-issue] announcing estimated time when this feature flag will be enabled on GitLab.com.
 - [ ] Ensure that any breaking changes have been announced following the [release post process](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes) to ensure GitLab customers are aware.
 - [ ] Notify `#support_gitlab-com` and your team channel ([more guidance when this is necessary in the dev docs](https://docs.gitlab.com/ee/development/feature_flags/controls.html#communicate-the-change)).
 - [ ] Ensure that the feature flag rollout plan is reviewed by another developer familiar with the domain.

@@ -35,11 +35,6 @@ export default {
       required: false,
       default: NO_USER_ID,
     },
-    addButtonClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     defaultAwards: {
       type: Array,
       required: false,
@@ -49,6 +44,11 @@ export default {
       type: String,
       required: false,
       default: 'selected',
+    },
+    boundary: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -201,6 +201,8 @@ export default {
         v-gl-tooltip.viewport
         :title="__('Add reaction')"
         :toggle-class="['add-reaction-button btn-icon gl-relative!', { 'is-active': isMenuOpen }]"
+        :right="false"
+        :boundary="boundary"
         data-testid="emoji-picker"
         @click="handleAward"
         @shown="setIsMenuOpen(true)"

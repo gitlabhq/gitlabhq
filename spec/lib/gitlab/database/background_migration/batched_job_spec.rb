@@ -378,41 +378,27 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     let(:attempts) { 0 }
     let(:batch_size) { 10 }
     let(:sub_batch_size) { 6 }
-    let(:feature_flag) { :reduce_sub_batch_size_on_timeouts }
     let(:job) do
       create(:batched_background_migration_job, attempts: attempts,
         batch_size: batch_size, sub_batch_size: sub_batch_size)
     end
 
-    where(:feature_flag_state, :within_boundaries, :outside_boundaries, :limit_reached) do
-      [
-        [true, true, false, false],
-        [false, false, false, false]
-      ]
+    context 'when the number of attempts is lower than the limit and batch size are within boundaries' do
+      let(:attempts) { 1 }
+
+      it { expect(job.can_reduce_sub_batch_size?).to be(true) }
     end
 
-    with_them do
-      before do
-        stub_feature_flags(feature_flag => feature_flag_state)
-      end
+    context 'when the number of attempts is lower than the limit and batch size are outside boundaries' do
+      let(:batch_size) { 1 }
 
-      context 'when the number of attempts is lower than the limit and batch size are within boundaries' do
-        let(:attempts) { 1 }
+      it { expect(job.can_reduce_sub_batch_size?).to be(false) }
+    end
 
-        it { expect(job.can_reduce_sub_batch_size?).to be(within_boundaries) }
-      end
+    context 'when the number of attempts is greater than the limit and batch size are within boundaries' do
+      let(:attempts) { 3 }
 
-      context 'when the number of attempts is lower than the limit and batch size are outside boundaries' do
-        let(:batch_size) { 1 }
-
-        it { expect(job.can_reduce_sub_batch_size?).to be(outside_boundaries) }
-      end
-
-      context 'when the number of attempts is greater than the limit and batch size are within boundaries' do
-        let(:attempts) { 3 }
-
-        it { expect(job.can_reduce_sub_batch_size?).to be(limit_reached) }
-      end
+      it { expect(job.can_reduce_sub_batch_size?).to be(false) }
     end
   end
 

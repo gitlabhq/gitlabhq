@@ -41,6 +41,8 @@ describe('Work Item Discussion', () => {
         fetchByIid,
         fullPath,
         workItemType,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
     });
   };
@@ -70,7 +72,7 @@ describe('Work Item Discussion', () => {
       expect(findToggleRepliesWidget().exists()).toBe(true);
     });
 
-    it('the number of threads should be equal to the response length', async () => {
+    it('the number of threads should be equal to the response length', () => {
       expect(findAllThreads()).toHaveLength(
         mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.length,
       );
@@ -104,7 +106,7 @@ describe('Work Item Discussion', () => {
       await findWorkItemAddNote().vm.$emit('replying', 'reply text');
     });
 
-    it('should show optimistic behavior when replying', async () => {
+    it('should show optimistic behavior when replying', () => {
       expect(findAllThreads()).toHaveLength(2);
       expect(findWorkItemNoteReplying().exists()).toBe(true);
     });

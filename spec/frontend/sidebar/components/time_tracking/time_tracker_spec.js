@@ -144,7 +144,7 @@ describe('Issuable Time Tracker', () => {
     });
 
     describe('Comparison pane when limitToHours is true', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         wrapper = mountComponent({
           props: {
             limitToHours: true,

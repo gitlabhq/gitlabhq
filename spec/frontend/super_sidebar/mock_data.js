@@ -49,11 +49,23 @@ export const mergeRequestMenuGroup = [
         text: 'Assigned',
         href: '/dashboard/merge_requests?assignee_username=root',
         count: 4,
+        extraAttrs: {
+          'data-track-action': 'click_link',
+          'data-track-label': 'merge_requests_assigned',
+          'data-track-property': 'nav_core_menu',
+          class: 'dashboard-shortcuts-merge_requests',
+        },
       },
       {
         text: 'Review requests',
         href: '/dashboard/merge_requests?reviewer_username=root',
         count: 0,
+        extraAttrs: {
+          'data-track-action': 'click_link',
+          'data-track-label': 'merge_requests_to_review',
+          'data-track-property': 'nav_core_menu',
+          class: 'dashboard-shortcuts-review_requests',
+        },
       },
     ],
   },
@@ -86,6 +98,21 @@ export const sidebarData = {
   gitlab_version_check: { severity: 'success' },
   gitlab_com_and_canary: false,
   canary_toggle_com_url: 'https://next.gitlab.com',
+  context_switcher_links: [],
+  search: {
+    search_path: '/search',
+  },
+  pinned_items: [],
+  panel_type: 'your_work',
+  update_pins_url: 'path/to/pins',
+  stop_impersonation_path: '/admin/impersonation',
+  shortcut_links: [
+    {
+      title: 'Shortcut link',
+      href: '/shortcut-link',
+      css_class: 'shortcut-link-class',
+    },
+  ],
 };
 
 export const userMenuMockStatus = {
@@ -122,6 +149,7 @@ export const userMenuMockData = {
   status: userMenuMockStatus,
   trial: {
     has_start_trial: false,
+    url: invalidUrl,
   },
   settings: {
     profile_path: invalidUrl,

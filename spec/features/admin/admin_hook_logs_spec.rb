@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::HookLogs', feature_category: :continuous_verification do
+RSpec.describe 'Admin::HookLogs', feature_category: :integrations do
   let_it_be(:system_hook) { create(:system_hook) }
   let_it_be(:hook_log) { create(:web_hook_log, web_hook: system_hook, internal_error_message: 'some error') }
   let_it_be(:admin) { create(:admin) }

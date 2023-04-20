@@ -18,6 +18,12 @@ appear in any logs:
 Error obtaining access token. Cannot access https://gitlab.example.com from Jira.
 ```
 
+## Session token bug in Jira
+
+When using GitLab 15.0 and later (including GitLab.com) with Jira Server, you might experience
+a [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389). As a workaround,
+ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
+
 ## SSL and TLS problems
 
 Problems with SSL and TLS can cause this error message:

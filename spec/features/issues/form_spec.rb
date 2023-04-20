@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ActionView::Helpers::JavaScriptHelper
+  include ListboxHelpers
 
   let_it_be(:project)   { create(:project, :repository) }
   let_it_be(:user)      { create(:user) }
@@ -249,19 +250,15 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
     describe 'displays issue type options in the dropdown' do
       shared_examples 'type option is visible' do |label:, identifier:|
         it "shows #{identifier} option", :aggregate_failures do
-          page.within('[data-testid="issue-type-select-dropdown"]') do
-            expect(page).to have_selector(%([data-testid="issue-type-#{identifier}-icon"]))
-            expect(page).to have_content(label)
-          end
+          wait_for_requests
+          expect_listbox_item(label)
         end
       end
 
       shared_examples 'type option is missing' do |label:, identifier:|
         it "does not show #{identifier} option", :aggregate_failures do
-          page.within('[data-testid="issue-type-select-dropdown"]') do
-            expect(page).not_to have_selector(%([data-testid="issue-type-#{identifier}-icon"]))
-            expect(page).not_to have_content(label)
-          end
+          wait_for_requests
+          expect_no_listbox_item(label)
         end
       end
 
@@ -504,7 +501,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       end
 
       describe 'when user has made changes' do
-        it 'shows a warning and can stay on page' do
+        it 'shows a warning and can stay on page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/397683' do
           content = 'new issue content'
 
           find('body').send_keys('e')

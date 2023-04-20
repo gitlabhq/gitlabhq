@@ -101,8 +101,20 @@ To create a tag from the GitLab UI:
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 
+## Trigger pipelines from a tag
+
+GitLab CI/CD provides a [`CI_COMMIT_TAG` variable](../../../../ci/variables/predefined_variables.md)
+to identify tags. Use this variable in job rules and workflow rules to test if the pipeline
+was triggered by a tag.
+
+In your `.gitlab-ci.yml` file for the CI/CD pipeline configuration of your project,
+you can trigger based on a new tag:
+
+- At the job level, with the [`only` keyword](../../../../ci/yaml/index.md#only--except).
+- At the pipeline level, with the [workflow rules keywords](../../../../ci/yaml/workflow.md).
+
 ## Related topics
 
-- [Tagging](https://git-scm.com/book/en/v2/Git-Basics-Tagging) Git reference page.
-- [Protected tags](../../protected_tags.md).
-- [Tags API](../../../../api/tags.md).
+- [Tagging (Git reference page)](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
+- [Protected tags](../../protected_tags.md)
+- [Tags API](../../../../api/tags.md)

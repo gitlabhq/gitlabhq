@@ -14,9 +14,9 @@ RSpec.describe 'Upload Dropzone Field', feature_category: :integrations do
     find("input[name='service[dropzone_file_name]']",
       visible: false).set(Rails.root.join('spec/fixtures/auth_key.p8'))
 
-    expect(find("input[name='service[app_store_private_key]']",
-      visible: false).value).to eq(File.read(Rails.root.join('spec/fixtures/auth_key.p8')))
-    expect(find("input[name='service[app_store_private_key_file_name]']", visible: false).value).to eq('auth_key.p8')
+    expect(page).to have_field("service[app_store_private_key]", type: :hidden,
+      with: File.read(Rails.root.join('spec/fixtures/auth_key.p8')))
+    expect(page).to have_field("service[app_store_private_key_file_name]", type: :hidden, with: 'auth_key.p8')
 
     expect(page).not_to have_content('Drag your Private Key file here or click to upload.')
     expect(page).to have_content('auth_key.p8')

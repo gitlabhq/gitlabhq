@@ -22,9 +22,13 @@ module Issues
     end
 
     def execute(skip_system_notes: false)
-      return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, @project)
+      return error(_('Operation not allowed'), 403) unless @current_user.can?(authorization_action, container)
 
-      @issue = @build_service.execute
+      # We should not initialize the callback classes during the build service execution because these will be
+      # initialized when we call #create below
+      @issue = @build_service.execute(initialize_callbacks: false)
+      set_work_item_type(@issue)
+
       # issue_type is set in BuildService, so we can delete it from params, in later phase
       # it can be set also from quick actions - in that case work_item_id is synced later again
       params.delete(:issue_type)
@@ -60,7 +64,8 @@ module Issues
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
         Issues::PlacementWorker.perform_async(nil, issue.project_id)
-        Onboarding::IssueCreatedWorker.perform_async(issue.project.namespace_id)
+        # issue.namespace_id can point to either a project through project namespace or a group.
+        Onboarding::IssueCreatedWorker.perform_async(issue.namespace_id)
       end
     end
 
@@ -72,7 +77,6 @@ module Issues
       handle_escalation_status_change(issue)
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
-      change_additional_attributes(issue)
 
       super
     end
@@ -89,6 +93,7 @@ module Issues
       return if issue.assignees == old_assignees
 
       create_assignee_note(issue, old_assignees)
+      Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: issue, old_assignees: old_assignees).record
     end
 
     def resolve_discussions_with_issue(issue)
@@ -101,12 +106,24 @@ module Issues
 
     private
 
-    def handle_quick_actions(issue)
-      # Do not handle quick actions unless the work item is the default Issue.
-      # The available quick actions for a work item depend on its type and widgets.
-      return if @params[:work_item_type].present? && @params[:work_item_type] != WorkItems::Type.default_by_type(:issue)
+    def set_work_item_type(issue)
+      work_item_type = if params[:work_item_type_id].present?
+                         params.delete(:work_item_type)
+                         WorkItems::Type.find_by(id: params.delete(:work_item_type_id)) # rubocop: disable CodeReuse/ActiveRecord
+                       else
+                         params.delete(:work_item_type)
+                       end
 
-      super
+      base_type = work_item_type&.base_type
+      if create_issue_type_allowed?(container, base_type)
+        issue.work_item_type = work_item_type
+        # Up to this point issue_type might be set to the default, so we need to sync if a work item type is provided
+        issue.issue_type = work_item_type.base_type
+      end
+
+      # If no work item type was provided, we need to set it to whatever issue_type was up to this point,
+      # and that includes the column default
+      issue.work_item_type = WorkItems::Type.default_by_type(issue.issue_type)
     end
 
     def authorization_action
@@ -139,15 +156,6 @@ module Issues
       contacts.concat extra_params[:cc] unless extra_params[:cc].nil?
 
       set_crm_contacts(issue, contacts)
-    end
-
-    override :change_additional_attributes
-    def change_additional_attributes(issue)
-      super
-
-      # issue_type can be still set through quick actions, in that case
-      # we have to make sure to re-sync work_item_type with it
-      issue.work_item_type_id = find_work_item_type_id(params[:issue_type]) if params[:issue_type]
     end
   end
 end

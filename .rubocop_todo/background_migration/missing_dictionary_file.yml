@@ -1,4 +1,0 @@
----
-# Grace period will be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/395354
-BackgroundMigration/MissingDictionaryFile:
-  Details: grace period

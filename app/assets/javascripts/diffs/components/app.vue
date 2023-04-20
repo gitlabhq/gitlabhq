@@ -45,7 +45,9 @@ import {
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
 import { diffsApp } from '../utils/performance';
+import { updateChangesTabCount } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
+import FindingsDrawer from './shared/findings_drawer.vue';
 import CollapsedFilesWarning from './collapsed_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import CompareVersions from './compare_versions.vue';
@@ -59,6 +61,7 @@ import PreRenderer from './pre_renderer.vue';
 export default {
   name: 'DiffsApp',
   components: {
+    FindingsDrawer,
     DynamicScroller,
     DynamicScrollerItem,
     PreRenderer,
@@ -199,6 +202,7 @@ export default {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
+    ...mapState('findingsDrawer', ['activeDrawer']),
     ...mapState('diffs', [
       'showTreeList',
       'isLoading',
@@ -233,6 +237,7 @@ export default {
       'flatBlobsList',
     ]),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
+    ...mapGetters('findingsDrawer', ['activeDrawer']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -247,6 +252,9 @@ export default {
     },
     renderDiffFiles() {
       return this.flatBlobsList.length > 0;
+    },
+    diffsIncomplete() {
+      return this.flatBlobsList.length !== this.diffFiles.length;
     },
     renderFileTree() {
       return this.renderDiffFiles && this.showTreeList;
@@ -308,6 +316,11 @@ export default {
     diffViewType() {
       this.adjustView();
     },
+    viewDiffsFileByFile(newViewFileByFile) {
+      if (!newViewFileByFile && this.diffsIncomplete && this.glFeatures.singleFileFileByFile) {
+        this.refetchDiffData({ refetchMeta: false });
+      }
+    },
     shouldShow() {
       // When the shouldShow property changed to true, the route is rendered for the first time
       // and if we have the isLoading as true this means we didn't fetch the data
@@ -336,8 +349,6 @@ export default {
       defaultSuggestionCommitMessage: this.defaultSuggestionCommitMessage,
       mrReviews: this.rehydratedMrReviews,
     });
-
-    this.interfaceWithDOM();
 
     if (this.endpointCodequality) {
       this.setCodequalityEndpoint(this.endpointCodequality);
@@ -426,41 +437,48 @@ export default {
       'setCodequalityEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
+      'fetchFileByFile',
       'fetchCoverageFiles',
       'fetchCodequality',
+      'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
       'cacheTreeListWidth',
-      'scrollToFile',
+      'goToFile',
       'setShowTreeList',
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
     ]),
+    ...mapActions('findingsDrawer', ['setDrawer']),
+    closeDrawer() {
+      this.setDrawer({});
+    },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
+      if (this.glFeatures.singleFileFileByFile) {
+        diffsEventHub.$on('diffFilesModified', this.setDiscussions);
+        notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      }
     },
     unsubscribeFromEvents() {
+      if (this.glFeatures.singleFileFileByFile) {
+        notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
+        diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      }
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
     },
-    interfaceWithDOM() {
-      this.diffsTab = document.querySelector('.js-diffs-tab');
-    },
-    updateChangesTabCount() {
-      const badge = this.diffsTab.querySelector('.gl-badge');
-
-      if (this.diffsTab && badge) {
-        badge.textContent = this.diffFilesLength;
-      }
-    },
     navigateToDiffFileNumber(number) {
-      this.navigateToDiffFileIndex(number - 1);
+      this.navigateToDiffFileIndex({
+        index: number - 1,
+        singleFile: this.glFeatures.singleFileFileByFile,
+      });
     },
-    refetchDiffData() {
-      this.fetchData(false);
+    refetchDiffData({ refetchMeta = true } = {}) {
+      this.fetchData({ toggleTree: false, fetchMeta: refetchMeta });
     },
     needsReload() {
       return this.diffFiles.length && isSingleViewStyle(this.diffFiles[0]);
@@ -468,42 +486,52 @@ export default {
     needsFirstLoad() {
       return !this.diffFiles.length;
     },
-    fetchData(toggleTree = true) {
-      this.fetchDiffFilesMeta()
-        .then((data) => {
-          let realSize = 0;
+    fetchData({ toggleTree = true, fetchMeta = true } = {}) {
+      if (fetchMeta) {
+        this.fetchDiffFilesMeta()
+          .then((data) => {
+            let realSize = 0;
 
-          if (data) {
-            realSize = data.real_size;
-          }
+            if (data) {
+              realSize = data.real_size;
 
-          this.diffFilesLength = parseInt(realSize, 10) || 0;
-          if (toggleTree) {
-            this.setTreeDisplay();
-          }
+              if (this.viewDiffsFileByFile && this.glFeatures.singleFileFileByFile) {
+                this.fetchFileByFile();
+              }
+            }
 
-          this.updateChangesTabCount();
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again!'),
+            this.diffFilesLength = parseInt(realSize, 10) || 0;
+            if (toggleTree) {
+              this.setTreeDisplay();
+            }
+
+            updateChangesTabCount({
+              count: this.diffFilesLength,
+            });
+          })
+          .catch(() => {
+            createAlert({
+              message: __('Something went wrong on our end. Please try again!'),
+            });
           });
-        });
+      }
 
-      this.fetchDiffFilesBatch()
-        .then(() => {
-          if (toggleTree) this.setTreeDisplay();
-          // Guarantee the discussions are assigned after the batch finishes.
-          // Just watching the length of the discussions or the diff files
-          // isn't enough, because with split diff loading, neither will
-          // change when loading the other half of the diff files.
-          this.setDiscussions();
-        })
-        .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again!'),
+      if (!this.viewDiffsFileByFile || !this.glFeatures.singleFileFileByFile) {
+        this.fetchDiffFilesBatch()
+          .then(() => {
+            if (toggleTree) this.setTreeDisplay();
+            // Guarantee the discussions are assigned after the batch finishes.
+            // Just watching the length of the discussions or the diff files
+            // isn't enough, because with split diff loading, neither will
+            // change when loading the other half of the diff files.
+            this.setDiscussions();
+          })
+          .catch(() => {
+            createAlert({
+              message: __('Something went wrong on our end. Please try again!'),
+            });
           });
-        });
+      }
 
       if (this.endpointCoverage) {
         this.fetchCoverageFiles();
@@ -579,7 +607,10 @@ export default {
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.flatBlobsList.length) {
-        this.scrollToFile({ path: this.flatBlobsList[targetIndex].path });
+        this.goToFile({
+          path: this.flatBlobsList[targetIndex].path,
+          singleFile: this.glFeatures.singleFileFileByFile,
+        });
       }
     },
     setTreeDisplay() {
@@ -640,6 +671,11 @@ export default {
 
 <template>
   <div v-show="shouldShow">
+    <findings-drawer
+      v-if="glFeatures.codeQualityInlineDrawer"
+      :drawer="activeDrawer"
+      @close="closeDrawer"
+    />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions :diff-files-count-text="numTotalFiles" />

@@ -70,7 +70,12 @@ don't need to perform this work in parallel.
 This worker imports all pull requests. For every pull request a job for the
 `Gitlab::GithubImport::ImportPullRequestWorker` worker is scheduled.
 
-### 5. Stage::ImportPullRequestsMergedByWorker
+### 5. Stage::ImportCollaboratorsWorker
+
+This worker imports all repository collaborators. For every collaborator, we schedule a job
+for the `Gitlab::GithubImport::ImportCollaboratorWorker` worker.
+
+### 6. Stage::ImportPullRequestsMergedByWorker
 
 This worker imports the pull requests' _merged-by_ user information. The
 [_List pull requests_](https://docs.github.com/en/rest/pulls#list-pull-requests)
@@ -79,21 +84,21 @@ individually to import this information. A
 `Gitlab::GithubImport::ImportPullRequestMergedByWorker` job is scheduled for each fetched pull
 request.
 
-### 6. Stage::ImportPullRequestsReviewRequestsWorker
+### 7. Stage::ImportPullRequestsReviewRequestsWorker
 
 This worker imports assigned reviewers of pull requests. For each pull request, this worker:
 
 - Fetches all assigned review requests.
 - Schedules a `Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker` job for each fetched review request.
 
-### 7. Stage::ImportPullRequestsReviewsWorker
+### 8. Stage::ImportPullRequestsReviewsWorker
 
 This worker imports reviews of pull requests. For each pull request, this worker:
 
 - Fetches all the pages of reviews.
 - Schedules a `Gitlab::GithubImport::ImportPullRequestReviewWorker` job for each fetched review.
 
-### 8. Stage::ImportIssuesAndDiffNotesWorker
+### 9. Stage::ImportIssuesAndDiffNotesWorker
 
 This worker imports all issues and pull request comments. For every issue, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueWorker` worker. For
@@ -109,7 +114,7 @@ label links in the same worker removes the need for performing a separate crawl
 through the API data, reducing the number of API calls necessary to import a
 project.
 
-### 9. Stage::ImportIssueEventsWorker
+### 10. Stage::ImportIssueEventsWorker
 
 This worker imports all issues and pull request events. For every event, we
 schedule a job for the `Gitlab::GithubImport::ImportIssueEventWorker` worker.
@@ -125,7 +130,7 @@ Therefore, both issues and pull requests have a common API for most related thin
 NOTE:
 This stage is optional and can consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
 
-### 10. Stage::ImportNotesWorker
+### 11. Stage::ImportNotesWorker
 
 This worker imports regular comments for both issues and pull requests. For
 every comment, we schedule a job for the
@@ -136,7 +141,7 @@ returns comments for both issues and pull requests. This means we have to wait
 for all issues and pull requests to be imported before we can import regular
 comments.
 
-### 11. Stage::ImportAttachmentsWorker
+### 12. Stage::ImportAttachmentsWorker
 
 This worker imports note attachments that are linked inside Markdown.
 For each entity with Markdown text in the project, we schedule a job of:
@@ -155,7 +160,7 @@ Each job:
 NOTE:
 It's an optional stage that could consume significant extra import time (controlled by `Gitlab::GithubImport::Settings`).
 
-### 12. Stage::ImportProtectedBranchesWorker
+### 13. Stage::ImportProtectedBranchesWorker
 
 This worker imports protected branch rules.
 For every rule that exists on GitHub, we schedule a job of
@@ -164,7 +169,7 @@ For every rule that exists on GitHub, we schedule a job of
 Each job compares the branch protection rules from GitHub and GitLab and applies
 the strictest of the rules to the branches in GitLab.
 
-### 13. Stage::FinishImportWorker
+### 14. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 (such as flushing any caches) and by marking the import as completed.

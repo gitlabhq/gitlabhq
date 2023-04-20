@@ -1,5 +1,4 @@
 - page_title _("Package Registry")
-- @content_class = "limit-container-width" unless fluid_layout
 
 .row
   .col-12
@@ -10,4 +9,5 @@
       empty_list_illustration: image_path('illustrations/no-packages.svg'),
       npm_instance_url: package_registry_instance_url(:npm),
       project_list_url: '',
+      settings_path: show_group_package_registry_settings(@group) ? group_settings_packages_and_registries_path(@group) : '',
       group_list_url: group_packages_path(@group) } }

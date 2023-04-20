@@ -57,9 +57,11 @@ RSpec.describe DesignManagement::NewVersionWorker, feature_category: :design_man
 
     context 'the version includes multiple types of action' do
       let_it_be(:version) do
-        create(:design_version, :with_lfs_file,
-               created_designs: create_list(:design, 1, :with_lfs_file),
-               modified_designs: create_list(:design, 1))
+        create(
+          :design_version, :with_lfs_file,
+          created_designs: create_list(:design, 1, :with_lfs_file),
+          modified_designs: create_list(:design, 1)
+        )
       end
 
       it 'creates two system notes' do

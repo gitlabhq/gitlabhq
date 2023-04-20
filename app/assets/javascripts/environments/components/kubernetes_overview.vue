@@ -1,14 +1,20 @@
 <script>
-import { GlCollapse, GlButton } from '@gitlab/ui';
+import { GlCollapse, GlButton, GlAlert } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
+import csrf from '~/lib/utils/csrf';
+import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
+import KubernetesPods from './kubernetes_pods.vue';
 
 export default {
   components: {
     GlCollapse,
     GlButton,
+    GlAlert,
     KubernetesAgentInfo,
+    KubernetesPods,
   },
+  inject: ['kasTunnelUrl'],
   props: {
     agentName: {
       required: true,
@@ -22,10 +28,16 @@ export default {
       required: true,
       type: String,
     },
+    namespace: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
       isVisible: false,
+      error: '',
     };
   },
   computed: {
@@ -35,10 +47,25 @@ export default {
     label() {
       return this.isVisible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
+    gitlabAgentId() {
+      const id = isGid(this.agentId) ? getIdFromGraphQLId(this.agentId) : this.agentId;
+      return id.toString();
+    },
+    k8sAccessConfiguration() {
+      return {
+        basePath: this.kasTunnelUrl,
+        baseOptions: {
+          headers: { 'GitLab-Agent-Id': this.gitlabAgentId, ...csrf.headers },
+        },
+      };
+    },
   },
   methods: {
     toggleCollapse() {
       this.isVisible = !this.isVisible;
+    },
+    onClusterError(message) {
+      this.error = message;
     },
   },
   i18n: {
@@ -66,7 +93,17 @@ export default {
           :agent-name="agentName"
           :agent-id="agentId"
           :agent-project-path="agentProjectPath"
+          class="gl-mb-5" />
+
+        <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mb-5">
+          {{ error }}
+        </gl-alert>
+
+        <kubernetes-pods
+          :configuration="k8sAccessConfiguration"
+          :namespace="namespace"
           class="gl-mb-5"
+          @cluster-error="onClusterError"
       /></template>
     </gl-collapse>
   </div>

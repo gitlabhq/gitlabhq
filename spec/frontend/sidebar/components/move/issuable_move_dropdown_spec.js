@@ -328,7 +328,7 @@ describe('IssuableMoveDropdown', () => {
         expect(axios.get).toHaveBeenCalled();
       });
 
-      it('gl-dropdown component prevents dropdown body from closing on `hide` event when `projectItemClick` prop is true', async () => {
+      it('gl-dropdown component prevents dropdown body from closing on `hide` event when `projectItemClick` prop is true', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
@@ -341,7 +341,7 @@ describe('IssuableMoveDropdown', () => {
         expect(wrapper.vm.projectItemClick).toBe(false);
       });
 
-      it('gl-dropdown component emits `dropdown-close` event on component from `hide` event', async () => {
+      it('gl-dropdown component emits `dropdown-close` event on component from `hide` event', () => {
         findDropdownEl().vm.$emit('hide');
 
         expect(wrapper.emitted('dropdown-close')).toHaveLength(1);

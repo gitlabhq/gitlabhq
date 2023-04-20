@@ -37,7 +37,11 @@ module QA
           end
         end
 
-        it 'imports a project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347877' do
+        it 'imports a project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347877',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/405127',
+            type: :investigating
+          } do
           Page::Project::Import::Github.perform do |import_page|
             import_page.add_personal_access_token(Runtime::Env.github_access_token)
 

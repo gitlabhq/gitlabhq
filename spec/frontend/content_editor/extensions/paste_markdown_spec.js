@@ -2,6 +2,7 @@ import PasteMarkdown from '~/content_editor/extensions/paste_markdown';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Diagram from '~/content_editor/extensions/diagram';
 import Frontmatter from '~/content_editor/extensions/frontmatter';
+import Heading from '~/content_editor/extensions/heading';
 import Bold from '~/content_editor/extensions/bold';
 import { VARIANT_DANGER } from '~/alert';
 import eventHubFactory from '~/helpers/event_hub_factory';
@@ -20,6 +21,7 @@ describe('content_editor/extensions/paste_markdown', () => {
   let doc;
   let p;
   let bold;
+  let heading;
   let renderMarkdown;
   let eventHub;
   const defaultData = { 'text/plain': '**bold text**' };
@@ -36,16 +38,18 @@ describe('content_editor/extensions/paste_markdown', () => {
         CodeBlockHighlight,
         Diagram,
         Frontmatter,
+        Heading,
         PasteMarkdown.configure({ renderMarkdown, eventHub }),
       ],
     });
 
     ({
-      builders: { doc, p, bold },
+      builders: { doc, p, bold, heading },
     } = createDocBuilder({
       tiptapEditor,
       names: {
         bold: { markType: Bold.name },
+        heading: { nodeType: Heading.name },
       },
     }));
   });
@@ -109,6 +113,52 @@ describe('content_editor/extensions/paste_markdown', () => {
         await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
 
         expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+      });
+
+      describe('when pasting inline content in an existing paragraph', () => {
+        it('inserts the inline content next to the existing paragraph content', async () => {
+          const expectedDoc = doc(p('Initial text and', bold('bold text')));
+
+          tiptapEditor.commands.setContent('Initial text and ');
+
+          await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+        });
+      });
+
+      describe('when pasting inline content and there is text selected', () => {
+        it('inserts the block content after the existing paragraph', async () => {
+          const expectedDoc = doc(p('Initial text', bold('bold text')));
+
+          tiptapEditor.commands.setContent('Initial text and ');
+          tiptapEditor.commands.setTextSelection({ from: 13, to: 17 });
+
+          await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+        });
+      });
+
+      describe('when pasting block content in an existing paragraph', () => {
+        beforeEach(() => {
+          renderMarkdown.mockReset();
+          renderMarkdown.mockResolvedValueOnce('<h1>Heading</h1><p><strong>bold text</strong></p>');
+        });
+
+        it('inserts the block content after the existing paragraph', async () => {
+          const expectedDoc = doc(
+            p('Initial text and'),
+            heading({ level: 1 }, 'Heading'),
+            p(bold('bold text')),
+          );
+
+          tiptapEditor.commands.setContent('Initial text and ');
+
+          await triggerPasteEventHandlerAndWaitForTransaction(buildClipboardEvent());
+
+          expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+        });
       });
     });
 

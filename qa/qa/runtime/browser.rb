@@ -17,6 +17,9 @@ module QA
       NotRespondingError = Class.new(RuntimeError)
 
       CAPYBARA_MAX_WAIT_TIME = Env.max_capybara_wait_time
+      DEFAULT_WINDOW_SIZE = '1480,2200'
+      PHONE_VIDEO_SIZE = '500x900'
+      TABLET_VIDEO_SIZE = '800x1100'
 
       def self.blank_page?
         ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
@@ -96,11 +99,14 @@ module QA
             capabilities['goog:chromeOptions'][:args] << 'disable-dev-shm-usage' if QA::Runtime::Env.disable_dev_shm?
 
             # Set chrome default download path
-
-            capabilities['goog:chromeOptions'][:prefs] = {
-              'download.default_directory' => File.expand_path(QA::Runtime::Env.chrome_default_download_path),
-              'download.prompt_for_download' => false
-            }
+            # TODO: Set for remote grid as well once Sauce Labs tests are deprecated and Options.chrome is added
+            # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112258
+            unless QA::Runtime::Env.remote_grid
+              capabilities['goog:chromeOptions'][:prefs] = {
+                'download.default_directory' => File.expand_path(QA::Runtime::Env.chrome_default_download_path),
+                'download.prompt_for_download' => false
+              }
+            end
 
             # Specify the user-agent to allow challenges to be bypassed
             # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/11938
@@ -114,7 +120,7 @@ module QA
               capabilities['appium:deviceName'] = QA::Runtime::Env.remote_mobile_device_name
               capabilities['appium:platformVersion'] = 'latest'
             else
-              capabilities['goog:chromeOptions'][:args] << 'window-size=1480,2200'
+              capabilities['goog:chromeOptions'][:args] << "window-size=#{DEFAULT_WINDOW_SIZE}"
             end
 
             # Slack tries to open an external URL handler
@@ -159,6 +165,9 @@ module QA
 
           when :firefox
             capabilities['acceptInsecureCerts'] = true if QA::Runtime::Env.accept_insecure_certs?
+
+          when :edge
+            capabilities['ms:edgeOptions'] = { args: ["--window-size=#{DEFAULT_WINDOW_SIZE}"] }
           end
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
@@ -174,8 +183,19 @@ module QA
           if QA::Runtime::Env.remote_grid
             selenium_options[:browser] = :remote
             selenium_options[:url] = QA::Runtime::Env.remote_grid
-            capabilities[:browserVersion] = 'latest'
+            capabilities[:browserVersion] = QA::Runtime::Env.browser_version
+          end
+
+          if QA::Runtime::Env.remote_tunnel_id
             capabilities['sauce:options'] = { tunnelIdentifier: QA::Runtime::Env.remote_tunnel_id }
+          end
+
+          if QA::Runtime::Env.record_video?
+            capabilities['selenoid:options'] = {
+              enableVideo: true,
+              videoScreenSize: video_screen_size,
+              videoName: "#{QA::Runtime::Env.browser}-#{QA::Runtime::Env.browser_version}-#{Time.now}.mp4"
+            }
           end
 
           Capybara::Selenium::Driver.new(
@@ -231,6 +251,16 @@ module QA
 
       def self.chrome_profile_location
         ::File.expand_path('../../tmp/qa-profile', __dir__)
+      end
+
+      def self.video_screen_size
+        if QA::Runtime::Env.phone_layout?
+          PHONE_VIDEO_SIZE
+        elsif QA::Runtime::Env.tablet_layout?
+          TABLET_VIDEO_SIZE
+        else
+          ''
+        end
       end
 
       class Session

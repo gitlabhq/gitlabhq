@@ -8309,5 +8309,38 @@
     "reject_unsigned_commits": true,
     "commit_committer_check": true,
     "regexp_uses_re2": true
-  }
+  },
+  "approval_rules": [
+    {
+      "approvals_required": 1,
+      "name": "MustContain",
+      "rule_type": "regular",
+      "scanners": [
+
+      ],
+      "vulnerabilities_allowed": 0,
+      "severity_levels": [
+        "unknown",
+        "high",
+        "critical"
+      ],
+      "report_type": null,
+      "vulnerability_states": [
+        "newly_detected"
+      ],
+      "orchestration_policy_idx": null,
+      "applies_to_all_protected_branches": false,
+      "approval_project_rules_protected_branches": [
+        {
+          "protected_branch_id": 1,
+          "branch_name": "master"
+        }
+      ],
+      "approval_project_rules_users": [
+        {
+          "user_id": 35
+        }
+      ]
+    }
+  ]
 }

@@ -16,6 +16,7 @@ import { __, s__ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
+import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   INLINE_DIFF_VIEW_TYPE,
@@ -49,6 +50,7 @@ import {
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
 } from '../constants';
+import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
 import eventHub from '../event_hub';
 import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
@@ -62,6 +64,8 @@ import {
   idleCallback,
   allDiscussionWrappersExpanded,
   prepareLineForRenamedFile,
+  parseUrlHashAsFileHash,
+  isUrlHashNoteLink,
 } from './utils';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -99,6 +103,47 @@ export const setBaseConfig = ({ commit }, options) => {
 
     commit(types.SET_DIFF_FILE_VIEWED, { id: viewedId, seen: true });
   });
+};
+
+export const fetchFileByFile = async ({ state, getters, commit }) => {
+  const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
+  const id = parseUrlHashAsFileHash(window?.location?.hash, state.currentDiffFileId);
+  const treeEntry = id
+    ? getters.flatBlobsList.find(({ fileHash }) => fileHash === id)
+    : getters.flatBlobsList[0];
+
+  if (treeEntry && !treeEntry.diffLoaded && !getters.getDiffFileByHash(id)) {
+    // Overloading "batch" loading indicators so the UI stays mostly the same
+    commit(types.SET_BATCH_LOADING_STATE, 'loading');
+    commit(types.SET_RETRIEVING_BATCHES, true);
+
+    const urlParams = {
+      old_path: treeEntry.filePaths.old,
+      new_path: treeEntry.filePaths.new,
+      w: state.showWhitespace ? '0' : '1',
+      view: 'inline',
+    };
+
+    axios
+      .get(mergeUrlParams({ ...urlParams }, state.endpointDiffForPath))
+      .then(({ data: diffData }) => {
+        commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffData.diff_files });
+
+        if (!isNoteLink && !state.currentDiffFileId) {
+          commit(types.SET_CURRENT_DIFF_FILE, state.diffFiles[0]?.file_hash || '');
+        }
+
+        commit(types.SET_BATCH_LOADING_STATE, 'loaded');
+
+        eventHub.$emit('diffFilesModified');
+      })
+      .catch(() => {
+        commit(types.SET_BATCH_LOADING_STATE, 'error');
+      })
+      .finally(() => {
+        commit(types.SET_RETRIEVING_BATCHES, false);
+      });
+  }
 };
 
 export const fetchDiffFilesBatch = ({ commit, state, dispatch }) => {
@@ -512,12 +557,19 @@ export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
   }
 };
 
-export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
+export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }) => {
   const postData = getNoteFormData({
     commit: state.commit,
     note,
     ...formData,
   });
+
+  if (containsSensitiveToken(note)) {
+    const confirmed = await confirmSensitiveAction();
+    if (!confirmed) {
+      return null;
+    }
+  }
 
   return dispatch('saveNote', postData, { root: true })
     .then((result) => dispatch('updateDiscussion', result.discussion, { root: true }))
@@ -537,6 +589,31 @@ export const toggleTreeOpen = ({ commit }, path) => {
 
 export const setCurrentFileHash = ({ commit }, hash) => {
   commit(types.SET_CURRENT_DIFF_FILE, hash);
+};
+
+export const goToFile = ({ state, commit, dispatch, getters }, { path, singleFile }) => {
+  if (!state.viewDiffsFileByFile || !singleFile) {
+    dispatch('scrollToFile', { path });
+  } else {
+    if (!state.treeEntries[path]) return;
+
+    const { fileHash } = state.treeEntries[path];
+
+    commit(types.SET_CURRENT_DIFF_FILE, fileHash);
+    document.location.hash = fileHash;
+
+    if (!getters.isTreePathLoaded(path)) {
+      dispatch('fetchFileByFile')
+        .then(() => {
+          dispatch('scrollToFile', { path });
+        })
+        .catch(() => {
+          createAlert({
+            message: LOAD_SINGLE_DIFF_FAILED,
+          });
+        });
+    }
+  }
 };
 
 export const scrollToFile = ({ state, commit, getters }, { path }) => {
@@ -779,13 +856,11 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
     });
 
 export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {
-  /* eslint-disable @gitlab/require-i18n-strings */
   if (!commitId) {
     return Promise.reject(new Error('`commitId` is a required argument'));
   } else if (!state.commit) {
-    return Promise.reject(new Error('`state` must already contain a valid `commit`'));
+    return Promise.reject(new Error('`state` must already contain a valid `commit`')); // eslint-disable-line @gitlab/require-i18n-strings
   }
-  /* eslint-enable @gitlab/require-i18n-strings */
 
   // this is less than ideal, see: https://gitlab.com/gitlab-org/gitlab/-/issues/215421
   const commitRE = new RegExp(state.commit.id, 'g');
@@ -821,6 +896,24 @@ export function moveToNeighboringCommit({ dispatch, state }, { direction }) {
   }
 }
 
+export const rereadNoteHash = ({ state, dispatch }) => {
+  const urlHash = window?.location?.hash;
+
+  if (isUrlHashNoteLink(urlHash)) {
+    dispatch('setCurrentDiffFileIdFromNote', urlHash.split('_').pop())
+      .then(() => {
+        if (state.viewDiffsFileByFile) {
+          dispatch('fetchFileByFile');
+        }
+      })
+      .catch(() => {
+        createAlert({
+          message: DISCUSSION_SINGLE_DIFF_FAILED,
+        });
+      });
+  }
+};
+
 export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, noteId) => {
   const note = rootGetters.notesById[noteId];
 
@@ -833,11 +926,18 @@ export const setCurrentDiffFileIdFromNote = ({ commit, getters, rootGetters }, n
   }
 };
 
-export const navigateToDiffFileIndex = ({ commit, getters }, index) => {
+export const navigateToDiffFileIndex = (
+  { state, getters, commit, dispatch },
+  { index, singleFile },
+) => {
   const { fileHash } = getters.flatBlobsList[index];
   document.location.hash = fileHash;
 
   commit(types.SET_CURRENT_DIFF_FILE, fileHash);
+
+  if (state.viewDiffsFileByFile && singleFile) {
+    dispatch('fetchFileByFile');
+  }
 };
 
 export const setFileByFile = ({ state, commit }, { fileByFile }) => {

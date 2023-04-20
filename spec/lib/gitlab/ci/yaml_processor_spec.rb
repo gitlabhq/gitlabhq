@@ -2395,10 +2395,16 @@ module Gitlab
           end
         end
 
-        context 'undefined need' do
+        context 'when need is an undefined job' do
           let(:needs) { ['undefined'] }
 
           it_behaves_like 'returns errors', 'test1 job: undefined need: undefined'
+
+          context 'when need is optional' do
+            let(:needs) { [{ job: 'undefined', optional: true }] }
+
+            it { is_expected.to be_valid }
+          end
         end
 
         context 'needs to deploy' do

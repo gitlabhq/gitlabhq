@@ -1,16 +1,22 @@
 <script>
-import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlTooltip } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+  GlTooltip,
+} from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-
 import { s__ } from '~/locale';
+import { USER_MENU_TRACKING_DEFAULTS } from '../constants';
 
 export default {
   i18n: {
     user: {
-      busy: s__('UserProfile|(Busy)'),
+      busy: s__('UserProfile|Busy'),
     },
   },
   components: {
+    GlBadge,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlTooltip,
@@ -31,7 +37,13 @@ export default {
       };
       if (this.user.has_link_to_profile) {
         item.href = this.user.link_to_profile;
+
+        item.extraAttrs = {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'user_profile',
+        };
       }
+
       return item;
     },
   },
@@ -47,9 +59,9 @@ export default {
             <span class="gl-font-weight-bold">
               {{ user.name }}
             </span>
-            <span v-if="user.status.busy" class="gl-text-gray-500">{{
-              $options.i18n.user.busy
-            }}</span>
+            <gl-badge v-if="user.status.busy" size="sm" variant="warning">
+              {{ $options.i18n.user.busy }}
+            </gl-badge>
           </span>
 
           <span class="gl-text-gray-400">@{{ user.username }}</span>

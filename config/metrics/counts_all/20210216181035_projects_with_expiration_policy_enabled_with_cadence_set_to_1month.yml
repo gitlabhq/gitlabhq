@@ -5,7 +5,6 @@ description: A count of projects with the cleanup policy set to run monthly
 product_section: ops
 product_stage: package
 product_group: package
-product_category: container registry
 value_type: number
 status: active
 time_frame: all

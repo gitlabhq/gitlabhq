@@ -1,0 +1,8 @@
+---
+name: explain_code_snippet
+introduced_by_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404631
+milestone: '15.11'
+type: development
+group: group::source code
+default_enabled: false

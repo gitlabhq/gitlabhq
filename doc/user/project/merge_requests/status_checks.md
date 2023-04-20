@@ -3,7 +3,6 @@ stage: Govern
 group: Compliance
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, concepts
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/status_checks.html'
 ---
 
 # External status checks **(ULTIMATE)**
@@ -11,6 +10,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/statu
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3869) in GitLab 14.0, disabled behind the `:ff_external_status_checks` feature flag.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/320783) in GitLab 14.1.
 > - `failed` status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329636) in GitLab 14.9.
+
+Status checks are API calls to external systems that request the status of an external requirement.
 
 You can create a status check that sends merge request data to third-party tools.
 When users create, change, or close merge requests, GitLab sends a notification. The users or automated workflows

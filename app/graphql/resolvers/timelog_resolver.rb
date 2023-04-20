@@ -121,7 +121,7 @@ module Resolvers
     def apply_user_filter(timelogs, args)
       return timelogs unless args[:username]
 
-      user = UserFinder.new(args[:username]).find_by_username!
+      user = UserFinder.new(args[:username]).find_by_username
       timelogs.for_user(user)
     end
 

@@ -51,7 +51,7 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu, feature_category: :na
       end
     end
 
-    describe 'Feature Flags' do
+    describe 'Feature flags' do
       let(:item_id) { :feature_flags }
 
       it_behaves_like 'access rights checks'

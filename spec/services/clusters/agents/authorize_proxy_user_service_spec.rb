@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agents::AuthorizeProxyUserService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Agents::AuthorizeProxyUserService, feature_category: :deployment_management do
   subject(:service_response) { service.execute }
 
   let(:service) { described_class.new(user, agent) }

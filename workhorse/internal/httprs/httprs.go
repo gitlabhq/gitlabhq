@@ -11,6 +11,7 @@ Usage :
 	io.ReadFull(rs, buf) // does a range request and reads from the response body
 
 If you want use a specific http.Client for additional range requests :
+
 	rs := httprs.NewHttpReadSeeker(resp, client)
 */
 package httprs

@@ -23,6 +23,7 @@ The available roles are:
 - Developer
 - Maintainer
 - Owner
+- Minimal Access (available for the top-level group only)
 
 A user assigned the Guest role has the least permissions,
 and the Owner has the most.
@@ -58,7 +59,7 @@ The following table lists project permissions available for each role:
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|----------|-----------|------------|----------|
 | [Analytics](analytics/index.md):<br>View [issue analytics](analytics/issue_analytics.md)                                                                                             | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [merge request analytics](analytics/merge_request_analytics.md)                                                                             | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Analytics](analytics/index.md):<br>View [value stream analytics](analytics/value_stream_analytics.md)                                                                               | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Analytics](analytics/index.md):<br>View [value stream analytics](group/value_stream_analytics/index.md)                                                                               | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [DORA metrics](analytics/ci_cd_analytics.md)                                                                                                |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [CI/CD analytics](analytics/ci_cd_analytics.md)                                                                                             |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md)                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
@@ -137,7 +138,7 @@ The following table lists project permissions available for each role:
 | [Package registry](packages/index.md):<br>Delete a package                                                                                                                           |          |          |           | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Delete a file associated with a package                                                                                                    |          |          |           | ✓          | ✓        |
 | [Project operations](../operations/index.md):<br>View [Error Tracking](../operations/error_tracking.md) list                                                                         |          | ✓        | ✓         | ✓          | ✓        |
-| [Project operations](../operations/index.md):<br>Manage [Feature Flags](../operations/feature_flags.md)                                                                              |          |          | ✓         | ✓          | ✓        |
+| [Project operations](../operations/index.md):<br>Manage [Feature flags](../operations/feature_flags.md)                                                                              |          |          | ✓         | ✓          | ✓        |
 | [Project operations](../operations/index.md):<br>Manage [Error Tracking](../operations/error_tracking.md)                                                                            |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Download project                                                                                                                                    | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
 | [Projects](project/index.md):<br>Leave comments                                                                                                                                      | ✓        | ✓        | ✓         | ✓          | ✓        |
@@ -327,7 +328,7 @@ This table shows granted privileges for jobs triggered by specific types of user
 | Push source and LFS                          |                 |           |            |               |
 
 1. Only if the triggering user is not an external one.
-1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
+1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
 ## Group members permissions
 
@@ -423,31 +424,30 @@ nested groups if you have membership in one of its parents.
 For more information, see
 [subgroup memberships](group/subgroups/index.md#subgroup-membership).
 
-## Users with minimal access **(PREMIUM)**
+## Users with Minimal Access **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
+> - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 
-Owners can add members with a "minimal access" role to a root group. Such users don't automatically have access to
-projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
+Users with the Minimal Access role do not:
+
+- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
+- Automatically have access to projects and subgroups in that root group.
+
+Owners must explicitly add these users to the specific subgroups and
 projects.
 
-You can use minimal access to give the same member more than one role in a group:
+You can use the Minimal Access role to give the same member more than one role in a group:
 
-1. Add the member to the root group with a minimal access role.
+1. Add the member to the root group with a Minimal Access role.
 1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
 
-Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:
+Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when a user with the Minimal Access role:
 
-- Sign in with standard web authentication, they receive a `404` error when accessing the parent group.
-- Sign in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
+- Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
+- Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
 To work around the issue, give these users the Guest role or higher to any project or subgroup within the parent group.
-
-### Minimal access users take license seats
-
-Users with even a "minimal access" role are counted against your number of license seats. This
-requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
-subscriptions.
 
 ## Related topics
 
@@ -455,7 +455,7 @@ subscriptions.
 - [Members](project/members/index.md)
 - Customize permissions on [protected branches](project/protected_branches.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
-- [Value stream analytics permissions](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics)
+- [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/import/index.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)
@@ -539,8 +539,5 @@ the Owner role:
 ### Known issues
 
 - Additional permissions can only be applied to users with the Guest role.
-- There is no visual distinction in the UI between the Guest role and the Guest role with additional permission. For more information, see [issue 384099](https://gitlab.com/gitlab-org/gitlab/-/issues/384099).
 - If a user with a custom role is shared with a group or project, their custom role is not transferred over with them. The user has the regular Guest role in the new group or project.
-- If a custom role is deleted, the users associated with that custom role are also removed from the group. For more information, see [issue 370352](https://gitlab.com/gitlab-org/gitlab/-/issues/370352).
-- The API endpoint for associating a custom role with a user only works for users with the Guest role in a group. A project member can be associated with a custom role, but not through the API yet. For more information, see [issue 385495](https://gitlab.com/gitlab-org/gitlab/-/issues/385495).
-- The only way to remove a custom role from a user's membership to a Group is to delete the custom role, which deletes the user membership entirely. See [issue 387769](https://gitlab.com/gitlab-org/gitlab/-/issues/387769).
+- You cannot use an [Auditor user](../administration/auditor_users.md) as a template for a custom role.

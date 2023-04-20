@@ -1,8 +1,8 @@
 ---
 description: 'Learn how to configure the build output folder for the most
 common static site generators'
-stage: Create
-group: Editor
+stage: Plan
+group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -146,7 +146,7 @@ module.exports = {
 ## Should you commit the `public` folder?
 
 Not necessarily. However, when the GitLab Pages deploy pipeline runs, it looks
-for an [artifact](../../../ci/pipelines/job_artifacts.md) of that name.
+for an [artifact](../../../ci/jobs/job_artifacts.md) of that name.
 If you set up a job that creates the `public` folder before deploy, such as by
 running `npm run build`, committing the folder isn't required.
 

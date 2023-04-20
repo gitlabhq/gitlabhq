@@ -226,5 +226,4 @@ git push --force origin my-feature
 ## Related topics
 
 - [Numerous undo possibilities in Git](numerous_undo_possibilities_in_git/index.md#undo-staged-local-changes-without-modifying-history)
-for a deeper look into interactive rebases.
-- [Git documentation for branches and rebases](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
+- [Git documentation for branches and rebases](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)

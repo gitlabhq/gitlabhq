@@ -5,7 +5,6 @@ description: Count of expanding the accessibility report widget
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution
-product_category: accessibility_testing
 value_type: number
 status: active
 milestone: '13.11'

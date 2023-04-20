@@ -17,6 +17,7 @@ exports[`CiCdAnalyticsAreaChart matches the snapshot 1`] = `
     legendlayout="inline"
     legendmaxtext="Max"
     legendmintext="Min"
+    legendseriesinfo=""
     option="[object Object]"
     responsive=""
     thresholds=""

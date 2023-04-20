@@ -26,7 +26,7 @@ describe('content/components/wrappers/code_block', () => {
     eventHub = eventHubFactory();
   };
 
-  const createWrapper = async (nodeAttrs = { language }) => {
+  const createWrapper = (nodeAttrs = { language }) => {
     updateAttributesFn = jest.fn();
 
     wrapper = mountExtended(CodeBlockWrapper, {
@@ -97,7 +97,7 @@ describe('content/components/wrappers/code_block', () => {
       jest.spyOn(tiptapEditor, 'isActive').mockReturnValue(true);
     });
 
-    it('does not render a preview if showPreview: false', async () => {
+    it('does not render a preview if showPreview: false', () => {
       createWrapper({ language: 'plantuml', isDiagram: true, showPreview: false });
 
       expect(wrapper.findComponent({ ref: 'diagramContainer' }).exists()).toBe(false);

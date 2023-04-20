@@ -8,7 +8,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { commentLineOptions, formatLineRange } from '~/notes/components/multiline_comment_utils';
 import NoteForm from '~/notes/components/note_form.vue';
-import autosave from '~/notes/mixins/autosave';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import {
   DIFF_NOTE_TYPE,
   INLINE_DIFF_LINES_KEY,
@@ -21,7 +21,7 @@ export default {
     NoteForm,
     MultilineCommentForm,
   },
-  mixins: [autosave, diffLineNoteFormMixin, glFeatureFlagsMixin()],
+  mixins: [diffLineNoteFormMixin, glFeatureFlagsMixin()],
   props: {
     diffFileHash: {
       type: String,
@@ -146,6 +146,27 @@ export default {
 
       return lines;
     },
+    autosaveKey() {
+      if (!this.isLoggedIn) return '';
+
+      const {
+        id,
+        noteable_type: noteableTypeUnderscored,
+        noteableType,
+        diff_head_sha: diffHeadSha,
+        source_project_id: sourceProjectId,
+      } = this.noteableData;
+
+      return [
+        s__('Autosave|Note'),
+        capitalizeFirstCharacter(noteableTypeUnderscored || noteableType),
+        id,
+        diffHeadSha,
+        DIFF_NOTE_TYPE,
+        sourceProjectId,
+        this.line.line_code,
+      ].join('/');
+    },
   },
   created() {
     if (this.range) {
@@ -155,17 +176,6 @@ export default {
     }
   },
   mounted() {
-    if (this.isLoggedIn) {
-      const keys = [
-        this.noteableData.diff_head_sha,
-        DIFF_NOTE_TYPE,
-        this.noteableData.source_project_id,
-        this.line.line_code,
-      ];
-
-      this.initAutoSave(this.noteableData, keys);
-    }
-
     if (this.selectedCommentPosition) {
       this.commentLineStart = this.selectedCommentPosition.start;
     }
@@ -195,9 +205,6 @@ export default {
       this.cancelCommentForm({
         lineCode: this.line.line_code,
         fileHash: this.diffFileHash,
-      });
-      this.$nextTick(() => {
-        this.resetAutoSave();
       });
     }),
     handleSaveNote(note) {
@@ -232,6 +239,7 @@ export default {
       :diff-file="diffFile"
       :show-suggest-popover="showSuggestPopover"
       :save-button-title="__('Comment')"
+      :autosave-key="autosaveKey"
       class="diff-comment-form gl-mt-3"
       @handleFormUpdateAddToReview="addToReview"
       @cancelForm="handleCancelCommentForm"

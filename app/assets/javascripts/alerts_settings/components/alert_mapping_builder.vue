@@ -142,7 +142,7 @@ export default {
         {{ $options.i18n.columns.fallbackKeyTitle }}
         <gl-icon
           v-gl-tooltip
-          name="question"
+          name="question-o"
           class="gl-text-gray-500"
           :title="$options.i18n.fallbackTooltip"
         />

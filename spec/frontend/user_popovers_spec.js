@@ -97,7 +97,7 @@ describe('User Popovers', () => {
         expect(findPopovers().length).toBe(linksWithUsers.length);
       });
 
-      it('for elements added after initial load', async () => {
+      it('for elements added after initial load', () => {
         const addedLinks = [createUserLink(), createUserLink()];
         addedLinks.forEach((link) => {
           document.body.appendChild(link);
@@ -113,7 +113,7 @@ describe('User Popovers', () => {
       });
     });
 
-    it('does not initialize the popovers for group references', async () => {
+    it('does not initialize the popovers for group references', () => {
       const [groupLink] = Array.from(document.querySelectorAll('.js-user-link[data-group]'));
 
       triggerEvent('mouseover', groupLink);
@@ -122,7 +122,7 @@ describe('User Popovers', () => {
       expect(findPopovers().length).toBe(0);
     });
 
-    it('does not initialize the popovers for @all references', async () => {
+    it('does not initialize the popovers for @all references', () => {
       const [projectLink] = Array.from(document.querySelectorAll('.js-user-link[data-project]'));
 
       triggerEvent('mouseover', projectLink);
@@ -131,7 +131,7 @@ describe('User Popovers', () => {
       expect(findPopovers().length).toBe(0);
     });
 
-    it('does not initialize the user popovers twice for the same element', async () => {
+    it('does not initialize the user popovers twice for the same element', () => {
       const [firstUserLink] = findFixtureLinks();
       triggerEvent('mouseover', firstUserLink);
       jest.runOnlyPendingTimers();

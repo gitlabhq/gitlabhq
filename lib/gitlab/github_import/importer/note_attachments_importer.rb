@@ -6,7 +6,7 @@ module Gitlab
       class NoteAttachmentsImporter
         attr_reader :note_text, :project
 
-        # note_text - An instance of `NoteText`.
+        # note_text - An instance of `Gitlab::GithubImport::Representation::NoteText`.
         # project - An instance of `Project`.
         # client - An instance of `Gitlab::GithubImport::Client`.
         def initialize(note_text, project, _client = nil)

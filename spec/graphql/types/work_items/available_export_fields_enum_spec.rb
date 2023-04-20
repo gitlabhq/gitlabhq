@@ -12,6 +12,7 @@ RSpec.describe GitlabSchema.types['AvailableExportFields'], feature_category: :t
       'ID'              | 'id'
       'TYPE'            | 'type'
       'TITLE'           | 'title'
+      'DESCRIPTION'     | 'description'
       'AUTHOR'          | 'author'
       'AUTHOR_USERNAME' | 'author username'
       'CREATED_AT'      | 'created_at'

@@ -26,10 +26,6 @@ module Resolvers
 
         synthetic_notes.find { |note| note.discussion_id == sha }
       end
-
-      def find_object(id:)
-        GitlabSchema.find_by_gid(id)
-      end
     end
   end
 end

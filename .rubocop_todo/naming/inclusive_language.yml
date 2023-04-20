@@ -1,9 +1,7 @@
 ---
 Naming/InclusiveLanguage:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings/appearances_controller.rb'
-    - 'app/controllers/application_controller.rb'
     - 'app/controllers/concerns/requires_whitelisted_monitoring_client.rb'
     - 'app/controllers/health_check_controller.rb'
     - 'app/controllers/health_controller.rb'
@@ -13,7 +11,6 @@ Naming/InclusiveLanguage:
     - 'app/helpers/markup_helper.rb'
     - 'app/models/application_setting.rb'
     - 'app/models/application_setting_implementation.rb'
-    - 'app/models/clusters/applications/jupyter.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
     - 'app/services/application_settings/update_service.rb'
     - 'app/services/projects/download_service.rb'
@@ -37,7 +34,6 @@ Naming/InclusiveLanguage:
     - 'lib/api/settings.rb'
     - 'lib/banzai/filter/asset_proxy_filter.rb'
     - 'lib/gitlab/asset_proxy.rb'
-    - 'lib/gitlab/auth.rb'
     - 'lib/gitlab/auth/ip_rate_limiter.rb'
     - 'lib/gitlab/ci/config/external/file/base.rb'
     - 'lib/gitlab/git/hook_env.rb'
@@ -45,7 +41,6 @@ Naming/InclusiveLanguage:
     - 'lib/gitlab/markdown_cache/active_record/extension.rb'
     - 'lib/gitlab/markdown_cache/field_data.rb'
     - 'lib/gitlab/middleware/basic_health_check.rb'
-    - 'lib/gitlab/middleware/go.rb'
     - 'lib/gitlab/sanitizers/exif.rb'
     - 'lib/gitlab/sanitizers/svg.rb'
     - 'lib/gitlab/sanitizers/svg/whitelist.rb'
@@ -61,7 +56,6 @@ Naming/InclusiveLanguage:
     - 'rubocop/cop/ignored_columns.rb'
     - 'rubocop/cop/inject_enterprise_edition_module.rb'
     - 'rubocop/cop/migration/add_columns_to_wide_tables.rb'
-    - 'spec/controllers/application_controller_spec.rb'
     - 'spec/controllers/concerns/issuable_collections_spec.rb'
     - 'spec/controllers/health_check_controller_spec.rb'
     - 'spec/controllers/metrics_controller_spec.rb'
@@ -70,7 +64,6 @@ Naming/InclusiveLanguage:
     - 'spec/lib/banzai/filter/asset_proxy_filter_spec.rb'
     - 'spec/lib/gitlab/asset_proxy_spec.rb'
     - 'spec/lib/gitlab/auth/ip_rate_limiter_spec.rb'
-    - 'spec/lib/gitlab/auth_spec.rb'
     - 'spec/lib/gitlab/git/hook_env_spec.rb'
     - 'spec/lib/gitlab/github_import/markdown/attachment_spec.rb'
     - 'spec/lib/gitlab/import_export/attribute_configuration_spec.rb'
@@ -81,7 +74,6 @@ Naming/InclusiveLanguage:
     - 'spec/lib/gitlab/sanitizers/exif_spec.rb'
     - 'spec/lib/system_check/app/git_user_default_ssh_config_check_spec.rb'
     - 'spec/models/application_setting_spec.rb'
-    - 'spec/models/clusters/applications/jupyter_spec.rb'
     - 'spec/requests/api/settings_spec.rb'
     - 'spec/requests/health_controller_spec.rb'
     - 'spec/rubocop/cop/avoid_return_from_blocks_spec.rb'

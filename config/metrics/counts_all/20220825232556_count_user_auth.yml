@@ -4,7 +4,6 @@ description: Number of unique user logins
 product_section: dev
 product_stage: manage
 product_group: authentication_and_authorization
-product_category: system_access
 value_type: number
 status: active
 milestone: "15.4"

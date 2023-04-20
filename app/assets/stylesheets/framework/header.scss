@@ -8,7 +8,7 @@ $search-input-field-x-min-width: 200px;
   min-height: $header-height;
   border: 0;
   position: fixed;
-  top: 0;
+  top: $calc-application-bars-height;
   left: 0;
   right: 0;
   border-radius: 0;
@@ -312,21 +312,52 @@ $search-input-field-x-min-width: 200px;
   margin-top: $dropdown-vertical-offset;
 }
 
+.top-bar-container {
+  min-height: $top-bar-height;
+}
+
+.top-bar-fixed {
+  background-color: $body-bg;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: $calc-application-bars-height;
+  width: auto;
+  z-index: $top-bar-z-index;
+  @include gl-inset-border-b-1-gray-100;
+
+  .breadcrumbs-list {
+    @include media-breakpoint-down(xs) {
+      flex-wrap: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
+  }
+
+  @include media-breakpoint-up(md) {
+    .right-sidebar-collapsed & {
+      right: $gutter-collapsed-width;
+    }
+
+    .right-sidebar-expanded & {
+      right: $gutter-width;
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    .page-with-super-sidebar & {
+      left: $super-sidebar-width;
+    }
+
+    .page-with-super-sidebar-collapsed & {
+      left: 0;
+    }
+  }
+}
+
 .breadcrumbs {
-  display: flex;
-  min-height: $breadcrumb-min-height;
-  color: $gl-text-color;
-}
-
-.breadcrumbs-container {
-  display: flex;
-  width: 100%;
-  padding-top: $gl-padding / 2;
-  padding-bottom: $gl-padding / 2;
-  align-items: center;
-}
-
-.breadcrumbs-links {
   flex: 1;
   min-width: 0;
   align-self: center;
@@ -347,16 +378,6 @@ $search-input-field-x-min-width: 200px;
       position: relative;
       top: 1px;
     }
-  }
-
-  .dropdown-menu li a .identicon {
-    width: 17px;
-    height: 17px;
-    font-size: $gl-font-size-xs;
-    vertical-align: middle;
-    text-indent: 0;
-    line-height: $gl-font-size-xs + 2px;
-    display: inline-block;
   }
 }
 
@@ -498,11 +519,6 @@ $search-input-field-x-min-width: 200px;
   visibility: visible;
 }
 
-.with-performance-bar .navbar-gitlab,
-.with-performance-bar .fixed-top {
-  top: $performance-bar-height;
-}
-
 .navbar-empty {
   justify-content: center;
   height: $header-height;
@@ -558,7 +574,7 @@ $search-input-field-x-min-width: 200px;
   @include media-breakpoint-down(sm) {
     @include gl-display-block;
 
-    + .breadcrumbs-links {
+    + .breadcrumbs {
       @include gl-pl-4;
       @include gl-border-l-1;
       @include gl-border-l-solid;

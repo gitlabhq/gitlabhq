@@ -24,9 +24,9 @@ module Types
           authorize: :create_pipeline,
           alpha: { milestone: '15.3' },
           description: 'CI/CD config variable.' do
-            argument :sha, GraphQL::Types::String,
+            argument :ref, GraphQL::Types::String,
               required: true,
-              description: 'Sha.'
+              description: 'Ref.'
           end
 
     field :full_path, GraphQL::Types::ID,
@@ -135,6 +135,11 @@ module Types
     field :jobs_enabled, GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if CI/CD pipeline jobs are enabled for the current user.'
+
+    field :is_catalog_resource, GraphQL::Types::Boolean,
+          alpha: { milestone: '15.11' },
+          null: true,
+          description: 'Indicates if a project is a catalog resource.'
 
     field :public_jobs, GraphQL::Types::Boolean,
           null: true,
@@ -567,8 +572,8 @@ module Types
           description: "Find runners visible to the current user."
 
     field :data_transfer, Types::DataTransfer::ProjectDataTransferType,
-          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out!
-          resolver: Resolvers::DataTransferResolver.project,
+          null: true, # disallow null once data_transfer_monitoring feature flag is rolled-out! https://gitlab.com/gitlab-org/gitlab/-/issues/391682
+          resolver: Resolvers::DataTransfer::ProjectDataTransferResolver,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
 
     field :visible_forks, Types::ProjectType.connection_type,
@@ -588,6 +593,16 @@ module Types
           method: :project_namespace,
           authorize: :read_cycle_analytics,
           alpha: { milestone: '15.10' }
+
+    field :tags_tipping_at_commit, ::Types::Projects::CommitParentNamesType,
+          null: true,
+          resolver: Resolvers::Projects::TagsTippingAtCommitResolver,
+          description: "Get tag names tipping at a given commit."
+
+    field :branches_tipping_at_commit, ::Types::Projects::CommitParentNamesType,
+          null: true,
+          resolver: Resolvers::Projects::BranchesTippingAtCommitResolver,
+          description: "Get branch names tipping at a given commit."
 
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
@@ -635,6 +650,16 @@ module Types
       BatchLoader::GraphQL.wrap(object.forks_count)
     end
 
+    def is_catalog_resource # rubocop:disable Naming/PredicateName
+      lazy_catalog_resource = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::Ci::Catalog::Resource.for_projects(project_ids).each do |catalog_resource|
+          loader.call(catalog_resource.project_id, catalog_resource)
+        end
+      end
+
+      Gitlab::Graphql::Lazy.with_value(lazy_catalog_resource, &:present?)
+    end
+
     def statistics
       Gitlab::Graphql::Loaders::BatchProjectStatisticsLoader.new(object.id).find
     end
@@ -643,10 +668,8 @@ module Types
       project.container_repositories.size
     end
 
-    # Even if the parameter name is `sha`, it is actually a ref name. We always send `ref` to the endpoint.
-    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/389065
-    def ci_config_variables(sha:)
-      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(sha)
+    def ci_config_variables(ref:)
+      result = ::Ci::ListConfigVariablesService.new(object, context[:current_user]).execute(ref)
 
       return if result.nil?
 

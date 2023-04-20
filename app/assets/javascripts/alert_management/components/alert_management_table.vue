@@ -12,6 +12,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import getAlertsQuery from '~/graphql_shared/queries/get_alerts.query.graphql';
+import { STATUS_CLOSED } from '~/issues/constants';
 import { sortObjectToString } from '~/lib/utils/table_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
@@ -229,7 +230,7 @@ export default {
     },
     getIssueMeta({ issue: { iid, state } }) {
       return {
-        state: state === 'closed' ? `(${this.$options.i18n.closed})` : '',
+        state: state === STATUS_CLOSED ? `(${this.$options.i18n.closed})` : '',
         link: joinPaths('/', this.projectPath, '-', 'issues/incident', iid),
       };
     },

@@ -26,6 +26,7 @@ import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
@@ -39,7 +40,7 @@ import {
   WIDGET_TYPE_NOTES,
 } from '../constants';
 
-import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
+import workItemDatesSubscription from '../../graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscription.graphql';
 import workItemMilestoneSubscription from '../graphql/work_item_milestone.subscription.graphql';
@@ -224,14 +225,17 @@ export default {
     canDelete() {
       return this.workItem?.userPermissions?.deleteWorkItem;
     },
+    canSetWorkItemMetadata() {
+      return this.workItem?.userPermissions?.setWorkItemMetadata;
+    },
+    canAssignUnassignUser() {
+      return this.workItemAssignees && this.canSetWorkItemMetadata;
+    },
     confidentialTooltip() {
       return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
     },
     fullPath() {
       return this.workItem?.project.fullPath;
-    },
-    workItemsMvcEnabled() {
-      return this.glFeatures.workItemsMvc;
     },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
@@ -267,6 +271,9 @@ export default {
     },
     hasDescriptionWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+    },
+    workItemNotificationsSubscribed() {
+      return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
@@ -534,14 +541,13 @@ export default {
               {{ workItemBreadcrumbReference }}
             </li>
           </ul>
-          <work-item-type-icon
-            v-else-if="!error"
-            :work-item-icon-name="workItemIconName"
-            :work-item-type="workItemType && workItemType.toUpperCase()"
-            show-text
-            class="gl-font-weight-bold gl-text-secondary gl-mr-auto"
-            data-testid="work-item-type"
-          />
+          <div v-else-if="!error" class="gl-mr-auto" data-testid="work-item-type">
+            <work-item-type-icon
+              :work-item-icon-name="workItemIconName"
+              :work-item-type="workItemType && workItemType.toUpperCase()"
+            />
+            {{ workItemBreadcrumbReference }}
+          </div>
           <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
           <gl-badge
             v-if="workItem.confidential"
@@ -555,6 +561,7 @@ export default {
           <work-item-actions
             v-if="canUpdate || canDelete"
             :work-item-id="workItem.id"
+            :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
             :can-delete="canDelete"
             :can-update="canUpdate"
@@ -705,12 +712,17 @@ export default {
         <work-item-notes
           v-if="workItemNotes"
           :work-item-id="workItem.id"
+          :work-item-iid="workItem.iid"
           :query-variables="queryVariables"
           :full-path="fullPath"
           :fetch-by-iid="fetchByIid"
           :work-item-type="workItemType"
+          :is-modal="isModal"
+          :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
+          :can-set-work-item-metadata="canAssignUnassignUser"
           class="gl-pt-5"
           @error="updateError = $event"
+          @has-notes="updateHasNotes"
         />
         <gl-empty-state
           v-if="error"

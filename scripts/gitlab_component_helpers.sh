@@ -52,22 +52,7 @@ export GITLAB_ASSETS_PACKAGE="assets-${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSE
 export GITLAB_ASSETS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/assets/${NODE_ENV}-${GITLAB_EDITION}-${GITLAB_ASSETS_HASH}/${GITLAB_ASSETS_PACKAGE}"
 
 # Fixtures constants
-
-# Export the SHA variable for updating/downloading fixture packages, using the following order of precedence:
-# 1. If MERGE_BASE_SHA is defined, use its value.
-# 2. If CI_MERGE_REQUEST_SOURCE_BRANCH_SHA is defined, use its value for merge request pipelines.
-# 3. Otherwise, use the value of CI_COMMIT_SHA for default branch pipelines or merge requests with detached pipelines.
-if [ -n "${MERGE_BASE_SHA:-}" ]; then
-  export FIXTURES_SHA="${MERGE_BASE_SHA}"
-elif [ -n "${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-}" ]; then
-  export FIXTURES_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA}"
-else
-  export FIXTURES_SHA="${CI_COMMIT_SHA}"
-fi
-
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
-export FIXTURES_PACKAGE="fixtures-${FIXTURES_SHA}.tar.gz"
-export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
 
 # Generic helper functions
 function archive_doesnt_exist() {
@@ -75,7 +60,13 @@ function archive_doesnt_exist() {
 
   status=$(curl -I --silent --retry 3 --output /dev/null -w "%{http_code}" "${package_url}")
 
-  [[ "${status}" != "200" ]]
+  if [[ "${status}" = "200" ]]; then
+    echoinfo "The archive was found. The server returned status ${status}."
+    return 1
+  else
+    echoinfo "The archive was not found. The server returned status ${status}."
+    return 0
+  fi
 }
 
 function create_package() {
@@ -167,12 +158,67 @@ function upload_gitlab_assets_package() {
 }
 
 # Fixtures functions
-function fixtures_archive_doesnt_exist() {
-  archive_doesnt_exist "${FIXTURES_PACKAGE_URL}"
+function check_fixtures_download() {
+  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED:-}" != "true" ]]; then
+    return 1
+  fi
+
+  # Note: Currently, reusing frontend fixtures is only supported in EE.
+  # Other projects will be supported through this issue in the future: https://gitlab.com/gitlab-org/gitlab/-/issues/393615.
+  if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
+    return 1
+  fi
+
+  if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
+    return 1
+  else
+    if tooling/bin/find_only_js_changes && ! fixtures_archive_doesnt_exist; then
+      return 0
+    else
+      return 1
+    fi
+  fi
 }
 
 function create_fixtures_package() {
   create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
+}
+
+function download_and_extract_fixtures() {
+  read_curl_package "${FIXTURES_PACKAGE_URL}" | extract_package
+}
+
+function export_fixtures_package_variables() {
+  export FIXTURES_PACKAGE="fixtures-${FIXTURES_SHA}.tar.gz"
+  export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
+}
+
+function export_fixtures_sha_for_download() {
+  export FIXTURES_SHA="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$CI_COMMIT_SHA}}"
+  export_fixtures_package_variables
+}
+
+function export_fixtures_sha_for_upload() {
+  export FIXTURES_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
+  export_fixtures_package_variables
+}
+
+function fixtures_archive_doesnt_exist() {
+  echoinfo "Checking if the package is available at ${FIXTURES_PACKAGE_URL} ..."
+
+  archive_doesnt_exist "${FIXTURES_PACKAGE_URL}"
+}
+
+function fixtures_directory_exists() {
+  local fixtures_directory="tmp/tests/frontend/"
+
+  if [[ -d "${fixtures_directory}" ]]; then
+    echo "${fixtures_directory} directory exists"
+    return 0
+  else
+    echo "${fixtures_directory} directory does not exist"
+    return 1
+  fi
 }
 
 function upload_fixtures_package() {

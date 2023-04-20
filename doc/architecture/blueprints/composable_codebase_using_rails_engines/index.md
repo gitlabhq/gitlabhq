@@ -8,6 +8,8 @@ owning-stage: "~devops::non_devops"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Composable GitLab Codebase
 
 NOTE:

@@ -137,3 +137,27 @@ Each record in the table defines mapping of a widget to a work item type. Curren
 | 4  | 1            | 1                 | 1                | 0        | MyWeight  | false |
 | 5  | 2            | 0                 | 1                | 1        | Other Weight | false |
 | 6  | 3            | 0                 | 1                | 1        | Weight | true |
+
+## Backend architecture
+
+You can update widgets using custom fine-grained mutations (for example, `WorkItemCreateFromTask`) or as part of the
+`workItemCreate` or `workItemUpdate` mutations.
+
+### Widget callbacks
+
+When updating the widget together with the work item's mutation, backend code should be implemented using
+callback classes that inherit from `Issuable::Callbacks::Base`. These classes have callback methods
+that are named similar to ActiveRecord callbacks and behave similarly.
+
+Callback classes with the same name as the widget are automatically used. For example, `Issuable::Callbacks::Milestone`
+is called when the work item has the milestone widget. To use a different class, you can override the `callback_class`
+class method.
+
+#### Available callbacks
+
+- `after_initialize` is called after the work item is initialized by the `BuildService` and before
+  the work item is saved by the `CreateService` and `UpdateService`. This callback runs outside the
+  creation or update database transaction.
+- `after_update_commit` is called after the DB update transaction is committed by the `UpdateService`.
+- `after_save_commit` is called after the creation or DB update transaction is committed by the
+  `CreateService` or `UpdateService`.

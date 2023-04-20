@@ -4,31 +4,28 @@
 #
 # Usage:
 #   describe "..." do
-#     include Spec::Support::Helpers::Features::BranchesHelpers
+#     include Features::BranchesHelpers
 #     ...
 #
 #     create_branch("feature")
 #     select_branch("master")
 #
-module Spec
-  module Support
-    module Helpers
-      module Features
-        module BranchesHelpers
-          def create_branch(branch_name, source_branch_name = "master")
-            fill_in("branch_name", with: branch_name)
-            select_branch(source_branch_name)
-            click_button("Create branch")
-          end
+module Features
+  module BranchesHelpers
+    include ListboxHelpers
 
-          def select_branch(branch_name)
-            wait_for_requests
+    def create_branch(branch_name, source_branch_name = "master")
+      fill_in("branch_name", with: branch_name)
+      select_branch(source_branch_name)
+      click_button("Create branch")
+    end
 
-            click_button branch_name
-            send_keys branch_name
-          end
-        end
-      end
+    def select_branch(branch_name)
+      wait_for_requests
+
+      click_button branch_name
+      send_keys branch_name
+      select_listbox_item(branch_name)
     end
   end
 end

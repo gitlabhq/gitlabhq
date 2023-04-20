@@ -158,7 +158,7 @@ see [Email notification for unknown sign-ins](../../profile/notifications.md#not
 All users that are not logged in are redirected to the page represented by the configured
 **Home page URL** if value is not empty.
 
-All users are redirected to the page represented by the configured **After sign-out path**
+All users are redirected to the page represented by the configured **Sign-out page URL**
 after sign out if value is not empty.
 
 In the **Sign-in restrictions** section, scroll to the **Sign-in text** field. You can add a

@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -77,17 +77,16 @@ describe('DiscussionFilter component', () => {
     // as it doesn't matter for our tests here
     mock.onGet(DISCUSSION_PATH).reply(HTTP_STATUS_OK, '');
     window.mrTabs = undefined;
-    wrapper = mountComponent();
     jest.spyOn(Tracking, 'event');
   });
 
   afterEach(() => {
-    wrapper.vm.$destroy();
     mock.restore();
   });
 
   describe('default', () => {
     beforeEach(() => {
+      wrapper = mountComponent();
       jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
@@ -104,6 +103,7 @@ describe('DiscussionFilter component', () => {
 
   describe('when asc', () => {
     beforeEach(() => {
+      wrapper = mountComponent();
       jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
@@ -123,6 +123,7 @@ describe('DiscussionFilter component', () => {
 
   describe('when desc', () => {
     beforeEach(() => {
+      wrapper = mountComponent();
       store.state.discussionSortOrder = DESC;
       jest.spyOn(store, 'dispatch').mockImplementation();
     });
@@ -145,56 +146,62 @@ describe('DiscussionFilter component', () => {
     });
   });
 
-  it('renders the all filters', () => {
-    expect(wrapper.findAll('.discussion-filter-container .dropdown-item').length).toBe(
-      discussionFiltersMock.length,
-    );
-  });
+  describe('discussion filter functionality', () => {
+    beforeEach(() => {
+      wrapper = mountComponent();
+    });
 
-  it('renders the default selected item', () => {
-    expect(wrapper.find('.discussion-filter-container .dropdown-item').text().trim()).toBe(
-      discussionFiltersMock[0].title,
-    );
-  });
+    it('renders the all filters', () => {
+      expect(wrapper.findAll('.discussion-filter-container .dropdown-item').length).toBe(
+        discussionFiltersMock.length,
+      );
+    });
 
-  it('disables the dropdown when discussions are loading', () => {
-    store.state.isLoading = true;
+    it('renders the default selected item', () => {
+      expect(wrapper.find('.discussion-filter-container .dropdown-item').text().trim()).toBe(
+        discussionFiltersMock[0].title,
+      );
+    });
 
-    expect(wrapper.findComponent(GlDropdown).props('disabled')).toBe(true);
-  });
+    it('disables the dropdown when discussions are loading', () => {
+      store.state.isLoading = true;
 
-  it('updates to the selected item', () => {
-    const filterItem = findFilter(DISCUSSION_FILTER_TYPES.ALL);
+      expect(wrapper.findComponent(GlDropdown).props('disabled')).toBe(true);
+    });
 
-    filterItem.trigger('click');
+    it('updates to the selected item', () => {
+      const filterItem = findFilter(DISCUSSION_FILTER_TYPES.ALL);
 
-    expect(wrapper.vm.currentFilter.title).toBe(filterItem.text().trim());
-  });
+      filterItem.trigger('click');
 
-  it('only updates when selected filter changes', () => {
-    findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
+      expect(filterItem.text().trim()).toBe('Show all activity');
+    });
 
-    expect(filterDiscussion).not.toHaveBeenCalled();
-  });
+    it('only updates when selected filter changes', () => {
+      findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
 
-  it('disables timeline view if it was enabled', () => {
-    store.state.isTimelineEnabled = true;
+      expect(filterDiscussion).not.toHaveBeenCalled();
+    });
 
-    findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
+    it('disables timeline view if it was enabled', () => {
+      store.state.isTimelineEnabled = true;
 
-    expect(wrapper.vm.$store.state.isTimelineEnabled).toBe(false);
-  });
+      findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
 
-  it('disables commenting when "Show history only" filter is applied', () => {
-    findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
+      expect(store.state.isTimelineEnabled).toBe(false);
+    });
 
-    expect(wrapper.vm.$store.state.commentsDisabled).toBe(true);
-  });
+    it('disables commenting when "Show history only" filter is applied', () => {
+      findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
 
-  it('enables commenting when "Show history only" filter is not applied', () => {
-    findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
+      expect(store.state.commentsDisabled).toBe(true);
+    });
 
-    expect(wrapper.vm.$store.state.commentsDisabled).toBe(false);
+    it('enables commenting when "Show history only" filter is not applied', () => {
+      findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
+
+      expect(store.state.commentsDisabled).toBe(false);
+    });
   });
 
   describe('Merge request tabs', () => {
@@ -222,52 +229,41 @@ describe('DiscussionFilter component', () => {
   });
 
   describe('URL with Links to notes', () => {
+    const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+
     afterEach(() => {
       window.location.hash = '';
     });
 
-    it('updates the filter when the URL links to a note', async () => {
-      window.location.hash = `note_${discussionMock.notes[0].id}`;
-      wrapper.vm.currentValue = discussionFiltersMock[2].value;
-      wrapper.vm.handleLocationHash();
-
-      await nextTick();
-      expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
-    });
-
     it('does not update the filter when the current filter is "Show all activity"', async () => {
       window.location.hash = `note_${discussionMock.notes[0].id}`;
-      wrapper.vm.handleLocationHash();
+      wrapper = mountComponent();
 
       await nextTick();
-      expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
+      const filtered = findDropdownItems().filter((el) => el.classes('is-active'));
+
+      expect(filtered).toHaveLength(1);
+      expect(filtered.at(0).text()).toBe(discussionFiltersMock[0].title);
     });
 
     it('only updates filter when the URL links to a note', async () => {
       window.location.hash = `testing123`;
-      wrapper.vm.handleLocationHash();
+      wrapper = mountComponent();
 
       await nextTick();
-      expect(wrapper.vm.currentValue).toBe(DISCUSSION_FILTERS_DEFAULT_VALUE);
-    });
+      const filtered = findDropdownItems().filter((el) => el.classes('is-active'));
 
-    it('fetches discussions when there is a hash', async () => {
-      window.location.hash = `note_${discussionMock.notes[0].id}`;
-      wrapper.vm.currentValue = discussionFiltersMock[2].value;
-      jest.spyOn(wrapper.vm, 'selectFilter').mockImplementation(() => {});
-      wrapper.vm.handleLocationHash();
-
-      await nextTick();
-      expect(wrapper.vm.selectFilter).toHaveBeenCalled();
+      expect(filtered).toHaveLength(1);
+      expect(filtered.at(0).text()).toBe(discussionFiltersMock[0].title);
     });
 
     it('does not fetch discussions when there is no hash', async () => {
       window.location.hash = '';
-      jest.spyOn(wrapper.vm, 'selectFilter').mockImplementation(() => {});
-      wrapper.vm.handleLocationHash();
+      const selectFilterSpy = jest.spyOn(wrapper.vm, 'selectFilter').mockImplementation(() => {});
+      wrapper = mountComponent();
 
       await nextTick();
-      expect(wrapper.vm.selectFilter).not.toHaveBeenCalled();
+      expect(selectFilterSpy).not.toHaveBeenCalled();
     });
   });
 });

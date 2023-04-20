@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 constraints(::Constraints::GroupUrlConstrainer.new) do
-  scope(path: 'groups/*id',
-        controller: :groups,
-        constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom|ics)/ }) do
+  scope(
+    path: 'groups/*id',
+    controller: :groups,
+    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom|ics)/ }
+  ) do
     scope(path: '-') do
       # These routes are legit and the cop rule will be improved in
       # https://gitlab.com/gitlab-org/gitlab/-/issues/230703
@@ -27,10 +29,12 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     get '/', action: :show, as: :group_canonical
   end
 
-  scope(path: 'groups/*group_id/-',
-        module: :groups,
-        as: :group,
-        constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
+  scope(
+    path: 'groups/*group_id/-',
+    module: :groups,
+    as: :group,
+    constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }
+  ) do
     namespace :settings do
       resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
         put :reset_registration_token
@@ -114,8 +118,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :boards, only: [:index, :show], constraints: { id: /\d+/ }
 
-    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+    resources :runners, only: [:index, :new, :edit, :update, :destroy, :show] do
       member do
+        get :register
         post :resume
         post :pause
       end
@@ -155,10 +160,12 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
   end
 
-  scope(path: '*id',
-        as: :group,
-        constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ },
-        controller: :groups) do
+  scope(
+    path: '*id',
+    as: :group,
+    constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ },
+    controller: :groups
+  ) do
     get '/', action: :show
     patch '/', action: :update
     put '/', action: :update

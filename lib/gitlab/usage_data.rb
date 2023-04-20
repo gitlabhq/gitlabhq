@@ -240,7 +240,7 @@ module Gitlab
           omniauth_enabled: alt_usage_data(fallback: nil) { Gitlab::Auth.omniauth_enabled? },
           prometheus_enabled: alt_usage_data(fallback: nil) { Gitlab::Prometheus::Internal.prometheus_enabled? },
           prometheus_metrics_enabled: alt_usage_data(fallback: nil) { Gitlab::Metrics.prometheus_metrics_enabled? },
-          reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::IncomingEmail.enabled? },
+          reply_by_email_enabled: alt_usage_data(fallback: nil) { Gitlab::Email::IncomingEmail.enabled? },
           web_ide_clientside_preview_enabled: alt_usage_data(fallback: nil) { false },
           signup_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.allow_signup? },
           grafana_link_enabled: alt_usage_data(fallback: nil) { Gitlab::CurrentSettings.grafana_enabled? },
@@ -370,16 +370,6 @@ module Gitlab
         }
       end
 
-      def merge_requests_users(time_period)
-        redis_usage_data do
-          Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
-            event_names: :merge_request_action,
-            start_date: time_period[:created_at].first,
-            end_date: time_period[:created_at].last
-          )
-        end
-      end
-
       def installation_type
         if Rails.env.production?
           Gitlab::INSTALLATION_TYPE
@@ -447,9 +437,7 @@ module Gitlab
           projects_without_disable_overriding_approvers_per_merge_request: count(::Project.where(time_period.merge(disable_overriding_approvers_per_merge_request: [false, nil]))),
           remote_mirrors: distinct_count(::Project.with_remote_mirrors.where(time_period), :creator_id),
           snippets: distinct_count(::Snippet.where(time_period), :author_id)
-        }.tap do |h|
-          h[:merge_requests_users] = merge_requests_users(time_period) if time_period.present?
-        end
+        }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

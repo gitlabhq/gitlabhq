@@ -1,8 +1,0 @@
----
-name: fe_epic_board_total_weight
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89390
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364503
-milestone: '15.1'
-type: development
-group: group::product planning
-default_enabled: true

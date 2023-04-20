@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User edit profile', feature_category: :user_profile do
-  include Spec::Support::Helpers::Features::NotesHelpers
+  include Features::NotesHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -97,8 +97,8 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
     expect(page).to have_content('Website url is not a valid URL')
   end
 
-  it 'validates that the dicord id has a valid length', :js do
-    valid_dicord_id = '123456789123456789'
+  it 'validates that the discord id has a valid length', :js do
+    valid_discord_id = '123456789123456789'
     too_short_discord_id = '123456'
     too_long_discord_id = '123456789abcdefghijkl'
 
@@ -108,12 +108,12 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
     fill_in 'user_discord', with: too_long_discord_id
     expect(page).to have_content('Discord ID is too long')
 
-    fill_in 'user_discord', with: valid_dicord_id
+    fill_in 'user_discord', with: valid_discord_id
 
     submit_settings
 
     expect(user.reload).to have_attributes(
-      discord: valid_dicord_id
+      discord: valid_discord_id
     )
   end
 
@@ -297,7 +297,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
           end
 
           page.within '.dropdown-menu-user' do
-            expect(page).to have_content("#{user.name} (Busy)")
+            expect(page).to have_content("#{user.name} Busy")
           end
         end
 
@@ -308,7 +308,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
           visit project_issue_path(project, issue)
           wait_for_requests
 
-          expect(page.find('.issuable-assignees')).to have_content("#{user.name} (Busy)")
+          expect(page.find('.issuable-assignees')).to have_content("#{user.name} Busy")
         end
       end
     end

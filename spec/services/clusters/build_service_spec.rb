@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::BuildService, feature_category: :kubernetes_management do
+RSpec.describe Clusters::BuildService, feature_category: :deployment_management do
   describe '#execute' do
     subject { described_class.new(cluster_subject).execute }
 

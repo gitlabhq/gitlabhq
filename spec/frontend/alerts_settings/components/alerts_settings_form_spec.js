@@ -97,7 +97,7 @@ describe('AlertsSettingsForm', () => {
       expect(findFormFields().at(0).isVisible()).toBe(true);
     });
 
-    it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
+    it('disables the dropdown and shows help text when multi integrations are not supported', () => {
       createComponent({ props: { canAddIntegration: false } });
       expect(findSelect().attributes('disabled')).toBe('disabled');
       expect(findMultiSupportText().exists()).toBe(true);

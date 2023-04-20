@@ -19,11 +19,14 @@ describe('GroupsList component', () => {
 
   const itRendersViewAllItem = () => {
     it('renders the "View all..." item', () => {
-      expect(findViewAllLink().props('item')).toEqual({
+      const link = findViewAllLink();
+
+      expect(link.props('item')).toEqual({
         icon: 'group',
         link: viewAllLink,
-        title: s__('Navigation|View all groups'),
+        title: s__('Navigation|View all your groups'),
       });
+      expect(link.props('linkClasses')).toEqual({ 'dashboard-shortcuts-groups': true });
     });
   };
 
@@ -75,7 +78,7 @@ describe('GroupsList component', () => {
 
     it('passes the correct props to the frequent items list', () => {
       expect(findFrequentItemsList().props()).toEqual({
-        title: s__('Navigation|Frequent groups'),
+        title: s__('Navigation|Frequently visited groups'),
         storageKey,
         maxItems: MAX_FREQUENT_GROUPS_COUNT,
         pristineText: s__('Navigation|Groups you visit often will appear here.'),

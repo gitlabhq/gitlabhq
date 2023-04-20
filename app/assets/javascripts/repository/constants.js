@@ -112,3 +112,5 @@ export const POLLING_INTERVAL_DEFAULT = 2500;
 export const POLLING_INTERVAL_BACKOFF = 2;
 
 export const CONFLICTS_MODAL_ID = 'fork-sync-conflicts-modal';
+
+export const FORK_UPDATED_EVENT = 'fork:updated';

@@ -22,7 +22,8 @@ module QA
           r = put(Runtime::API::Request.new(api_client, APPLICATION_SETTINGS_PATH).url, **application_settings)
           return if r.code == QA::Support::API::HTTP_STATUS_OK
 
-          raise "Couldn't set application settings #{application_settings.inspect}"
+          body = parse_body(r)
+          raise("Couldn't set application settings #{application_settings.inspect}, code: '#{r.code}', body: #{body}")
         end
 
         def get_application_settings(api_client: admin_api_client)

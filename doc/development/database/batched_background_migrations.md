@@ -597,6 +597,37 @@ for more details.
    more pressure on DB than you expect. Measure on staging,
    or ask someone to measure on production.
 1. Know how much time is required to run the batched background migration.
+1. Be careful when silently rescuing exceptions inside job classes. This may lead to
+   jobs being marked as successful, even in a failure scenario.
+
+   ```ruby
+   # good
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     end
+   end
+
+   # acceptable
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     rescue Exception => error
+       logger.error(message: error.message, class: error.class)
+
+       raise
+     end
+   end
+
+   # bad
+   def perform
+     each_sub_batch do |sub_batch|
+       sub_batch.update_all(name: 'My Name')
+     rescue Exception => error
+       logger.error(message: error.message, class: self.class.name)
+     end
+   end
+   ```
 
 ## Additional tips and strategies
 
@@ -768,7 +799,7 @@ To do that, you need to:
 
 #### 1. Find the batch `start_id` and `end_id`
 
-You should be able to find those in [Kibana][#viewing-failure-error-logs].
+You should be able to find those in [Kibana](#viewing-failure-error-logs).
 
 #### 2. Create a regular migration
 
@@ -809,7 +840,7 @@ index b8d1d21a0d2d2a23d9e8c8a0a17db98ed1ed40b7..912e20659a6919f771045178c6682856
 +++ b/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb
 @@ -55,7 +55,7 @@ def unmatched_schemas
          end
- 
+
          def allowed_schemas_for_connection
 -          Gitlab::Database.gitlab_schemas_for_connection(connection)
 +          Gitlab::Database.gitlab_schemas_for_connection(connection) << :gitlab_ci
@@ -828,7 +859,7 @@ index 4ae3622479f0800c0553959e132143ec9051898e..d556ec7f55adae9d46a56665ce02de78
 @@ -79,7 +79,7 @@ def restrict_to_dml_only(parsed)
              tables = self.dml_tables(parsed)
              schemas = self.dml_schemas(tables)
- 
+
 -            if (schemas - self.allowed_gitlab_schemas).any?
 +            if (schemas - (self.allowed_gitlab_schemas << :gitlab_ci)).any?
                raise DMLAccessDeniedError, \

@@ -1,15 +1,17 @@
 ---
 stage: Create
-group: Editor
+group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Web IDE Beta **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available.
 
 As announced in [this blog post](https://about.gitlab.com/blog/2022/05/23/the-future-of-the-gitlab-web-ide/),
 the current implementation of the [Web IDE](../web_ide/index.md) is being replaced
@@ -17,15 +19,6 @@ with an implementation powered by Visual Studio Code. This effort is still under
 development. For updates, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7683).
 
 To pair the Web IDE Beta with a Remote Development environment, see [Remote Development](../remote_development/index.md).
-
-## Enable the Web IDE Beta
-
-To use the Web IDE Beta on a self-managed GitLab instance,
-ensure that the `vscode_web_ide` feature flag
-[is enabled](../../../administration/feature_flags.md).
-
-On GitLab.com, this feature is available by default. However, you can
-[stop using it if you choose](#stop-using-the-web-ide-beta).
 
 ## Use the Web IDE Beta
 
@@ -54,6 +47,10 @@ To open the Web IDE Beta from a merge request:
 
 1. Go to your merge request.
 1. In the upper-right corner, select **Code > Open in Web IDE**.
+
+The Web IDE Beta opens new and modified files in separate tabs and displays changes side by side with the original source. To optimize loading time, only the top 10 files (by number of lines changed) are opened automatically.
+
+In the file tree, any new or modified file in the merge request is indicated by an icon next to the filename. To view changes to a file, right-click the filename and select **Compare with merge request base**.
 
 ## Open a file in the Web IDE Beta
 
@@ -99,10 +96,20 @@ Full file search is planned for a later date.
 ## View a list of changed files
 
 To view a list of files you changed in the Web IDE Beta,
-in the Activity Bar on the left, select **Source Control**.
+on the Activity Bar on the left, select **Source Control**.
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 
 For details, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
+
+## Commit changes
+
+To commit your changes in the Web IDE Beta:
+
+1. On the Activity Bar on the left, select **Source Control**,
+or press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. Enter your commit message.
+1. Select **Commit & Push**.
+1. Commit to the current branch, or create a new branch.
 
 ## Open the command palette
 
@@ -128,8 +135,3 @@ The [Web Terminal](../web_ide/index.md#interactive-web-terminals-for-the-web-ide
 and [Live Preview](../web_ide/index.md#live-preview-removed) are not available in the Web IDE Beta.
 
 These features might become available at a later date.
-
-## Related topics
-
-- [Remote Development](../remote_development/index.md)
-- [Web IDE](../web_ide/index.md)

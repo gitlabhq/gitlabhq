@@ -70,7 +70,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
 
       describe "GET /projects/:id/noteable/:noteable_id/notes" do
         context "current user cannot view the notes" do
-          it "returns an empty array" do
+          it "returns an empty array", :aggregate_failures do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -93,7 +93,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         end
 
         context "current user can view the note" do
-          it "returns a non-empty array" do
+          it "returns a non-empty array", :aggregate_failures do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", private_user)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -114,7 +114,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
           let(:test_url) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }
 
           shared_examples 'a notes request' do
-            it 'is a note array response' do
+            it 'is a note array response', :aggregate_failures do
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_an Array
@@ -164,7 +164,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
 
               it_behaves_like 'a notes request'
 
-              it "properly filters the returned notables" do
+              it "properly filters the returned notables", :aggregate_failures do
                 expect(json_response.count).to eq(count)
                 expect(json_response.first["system"]).to be system_notable
               end
@@ -195,7 +195,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
         end
 
         context "current user can view the note" do
-          it "returns an issue note by id" do
+          it "returns an issue note by id", :aggregate_failures do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", private_user)
 
             expect(response).to have_gitlab_http_status(:ok)

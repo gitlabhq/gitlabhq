@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ClustersController, feature_category: :kubernetes_management do
+RSpec.describe Admin::ClustersController, feature_category: :deployment_management do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
@@ -258,14 +258,6 @@ RSpec.describe Admin::ClustersController, feature_category: :kubernetes_manageme
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
-      end
-
-      it 'invokes schedule_status_update on each application' do
-        expect_next_instance_of(Clusters::Applications::Ingress) do |instance|
-          expect(instance).to receive(:schedule_status_update)
-        end
-
-        get_cluster_status
       end
     end
 

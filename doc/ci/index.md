@@ -2,7 +2,6 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
 type: index
 ---
@@ -47,7 +46,7 @@ GitLab CI/CD uses a number of concepts to describe and run your build and deploy
 | [Pipelines](pipelines/index.md)                         | Structure your CI/CD process through pipelines.                                       |
 | [CI/CD variables](variables/index.md)                   | Reuse values based on a variable/value key pair.                                      |
 | [Environments](environments/index.md)                   | Deploy your application to different environments (for example, staging, production). |
-| [Job artifacts](pipelines/job_artifacts.md)             | Output, use, and reuse job artifacts.                                                 |
+| [Job artifacts](jobs/job_artifacts.md)             | Output, use, and reuse job artifacts.                                                 |
 | [Cache dependencies](caching/index.md)                  | Cache your dependencies for a faster execution.                                       |
 | [GitLab Runner](https://docs.gitlab.com/runner/)        | Configure your own runners to execute your scripts.                                   |
 | [Pipeline efficiency](pipelines/pipeline_efficiency.md) | Configure your pipelines to run quickly and efficiently.                              |
@@ -96,7 +95,7 @@ GitLab CI/CD features, grouped by DevOps stage, include:
 | [Building Docker images](docker/using_docker_build.md)                                       | Maintain Docker-based projects using GitLab CI/CD. |
 | [Canary Deployments](../user/project/canary_deployments.md)                                  | Ship features to only a portion of your pods and let a percentage of your user base to visit the temporarily deployed feature. |
 | [Deploy boards](../user/project/deploy_boards.md)                                            | Check the current health and status of each CI/CD environment running on Kubernetes. |
-| [Feature Flags](../operations/feature_flags.md)                                              | Deploy your features behind Feature Flags. |
+| [Feature flags](../operations/feature_flags.md)                                              | Deploy your features behind Feature flags. |
 | [GitLab Pages](../user/project/pages/index.md)                                               | Deploy static websites. |
 | [GitLab Releases](../user/project/releases/index.md)                                         | Add release notes to Git tags. |
 | [Cloud deployment](cloud_deployment/index.md)                                                | Deploy your application to a main cloud provider. |
@@ -120,7 +119,7 @@ using GitLab CI/CD with various:
 
 You can change the default behavior of GitLab CI/CD for:
 
-- An entire GitLab instance in the [CI/CD administration settings](../administration/index.md#cicd-settings).
+- An entire GitLab instance in the [CI/CD administration settings](../administration/cicd.md).
 - Specific projects in the [pipelines settings](pipelines/settings.md).
 
 See also:
@@ -129,13 +128,13 @@ See also:
 
 ## Related topics
 
-- [Why you might choose GitLab CI/CD](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/).
-- [Reasons you might migrate from another platform](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/).
-- [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/).
+- [Why you might choose GitLab CI/CD](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/)
+- [Reasons you might migrate from another platform](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/)
+- [Five teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/)
 - If you use VS Code to edit your GitLab CI/CD configuration, the
   [GitLab Workflow VS Code extension](../user/project/repository/vscode.md) helps you
   [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
-  and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue).
+  and [view your pipeline status](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#information-about-your-branch-pipelines-mr-closing-issue)
 
 See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJaIOzCX4Vqg3dlwfELC3u2jEeCBbDk) presentation.
 

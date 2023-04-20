@@ -468,9 +468,62 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         FIELDS
       end
 
+      let_it_be(:valid_parent) { create(:work_item, project: project) }
+      let_it_be(:valid_child1) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
+      let_it_be(:valid_child2) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+      let(:input_base) { { parentId: valid_parent.to_gid.to_s } }
+      let(:child1_ref) { { adjacentWorkItemId: valid_child1.to_global_id.to_s } }
+      let(:child2_ref) { { adjacentWorkItemId: valid_child2.to_global_id.to_s } }
+      let(:relative_range) { [valid_child1, valid_child2].map(&:parent_link).map(&:relative_position) }
+
+      let(:invalid_relative_position_error) do
+        WorkItems::Widgets::HierarchyService::UpdateService::INVALID_RELATIVE_POSITION_ERROR
+      end
+
+      shared_examples 'updates work item parent and sets the relative position' do
+        it do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to change(work_item, :work_item_parent).from(nil).to(valid_parent)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(widgets_response).to include({ 'type' => 'HIERARCHY', 'children' => { 'edges' => [] },
+            'parent' => { 'id' => valid_parent.to_global_id.to_s } })
+
+          expect(work_item.parent_link.relative_position).to be_between(*relative_range)
+        end
+      end
+
+      shared_examples 'sets the relative position and does not update work item parent' do
+        it do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to not_change(work_item, :work_item_parent)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(widgets_response).to include({ 'type' => 'HIERARCHY', 'children' => { 'edges' => [] },
+            'parent' => { 'id' => valid_parent.to_global_id.to_s } })
+
+          expect(work_item.parent_link.relative_position).to be_between(*relative_range)
+        end
+      end
+
+      shared_examples 'returns "relative position is not valid" error message' do
+        it do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to not_change(work_item, :work_item_parent)
+
+          expect(mutation_response['workItem']).to be_nil
+          expect(mutation_response['errors']).to match_array([invalid_relative_position_error])
+        end
+      end
+
       context 'when updating parent' do
         let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
-        let_it_be(:valid_parent) { create(:work_item, project: project) }
         let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
         context 'when parent work item type is invalid' do
@@ -493,20 +546,15 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         context 'when parent work item has a valid type' do
           let(:input) { { 'hierarchyWidget' => { 'parentId' => valid_parent.to_global_id.to_s } } }
 
-          it 'sets the parent for the work item' do
+          it 'updates work item parent' do
             expect do
               post_graphql_mutation(mutation, current_user: current_user)
               work_item.reload
             end.to change(work_item, :work_item_parent).from(nil).to(valid_parent)
 
             expect(response).to have_gitlab_http_status(:success)
-            expect(widgets_response).to include(
-              {
-                'children' => { 'edges' => [] },
-                'parent' => { 'id' => valid_parent.to_global_id.to_s },
-                'type' => 'HIERARCHY'
-              }
-            )
+            expect(widgets_response).to include({ 'type' => 'HIERARCHY', 'children' => { 'edges' => [] },
+              'parent' => { 'id' => valid_parent.to_global_id.to_s } })
           end
 
           context 'when a parent is already present' do
@@ -521,6 +569,31 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 post_graphql_mutation(mutation, current_user: current_user)
                 work_item.reload
               end.to change(work_item, :work_item_parent).from(existing_parent).to(valid_parent)
+            end
+          end
+
+          context 'when updating relative position' do
+            before(:all) do
+              create(:parent_link, work_item_parent: valid_parent, work_item: valid_child1)
+              create(:parent_link, work_item_parent: valid_parent, work_item: valid_child2)
+            end
+
+            context "when incomplete positioning arguments are given" do
+              let(:input) { { hierarchyWidget: input_base.merge(child1_ref) } }
+
+              it_behaves_like 'returns "relative position is not valid" error message'
+            end
+
+            context 'when moving after adjacent' do
+              let(:input) { { hierarchyWidget: input_base.merge(child1_ref).merge(relativePosition: 'AFTER') } }
+
+              it_behaves_like 'updates work item parent and sets the relative position'
+            end
+
+            context 'when moving before adjacent' do
+              let(:input) { { hierarchyWidget: input_base.merge(child2_ref).merge(relativePosition: 'BEFORE') } }
+
+              it_behaves_like 'updates work item parent and sets the relative position'
             end
           end
         end
@@ -578,9 +651,37 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
       end
 
+      context 'when reordering existing child' do
+        let_it_be(:work_item, reload: true) { create(:work_item, :task, project: project) }
+
+        context "when parent is already assigned" do
+          before(:all) do
+            create(:parent_link, work_item_parent: valid_parent, work_item: work_item)
+            create(:parent_link, work_item_parent: valid_parent, work_item: valid_child1)
+            create(:parent_link, work_item_parent: valid_parent, work_item: valid_child2)
+          end
+
+          context "when incomplete positioning arguments are given" do
+            let(:input) { { hierarchyWidget: child1_ref } }
+
+            it_behaves_like 'returns "relative position is not valid" error message'
+          end
+
+          context 'when moving after adjacent' do
+            let(:input) { { hierarchyWidget: child1_ref.merge(relativePosition: 'AFTER') } }
+
+            it_behaves_like 'sets the relative position and does not update work item parent'
+          end
+
+          context 'when moving before adjacent' do
+            let(:input) { { hierarchyWidget: child2_ref.merge(relativePosition: 'BEFORE') } }
+
+            it_behaves_like 'sets the relative position and does not update work item parent'
+          end
+        end
+      end
+
       context 'when updating children' do
-        let_it_be(:valid_child1) { create(:work_item, :task, project: project) }
-        let_it_be(:valid_child2) { create(:work_item, :task, project: project) }
         let_it_be(:invalid_child) { create(:work_item, project: project) }
 
         let(:input) { { 'hierarchyWidget' => { 'childrenIds' => children_ids } } }
@@ -978,18 +1079,293 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
+    context 'when updating currentUserTodos' do
+      let_it_be(:current_user) { reporter }
+
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetCurrentUserTodos {
+              currentUserTodos {
+                nodes {
+                  id
+                  state
+                }
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
+      end
+
+      subject(:update_work_item) { post_graphql_mutation(mutation, current_user: current_user) }
+
+      context 'when adding a new todo' do
+        let(:input) { { 'currentUserTodosWidget' => { 'action' => 'ADD' } } }
+
+        context 'when user has access to the work item' do
+          it 'adds a new todo for the user on the work item' do
+            expect { update_work_item }.to change { current_user.todos.count }.by(1)
+
+            created_todo = current_user.todos.last
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'type' => 'CURRENT_USER_TODOS',
+                'currentUserTodos' => {
+                  'nodes' => [
+                    { 'id' => created_todo.to_global_id.to_s, 'state' => 'pending' }
+                  ]
+                }
+              }
+            )
+          end
+        end
+
+        context 'when user has no access' do
+          let_it_be(:current_user) { create(:user) }
+
+          it 'does not create a new todo' do
+            expect { update_work_item }.to change { Todo.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+
+      context 'when marking all todos of the work item as done' do
+        let_it_be(:pending_todo1) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let_it_be(:pending_todo2) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let(:input) { { 'currentUserTodosWidget' => { 'action' => 'MARK_AS_DONE' } } }
+
+        context 'when user has access' do
+          it 'marks all todos of the user on the work item as done' do
+            expect { update_work_item }.to change { current_user.todos.done.count }.by(2)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'type' => 'CURRENT_USER_TODOS',
+                'currentUserTodos' => {
+                  'nodes' => match_array([
+                    { 'id' => pending_todo1.to_global_id.to_s, 'state' => 'done' },
+                    { 'id' => pending_todo2.to_global_id.to_s, 'state' => 'done' }
+                  ])
+                }
+              }
+            )
+          end
+        end
+
+        context 'when user has no access' do
+          let_it_be(:current_user) { create(:user) }
+
+          it 'does not mark todos as done' do
+            expect { update_work_item }.to change { Todo.done.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+
+      context 'when marking one todo of the work item as done' do
+        let_it_be(:pending_todo1) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let_it_be(:pending_todo2) do
+          create(:todo, target: work_item, target_type: 'WorkItem', user: current_user, state: :pending)
+        end
+
+        let(:input) do
+          { 'currentUserTodosWidget' => { 'action' => 'MARK_AS_DONE', todo_id: global_id_of(pending_todo1) } }
+        end
+
+        context 'when user has access' do
+          it 'marks the todo of the work item as done' do
+            expect { update_work_item }.to change { current_user.todos.done.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'type' => 'CURRENT_USER_TODOS',
+                'currentUserTodos' => {
+                  'nodes' => match_array([
+                    { 'id' => pending_todo1.to_global_id.to_s, 'state' => 'done' },
+                    { 'id' => pending_todo2.to_global_id.to_s, 'state' => 'pending' }
+                  ])
+                }
+              }
+            )
+          end
+        end
+
+        context 'when user has no access' do
+          let_it_be(:current_user) { create(:user) }
+
+          it 'does not mark the todo as done' do
+            expect { update_work_item }.to change { Todo.done.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:success)
+          end
+        end
+      end
+    end
+
+    context 'when updating awardEmoji' do
+      let_it_be(:current_user) { work_item.author }
+      let_it_be(:upvote) { create(:award_emoji, :upvote, awardable: work_item, user: current_user) }
+      let(:award_action) { 'ADD' }
+      let(:award_name) { 'star' }
+      let(:input) { { 'awardEmojiWidget' => { 'action' => award_action, 'name' => award_name } } }
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetAwardEmoji {
+                upvotes
+                downvotes
+                awardEmoji {
+                  nodes {
+                    name
+                    user { id }
+                  }
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      subject(:update_work_item) { post_graphql_mutation(mutation, current_user: current_user) }
+
+      context 'when user cannot award work item' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?)
+                        .with(current_user, :award_emoji, work_item).and_return(false)
+        end
+
+        it 'ignores the update request' do
+          expect do
+            update_work_item
+          end.to not_change(AwardEmoji, :count)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['errors']).to be_empty
+          expect(graphql_errors).to be_blank
+        end
+      end
+
+      context 'when user can award work item' do
+        shared_examples 'request with error' do |message|
+          it 'ignores update and returns an error' do
+            expect do
+              update_work_item
+            end.not_to change(AwardEmoji, :count)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']).to be_nil
+            expect(mutation_response['errors'].first).to include(message)
+          end
+        end
+
+        shared_examples 'request that removes emoji' do
+          it "updates work item's award emoji" do
+            expect do
+              update_work_item
+            end.to change(AwardEmoji, :count).by(-1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'upvotes' => 0,
+                'downvotes' => 0,
+                'awardEmoji' => { 'nodes' => [] },
+                'type' => 'AWARD_EMOJI'
+              }
+            )
+          end
+        end
+
+        shared_examples 'request that adds emoji' do
+          it "updates work item's award emoji" do
+            expect do
+              update_work_item
+            end.to change(AwardEmoji, :count).by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'upvotes' => 1,
+                'downvotes' => 0,
+                'awardEmoji' => { 'nodes' => [
+                  { 'name' => 'thumbsup', 'user' => { 'id' => current_user.to_gid.to_s } },
+                  { 'name' => award_name, 'user' => { 'id' => current_user.to_gid.to_s } }
+                ] },
+                'type' => 'AWARD_EMOJI'
+              }
+            )
+          end
+        end
+
+        context 'when adding award emoji' do
+          it_behaves_like 'request that adds emoji'
+
+          context 'when the emoji name is not valid' do
+            let(:award_name) { 'xxqq' }
+
+            it_behaves_like 'request with error', 'Name is not a valid emoji name'
+          end
+        end
+
+        context 'when removing award emoji' do
+          let(:award_action) { 'REMOVE' }
+
+          context 'when emoji was awarded by current user' do
+            let(:award_name) { 'thumbsup' }
+
+            it_behaves_like 'request that removes emoji'
+          end
+
+          context 'when emoji was awarded by a different user' do
+            let(:award_name) { 'thumbsdown' }
+
+            before do
+              create(:award_emoji, :downvote, awardable: work_item)
+            end
+
+            it_behaves_like 'request with error',
+              'User has not awarded emoji of type thumbsdown on the awardable'
+          end
+        end
+      end
+    end
+
     context 'when unsupported widget input is sent' do
-      let_it_be(:test_case) { create(:work_item_type, :default, :test_case) }
-      let_it_be(:work_item) { create(:work_item, work_item_type: test_case, project: project) }
+      let_it_be(:work_item) { create(:work_item, :incident, project: project) }
 
       let(:input) do
         {
-          'hierarchyWidget' => {}
+          'assigneesWidget' => { 'assigneeIds' => [developer.to_gid.to_s] }
         }
       end
 
       it_behaves_like 'a mutation that returns top-level errors',
-        errors: ["Following widget keys are not supported by Test Case type: [:hierarchy_widget]"]
+        errors: ["Following widget keys are not supported by Incident type: [:assignees_widget]"]
     end
   end
 end

@@ -102,8 +102,9 @@ Keep in mind that restricting group access by IP address has the following impli
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users might still see some events from the IP-restricted groups and projects on their dashboard. Activity might include
   push, merge, issue, or comment events.
-- IP access restrictions for Git operations via SSH are supported only on GitLab SaaS.
-  IP access restrictions applied to self-managed instances block SSH completely.
+- IP access restrictions for Git operations via SSH are supported on GitLab SaaS.
+  IP access restrictions applied to self-managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
+  with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
 
 ## Restrict group access by domain **(PREMIUM)**
 

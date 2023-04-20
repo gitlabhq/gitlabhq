@@ -145,7 +145,7 @@ describe('ProjectNamespace component', () => {
       await nextTick();
     });
 
-    it('creates an alert message and captures the error', () => {
+    it('creates an alert and captures the error', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'Something went wrong while loading data. Please refresh the page to try again.',
         captureError: true,

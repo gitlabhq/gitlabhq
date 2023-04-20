@@ -14,6 +14,7 @@ import Poll from '~/lib/utils/poll';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -95,10 +96,10 @@ export default {
       required: false,
       default: '',
     },
-    initialTaskStatus: {
-      type: String,
+    initialTaskCompletionStatus: {
+      type: Object,
       required: false,
-      default: '',
+      default: () => ({}),
     },
     updatedAt: {
       type: String,
@@ -197,7 +198,7 @@ export default {
       updatedAt: this.updatedAt,
       updatedByName: this.updatedByName,
       updatedByPath: this.updatedByPath,
-      taskStatus: this.initialTaskStatus,
+      taskCompletionStatus: this.initialTaskCompletionStatus,
       lock_version: this.lockVersion,
     });
 
@@ -221,9 +222,6 @@ export default {
     },
     formState() {
       return this.store.formState;
-    },
-    hasUpdated() {
-      return Boolean(this.state.updatedAt);
     },
     issueChanged() {
       const {
@@ -379,7 +377,7 @@ export default {
       this.showForm = false;
     },
 
-    updateIssuable() {
+    async updateIssuable() {
       this.setFormState({ updateLoading: true });
 
       const {
@@ -391,6 +389,14 @@ export default {
         : formState;
 
       this.alert?.dismiss();
+
+      if (containsSensitiveToken(issuablePayload.description)) {
+        const confirmed = await confirmSensitiveAction(i18n.descriptionPrompt);
+        if (!confirmed) {
+          this.setFormState({ updateLoading: false });
+          return false;
+        }
+      }
 
       return this.service
         .updateIssuable(issuablePayload)
@@ -557,7 +563,6 @@ export default {
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
-        :task-status="state.taskStatus"
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
@@ -570,7 +575,7 @@ export default {
       />
 
       <edited-component
-        v-if="hasUpdated"
+        :task-completion-status="state.taskCompletionStatus"
         :updated-at="state.updatedAt"
         :updated-by-name="state.updatedByName"
         :updated-by-path="state.updatedByPath"

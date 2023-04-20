@@ -6,7 +6,6 @@ description: Total active and online Shared (Instance) Runners
 product_section: ops
 product_stage: verify
 product_group: pipeline_execution
-product_category: continuous_integration
 value_type: number
 status: active
 milestone: "13.12"

@@ -273,10 +273,10 @@ PUT /runners/:id
 | `id`              | integer | yes      | The ID of a runner                                                                              |
 | `description`     | string  | no       | The description of the runner                                                                   |
 | `active`          | boolean | no       | Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs |
-| `paused`          | boolean | no       | Specifies whether the runner should ignore new jobs                                             |
+| `paused`          | boolean | no       | Specifies if the runner should ignore new jobs                                             |
 | `tag_list`        | array   | no       | The list of tags for the runner                                                                 |
-| `run_untagged`    | boolean | no       | Specifies whether the runner can execute untagged jobs                                          |
-| `locked`          | boolean | no       | Specifies whether the runner is locked                                                          |
+| `run_untagged`    | boolean | no       | Specifies if the runner can execute untagged jobs                                          |
+| `locked`          | boolean | no       | Specifies if the runner is locked                                                          |
 | `access_level`    | string  | no       | The access level of the runner; `not_protected` or `ref_protected`                              |
 | `maximum_timeout` | integer | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs           |
 
@@ -656,20 +656,20 @@ Register a new runner for the instance.
 POST /runners
 ```
 
-| Attribute          | Type         | Required | Description                                                                                                                                                   |
-|--------------------|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens) |
-| `description`      | string       | no       | Runner's description |
+| Attribute          | Type         | Required | Description                                                                                                                                                                                    |
+|--------------------|--------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                                                  |
+| `description`      | string       | no       | Description of the runner                                                                                                                                                                      |
 | `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version`, `platform`, and `architecture` are displayed in the Admin Area of the UI |
-| `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies whether the runner is allowed to receive new jobs |
-| `paused`           | boolean      | no       | Specifies whether the runner should ignore new jobs |
-| `locked`           | boolean      | no       | Specifies whether the runner should be locked for the current project |
-| `run_untagged`     | boolean      | no       | Specifies whether the runner should handle untagged jobs |
-| `tag_list`         | string array | no       | A list of runner tags |
-| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected` |
-| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs |
-| `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note` |
-| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters) |
+| `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies if the runner is allowed to receive new jobs                                                                                                       |
+| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs                                                                                                                                                 |
+| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project                                                                                                                               |
+| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs                                                                                                                                            |
+| `tag_list`         | string array | no       | A list of runner tags                                                                                                                                                                          |
+| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`                                                                                                                             |
+| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs                                                                                                          |
+| `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note`                                                                                                     |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters)                                                                                                                                   |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" \
@@ -774,7 +774,7 @@ Example response:
 }
 ```
 
-## Reset instance's runner registration token
+## Reset instance's runner registration token (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
@@ -793,7 +793,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/runners/reset_registration_token"
 ```
 
-## Reset project's runner registration token
+## Reset project's runner registration token (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.
@@ -812,7 +812,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/9/runners/reset_registration_token"
 ```
 
-## Reset group's runner registration token
+## Reset group's runner registration token (deprecated)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104691) in GitLab 15.7.

@@ -1,13 +1,13 @@
-/* eslint-disable @gitlab/require-i18n-strings */
+const category = 'Error Tracking'; // eslint-disable-line @gitlab/require-i18n-strings
 
 /**
  * Tracks snowplow event when User clicks on error link to Sentry
  * @param {String}  externalUrl that will be send as a property for the event
  */
 export const trackClickErrorLinkToSentryOptions = (url) => ({
-  category: 'Error Tracking',
+  category,
   action: 'click_error_link_to_sentry',
-  label: 'Error Link',
+  label: 'Error Link', // eslint-disable-line @gitlab/require-i18n-strings
   property: url,
 });
 
@@ -15,7 +15,7 @@ export const trackClickErrorLinkToSentryOptions = (url) => ({
  * Tracks snowplow event when user views error list
  */
 export const trackErrorListViewsOptions = {
-  category: 'Error Tracking',
+  category,
   action: 'view_errors_list',
 };
 
@@ -23,7 +23,7 @@ export const trackErrorListViewsOptions = {
  * Tracks snowplow event when user views error details
  */
 export const trackErrorDetailsViewsOptions = {
-  category: 'Error Tracking',
+  category,
   action: 'view_error_details',
 };
 
@@ -31,6 +31,6 @@ export const trackErrorDetailsViewsOptions = {
  * Tracks snowplow event when error status is updated
  */
 export const trackErrorStatusUpdateOptions = (status) => ({
-  category: 'Error Tracking',
+  category,
   action: `update_${status}_status`,
 });

@@ -31,6 +31,8 @@ class Packages::Package < ApplicationRecord
   belongs_to :project
   belongs_to :creator, class_name: 'User'
 
+  after_create_commit :publish_creation_event, if: :generic?
+
   # package_files must be destroyed by ruby code in order to properly remove carrierwave uploads and update project statistics
   has_many :package_files, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   # TODO: put the installable default scope on the :package_files association once the dependent: :destroy is removed
@@ -70,9 +72,8 @@ class Packages::Package < ApplicationRecord
               scope: %i[project_id version package_type],
               conditions: -> { not_pending_destruction }
             },
-            unless: -> { pending_destruction? || conan? || debian_package? }
+            unless: -> { pending_destruction? || conan? }
 
-  validate :unique_debian_package_name, if: :debian_package?
   validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
   validate :npm_package_already_taken, if: :npm?
@@ -84,7 +85,7 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
-  validates :name, inclusion: { in: %w[incoming] }, if: :debian_incoming?
+  validates :name, inclusion: { in: [Packages::Debian::INCOMING_PACKAGE_NAME] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
@@ -222,6 +223,12 @@ class Packages::Package < ApplicationRecord
     find_by!(name: name, version: version)
   end
 
+  def self.existing_debian_packages_with(name:, version:)
+    debian.with_name(name)
+          .with_version(version)
+          .not_pending_destruction
+  end
+
   def self.pluck_names
     pluck(:name)
   end
@@ -353,6 +360,18 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  def publish_creation_event
+    ::Gitlab::EventStore.publish(
+      ::Packages::PackageCreatedEvent.new(data: {
+        project_id: project_id,
+        id: id,
+        name: name,
+        version: version,
+        package_type: package_type
+      })
+    )
+  end
+
   private
 
   def composer_tag_version?
@@ -402,19 +421,6 @@ class Packages::Package < ApplicationRecord
     return false unless project&.root_namespace&.path
 
     project.root_namespace.path == ::Packages::Npm.scope_of(name)
-  end
-
-  def unique_debian_package_name
-    return unless debian_publication&.distribution
-
-    package_exists = debian_publication.distribution.packages
-                            .with_name(name)
-                            .with_version(version)
-                            .not_pending_destruction
-                            .id_not_in(id)
-                            .exists?
-
-    errors.add(:base, _('Debian package already exists in Distribution')) if package_exists
   end
 
   def forbidden_debian_changes

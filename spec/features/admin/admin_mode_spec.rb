@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Admin mode', :js, feature_category: :shared do
   include MobileHelpers
-  include Spec::Support::Helpers::Features::TopNavSpecHelpers
+  include Features::TopNavSpecHelpers
   include StubENV
 
   let(:admin) { create(:admin) }

@@ -27,6 +27,11 @@ ifeq (${FIPS_MODE}, 1)
     # If the golang-fips compiler is built with CGO_ENABLED=0, this needs to be
     # explicitly switched on.
     export CGO_ENABLED=1
+    # Go 1.19+ now requires GOEXPERIMENT=boringcrypto for FIPS compilation.
+    # See https://github.com/golang/go/issues/51940 for more details.
+    ifeq ($(shell GOEXPERIMENT=boringcrypto go version > /dev/null 2>&1; echo $$?), 0)
+      export GOEXPERIMENT=boringcrypto
+    endif
 endif
 
 MINIMUM_SUPPORTED_GO_VERSION := 1.11

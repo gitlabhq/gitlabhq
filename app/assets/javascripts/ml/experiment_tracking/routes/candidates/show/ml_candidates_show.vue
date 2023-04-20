@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import {
   TITLE_LABEL,
   INFO_LABEL,
@@ -12,12 +13,16 @@ import {
   PARAMETERS_LABEL,
   METRICS_LABEL,
   METADATA_LABEL,
+  DELETE_CANDIDATE_CONFIRMATION_MESSAGE,
+  DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
+  DELETE_CANDIDATE_MODAL_TITLE,
 } from './translations';
 
 export default {
   name: 'MlCandidatesShow',
   components: {
     IncubationAlert,
+    DeleteButton,
     GlLink,
   },
   props: {
@@ -36,6 +41,9 @@ export default {
     PARAMETERS_LABEL,
     METRICS_LABEL,
     METADATA_LABEL,
+    DELETE_CANDIDATE_CONFIRMATION_MESSAGE,
+    DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
+    DELETE_CANDIDATE_MODAL_TITLE,
   },
   computed: {
     sections() {
@@ -67,11 +75,22 @@ export default {
       :link-to-feedback-issue="$options.FEATURE_FEEDBACK_ISSUE"
     />
 
-    <h3>
-      {{ $options.i18n.TITLE_LABEL }}
-    </h3>
+    <div class="detail-page-header gl-flex-wrap">
+      <div class="detail-page-header-body">
+        <h1 class="page-title gl-font-size-h-display flex-fill">
+          {{ $options.i18n.TITLE_LABEL }}
+        </h1>
 
-    <table class="candidate-details">
+        <delete-button
+          :delete-path="candidate.info.path"
+          :delete-confirmation-text="$options.i18n.DELETE_CANDIDATE_CONFIRMATION_MESSAGE"
+          :action-primary-text="$options.i18n.DELETE_CANDIDATE_PRIMARY_ACTION_LABEL"
+          :modal-title="$options.i18n.DELETE_CANDIDATE_MODAL_TITLE"
+        />
+      </div>
+    </div>
+
+    <table class="candidate-details gl-w-full">
       <tbody>
         <tr class="divider"></tr>
 

@@ -10,19 +10,19 @@
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
 
-  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref } }
+  #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
-#blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }
+- if project.forked?
+  #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
+
+#blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   - if @code_navigation_path
     #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
   - if !expanded
     -# Data info will be removed once we migrate this to use GraphQL
     -# Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/330406
-    #js-view-blob-app{ data: { blob_path: blob.path,
-                              project_path: @project.full_path,
-                              target_branch: project.empty_repo? ? ref : @ref,
-                              original_branch: @ref } }
+    #js-view-blob-app{ data: vue_blob_app_data(project, blob, ref) }
       = gl_loading_icon(size: 'md')
   - else
     %article.file-holder

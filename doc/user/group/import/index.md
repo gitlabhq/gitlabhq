@@ -40,7 +40,7 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
 - In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
-- Copy groups with projects (in [beta](../../../policy/alpha-beta-support.md#beta-features) and not ready for production
+- Copy groups with projects (in [Beta](../../../policy/alpha-beta-support.md#beta) and not ready for production
   use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.
 
@@ -50,7 +50,7 @@ Not all group and project resources are copied. See list of copied resources bel
 - [Migrated project items](#migrated-project-items-beta).
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not
+Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta). This feature is not
 ready for production use.
 
 We invite you to leave your feedback about migrating by direct transfer in
@@ -122,7 +122,7 @@ To ensure GitLab maps users and their contributions correctly:
 1. Ensure that users have a public email on the source GitLab instance that matches any confirmed email address on the destination GitLab instance. Most
    users receive an email asking them to confirm their email address.
 1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), all users must
-   [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
+   [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### Connect the source GitLab instance
 
@@ -137,7 +137,7 @@ Create the group you want to import to and connect the source GitLab instance:
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
-### Select the groups to import
+### Select the groups and projects to import
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
 
@@ -153,7 +153,7 @@ role.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/alpha-beta-support.md#beta-features). This feature is not
+Importing groups with projects is in [Beta](../../../policy/alpha-beta-support.md#beta). This feature is not
 ready for production use.
 
 ### Group import history
@@ -220,11 +220,15 @@ Group items that are migrated to the destination GitLab instance include:
    - Already exists in the destination GitLab instance.
    - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
 
-### Migrated project items (beta)
+### Migrated project items (Beta)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
+> - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+
+If you choose to migrate projects when you [select groups to migrate](#select-the-groups-and-projects-to-import),
+project items are migrated with the projects.
 
 The project items that are migrated depends on the version of GitLab you use on the destination. To determine if a
 specific project item is migrated:
@@ -243,8 +247,11 @@ specific project item is migrated:
 
 Any other project items are **not** migrated.
 
+If you choose not to migrate projects along with groups or if you want to retry a project migration, you can
+initiate project-only migrations using the [API](../../../api/bulk_imports.md).
+
 WARNING:
-Migrating projects when migrating groups by direct transfer is in [beta](../../../policy/alpha-beta-support.md#beta-features)
+Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/alpha-beta-support.md#beta)
 and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:
@@ -256,6 +263,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Badges                                  | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) |
 | Branches (including protected branches) | [GitLab 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/339414)        |
 | CI Pipelines                            | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339407)        |
+| Commit comments                         | [GitLab 15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/391601)       |
 | Designs                                 | [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/339421)        |
 | Issues                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
 | Issue boards                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) |
@@ -344,7 +352,7 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 ```
 
 You can also see all migrated entities with any failures related to them using an
-[API endpoint](../../../api/bulk_imports.md#list-all-group-migrations-entities).
+[API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
 
 #### Stale imports
 
@@ -429,13 +437,11 @@ Note the following:
 
 ### Compatibility
 
-Group file exports are in NDJSON format. GitLab previously produced group file exports in JSON format, however:
+> Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
 
-- From GitLab 15.8, GitLab no longer supports importing a JSON-formatted group file export.
-- Between GitLab 14.0 and GitLab 14.7, GitLab no longer produces group file exports in JSON format but, to support
-  transitions, can still import JSON-formatted group file exports.
+Group file exports are in NDJSON format.
 
-From GitLab 13.0, GitLab can import group file exports that were exported from a version of GitLab up to two
+You can import group file exports that were exported from a version of GitLab up to two
 [minor](../../../policy/maintenance.md#versioning) versions behind, which is similar to our process for
 [security releases](../../../policy/maintenance.md#security-releases).
 

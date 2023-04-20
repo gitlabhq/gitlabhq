@@ -809,6 +809,107 @@ Example response:
 
 - CustomersDot
 
+## Storage limit exclusions
+
+The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.
+These endpoints can only be consumed in the Admin Area of GitLab.com.
+
+### Retrieve storage limit exclusions
+
+Use a GET request to retrieve all `Namespaces::Storage::LimitExclusion` records.
+
+```plaintext
+GET /namespaces/storage/limit_exclusions
+```
+
+Example request:
+
+```shell
+curl --request GET \
+  --url "https://gitlab.com/v4/namespaces/storage/limit_exclusions" \
+  --header 'PRIVATE-TOKEN: <admin access token>' 
+```
+
+Example response:
+
+```json
+[
+    {
+      "id": 1,
+      "namespace_id": 1234,
+      "namespace_name": "A Namespace Name",
+      "reason": "a reason to exclude the Namespace"
+    },
+    {
+      "id": 2,
+      "namespace_id": 4321,
+      "namespace_name": "Another Namespace Name",
+      "reason": "another reason to exclude the Namespace"
+    },
+]
+```
+
+### Create a storage limit exclusion
+
+Use a POST request to create an `Namespaces::Storage::LimitExclusion`.
+
+```plaintext
+POST /namespaces/:id/storage/limit_exclusion
+```
+
+| Attribute   | Type    | Required | Description |
+|:------------|:--------|:---------|:------------|
+| `reason`    | string  | yes      | The reason to exclude the namespace. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --url "https://gitlab.com/v4/namespaces/123/storage/limit_exclusion" \
+  --header 'Content-Type: application/json' \
+  --header 'PRIVATE-TOKEN: <admin access token>' \
+  --data '{
+    "reason": "a reason to exclude the Namespace"
+  }'
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "namespace_id": 1234,
+  "namespace_name": "A Namespace Name",
+  "reason": "a reason to exclude the Namespace"
+}
+```
+
+### Delete a storage limit exclusion
+
+Use a DELETE request to delete a `Namespaces::Storage::LimitExclusion` for a namespace.
+
+```plaintext
+DELETE /namespaces/:id/storage/limit_exclusion
+```
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "https://gitlab.com/v4/namespaces/123/storage/limit_exclusion" \
+  --header 'PRIVATE-TOKEN: <admin access token>'
+```
+
+Example response:
+
+```plaintext
+204
+```
+
+### Known consumers
+
+- GitLab.com Admin Area
+
 ## CI/CD minutes provisioning
 
 The CI/CD Minutes endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)

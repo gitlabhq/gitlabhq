@@ -78,30 +78,6 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
           end
         RUBY
       end
-
-      context 'for migrations before 2021_09_10_00_00_00' do
-        it 'when limit: attribute is used (which is not supported yet for this version): registers an offense' do
-          allow(cop).to receive(:version).and_return(described_class::TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE - 5)
-
-          expect_offense(<<~RUBY)
-            class TestTextLimits < ActiveRecord::Migration[6.0]
-              def up
-                create_table :test_text_limit_attribute do |t|
-                  t.integer :test_id, null: false
-                  t.text :name, limit: 100
-                    ^^^^ Text columns should always have a limit set (255 is suggested). Using limit: is not supported in this version. You can add a limit to a `text` column by using `add_text_limit` or `.text_limit` inside `create_table`
-                end
-
-                create_table_with_constraints :test_text_limit_attribute do |t|
-                  t.integer :test_id, null: false
-                  t.text :name, limit: 100
-                    ^^^^ Text columns should always have a limit set (255 is suggested). Using limit: is not supported in this version. You can add a limit to a `text` column by using `add_text_limit` or `.text_limit` inside `create_table`
-                end
-              end
-            end
-          RUBY
-        end
-      end
     end
 
     context 'when text array columns are defined without a limit' do

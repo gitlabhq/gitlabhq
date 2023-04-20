@@ -1,23 +1,15 @@
 <script>
-import { GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
+import { GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
 import { ALL_GITLAB } from '~/vue_shared/global_search/constants';
 
 export default {
-  name: 'HeaderSearchDefaultItems',
+  name: 'GlobalSearchDefaultItems',
   i18n: {
     ALL_GITLAB,
   },
   components: {
-    GlDropdownSectionHeader,
-    GlDropdownItem,
-  },
-  props: {
-    currentFocusedOption: {
-      type: Object,
-      required: false,
-      default: () => null,
-    },
+    GlDisclosureDropdownGroup,
   },
   computed: {
     ...mapState(['searchContext']),
@@ -29,30 +21,18 @@ export default {
         this.$options.i18n.ALL_GITLAB
       );
     },
-  },
-  methods: {
-    isOptionFocused(option) {
-      return this.currentFocusedOption?.html_id === option.html_id;
+    defaultItemsGroup() {
+      return {
+        name: this.sectionHeader,
+        items: this.defaultSearchOptions,
+      };
     },
   },
 };
 </script>
 
 <template>
-  <div>
-    <gl-dropdown-section-header>{{ sectionHeader }}</gl-dropdown-section-header>
-    <gl-dropdown-item
-      v-for="option in defaultSearchOptions"
-      :id="option.html_id"
-      :ref="option.html_id"
-      :key="option.html_id"
-      :class="{ 'gl-bg-gray-50': isOptionFocused(option) }"
-      :aria-selected="isOptionFocused(option)"
-      :aria-label="option.title"
-      tabindex="-1"
-      :href="option.url"
-    >
-      <span aria-hidden="true">{{ option.title }}</span>
-    </gl-dropdown-item>
-  </div>
+  <ul class="gl-p-0 gl-m-0 gl-list-style-none">
+    <gl-disclosure-dropdown-group :group="defaultItemsGroup" bordered class="gl-mt-0!" />
+  </ul>
 </template>

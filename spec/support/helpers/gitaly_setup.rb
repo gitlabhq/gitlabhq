@@ -10,7 +10,6 @@ require 'securerandom'
 require 'socket'
 require 'logger'
 require 'fileutils'
-require 'bundler'
 
 require_relative '../../../lib/gitlab/utils'
 
@@ -50,49 +49,16 @@ module GitalySetup
     expand_path('.gitlab_shell_secret')
   end
 
-  def gemfile
-    File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile')
-  end
-
-  def gemfile_dir
-    File.dirname(gemfile)
-  end
-
   def gitlab_shell_secret_file
     File.join(tmp_tests_gitlab_shell_dir, '.gitlab_shell_secret')
   end
 
   def env
     {
-      'GEM_PATH' => Gem.path.join(':'),
-      'BUNDLER_SETUP' => nil,
-      'BUNDLE_INSTALL_FLAGS' => nil,
-      'BUNDLE_IGNORE_CONFIG' => '1',
-      'BUNDLE_PATH' => bundle_path,
-      'BUNDLE_GEMFILE' => gemfile,
-      'BUNDLE_JOBS' => '4',
-      'BUNDLE_RETRY' => '3',
-      'RUBYOPT' => nil,
-
       # Git hooks can't run during tests as the internal API is not running.
       'GITALY_TESTING_NO_GIT_HOOKS' => "1",
       'GITALY_TESTING_ENABLE_ALL_FEATURE_FLAGS' => "true"
     }
-  end
-
-  def bundle_path
-    # Allow the user to override BUNDLE_PATH if they need to
-    return ENV['GITALY_TEST_BUNDLE_PATH'] if ENV['GITALY_TEST_BUNDLE_PATH']
-
-    if ENV['CI']
-      expand_path('vendor/gitaly-ruby')
-    else
-      explicit_path = Bundler.configured_bundle_path.explicit_path
-
-      return unless explicit_path
-
-      expand_path(explicit_path)
-    end
   end
 
   def config_path(service)
@@ -123,10 +89,6 @@ module GitalySetup
 
   def run_command(cmd, env: {})
     system(env, *cmd, exception: true, chdir: tmp_tests_gitaly_dir)
-  end
-
-  def install_gitaly_gems
-    run_command(%W[make #{tmp_tests_gitaly_dir}/.ruby-bundle], env: env)
   end
 
   def build_gitaly
@@ -186,35 +148,6 @@ module GitalySetup
     unless File.exist?(shell_link)
       FileUtils.ln_s(secret_file, shell_link)
     end
-  end
-
-  def check_gitaly_config!
-    LOGGER.debug "Checking gitaly-ruby Gemfile...\n"
-
-    unless File.exist?(gemfile)
-      message = "#{gemfile} does not exist."
-      message += "\n\nThis might have happened if the CI artifacts for this build were destroyed." if ENV['CI']
-      abort message
-    end
-
-    LOGGER.debug "Checking gitaly-ruby bundle...\n"
-
-    bundle_install unless bundle_check
-
-    abort 'bundle check failed' unless bundle_check
-  end
-
-  def bundle_check
-    bundle_cmd('check')
-  end
-
-  def bundle_install
-    bundle_cmd('install')
-  end
-
-  def bundle_cmd(cmd)
-    out = ENV['CI'] ? $stdout : '/dev/null'
-    system(env, 'bundle', cmd, out: out, chdir: gemfile_dir)
   end
 
   def connect_proc(toml)
@@ -358,8 +291,6 @@ module GitalySetup
   end
 
   def spawn_gitaly(toml = nil)
-    check_gitaly_config!
-
     pids = []
 
     if toml

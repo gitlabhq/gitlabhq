@@ -959,7 +959,7 @@ This behavior affects only the following data types through GitLab 14.6:
 | Package Registry         | 13.10        |
 | CI Pipeline Artifacts    | 13.11        |
 | Terraform State Versions | 13.12        |
-| Infrastructure Registry  | 14.0         |
+| Infrastructure Registry (renamed to Terraform Module Registry in GitLab 15.11) | 14.0 |
 | External MR diffs        | 14.6         |
 | LFS Objects              | 14.6         |
 | Pages Deployments        | 14.6         |

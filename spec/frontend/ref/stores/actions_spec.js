@@ -52,6 +52,13 @@ describe('Ref selector Vuex store actions', () => {
     });
   });
 
+  describe('setParams', () => {
+    it(`commits ${types.SET_PARAMS} with the provided params`, () => {
+      const params = { sort: 'updated_asc' };
+      testAction(actions.setParams, params, state, [{ type: types.SET_PARAMS, payload: params }]);
+    });
+  });
+
   describe('search', () => {
     it(`commits ${types.SET_QUERY} with the new search query`, () => {
       const query = 'hello';

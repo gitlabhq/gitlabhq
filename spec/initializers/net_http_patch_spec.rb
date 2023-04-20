@@ -8,6 +8,12 @@ require_relative '../../config/initializers/net_http_patch'
 RSpec.describe 'Net::HTTP patch proxy user and password encoding' do
   let(:net_http) { Net::HTTP.new('hostname.example') }
 
+  before do
+    # This file can be removed once Ruby 3.0 is no longer supported:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/396223
+    skip if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new(3.1)
+  end
+
   describe '#proxy_user' do
     subject { net_http.proxy_user }
 

@@ -5,14 +5,13 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 
 import {
+  mockRegistrationToken,
   newRunnerPath,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
 } from 'jest/ci/runner/mock_data';
 
 import RunnerListEmptyState from '~/ci/runner/components/runner_list_empty_state.vue';
-
-const mockRegistrationToken = 'REGISTRATION_TOKEN';
 
 describe('RunnerListEmptyState', () => {
   let wrapper;

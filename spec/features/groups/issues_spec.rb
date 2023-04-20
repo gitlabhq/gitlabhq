@@ -30,29 +30,15 @@ RSpec.describe 'Group issues page', feature_category: :subgroups do
           user_in_group
         end
 
+        it_behaves_like "it has an RSS link with current_user's feed token"
         it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
-
-        # Note: The one from rss_shared_example.rb uses a css pseudo-class `:has`
-        # which is VERY experimental and only supported in Nokogiri used by Capybara
-        # However,`:js` option forces Capybara to use Selenium that doesn't support`:has`
-        context "it has an RSS button with current_user's feed token" do
-          it "shows the RSS button with current_user's feed token" do
-            expect(page).to have_link 'Subscribe to RSS feed', href: /feed_token=#{user.feed_token}/
-          end
-        end
       end
 
       context 'when signed out' do
         let(:user) { nil }
 
+        it_behaves_like "it has an RSS link without a feed token"
         it_behaves_like "an autodiscoverable RSS feed without a feed token"
-
-        # Note: please see the above
-        context "it has an RSS button without a feed token" do
-          it "shows the RSS button without a feed token" do
-            expect(page).not_to have_link 'Subscribe to RSS feed', href: /feed_token/
-          end
-        end
       end
     end
 

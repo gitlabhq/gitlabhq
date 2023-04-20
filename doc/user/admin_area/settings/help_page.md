@@ -71,14 +71,7 @@ You can specify a custom URL to which users are directed when they:
 > - [Feature flag `help_page_documentation_redirect`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71737) removed in GitLab 14.4.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71737) in GitLab 14.4.
 
-The `/help` URL of a GitLab instance displays a basic version of the documentation sourced from the
-[`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab. `/help` links
-are often used for contextual help.
-
-You can redirect these `/help` links to either:
-
-- The more navigable and searchable version published at [`docs.gitlab.com`](https://docs.gitlab.com).
-- A destination that meets [necessary requirements](#destination-requirements).
+You can redirect all `/help` links to a destination that meets the [necessary requirements](#destination-requirements).
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > Preferences**.
@@ -86,17 +79,19 @@ You can redirect these `/help` links to either:
 1. In the **Documentation pages URL** field, enter the URL.
 1. Select **Save changes**.
 
+If the "Documentation pages URL" field is empty, the GitLab instance displays a basic version of the documentation sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab.
+
 ### Destination requirements
 
 When redirecting `/help`, GitLab:
 
 - Redirects requests to the specified URL.
-- Appends `ee`  and the documentation path to the URL.
+- Appends `ee`  and the documentation path, which includes the version number, to the URL.
 - Appends `.html` to the URL, and removes `.md` if necessary.
 
 For example, if the URL is set to `https://docs.gitlab.com`, requests for
 `/help/user/admin_area/settings/help_page.md` redirect to:
-`https://docs.gitlab.com/ee/user/admin_area/settings/help_page.html`.
+`https://docs.gitlab.com/${VERSION}/ee/user/admin_area/settings/help_page.html`.
 
 <!-- ## Troubleshooting
 

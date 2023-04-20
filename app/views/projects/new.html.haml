@@ -1,4 +1,4 @@
-- @hide_breadcrumbs = true
+- @hide_top_bar = true
 - @hide_top_links = true
 - page_title    _('New Project')
 - header_title  _("Projects"), dashboard_projects_path
@@ -14,6 +14,7 @@
     new_project_guidelines: brand_new_project_guidelines,
     push_to_create_project_command: push_to_create_project_command,
     working_with_projects_help_path: help_page_path("user/project/working_with_projects"),
+    root_path: root_path,
     parent_group_url: @project.parent && group_url(@project.parent),
     parent_group_name: @project.parent&.name,
     projects_url: dashboard_projects_url } }

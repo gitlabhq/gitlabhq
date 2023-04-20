@@ -13,6 +13,10 @@ class ResourceStateEvent < ResourceEvent
 
   after_create :issue_usage_metrics
 
+  scope :aliased_for_timebox_report, -> do
+    select("'state' AS event_type", "id", "created_at", "state AS value", "NULL AS action", "issue_id")
+  end
+
   def self.issuable_attrs
     %i(issue merge_request).freeze
   end

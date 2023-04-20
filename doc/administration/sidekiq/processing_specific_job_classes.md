@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 These are advanced settings. While they are used on GitLab.com, most GitLab
-instances should add more processes that all listen to all queues. This is the
+instances should only add more processes that listen to all queues. This is the
 same approach we take in our [Reference Architectures](../reference_architectures/index.md).
 
 GitLab has two options for creating Sidekiq processes that only handle specific

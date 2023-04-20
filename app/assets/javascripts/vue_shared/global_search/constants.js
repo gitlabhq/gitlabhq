@@ -27,6 +27,10 @@ export const KBD_HELP = sprintf(
   { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
   false,
 );
+export const MIN_SEARCH_TERM = s__(
+  'GlobalSearch|The search term must be at least 3 characters long.',
+);
+
 export const SCOPED_SEARCH_ITEM_ARIA_LABEL = s__('GlobalSearch| %{search} %{description} %{scope}');
 
 export const MSG_ISSUES_ASSIGNED_TO_ME = s__('GlobalSearch|Issues assigned to me');

@@ -7,13 +7,13 @@
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/335465  # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395708  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     In GitLab 14.4 we introduced the ability to limit the "outbound" scope of the CI/CD job token (`CI_JOB_TOKEN`) to make it more secure. You can prevent job tokens from your project's pipelines from being used to access other projects. If needed, you can list specific projects that you want to access with your project's job tokens.
 
     In 15.9 we extended this functionality with a better solution, an "inbound" scope limit. You can prevent the job tokens from _other_ projects from being used to access your project. With this feature, you can optionally list specific projects that you want to allow to access your project with _their_ job token.
 
-    In 16.0, this inbound scope limit will be the only option available for all projects, and the outbound limit setting will be removed. To prepare for this change, you can enable the ["inbound" CI/CD job token limit](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#configure-the-job-token-scope-limit) feature now, and list any projects that need to access your project.
+    In 16.0, this inbound scope limit will be the only option available for all projects, and the outbound limit setting will be disabled. To prepare for this change, you can enable the ["inbound" CI/CD job token limit](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#configure-the-job-token-scope-limit) feature now, and list any projects that need to access your project.
   #
   # OPTIONAL END OF SUPPORT FIELDS
   #

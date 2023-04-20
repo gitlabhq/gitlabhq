@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlFormCheckbox } from '@gitlab/ui';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
@@ -28,6 +29,7 @@ describe('diffs/components/commit_item', () => {
   const getCommitterElement = () => wrapper.find('.committer');
   const getCommitActionsElement = () => wrapper.find('.commit-actions');
   const getCommitPipelineStatus = () => wrapper.findComponent(CommitPipelineStatus);
+  const getCommitCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   const mountComponent = (propsData) => {
     wrapper = mount(Component, {
@@ -166,6 +168,26 @@ describe('diffs/components/commit_item', () => {
 
     it('renders pipeline status', () => {
       expect(getCommitPipelineStatus().exists()).toBe(true);
+    });
+  });
+
+  describe('when commit is selectable', () => {
+    beforeEach(() => {
+      mountComponent({
+        commit: { ...commit },
+        isSelectable: true,
+      });
+    });
+
+    it('renders checkbox', () => {
+      expect(getCommitCheckbox().exists()).toBe(true);
+    });
+
+    it('emits "handleCheckboxChange" event on change', () => {
+      expect(wrapper.emitted('handleCheckboxChange')).toBeUndefined();
+      getCommitCheckbox().vm.$emit('change');
+
+      expect(wrapper.emitted('handleCheckboxChange')[0]).toEqual([true]);
     });
   });
 });

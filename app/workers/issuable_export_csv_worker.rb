@@ -9,7 +9,7 @@ class IssuableExportCsvWorker # rubocop:disable Scalability/IdempotentWorker
 
   feature_category :team_planning
   worker_resource_boundary :cpu
-  loggable_arguments 2
+  loggable_arguments 0, 1, 2, 3
 
   def perform(type, current_user_id, project_id, params)
     user = User.find(current_user_id)

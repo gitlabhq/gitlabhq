@@ -18,11 +18,7 @@ import '~/sourcegraph/load';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 import { initReportAbuse } from '~/projects/report_abuse';
 
-const hasPerfBar = document.querySelector('.with-performance-bar');
-const performanceHeight = hasPerfBar ? 35 : 0;
-initDiffStatsDropdown(
-  (document.querySelector('.navbar-gitlab')?.offsetHeight ?? 0) + performanceHeight,
-);
+initDiffStatsDropdown(true);
 new ZenMode();
 new ShortcutsNavigation();
 

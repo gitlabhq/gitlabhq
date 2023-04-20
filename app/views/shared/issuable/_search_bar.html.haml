@@ -194,7 +194,7 @@
 
               = render_if_exists 'shared/issuable/filter_epic', type: type
 
-            %button.clear-search.hidden{ type: 'button' }
+            %button.clear-search.hidden.gl-rounded-base{ type: 'button' }
               = sprite_icon('close', size: 16, css_class: 'clear-search-icon')
     .filter-dropdown-container.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-align-items-flex-start
       - if type != :productivity_analytics && show_sorting_dropdown

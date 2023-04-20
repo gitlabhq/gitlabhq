@@ -6,7 +6,7 @@ class ForkNamespaceEntity < Grape::Entity
   include MarkupHelper
 
   expose :id, :name, :description, :visibility, :full_name,
-         :created_at, :updated_at, :avatar_url
+    :created_at, :updated_at, :avatar_url
 
   expose :fork_path do |namespace, options|
     project_forks_path(options[:project], namespace_key: namespace.id)

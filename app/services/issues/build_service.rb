@@ -4,11 +4,20 @@ module Issues
   class BuildService < Issues::BaseService
     include ResolveDiscussions
 
-    def execute
+    def execute(initialize_callbacks: true)
       filter_resolve_discussion_params
 
-      @issue = model_klass.new(issue_params.merge(project: project)).tap do |issue|
-        ensure_milestone_available(issue)
+      container_param = case container
+                        when Project
+                          { project: project }
+                        when Namespaces::ProjectNamespace
+                          { project: container.project }
+                        else
+                          { namespace: container }
+                        end
+
+      @issue = model_klass.new(issue_params.merge(container_param)).tap do |issue|
+        initialize_callbacks!(issue) if initialize_callbacks
       end
     end
 
@@ -61,18 +70,6 @@ module Issues
 
     def issue_params
       @issue_params ||= build_issue_params
-
-      if @issue_params[:work_item_type].present?
-        @issue_params[:issue_type] = @issue_params[:work_item_type].base_type
-      else
-        # If :issue_type is nil then params[:issue_type] was either nil
-        # or not permitted.  Either way, the :issue_type will default
-        # to the column default of `issue`. And that means we need to
-        # ensure the work_item_type_id is set
-        @issue_params[:work_item_type_id] = get_work_item_type_id(@issue_params[:issue_type])
-      end
-
-      @issue_params
     end
 
     private
@@ -89,11 +86,7 @@ module Issues
         :confidential
       ]
 
-      params[:work_item_type] = WorkItems::Type.find_by(id: params[:work_item_type_id]) if params[:work_item_type_id].present? # rubocop: disable CodeReuse/ActiveRecord
-
-      public_issue_params << :milestone_id if can?(current_user, :admin_issue, project)
-      public_issue_params << :issue_type if create_issue_type_allowed?(project, params[:issue_type])
-      public_issue_params << :work_item_type if create_issue_type_allowed?(project, params[:work_item_type]&.base_type)
+      public_issue_params << :issue_type if create_issue_type_allowed?(container, params[:issue_type])
 
       params.slice(*public_issue_params)
     end
@@ -103,10 +96,6 @@ module Issues
         .merge(issue_params_with_info_from_discussions)
         .merge(public_params)
         .with_indifferent_access
-    end
-
-    def get_work_item_type_id(issue_type = :issue)
-      find_work_item_type_id(issue_type)
     end
   end
 end

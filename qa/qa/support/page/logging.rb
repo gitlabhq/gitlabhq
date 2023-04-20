@@ -92,8 +92,8 @@ module QA
           super
         end
 
-        def click_via_capybara(method, locator)
-          log("clicking via capybara using '#{method}(#{locator})'", :info)
+        def act_via_capybara(method, locator, **kwargs)
+          log("acting via capybara using '#{method}(#{locator})' with args #{kwargs}", :info)
 
           super
         end

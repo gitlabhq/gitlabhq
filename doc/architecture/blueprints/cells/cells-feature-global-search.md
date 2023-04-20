@@ -1,9 +1,10 @@
 ---
 stage: enablement
 group: Tenant Scale
-comments: false
 description: 'Cells: Global search'
 ---
+
+<!-- vale gitlab.FutureTense = NO -->
 
 DISCLAIMER:
 This page may contain information related to upcoming products, features and

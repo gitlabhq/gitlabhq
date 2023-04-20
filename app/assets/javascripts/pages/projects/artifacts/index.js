@@ -1,3 +1,3 @@
-import { initArtifactsTable } from '~/artifacts/index';
+import { initArtifactsTable } from '~/ci/artifacts/index';
 
 initArtifactsTable();

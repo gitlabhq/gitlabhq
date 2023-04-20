@@ -9,7 +9,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       ConfigError = Class.new(StandardError)
-      TIMEOUT_SECONDS = 30.seconds
+      TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS', 30).to_i.clamp(0, 60).seconds
       TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
 
       RESCUE_ERRORS = [

@@ -5,7 +5,6 @@ description: Count of MAU using the `/spend` quick action to subtract time spent
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: time_tracking
 value_type: number
 status: active
 time_frame: 28d

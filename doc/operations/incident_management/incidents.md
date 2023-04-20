@@ -94,7 +94,7 @@ If an incident template is configured for the project, then the template content
 Comments are displayed in threads, but can be displayed chronologically
 [by toggling on the recent updates view](#recent-updates-view).
 
-When you make changes to an incident, GitLab creates system notes and
+When you make changes to an incident, GitLab creates [system notes](../../user/project/system_notes.md) and
 displays them below the summary.
 
 ### Metrics **(PREMIUM)**
@@ -187,7 +187,7 @@ label to the incident.
 - [Toggle notifications](../../user/profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics)
 - [Track spent time](../../user/project/time_tracking.md)
 - [Add a Zoom meeting to an incident](../../user/project/issues/associate_zoom_meeting.md) the same
-  way you add it to an issue.
+  way you add it to an issue
 - [Linked resources in incidents](linked_resources.md)
-- Create incidents and receive incident notifications [directly from Slack](slack.md).
-- Use the [Issues API](../../api/issues.md) to interact with incidents.
+- Create incidents and receive incident notifications [directly from Slack](slack.md)
+- Use the [Issues API](../../api/issues.md) to interact with incidents

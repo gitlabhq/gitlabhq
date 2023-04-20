@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, feature_category: :code_review_workflow do
   include ProjectForksHelper
+  include AfterNextHelpers
 
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
@@ -336,6 +337,19 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         end
       end
 
+      context 'with a milestone' do
+        let(:milestone) { create(:milestone, project: project) }
+
+        let(:opts) { { title: 'Awesome merge_request', source_branch: 'feature', target_branch: 'master', milestone_id: milestone.id } }
+
+        it 'deletes the cache key for milestone merge request counter' do
+          expect_next(Milestones::MergeRequestsCountService, milestone)
+            .to receive(:delete_cache).and_call_original
+
+          expect(merge_request).to be_persisted
+        end
+      end
+
       it_behaves_like 'reviewer_ids filter' do
         let(:execute) { service.execute }
       end
@@ -431,12 +445,20 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
             }
           end
 
-          it 'invalidates open merge request counter for assignees when merge request is assigned' do
+          before do
             project.add_maintainer(user2)
+          end
 
+          it 'invalidates open merge request counter for assignees when merge request is assigned' do
             described_class.new(project: project, current_user: user, params: opts).execute
 
             expect(user2.assigned_open_merge_requests_count).to eq 1
+          end
+
+          it 'records the assignee assignment event', :sidekiq_inline do
+            mr = described_class.new(project: project, current_user: user, params: opts).execute.reload
+
+            expect(mr.assignment_events).to match([have_attributes(user_id: user2.id, action: 'add')])
           end
         end
 

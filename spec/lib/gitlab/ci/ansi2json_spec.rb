@@ -2,10 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Ansi2json do
+RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration do
   subject { described_class }
 
   describe 'lines' do
+    describe 'verify_state' do
+      it 'uses SignedState when true' do
+        expect(Gitlab::Ci::Ansi2json::State).not_to receive(:new)
+        expect(Gitlab::Ci::Ansi2json::SignedState).to receive(:new).and_call_original
+
+        described_class.convert(StringIO.new('data'), verify_state: true)
+      end
+
+      it 'uses State when false' do
+        expect(Gitlab::Ci::Ansi2json::State).to receive(:new).and_call_original
+        expect(Gitlab::Ci::Ansi2json::SignedState).not_to receive(:new)
+
+        described_class.convert(StringIO.new('data'), verify_state: false)
+      end
+    end
+
     it 'prints non-ansi as-is' do
       expect(convert_json('Hello')).to eq([{ offset: 0, content: [{ text: 'Hello' }] }])
     end

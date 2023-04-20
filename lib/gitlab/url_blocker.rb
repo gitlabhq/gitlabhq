@@ -12,7 +12,7 @@ module Gitlab
     class << self
       # Validates the given url according to the constraints specified by arguments.
       #
-      # ports - Raises error if the given URL port does is not between given ports.
+      # ports - Raises error if the given URL port is not between given ports.
       # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is false.
       # allow_local_network - Raises error if URL resolves to a link-local address and argument is false.
       # allow_object_storage - Avoid raising an error if URL resolves to an object storage endpoint and argument is true.
@@ -62,6 +62,10 @@ module Gitlab
         end
 
         ip_address = ip_address(address_info)
+
+        # Ignore DNS rebind protection when a proxy is being used, as DNS
+        # rebinding is expected behavior.
+        dns_rebind_protection &= !uri_under_proxy_setting?(uri, ip_address)
         return [uri, nil] if domain_in_allow_list?(uri)
 
         protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
@@ -126,6 +130,18 @@ module Gitlab
         validate_unicode_restriction(uri) if ascii_only
       end
 
+      def uri_under_proxy_setting?(uri, ip_address)
+        return false unless Gitlab.http_proxy_env?
+        # `no_proxy|NO_PROXY` specifies addresses for which the proxy is not
+        # used. If it's empty, there are no exceptions and this URI
+        # will be under proxy settings.
+        return true if no_proxy_env.blank?
+
+        # `no_proxy|NO_PROXY` is being used. We must check whether it
+        # applies to this specific URI.
+        ::URI::Generic.use_proxy?(uri.hostname, ip_address, get_port(uri), no_proxy_env)
+      end
+
       # Returns addrinfo object for the URI.
       #
       # @param uri [Addressable::URI]
@@ -151,8 +167,11 @@ module Gitlab
         # Enforce if the instance should block requests
         return true if deny_all_requests_except_allowed?(deny_all_requests_except_allowed)
 
-        # Do not enforce unless DNS rebinding protection is enabled
+        # Do not enforce if DNS rebinding protection is disabled
         return false unless dns_rebind_protection
+
+        # Do not enforce if proxy is used
+        return false if Gitlab.http_proxy_env?
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories
@@ -363,6 +382,10 @@ module Gitlab
 
       def config
         Gitlab.config
+      end
+
+      def no_proxy_env
+        ENV['no_proxy'] || ENV['NO_PROXY']
       end
     end
   end

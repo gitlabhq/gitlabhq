@@ -31,71 +31,73 @@ RSpec.describe 'devise/sessions/new' do
 
   flag_values = [true, false]
   flag_values.each do |val|
-    before do
-      stub_feature_flags(restyle_login_page: val)
-    end
-
-    describe 'ldap' do
-      include LdapHelpers
-
-      let(:server) { { provider_name: 'ldapmain', label: 'LDAP' }.with_indifferent_access }
-
+    context "with #{val}" do
       before do
-        enable_ldap
-        stub_devise
-        disable_captcha
-        disable_sign_up
-        disable_other_signin_methods
-
-        allow(view).to receive(:experiment_enabled?).and_return(false)
+        stub_feature_flags(restyle_login_page: val)
       end
 
-      it 'is shown when enabled' do
-        render
+      describe 'ldap' do
+        include LdapHelpers
 
-        expect(rendered).to have_selector('.new-session-tabs')
-        expect(rendered).to have_selector('[data-testid="ldap-tab"]')
-        expect(rendered).to have_field('LDAP Username')
-      end
+        let(:server) { { provider_name: 'ldapmain', label: 'LDAP' }.with_indifferent_access }
 
-      it 'is not shown when LDAP sign in is disabled' do
-        disable_ldap_sign_in
-
-        render
-
-        expect(rendered).to have_content('No authentication methods configured')
-        expect(rendered).not_to have_selector('[data-testid="ldap-tab"]')
-        expect(rendered).not_to have_field('LDAP Username')
-      end
-    end
-
-    describe 'Google Tag Manager' do
-      let!(:gtm_id) { 'GTM-WWKMTWS' }
-
-      subject { rendered }
-
-      before do
-        stub_devise
-        disable_captcha
-        stub_config(extra: { google_tag_manager_id: gtm_id, google_tag_manager_nonce_id: gtm_id })
-      end
-
-      describe 'when Google Tag Manager is enabled' do
         before do
-          enable_gtm
-          render
+          enable_ldap
+          stub_devise
+          disable_captcha
+          disable_sign_up
+          disable_other_signin_methods
+
+          allow(view).to receive(:experiment_enabled?).and_return(false)
         end
 
-        it { is_expected.to match /www.googletagmanager.com/ }
-      end
-
-      describe 'when Google Tag Manager is disabled' do
-        before do
-          disable_gtm
+        it 'is shown when enabled' do
           render
+
+          expect(rendered).to have_selector('.new-session-tabs')
+          expect(rendered).to have_selector('[data-testid="ldap-tab"]')
+          expect(rendered).to have_field('LDAP Username')
         end
 
-        it { is_expected.not_to match /www.googletagmanager.com/ }
+        it 'is not shown when LDAP sign in is disabled' do
+          disable_ldap_sign_in
+
+          render
+
+          expect(rendered).to have_content('No authentication methods configured')
+          expect(rendered).not_to have_selector('[data-testid="ldap-tab"]')
+          expect(rendered).not_to have_field('LDAP Username')
+        end
+      end
+
+      describe 'Google Tag Manager' do
+        let!(:gtm_id) { 'GTM-WWKMTWS' }
+
+        subject { rendered }
+
+        before do
+          stub_devise
+          disable_captcha
+          stub_config(extra: { google_tag_manager_id: gtm_id, google_tag_manager_nonce_id: gtm_id })
+        end
+
+        describe 'when Google Tag Manager is enabled' do
+          before do
+            enable_gtm
+            render
+          end
+
+          it { is_expected.to match /www.googletagmanager.com/ }
+        end
+
+        describe 'when Google Tag Manager is disabled' do
+          before do
+            disable_gtm
+            render
+          end
+
+          it { is_expected.not_to match /www.googletagmanager.com/ }
+        end
       end
     end
   end

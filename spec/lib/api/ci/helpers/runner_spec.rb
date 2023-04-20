@@ -67,74 +67,44 @@ RSpec.describe API::Ci::Helpers::Runner do
     end
   end
 
-  describe '#current_runner_machine', :freeze_time, feature_category: :runner_fleet do
+  describe '#current_runner_manager', :freeze_time, feature_category: :runner_fleet do
     let(:runner) { create(:ci_runner, token: 'foo') }
-    let(:runner_machine) { create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago) }
+    let(:runner_manager) { create(:ci_runner_machine, runner: runner, system_xid: 'bar', contacted_at: 1.hour.ago) }
 
-    subject(:current_runner_machine) { helper.current_runner_machine }
+    subject(:current_runner_manager) { helper.current_runner_manager }
 
-    context 'with create_runner_machine FF enabled' do
+    context 'when runner manager already exists' do
       before do
-        stub_feature_flags(create_runner_machine: true)
+        allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_manager.system_xid)
       end
 
-      context 'when runner machine already exists' do
-        before do
-          allow(helper).to receive(:params).and_return(token: runner.token, system_id: runner_machine.system_xid)
-        end
+      it { is_expected.to eq(runner_manager) }
 
-        it { is_expected.to eq(runner_machine) }
-
-        it 'does not update the contacted_at field' do
-          expect(current_runner_machine.contacted_at).to eq 1.hour.ago
-        end
-      end
-
-      context 'when runner machine cannot be found' do
-        it 'creates a new runner machine', :aggregate_failures do
-          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
-
-          expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
-
-          expect(current_runner_machine).not_to be_nil
-          expect(current_runner_machine.system_xid).to eq('new_system_id')
-          expect(current_runner_machine.contacted_at).to eq(Time.current)
-          expect(current_runner_machine.runner).to eq(runner)
-        end
-
-        it 'creates a new <legacy> runner machine if system_id is not specified', :aggregate_failures do
-          allow(helper).to receive(:params).and_return(token: runner.token)
-
-          expect { current_runner_machine }.to change { Ci::RunnerMachine.count }.by(1)
-
-          expect(current_runner_machine).not_to be_nil
-          expect(current_runner_machine.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
-          expect(current_runner_machine.runner).to eq(runner)
-        end
+      it 'does not update the contacted_at field' do
+        expect(current_runner_manager.contacted_at).to eq 1.hour.ago
       end
     end
 
-    context 'with create_runner_machine FF disabled' do
-      before do
-        stub_feature_flags(create_runner_machine: false)
+    context 'when runner manager cannot be found' do
+      it 'creates a new runner manager', :aggregate_failures do
+        allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
+
+        expect { current_runner_manager }.to change { Ci::RunnerManager.count }.by(1)
+
+        expect(current_runner_manager).not_to be_nil
+        expect(current_runner_manager.system_xid).to eq('new_system_id')
+        expect(current_runner_manager.contacted_at).to eq(Time.current)
+        expect(current_runner_manager.runner).to eq(runner)
       end
 
-      it 'does not return runner machine if no system_id specified' do
+      it 'creates a new <legacy> runner manager if system_id is not specified', :aggregate_failures do
         allow(helper).to receive(:params).and_return(token: runner.token)
 
-        is_expected.to be_nil
-      end
+        expect { current_runner_manager }.to change { Ci::RunnerManager.count }.by(1)
 
-      context 'when runner machine can not be found' do
-        before do
-          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
-        end
-
-        it 'does not create a new runner machine', :aggregate_failures do
-          expect { current_runner_machine }.not_to change { Ci::RunnerMachine.count }
-
-          expect(current_runner_machine).to be_nil
-        end
+        expect(current_runner_manager).not_to be_nil
+        expect(current_runner_manager.system_xid).to eq(::API::Ci::Helpers::Runner::LEGACY_SYSTEM_XID)
+        expect(current_runner_manager.runner).to eq(runner)
       end
     end
   end

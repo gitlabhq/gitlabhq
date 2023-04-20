@@ -1,13 +1,13 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Using GitLab CI/CD with a Kubernetes cluster **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
-> - The pre-configured `KUBECONFIG` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
+> - The pre-configured variable `$KUBECONFIG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) the `ci_access` attribute in GitLab 14.3.
 > - The ability to authorize groups was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
@@ -78,7 +78,8 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 100 projects.
 
-All CI/CD jobs now include a `KUBECONFIG` with contexts for every shared agent connection.
+All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
+The `kubeconfig` path is available in the environment variable `$KUBECONFIG`.
 Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 ### Authorize the agent to access projects in your groups
@@ -104,7 +105,8 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
    - You can authorize up to 100 groups.
 
 All the projects that belong to the group and its subgroups are now authorized to access the agent.
-All CI/CD jobs now include a `KUBECONFIG` with contexts for every shared agent connection.
+All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
+The `kubeconfig` path is available in an environment variable `$KUBECONFIG`.
 Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 ## Update your `.gitlab-ci.yml` file to run `kubectl` commands
@@ -159,10 +161,10 @@ When you deploy to an environment that has both a
 
 - The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.
-- In GitLab 14.9 and later, agent contexts are included in the
-  `KUBECONFIG`. You can select them by using `kubectl config use-context path/to/agent/repository:agent-name`.
+- In GitLab 14.9 and later, agent contexts are included in `$KUBECONFIG`.
+  You can select them by using `kubectl config use-context path/to/agent/repository:agent-name`.
 - In GitLab 14.8 and earlier, you can still use agent connections, but for environments that
-  already have a certificate-based cluster, the agent connections are not included in the `KUBECONFIG`.
+  already have a certificate-based cluster, the agent connections are not included in `$KUBECONFIG`.
 
 To use an agent connection when certificate-based connections are present, you can manually configure a new `kubectl`
 configuration context. For example:
@@ -182,6 +184,17 @@ deploy:
     - kubectl config use-context "$KUBE_CONTEXT"
   # ... rest of your job configuration
 ```
+
+### Environments with KAS that use self-signed certificates
+
+If you use an environment with KAS and a self-signed certificate, you must configure your Kubernetes client to trust the certificate authority (CA) that signed your certificate.
+
+To configure your client, do one of the following:
+
+- Set a CI/CD variable `SSL_CERT_FILE` with the KAS certificate in PEM format.
+- Configure the Kubernetes client with `--certificate-authority=$KAS_CERTIFICATE`, where `KAS_CERTIFICATE` is a CI/CD variable with the CA certificate of KAS.
+- Place the certificates in an appropriate location in the job container by updating the container image or mounting via the runner.
+- Not recommended. Configure the Kubernetes client with `--insecure-skip-tls-verify=true`.
 
 ## Restrict project and group access by using impersonation **(PREMIUM)**
 
@@ -340,3 +353,16 @@ If you attempt to use `kubectl` without TLS, you might get an error like:
 $ kubectl get pods
 error: You must be logged in to the server (the server has asked for the client to provide credentials)
 ```
+
+### Unable to connect to the server: certificate signed by unknown authority
+
+If you use an environment with KAS and a self-signed certificate, your `kubectl` call might return this error:
+
+```plaintext
+kubectl get pods
+Unable to connect to the server: x509: certificate signed by unknown authority
+```
+
+The error occurs because the job does not trust the certificate authority (CA) that signed the KAS certificate.
+
+To resolve the issue, [configure `kubectl` to trust the CA](#environments-with-kas-that-use-self-signed-certificates).

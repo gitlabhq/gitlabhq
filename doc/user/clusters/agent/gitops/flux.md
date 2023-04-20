@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -15,7 +15,7 @@ You can use Flux to:
 
 To get started, see the [Flux installation documentation](https://fluxcd.io/flux/installation).
 
-Support for Flux is in [Open Beta](../../../../policy/alpha-beta-support.md#beta-features).
+Support for Flux is in [Beta](../../../../policy/alpha-beta-support.md#beta).
 
 ## Bootstrap installation
 

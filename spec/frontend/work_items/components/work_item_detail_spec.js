@@ -29,12 +29,13 @@ import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
+import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
 import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
+
 import {
   mockParent,
   workItemDatesSubscriptionResponse,
@@ -337,7 +338,7 @@ describe('WorkItemDetail component', () => {
           expect(findLoadingIcon().exists()).toBe(false);
         });
 
-        it('shows alert message when mutation fails', async () => {
+        it('shows an alert when mutation fails', async () => {
           createComponent({
             handler: handlerMock,
             confidentialityMock: confidentialityFailureMock,
@@ -388,11 +389,12 @@ describe('WorkItemDetail component', () => {
       expect(findParent().exists()).toBe(false);
     });
 
-    it('shows work item type if there is not a parent', async () => {
+    it('shows work item type with reference when there is no a parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
       expect(findWorkItemType().exists()).toBe(true);
+      expect(findWorkItemType().text()).toBe('Task #1');
     });
 
     describe('with parent', () => {
@@ -407,7 +409,7 @@ describe('WorkItemDetail component', () => {
         expect(findParent().exists()).toBe(true);
       });
 
-      it('does not show work item type', async () => {
+      it('does not show work item type', () => {
         expect(findWorkItemType().exists()).toBe(false);
       });
 

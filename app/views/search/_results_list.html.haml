@@ -5,7 +5,9 @@
 - elsif @search_objects.blank?
   = render partial: "search/results/empty"
 - else
-  .gl-md-pl-5
+  - statusBarClass = !show_super_sidebar? ? 'gl-md-pl-5' : ''
+
+  .section{ class: statusBarClass }
     - if @scope == 'commits'
       %ul.content-list.commit-list
         = render partial: "search/results/commit", collection: @search_objects

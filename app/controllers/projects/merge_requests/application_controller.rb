@@ -7,6 +7,11 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   feature_category :code_review_workflow
 
+  before_action do
+    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
+    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
+  end
+
   private
 
   def merge_request

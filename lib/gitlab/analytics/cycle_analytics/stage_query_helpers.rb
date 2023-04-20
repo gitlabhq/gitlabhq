@@ -13,7 +13,9 @@ module Gitlab
         end
 
         def round_duration_to_seconds
-          Arel::Nodes::NamedFunction.new('ROUND', [Arel::Nodes::Extract.new(duration, :epoch)])
+          Arel::Nodes::NamedFunction.new('ROUND', [
+            Arel::Nodes::NamedFunction.new('CAST', [Arel::Nodes::Extract.new(duration, :epoch).as('double precision')])
+          ])
         end
 
         def duration

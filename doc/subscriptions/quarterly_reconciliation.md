@@ -91,7 +91,7 @@ sent and subject to your payment terms.
 - You purchased your subscription from a reseller or another channel partner.
 - You purchased a multi-year subscription.
 - You purchased your subscription with a purchasing order.
-- You are a pubic sector customer.
+- You are a public sector customer.
 - You have an offline environment and used a license file to activate your subscription.
 - You are enrolled in a program that provides a free tier such as the GitLab for Education, GitLab for Open Source Program, or GitLab for Startups.
 

@@ -9,6 +9,8 @@ class Packages::Npm::Metadatum < ApplicationRecord
   validate :ensure_npm_package_type
   validate :ensure_package_json_size
 
+  scope :package_id_in, ->(package_ids) { where(package_id: package_ids) }
+
   private
 
   def ensure_npm_package_type

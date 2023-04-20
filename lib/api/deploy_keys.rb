@@ -104,6 +104,7 @@ module API
         requires :key, type: String, desc: 'New deploy key'
         requires :title, type: String, desc: "New deploy key's title"
         optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
+        optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ":id/deploy_keys" do

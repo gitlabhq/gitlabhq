@@ -39,11 +39,10 @@ export default {
 </script>
 <template>
   <div>
-    <segmented-control-button-group
-      v-model="selectedChart"
-      :options="chartRanges"
-      class="gl-mb-4"
-    />
+    <div class="gl-display-flex gl-flex-wrap gl-gap-5">
+      <segmented-control-button-group v-model="selectedChart" :options="chartRanges" />
+      <slot name="extend-button-group"></slot>
+    </div>
     <ci-cd-analytics-area-chart
       v-if="chart"
       v-bind="$attrs"

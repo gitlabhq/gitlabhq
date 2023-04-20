@@ -27,7 +27,10 @@ module Types
           GraphQL::Types::Int,
           null: false,
           description: 'Lock version of the work item. Incremented each time the work item is updated.'
-    field :project, Types::ProjectType, null: false,
+    field :namespace, Types::NamespaceType, null: true,
+                                            description: 'Namespace the work item belongs to.',
+                                            alpha: { milestone: '15.10' }
+    field :project, Types::ProjectType, null: true,
                                         description: 'Project the work item belongs to.',
                                         alpha: { milestone: '15.3' }
     field :state, WorkItemStateEnum, null: false,

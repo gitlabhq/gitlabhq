@@ -34,7 +34,6 @@ module Gitlab
               update_params!
 
               BulkInsertableAssociations.with_bulk_insert(enabled: bulk_insert_enabled) do
-                fix_ci_pipelines_not_sorted_on_legacy_project_json!
                 create_relations!
               end
             end
@@ -273,15 +272,6 @@ module Gitlab
             user: @user,
             excluded_keys: excluded_keys_for_relation(relation_key)
           }
-        end
-
-        # Temporary fix for https://gitlab.com/gitlab-org/gitlab/-/issues/27883 when import from legacy project.json
-        # This should be removed once legacy JSON format is deprecated.
-        # Ndjson export file will fix the order during project export.
-        def fix_ci_pipelines_not_sorted_on_legacy_project_json!
-          return unless @relation_reader.legacy?
-
-          @relation_reader.sort_ci_pipelines_by_id
         end
 
         # Enable logging of each top-level relation creation when Importing into a Group

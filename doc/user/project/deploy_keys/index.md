@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -86,6 +86,7 @@ Prerequisites:
 1. Complete the fields.
 1. Optional. To grant `read-write` permission, select the **Grant write permissions to this key**
    checkbox.
+1. Optional. Update the **Expiration date**.
 
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
 name and permissions.

@@ -56,4 +56,39 @@ RSpec.describe GroupLabel do
       end
     end
   end
+
+  describe '#preloaded_parent_container' do
+    let_it_be(:label) { create(:group_label) }
+
+    before do
+      label.reload # ensure associations are not loaded
+    end
+
+    context 'when group is loaded' do
+      it 'does not invoke a DB query' do
+        label.group
+
+        count = ActiveRecord::QueryRecorder.new { label.preloaded_parent_container }.count
+        expect(count).to eq(0)
+        expect(label.preloaded_parent_container).to eq(label.group)
+      end
+    end
+
+    context 'when parent_container is loaded' do
+      it 'does not invoke a DB query' do
+        label.parent_container
+
+        count = ActiveRecord::QueryRecorder.new { label.preloaded_parent_container }.count
+        expect(count).to eq(0)
+        expect(label.preloaded_parent_container).to eq(label.parent_container)
+      end
+    end
+
+    context 'when none of them are loaded' do
+      it 'invokes a DB query' do
+        count = ActiveRecord::QueryRecorder.new { label.preloaded_parent_container }.count
+        expect(count).to eq(1)
+      end
+    end
+  end
 end

@@ -46,7 +46,7 @@ module SnowplowHelpers
   #       }
   #     ]
   #   )
-  def expect_snowplow_event(category:, action:, context: nil, **kwargs)
+  def expect_snowplow_event(category:, action:, context: nil, tracking_method: :event, **kwargs)
     if context
       if context.is_a?(Array)
         kwargs[:context] = []
@@ -60,7 +60,7 @@ module SnowplowHelpers
       end
     end
 
-    expect(Gitlab::Tracking).to have_received(:event) # rubocop:disable RSpec/ExpectGitlabTracking
+    expect(Gitlab::Tracking).to have_received(tracking_method) # rubocop:disable RSpec/ExpectGitlabTracking
       .with(category, action, **kwargs).at_least(:once)
   end
 
@@ -79,11 +79,11 @@ module SnowplowHelpers
   #       expect_no_snowplow_event
   #     end
   #   end
-  def expect_no_snowplow_event(category: nil, action: nil, **kwargs)
+  def expect_no_snowplow_event(category: nil, action: nil, tracking_method: :event, **kwargs)
     if category && action
-      expect(Gitlab::Tracking).not_to have_received(:event).with(category, action, **kwargs) # rubocop:disable RSpec/ExpectGitlabTracking
+      expect(Gitlab::Tracking).not_to have_received(tracking_method).with(category, action, **kwargs) # rubocop:disable RSpec/ExpectGitlabTracking
     else
-      expect(Gitlab::Tracking).not_to have_received(:event) # rubocop:disable RSpec/ExpectGitlabTracking
+      expect(Gitlab::Tracking).not_to have_received(tracking_method) # rubocop:disable RSpec/ExpectGitlabTracking
     end
   end
 end

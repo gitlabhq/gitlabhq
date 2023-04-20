@@ -9,10 +9,11 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
-      has_one :metadata, class_name: 'Ci::BuildMetadata',
-                         foreign_key: :build_id,
-                         inverse_of: :build,
-                         autosave: true
+      has_one :metadata,
+        class_name: 'Ci::BuildMetadata',
+        foreign_key: :build_id,
+        inverse_of: :build,
+        autosave: true
 
       accepts_nested_attributes_for :metadata
 

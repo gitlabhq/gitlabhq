@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
-  :reestablished_active_record_base, :delete, query_analyzers: false, feature_category: :pods do
+  :reestablished_active_record_base, :delete, query_analyzers: false, feature_category: :cell do
   using RSpec::Parameterized::TableSyntax
 
   let(:schema_class) { Class.new(Gitlab::Database::Migration[2.1]) }
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
       let(:create_gitlab_shared_table_migration_class) { create_table_migration(gitlab_shared_table_name) }
 
       before do
-        skip_if_multiple_databases_are_setup(:ci)
+        skip_if_database_exists(:ci)
       end
 
       it 'does not lock any newly created tables' do
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
     context 'when multiple databases' do
       before do
-        skip_if_multiple_databases_not_setup(:ci)
+        skip_if_shared_database(:ci)
       end
 
       let(:migration_class) { create_table_migration(table_name, skip_automatic_lock_on_writes) }
@@ -238,7 +238,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
   context 'when renaming a table' do
     before do
-      skip_if_multiple_databases_not_setup(:ci)
+      skip_if_shared_database(:ci)
       create_table_migration(old_table_name).migrate(:up) # create the table first before renaming it
     end
 
@@ -277,7 +277,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
       let(:config_model) { Gitlab::Database.database_base_models[:main] }
 
       before do
-        skip_if_multiple_databases_are_setup(:ci)
+        skip_if_database_exists(:ci)
       end
 
       it 'does not lock any newly created tables' do
@@ -305,7 +305,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
     context 'when multiple databases' do
       before do
-        skip_if_multiple_databases_not_setup(:ci)
+        skip_if_shared_database(:ci)
         migration_class.connection.execute("CREATE TABLE #{table_name}()")
         migration_class.migrate(:up)
       end

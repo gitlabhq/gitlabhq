@@ -5,7 +5,6 @@ description: Number of distinct users who have generated a manage event
 product_section: dev
 product_stage: manage
 product_group: manage
-product_category:
 value_type: number
 status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344100

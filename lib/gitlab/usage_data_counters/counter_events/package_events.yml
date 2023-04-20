@@ -7,6 +7,7 @@
 - i_package_conan_push_package
 - i_package_debian_delete_package
 - i_package_debian_pull_package
+- i_package_debian_push_package
 - i_package_delete_package
 - i_package_delete_package_by_deploy_token
 - i_package_delete_package_by_guest

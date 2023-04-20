@@ -165,7 +165,7 @@ describe('ListboxInput', () => {
         findGlListbox().vm.$emit('search', '1');
       });
 
-      it('passes only the items that match the search string', async () => {
+      it('passes only the items that match the search string', () => {
         expect(findGlListbox().props('items')).toStrictEqual([
           {
             text: 'Group 1',
@@ -183,7 +183,7 @@ describe('ListboxInput', () => {
         findGlListbox().vm.$emit('search', '1');
       });
 
-      it('passes only the items that match the search string', async () => {
+      it('passes only the items that match the search string', () => {
         expect(findGlListbox().props('items')).toStrictEqual([{ text: 'Item 1', value: '1' }]);
       });
     });

@@ -53,7 +53,7 @@ describe('Custom variable component', () => {
     expect(findDropdown().exists()).toBe(true);
   });
 
-  it('changing dropdown items triggers update', async () => {
+  it('changing dropdown items triggers update', () => {
     createShallowWrapper();
     findDropdownItems().at(1).vm.$emit('click');
 

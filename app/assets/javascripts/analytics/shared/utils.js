@@ -129,12 +129,28 @@ export const fetchMetricsData = (requests = [], requestPath, params) => {
  * @param {Array} projectPaths - Array of project paths to include in the `query` parameter
  * @returns a URL or blank string if there is no groupPath set
  */
-export const generateValueStreamsDashboardLink = (groupPath, projectPaths = []) => {
-  if (groupPath.length) {
+export const generateValueStreamsDashboardLink = (namespacePath, projectPaths = []) => {
+  if (namespacePath.length) {
     const query = projectPaths.length ? `?query=${projectPaths.join(',')}` : '';
     const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
-    const segments = [gon.relative_url_root || '', '/', groupPath, dashboardsSlug];
+    const segments = [gon.relative_url_root || '', '/', namespacePath, dashboardsSlug];
     return joinPaths(...segments).concat(query);
   }
   return '';
 };
+
+/**
+ * Extracts the relevant feature and license flags needed for VSA
+ *
+ * @param {Object} gon the global `window.gon` object populated when the page loads
+ * @returns an object containing the extracted feature flags and their boolean status
+ */
+export const extractVSAFeaturesFromGON = () => ({
+  // licensed feature toggles
+  cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
+  cycleAnalyticsForProjects: Boolean(gon?.licensed_features?.cycleAnalyticsForProjects),
+  groupLevelAnalyticsDashboard: Boolean(gon?.licensed_features?.groupLevelAnalyticsDashboard),
+  // feature flags
+  groupAnalyticsDashboardsPage: Boolean(gon?.features?.groupAnalyticsDashboardsPage),
+  vsaGroupAndProjectParity: Boolean(gon?.features?.vsaGroupAndProjectParity),
+});

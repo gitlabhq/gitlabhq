@@ -45,7 +45,7 @@ module Sidebars
         end
 
         def kubernetes_menu_item
-          unless can?(context.current_user, :read_cluster, context.project)
+          unless can?(context.current_user, :read_cluster_agent, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :kubernetes)
           end
 

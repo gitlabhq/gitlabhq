@@ -34,7 +34,7 @@ describe('Jobs app', () => {
   const createComponent = (resolver) => {
     wrapper = shallowMount(JobsApp, {
       provide: {
-        fullPath: 'root/ci-project',
+        projectPath: 'root/ci-project',
         pipelineIid: 1,
       },
       apolloProvider: createMockApolloProvider(resolver),

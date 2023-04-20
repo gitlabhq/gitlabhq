@@ -134,7 +134,7 @@ describe('MilestoneToken', () => {
           return triggerFetchMilestones();
         });
 
-        it('calls `createAlert` with alert error message', () => {
+        it('calls `createAlert`', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching milestones.',
           });
@@ -153,7 +153,7 @@ describe('MilestoneToken', () => {
       { text: 'bar', value: 'baz' },
     ];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createComponent({
         value: { data: `"${mockRegularMilestone.title}"` },
         config: {

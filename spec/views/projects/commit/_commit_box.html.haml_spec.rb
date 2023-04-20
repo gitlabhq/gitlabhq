@@ -52,8 +52,7 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
 
     context 'when pipeline for the commit is blocked' do
       let!(:pipeline) do
-        create(:ci_pipeline, :blocked, project: project,
-                                       sha: project.commit.id)
+        create(:ci_pipeline, :blocked, project: project, sha: project.commit.id)
       end
 
       it 'shows correct pipeline description' do

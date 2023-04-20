@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controller do
+  include ApiHelpers
+  include GraphqlHelpers
   include JavaScriptFixturesHelpers
 
   let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
@@ -55,5 +57,28 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     }, format: :json
 
     expect(response).to be_successful
+  end
+
+  describe GraphQL::Query, type: :request do
+    fixtures_path = 'graphql/pipelines/'
+    get_pipeline_actions_query = 'get_pipeline_actions.query.graphql'
+
+    let!(:pipeline_with_manual_actions) { create(:ci_pipeline, project: project, user: user) }
+    let!(:build_scheduled) { create(:ci_build, :scheduled, pipeline: pipeline_with_manual_actions, stage: 'test') }
+    let!(:build_manual) { create(:ci_build, :manual, pipeline: pipeline_with_manual_actions, stage: 'build') }
+    let!(:build_manual_cannot_play) do
+      create(:ci_build, :manual, :skipped, pipeline: pipeline_with_manual_actions, stage: 'build')
+    end
+
+    let_it_be(:query) do
+      get_graphql_query_as_string("pipelines/graphql/queries/#{get_pipeline_actions_query}")
+    end
+
+    it "#{fixtures_path}#{get_pipeline_actions_query}.json" do
+      post_graphql(query, current_user: user,
+        variables: { fullPath: project.full_path, iid: pipeline_with_manual_actions.iid })
+
+      expect_graphql_errors_to_be_empty
+    end
   end
 end

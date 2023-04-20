@@ -5,7 +5,6 @@ description: Total GitLab Managed clusters with Runner enabled
 product_section: ops
 product_stage: verify
 product_group: runner
-product_category: runner
 value_type: number
 status: removed
 time_frame: 28d

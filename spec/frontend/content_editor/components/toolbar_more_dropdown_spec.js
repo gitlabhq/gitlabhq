@@ -53,7 +53,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     let commands;
     let btn;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       buildWrapper();
 
       commands = mockChainedCommands(tiptapEditor, [command, 'focus', 'run']);

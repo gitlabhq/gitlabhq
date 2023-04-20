@@ -44,24 +44,19 @@ class BulkImports::Entity < ApplicationRecord
   validates :source_full_path,
             presence: true,
             format: { with: Gitlab::Regex.bulk_import_source_full_path_regex,
-                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message }
+                      message: Gitlab::Regex.bulk_import_source_full_path_regex_message }
 
   validates :destination_name,
             presence: true,
-            format: { with: Gitlab::Regex.group_path_regex,
-                      message: Gitlab::Regex.group_path_regex_message }
+            if: -> { group || project }
 
   validates :destination_namespace,
             exclusion: [nil],
-            format: { with: Gitlab::Regex.bulk_import_destination_namespace_path_regex,
-                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message },
             if: :group
 
   validates :destination_namespace,
             presence: true,
-            format: { with: Gitlab::Regex.bulk_import_destination_namespace_path_regex,
-                      message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message },
-            if: :project
+            if: :project?
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type

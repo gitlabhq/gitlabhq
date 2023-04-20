@@ -1,6 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 
-import { followUser, unfollowUser, associationsCount, updateUserStatus } from '~/api/user_api';
+import projects from 'test_fixtures/api/users/projects/get.json';
+import {
+  followUser,
+  unfollowUser,
+  associationsCount,
+  updateUserStatus,
+  getUserProjects,
+} from '~/api/user_api';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
@@ -89,6 +96,20 @@ describe('~/api/user_api', () => {
       ).resolves.toEqual(expect.objectContaining({ data: expectedResponse }));
       expect(axiosMock.history.patch[0].url).toBe(expectedUrl);
       expect(JSON.parse(axiosMock.history.patch[0].data)).toEqual(expectedData);
+    });
+  });
+
+  describe('getUserProjects', () => {
+    it('calls correct URL and returns expected response', async () => {
+      const expectedUrl = '/api/v4/users/1/projects';
+      const expectedResponse = { data: projects };
+
+      axiosMock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedResponse);
+
+      await expect(getUserProjects(1)).resolves.toEqual(
+        expect.objectContaining({ data: expectedResponse }),
+      );
+      expect(axiosMock.history.get[0].url).toBe(expectedUrl);
     });
   });
 });

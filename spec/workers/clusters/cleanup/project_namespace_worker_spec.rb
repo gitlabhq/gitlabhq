@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Cleanup::ProjectNamespaceWorker, feature_category: :kubernetes_management do
+RSpec.describe Clusters::Cleanup::ProjectNamespaceWorker, feature_category: :deployment_management do
   describe '#perform' do
     context 'when cluster.cleanup_status is cleanup_removing_project_namespaces' do
       let!(:cluster) { create(:cluster, :with_environments, :cleanup_removing_project_namespaces) }
@@ -27,7 +27,6 @@ RSpec.describe Clusters::Cleanup::ProjectNamespaceWorker, feature_category: :kub
                 exception: 'ClusterCleanupMethods::ExceededExecutionLimitError',
                 cluster_id: kind_of(Integer),
                 class_name: described_class.name,
-                applications: "",
                 cleanup_status: cluster.cleanup_status_name,
                 event: :failed_to_remove_cluster_and_resources,
                 message: "exceeded execution limit of 10 tries"

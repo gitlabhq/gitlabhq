@@ -90,7 +90,7 @@ module Sidebars
             link: group_boards_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             active_routes: { path: %w[boards#index boards#show] },
-            item_id: :boards
+            item_id: context.is_super_sidebar ? :issue_boards : :boards
           )
         end
 
@@ -102,7 +102,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Milestones'),
             link: group_milestones_path(context.group),
-            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
             active_routes: { path: 'milestones#index' },
             item_id: :milestones
           )

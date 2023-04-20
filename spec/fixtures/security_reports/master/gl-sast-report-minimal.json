@@ -1,7 +1,8 @@
 {
-  "version": "14.0.0",
+  "version": "15.0.0",
   "vulnerabilities": [
     {
+      "id": "1",
       "category": "sast",
       "name": "Cipher with no integrity",
       "message": "Cipher with no integrity",
@@ -49,8 +50,19 @@
       }
     }
   ],
-  "remediations": [],
+  "remediations": [
+
+  ],
   "scan": {
+    "analyzer": {
+      "id": "find_sec_bugs_analyzer",
+      "name": "Find Security Bugs Analyzer",
+      "url": "https://gitlab.com",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "1.0.0"
+    },
     "scanner": {
       "id": "find_sec_bugs",
       "name": "Find Security Bugs",

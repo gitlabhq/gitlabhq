@@ -27,18 +27,14 @@
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 0;
-  bottom: 0;
+  top: calc(#{$header-height} + #{$calc-application-bars-height});
+  bottom: $calc-application-footer-height;
   left: 0;
   background-color: var(--gray-10, $gray-10);
   border-right: 1px solid $t-gray-a-08;
   transform: translate3d(0, 0, 0);
   width: $super-sidebar-width;
   z-index: $super-sidebar-z-index;
-
-  &:focus {
-    @include gl-focus;
-  }
 
   &.super-sidebar-loading {
     transform: translate3d(-100%, 0, 0);
@@ -49,7 +45,9 @@
   }
 
   &:not(.super-sidebar-loading) {
-    transition: transform $gl-transition-duration-medium;
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform $gl-transition-duration-medium;
+    }
   }
 
   .user-bar {
@@ -78,8 +76,9 @@
     }
   }
 
-  .counter .gl-icon {
-    color: var(--gray-500, $gray-500);
+  .counter .gl-icon,
+  .item-icon {
+    color: var(--gray-600, $gray-500);
   }
 
   .counter:hover,
@@ -107,6 +106,9 @@
     &[aria-expanded='true'] {
       background-color: $t-gray-a-08;
     }
+
+    &:focus {
+      @include gl-focus($inset: true); }
   }
 
   .btn-with-notification {
@@ -141,6 +143,29 @@
       @include active-toggle;
     }
   }
+
+  .nav-item-link {
+    button,
+    .draggable-icon {
+      opacity: 0;
+    }
+
+    .draggable-icon {
+      cursor: grab;
+    }
+
+    &:hover {
+      button,
+      .draggable-icon {
+        opacity: 1;
+      }
+    }
+
+    &:focus button,
+    button:focus {
+      opacity: 1;
+    }
+  }
 }
 
 .super-sidebar-skip-to {
@@ -151,9 +176,25 @@
   display: none;
 }
 
+.super-sidebar-peek {
+  @include gl-shadow;
+  border-right: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 100ms !important;
+  }
+}
+
+.super-sidebar-hover-area {
+  z-index: $super-sidebar-z-index;
+}
+
 .page-with-super-sidebar {
   padding-left: 0;
-  transition: padding-left $gl-transition-duration-medium;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: padding-left $gl-transition-duration-medium;
+  }
 
   &:not(.page-with-super-sidebar-collapsed) {
     .super-sidebar-overlay {
@@ -184,6 +225,10 @@
 .page-with-super-sidebar-collapsed {
   .super-sidebar {
     transform: translate3d(-100%, 0, 0);
+
+    &.super-sidebar-peek {
+      transform: translate3d(0, 0, 0);
+    }
   }
 
   @include media-breakpoint-up(xl) {
@@ -195,19 +240,6 @@
   }
 }
 
-.container-limited .super-sidebar-toggle {
-  @media (min-width: $super-sidebar-toggle-position-breakpoint) {
-    position: absolute;
-    left: $gl-spacing-scale-3;
-    top: $gl-spacing-scale-3;
-    margin: 0;
-  }
-}
-
-.with-performance-bar .super-sidebar {
-  top: $performance-bar-height;
-}
-
 .gl-dark {
   .super-sidebar {
     .gl-new-dropdown-custom-toggle {
@@ -215,5 +247,40 @@
         mix-blend-mode: unset;
       }
     }
+  }
+}
+
+.global-search-modal {
+  padding: 3rem 0.5rem 0;
+
+  &.gl-modal .modal-dialog {
+    align-items: flex-start;
+  }
+
+  @include gl-media-breakpoint-up(sm) {
+    padding: 5rem 1rem 0;
+  }
+
+  // This is a temporary workaround!
+  // the button in GitLab UI Search components need to be updated to not be the small size
+  // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
+  .gl-search-box-by-type-clear.btn-sm {
+    padding: 0.5rem !important;
+  }
+
+  .is-searching {
+    .in-search-scope-help {
+      position: absolute;
+      top: 0.625rem;
+      right: 2.5rem;
+    }
+  }
+
+  .gl-search-box-by-type-input-borderless {
+    @include gl-rounded-base;
+  }
+
+  .global-search-results {
+    max-height: 30rem;
   }
 }

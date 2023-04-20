@@ -10,16 +10,16 @@ Use the Import API to import repositories from GitHub or Bitbucket Server.
 
 Related APIs include:
 
-- [Group migration by direct transfer API](bulk_imports.md)
-- [Group import and export API](group_import_export.md)
-- [Project import and export API](project_import_export.md)
+- [Group migration by direct transfer API](bulk_imports.md).
+- [Group import and export API](group_import_export.md).
+- [Project import and export API](project_import_export.md).
 
 ## Prerequisites
 
 For information on prerequisites for using the Import API, see:
 
-- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites)
-- [Prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories)
+- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
+- [Prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
 
 ## Import repository from GitHub
 
@@ -141,11 +141,7 @@ Returns the following status codes:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.10.
-
-FLAG:
-On self-managed GitLab, this feature is available by default. To hide the feature,
-ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `github_import_gists`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.11. Feature flag `github_import_gists` removed.
 
 You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.
 GitHub gists with more than 10 files are skipped. You should manually migrate these GitHub gists.

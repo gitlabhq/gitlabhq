@@ -6,30 +6,22 @@
   }
 
   .archived-job {
-    top: $header-height;
+    top: $calc-application-header-height;
     border-radius: 2px 2px 0 0;
     color: var(--orange-600, $orange-600);
     background-color: var(--orange-50, $orange-50);
     border: 1px solid var(--border-color, $border-color);
-
-    .with-performance-bar & {
-      top: calc(#{$header-height} + #{$performance-bar-height});
-    }
   }
 
   .top-bar {
     @include build-log-top-bar(50px);
 
     &.has-archived-block {
-      top: calc(#{$header-height} + 28px);
-
-      .with-performance-bar & {
-        top: calc(#{$header-height} + #{$performance-bar-height} + 28px);
-      }
+      top: calc(#{$calc-application-header-height} + 28px);
     }
 
     &.affix {
-      top: $header-height;
+      top: $calc-application-header-height;
 
       // with sidebar
       &.sidebar-expanded {

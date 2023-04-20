@@ -16,9 +16,13 @@ RSpec.describe ObjectPool::DestroyWorker, feature_category: :shared do
       subject { described_class.new }
 
       it 'requests Gitaly to remove the object pool' do
-        expect(Gitlab::GitalyClient).to receive(:call)
-          .with(pool.shard_name, :object_pool_service, :delete_object_pool,
-                Object, timeout: Gitlab::GitalyClient.long_timeout)
+        expect(Gitlab::GitalyClient).to receive(:call).with(
+          pool.shard_name,
+          :object_pool_service,
+          :delete_object_pool,
+          Object,
+          timeout: Gitlab::GitalyClient.long_timeout
+        )
 
         subject.perform(pool.id)
       end

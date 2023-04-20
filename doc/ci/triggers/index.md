@@ -187,7 +187,12 @@ In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
 
 ## Troubleshooting
 
-### `404 not found` when triggering a pipeline
+### `403 Forbidden` when you trigger a pipeline with a webhook
+
+When you trigger a pipeline with a webhook, the API might return a `{"message":"403 Forbidden"}` response.
+To avoid trigger loops, do not use [pipeline events](../../user/project/integrations/webhook_events.md#pipeline-events) to trigger pipelines.
+
+### `404 Not Found` when triggering a pipeline
 
 A response of `{"message":"404 Not Found"}` when triggering a pipeline might be caused
 by using a [personal access token](../../user/profile/personal_access_tokens.md)

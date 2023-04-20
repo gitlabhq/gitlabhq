@@ -54,6 +54,25 @@ export default {
       required: false,
       default: false,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    assignees: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canSetWorkItemMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -117,8 +136,7 @@ export default {
       this.isExpanded = !this.isExpanded;
     },
     threadKey(note) {
-      /* eslint-disable @gitlab/require-i18n-strings */
-      return `${note.id}-thread`;
+      return `${note.id}-thread`; // eslint-disable-line @gitlab/require-i18n-strings
     },
     onReplied() {
       this.isExpanded = true;
@@ -142,7 +160,15 @@ export default {
     :has-replies="hasReplies"
     :work-item-type="workItemType"
     :is-modal="isModal"
+    :autocomplete-data-sources="autocompleteDataSources"
+    :markdown-preview-path="markdownPreviewPath"
     :class="{ 'gl-mb-4': hasReplies }"
+    :assignees="assignees"
+    :can-set-work-item-metadata="canSetWorkItemMetadata"
+    :work-item-id="workItemId"
+    :query-variables="queryVariables"
+    :full-path="fullPath"
+    :fetch-by-iid="fetchByIid"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
     @error="$emit('error', $event)"
@@ -167,6 +193,14 @@ export default {
                   :work-item-type="workItemType"
                   :is-modal="isModal"
                   :class="{ 'gl-mb-4': hasReplies }"
+                  :autocomplete-data-sources="autocompleteDataSources"
+                  :markdown-preview-path="markdownPreviewPath"
+                  :assignees="assignees"
+                  :work-item-id="workItemId"
+                  :can-set-work-item-metadata="canSetWorkItemMetadata"
+                  :query-variables="queryVariables"
+                  :full-path="fullPath"
+                  :fetch-by-iid="fetchByIid"
                   @startReplying="showReplyForm"
                   @deleteNote="$emit('deleteNote', note)"
                   @error="$emit('error', $event)"
@@ -186,6 +220,14 @@ export default {
                         :note="reply"
                         :work-item-type="workItemType"
                         :is-modal="isModal"
+                        :autocomplete-data-sources="autocompleteDataSources"
+                        :markdown-preview-path="markdownPreviewPath"
+                        :assignees="assignees"
+                        :work-item-id="workItemId"
+                        :can-set-work-item-metadata="canSetWorkItemMetadata"
+                        :query-variables="queryVariables"
+                        :full-path="fullPath"
+                        :fetch-by-iid="fetchByIid"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @error="$emit('error', $event)"
@@ -204,6 +246,9 @@ export default {
                       :work-item-type="workItemType"
                       :sort-order="sortOrder"
                       :add-padding="true"
+                      :autocomplete-data-sources="autocompleteDataSources"
+                      :markdown-preview-path="markdownPreviewPath"
+                      @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"
                       @replying="onReplying"

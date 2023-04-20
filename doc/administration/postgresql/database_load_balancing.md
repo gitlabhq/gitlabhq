@@ -235,3 +235,8 @@ operation retries up to 3 times using an exponential back-off.
 
 When using load balancing, you should be able to safely restart a database server
 without it immediately leading to errors being presented to the users.
+
+### Development guide
+
+For detailed development guide on database load balancing,
+see [the development documentation](../../development/database/load_balancing.md).

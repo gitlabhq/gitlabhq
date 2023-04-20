@@ -4,6 +4,8 @@ module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
 
+  USER_BAR_COUNT_LIMIT = 99
+
   def sidebar_tracking_attributes_by_object(object)
     sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
   end
@@ -40,7 +42,7 @@ module SidebarsHelper
     Sidebars::Context.new(**context_data, **args)
   end
 
-  def super_sidebar_context(user, group:, project:, panel:)
+  def super_sidebar_context(user, group:, project:, panel:, panel_type:) # rubocop:disable Metrics/AbcSize
     {
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
@@ -50,15 +52,7 @@ module SidebarsHelper
       has_link_to_profile: current_user_menu?(:profile),
       link_to_profile: user_url(user),
       logo_url: current_appearance&.header_logo_path,
-      status: {
-        can_update: can?(current_user, :update_user_status, current_user),
-        busy: user.status&.busy?,
-        customized: user.status&.customized?,
-        availability: user.status&.availability.to_s,
-        emoji: user.status&.emoji,
-        message: user.status&.message_html&.html_safe,
-        clear_after: user_clear_status_at(user)
-      },
+      status: user_status_menu_data(user),
       trial: {
         has_start_trial: current_user_menu?(:start_trial),
         url: trials_link_url
@@ -70,14 +64,14 @@ module SidebarsHelper
       },
       can_sign_out: current_user_menu?(:sign_out),
       sign_out_link: destroy_user_session_path,
-      assigned_open_issues_count: user.assigned_open_issues_count,
+      assigned_open_issues_count: format_user_bar_count(user.assigned_open_issues_count),
       todos_pending_count: user.todos_pending_count,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
-      total_merge_requests_count: user_merge_requests_counts[:total],
+      total_merge_requests_count: format_user_bar_count(user_merge_requests_counts[:total]),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
-      projects_path: projects_path,
-      groups_path: groups_path,
+      projects_path: dashboard_projects_path,
+      groups_path: dashboard_groups_path,
       support_path: support_url,
       display_whats_new: display_whats_new?,
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
@@ -88,7 +82,15 @@ module SidebarsHelper
       gitlab_com_but_not_canary: Gitlab.com_but_not_canary?,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
-      current_context: super_sidebar_current_context(project: project, group: group)
+      current_context: super_sidebar_current_context(project: project, group: group),
+      context_switcher_links: context_switcher_links,
+      search: search_data,
+      pinned_items: user.pinned_nav_items[panel_type] || [],
+      panel_type: panel_type,
+      update_pins_url: pins_url,
+      is_impersonating: impersonating?,
+      stop_impersonation_path: admin_impersonation_path,
+      shortcut_links: shortcut_links
     }
   end
 
@@ -111,6 +113,11 @@ module SidebarsHelper
       Sidebars::UserProfile::Panel.new(context)
     when 'explore'
       Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+    when 'search'
+      context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
+      Sidebars::Search::Panel.new(context)
+    when 'admin'
+      Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
     else
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)
@@ -118,6 +125,28 @@ module SidebarsHelper
   end
 
   private
+
+  def search_data
+    {
+      search_path: search_path,
+      issues_path: issues_dashboard_path,
+      mr_path: merge_requests_dashboard_path,
+      autocomplete_path: search_autocomplete_path,
+      search_context: header_search_context
+    }
+  end
+
+  def user_status_menu_data(user)
+    {
+      can_update: can?(user, :update_user_status, user),
+      busy: user.status&.busy?,
+      customized: user.status&.customized?,
+      availability: user.status&.availability.to_s,
+      emoji: user.status&.emoji,
+      message: user.status&.message_html&.html_safe,
+      clear_after: user_clear_status_at(user)
+    }
+  end
 
   def create_new_menu_groups(group:, project:)
     new_dropdown_sections = new_dropdown_view_model(group: group, project: project)[:menu_sections]
@@ -128,7 +157,14 @@ module SidebarsHelper
         items: section[:menu_items].map do |item|
           {
             text: item[:title],
-            href: item[:href]
+            href: item[:href],
+            extraAttrs: {
+              'data-track-label': item[:id],
+              'data-track-action': 'click_link',
+              'data-track-property': 'nav_create_menu',
+              'data-qa-selector': 'create_menu_item',
+              'data-qa-create-menu-item': item[:id]
+            }
           }
         end
       }
@@ -143,12 +179,24 @@ module SidebarsHelper
           {
             text: _('Assigned'),
             href: merge_requests_dashboard_path(assignee_username: user.username),
-            count: user_merge_requests_counts[:assigned]
+            count: user_merge_requests_counts[:assigned],
+            extraAttrs: {
+              'data-track-action': 'click_link',
+              'data-track-label': 'merge_requests_assigned',
+              'data-track-property': 'nav_core_menu',
+              class: 'dashboard-shortcuts-merge_requests'
+            }
           },
           {
             text: _('Review requests'),
             href: merge_requests_dashboard_path(reviewer_username: user.username),
-            count: user_merge_requests_counts[:review_requested]
+            count: user_merge_requests_counts[:review_requested],
+            extraAttrs: {
+              'data-track-action': 'click_link',
+              'data-track-label': 'merge_requests_to_review',
+              'data-track-property': 'nav_core_menu',
+              class: 'dashboard-shortcuts-review_requests'
+            }
           }
         ]
       }
@@ -259,6 +307,57 @@ module SidebarsHelper
     end
 
     {}
+  end
+
+  def context_switcher_links
+    links = [
+      # We should probably not return "You work" when used is not logged-in
+      { title: s_('Navigation|Your work'), link: root_path, icon: 'work' },
+      { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
+    ]
+
+    if current_user&.can_admin_all_resources?
+      links.append(
+        { title: s_('Navigation|Admin'), link: admin_root_path, icon: 'admin' }
+      )
+    end
+
+    links
+  end
+
+  # Formats the counts to be shown in the super sidebar's top section (issues, MRs and todos).
+  # We want to avoid printing huge numbers there, so when the count exceeds USER_BAR_COUNT_LIMIT,
+  # we cap it to USER_BAR_COUNT_LIMIT and append a "+" to it.
+  def format_user_bar_count(count)
+    if count > USER_BAR_COUNT_LIMIT
+      "#{USER_BAR_COUNT_LIMIT}+"
+    else
+      count.to_s
+    end
+  end
+
+  def impersonating?
+    !!session[:impersonator_id]
+  end
+
+  def shortcut_links
+    [
+      {
+        title: _('Milestones'),
+        href: dashboard_milestones_path,
+        css_class: 'dashboard-shortcuts-milestones'
+      },
+      {
+        title: _('Snippets'),
+        href: dashboard_snippets_path,
+        css_class: 'dashboard-shortcuts-snippets'
+      },
+      {
+        title: _('Activity'),
+        href: activity_dashboard_path,
+        css_class: 'dashboard-shortcuts-activity'
+      }
+    ]
   end
 end
 

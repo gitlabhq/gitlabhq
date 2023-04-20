@@ -297,6 +297,8 @@
   - 1
 - - ldap_group_sync
   - 2
+- - llm_completion
+  - 1
 - - mail_scheduler
   - 2
 - - mailers
@@ -325,6 +327,8 @@
   - 1
 - - merge_requests_handle_assignees_change
   - 1
+- - merge_requests_llm_summarize_merge_request
+  - 1
 - - merge_requests_resolve_todos
   - 1
 - - merge_requests_resolve_todos_after_approval
@@ -340,6 +344,10 @@
 - - metrics_dashboard_sync_dashboards
   - 1
 - - migrate_external_diffs
+  - 1
+- - ml_experiment_tracking_associate_ml_candidate_to_package
+  - 1
+- - namespaces_free_user_cap_notification_clearing
   - 1
 - - namespaces_free_user_cap_over_limit_notification
   - 1
@@ -405,6 +413,8 @@
   - 3
 - - product_analytics_initialize_analytics
   - 1
+- - product_analytics_initialize_snowplow_product_analytics
+  - 1
 - - project_cache
   - 1
 - - project_destroy
@@ -418,6 +428,8 @@
 - - projects_after_import
   - 1
 - - projects_delete_branch
+  - 1
+- - projects_deregister_suggested_reviewers_project
   - 1
 - - projects_finalize_project_statistics_refresh
   - 1
@@ -493,6 +505,8 @@
   - 1
 - - search_project_index_integrity
   - 1
+- - search_zoekt_namespace_indexer
+  - 1
 - - security_auto_fix
   - 1
 - - security_orchestration_policy_rule_schedule_namespace
@@ -558,6 +572,10 @@
 - - web_hooks_log_execution
   - 1
 - - wikis_git_garbage_collect
+  - 1
+- - work_items_import_work_items_csv
+  - 1
+- - work_items_update_parent_objectives_progress
   - 1
 - - x509_certificate_revoke
   - 1

@@ -82,7 +82,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       expect(wrapper.findByTestId('editor-header').text()).toBe(expectedMessage);
     });
 
-    it('shows the editor header with a custom filename', async () => {
+    it('shows the editor header with a custom filename', () => {
       const filename = 'my-file.yml';
       createComponent({
         filename,
@@ -142,7 +142,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
         });
 
         if (expectCommitStepShown) {
-          it('does not show the step wrapper', async () => {
+          it('does not show the step wrapper', () => {
             expect(wrapper.findComponent(WizardStep).isVisible()).toBe(false);
           });
 
@@ -150,7 +150,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
             expect(wrapper.findComponent(CommitStep).isVisible()).toBe(true);
           });
         } else {
-          it('passes the correct step config to the step component', async () => {
+          it('passes the correct step config to the step component', () => {
             expect(getStepWrapper().props('inputs')).toMatchObject(expectStepDef.inputs);
           });
 
@@ -250,7 +250,7 @@ describe('Pipeline Wizard - wrapper.vue', () => {
   });
 
   describe('integration test', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent({}, mountExtended);
     });
 

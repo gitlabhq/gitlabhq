@@ -13,6 +13,10 @@ module Gitlab
         DETAIL_STORE = :external_http_detail_store
         COUNTER = :external_http_count
         DURATION = :external_http_duration_s
+        SLOW_REQUESTS = :external_http_slow_requests
+
+        THRESHOLD_SLOW_REQUEST_S = 5.0
+        MAX_SLOW_REQUESTS = 10
 
         def self.detail_store
           ::Gitlab::SafeRequestStore[DETAIL_STORE] ||= []
@@ -26,11 +30,24 @@ module Gitlab
           Gitlab::SafeRequestStore[COUNTER].to_i
         end
 
+        def self.slow_requests
+          Gitlab::SafeRequestStore[SLOW_REQUESTS]
+        end
+
+        def self.top_slowest_requests
+          requests = slow_requests
+
+          return unless requests.present?
+
+          requests.sort_by { |req| req[:duration_s] }.reverse.first(MAX_SLOW_REQUESTS)
+        end
+
         def self.payload
           {
             COUNTER => request_count,
-            DURATION => duration
-          }
+            DURATION => duration,
+            SLOW_REQUESTS => top_slowest_requests
+          }.compact
         end
 
         def request(event)
@@ -69,6 +86,17 @@ module Gitlab
 
           Gitlab::SafeRequestStore[COUNTER] = Gitlab::SafeRequestStore[COUNTER].to_i + 1
           Gitlab::SafeRequestStore[DURATION] = Gitlab::SafeRequestStore[DURATION].to_f + payload[:duration].to_f
+
+          if payload[:duration].to_f > THRESHOLD_SLOW_REQUEST_S
+            Gitlab::SafeRequestStore[SLOW_REQUESTS] ||= []
+            Gitlab::SafeRequestStore[SLOW_REQUESTS] << {
+              method: payload[:method],
+              host: payload[:host],
+              port: payload[:port],
+              path: payload[:path],
+              duration_s: payload[:duration].to_f.round(3)
+            }
+          end
         end
 
         def expose_metrics(payload)

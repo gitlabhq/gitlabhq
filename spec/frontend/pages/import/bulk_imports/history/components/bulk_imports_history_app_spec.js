@@ -192,7 +192,7 @@ describe('BulkImportsHistoryApp', () => {
       return axios.waitForAll();
     });
 
-    it('renders details button if relevant item has failures', async () => {
+    it('renders details button if relevant item has failures', () => {
       expect(
         extendedWrapper(wrapper.find('tbody').findAll('tr').at(1)).findByText('Details').exists(),
       ).toBe(true);

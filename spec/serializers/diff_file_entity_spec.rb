@@ -84,8 +84,8 @@ RSpec.describe DiffFileEntity do
     let(:options) { { conflicts: {} } }
 
     it 'calls diff_lines_for_serializer on diff_file' do
-      # #diff_lines_for_serializer gets called in #fully_expanded? as well so we expect twice
-      expect(diff_file).to receive(:diff_lines_for_serializer).twice.and_return([])
+      # #diff_lines_for_serializer gets called in #fully_expanded? and whitespace_only as well so we expect three calls
+      expect(diff_file).to receive(:diff_lines_for_serializer).exactly(3).times.and_return([])
       expect(subject[:highlighted_diff_lines]).to eq([])
     end
   end

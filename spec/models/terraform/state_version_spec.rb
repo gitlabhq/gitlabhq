@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::StateVersion do
+RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_code do
   it { is_expected.to be_a FileStoreMounter }
   it { is_expected.to be_a EachBatch }
 
-  it { is_expected.to belong_to(:terraform_state).required }
+  it { is_expected.to belong_to(:terraform_state).required.touch }
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:build).class_name('Ci::Build').optional }
 

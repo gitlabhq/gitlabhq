@@ -29,8 +29,14 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
     end
 
     it 'returns a tree-like structure of itself and all menu items' do
-      menu.add_item(Sidebars::MenuItem.new(title: 'Is active', link: 'foo2', active_routes: { controller: 'fooc' }))
       menu.add_item(Sidebars::MenuItem.new(
+        item_id: 'id1',
+        title: 'Is active',
+        link: 'foo2',
+        active_routes: { controller: 'fooc' }
+      ))
+      menu.add_item(Sidebars::MenuItem.new(
+        item_id: 'id2',
         title: 'Not active',
         link: 'foo3',
         active_routes: { controller: 'barc' },
@@ -50,6 +56,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
           pill_count: nil,
           items: [
             {
+              id: 'id1',
               title: "Is active",
               icon: nil,
               link: "foo2",
@@ -57,6 +64,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               pill_count: nil
             },
             {
+              id: 'id2',
               title: "Not active",
               icon: nil,
               link: "foo3",
@@ -226,6 +234,47 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         menu.insert_element_after(list, :non_existent, item3)
 
         expect(list).to eq [item1, item2, item3]
+      end
+    end
+  end
+
+  describe '#replace_placeholder' do
+    let(:item1) { Sidebars::NilMenuItem.new(item_id: :foo1) }
+    let(:item2) { Sidebars::MenuItem.new(item_id: :foo2, title: 'foo2', link: 'foo2', active_routes: {}) }
+    let(:item3) { Sidebars::NilMenuItem.new(item_id: :foo3) }
+
+    subject { menu.instance_variable_get(:@items) }
+
+    before do
+      menu.add_item(item1)
+      menu.add_item(item2)
+      menu.add_item(item3)
+    end
+
+    context 'when a NilMenuItem reference element exists' do
+      it 'replaces the reference element with the provided item' do
+        item = Sidebars::MenuItem.new(item_id: :foo1, title: 'target', active_routes: {}, link: 'target')
+        menu.replace_placeholder(item)
+
+        expect(subject).to eq [item, item2, item3]
+      end
+    end
+
+    context 'when a MenuItem reference element exists' do
+      it 'does not replace the reference element and adds to the end of the list' do
+        item = Sidebars::MenuItem.new(item_id: :foo2, title: 'target', active_routes: {}, link: 'target')
+        menu.replace_placeholder(item)
+
+        expect(subject).to eq [item1, item2, item3, item]
+      end
+    end
+
+    context 'when reference element does not exist' do
+      it 'adds the element to the end of the list' do
+        item = Sidebars::MenuItem.new(item_id: :new_element, title: 'target', active_routes: {}, link: 'target')
+        menu.replace_placeholder(item)
+
+        expect(subject).to eq [item1, item2, item3, item]
       end
     end
   end

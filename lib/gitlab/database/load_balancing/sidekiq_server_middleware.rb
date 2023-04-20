@@ -6,7 +6,7 @@ module Gitlab
       class SidekiqServerMiddleware
         JobReplicaNotUpToDate = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
-        MINIMUM_DELAY_INTERVAL_SECONDS = 0.8
+        REPLICA_WAIT_SLEEP_SECONDS = 0.5
 
         def call(worker, job, _queue)
           worker_class = worker.class
@@ -18,7 +18,7 @@ module Gitlab
             ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
           elsif strategy == :retry
             raise JobReplicaNotUpToDate, "Sidekiq job #{worker_class} JID-#{job['jid']} couldn't use the replica."\
-              "  Replica was not up to date."
+              " Replica was not up to date."
           else
             # this means we selected an up-to-date replica, but there is nothing to do in this case.
           end
@@ -49,7 +49,10 @@ module Gitlab
           # Happy case: we can read from a replica.
           return replica_strategy(worker_class, job) if databases_in_sync?(wal_locations)
 
-          sleep_if_needed(job)
+          3.times do
+            sleep REPLICA_WAIT_SLEEP_SECONDS
+            break if databases_in_sync?(wal_locations)
+          end
 
           if databases_in_sync?(wal_locations)
             replica_strategy(worker_class, job)
@@ -60,12 +63,6 @@ module Gitlab
             # Sad case: we need to fall back to the primary.
             :primary
           end
-        end
-
-        def sleep_if_needed(job)
-          remaining_delay = MINIMUM_DELAY_INTERVAL_SECONDS - (Time.current.to_f - job['created_at'].to_f)
-
-          sleep remaining_delay if remaining_delay > 0 && remaining_delay < MINIMUM_DELAY_INTERVAL_SECONDS
         end
 
         def get_wal_locations(job)
@@ -79,7 +76,7 @@ module Gitlab
         end
 
         def can_retry?(worker_class, job)
-          worker_class.get_data_consistency == :delayed && not_yet_retried?(job)
+          worker_class.get_data_consistency == :delayed && not_yet_requeued?(job)
         end
 
         def replica_strategy(worker_class, job)
@@ -87,10 +84,10 @@ module Gitlab
         end
 
         def retried_before?(worker_class, job)
-          worker_class.get_data_consistency == :delayed && !not_yet_retried?(job)
+          worker_class.get_data_consistency == :delayed && !not_yet_requeued?(job)
         end
 
-        def not_yet_retried?(job)
+        def not_yet_requeued?(job)
           # if `retry_count` is `nil` it indicates that this job was never retried
           # the `0` indicates that this is a first retry
           job['retry_count'].nil?

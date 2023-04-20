@@ -179,8 +179,6 @@ Your project's visibility is set to **Private** by default. To change project vi
 
 ## Related topics
 
-- For a list of words that you cannot use as project names, see
-  [reserved project and group names](../../user/reserved_names.md).
-- For a list of characters that you cannot use in project and group names, see
-  [limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names).
-- [Manage projects](working_with_projects.md).
+- [Reserved project and group names](../../user/reserved_names.md)
+- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-project-and-group-names)
+- [Manage projects](working_with_projects.md)

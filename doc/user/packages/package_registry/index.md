@@ -71,9 +71,13 @@ NOTE:
 If you have not activated the "Package registry" feature for your project at **Settings > General > Visibility, project features, permissions**, you receive a 403 Forbidden response.
 Accessing package registry via deploy token is not available when external authorization is enabled.
 
-## Use GitLab CI/CD to build packages
+## Use GitLab CI/CD
 
-You can use [GitLab CI/CD](../../../ci/index.md) to build packages.
+You can use [GitLab CI/CD](../../../ci/index.md) to build or import packages into
+a package registry.
+
+### To build packages
+
 For Maven, NuGet, npm, Conan, Helm, and PyPI packages, and Composer dependencies, you can
 authenticate with GitLab by using the `CI_JOB_TOKEN`.
 
@@ -96,6 +100,16 @@ when you view the package details:
 ![Package CI/CD activity](img/package_activity_v12_10.png)
 
 You can view which pipeline published the package, and the commit and user who triggered it. However, the history is limited to five updates of a given package.
+
+### To import packages
+
+If you already have packages built in a different registry, you can import them
+into your GitLab package registry with the [Packages Importer](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer)
+
+The Packages Importer runs a CI/CD pipeline that [can import these package types](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer#formats-supported):
+
+- NPM
+- NuGet
 
 ## Reduce storage usage
 

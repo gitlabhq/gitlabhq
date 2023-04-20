@@ -24,7 +24,7 @@
 - Ci::CommitStatusesFinder
 - Ci::DailyBuildGroupReportResultsFinder
 - ClusterAncestorsFinder
-- Clusters::AgentAuthorizationsFinder
+- Clusters::Agents::Authorizations::CiAccess::Finder
 - Clusters::KubernetesNamespaceFinder
 - ComplianceManagement::MergeRequests::ComplianceViolationsFinder
 - ContainerRepositoriesFinder
@@ -69,3 +69,4 @@
 - UploaderFinder
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
+- DataTransfer::MockedTransferFinder # Can be removed when https://gitlab.com/gitlab-org/gitlab/-/issues/397693 is closed

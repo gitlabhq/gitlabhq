@@ -156,6 +156,7 @@ The following metrics are available from the `/metrics` endpoint:
 - `gitaly_praefect_replication_delay_bucket`, a histogram measuring how much time passes between
   when the replication job is created and when it starts. Available in GitLab 12.10 and later.
 - `gitaly_praefect_connections_total`, the total number of connections to Praefect. [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4220) in GitLab 14.7.
+- `gitaly_praefect_method_types`, a count of accessor and mutator RPCs per node.
 
 To monitor [strong consistency](index.md#strong-consistency), you can use the following Prometheus metrics:
 

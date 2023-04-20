@@ -71,10 +71,6 @@ describe('MoveIssueButton', () => {
     });
   };
 
-  afterEach(() => {
-    fakeApollo = null;
-  });
-
   it('renders the project select dropdown', () => {
     createComponent();
 

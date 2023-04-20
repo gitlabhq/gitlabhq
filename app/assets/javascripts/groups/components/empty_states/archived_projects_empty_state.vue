@@ -8,14 +8,14 @@ export default {
   i18n: {
     title: s__('GroupsEmptyState|No archived projects.'),
   },
-  inject: ['newProjectIllustration'],
+  inject: ['emptyProjectsIllustration'],
 };
 </script>
 
 <template>
   <gl-empty-state
     :title="$options.i18n.title"
-    :svg-path="newProjectIllustration"
+    :svg-path="emptyProjectsIllustration"
     :svg-height="100"
   />
 </template>

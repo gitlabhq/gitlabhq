@@ -2,12 +2,7 @@
 import { GlBadge } from '@gitlab/ui';
 import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending_removal';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import {
-  ITEM_TYPE,
-  VISIBILITY_TYPE_ICON,
-  GROUP_VISIBILITY_TYPE,
-  PROJECT_VISIBILITY_TYPE,
-} from '../constants';
+import { ITEM_TYPE } from '../constants';
 import ItemStatsValue from './item_stats_value.vue';
 
 export default {
@@ -24,15 +19,6 @@ export default {
     },
   },
   computed: {
-    visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.item.visibility];
-    },
-    visibilityTooltip() {
-      if (this.item.type === ITEM_TYPE.GROUP) {
-        return GROUP_VISIBILITY_TYPE[this.item.visibility];
-      }
-      return PROJECT_VISIBILITY_TYPE[this.item.visibility];
-    },
     isProject() {
       return this.item.type === ITEM_TYPE.PROJECT;
     },

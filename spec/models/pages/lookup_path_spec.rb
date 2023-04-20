@@ -138,14 +138,14 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
     end
   end
 
-  describe '#unique_domain' do
+  describe '#unique_host' do
     let(:project) { build(:project) }
 
     context 'when unique domain is disabled' do
       it 'returns nil' do
         project.project_setting.pages_unique_domain_enabled = false
 
-        expect(lookup_path.unique_domain).to be_nil
+        expect(lookup_path.unique_host).to be_nil
       end
     end
 
@@ -154,7 +154,30 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
         project.project_setting.pages_unique_domain_enabled = true
         project.project_setting.pages_unique_domain = 'unique-domain'
 
-        expect(lookup_path.unique_domain).to eq('unique-domain')
+        expect(lookup_path.unique_host).to eq('unique-domain.example.com')
+      end
+    end
+  end
+
+  describe '#root_directory' do
+    subject(:lookup_path) { described_class.new(project) }
+
+    context 'when there is no deployment' do
+      it 'returns nil' do
+        expect(lookup_path.root_directory).to be_nil
+      end
+    end
+
+    context 'when there is a deployment' do
+      let(:deployment) { create(:pages_deployment, project: project, root_directory: 'foo') }
+
+      before do
+        project.mark_pages_as_deployed
+        project.pages_metadatum.update!(pages_deployment: deployment)
+      end
+
+      it 'returns the deployment\'s root_directory' do
+        expect(lookup_path.root_directory).to eq('foo')
       end
     end
   end

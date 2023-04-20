@@ -45,4 +45,35 @@ export const user6 = {
   avatar_url: '',
 };
 
+export const postData = {
+  user_id: `${user1.id},${user2.id}`,
+  access_level: propsData.defaultAccessLevel,
+  expires_at: undefined,
+  invite_source: inviteSource,
+  format: 'json',
+  tasks_to_be_done: [],
+  tasks_project_id: '',
+};
+
+export const emailPostData = {
+  access_level: propsData.defaultAccessLevel,
+  expires_at: undefined,
+  email: `${user3.name}`,
+  invite_source: inviteSource,
+  tasks_to_be_done: [],
+  tasks_project_id: '',
+  format: 'json',
+};
+
+export const singleUserPostData = {
+  access_level: propsData.defaultAccessLevel,
+  expires_at: undefined,
+  user_id: `${user1.id}`,
+  email: `${user3.name}`,
+  invite_source: inviteSource,
+  tasks_to_be_done: [],
+  tasks_project_id: '',
+  format: 'json',
+};
+
 export const GlEmoji = { template: '<img/>' };

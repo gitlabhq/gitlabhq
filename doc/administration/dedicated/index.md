@@ -203,7 +203,7 @@ Prerequisites:
 
 To activate SAML for your GitLab Dedicated instance:
 
-1. Read the [GitLab documentation about SAML](../../integration/saml.md#https://docs.gitlab.com/ee/integration/saml.html#configure-saml-on-your-idp) to gather all data your identity provider requires for configuration. You can also find some providers and their requirements in the [group SAML documentation](../../user/group/saml_sso/index.md#set-up-identity-provider).
+1. Read the [GitLab documentation about SAML](../../integration/saml.md#https://docs.gitlab.com/ee/integration/saml.html#configure-saml-on-your-idp) to gather all data your identity provider requires for configuration. You can also find some providers and their requirements in the [group SAML documentation](../../user/group/saml_sso/index.md#set-up-your-identity-provider).
 1. To make the necessary changes, include in your [support ticket](#configuration-changes) the desired [SAML configuration block](../../integration/saml.md#configure-saml-support-in-gitlab) that will be set on the GitLab application. At a minimum, GitLab needs the following information to enable SAML for your instance:
    - Assertion consumer service URL
    - Certificate fingerprint or certificate

@@ -487,7 +487,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             container_registry_delete_tags_service_timeout: 'Container Registry delete tags service execution timeout',
             container_registry_expiration_policies_worker_capacity: 'Cleanup policy maximum workers running concurrently',
             container_registry_cleanup_tags_service_max_list_size: 'Cleanup policy maximum number of tags to be deleted',
-            container_registry_expiration_policies_caching: 'Enable container expiration caching'
+            container_registry_expiration_policies_caching: 'Enable cleanup policy caching'
           }
         end
 

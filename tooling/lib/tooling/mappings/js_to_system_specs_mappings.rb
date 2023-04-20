@@ -9,10 +9,14 @@ require_relative '../../../../lib/gitlab_edition'
 module Tooling
   module Mappings
     class JsToSystemSpecsMappings < Base
-      def initialize(js_base_folder: 'app/assets/javascripts', system_specs_base_folder: 'spec/features')
-        @js_base_folder           = js_base_folder
-        @js_base_folders          = folders_for_available_editions(js_base_folder)
-        @system_specs_base_folder = system_specs_base_folder
+      def initialize(
+        changed_files_pathname, predictive_tests_pathname,
+        js_base_folder: 'app/assets/javascripts', system_specs_base_folder: 'spec/features')
+        @changed_files             = read_array_from_file(changed_files_pathname)
+        @predictive_tests_pathname = predictive_tests_pathname
+        @js_base_folder            = js_base_folder
+        @js_base_folders           = folders_for_available_editions(js_base_folder)
+        @system_specs_base_folder  = system_specs_base_folder
 
         # Cannot be extracted to a constant, as it depends on a variable
         @first_js_folder_extract_regexp = %r{
@@ -23,20 +27,22 @@ module Tooling
         }x
       end
 
-      def execute(changed_files)
-        filter_files(changed_files).flat_map do |edition, js_files|
+      def execute
+        matching_system_tests = filter_files.flat_map do |edition, js_files|
           js_keywords_regexp = Regexp.union(construct_js_keywords(js_files))
 
           system_specs_for_edition(edition).select do |system_spec_file|
             system_spec_file if js_keywords_regexp.match?(system_spec_file)
           end
         end
+
+        write_array_to_file(predictive_tests_pathname, matching_system_tests)
       end
 
       # Keep the files that are in the @js_base_folders folders
       #
       # Returns a hash, where the key is the GitLab edition, and the values the JS specs
-      def filter_files(changed_files)
+      def filter_files
         selected_files = changed_files.select do |filename|
           filename.start_with?(*@js_base_folders) && File.exist?(filename)
         end
@@ -55,8 +61,12 @@ module Tooling
       def system_specs_for_edition(edition)
         all_files_in_folders_glob = File.join(@system_specs_base_folder, '**', '*')
         all_files_in_folders_glob = File.join(edition, all_files_in_folders_glob) if edition
-        Dir[all_files_in_folders_glob].select { |f| File.file?(f) }
+        Dir[all_files_in_folders_glob].select { |f| File.file?(f) && f.end_with?('_spec.rb') }
       end
+
+      private
+
+      attr_reader :changed_files, :predictive_tests_pathname
     end
   end
 end

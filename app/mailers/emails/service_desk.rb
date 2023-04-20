@@ -43,6 +43,61 @@ module Emails
       inject_service_desk_custom_email(mail_answer_thread(@issue, options))
     end
 
+    def service_desk_custom_email_verification_email(service_desk_setting)
+      @service_desk_setting = service_desk_setting
+
+      email_sender = sender(
+        User.support_bot.id,
+        send_from_user_email: false,
+        sender_name: @service_desk_setting.outgoing_name,
+        sender_email: @service_desk_setting.custom_email
+      )
+
+      @verification_token = @service_desk_setting.custom_email_verification.token
+
+      subject = format(s_("Notify|Verify custom email address %{email} for %{project_name}"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      options = {
+        from: email_sender,
+        to: @service_desk_setting.custom_email_address_for_verification,
+        subject: subject,
+        content_type: "text/plain"
+      }
+      # Outgoing emails from GitLab usually have this set to true.
+      # Service Desk email ingestion ignores auto generated emails.
+      headers["Auto-Submitted"] = "no"
+
+      inject_service_desk_custom_email(mail_with_locale(options), force: true)
+    end
+
+    def service_desk_verification_triggered_email(service_desk_setting, recipient)
+      @service_desk_setting = service_desk_setting
+      @triggerer = @service_desk_setting.custom_email_verification.triggerer
+      @smtp_address = @service_desk_setting.custom_email_credential.smtp_address
+
+      subject = format(s_("Notify|Verification for custom email %{email} for %{project_name} triggered"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      email_with_layout(to: recipient, subject: subject)
+    end
+
+    def service_desk_verification_result_email(service_desk_setting, recipient)
+      @service_desk_setting = service_desk_setting
+      @verification = @service_desk_setting.custom_email_verification
+
+      subject = format(s_("Notify|Verification result for custom email %{email} for %{project_name}"),
+        email: @service_desk_setting.custom_email,
+        project_name: @service_desk_setting.project.name
+      )
+
+      email_with_layout(to: recipient, subject: subject)
+    end
+
     private
 
     def setup_service_desk_mail(issue_id)
@@ -67,10 +122,11 @@ module Emails
       end
     end
 
-    def inject_service_desk_custom_email(mail)
-      return mail unless service_desk_custom_email_enabled?
+    def inject_service_desk_custom_email(mail, force: false)
+      return mail if !service_desk_custom_email_enabled? && !force
+      return mail unless @service_desk_setting.custom_email_credential.present?
 
-      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_delivery_options)
+      mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
     end
 
     def service_desk_custom_email_enabled?

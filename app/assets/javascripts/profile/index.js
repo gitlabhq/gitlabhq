@@ -13,15 +13,17 @@ export const initProfileTabs = () => {
 
   if (!el) return false;
 
-  const { followees, followers, userCalendarPath, utcOffset } = el.dataset;
+  const { followees, followers, userCalendarPath, utcOffset, userId } = el.dataset;
 
   return new Vue({
     el,
+    name: 'ProfileRoot',
     provide: {
       followees: parseInt(followers, 10),
       followers: parseInt(followees, 10),
       userCalendarPath,
       utcOffset,
+      userId,
     },
     render(createElement) {
       return createElement(ProfileTabs);

@@ -23,6 +23,8 @@ You need an token to publish a package. There are different tokens available dep
 
 Create a token and save it to use later in the process.
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 ### Naming convention
 
 Depending on how the package is installed, you may need to adhere to the naming convention.
@@ -122,21 +124,50 @@ You can install a package from a GitLab project or instance:
 - **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
 - **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
 
+### Authenticate to the Package Registry
+
+You must authenticate to the Package Registry to install a package from a private project.
+No authentication is needed if the project is public.
+
+To authenticate with `npm`:
+
+```shell
+npm config set -- //your_domain_name/:_authToken=your_token
+```
+
+With npm version 7 or earlier, use the full URL to the endpoint.
+
+If you're installing:
+
+- From the instance level:
+
+  ```shell
+  npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
+  ```
+
+  From the project level:
+
+  ```shell
+  npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
+  ```
+
+In these examples:
+
+- Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
+- Replace `your_project_id` is your project ID, found on the project's home page.
+- Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+
+NOTE:
+Starting with npm version 8, you can [use a URI fragment instead of a full URL](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc?v=true#auth-related-configuration)
+in the `_authToken` parameter. However, [group-level endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/299834)
+are not supported.
+
 ### Install from the instance level
 
 WARNING:
 To install a package from the instance level, the package must have been published following the scoped [naming convention](#naming-convention).
 
-1. Authenticate to the Package Registry
-
-   If you would like to install a package from a private project, you would have to authenticate to the Package Registry. Skip this step if the project is not private.
-
-   ```shell
-   npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
-   ```
-
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 
@@ -156,17 +187,7 @@ To install a package from the instance level, the package must have been publish
 
 ### Install from the project level
 
-1. Authenticate to the Package Registry
-
-   If you would like to install a package from a private project, you would have to authenticate to the Package Registry. Skip this step if the project is not private.
-
-   ```shell
-   npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
-   ```
-
-   - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_project_id` is your project ID, found on the project's home page.
-   - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
+1. [Authenticate to the Package Registry](#authenticate-to-the-package-registry).
 
 1. Set the registry
 
@@ -183,6 +204,39 @@ To install a package from the instance level, the package must have been publish
    ```shell
    npm install @scope/my-package
    ```
+
+## Deprecate a package
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
+
+You can deprecate a package so that a deprecation warning displays when the package is fetched.
+
+Pre-requisites:
+
+- The same [permissions](../../permissions.md) as deleting a package.
+- [Authenticated to the package registry](#authentication-to-the-package-registry).
+
+From the command line, run:
+
+```shell
+npm deprecate @scope/package "Deprecation message"
+```
+
+The CLI also accepts version ranges for `@scope/package`. For example:
+
+```shell
+npm deprecate @scope/package "All package versions are deprecated"
+npm deprecate @scope/package@1.0.1 "Only version 1.0.1 is deprecated"
+npm deprecate @scope/package@"< 1.0.5" "All package versions less than 1.0.5 are deprecated"
+```
+
+### Remove deprecation warning
+
+To remove a package's deprecation warning, specify `""` (an empty string) for the message. For example:
+
+```shell
+npm deprecate @scope/package ""
+```
 
 ## Helpful hints
 
@@ -272,6 +326,8 @@ The GitLab npm repository supports the following commands for the npm CLI (`npm`
 - `npm dist-tag rm`: Delete a dist-tag.
 - `npm ci`: Install npm packages directly from your `package-lock.json` file.
 - `npm view`: Show package metadata.
+- `npm pack`: Create a tarball from a package.
+- `npm deprecate`: Deprecate a version of a package.
 
 ## Troubleshooting
 

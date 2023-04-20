@@ -8,7 +8,7 @@ module Expirable
   included do
     scope :not, ->(scope) { where(scope.arel.constraints.reduce(:and).not) }
 
-    scope :expired, -> { where('expires_at IS NOT NULL AND expires_at <= ?', Time.current) }
+    scope :expired, -> { where.not(expires_at: nil).where(arel_table[:expires_at].lteq(Time.current)) }
     scope :not_expired, -> { self.not(expired) }
   end
 

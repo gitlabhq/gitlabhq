@@ -75,28 +75,28 @@ To configure visibility, features, and permissions for a project:
 
 Use the toggles to enable or disable features in the project.
 
-| Option                           | More access limit options | Description                                                                                                                                            |
-| :------------------------------- | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Issues**                       | ✓                         | Activates the GitLab issues tracker.                                                                                                                   |
-| **Repository**                   | ✓                         | Enables [repository](../repository/index.md) functionality                                                                                             |
-| **Merge requests**               | ✓                         | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project). |
-| **Forks**                        | ✓                         | Enables [forking](../repository/forking_workflow.md) functionality.                                                                                    |
-| **Git Large File Storage (LFS)** |                           | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs).                                                         |
-| **Packages**                     |                           | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality.        |
-| **CI/CD**                        | ✓                         | Enables [CI/CD](../../../ci/index.md) functionality.                                                                                                   |
-| **Container Registry**           |                           | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.                                                             |
-| **Analytics**                    | ✓                         | Enables [analytics](../../analytics/index.md).                                                                                                         |
-| **Requirements**                 | ✓                         | Control access to [Requirements Management](../requirements/index.md).                                                                                 |
-| **Security and Compliance**      | ✓                         | Control access to [security features](../../application_security/index.md).                                                                            |
-| **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md).                                                                                       |
-| **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md).                                                                                                 |
-| **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md).                                                                                            |
-| **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                  |
-| **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                    |
-| **Environments**                 | ✓                         | Control access to [Environments and Deployments](../../../ci/environments/index.md).                                                                   |
-| **Feature flags**                | ✓                         | Control access to [Feature Flags](../../../operations/feature_flags.md).                                                                               |
-| **Monitor**                      | ✓                         | Control access to [Monitor](../../../operations/index.md) features.                                                                                    |
-| **Infrastructure**               | ✓                         | Control access to [Infrastructure](../../infrastructure/index.md) features.                                                                            |
+| Option                           | More access limit options | Description
+| :------------------------------- | :------------------------ | :---------- |
+| **Issues**                       | **{check-circle}** Yes | Activates the GitLab issues tracker.
+| **Repository**                   | **{check-circle}** Yes | Enables [repository](../repository/index.md) functionality.
+| **Merge requests**               | **{check-circle}** Yes | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project).
+| **Forks**                        | **{check-circle}** Yes | Enables [forking](../repository/forking_workflow.md) functionality.
+| **Git Large File Storage (LFS)** | **{dotted-circle}** No | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs).
+| **Packages**                     | **{dotted-circle}** No | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality.
+| **CI/CD**                        | **{check-circle}** Yes | Enables [CI/CD](../../../ci/index.md) functionality.
+| **Container Registry**           | **{dotted-circle}** No | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.
+| **Analytics**                    | **{check-circle}** Yes | Enables [analytics](../../analytics/index.md).
+| **Requirements**                 | **{check-circle}** Yes | Control access to [Requirements Management](../requirements/index.md).
+| **Security and Compliance**      | **{check-circle}** Yes | Control access to [security features](../../application_security/index.md).
+| **Wiki**                         | **{check-circle}** Yes | Enables a separate system for [documentation](../wiki/index.md).
+| **Snippets**                     | **{check-circle}** Yes | Enables [sharing of code and text](../../snippets.md).
+| **Pages**                        | **{check-circle}** Yes | Allows you to [publish static websites](../pages/index.md).
+| **Metrics Dashboard**            | **{check-circle}** Yes | Control access to [metrics dashboard](../integrations/prometheus.md).
+| **Releases**                     | **{check-circle}** Yes | Control access to [Releases](../releases/index.md).
+| **Environments**                 | **{check-circle}** Yes | Control access to [Environments and Deployments](../../../ci/environments/index.md).
+| **Feature flags**                | **{check-circle}** Yes | Control access to [Feature flags](../../../operations/feature_flags.md).
+| **Monitor**                      | **{check-circle}** Yes | Control access to [Monitor](../../../operations/index.md) features.
+| **Infrastructure**               | **{check-circle}** Yes | Control access to [Infrastructure](../../infrastructure/index.md) features.
 
 When you disable a feature, the following additional features are also disabled:
 
@@ -162,6 +162,7 @@ Configure your project's merge request settings:
 - Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 - Configure [merge and squash commit message templates](../merge_requests/commit_templates.md).
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
+- Enable [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers).
 
 ## Service Desk
 
@@ -174,7 +175,7 @@ Learn how to [export a project](import_export.md#import-a-project-and-its-data) 
 ## Advanced project settings
 
 Use the advanced settings to archive, rename, transfer,
-remove a fork relationship, or delete a project.
+[remove a fork relationship](../repository/forking_workflow.md#unlink-a-fork), or delete a project.
 
 ### Archive a project
 
@@ -347,24 +348,6 @@ To restore a project marked for deletion:
 1. Navigate to your project, and select **Settings > General > Advanced**.
 1. In the Restore project section, select **Restore project**.
 
-## Remove a fork relationship
-
-Prerequisites:
-
-- You must be a project owner to remove a fork relationship.
-
-WARNING:
-If you remove a fork relationship, you can't send merge requests to the source. If anyone has forked your project, their fork also loses the relationship.
-To restore the fork relationship, [use the API](../../../api/projects.md#create-a-forked-fromto-relation-between-existing-projects).
-
-To remove a fork relationship:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Remove fork relationship** section, select **Remove fork relationship**.
-1. To confirm, enter the project path and select **Confirm**.
-
 ## Monitor settings
 
 ### Alerts
@@ -397,16 +380,6 @@ to enable the syncing of public Issues to a [deployed status page](../../../oper
 ## Troubleshooting
 
 When working with project settings, you might encounter the following issues, or require alternate methods to complete specific tasks.
-
-### Remove a fork relationship through console
-
-If removing the fork through the UI or API is not working, you can attempt the fork relationship removal in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-
-```ruby
-p = Project.find_by_full_path('<project_path>')
-u = User.find_by_username('<username>')
-Projects::UnlinkForkService.new(p, u).execute
-```
 
 ### Transfer a project through console
 

@@ -86,6 +86,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
           project.id,
           {
             merge_request_id: merge_request_1.id,
+            merge_request_iid: merge_request_1.iid,
             users: [
               { id: 4, login: 'alice' },
               { id: 5, login: 'bob' }
@@ -97,6 +98,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
           project.id,
           {
             merge_request_id: merge_request_2.id,
+            merge_request_iid: merge_request_2.iid,
             users: [
               { id: 4, login: 'alice' }
             ]

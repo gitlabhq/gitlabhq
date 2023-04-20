@@ -1,0 +1,6 @@
+fragment DeploymentJob on CiJob {
+  name
+  id
+  webPath
+  playable
+}

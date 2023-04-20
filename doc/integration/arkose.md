@@ -156,5 +156,5 @@ The [Anti-abuse team](https://about.gitlab.com/handbook/engineering/development/
 ArkoseLabs also maintains the following resources:
 
 - [ArkoseLabs portal](https://portal.arkoselabs.com/)
-- [ArkoseLabs Zendesk](https://support.arkoselabs.com/)
+- [ArkoseLabs Zendesk](https://support.arkoselabs.com/hc/en-us)
 - [ArkoseLabs documentation](https://developer.arkoselabs.com/docs/documentation-guide)

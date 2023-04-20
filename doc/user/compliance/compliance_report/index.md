@@ -85,10 +85,10 @@ The following are unavailable compliance violations that are tracked in [epic 52
 |:-------------------------------------|:---------------|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
 | Pipeline failed                      | Medium         | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge requests pipeline failed and was merged.                                                     |
 | Pipeline passed with warnings        | Info           | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge request pipeline passed with warnings and was merged.                                        |
-| Code coverage down more than 10%     | High           | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of more than 10%.     |
-| Code coverage down between 5% to 10% | Medium         | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%. |
-| Code coverage down between 1% to 5%  | Low            | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.  |
-| Code coverage down less than 1%      | Info           | [Code coverage](../../../ci/pipelines/settings.md#merge-request-test-coverage-results) | Code coverage report for the merge request indicates a reduction in coverage of less than 1%.      |
+| Code coverage down more than 10%     | High           | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of more than 10%.     |
+| Code coverage down between 5% to 10% | Medium         | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%. |
+| Code coverage down between 1% to 5%  | Low            | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.  |
+| Code coverage down less than 1%      | Info           | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of less than 1%.      |
 
 <!-- vale gitlab.SubstitutionWarning = YES -->
 
@@ -170,7 +170,8 @@ passing in an optional value to the `commit_sha` query parameter.
 
 ## Compliance frameworks report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+> - Support for applying/removing compliance framework [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11
 
 With compliance frameworks report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
 
@@ -191,3 +192,51 @@ To view the compliance frameworks report:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security & Compliance > Compliance report**.
 1. On the page, select the **Frameworks** tab.
+
+### Apply a compliance framework to projects in a group
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To apply a compliance framework to projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. Select one or more projects.
+1. From the **Choose one bulk action** dropdown list, select **Apply framework to selected projects**.
+1. Select framework to apply.
+1. Select **Apply**.
+
+### Remove a compliance framework from projects in a group
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To remove a compliance framework from projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. Select one or more projects.
+1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
+1. Select **Remove**.
+
+#### Filter the compliance frameworks report
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
+
+To filter the list of compliance frameworks:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security & Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. In the search field:
+   1. Select the attribute you want to filter by.
+   1. Select an operator.
+   1. Select from the list of options or enter text for the search.
+1. Select **Search** (**{search}**).
+
+Repeat this process to filter by multiple attributes.

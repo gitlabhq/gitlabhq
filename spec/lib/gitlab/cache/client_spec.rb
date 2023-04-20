@@ -8,14 +8,12 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
   let(:backend) { Rails.cache }
   let(:metadata) do
     Gitlab::Cache::Metadata.new(
-      caller_id: caller_id,
       cache_identifier: cache_identifier,
       feature_category: feature_category,
       backing_resource: backing_resource
     )
   end
 
-  let(:caller_id) { 'caller-id' }
   let(:cache_identifier) { 'MyClass#cache' }
   let(:feature_category) { :source_code_management }
   let(:backing_resource) { :cpu }
@@ -32,7 +30,6 @@ RSpec.describe Gitlab::Cache::Client, feature_category: :source_code_management 
   describe '.build_with_metadata' do
     it 'builds a cache client with metrics support' do
       attributes = {
-        caller_id: caller_id,
         cache_identifier: cache_identifier,
         feature_category: feature_category,
         backing_resource: backing_resource

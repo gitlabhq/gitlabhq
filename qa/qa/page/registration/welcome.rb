@@ -17,7 +17,7 @@ module QA
           select_element(:role_dropdown, role)
         end
 
-        def choose_setup_for_company_if_available
+        def choose_setup_for_just_me_if_available
           # Only implemented in EE
         end
 

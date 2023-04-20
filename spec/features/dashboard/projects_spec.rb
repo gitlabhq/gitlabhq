@@ -18,7 +18,7 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
     end
   end
 
-  it_behaves_like "a dashboard page with sidebar", :dashboard_projects_path, :projects
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_projects_path, :projects
 
   it 'links to the "Explore projects" page' do
     visit dashboard_projects_path
@@ -112,6 +112,8 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
   end
 
   context 'when on Starred projects tab', :js do
+    it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :starred_dashboard_projects_path, :projects
+
     it 'shows the empty state when there are no starred projects' do
       visit(starred_dashboard_projects_path)
 

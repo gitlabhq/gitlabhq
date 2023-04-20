@@ -1,173 +1,119 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Vuex from 'vuex';
+import { GlAlert, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import waitForPromises from 'helpers/wait_for_promises';
+import * as transitionModule from '~/vue_shared/components/diff_viewer/utils';
 import {
+  TRANSITION_ACKNOWLEDGE_ERROR,
   TRANSITION_LOAD_START,
   TRANSITION_LOAD_ERROR,
   TRANSITION_LOAD_SUCCEED,
-  TRANSITION_ACKNOWLEDGE_ERROR,
   STATE_IDLING,
   STATE_LOADING,
-  STATE_ERRORED,
 } from '~/diffs/constants';
 import Renamed from '~/vue_shared/components/diff_viewer/viewers/renamed.vue';
 
 Vue.use(Vuex);
 
-function createRenamedComponent({ props = {}, store = new Vuex.Store({}), deep = false }) {
+let wrapper;
+let store;
+let event;
+
+const DIFF_FILE_COMMIT_SHA = 'commitsha';
+const DIFF_FILE_SHORT_SHA = 'commitsh';
+const DIFF_FILE_VIEW_PATH = `blob/${DIFF_FILE_COMMIT_SHA}/filename.ext`;
+
+const defaultStore = {
+  modules: {
+    diffs: {
+      namespaced: true,
+      actions: { switchToFullDiffFromRenamedFile: jest.fn().mockResolvedValue() },
+    },
+  },
+};
+const diffFile = {
+  content_sha: DIFF_FILE_COMMIT_SHA,
+  view_path: DIFF_FILE_VIEW_PATH,
+  alternate_viewer: {
+    name: 'text',
+  },
+};
+const defaultProps = { diffFile };
+
+function createRenamedComponent({ props = {}, storeArg = defaultStore, deep = false } = {}) {
+  store = new Vuex.Store(storeArg);
   const mnt = deep ? mount : shallowMount;
 
-  return mnt(Renamed, {
-    propsData: { ...props },
+  wrapper = mnt(Renamed, {
+    propsData: { ...defaultProps, ...props },
     store,
   });
 }
 
-describe('Renamed Diff Viewer', () => {
-  const DIFF_FILE_COMMIT_SHA = 'commitsha';
-  const DIFF_FILE_SHORT_SHA = 'commitsh';
-  const DIFF_FILE_VIEW_PATH = `blob/${DIFF_FILE_COMMIT_SHA}/filename.ext`;
-  let diffFile;
-  let wrapper;
+const findErrorAlert = () => wrapper.findComponent(GlAlert);
+const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+const findShowFullDiffBtn = () => wrapper.findComponent(GlLink);
+const findPlainText = () => wrapper.find('[test-id="plaintext"]');
 
+describe('Renamed Diff Viewer', () => {
   beforeEach(() => {
-    diffFile = {
-      content_sha: DIFF_FILE_COMMIT_SHA,
-      view_path: DIFF_FILE_VIEW_PATH,
-      alternate_viewer: {
-        name: 'text',
-      },
+    event = {
+      preventDefault: jest.fn(),
     };
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
-  describe('is', () => {
+  describe('when clicking to load full diff', () => {
     beforeEach(() => {
-      wrapper = createRenamedComponent({ props: { diffFile } });
+      createRenamedComponent();
     });
 
-    it.each`
-      state        | request      | result
-      ${'idle'}    | ${'idle'}    | ${true}
-      ${'idle'}    | ${'loading'} | ${false}
-      ${'idle'}    | ${'errored'} | ${false}
-      ${'loading'} | ${'loading'} | ${true}
-      ${'loading'} | ${'idle'}    | ${false}
-      ${'loading'} | ${'errored'} | ${false}
-      ${'errored'} | ${'errored'} | ${true}
-      ${'errored'} | ${'idle'}    | ${false}
-      ${'errored'} | ${'loading'} | ${false}
-    `(
-      'returns the $result for "$request" when the state is "$state"',
-      ({ request, result, state }) => {
-        wrapper.vm.state = state;
+    it('shows a loading state', async () => {
+      expect(findLoadingIcon().exists()).toBe(false);
 
-        expect(wrapper.vm.is(request)).toEqual(result);
-      },
-    );
-  });
+      await findShowFullDiffBtn().vm.$emit('click', event);
 
-  describe('transition', () => {
-    beforeEach(() => {
-      wrapper = createRenamedComponent({ props: { diffFile } });
+      expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it.each`
-      state        | transition                      | result
-      ${'idle'}    | ${TRANSITION_LOAD_START}        | ${STATE_LOADING}
-      ${'idle'}    | ${TRANSITION_LOAD_ERROR}        | ${STATE_IDLING}
-      ${'idle'}    | ${TRANSITION_LOAD_SUCCEED}      | ${STATE_IDLING}
-      ${'idle'}    | ${TRANSITION_ACKNOWLEDGE_ERROR} | ${STATE_IDLING}
-      ${'loading'} | ${TRANSITION_LOAD_START}        | ${STATE_LOADING}
-      ${'loading'} | ${TRANSITION_LOAD_ERROR}        | ${STATE_ERRORED}
-      ${'loading'} | ${TRANSITION_LOAD_SUCCEED}      | ${STATE_IDLING}
-      ${'loading'} | ${TRANSITION_ACKNOWLEDGE_ERROR} | ${STATE_LOADING}
-      ${'errored'} | ${TRANSITION_LOAD_START}        | ${STATE_LOADING}
-      ${'errored'} | ${TRANSITION_LOAD_ERROR}        | ${STATE_ERRORED}
-      ${'errored'} | ${TRANSITION_LOAD_SUCCEED}      | ${STATE_ERRORED}
-      ${'errored'} | ${TRANSITION_ACKNOWLEDGE_ERROR} | ${STATE_IDLING}
-    `(
-      'correctly updates the state to "$result" when it starts as "$state" and the transition is "$transition"',
-      ({ state, transition, result }) => {
-        wrapper.vm.state = state;
-
-        wrapper.vm.transition(transition);
-
-        expect(wrapper.vm.state).toEqual(result);
-      },
-    );
-  });
-
-  describe('switchToFull', () => {
-    let store;
-
-    beforeEach(() => {
-      store = new Vuex.Store({
-        modules: {
-          diffs: {
-            namespaced: true,
-            actions: { switchToFullDiffFromRenamedFile: () => {} },
-          },
-        },
-      });
-
+    it('calls the switchToFullDiffFromRenamedFile action when the method is triggered', () => {
       jest.spyOn(store, 'dispatch');
 
-      wrapper = createRenamedComponent({ props: { diffFile }, store });
-    });
+      findShowFullDiffBtn().vm.$emit('click', event);
 
-    afterEach(() => {
-      store = null;
-    });
-
-    it('calls the switchToFullDiffFromRenamedFile action when the method is triggered', async () => {
-      store.dispatch.mockResolvedValue();
-
-      wrapper.vm.switchToFull();
-
-      await nextTick();
       expect(store.dispatch).toHaveBeenCalledWith('diffs/switchToFullDiffFromRenamedFile', {
         diffFile,
       });
     });
 
     it.each`
-      after            | resolvePromise         | resolution
-      ${STATE_IDLING}  | ${'mockResolvedValue'} | ${'successful'}
-      ${STATE_ERRORED} | ${'mockRejectedValue'} | ${'rejected'}
+      after                      | resolvePromise         | resolution
+      ${TRANSITION_LOAD_SUCCEED} | ${'mockResolvedValue'} | ${'successful'}
+      ${TRANSITION_LOAD_ERROR}   | ${'mockRejectedValue'} | ${'rejected'}
     `(
       'moves through the correct states during a $resolution request',
       async ({ after, resolvePromise }) => {
-        store.dispatch[resolvePromise]();
+        jest.spyOn(transitionModule, 'transition');
+        store.dispatch = jest.fn()[resolvePromise]();
 
-        expect(wrapper.vm.state).toEqual(STATE_IDLING);
+        expect(transitionModule.transition).not.toHaveBeenCalled();
 
-        wrapper.vm.switchToFull();
+        findShowFullDiffBtn().vm.$emit('click', event);
 
-        expect(wrapper.vm.state).toEqual(STATE_LOADING);
+        expect(transitionModule.transition).toHaveBeenCalledWith(
+          STATE_IDLING,
+          TRANSITION_LOAD_START,
+        );
 
-        await nextTick(); // This tick is needed for when the action (promise) finishes
-        await nextTick(); // This tick waits for the state change in the promise .then/.catch to bubble into the component
-        expect(wrapper.vm.state).toEqual(after);
+        await waitForPromises();
+
+        expect(transitionModule.transition).toHaveBeenCalledTimes(2);
+        expect(transitionModule.transition.mock.calls[1]).toEqual([STATE_LOADING, after]);
       },
     );
   });
 
   describe('clickLink', () => {
-    let event;
-
-    beforeEach(() => {
-      event = {
-        preventDefault: jest.fn(),
-      };
-    });
-
     it.each`
       alternateViewer | stops    | handled
       ${'text'}       | ${true}  | ${'should'}
@@ -175,42 +121,51 @@ describe('Renamed Diff Viewer', () => {
     `(
       'given { alternate_viewer: { name: "$alternateViewer" } }, the click event $handled be handled in the component',
       ({ alternateViewer, stops }) => {
-        wrapper = createRenamedComponent({
-          props: {
-            diffFile: {
-              ...diffFile,
-              alternate_viewer: { name: alternateViewer },
-            },
+        const props = {
+          diffFile: {
+            ...diffFile,
+            alternate_viewer: { name: alternateViewer },
           },
+        };
+
+        createRenamedComponent({
+          props,
         });
 
-        jest.spyOn(wrapper.vm, 'switchToFull').mockImplementation(() => {});
+        store.dispatch = jest.fn().mockResolvedValue();
 
-        wrapper.vm.clickLink(event);
+        findShowFullDiffBtn().vm.$emit('click', event);
 
         if (stops) {
           expect(event.preventDefault).toHaveBeenCalled();
-          expect(wrapper.vm.switchToFull).toHaveBeenCalled();
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'diffs/switchToFullDiffFromRenamedFile',
+            props,
+          );
         } else {
           expect(event.preventDefault).not.toHaveBeenCalled();
-          expect(wrapper.vm.switchToFull).not.toHaveBeenCalled();
+          expect(store.dispatch).not.toHaveBeenCalled();
         }
       },
     );
   });
 
   describe('dismissError', () => {
-    let transitionSpy;
-
     beforeEach(() => {
-      wrapper = createRenamedComponent({ props: { diffFile } });
-      transitionSpy = jest.spyOn(wrapper.vm, 'transition');
+      createRenamedComponent({ props: { diffFile } });
     });
 
     it(`transitions the component with "${TRANSITION_ACKNOWLEDGE_ERROR}"`, () => {
-      wrapper.vm.dismissError();
+      jest.spyOn(transitionModule, 'transition');
 
-      expect(transitionSpy).toHaveBeenCalledWith(TRANSITION_ACKNOWLEDGE_ERROR);
+      expect(transitionModule.transition).not.toHaveBeenCalled();
+
+      findErrorAlert().vm.$emit('dismiss');
+
+      expect(transitionModule.transition).toHaveBeenCalledWith(
+        expect.stringContaining(''),
+        TRANSITION_ACKNOWLEDGE_ERROR,
+      );
     });
   });
 
@@ -224,14 +179,19 @@ describe('Renamed Diff Viewer', () => {
     `(
       'with { alternate_viewer: { name: $nameDisplay } }, renders the component',
       ({ altViewer }) => {
-        const file = { ...diffFile };
+        createRenamedComponent({
+          props: {
+            diffFile: {
+              ...diffFile,
+              alternate_viewer: {
+                ...diffFile.alternate_viewer,
+                name: altViewer,
+              },
+            },
+          },
+        });
 
-        file.alternate_viewer.name = altViewer;
-        wrapper = createRenamedComponent({ props: { diffFile: file } });
-
-        expect(wrapper.find('[test-id="plaintext"]').text()).toEqual(
-          'File renamed with no changes.',
-        );
+        expect(findPlainText().text()).toBe('File renamed with no changes.');
       },
     );
 
@@ -245,15 +205,15 @@ describe('Renamed Diff Viewer', () => {
         const file = { ...diffFile };
 
         file.alternate_viewer.name = altType;
-        wrapper = createRenamedComponent({
+        createRenamedComponent({
           deep: true,
           props: { diffFile: file },
         });
 
-        const link = wrapper.find('a');
+        const link = findShowFullDiffBtn();
 
-        expect(link.text()).toEqual(linkText);
-        expect(link.attributes('href')).toEqual(DIFF_FILE_VIEW_PATH);
+        expect(link.text()).toBe(linkText);
+        expect(link.attributes('href')).toBe(DIFF_FILE_VIEW_PATH);
       },
     );
   });

@@ -18,7 +18,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - [Activate GitLab EE with a license](../user/admin_area/license.md)
 - [Add a help message to the sign-in page](../user/admin_area/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
 - [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md) in the [Milestone View](../user/project/milestones/index.md#burndown-charts),
-- [Code owners](../user/project/code_owners.md)
+- [Code owners](../user/project/codeowners/index.md)
 - Description templates:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../user/admin_area/email_from_gitlab.md)
@@ -71,7 +71,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/protected_branches.md)
-  - [Visual Reviews](../ci/review_apps/index.md#visual-reviews)
+  - [Visual Reviews (deprecated)](../ci/review_apps/index.md#visual-reviews-deprecated)
 - Metrics and analytics:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)

@@ -17,6 +17,14 @@ GitLab features use it, including:
 - [Web Editor](../../user/project/repository/web_editor.md)
 - [Security Policies](../../user/application_security/policies/index.md)
 
+## When to use Source Editor
+
+Use Source Editor only when users need to edit the file content.
+If you only need to display source code, consider using the [`BlobContent`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/blob/components/blob_content.vue) component.
+
+If the page you're working on is already loading the Source Editor,
+displaying read-only content in the Source Editor is still a valid option.
+
 ## How to use Source Editor
 
 Source Editor is framework-agnostic and can be used in any application, including both
@@ -56,7 +64,7 @@ An instance of Source Editor accepts the following configuration options:
 | `blobContent`  | `false` | `String`: The initial content to render in the editor. |
 | `extensions`   | `false` | `Array`: Extensions to use in this instance. |
 | `blobGlobalId` | `false` | `String`: An auto-generated property.<br>**Note:** This property may go away in the future. Do not pass `blobGlobalId` unless you know what you're doing.|
-| Editor Options | `false` | `Object(s)`: Any property outside of the list above is treated as an Editor Option for this particular instance. Use this field to override global Editor Options on the instance level. A full [index of Editor Options](https://microsoft.github.io/monaco-editor/api/enums/monaco.editor.EditorOption.html) is available. |
+| Editor Options | `false` | `Object(s)`: Any property outside of the list above is treated as an Editor Option for this particular instance. Use this field to override global Editor Options on the instance level. A full [index of Editor Options](https://microsoft.github.io/monaco-editor/docs.html#enums/editor.EditorOption.html) is available. |
 
 ## API
 
@@ -68,7 +76,7 @@ with additional functions on the instance level:
 | --------------------- | ----- | ----- |
 | `updateModelLanguage` | `path`: String | Updates the instance's syntax highlighting to follow the extension of the passed `path`. Available only on the instance level. |
 | `use`                 | Array of objects | Array of extensions to apply to the instance. Accepts only an array of **objects**. The extensions' ES6 modules must be fetched and resolved in your views or components before they're passed to `use`. Available on the instance and global editor (all instances) levels. |
-| Monaco Editor options | See [documentation](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html) | Default Monaco editor options. |
+| Monaco Editor options | See [documentation](https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor.IStandaloneCodeEditor.html) | Default Monaco editor options. |
 
 ## Tips
 

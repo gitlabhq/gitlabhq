@@ -32,7 +32,7 @@ describe('Infrastructure Title', () => {
     });
 
     it('has the correct title', () => {
-      expect(findTitleArea().props('title')).toBe('Infrastructure Registry');
+      expect(findTitleArea().props('title')).toBe('Terraform Module Registry');
     });
 
     describe('with no modules', () => {

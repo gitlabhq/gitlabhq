@@ -112,6 +112,15 @@ After configuring your SAML IdP to allow the secondary site's SAML callback URL,
 
 If you have configured SAML on the primary site correctly, then it should work on the secondary site without additional configuration.
 
+## OpenID Connect
+
+If you use an [OpenID Connect (OIDC)](../../auth/oidc.md) OmniAuth provider,
+in most cases, it should work without an issue:
+
+- **OIDC with Unified URL**: If you have configured OIDC on the primary site correctly, then it should work on the secondary site without additional configuration.
+- **OIDC with separate URL with proxying disabled**: If you have configured OIDC on the primary site correctly, then it should work on the secondary site without additional configuration.
+- **OIDC with separate URL with proxying enabled**: Geo with separate URL with proxying enabled does not support [OpenID Connect](../../auth/oidc.md). For more information, see [issue 396745](https://gitlab.com/gitlab-org/gitlab/-/issues/396745).
+
 ## LDAP
 
 If you use LDAP on your **primary** site, you should also set up secondary LDAP servers on each **secondary** site. Otherwise, users cannot perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.

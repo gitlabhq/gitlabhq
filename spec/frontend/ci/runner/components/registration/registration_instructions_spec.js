@@ -22,16 +22,13 @@ import {
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
   I18N_REGISTRATION_SUCCESS,
 } from '~/ci/runner/constants';
-import { runnerForRegistration } from '../../mock_data';
+import { runnerForRegistration, mockAuthenticationToken } from '../../mock_data';
 
 Vue.use(VueApollo);
 
-const MOCK_TOKEN = 'MOCK_TOKEN';
-const mockDescription = runnerForRegistration.data.runner.description;
-
 const mockRunner = {
   ...runnerForRegistration.data.runner,
-  ephemeralAuthenticationToken: MOCK_TOKEN,
+  ephemeralAuthenticationToken: mockAuthenticationToken,
 };
 const mockRunnerWithoutToken = {
   ...runnerForRegistration.data.runner,
@@ -51,6 +48,18 @@ describe('RegistrationInstructions', () => {
   const waitForPolling = async () => {
     jest.advanceTimersByTime(RUNNER_REGISTRATION_POLLING_INTERVAL_MS);
     await waitForPromises();
+  };
+
+  const mockBeforeunload = () => {
+    const event = new Event('beforeunload');
+    const preventDefault = jest.spyOn(event, 'preventDefault');
+    const returnValueSetter = jest.spyOn(event, 'returnValue', 'set');
+
+    return {
+      event,
+      preventDefault,
+      returnValueSetter,
+    };
   };
 
   const mockResolvedRunner = (runner = mockRunner) => {
@@ -84,7 +93,7 @@ describe('RegistrationInstructions', () => {
     window.gon.gitlab_url = TEST_HOST;
   });
 
-  it('loads runner with id', async () => {
+  it('loads runner with id', () => {
     createComponent();
 
     expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });
@@ -139,13 +148,12 @@ describe('RegistrationInstructions', () => {
         command: [
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${MOCK_TOKEN}`,
-          `  --description '${mockDescription}'`,
+          `  --token ${mockAuthenticationToken}`,
         ],
         prompt: '$',
       });
-      expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-      expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+      expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
+      expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
     });
 
     it('renders step 1 in loading state', () => {
@@ -169,9 +177,8 @@ describe('RegistrationInstructions', () => {
       expect(step1.findComponent(CliCommand).props('command')).toEqual([
         'gitlab-runner register',
         `  --url ${TEST_HOST}`,
-        `  --description '${mockDescription}'`,
       ]);
-      expect(step1.find('[data-testid="runner-token"]').exists()).toBe(false);
+      expect(step1.findByTestId('runner-token').exists()).toBe(false);
       expect(step1.findComponent(ClipboardButton).exists()).toBe(false);
     });
 
@@ -211,11 +218,10 @@ describe('RegistrationInstructions', () => {
         expect(step1.findComponent(CliCommand).props('command')).toEqual([
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${MOCK_TOKEN}`,
-          `  --description '${mockDescription}'`,
+          `  --token ${mockAuthenticationToken}`,
         ]);
-        expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-        expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+        expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
+        expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
       });
 
       it('when runner is not available (e.g. deleted), the UI does not update', async () => {
@@ -226,11 +232,10 @@ describe('RegistrationInstructions', () => {
         expect(step1.findComponent(CliCommand).props('command')).toEqual([
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
-          `  --registration-token ${MOCK_TOKEN}`,
-          `  --description '${mockDescription}'`,
+          `  --token ${mockAuthenticationToken}`,
         ]);
-        expect(step1.find('[data-testid="runner-token"]').text()).toBe(MOCK_TOKEN);
-        expect(step1.findComponent(ClipboardButton).props('text')).toBe(MOCK_TOKEN);
+        expect(step1.findByTestId('runner-token').text()).toBe(mockAuthenticationToken);
+        expect(step1.findComponent(ClipboardButton).props('text')).toBe(mockAuthenticationToken);
       });
     });
   });
@@ -273,6 +278,20 @@ describe('RegistrationInstructions', () => {
       it('does not show success message', () => {
         expect(wrapper.text()).not.toContain(I18N_REGISTRATION_SUCCESS);
       });
+
+      describe('when the page is closing', () => {
+        it('warns the user against closing', () => {
+          const { event, preventDefault, returnValueSetter } = mockBeforeunload();
+
+          expect(preventDefault).not.toHaveBeenCalled();
+          expect(returnValueSetter).not.toHaveBeenCalled();
+
+          window.dispatchEvent(event);
+
+          expect(preventDefault).toHaveBeenCalledWith();
+          expect(returnValueSetter).toHaveBeenCalledWith(expect.any(String));
+        });
+      });
     });
 
     describe('when the runner has been registered', () => {
@@ -287,6 +306,20 @@ describe('RegistrationInstructions', () => {
       it('shows success message', () => {
         expect(wrapper.text()).toContain('🎉');
         expect(wrapper.text()).toContain(I18N_REGISTRATION_SUCCESS);
+      });
+
+      describe('when the page is closing', () => {
+        it('does not warn the user against closing', () => {
+          const { event, preventDefault, returnValueSetter } = mockBeforeunload();
+
+          expect(preventDefault).not.toHaveBeenCalled();
+          expect(returnValueSetter).not.toHaveBeenCalled();
+
+          window.dispatchEvent(event);
+
+          expect(preventDefault).not.toHaveBeenCalled();
+          expect(returnValueSetter).not.toHaveBeenCalled();
+        });
       });
     });
   });

@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
@@ -42,6 +42,7 @@ import { captureException } from '../sentry_utils';
 export default {
   name: 'GroupRunnersApp',
   components: {
+    GlButton,
     GlLink,
     RegistrationDropdown,
     RunnerFilteredSearchBar,
@@ -58,6 +59,11 @@ export default {
   mixins: [glFeatureFlagMixin()],
   inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
+    newRunnerPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
     registrationToken: {
       type: String,
       required: false,
@@ -150,6 +156,10 @@ export default {
     isSearchFiltered() {
       return isSearchFiltered(this.search);
     },
+    shouldShowCreateRunnerWorkflow() {
+      // create_runner_workflow_for_namespace feature flag
+      return this.glFeatures.createRunnerWorkflowForNamespace;
+    },
   },
   watch: {
     search: {
@@ -219,8 +229,13 @@ export default {
         nav-class="gl-border-none!"
       />
 
+      <template v-if="shouldShowCreateRunnerWorkflow">
+        <gl-button v-if="newRunnerPath" :href="newRunnerPath" variant="confirm">
+          {{ s__('Runners|New group runner') }}
+        </gl-button>
+      </template>
       <registration-dropdown
-        v-if="registrationToken"
+        v-else-if="registrationToken"
         class="gl-ml-auto"
         :registration-token="registrationToken"
         :type="$options.GROUP_TYPE"

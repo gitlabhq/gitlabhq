@@ -30,10 +30,12 @@ RSpec.describe 'devise/shared/_signup_box' do
   end
 
   def text(translation)
-    format(translation,
-           button_text: button_text,
-           link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>",
-           link_end: '</a>')
+    format(
+      translation,
+      button_text: button_text,
+      link_start: "<a href='#{terms_path}' target='_blank' rel='noreferrer noopener'>",
+      link_end: '</a>'
+    )
   end
 
   context 'when terms are enforced' do

@@ -14,7 +14,7 @@ RSpec.describe 'getting job information', feature_category: :continuous_integrat
   context 'when user is admin' do
     let_it_be(:current_user) { create(:admin) }
 
-    it 'has full access to all jobs', :aggregate_failure do
+    it 'has full access to all jobs', :aggregate_failures do
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data_at(:jobs, :count)).to eq(1)
@@ -25,14 +25,14 @@ RSpec.describe 'getting job information', feature_category: :continuous_integrat
       let_it_be(:pending_job) { create(:ci_build, :pending) }
       let_it_be(:failed_job) { create(:ci_build, :failed) }
 
-      it 'gets pending jobs', :aggregate_failure do
+      it 'gets pending jobs', :aggregate_failures do
         post_graphql(graphql_query_for(:jobs, { statuses: :PENDING }), current_user: current_user)
 
         expect(graphql_data_at(:jobs, :count)).to eq(1)
         expect(graphql_data_at(:jobs, :nodes)).to contain_exactly(a_graphql_entity_for(pending_job))
       end
 
-      it 'gets pending and failed jobs', :aggregate_failure do
+      it 'gets pending and failed jobs', :aggregate_failures do
         post_graphql(graphql_query_for(:jobs, { statuses: [:PENDING, :FAILED] }), current_user: current_user)
 
         expect(graphql_data_at(:jobs, :count)).to eq(2)
@@ -45,7 +45,7 @@ RSpec.describe 'getting job information', feature_category: :continuous_integrat
   context 'if the user is not an admin' do
     let_it_be(:current_user) { create(:user) }
 
-    it 'has no access to the jobs', :aggregate_failure do
+    it 'has no access to the jobs', :aggregate_failures do
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data_at(:jobs, :count)).to eq(0)

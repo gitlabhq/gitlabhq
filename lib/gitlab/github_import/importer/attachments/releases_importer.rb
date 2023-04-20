@@ -24,7 +24,7 @@ module Gitlab
           private
 
           def collection
-            project.releases.select(:id, :description)
+            project.releases.select(:id, :description, :tag)
           end
         end
       end

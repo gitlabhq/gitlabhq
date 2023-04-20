@@ -28,8 +28,6 @@ You can find a basic list of projection options in
   - [Alternate File](https://marketplace.visualstudio.com/items?itemName=will-wow.vscode-alternate-file)
   - [projectionist](https://github.com/jarsen/projectionist)
   - [`jumpto`](https://github.com/gmdayley/jumpto)
-- Atom
-  - [projectionist-atom](https://atom.io/packages/projectionist-atom)
 - Command-line
   - [projectionist](https://github.com/glittershark/projectionist)
 

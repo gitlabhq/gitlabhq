@@ -37,10 +37,8 @@ RSpec.describe PipelineDetailsEntity, feature_category: :continuous_integration 
       end
 
       it 'contains flags' do
-        expect(subject).to include :flags
-        expect(subject[:flags])
-          .to include :latest, :stuck,
-                      :yaml_errors, :retryable, :cancelable
+        expect(subject).to include(:flags)
+        expect(subject[:flags]).to include(:latest, :stuck, :yaml_errors, :retryable, :cancelable)
       end
     end
 

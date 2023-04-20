@@ -3,6 +3,8 @@
 import $ from 'jquery';
 import 'cropper';
 import { isString } from 'lodash';
+import { s__ } from '~/locale';
+import { createAlert } from '~/alert';
 import { loadCSSFile } from '../lib/utils/css_utils';
 
 (() => {
@@ -139,11 +141,20 @@ import { loadCSSFile } from '../lib/utils/css_utils';
     }
 
     readFile(input) {
-      const _this = this;
       const reader = new FileReader();
       reader.onload = () => {
-        _this.modalCropImg.attr('src', reader.result);
-        return _this.modalCrop.modal('show');
+        this.modalCropImg.attr('src', reader.result);
+        import(/* webpackChunkName: 'bootstrapModal' */ 'bootstrap/js/dist/modal')
+          .then(() => {
+            this.modalCrop.modal('show');
+          })
+          .catch(() => {
+            createAlert({
+              message: s__(
+                'UserProfile|Failed to set avatar. Please reload the page to try again.',
+              ),
+            });
+          });
       };
       return reader.readAsDataURL(input.files[0]);
     }

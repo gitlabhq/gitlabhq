@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'support/shared_examples/lib/gitlab/malicious_regexp_shared_examples'
 
-RSpec.describe Gitlab::UntrustedRegexp do
+RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
   describe '#initialize' do
     subject { described_class.new(pattern) }
 
@@ -19,6 +19,39 @@ RSpec.describe Gitlab::UntrustedRegexp do
       result = described_class.new('foo').replace_all('foo bar foo', 'oof')
 
       expect(result).to eq('oof bar oof')
+    end
+  end
+
+  describe '#replace_gsub' do
+    let(:regex_str) { '(?P<scheme>(ftp))' }
+    let(:regex) { described_class.new(regex_str, multiline: true) }
+
+    def result(regex, text)
+      regex.replace_gsub(text) do |match|
+        if match[:scheme]
+          "http|#{match[:scheme]}|rss"
+        else
+          match.to_s
+        end
+      end
+    end
+
+    it 'replaces all instances of the match in a string' do
+      text = 'Use only https instead of ftp'
+
+      expect(result(regex, text)).to eq('Use only https instead of http|ftp|rss')
+    end
+
+    it 'replaces nothing when no match' do
+      text = 'Use only https instead of gopher'
+
+      expect(result(regex, text)).to eq(text)
+    end
+
+    it 'handles empty text' do
+      text = ''
+
+      expect(result(regex, text)).to eq('')
     end
   end
 

@@ -1,5 +1,6 @@
+import prometheusIntegration from 'test_fixtures/integrations/prometheus/prometheus_integration.html';
 import MockAdapter from 'axios-mock-adapter';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PANEL_STATE from '~/prometheus_metrics/constants';
@@ -7,7 +8,6 @@ import CustomMetrics from '~/prometheus_metrics/custom_metrics';
 import { metrics1 as metrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {
-  const FIXTURE = 'integrations/prometheus/prometheus_integration.html';
   const customMetricsEndpoint =
     'http://test.host/frontend-fixtures/integrations-project/prometheus/metrics';
   let mock;
@@ -17,7 +17,7 @@ describe('PrometheusMetrics', () => {
     mock.onGet(customMetricsEndpoint).reply(HTTP_STATUS_OK, {
       metrics,
     });
-    loadHTMLFixture(FIXTURE);
+    setHTMLFixture(prometheusIntegration);
   });
 
   afterEach(() => {

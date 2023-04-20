@@ -11,8 +11,8 @@ If you use GitLab SaaS (GitLab.com), your [untagged](../../ci/runners/configure_
 As long as shared runners are enabled for your project, no configuration is required. Your jobs can run on:
 
 - [Linux runners](saas/linux_saas_runner.md).
-- [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
-- [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta-features)).
+- [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
+- [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/alpha-beta-support.md#beta)).
 
 The number of minutes you can use on these runners depends on the
 [maximum number of CI/CD minutes](../pipelines/cicd_minutes.md)
@@ -22,7 +22,7 @@ in your [subscription plan](https://about.gitlab.com/pricing/).
 
 GitLab SaaS runners on Linux and Windows run on Google Compute Platform. The [Google Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf) provides an overview of how Google designs security into its technical infrastructure. The GitLab [Trust Center](https://about.gitlab.com/security/) and [GitLab Security Compliance Controls](https://about.staging.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/sec-controls.html) pages provide an overview of the security and compliance controls that govern the GitLab SaaS runners.
 
-The runner that serves as a Runner Manager automatically initiates the creation and deletion of the virtual machines (VMs) used for CI jobs. When the Runner Manager picks up a GitLab SaaS CI job, it automatically executes that job on a new VM. There is no human or manual intervention in this process. The following section provides an overview of the additional built-in layers that harden the security of the GitLab Runner SaaS CI build environment.
+The runner that serves as a runner manager automatically initiates the creation and deletion of the virtual machines (VMs) used for CI jobs. When the runner manager picks up a GitLab SaaS CI job, it automatically executes that job on a new VM. There is no human or manual intervention in this process. The following section provides an overview of the additional built-in layers that harden the security of the GitLab Runner SaaS CI build environment.
 
 ### Security of CI job execution on GitLab Runner SaaS (Linux, Windows)
 
@@ -39,4 +39,4 @@ GitLab sends the command to remove the temporary runner VM to the Google Compute
 - Firewall rules only allow outbound communication from the temporary VM to the public internet.
 - Inbound communication from the public internet to the temporary VM is not allowed.
 - Firewall rules do not permit communication between VMs.
-- The only internal communication allowed to the temporary VMs is from the Runner Manager.
+- The only internal communication allowed to the temporary VMs is from the runner manager.

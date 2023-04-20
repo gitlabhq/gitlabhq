@@ -5,7 +5,6 @@ import {
   GlFormInputGroup,
   GlFormGroup,
   GlModal,
-  GlSkeletonLoader,
   GlSprintf,
   GlEmptyState,
 } from '@gitlab/ui';
@@ -72,8 +71,6 @@ describe('DependencyProxyApp', () => {
   const findClipBoardButton = () => wrapper.findComponent(ClipboardButton);
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInputGroup = () => wrapper.findComponent(GlFormInputGroup);
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findMainArea = () => wrapper.findByTestId('main-area');
   const findProxyCountText = () => wrapper.findByTestId('proxy-count');
   const findManifestList = () => wrapper.findComponent(ManifestsList);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -99,22 +96,10 @@ describe('DependencyProxyApp', () => {
 
   describe('when the dependency proxy is available', () => {
     describe('when is loading', () => {
-      it('renders the skeleton loader', () => {
-        createComponent();
-
-        expect(findSkeletonLoader().exists()).toBe(true);
-      });
-
       it('does not render a form group with label', () => {
         createComponent();
 
         expect(findFormGroup().exists()).toBe(false);
-      });
-
-      it('does not show the main section', () => {
-        createComponent();
-
-        expect(findMainArea().exists()).toBe(false);
       });
     });
 
@@ -123,10 +108,6 @@ describe('DependencyProxyApp', () => {
         beforeEach(() => {
           createComponent();
           return waitForPromises();
-        });
-
-        it('renders the main area', () => {
-          expect(findMainArea().exists()).toBe(true);
         });
 
         it('renders a form group with a label', () => {
@@ -213,13 +194,6 @@ describe('DependencyProxyApp', () => {
             });
 
             describe('triggering page event on list', () => {
-              it('re-renders the skeleton loader', async () => {
-                findManifestList().vm.$emit('next-page');
-                await nextTick();
-
-                expect(findSkeletonLoader().exists()).toBe(true);
-              });
-
               it('renders form group with label', async () => {
                 findManifestList().vm.$emit('next-page');
                 await nextTick();
@@ -227,13 +201,6 @@ describe('DependencyProxyApp', () => {
                 expect(findFormGroup().attributes('label')).toEqual(
                   expect.stringMatching(DependencyProxyApp.i18n.proxyImagePrefix),
                 );
-              });
-
-              it('does not show the main section', async () => {
-                findManifestList().vm.$emit('next-page');
-                await nextTick();
-
-                expect(findMainArea().exists()).toBe(false);
               });
             });
 

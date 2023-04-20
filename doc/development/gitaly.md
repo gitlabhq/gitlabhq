@@ -54,16 +54,6 @@ they are merged.
 - See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab tests with a modified version of Gitaly.
 - In GDK run `gdk install` and restart GDK using `gdk restart` to use a locally modified Gitaly version for development
 
-### `gitaly-ruby`
-
-It is possible to implement and test RPCs in Gitaly using Ruby code,
-in
-[`gitaly-ruby`](https://gitlab.com/gitlab-org/gitaly/tree/master/ruby).
-This should make it easier to contribute for developers who are less
-comfortable writing Go code.
-
-For more information, see the [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md).
-
 ## Gitaly-Related Test Failures
 
 If your test-suite is failing with Gitaly issues, as a first step, try running:
@@ -249,7 +239,7 @@ Re-run steps 2-5 each time you want to try out new changes.
 
 [Return to Development documentation](index.md)
 
-## Wrapping RPCs in Feature Flags
+## Wrapping RPCs in feature flags
 
 Here are the steps to gate a new feature in Gitaly behind a feature flag.
 

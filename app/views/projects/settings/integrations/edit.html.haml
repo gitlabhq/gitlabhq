@@ -1,7 +1,6 @@
 - breadcrumb_title @integration.title
 - add_to_breadcrumbs _('Integration Settings'), project_settings_integrations_path(@project)
 - page_title @integration.title, _('Integrations')
-- @content_class = 'limit-container-width' unless fluid_layout
 
 = render 'form', integration: @integration
 

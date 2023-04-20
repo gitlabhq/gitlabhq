@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective, GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { __, s__ } from '~/locale';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -10,11 +10,18 @@ export default {
   name: 'WorkItemNoteActions',
   i18n: {
     editButtonText: __('Edit comment'),
+    moreActionsText: __('More actions'),
+    deleteNoteText: __('Delete comment'),
+    copyLinkText: __('Copy link'),
+    assignUserText: __('Assign to commenting user'),
+    unassignUserText: __('Unassign from commenting user'),
   },
   components: {
     GlButton,
     GlIcon,
     ReplyButton,
+    GlDropdown,
+    GlDropdownItem,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
   directives: {
@@ -38,6 +45,28 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    noteUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isAuthorAnAssignee: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showAssignUnassign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  computed: {
+    assignUserActionText() {
+      return this.isAuthorAnAssignee
+        ? this.$options.i18n.unassignUserText
+        : this.$options.i18n.assignUserText;
     },
   },
   methods: {
@@ -100,5 +129,39 @@ export default {
       :aria-label="$options.i18n.editButtonText"
       @click="$emit('startEditing')"
     />
+    <gl-dropdown
+      v-gl-tooltip
+      data-testid="work-item-note-actions"
+      icon="ellipsis_v"
+      text-sr-only
+      right
+      :text="$options.i18n.moreActionsText"
+      :title="$options.i18n.moreActionsText"
+      category="tertiary"
+      no-caret
+    >
+      <gl-dropdown-item
+        data-testid="copy-link-action"
+        :data-clipboard-text="noteUrl"
+        @click="$emit('notifyCopyDone')"
+      >
+        <span>{{ $options.i18n.copyLinkText }}</span>
+      </gl-dropdown-item>
+      <gl-dropdown-item
+        v-if="showAssignUnassign"
+        data-testid="assign-note-action"
+        @click="$emit('assignUser')"
+      >
+        {{ assignUserActionText }}
+      </gl-dropdown-item>
+      <gl-dropdown-item
+        v-if="showEdit"
+        variant="danger"
+        data-testid="delete-note-action"
+        @click="$emit('deleteNote')"
+      >
+        {{ $options.i18n.deleteNoteText }}
+      </gl-dropdown-item>
+    </gl-dropdown>
   </div>
 </template>

@@ -27,10 +27,14 @@ module RecordsUploads
     end
 
     def readd_upload
-      uploads.where(model: model, path: upload_path).delete_all
-      upload.delete if upload
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[uploads], url: "https://gitlab.com/gitlab-org/gitlab/-/issues/398199"
+      ) do
+        uploads.where(model: model, path: upload_path).delete_all
+        upload.delete if upload
 
-      self.upload = build_upload.tap(&:save!)
+        self.upload = build_upload.tap(&:save!)
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

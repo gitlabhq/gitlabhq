@@ -8,6 +8,8 @@ owning-stage: "~devops::manage"
 participating-stages: []
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # GraphQL API
 
 [GraphQL](https://graphql.org/) is a data query and manipulation language for

@@ -106,7 +106,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   end
 
   context 'when passing an empty list of assignees' do
-    let(:db_query_limit) { 31 }
+    let(:db_query_limit) { 35 }
     let(:input) { { assignee_usernames: [] } }
 
     before do

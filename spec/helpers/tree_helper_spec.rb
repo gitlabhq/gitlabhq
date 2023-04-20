@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe TreeHelper do
+  include Devise::Test::ControllerHelpers
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }

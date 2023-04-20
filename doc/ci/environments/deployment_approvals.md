@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Require approvals prior to deploying to a Protected Environment
 ---
@@ -62,9 +62,11 @@ co-exist and multiple approval rules takes the precedence over the unified appro
 
 #### Unified approval setting
 
-There are two ways to configure approvals for a protected environment:
+> - UI configuration [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/378447) in GitLab
+>   15.11.
 
-- Using the [UI](protected_environments.md#protecting-environments), set the **Required approvals** field to 1 or more.
+To configure approvals for a protected environment:
+
 - Using the [REST API](../../api/protected_environments.md#protect-a-single-environment),
   set the `required_approval_count` field to 1 or more.
 
@@ -87,14 +89,18 @@ Maintainer role.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
+> - UI configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378445) in GitLab 15.11.
 
 - Using the [REST API](../../api/group_protected_environments.md#protect-a-single-environment).
   - `deploy_access_levels` represents which entity can execute the deployment job.
   - `approval_rules` represents which entity can approve the deployment job.
+- Using the [UI](protected_environments.md#protecting-environments).
+  - **Allowed to deploy** sets which entities can execute the deployment job.
+  - **Approvers** sets which entities can approve the deployment job.
 
 After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
 
-Example:
+A configuration that uses the REST API might look like:
 
 ```shell
 curl --header 'Content-Type: application/json' --request POST \

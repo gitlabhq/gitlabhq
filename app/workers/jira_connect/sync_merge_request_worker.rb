@@ -14,10 +14,13 @@ module JiraConnect
 
     def perform(merge_request_id, update_sequence_id)
       merge_request = MergeRequest.find_by_id(merge_request_id)
+      project = merge_request&.project
 
-      return unless merge_request && merge_request.project
+      return unless merge_request && project
 
-      JiraConnect::SyncService.new(merge_request.project).execute(merge_requests: [merge_request], update_sequence_id: update_sequence_id)
+      branches = [project.repository.find_branch(merge_request.source_branch)].compact.presence if merge_request.open?
+
+      JiraConnect::SyncService.new(project).execute(merge_requests: [merge_request], branches: branches, update_sequence_id: update_sequence_id)
     end
   end
 end

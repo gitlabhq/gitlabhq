@@ -15,7 +15,14 @@ Read more on [pagination](rest/index.md#pagination).
 
 ## List project pipelines
 
-> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `name` in request and response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `name` field is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `pipeline_name_in_api`. This feature is not ready for production use.
+On GitLab.com, this feature is not available.
 
 List pipelines in a project. Child pipelines are not included in the results,
 but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.
@@ -36,6 +43,7 @@ GET /projects/:id/pipelines
 | `username`| string  | no       | The username of the user who triggered pipelines |
 | `updated_after` | datetime | no | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime | no | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `name`    | string  | no       | Return pipelines with the specified name. Introduced in GitLab 15.11, not available by default. |
 | `order_by`| string  | no       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
 | `sort`    | string  | no       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
 
@@ -55,6 +63,7 @@ Example of response
     "source": "push",
     "ref": "new-pipeline",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "name": "Build pipeline",
     "web_url": "https://example.com/foo/bar/pipelines/47",
     "created_at": "2016-08-11T11:28:34.085Z",
     "updated_at": "2016-08-11T11:32:35.169Z"
@@ -67,6 +76,7 @@ Example of response
     "source": "web",
     "ref": "new-pipeline",
     "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
+    "name": "Build pipeline",
     "web_url": "https://example.com/foo/bar/pipelines/48",
     "created_at": "2016-08-12T10:06:04.561Z",
     "updated_at": "2016-08-12T10:09:56.223Z"
@@ -76,7 +86,14 @@ Example of response
 
 ## Get a single pipeline
 
-> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `name` field is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `pipeline_name_in_api`. This feature is not ready for production use.
+On GitLab.com, this feature is not available.
 
 Get one pipeline from a project.
 
@@ -103,6 +120,7 @@ Example of response
   "id": 46,
   "iid": 11,
   "project_id": 1,
+  "name": "Build pipeline",
   "status": "success",
   "ref": "main",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
@@ -271,6 +289,14 @@ Sample response:
 
 ## Get the latest pipeline
 
+> `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `name` field is not available.
+To make it available, ask an administrator to [enable the feature flag](../administration/feature_flags.md)
+named `pipeline_name_in_api`. This feature is not ready for production use.
+On GitLab.com, this feature is not available.
+
 Get the latest pipeline for a specific ref in a project.
 
 ```plaintext
@@ -292,6 +318,7 @@ Example of response
     "id": 287,
     "iid": 144,
     "project_id": 21,
+    "name": "Build pipeline",
     "sha": "50f0acb76a40e34a4ff304f7347dcc6587da8a14",
     "ref": "main",
     "status": "success",

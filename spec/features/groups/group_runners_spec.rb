@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe "Group Runners", feature_category: :runner_fleet do
-  include Spec::Support::Helpers::Features::RunnersHelpers
+  include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:group_owner) { create(:user) }
@@ -16,10 +16,12 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
   end
 
   describe "Group runners page", :js do
-    let!(:group_registration_token) { group.runners_token }
+    describe "legacy runners registration" do
+      let_it_be(:group_registration_token) { group.runners_token }
 
-    describe "runners registration" do
       before do
+        stub_feature_flags(create_runner_workflow_for_namespace: false)
+
         visit group_runners_path(group)
       end
 
@@ -60,15 +62,11 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:runner) { group_runner }
       end
 
-      it 'shows a group badge' do
-        within_runner_row(group_runner.id) do
-          expect(page).to have_selector '.badge', text: s_('Runners|Group')
-        end
-      end
-
-      it 'can edit runner information' do
+      it 'shows an editable group badge' do
         within_runner_row(group_runner.id) do
           expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, group_runner))
+
+          expect(page).to have_selector '.badge', text: s_('Runners|Group')
         end
       end
 
@@ -102,15 +100,11 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:runner) { project_runner }
       end
 
-      it 'shows a project badge' do
-        within_runner_row(project_runner.id) do
-          expect(page).to have_selector '.badge', text: s_('Runners|Project')
-        end
-      end
-
-      it 'can edit runner information' do
+      it 'shows an editable project runner' do
         within_runner_row(project_runner.id) do
           expect(find_link('Edit')[:href]).to end_with(edit_group_runner_path(group, project_runner))
+
+          expect(page).to have_selector '.badge', text: s_('Runners|Project')
         end
       end
     end
@@ -199,6 +193,16 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:found_runner) { runner_1.description }
         let(:missing_runner) { runner_2.description }
       end
+    end
+  end
+
+  describe "Group runner create page", :js do
+    before do
+      visit new_group_runner_path(group)
+    end
+
+    it_behaves_like 'creates runner and shows register page' do
+      let(:register_path_pattern) { register_group_runner_path(group, '.*') }
     end
   end
 

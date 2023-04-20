@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -29,7 +29,7 @@ To deploy a project to EKS:
 ## Configure your Amazon account
 
 Before you create and connect your Kubernetes cluster to your GitLab project,
-you need an [Amazon Web Services account](https://https://aws.amazon.com/).
+you need an [Amazon Web Services account](https://aws.amazon.com/).
 Sign in with an existing Amazon account or create a new one.
 
 ## Create a Kubernetes cluster
@@ -217,7 +217,7 @@ you to common environment tasks:
 - **Re-deploy to environment** (**{repeat}**) - For more information, see
   [Retrying and rolling back](../../../ci/environments/index.md#retry-or-roll-back-a-deployment)
 - **Stop environment** (**{stop}**) - For more information, see
-  [Stopping an environment](../../../ci/environments/index.md#stop-an-environment)
+  [Stopping an environment](../../../ci/environments/index.md#stopping-an-environment)
 
 GitLab displays the [deploy board](../../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your

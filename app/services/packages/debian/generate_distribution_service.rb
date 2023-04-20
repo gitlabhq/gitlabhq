@@ -196,7 +196,7 @@ module Packages
             file: CarrierWaveStringFile.new(content),
             file_md5: file_md5,
             file_sha256: file_sha256,
-            size: content.size
+            size: content.bytesize
           )
         end
 

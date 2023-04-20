@@ -9,22 +9,19 @@ module Gitlab
       # @param cache_identifier [String] defines the location of the cache definition
       #   Example: "ProtectedBranches::CacheService#fetch"
       # @param feature_category [Symbol] name of the feature category (from config/feature_categories.yml)
-      # @param caller_id [String] caller id from labkit context
       # @param backing_resource [Symbol] most affected resource by cache generation (full list: VALID_BACKING_RESOURCES)
       # @return [Gitlab::Cache::Metadata]
       def initialize(
         cache_identifier:,
         feature_category:,
-        caller_id: Gitlab::ApplicationContext.current_context_attribute(:caller_id),
         backing_resource: Client::DEFAULT_BACKING_RESOURCE
       )
         @cache_identifier = cache_identifier
         @feature_category = Gitlab::FeatureCategories.default.get!(feature_category)
-        @caller_id = caller_id
         @backing_resource = fetch_backing_resource!(backing_resource)
       end
 
-      attr_reader :caller_id, :cache_identifier, :feature_category, :backing_resource
+      attr_reader :cache_identifier, :feature_category, :backing_resource
 
       private
 

@@ -1,5 +1,3 @@
-/* eslint-disable no-new */
-
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { createAlert } from '~/alert';
@@ -54,6 +52,7 @@ export default () => {
 
     import('./edit_blob')
       .then(({ default: EditBlob } = {}) => {
+        // eslint-disable-next-line no-new
         new EditBlob({
           assetsPath: `${urlRoot}${assetsPath}`,
           filePath,
@@ -80,7 +79,7 @@ export default () => {
       window.onbeforeunload = null;
     });
 
-    new NewCommitForm(editBlobForm);
+    new NewCommitForm(editBlobForm); // eslint-disable-line no-new
 
     // returning here blocks page navigation
     window.onbeforeunload = () => '';

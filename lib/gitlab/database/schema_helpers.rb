@@ -31,8 +31,8 @@ module Gitlab
       end
 
       def trigger_exists?(table_name, name)
-        connection.select_value(<<~SQL)
-          SELECT 1
+        result = connection.select_value(<<~SQL.squish)
+          SELECT true
           FROM pg_catalog.pg_trigger trgr
             INNER JOIN pg_catalog.pg_class rel
               ON trgr.tgrelid = rel.oid
@@ -42,6 +42,8 @@ module Gitlab
             AND rel.relname = #{connection.quote(table_name)}
             AND trgr.tgname = #{connection.quote(name)}
         SQL
+
+        !!result
       end
 
       def drop_function(name, if_exists: true)

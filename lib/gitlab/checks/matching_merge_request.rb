@@ -17,7 +17,7 @@ module Gitlab
         #
         # 1. Sidekiq: MergeService runs and updates the merge request in a locked state.
         # 2. Gitaly: The UserMergeBranch RPC runs.
-        # 3. Gitaly (gitaly-ruby): This RPC calls the pre-receive hook.
+        # 3. Gitaly: The RPC calls the pre-receive hook.
         # 4. Rails: This hook makes an API request to /api/v4/internal/allowed.
         # 5. Rails: This API check does a SQL query for locked merge
         #    requests with a matching SHA.

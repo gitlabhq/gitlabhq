@@ -74,7 +74,7 @@ module Ci
     end
 
     def project_runners
-      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :admin_project, @project)
+      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_project_runners, @project)
 
       @runners = ::Ci::Runner.owned_or_instance_wide(@project.id)
     end

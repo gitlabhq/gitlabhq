@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
-  include Spec::Support::Helpers::Features::TopNavSpecHelpers
+  include Features::TopNavSpecHelpers
 
   let(:user) { create(:admin) }
 

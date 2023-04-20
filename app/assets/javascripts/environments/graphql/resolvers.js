@@ -1,3 +1,4 @@
+import { CoreV1Api, Configuration } from '@gitlab/cluster-client';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import {
@@ -70,6 +71,19 @@ export const resolvers = (endpoint) => ({
     },
     isLastDeployment(_, { environment }) {
       return environment?.lastDeployment?.isLast;
+    },
+    k8sPods(_, { configuration, namespace }) {
+      const coreV1Api = new CoreV1Api(new Configuration(configuration));
+      const podsApi = namespace
+        ? coreV1Api.listCoreV1NamespacedPod(namespace)
+        : coreV1Api.listCoreV1PodForAllNamespaces();
+
+      return podsApi
+        .then((res) => res?.data?.items || [])
+        .catch((err) => {
+          const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
+          throw error;
+        });
     },
   },
   Mutation: {

@@ -289,4 +289,37 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
       }
     end
   end
+
+  describe '#to_hash' do
+    context 'when interpolation is being used' do
+      before do
+        project.repository.create_file(
+          user,
+          'template-file.yml',
+          template,
+          message: 'Add template',
+          branch_name: 'master'
+        )
+      end
+
+      let(:template) do
+        <<~YAML
+          spec:
+            inputs:
+              name:
+          ---
+          rspec:
+            script: rspec --suite $[[ inputs.name ]]
+        YAML
+      end
+
+      let(:params) do
+        { file: 'template-file.yml', ref: 'master', project: project.full_path, with: { name: 'abc' } }
+      end
+
+      it 'correctly interpolates the content' do
+        expect(project_file.to_hash).to eq({ rspec: { script: 'rspec --suite abc' } })
+      end
+    end
+  end
 end

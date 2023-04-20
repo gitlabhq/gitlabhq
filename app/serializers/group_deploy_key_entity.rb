@@ -7,6 +7,7 @@ class GroupDeployKeyEntity < Grape::Entity
   expose :fingerprint
   expose :fingerprint_sha256
   expose :created_at
+  expose :expires_at
   expose :updated_at
   expose :group_deploy_keys_groups, using: GroupDeployKeysGroupEntity do |group_deploy_key|
     group_deploy_key.group_deploy_keys_groups_for_user(options[:user])

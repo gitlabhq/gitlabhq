@@ -23,7 +23,7 @@ describe('IDE: User opens IDE', () => {
     resetHTMLFixture();
   });
 
-  it('shows loading indicator while the IDE is loading', async () => {
+  it('shows loading indicator while the IDE is loading', () => {
     vm = startWebIDE(container);
 
     expect(container.querySelectorAll('.multi-file-loading-container')).toHaveLength(3);
@@ -52,7 +52,7 @@ describe('IDE: User opens IDE', () => {
       await screen.findByText('README'); // wait for file tree to load
     });
 
-    it('shows a list of files in the left sidebar', async () => {
+    it('shows a list of files in the left sidebar', () => {
       expect(ideHelper.getFilesList()).toEqual(
         expect.arrayContaining(['README', 'LICENSE', 'CONTRIBUTING.md']),
       );

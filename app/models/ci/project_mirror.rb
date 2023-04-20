@@ -13,8 +13,7 @@ module Ci
 
     class << self
       def sync!(event)
-        upsert({ project_id: event.project_id, namespace_id: event.project.namespace_id },
-               unique_by: :project_id)
+        upsert({ project_id: event.project_id, namespace_id: event.project.namespace_id }, unique_by: :project_id)
       end
     end
   end

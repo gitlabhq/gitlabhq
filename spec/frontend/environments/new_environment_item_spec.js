@@ -7,10 +7,12 @@ import { stubTransition } from 'helpers/stub_transition';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
+import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import { resolvedEnvironment, rolloutStatus, agent } from './graphql/mock_data';
+import { mockKasTunnelUrl } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -25,11 +27,18 @@ describe('~/environments/components/new_environment_item.vue', () => {
     mountExtended(EnvironmentItem, {
       apolloProvider,
       propsData: { environment: resolvedEnvironment, ...propsData },
-      provide: { helpPagePath: '/help', projectId: '1', projectPath: '/1', ...provideData },
+      provide: {
+        helpPagePath: '/help',
+        projectId: '1',
+        projectPath: '/1',
+        kasTunnelUrl: mockKasTunnelUrl,
+        ...provideData,
+      },
       stubs: { transition: stubTransition() },
     });
 
   const findDeployment = () => wrapper.findComponent(Deployment);
+  const findActions = () => wrapper.findComponent(EnvironmentActions);
   const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
 
   const expandCollapsedSection = async () => {
@@ -124,9 +133,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('shows a dropdown if there are actions to perform', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const actions = wrapper.findByRole('button', { name: __('Deploy to...') });
-
-      expect(actions.exists()).toBe(true);
+      expect(findActions().exists()).toBe(true);
     });
 
     it('does not show a dropdown if there are no actions to perform', () => {
@@ -140,17 +147,15 @@ describe('~/environments/components/new_environment_item.vue', () => {
         },
       });
 
-      const actions = wrapper.findByRole('button', { name: __('Deploy to...') });
-
-      expect(actions.exists()).toBe(false);
+      expect(findActions().exists()).toBe(false);
     });
 
     it('passes all the actions down to the action component', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
 
-      const action = wrapper.findByRole('menuitem', { name: 'deploy-staging' });
-
-      expect(action.exists()).toBe(true);
+      expect(findActions().props('actions')).toMatchObject(
+        resolvedEnvironment.lastDeployment.manualActions,
+      );
     });
   });
 
@@ -382,6 +387,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       const button = await expandCollapsedSection();
 
       expect(button.attributes('aria-label')).toBe(__('Collapse'));
+      expect(button.props('category')).toBe('secondary');
       expect(collapse.attributes('visible')).toBe('visible');
       expect(icon.props('name')).toBe('chevron-lg-down');
       expect(environmentName.classes('gl-font-weight-bold')).toBe(true);
@@ -537,6 +543,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
         agentProjectPath: agent.project,
         agentName: agent.name,
         agentId: agent.id,
+        namespace: agent.kubernetesNamespace,
       });
     });
 

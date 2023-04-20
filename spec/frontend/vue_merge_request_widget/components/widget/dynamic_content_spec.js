@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import DynamicContent from '~/vue_merge_request_widget/components/widget/dynamic_content.vue';
+import ContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 
 describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () => {
   let wrapper;
@@ -13,6 +14,7 @@ describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () 
       },
       stubs: {
         DynamicContent,
+        ContentRow,
       },
     });
   };

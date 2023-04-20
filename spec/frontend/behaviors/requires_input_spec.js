@@ -1,12 +1,13 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlNewBranch from 'test_fixtures/branches/new_branch.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import '~/behaviors/requires_input';
 
 describe('requiresInput', () => {
   let submitButton;
 
   beforeEach(() => {
-    loadHTMLFixture('branches/new_branch.html');
+    setHTMLFixture(htmlNewBranch);
     submitButton = $('button[type="submit"]');
   });
 

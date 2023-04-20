@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-RSpec.describe API::UsageDataQueries, feature_category: :service_ping do
+RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :service_ping do
   include UsageDataHelpers
 
   let_it_be(:admin) { create(:user, admin: true) }
@@ -22,8 +22,12 @@ RSpec.describe API::UsageDataQueries, feature_category: :service_ping do
         stub_feature_flags(usage_data_queries_api: true)
       end
 
+      it_behaves_like 'GET request permissions for admin mode' do
+        let(:path) { endpoint }
+      end
+
       it 'returns queries if user is admin' do
-        get api(endpoint, admin)
+        get api(endpoint, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['active_user_count']).to start_with('SELECT COUNT("users"."id") FROM "users"')
@@ -54,7 +58,7 @@ RSpec.describe API::UsageDataQueries, feature_category: :service_ping do
       end
 
       it 'returns not_found for admin' do
-        get api(endpoint, admin)
+        get api(endpoint, admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -81,7 +85,7 @@ RSpec.describe API::UsageDataQueries, feature_category: :service_ping do
 
       it 'matches the generated query' do
         travel_to(Time.utc(2021, 1, 1)) do
-          get api(endpoint, admin)
+          get api(endpoint, admin, admin_mode: true)
         end
 
         data = Gitlab::Json.parse(File.read(file))

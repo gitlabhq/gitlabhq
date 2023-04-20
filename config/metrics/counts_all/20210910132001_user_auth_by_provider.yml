@@ -5,7 +5,6 @@ description: Number of unique user logins using two factor authentication for av
 product_section: dev
 product_stage: manage
 product_group: authentication_and_authorization
-product_category: system_access
 value_type: object
 status: active
 milestone: "14.3"

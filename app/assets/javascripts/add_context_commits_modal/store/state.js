@@ -1,4 +1,5 @@
 export default () => ({
+  projectId: '',
   contextCommitsPath: '',
   tabIndex: 0,
   isLoadingCommits: false,

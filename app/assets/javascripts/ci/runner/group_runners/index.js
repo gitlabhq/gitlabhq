@@ -18,6 +18,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
   const {
     registrationToken,
     runnerInstallHelpPage,
+    newRunnerPath,
     groupId,
     groupFullPath,
     onlineContactTimeoutSecs,
@@ -49,6 +50,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
         props: {
           registrationToken,
           groupFullPath,
+          newRunnerPath,
         },
       });
     },

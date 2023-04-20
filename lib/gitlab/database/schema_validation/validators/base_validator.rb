@@ -5,7 +5,7 @@ module Gitlab
     module SchemaValidation
       module Validators
         class BaseValidator
-          Inconsistency = Struct.new(:type, :object_name, :statement)
+          ERROR_MESSAGE = 'A schema inconsistency has been found'
 
           def initialize(structure_sql, database)
             @structure_sql = structure_sql
@@ -14,10 +14,15 @@ module Gitlab
 
           def self.all_validators
             [
+              ExtraTables,
+              ExtraTableColumns,
               ExtraIndexes,
               ExtraTriggers,
+              MissingTables,
+              MissingTableColumns,
               MissingIndexes,
               MissingTriggers,
+              DifferentDefinitionTables,
               DifferentDefinitionIndexes,
               DifferentDefinitionTriggers
             ]
@@ -31,10 +36,8 @@ module Gitlab
 
           attr_reader :structure_sql, :database
 
-          def build_inconsistency(validator_class, schema_object)
-            inconsistency_type = validator_class.name.demodulize.underscore
-
-            Inconsistency.new(inconsistency_type, schema_object.name, schema_object.statement)
+          def build_inconsistency(validator_class, structure_sql_object, database_object)
+            Inconsistency.new(validator_class, structure_sql_object, database_object)
           end
         end
       end

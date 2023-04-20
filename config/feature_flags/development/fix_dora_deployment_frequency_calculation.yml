@@ -1,0 +1,8 @@
+---
+name: fix_dora_deployment_frequency_calculation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116644
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404565
+milestone: '15.11'
+type: development
+group: group::optimize
+default_enabled: false

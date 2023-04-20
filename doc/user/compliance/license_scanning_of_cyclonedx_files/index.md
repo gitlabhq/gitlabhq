@@ -7,10 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # License scanning of CycloneDX files **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
-
-FLAG:
-On self-managed GitLab, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for GitLab SaaS.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for self-managed GitLab [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`, both of which must be enabled for this feature to work. The flags are disabled by default due to the initial performance load when the license database is first imported. Work to improve performance is being tracked in [issue 397670](https://gitlab.com/gitlab-org/gitlab/-/issues/397670).
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.11 for self-managed GitLab.
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),
@@ -19,13 +19,15 @@ Other 3rd party scanners may also be used as long as they produce a CycloneDX fi
 This method of scanning is also capable of parsing and identifying over 500 different types of licenses, as defined in [the SPDX list](https://spdx.org/licenses/).
 Licenses not in the SPDX list are reported as "Unknown". License information can also be extracted from packages that are dual-licensed, or have multiple different licenses that apply.
 
-To enable license detection using Dependency Scanning in a project,
-include the `Jobs/Dependency-Scanning.gitlab-ci.yml` template in its CI configuration,
-but do not include the `Jobs/License-Scanning.gitlab-ci.yml` template.
+## Enable license scanning
 
-## Requirements
+Prerequisites:
 
-The license scanning requirements are the same as those for [Dependency Scanning](../../application_security/dependency_scanning/index.md#requirements).
+- Enable [Synchronization with the GitLab License Database](../../admin_area/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in Admin Area for the GitLab instance.
+- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration).
+
+From the `.gitlab-ci.yml` file, remove the deprecated line `Jobs/License-Scanning.gitlab-ci.yml`, if
+it's present.
 
 ## Supported languages and package managers
 
@@ -66,8 +68,11 @@ License scanning is supported for the following languages and package managers:
       <td><a href="https://maven.apache.org/">Maven</a></td>
     </tr>
     <tr>
-      <td rowspan="2">JavaScript and TypeScript</td>
+      <td rowspan="3">JavaScript and TypeScript</td>
       <td><a href="https://www.npmjs.com/">npm</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://pnpm.io/">pnpm</a></td>
     </tr>
     <tr>
       <td><a href="https://classic.yarnpkg.com/en/">yarn</a></td>
@@ -103,11 +108,6 @@ License scanning is supported for the following languages and package managers:
 
 The supported files and versions are the ones supported by
 [Dependency Scanning](../../application_security/dependency_scanning/index.md#supported-languages-and-package-managers).
-
-## Configuration
-
-To enable license scanning of CycloneDX files,
-you must configure [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration).
 
 ## License expressions
 

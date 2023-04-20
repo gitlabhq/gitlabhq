@@ -31,6 +31,7 @@
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
+  include UpdatedAtFilter
 
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
@@ -87,6 +88,7 @@ class ProjectsFinder < UnionFinder
     collection = by_last_activity_before(collection)
     collection = by_language(collection)
     collection = by_feature_availability(collection)
+    collection = by_updated_at(collection)
     by_repository_storage(collection)
   end
 

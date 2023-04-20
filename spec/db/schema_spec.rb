@@ -11,10 +11,27 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   IGNORED_INDEXES_ON_FKS = {
     slack_integrations_scopes: %w[slack_api_scope_id],
-    p_ci_builds_metadata: %w[partition_id] # composable FK, the columns are reversed in the index definition
+    p_ci_builds_metadata: %w[partition_id], # composable FK, the columns are reversed in the index definition
+    p_ci_runner_machine_builds: %w[partition_id] # composable FK, the columns are reversed in the index definition
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
+
+  # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
+  # In the subsequent table removal MR, remove the entries.
+  # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
+  REMOVED_FKS = {
+    clusters_applications_cert_managers: %w[cluster_id],
+    clusters_applications_cilium: %w[cluster_id],
+    clusters_applications_crossplane: %w[cluster_id],
+    clusters_applications_helm: %w[cluster_id],
+    clusters_applications_ingress: %w[cluster_id],
+    clusters_applications_jupyter: %w[cluster_id oauth_application_id],
+    clusters_applications_knative: %w[cluster_id],
+    clusters_applications_prometheus: %w[cluster_id],
+    clusters_applications_runners: %w[cluster_id],
+    serverless_domain_cluster: %w[clusters_applications_knative_id creator_id pages_domain_id]
+  }.with_indifferent_access.freeze
 
   # List of columns historically missing a FK, don't add more columns
   # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
@@ -31,6 +48,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     award_emoji: %w[awardable_id user_id],
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
+    broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
     ci_build_needs: %w[partition_id build_id],
@@ -94,7 +112,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
     project_error_tracking_settings: %w[sentry_project_id],
-    project_group_links: %w[group_id],
     project_statistics: %w[namespace_id],
     projects: %w[ci_id mirror_user_id],
     redirect_routes: %w[source_id],
@@ -120,7 +137,9 @@ RSpec.describe 'Database schema', feature_category: :database do
     vulnerability_reads: %w[cluster_agent_id],
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
     # Fixes performance issues with the deletion of web-hooks with many log entries
-    web_hook_logs: %w[web_hook_id]
+    web_hook_logs: %w[web_hook_id],
+    ml_candidates: %w[internal_id]
+
   }.with_indifferent_access.freeze
 
   context 'for table' do
@@ -204,7 +223,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     'Ci::Processable' => %w[failure_reason],
     'Ci::Runner' => %w[access_level],
     'Ci::Stage' => %w[status],
-    'Clusters::Applications::Ingress' => %w[ingress_type],
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
     'GenericCommitStatus' => %w[failure_reason],
@@ -312,6 +330,28 @@ RSpec.describe 'Database schema', feature_category: :database do
         expect(problematic_tables).to be_empty
       end
     end
+
+    context 'for CI partitioned table' do
+      # Check that each partitionable model with more than 1 column has the partition_id column at the trailing
+      # position. Using PARTITIONABLE_MODELS instead of iterating tables since when partitioning existing tables,
+      # the routing table only gets created after the PK has already been created, which would be too late for a check.
+
+      skip_tables = %w[]
+      partitionable_models = Ci::Partitionable::Testing::PARTITIONABLE_MODELS
+      (partitionable_models - skip_tables).each do |klass|
+        model = klass.safe_constantize
+        table_name = model.table_name
+
+        primary_key_columns = Array(model.connection.primary_key(table_name))
+        next if primary_key_columns.count == 1
+
+        describe table_name do
+          it 'expects every PK to have partition_id at trailing position' do
+            expect(primary_key_columns).to match([an_instance_of(String), 'partition_id'])
+          end
+        end
+      end
+    end
   end
 
   context 'index names' do
@@ -347,7 +387,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   end
 
   def ignored_fk_columns(table)
-    IGNORED_FK_COLUMNS.fetch(table, [])
+    REMOVED_FKS.merge(IGNORED_FK_COLUMNS).fetch(table, [])
   end
 
   def ignored_index_columns(table)

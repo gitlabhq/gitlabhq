@@ -28,7 +28,7 @@ module ObjectStorage
         expiration = (Time.current + expiry).utc.to_i
 
         uri = Addressable::URI.parse(cdn_url)
-        uri.path = path
+        uri.path = Addressable::URI.encode_component(path, Addressable::URI::CharacterClasses::PATH)
         # Use an Array to preserve order: Google CDN needs to have
         # Expires, KeyName, and Signature in that order or it will return a 403 error:
         # https://cloud.google.com/cdn/docs/troubleshooting-steps#signing

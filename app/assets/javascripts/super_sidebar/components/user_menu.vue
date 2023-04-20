@@ -11,13 +11,17 @@ import { s__, __, sprintf } from '~/locale';
 import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import Tracking from '~/tracking';
 import PersistentUserCallout from '~/persistent_user_callout';
+import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserNameGroup from './user_name_group.vue';
 
+// Left offset required for the dropdown to be aligned with the super sidebar
+const DROPDOWN_X_OFFSET = -211;
+
 export default {
-  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/391533',
+  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403059',
   i18n: {
     newNavigation: {
-      badgeLabel: s__('NorthstarNavigation|Alpha'),
+      badgeLabel: s__('NorthstarNavigation|Beta'),
       sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
     },
     setStatus: s__('SetStatusModal|Set status'),
@@ -72,6 +76,10 @@ export default {
       return {
         text: this.$options.i18n.startTrial,
         href: this.data.trial.url,
+        extraAttrs: {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'start_trial',
+        },
       };
     },
     editProfileItem() {
@@ -80,6 +88,8 @@ export default {
         href: this.data.settings.profile_path,
         extraAttrs: {
           'data-qa-selector': 'edit_profile_link',
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'user_edit_profile',
         },
       };
     },
@@ -87,6 +97,10 @@ export default {
       return {
         text: this.$options.i18n.preferences,
         href: this.data.settings.profile_preferences_path,
+        extraAttrs: {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'user_preferences',
+        },
       };
     },
     addBuyPipelineMinutesMenuItem() {
@@ -99,6 +113,8 @@ export default {
         href: this.data.pipeline_minutes?.buy_pipeline_minutes_path,
         extraAttrs: {
           class: 'js-follow-link',
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'buy_pipeline_minutes',
         },
       };
     },
@@ -106,6 +122,10 @@ export default {
       return {
         text: this.$options.i18n.gitlabNext,
         href: this.data.canary_toggle_com_url,
+        extraAttrs: {
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'switch_to_canary',
+        },
       };
     },
     feedbackItem() {
@@ -114,6 +134,8 @@ export default {
         href: this.$options.feedbackUrl,
         extraAttrs: {
           target: '_blank',
+          ...USER_MENU_TRACKING_DEFAULTS,
+          'data-track-label': 'provide_nav_beta_feedback',
         },
       };
     },
@@ -139,9 +161,12 @@ export default {
         'data-default-emoji': 'speech_balloon',
       };
 
-      if (!this.data.status.customized) {
+      const { busy, customized } = this.data.status;
+
+      if (!busy && !customized) {
         return defaultData;
       }
+
       return {
         ...defaultData,
         'data-current-emoji': this.data.status.emoji,
@@ -164,15 +189,20 @@ export default {
   },
   methods: {
     onShow() {
-      this.trackEvents();
-      this.initCallout();
+      this.initBuyCIMinsCallout();
     },
-    initCallout() {
+    closeDropdown() {
+      this.$refs.userDropdown.close();
+    },
+    initBuyCIMinsCallout() {
       if (this.showNotificationDot) {
         PersistentUserCallout.factory(this.$refs?.buyPipelineMinutesNotificationCallout.$el);
       }
     },
-    trackEvents() {
+    /* We're not sure this event is tracked by anyone
+      whether it stays will depend on the outcome of this discussion:
+      https://gitlab.com/gitlab-org/gitlab/-/issues/402713#note_1343072135 */
+    trackBuyCIMins() {
       if (this.addBuyPipelineMinutesMenuItem) {
         const {
           'track-action': trackAction,
@@ -182,6 +212,22 @@ export default {
         this.track(trackAction, { label, property });
       }
     },
+    trackSignOut() {
+      this.track(USER_MENU_TRACKING_DEFAULTS['data-track-action'], {
+        label: 'user_sign_out',
+        property: USER_MENU_TRACKING_DEFAULTS['data-track-property'],
+      });
+    },
+  },
+  popperOptions: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [DROPDOWN_X_OFFSET, DROPDOWN_Y_OFFSET],
+        },
+      },
+    ],
   },
 };
 </script>
@@ -189,7 +235,8 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
-      placement="right"
+      ref="userDropdown"
+      :popper-options="$options.popperOptions"
       data-testid="user-dropdown"
       data-qa-selector="user_menu"
       @shown="onShow"
@@ -220,6 +267,7 @@ export default {
           v-if="data.status.can_update"
           :item="statusItem"
           data-testid="status-item"
+          @action="closeDropdown"
         />
 
         <gl-disclosure-dropdown-item
@@ -243,6 +291,7 @@ export default {
           :item="buyPipelineMinutesItem"
           v-bind="buyPipelineMinutesCalloutData"
           data-testid="buy-pipeline-minutes-item"
+          @action="trackBuyCIMins"
         >
           <template #list-item>
             <span class="gl-display-flex gl-flex-direction-column">
@@ -279,6 +328,7 @@ export default {
         bordered
         :group="signOutGroup"
         data-testid="sign-out-group"
+        @action="trackSignOut"
       />
     </gl-disclosure-dropdown>
 

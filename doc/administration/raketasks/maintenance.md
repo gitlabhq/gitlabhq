@@ -11,7 +11,7 @@ GitLab provides Rake tasks for general maintenance.
 ## Gather GitLab and system information
 
 This command gathers information about your GitLab installation and the system it runs on.
-These may be useful when asking for help or reporting issues.
+These may be useful when asking for help or reporting issues. In a multi-node environment, run this command on nodes running GitLab Rails to avoid PostgreSQL socket errors.
 
 **Omnibus Installation**
 
@@ -117,7 +117,7 @@ If you're running Geo, see also the [Geo Health check Rake task](../geo/replicat
 
 You may also have a look at our troubleshooting guides for:
 
-- [GitLab](../index.md#troubleshooting)
+- [GitLab](../troubleshooting/index.md)
 - [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html#troubleshooting)
 
 Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).

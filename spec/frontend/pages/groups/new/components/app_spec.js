@@ -6,7 +6,9 @@ describe('App component', () => {
   let wrapper;
 
   const createComponent = (propsData = {}) => {
-    wrapper = shallowMount(App, { propsData: { groupsUrl: '/dashboard/groups', ...propsData } });
+    wrapper = shallowMount(App, {
+      propsData: { rootPath: '/', groupsUrl: '/dashboard/groups', ...propsData },
+    });
   };
 
   const findNewNamespacePage = () => wrapper.findComponent(NewNamespacePage);
@@ -20,6 +22,7 @@ describe('App component', () => {
     createComponent();
 
     expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/', text: 'Your work' },
       { href: '/dashboard/groups', text: 'Groups' },
       { href: '#', text: 'New group' },
     ]);

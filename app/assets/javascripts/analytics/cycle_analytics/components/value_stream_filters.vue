@@ -31,6 +31,10 @@ export default {
       required: false,
       default: true,
     },
+    namespacePath: {
+      type: String,
+      required: true,
+    },
     groupPath: {
       type: String,
       required: true,
@@ -69,7 +73,7 @@ export default {
     <filter-bar
       data-testid="vsa-filter-bar"
       class="filtered-search-box gl-display-flex gl-mb-2 gl-mr-3 gl-border-none"
-      :group-path="groupPath"
+      :namespace-path="namespacePath"
     />
     <div
       v-if="hasDateRangeFilter || hasProjectFilter"

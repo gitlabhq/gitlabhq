@@ -8,11 +8,7 @@ export default {
   },
   [types.RECEIVE_AUTOCOMPLETE_SUCCESS](state, data) {
     state.loading = false;
-    state.autocompleteOptions = [...state.autocompleteOptions].concat(
-      data.map((d, i) => {
-        return { html_id: `autocomplete-${d.category}-${i}`, ...d };
-      }),
-    );
+    state.autocompleteOptions = [...state.autocompleteOptions].concat(data);
     state.autocompleteError = false;
   },
   [types.RECEIVE_AUTOCOMPLETE_ERROR](state) {

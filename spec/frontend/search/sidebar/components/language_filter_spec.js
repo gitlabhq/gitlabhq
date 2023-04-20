@@ -1,20 +1,35 @@
 import { GlAlert, GlFormCheckbox, GlForm } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   MOCK_QUERY,
   MOCK_AGGREGATIONS,
   MOCK_LANGUAGE_AGGREGATIONS_BUCKETS,
 } from 'jest/search/mock_data';
-import LanguageFilter from '~/search/sidebar/components/language_filter.vue';
+import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 import CheckboxFilter from '~/search/sidebar/components/checkbox_filter.vue';
-import { MAX_ITEM_LENGTH } from '~/search/sidebar/constants/language_filter_data';
+
+import {
+  TRACKING_LABEL_SHOW_MORE,
+  TRACKING_CATEGORY,
+  TRACKING_PROPERTY_MAX,
+  TRACKING_LABEL_MAX,
+  TRACKING_LABEL_FILTERS,
+  TRACKING_ACTION_SHOW,
+  TRACKING_ACTION_CLICK,
+  TRACKING_LABEL_APPLY,
+  TRACKING_LABEL_ALL,
+} from '~/search/sidebar/components/language_filter/tracking';
+
+import { MAX_ITEM_LENGTH } from '~/search/sidebar/components/language_filter/data';
 
 Vue.use(Vuex);
 
 describe('GlobalSearchSidebarLanguageFilter', () => {
   let wrapper;
+  let trackingSpy;
 
   const actionSpies = {
     fetchLanguageAggregation: jest.fn(),
@@ -46,6 +61,10 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
     });
   };
 
+  afterEach(() => {
+    unmockTracking();
+  });
+
   const findForm = () => wrapper.findComponent(GlForm);
   const findCheckboxFilter = () => wrapper.findComponent(CheckboxFilter);
   const findApplyButton = () => wrapper.findByTestId('apply-button');
@@ -58,6 +77,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   describe('Renders correctly', () => {
     beforeEach(() => {
       createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     it('renders form', () => {
@@ -130,18 +150,38 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   describe('Show All button works', () => {
     beforeEach(() => {
       createComponent();
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     it(`renders ${MAX_ITEM_LENGTH} amount of items`, async () => {
       findShowMoreButton().vm.$emit('click');
+
       await nextTick();
+
       expect(findAllCheckboxes()).toHaveLength(MAX_ITEM_LENGTH);
+    });
+
+    it('sends tracking information when show more clicked', () => {
+      findShowMoreButton().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_CLICK, TRACKING_LABEL_SHOW_MORE, {
+        label: TRACKING_LABEL_ALL,
+      });
     });
 
     it(`renders more then ${MAX_ITEM_LENGTH} text`, async () => {
       findShowMoreButton().vm.$emit('click');
       await nextTick();
       expect(findHasOverMax().exists()).toBe(true);
+    });
+
+    it('sends tracking information when show more clicked and max item reached', () => {
+      findShowMoreButton().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_SHOW, TRACKING_LABEL_FILTERS, {
+        label: TRACKING_LABEL_MAX,
+        property: TRACKING_PROPERTY_MAX,
+      });
     });
 
     it(`doesn't render show more button after click`, async () => {
@@ -154,6 +194,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   describe('actions', () => {
     beforeEach(() => {
       createComponent({});
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
     });
 
     it('uses getter languageAggregationBuckets', () => {
@@ -168,6 +209,14 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       findForm().vm.$emit('submit', { preventDefault: () => {} });
 
       expect(actionSpies.applyQuery).toHaveBeenCalled();
+    });
+
+    it('sends tracking information clicking ApplyButton', () => {
+      findForm().vm.$emit('submit', { preventDefault: () => {} });
+
+      expect(trackingSpy).toHaveBeenCalledWith(TRACKING_ACTION_CLICK, TRACKING_LABEL_APPLY, {
+        label: TRACKING_CATEGORY,
+      });
     });
   });
 });

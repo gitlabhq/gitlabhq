@@ -15,7 +15,7 @@ and will be removed in GitLab 16.0.
 
 WARNING:
 The Phabricator task importer is in
-[beta](../../../policy/alpha-beta-support.md#beta-features) and is
+[Beta](../../../policy/alpha-beta-support.md#beta) and is
 [**not** complete](https://gitlab.com/gitlab-org/gitlab/-/issues/284406). It imports
 only an issue's title and description. The GitLab project created during the import
 process contains only issues, and the associated repository is disabled.

@@ -123,6 +123,7 @@ module Gitlab
             end
 
             @needs_attributes.flat_map do |need|
+              # We ignore the optional needed job in case it is excluded from the pipeline due to the job's rules.
               next if need[:optional]
 
               result = need_present?(need)

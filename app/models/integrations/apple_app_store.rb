@@ -24,14 +24,12 @@ module Integrations
     field :app_store_key_id,
           section: SECTION_TYPE_CONNECTION,
           required: true,
-          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') },
-          is_secret: false
+          title: -> { s_('AppleAppStore|The Apple App Store Connect Key ID.') }
 
     field :app_store_private_key_file_name,
-          section: SECTION_TYPE_CONNECTION,
-          is_secret: false
+          section: SECTION_TYPE_CONNECTION
 
-    field :app_store_private_key, api_only: true, is_secret: false
+    field :app_store_private_key, api_only: true
 
     def title
       'Apple App Store Connect'
@@ -53,7 +51,7 @@ module Integrations
         s_("Use the Apple App Store Connect integration to easily connect to the Apple App Store with Fastlane in CI/CD pipelines."),
         s_("After the Apple App Store Connect integration is activated, the following protected variables will be created for CI/CD use."),
         variable_list.join('<br>'),
-        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: "https://docs.gitlab.com/ee/integration/apple_app_store.html")).html_safe
+        s_(format("To get started, see the <a href='%{url}' target='_blank'>integration documentation</a> for instructions on how to generate App Store Connect credentials, and how to use this integration.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'))).html_safe
       ]
       # rubocop:enable Layout/LineLength
 

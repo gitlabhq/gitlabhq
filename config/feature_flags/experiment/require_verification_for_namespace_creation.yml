@@ -1,8 +1,0 @@
----
-name: require_verification_for_namespace_creation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77315
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350251
-milestone: '14.8'
-type: experiment
-group: group::activation
-default_enabled: false

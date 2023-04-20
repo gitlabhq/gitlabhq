@@ -15,6 +15,7 @@ module Gitlab
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
       include AsyncConstraints::MigrationHelpers
+      include WraparoundVacuumHelpers
 
       def define_batchable_model(table_name, connection: self.connection)
         super(table_name, connection: connection)
@@ -76,63 +77,6 @@ module Gitlab
         columns = options.fetch(:columns, DEFAULT_TIMESTAMP_COLUMNS)
         columns.each do |column_name|
           remove_column(table_name, column_name)
-        end
-      end
-
-      # @deprecated Use `create_table` in V2 instead
-      #
-      # Creates a new table, optionally allowing the caller to add check constraints to the table.
-      # Aside from that addition, this method should behave identically to Rails' `create_table` method.
-      #
-      # Example:
-      #
-      #     create_table_with_constraints :some_table do |t|
-      #       t.integer :thing, null: false
-      #       t.text :other_thing
-      #
-      #       t.check_constraint :thing_is_not_null, 'thing IS NOT NULL'
-      #       t.text_limit :other_thing, 255
-      #     end
-      #
-      # See Rails' `create_table` for more info on the available arguments.
-      def create_table_with_constraints(table_name, **options, &block)
-        helper_context = self
-
-        with_lock_retries do
-          check_constraints = []
-
-          create_table(table_name, **options) do |t|
-            t.define_singleton_method(:check_constraint) do |name, definition|
-              helper_context.send(:validate_check_constraint_name!, name) # rubocop:disable GitlabSecurity/PublicSend
-
-              check_constraints << { name: name, definition: definition }
-            end
-
-            t.define_singleton_method(:text_limit) do |column_name, limit, name: nil|
-              # rubocop:disable GitlabSecurity/PublicSend
-              name = helper_context.send(:text_limit_name, table_name, column_name, name: name)
-              helper_context.send(:validate_check_constraint_name!, name)
-              # rubocop:enable GitlabSecurity/PublicSend
-
-              column_name = helper_context.quote_column_name(column_name)
-              definition = "char_length(#{column_name}) <= #{limit}"
-
-              check_constraints << { name: name, definition: definition }
-            end
-
-            t.instance_eval(&block) unless block.nil?
-          end
-
-          next if check_constraints.empty?
-
-          constraint_clauses = check_constraints.map do |constraint|
-            "ADD CONSTRAINT #{quote_table_name(constraint[:name])} CHECK (#{constraint[:definition]})"
-          end
-
-          execute(<<~SQL)
-            ALTER TABLE #{quote_table_name(table_name)}
-            #{constraint_clauses.join(",\n")}
-          SQL
         end
       end
 
@@ -371,6 +315,13 @@ module Gitlab
             tables_match?(target.to_s, foreign_key.to_table.to_s) &&
                 options_match?(foreign_key.options, options)
           end
+        end
+
+        # Since we may be migrating in one go from a previous version without
+        # `constrained_table_name` then we may see that this column exists
+        # (as above) but the schema cache is still outdated for the model.
+        unless Gitlab::Database::PostgresForeignKey.column_names.include?('constrained_table_name')
+          Gitlab::Database::PostgresForeignKey.reset_column_information
         end
 
         fks = Gitlab::Database::PostgresForeignKey.by_constrained_table_name_or_identifier(source)

@@ -9,7 +9,7 @@ module Projects
       include Gitlab::ShellAdapter
 
       attr_reader :old_disk_path, :new_disk_path, :old_storage_version,
-                  :logger, :move_wiki, :move_design
+        :logger, :move_wiki, :move_design
 
       def initialize(project:, old_disk_path:, logger: nil)
         @project = project

@@ -1,9 +1,9 @@
+- @gfm_form = true
 - project = local_assigns.fetch(:project)
 - model = local_assigns.fetch(:model)
 - form = local_assigns.fetch(:form)
 - placeholder = model.is_a?(MergeRequest) ? _('Describe the goal of the changes and what reviewers should be aware of.') : _('Write a description or drag your files here…')
-
-- supports_quick_actions = true
+- no_issuable_templates = issuable_templates(ref_project, model.to_ability_name).empty?
 - preview_url = preview_markdown_path(project, target_type: model.class.name)
 
 .form-group
@@ -16,12 +16,14 @@
 
   = render 'shared/form_elements/apply_template_warning', issuable: model
 
-  = render layout: 'shared/md_preview', locals: { url: preview_url, referenced_users: true } do
-    = render 'shared/zen', f: form, attr: :description,
-                              classes: 'note-textarea rspec-issuable-form-description',
-                              placeholder: placeholder,
-                              supports_quick_actions: supports_quick_actions,
-                              qa_selector: 'issuable_form_description_field'
-    = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
-    .clearfix
-    .error-alert
+  .js-markdown-editor{ data: { render_markdown_path: preview_url,
+                               markdown_docs_path: help_page_path('user/markdown'),
+                               quick_actions_docs_path: help_page_path('user/project/quick_actions'),
+                               qa_selector: 'issuable_form_description_field',
+                               form_field_placeholder: placeholder,
+                               form_field_classes: 'js-gfm-input markdown-area note-textarea rspec-issuable-form-description' } }
+    = form.hidden_field :description
+
+  - if no_issuable_templates && can?(current_user, :push_code, model.project)
+    = render 'shared/issuable/form/default_templates'
+

@@ -27,7 +27,7 @@
 #  batch_sum(User, :sign_in_count)
 #  batch_sum(Issue.group(:state_id), :weight))
 #  batch_average(Ci::Pipeline, :duration)
-#  batch_average(MergeTrain.group(:status), :duration)
+#  batch_average(MergeTrains::Car.group(:status), :duration)
 module Gitlab
   module Database
     module BatchCount

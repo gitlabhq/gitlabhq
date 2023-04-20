@@ -199,7 +199,7 @@ class Repository
   def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
     return [] unless exists?
     return [] unless has_visible_content?
-    return [] unless query.present? && ref.present?
+    return [] unless ref.present?
 
     commits = raw_repository.list_commits_by(
       query, ref, author: author, before: before, after: after, limit: limit).map do |c|

@@ -85,31 +85,40 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
     end
   end
 
-  describe '.definitions' do
-    subject(:definitions) { described_class.definitions }
+  context 'all tables have correct triggers installed' do
+    let(:all_tables_from_yaml) { described_class.definitions.pluck(:to_table).uniq }
 
-    it 'contains at least all parent tables that have triggers' do
-      all_definition_parent_tables = definitions.map { |d| d.to_table }.to_set
-
+    let(:all_tables_with_triggers) do
       triggers_query = <<~SQL
-        SELECT event_object_table, trigger_name
-        FROM information_schema.triggers
+        SELECT event_object_table FROM information_schema.triggers
         WHERE trigger_name LIKE '%_loose_fk_trigger'
-        GROUP BY event_object_table, trigger_name
       SQL
 
-      all_triggers = ApplicationRecord.connection.execute(triggers_query)
+      ApplicationRecord.connection.execute(triggers_query)
+        .pluck('event_object_table').uniq
+    end
 
-      all_triggers.each do |trigger|
-        table = trigger['event_object_table']
-        trigger_name = trigger['trigger_name']
-        error_message = <<~END
-          Missing a loose foreign key definition for parent table: #{table} with trigger: #{trigger_name}.
-          Loose foreign key definitions must be added before triggers are added and triggers must be removed before removing the loose foreign key definition.
-          Read more at https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html ."
-        END
-        expect(all_definition_parent_tables).to include(table), error_message
-      end
+    it 'all YAML tables do have `track_record_deletions` installed' do
+      missing_trigger_tables = all_tables_from_yaml - all_tables_with_triggers
+
+      expect(missing_trigger_tables).to be_empty, <<~END
+        The loose foreign keys definitions require using `track_record_deletions`
+        for the following tables: #{missing_trigger_tables}.
+        Read more at https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
+      END
+    end
+
+    it 'no extra tables have `track_record_deletions` installed' do
+      extra_trigger_tables = all_tables_with_triggers - all_tables_from_yaml
+
+      pending 'This result of this test is informatory, and not critical' if extra_trigger_tables.any?
+
+      expect(extra_trigger_tables).to be_empty, <<~END
+        The following tables have unused `track_record_deletions` triggers installed,
+        but they are not referenced by any of the loose foreign key definitions: #{extra_trigger_tables}.
+        You can remove them in one of the future releases as part of `db/post_migrate`.
+        Read more at https://docs.gitlab.com/ee/development/database/loose_foreign_keys.html."
+      END
     end
   end
 

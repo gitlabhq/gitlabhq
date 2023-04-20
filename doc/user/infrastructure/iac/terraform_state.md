@@ -1,16 +1,14 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab-managed Terraform state **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
-> - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106861) in GitLab 15.7.
-
-FLAG:
-On self-managed GitLab, by default support for state names that contain periods is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. On GitLab.com, support for state names that contain periods is available. Requests for state files might generate HTTP 404 errors after enabling this feature. For more information, see [Troubleshooting the Terraform integration with GitLab](troubleshooting.md#state-not-found-if-the-state-name-contains-a-period).
+> - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
+> - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
 
 Terraform uses state files to store details about your infrastructure configuration.
 With Terraform remote [backends](https://www.terraform.io/language/settings/backends/configuration),
@@ -338,6 +336,5 @@ You can also use [the GraphQL API](../../../api/graphql/reference/index.md#mutat
 
 ## Related topics
 
-- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md).
-- To use GitLab and Terraform to deploy an AWS EC2 instance in a custom VPC,
-  see [this sample project](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws).
+- [Troubleshooting GitLab-managed Terraform state](troubleshooting.md)
+- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws)

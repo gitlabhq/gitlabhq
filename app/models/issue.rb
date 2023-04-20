@@ -39,6 +39,8 @@ class Issue < ApplicationRecord
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
+  IssueTypeOutOfSyncError = Class.new(StandardError)
+
   SORTING_PREFERENCE_FIELD = :issues_sort
   MAX_BRANCH_TEMPLATE = 255
 
@@ -52,16 +54,18 @@ class Issue < ApplicationRecord
   # Types of issues that should be displayed on issue board lists
   TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
 
+  # This default came from the enum `issue_type` column. Defined as default in the DB
+  DEFAULT_ISSUE_TYPE = :issue
+
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
 
   belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
-  belongs_to :iteration, foreign_key: 'sprint_id'
   belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :work_items
 
-  belongs_to :moved_to, class_name: 'Issue'
-  has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id
+  belongs_to :moved_to, class_name: 'Issue', inverse_of: :moved_from
+  has_one :moved_from, class_name: 'Issue', foreign_key: :moved_to_id, inverse_of: :moved_to
 
   has_internal_id :iid, scope: :namespace, track_if: -> { !importing? }, init: ->(issue, scope) do
     # we need this init for the case where the IID allocation in internal_ids#last_value
@@ -114,6 +118,7 @@ class Issue < ApplicationRecord
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
   has_many :incident_management_timeline_events, class_name: 'IncidentManagement::TimelineEvent', foreign_key: :issue_id, inverse_of: :incident
+  has_many :assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', inverse_of: :issue
 
   alias_attribute :escalation_status, :incident_management_issuable_escalation_status
 
@@ -231,6 +236,7 @@ class Issue < ApplicationRecord
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
+  before_save :check_issue_type_in_sync!
 
   after_save :ensure_metrics!, unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
@@ -594,6 +600,10 @@ class Issue < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def update_project_counter_caches
+    # TODO: Fix counter cache for issues in group
+    # TODO: see https://gitlab.com/gitlab-org/gitlab/-/work_items/393125?iid_path=true
+    return unless project
+
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -688,6 +698,10 @@ class Issue < ApplicationRecord
   end
 
   def expire_etag_cache
+    # TODO: Fix this for the case when issues is created at group level
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/395814?iid_path=true
+    return unless project
+
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
   end
@@ -702,7 +716,44 @@ class Issue < ApplicationRecord
     ::Gitlab::GlobalId.as_global_id(id, model_name: WorkItem.name)
   end
 
+  def resource_parent
+    project || namespace
+  end
+
+  # Persisted records will always have a work_item_type. This method is useful
+  # in places where we use a non persisted issue to perform feature checks
+  def work_item_type_with_default
+    work_item_type || WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
+  end
+
   private
+
+  def check_issue_type_in_sync!
+    # We might have existing records out of sync, so we need to skip this check unless the value is changed
+    # so those records can still be updated until we fix them and remove the issue_type column
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158?iid_path=true
+    return unless (changes.keys & %w[issue_type work_item_type_id]).any?
+
+    if issue_type != work_item_type.base_type
+      error = IssueTypeOutOfSyncError.new(
+        <<~ERROR
+          Issue `issue_type` out of sync with `work_item_type_id` column.
+          `issue_type` must be equal to `work_item.base_type`.
+          You can assign the correct work_item_type like this for example:
+
+          Issue.new(issue_type: :incident, work_item_type: WorkItems::Type.default_by_type(:incident))
+
+          More details in https://gitlab.com/gitlab-org/gitlab/-/issues/338005
+        ERROR
+      )
+
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        error,
+        issue_type: issue_type,
+        work_item_type_id: work_item_type_id
+      )
+    end
+  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?
@@ -729,6 +780,10 @@ class Issue < ApplicationRecord
 
   override :persist_pg_full_text_search_vector
   def persist_pg_full_text_search_vector(search_vector)
+    # TODO: Fix search vector for issues at group level
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126?iid_path=true
+    return unless project
+
     Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
   end
 
@@ -745,12 +800,14 @@ class Issue < ApplicationRecord
   end
 
   def record_create_action
-    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(author: author, project: project)
+    Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_created_action(
+      author: author, namespace: namespace.reset
+    )
   end
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && project.feature_available?(:issues, nil) &&
+    resource_parent.public? && resource_parent.feature_available?(:issues, nil) &&
       !confidential? && !hidden? && !::Gitlab::ExternalAuthorization.enabled?
   end
 
@@ -766,6 +823,8 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
+    # TODO: We should switch to DEFAULT_ISSUE_TYPE here when the issue_type column is dropped
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700?iid_path=true
     self.work_item_type = WorkItems::Type.default_by_type(issue_type)
   end
 

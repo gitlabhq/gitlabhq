@@ -76,8 +76,8 @@ export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const i18n = {
   calendarLabel: __('Subscribe to calendar'),
-  closed: __('CLOSED'),
-  closedMoved: __('CLOSED (MOVED)'),
+  closed: __('Closed'),
+  closedMoved: __('Closed (moved)'),
   confidentialNo: __('No'),
   confidentialYes: __('Yes'),
   downvotes: __('Downvotes'),

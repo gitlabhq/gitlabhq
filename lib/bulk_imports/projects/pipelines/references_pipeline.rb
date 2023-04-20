@@ -59,7 +59,7 @@ module BulkImports
         end
 
         def object_has_reference?(object)
-          object_body(object).include?(source_full_path)
+          object_body(object)&.include?(source_full_path)
         end
 
         def object_body(object)

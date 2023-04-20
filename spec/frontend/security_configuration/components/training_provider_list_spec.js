@@ -253,7 +253,7 @@ describe('TrainingProviderList component', () => {
         expect(findLogos().at(provider).attributes('role')).toBe('presentation');
       });
 
-      it.each(providerIndexArray)('renders the svg content for provider %s', async (provider) => {
+      it.each(providerIndexArray)('renders the svg content for provider %s', (provider) => {
         expect(findLogos().at(provider).html()).toContain(
           TEMP_PROVIDER_LOGOS[testProviderName[provider]].svg,
         );

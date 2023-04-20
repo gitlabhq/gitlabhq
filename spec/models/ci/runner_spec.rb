@@ -273,7 +273,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  shared_examples '.belonging_to_parent_group_of_project' do
+  shared_examples '.belonging_to_parent_groups_of_project' do
     let_it_be(:group1) { create(:group) }
     let_it_be(:project1) { create(:project, group: group1) }
     let_it_be(:runner1) { create(:ci_runner, :group, groups: [group1]) }
@@ -284,7 +284,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     let(:project_id) { project1.id }
 
-    subject(:result) { described_class.belonging_to_parent_group_of_project(project_id) }
+    subject(:result) { described_class.belonging_to_parent_groups_of_project(project_id) }
 
     it 'returns the group runner' do
       expect(result).to contain_exactly(runner1)
@@ -310,7 +310,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   context 'when use_traversal_ids* are enabled' do
-    it_behaves_like '.belonging_to_parent_group_of_project'
+    it_behaves_like '.belonging_to_parent_groups_of_project'
   end
 
   context 'when use_traversal_ids* are disabled' do
@@ -322,7 +322,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       )
     end
 
-    it_behaves_like '.belonging_to_parent_group_of_project'
+    it_behaves_like '.belonging_to_parent_groups_of_project'
   end
 
   context 'with instance runners sharing enabled' do

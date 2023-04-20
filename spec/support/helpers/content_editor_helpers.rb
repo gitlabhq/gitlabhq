@@ -2,7 +2,7 @@
 
 module ContentEditorHelpers
   def switch_to_content_editor
-    click_button _('Viewing markdown')
+    click_button _('Editing markdown')
     click_button _('Rich text')
   end
 
@@ -10,8 +10,8 @@ module ContentEditorHelpers
     find(content_editor_testid).send_keys keys
   end
 
-  def open_insert_media_dropdown
-    page.find('svg[data-testid="media-icon"]').click
+  def click_attachment_button
+    page.find('svg[data-testid="paperclip-icon"]').click
   end
 
   def set_source_editor_content(content)

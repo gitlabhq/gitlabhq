@@ -559,19 +559,19 @@ export const allDiscussionWrappersExpanded = (diff) => {
   return discussionsExpanded;
 };
 
-export function isUrlHashNoteLink(urlHash) {
+export function isUrlHashNoteLink(urlHash = '') {
   const id = urlHash.replace(/^#/, '');
 
   return id.startsWith('note');
 }
 
-export function isUrlHashFileHeader(urlHash) {
+export function isUrlHashFileHeader(urlHash = '') {
   const id = urlHash.replace(/^#/, '');
 
   return id.startsWith('diff-content');
 }
 
-export function parseUrlHashAsFileHash(urlHash, currentDiffFileId = '') {
+export function parseUrlHashAsFileHash(urlHash = '', currentDiffFileId = '') {
   const isNoteLink = isUrlHashNoteLink(urlHash);
   let id = urlHash.replace(/^#/, '');
 

@@ -12,12 +12,16 @@ RSpec.describe FinalizeGroupMemberNamespaceIdMigration, :migration, feature_cate
     shared_examples 'finalizes the migration' do
       it 'finalizes the migration' do
         allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-          expect(runner).to receive(:finalize).with('BackfillMemberNamespaceForGroupMembers', :members, :id, [])
+          expect(runner).to receive(:finalize).with(migration, :members, :id, [])
         end
       end
     end
 
     context 'when migration is missing' do
+      before do
+        batched_migrations.where(job_class_name: migration).delete_all
+      end
+
       it 'warns migration not found' do
         expect(Gitlab::AppLogger)
           .to receive(:warn).with(/Could not find batched background migration for the given configuration:/)
@@ -29,7 +33,7 @@ RSpec.describe FinalizeGroupMemberNamespaceIdMigration, :migration, feature_cate
     context 'with migration present' do
       let!(:group_member_namespace_id_backfill) do
         batched_migrations.create!(
-          job_class_name: 'BackfillMemberNamespaceForGroupMembers',
+          job_class_name: migration,
           table_name: :members,
           column_name: :id,
           job_arguments: [],

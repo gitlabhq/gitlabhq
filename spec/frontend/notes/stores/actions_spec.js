@@ -257,14 +257,14 @@ describe('Actions Notes Store', () => {
       axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, pollResponse, pollHeaders);
     const failureMock = () =>
       axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    const advanceAndRAF = async (time) => {
+    const advanceAndRAF = (time) => {
       if (time) {
         jest.advanceTimersByTime(time);
       }
 
       return waitForPromises();
     };
-    const advanceXMoreIntervals = async (number) => {
+    const advanceXMoreIntervals = (number) => {
       const timeoutLength = pollInterval * number;
 
       return advanceAndRAF(timeoutLength);
@@ -273,7 +273,7 @@ describe('Actions Notes Store', () => {
       await store.dispatch('poll');
       await advanceAndRAF(2);
     };
-    const cleanUp = async () => {
+    const cleanUp = () => {
       jest.clearAllTimers();
 
       return store.dispatch('stopPolling');

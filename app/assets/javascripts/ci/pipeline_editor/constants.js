@@ -86,25 +86,8 @@ export const VALIDATE_TAB_FEEDBACK_URL = 'https://gitlab.com/gitlab-org/gitlab/-
 
 export const COMMIT_SHA_POLL_INTERVAL = 1000;
 
-export const RUNNERS_AVAILABILITY_SECTION_EXPERIMENT_NAME = 'runners_availability_section';
-export const RUNNERS_SETTINGS_LINK_CLICKED_EVENT = 'runners_settings_link_clicked';
-export const RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT = 'runners_documentation_link_clicked';
-export const RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT = 'runners_settings_button_clicked';
 export const I18N = {
   title: s__('Pipelines|Get started with GitLab CI/CD'),
-  runners: {
-    title: s__('Pipelines|Runners are available to run your jobs now'),
-    subtitle: s__(
-      'Pipelines|GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. There are active runners available to run your jobs right now. If you prefer, you can %{settingsLinkStart}configure your runners%{settingsLinkEnd} or %{docsLinkStart}learn more%{docsLinkEnd} about runners.',
-    ),
-  },
-  noRunners: {
-    title: s__('Pipelines|No runners detected'),
-    subtitle: s__(
-      'Pipelines|A GitLab Runner is an application that works with GitLab CI/CD to run jobs in a pipeline. Install GitLab Runner and register your own runners to get started with CI/CD.',
-    ),
-    cta: s__('Pipelines|Install GitLab Runner'),
-  },
   learnBasics: {
     title: s__('Pipelines|Learn the basics of pipelines and .yml files'),
     subtitle: s__(

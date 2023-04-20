@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Applications::ActivateIntegrationWorker, '#perform', feature_category: :kubernetes_management do
+RSpec.describe Clusters::Applications::ActivateIntegrationWorker, '#perform', feature_category: :deployment_management do
   context 'when cluster exists' do
     describe 'prometheus integration' do
       let(:integration_name) { 'prometheus' }

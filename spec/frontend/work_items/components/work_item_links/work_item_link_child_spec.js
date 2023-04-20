@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlLabel, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -11,6 +11,7 @@ import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemLinksMenu from '~/work_items/components/work_item_links/work_item_links_menu.vue';
 import WorkItemTreeChildren from '~/work_items/components/work_item_links/work_item_tree_children.vue';
@@ -29,6 +30,8 @@ import {
   workItemHierarchyTreeResponse,
   workItemHierarchyTreeFailureResponse,
   workItemObjectiveMetadataWidgets,
+  changeIndirectWorkItemParentMutationResponse,
+  workItemUpdateFailureResponse,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -37,6 +40,14 @@ describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
   let getWorkItemTreeQueryHandler;
+  let mutationChangeParentHandler;
+  const { LABELS } = workItemObjectiveMetadataWidgets;
+  const mockLabels = LABELS.labels.nodes;
+
+  const $toast = {
+    show: jest.fn(),
+    hide: jest.fn(),
+  };
 
   Vue.use(VueApollo);
 
@@ -49,16 +60,26 @@ describe('WorkItemLinkChild', () => {
     apolloProvider = null,
   } = {}) => {
     getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
+    mutationChangeParentHandler = jest
+      .fn()
+      .mockResolvedValue(changeIndirectWorkItemParentMutationResponse);
 
     wrapper = shallowMountExtended(WorkItemLinkChild, {
       apolloProvider:
-        apolloProvider || createMockApollo([[getWorkItemTreeQuery, getWorkItemTreeQueryHandler]]),
+        apolloProvider ||
+        createMockApollo([
+          [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
+          [updateWorkItemMutation, mutationChangeParentHandler],
+        ]),
       propsData: {
         projectPath,
         canUpdate,
         issuableGid,
         childItem,
         workItemType,
+      },
+      mocks: {
+        $toast,
       },
     });
   };
@@ -165,8 +186,6 @@ describe('WorkItemLinkChild', () => {
       expect(metadataEl.props()).toMatchObject({
         metadataWidgets: workItemObjectiveMetadataWidgets,
       });
-
-      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-3');
     });
 
     it('does not render item metadata component when item has no metadata present', () => {
@@ -176,8 +195,20 @@ describe('WorkItemLinkChild', () => {
       });
 
       expect(findMetadataComponent().exists()).toBe(false);
+    });
 
-      expect(wrapper.find('[data-testid="links-child"]').classes()).toContain('gl-py-0');
+    it('renders labels', () => {
+      const labels = wrapper.findAllComponents(GlLabel);
+      const mockLabel = mockLabels[0];
+
+      expect(labels).toHaveLength(mockLabels.length);
+      expect(labels.at(0).props()).toMatchObject({
+        title: mockLabel.title,
+        backgroundColor: mockLabel.color,
+        description: mockLabel.description,
+        scoped: false,
+      });
+      expect(labels.at(1).props('scoped')).toBe(true); // Second label is scoped
     });
   });
 
@@ -216,6 +247,13 @@ describe('WorkItemLinkChild', () => {
     const findExpandButton = () => wrapper.findByTestId('expand-child');
     const findTreeChildren = () => wrapper.findComponent(WorkItemTreeChildren);
 
+    const getWidgetHierarchy = () =>
+      workItemHierarchyTreeResponse.data.workItem.widgets.find(
+        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+      );
+    const getChildrenNodes = () => getWidgetHierarchy().children.nodes;
+    const findFirstItemId = () => getChildrenNodes()[0].id;
+
     beforeEach(() => {
       getWorkItemTreeQueryHandler.mockClear();
       createComponent({
@@ -238,10 +276,8 @@ describe('WorkItemLinkChild', () => {
       expect(getWorkItemTreeQueryHandler).toHaveBeenCalled();
       expect(findTreeChildren().exists()).toBe(true);
 
-      const widgetHierarchy = workItemHierarchyTreeResponse.data.workItem.widgets.find(
-        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-      );
-      expect(findTreeChildren().props('children')).toEqual(widgetHierarchy.children.nodes);
+      const childrenNodes = getChildrenNodes();
+      expect(findTreeChildren().props('children')).toEqual(childrenNodes);
     });
 
     it('does not fetch children if already fetched once while clicking expand button', async () => {
@@ -289,6 +325,75 @@ describe('WorkItemLinkChild', () => {
       findTreeChildren().vm.$emit('click', 'event');
 
       expect(wrapper.emitted('click')).toEqual([['event']]);
+    });
+
+    it('shows toast on removing child item', async () => {
+      findExpandButton().vm.$emit('click');
+      await waitForPromises();
+
+      findTreeChildren().vm.$emit('removeChild', findFirstItemId());
+      await waitForPromises();
+
+      expect($toast.show).toHaveBeenCalledWith('Child removed', {
+        action: { onClick: expect.any(Function), text: 'Undo' },
+      });
+    });
+
+    it('renders correct number of children after the removal', async () => {
+      findExpandButton().vm.$emit('click');
+      await waitForPromises();
+
+      const childrenNodes = getChildrenNodes();
+      expect(findTreeChildren().props('children')).toEqual(childrenNodes);
+
+      findTreeChildren().vm.$emit('removeChild', findFirstItemId());
+      await waitForPromises();
+
+      expect(findTreeChildren().props('children')).toEqual([]);
+    });
+
+    it('calls correct mutation with correct variables', async () => {
+      const firstItemId = findFirstItemId();
+
+      findExpandButton().vm.$emit('click');
+      await waitForPromises();
+
+      findTreeChildren().vm.$emit('removeChild', firstItemId);
+
+      expect(mutationChangeParentHandler).toHaveBeenCalledWith({
+        input: {
+          id: firstItemId,
+          hierarchyWidget: {
+            parentId: null,
+          },
+        },
+      });
+    });
+
+    it('shows the alert when workItem update fails', async () => {
+      mutationChangeParentHandler = jest.fn().mockRejectedValue(workItemUpdateFailureResponse);
+      const apolloProvider = createMockApollo([
+        [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
+        [updateWorkItemMutation, mutationChangeParentHandler],
+      ]);
+
+      createComponent({
+        childItem: workItemObjectiveWithChild,
+        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        apolloProvider,
+      });
+
+      findExpandButton().vm.$emit('click');
+      await waitForPromises();
+
+      findTreeChildren().vm.$emit('removeChild', findFirstItemId());
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.any(Object),
+        message: 'Something went wrong while removing child.',
+      });
     });
   });
 });

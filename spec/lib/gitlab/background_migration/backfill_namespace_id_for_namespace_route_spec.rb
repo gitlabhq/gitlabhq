@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceIdForNamespaceRoute, :migration, schema: 20220120123800 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceIdForNamespaceRoute, :migration, schema: 20220314184009 do
   let(:migration) { described_class.new }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }

@@ -52,7 +52,7 @@ describe('toggles/index.js', () => {
         initToggleWithOptions();
       });
 
-      it('attaches a GlToggle to the element', async () => {
+      it('attaches a GlToggle to the element', () => {
         expect(toggleWrapper).not.toBe(null);
         expect(toggleWrapper.querySelector(TOGGLE_LABEL_CLASS).textContent).toBe(toggleLabel);
       });

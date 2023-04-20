@@ -57,13 +57,13 @@ import {
   allRunnersDataPaginated,
   onlineContactTimeoutSecs,
   staleTimeoutSecs,
+  mockRegistrationToken,
   newRunnerPath,
   emptyPageInfo,
   emptyStateSvgPath,
   emptyStateFilteredSvgPath,
 } from '../mock_data';
 
-const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 const mockRunners = allRunnersData.data.runners.nodes;
 const mockRunnersCount = runnersCountData.data.runners.count;
 
@@ -208,13 +208,13 @@ describe('AdminRunnersApp', () => {
   it('runner item links to the runner admin page', async () => {
     await createComponent({ mountFn: mountExtended });
 
-    const { id, shortSha } = mockRunners[0];
+    const { id, shortSha, adminUrl } = mockRunners[0];
     const numericId = getIdFromGraphQLId(id);
 
     const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
     expect(runnerLink.text()).toBe(`#${numericId} (${shortSha})`);
-    expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${numericId}`);
+    expect(runnerLink.attributes('href')).toBe(adminUrl);
   });
 
   it('renders runner actions for each runner', async () => {
@@ -264,7 +264,7 @@ describe('AdminRunnersApp', () => {
   });
 
   describe('Single runner row', () => {
-    const { id: graphqlId, shortSha } = mockRunners[0];
+    const { id: graphqlId, shortSha, adminUrl } = mockRunners[0];
     const id = getIdFromGraphQLId(graphqlId);
 
     beforeEach(async () => {
@@ -273,11 +273,11 @@ describe('AdminRunnersApp', () => {
       await createComponent({ mountFn: mountExtended });
     });
 
-    it('Links to the runner page', async () => {
+    it('Links to the runner page', () => {
       const runnerLink = wrapper.find('tr [data-testid="td-summary"]').findComponent(GlLink);
 
       expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
-      expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
+      expect(runnerLink.attributes('href')).toBe(adminUrl);
     });
 
     it('Shows job status and links to jobs', () => {
@@ -286,13 +286,10 @@ describe('AdminRunnersApp', () => {
         .findComponent(RunnerJobStatusBadge);
 
       expect(badge.props('jobStatus')).toBe(mockRunners[0].jobExecutionStatus);
-
-      const badgeHref = new URL(badge.attributes('href'));
-      expect(badgeHref.pathname).toBe(`/admin/runners/${id}`);
-      expect(badgeHref.hash).toBe(`#${JOBS_ROUTE_PATH}`);
+      expect(badge.attributes('href')).toBe(`${adminUrl}#${JOBS_ROUTE_PATH}`);
     });
 
-    it('When runner is paused or unpaused, some data is refetched', async () => {
+    it('When runner is paused or unpaused, some data is refetched', () => {
       expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
       findRunnerActionsCell().vm.$emit('toggledPaused');
@@ -301,7 +298,7 @@ describe('AdminRunnersApp', () => {
       expect(showToast).toHaveBeenCalledTimes(0);
     });
 
-    it('When runner is deleted, data is refetched and a toast message is shown', async () => {
+    it('When runner is deleted, data is refetched and a toast message is shown', () => {
       findRunnerActionsCell().vm.$emit('deleted', { message: 'Runner deleted' });
 
       expect(showToast).toHaveBeenCalledTimes(1);
@@ -324,7 +321,7 @@ describe('AdminRunnersApp', () => {
           { type: PARAM_KEY_STATUS, value: { data: STATUS_ONLINE, operator: '=' } },
           { type: PARAM_KEY_PAUSED, value: { data: 'true', operator: '=' } },
         ],
-        sort: 'CREATED_DESC',
+        sort: DEFAULT_SORT,
         pagination: {},
       });
     });
@@ -410,7 +407,7 @@ describe('AdminRunnersApp', () => {
         await createComponent({ mountFn: mountExtended });
       });
 
-      it('count data is refetched', async () => {
+      it('count data is refetched', () => {
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES);
 
         findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
@@ -418,7 +415,7 @@ describe('AdminRunnersApp', () => {
         expect(mockRunnersCountHandler).toHaveBeenCalledTimes(COUNT_QUERIES * 2);
       });
 
-      it('toast is shown', async () => {
+      it('toast is shown', () => {
         expect(showToast).toHaveBeenCalledTimes(0);
 
         findRunnerList().vm.$emit('deleted', { message: 'Runners deleted' });
@@ -480,11 +477,11 @@ describe('AdminRunnersApp', () => {
       await createComponent();
     });
 
-    it('error is shown to the user', async () => {
+    it('error is shown to the user', () => {
       expect(createAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('error is reported to sentry', async () => {
+    it('error is reported to sentry', () => {
       expect(captureException).toHaveBeenCalledWith({
         error: new Error('Error!'),
         component: 'AdminRunnersApp',

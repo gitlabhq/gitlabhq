@@ -13,6 +13,7 @@ module QA
           view 'app/views/shared/deploy_keys/_project_group_form.html.haml' do
             element :deploy_key_title_field
             element :deploy_key_field
+            element :deploy_key_expires_at_field
             element :add_deploy_key_button
           end
 

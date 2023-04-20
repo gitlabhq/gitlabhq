@@ -28,6 +28,9 @@ module Gitlab
       EMAIL_FOR_USERNAME_CACHE_KEY =
         'github-import/user-finder/email-for-username/%s'
 
+      # The base cache key to use for caching inexistence of GitHub usernames.
+      INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY = 'github-import/user-finder/inexistence-of-username/%s'
+
       # project - An instance of `Project`
       # client - An instance of `Gitlab::GithubImport::Client`
       def initialize(project, client)
@@ -113,12 +116,15 @@ module Gitlab
         cache_key = EMAIL_FOR_USERNAME_CACHE_KEY % username
         email = Gitlab::Cache::Import::Caching.read(cache_key)
 
-        unless email
+        if email.blank? && !github_username_inexists?(username)
           user = client.user(username)
           email = Gitlab::Cache::Import::Caching.write(cache_key, user[:email], timeout: timeout(user[:email])) if user
         end
 
         email
+      rescue ::Octokit::NotFound
+        cache_github_username_inexistence(username)
+        nil
       end
 
       def cached_id_for_github_id(id)
@@ -189,6 +195,18 @@ module Gitlab
         else
           Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT
         end
+      end
+
+      def github_username_inexists?(username)
+        cache_key = INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY % username
+
+        Gitlab::Cache::Import::Caching.read(cache_key) == 'true'
+      end
+
+      def cache_github_username_inexistence(username)
+        cache_key = INEXISTENCE_OF_GITHUB_USERNAME_CACHE_KEY % username
+
+        Gitlab::Cache::Import::Caching.write(cache_key, true)
       end
     end
   end

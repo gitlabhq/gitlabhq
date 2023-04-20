@@ -32,6 +32,8 @@ module QA
             # In this case skip this step and proceed to import project row
             return unless has_element?(:personal_access_token_field)
 
+            raise ArgumentError, "No personal access token was provided" if personal_access_token.empty?
+
             fill_element(:personal_access_token_field, personal_access_token)
             click_element(:authenticate_button)
             finished_loading?
@@ -71,7 +73,11 @@ module QA
           # @param [String] source_project_name
           # @param [Integer] wait
           # @return [Boolean]
-          def has_imported_project?(gh_project_name, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
+          def has_imported_project?(
+            gh_project_name,
+            wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME,
+            allow_partial_import: false
+          )
             within_element(:project_import_row, source_project: gh_project_name, skip_finished_loading_check: true) do
               wait_until(
                 max_duration: wait,
@@ -80,18 +86,12 @@ module QA
                 skip_finished_loading_check_on_refresh: true
               ) do
                 status_selector = 'import_status_indicator'
-                is_partial_import = has_css?(status_selector, text: "Partial import")
 
-                # Temporarily adding this for investigation purposes. This makes sure that the details section is
-                # expanded when the screenshot is taken when the test fails. This can be removed or repurposed later
-                # after investigation. Related: https://gitlab.com/gitlab-org/gitlab/-/issues/385252#note_1211218434
-                if is_partial_import
-                  within_element_by_index(:import_status_indicator, 0) do
-                    find('button').click
-                  end
+                return has_element?(status_selector, text: "Complete", wait: 1) unless allow_partial_import # rubocop:disable Cop/AvoidReturnFromBlocks
+
+                ["Partially completed", "Complete"].any? do |status|
+                  has_element?(status_selector, text: status, wait: 1)
                 end
-
-                has_element?(status_selector, text: "Complete")
               end
             end
           end

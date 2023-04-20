@@ -7,6 +7,9 @@
 
 RSpec.shared_examples 'tracking unique hll events' do
   it 'tracks unique event' do
+    # Allow any event tracking before we expect the specific event we want to check below
+    allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).and_call_original
+
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to(
       receive(:track_event)
         .with(target_event, values: expected_value)

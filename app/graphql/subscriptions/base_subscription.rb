@@ -12,6 +12,18 @@ module Subscriptions
       current_user.reset if current_user
     end
 
+    # We override graphql-ruby's default `subscribe` since it returns
+    # :no_response instead, which leads to empty hashes rendered out
+    # to the caller which has caused problems in the client.
+    #
+    # Eventually, we should move to an approach where the caller receives
+    # a response here upon subscribing, but we don't need this currently
+    # because Vue components also perform an initial fetch query.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/402614
+    def subscribe(*)
+      nil
+    end
+
     def authorized?(*)
       raise NotImplementedError
     end

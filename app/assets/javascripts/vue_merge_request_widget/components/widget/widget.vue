@@ -219,6 +219,8 @@ export default {
           this.fetchExpandedContent();
         }
       }
+
+      this.$emit('toggle', { expanded: !this.isCollapsed });
     },
     async fetchExpandedContent() {
       this.isLoadingExpandedContent = true;
@@ -287,7 +289,7 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="gl-px-5 gl-py-4 gl-align-items-center gl-display-flex">
+    <div class="gl-px-5 gl-pr-4 gl-py-4 gl-align-items-center gl-display-flex">
       <status-icon
         :level="1"
         :name="widgetName"
@@ -346,6 +348,7 @@ export default {
             category="tertiary"
             data-testid="toggle-button"
             size="small"
+            data-qa-selector="expand_report_button"
             @click="toggleCollapsed"
           />
         </div>

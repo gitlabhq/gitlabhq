@@ -5,6 +5,8 @@ module Gitlab
     class PostgresForeignKey < SharedModel
       self.primary_key = :oid
 
+      has_many :child_foreign_keys, class_name: 'Gitlab::Database::PostgresForeignKey', foreign_key: 'parent_oid'
+
       # These values come from the possible confdeltype / confupdtype values in pg_constraint
       ACTION_TYPES = {
         restrict: 'r',

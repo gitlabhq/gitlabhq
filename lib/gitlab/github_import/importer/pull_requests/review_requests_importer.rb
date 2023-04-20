@@ -18,6 +18,7 @@ module Gitlab
 
                 review_requests = client.pull_request_review_requests(repo, merge_request.iid)
                 review_requests[:merge_request_id] = merge_request.id
+                review_requests[:merge_request_iid] = merge_request.iid
                 yield review_requests
 
                 mark_merge_request_imported(merge_request)

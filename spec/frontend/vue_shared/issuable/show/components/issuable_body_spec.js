@@ -1,5 +1,5 @@
+import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { useFakeDate } from 'helpers/fake_date';
 
 import IssuableBody from '~/vue_shared/issuable/show/components/issuable_body.vue';
@@ -14,29 +14,12 @@ import { mockIssuableShowProps, mockIssuable } from '../mock_data';
 
 jest.mock('~/autosave');
 jest.mock('~/alert');
+jest.mock('~/task_list');
 
 const issuableBodyProps = {
   ...mockIssuableShowProps,
   issuable: mockIssuable,
 };
-
-const createComponent = (propsData = issuableBodyProps) =>
-  shallowMount(IssuableBody, {
-    propsData,
-    stubs: {
-      IssuableTitle,
-      IssuableDescription,
-      IssuableEditForm,
-      TimeAgoTooltip,
-    },
-    slots: {
-      'status-badge': 'Open',
-      'edit-form-actions': `
-        <button class="js-save">Save changes</button>
-        <button class="js-cancel">Cancel</button>
-      `,
-    },
-  });
 
 describe('IssuableBody', () => {
   // Some assertions expect a date later than our default
@@ -44,66 +27,63 @@ describe('IssuableBody', () => {
 
   let wrapper;
 
+  const createComponent = (propsData = {}) => {
+    wrapper = shallowMount(IssuableBody, {
+      propsData: {
+        ...issuableBodyProps,
+        ...propsData,
+      },
+      stubs: {
+        IssuableTitle,
+        IssuableDescription,
+        IssuableEditForm,
+        TimeAgoTooltip,
+      },
+      slots: {
+        'status-badge': 'Open',
+        'edit-form-actions': `
+        <button class="js-save">Save changes</button>
+        <button class="js-cancel">Cancel</button>
+      `,
+      },
+    });
+  };
+
+  const findUpdatedLink = () => wrapper.findComponent(GlLink);
+  const findIssuableEditForm = () => wrapper.findComponent(IssuableEditForm);
+  const findIssuableEditFormButton = (type) => findIssuableEditForm().find(`button.js-${type}`);
+  const findIssuableTitle = () => wrapper.findComponent(IssuableTitle);
+
   beforeEach(() => {
-    wrapper = createComponent();
+    createComponent();
+    TaskList.mockClear();
   });
 
   describe('computed', () => {
-    describe('isUpdated', () => {
-      it.each`
-        updatedAt                 | returnValue
-        ${mockIssuable.updatedAt} | ${true}
-        ${null}                   | ${false}
-        ${''}                     | ${false}
-      `(
-        'returns $returnValue when value of `updateAt` prop is `$updatedAt`',
-        async ({ updatedAt, returnValue }) => {
-          wrapper.setProps({
-            issuable: {
-              ...mockIssuable,
-              updatedAt,
-            },
-          });
-
-          await nextTick();
-
-          expect(wrapper.vm.isUpdated).toBe(returnValue);
-        },
-      );
-    });
-
     describe('updatedBy', () => {
       it('returns value of `issuable.updatedBy`', () => {
-        expect(wrapper.vm.updatedBy).toBe(mockIssuable.updatedBy);
+        expect(findUpdatedLink().text()).toBe(mockIssuable.updatedBy.name);
+        expect(findUpdatedLink().attributes('href')).toBe(mockIssuable.updatedBy.webUrl);
       });
     });
   });
 
   describe('watchers', () => {
     describe('editFormVisible', () => {
-      it('calls initTaskList in nextTick', async () => {
-        jest.spyOn(wrapper.vm, 'initTaskList');
-        wrapper.setProps({
-          editFormVisible: true,
-        });
-
-        await nextTick();
-
-        wrapper.setProps({
+      it('calls initTaskList in nextTick', () => {
+        createComponent({
           editFormVisible: false,
         });
 
-        await nextTick();
-
-        expect(wrapper.vm.initTaskList).toHaveBeenCalled();
+        expect(TaskList).toHaveBeenCalled();
       });
     });
   });
 
   describe('mounted', () => {
     it('initializes TaskList instance when enabledEdit and enableTaskList props are true', () => {
-      expect(wrapper.vm.taskList instanceof TaskList).toBe(true);
-      expect(wrapper.vm.taskList).toMatchObject({
+      createComponent();
+      expect(TaskList).toHaveBeenCalledWith({
         dataType: 'issue',
         fieldName: 'description',
         lockVersion: issuableBodyProps.taskListLockVersion,
@@ -114,14 +94,12 @@ describe('IssuableBody', () => {
     });
 
     it('does not initialize TaskList instance when either enabledEdit or enableTaskList prop is false', () => {
-      const wrapperNoTaskList = createComponent({
+      createComponent({
         ...issuableBodyProps,
         enableTaskList: false,
       });
 
-      expect(wrapperNoTaskList.vm.taskList).not.toBeDefined();
-
-      wrapperNoTaskList.destroy();
+      expect(TaskList).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -150,10 +128,8 @@ describe('IssuableBody', () => {
 
   describe('template', () => {
     it('renders issuable-title component', () => {
-      const titleEl = wrapper.findComponent(IssuableTitle);
-
-      expect(titleEl.exists()).toBe(true);
-      expect(titleEl.props()).toMatchObject({
+      expect(findIssuableTitle().exists()).toBe(true);
+      expect(findIssuableTitle().props()).toMatchObject({
         issuable: issuableBodyProps.issuable,
         statusIcon: issuableBodyProps.statusIcon,
         enableEdit: issuableBodyProps.enableEdit,
@@ -168,42 +144,37 @@ describe('IssuableBody', () => {
     });
 
     it('renders issuable edit info', () => {
-      const editedEl = wrapper.find('small');
-
-      expect(editedEl.text()).toMatchInterpolatedText('Edited 3 months ago by Administrator');
+      expect(wrapper.find('small').text()).toMatchInterpolatedText(
+        'Edited 3 months ago by Administrator',
+      );
     });
 
-    it('renders issuable-edit-form when `editFormVisible` prop is true', async () => {
-      wrapper.setProps({
+    it('renders issuable-edit-form when `editFormVisible` prop is true', () => {
+      createComponent({
         editFormVisible: true,
       });
 
-      await nextTick();
-
-      const editFormEl = wrapper.findComponent(IssuableEditForm);
-      expect(editFormEl.exists()).toBe(true);
-      expect(editFormEl.props()).toMatchObject({
+      expect(findIssuableEditForm().exists()).toBe(true);
+      expect(findIssuableEditForm().props()).toMatchObject({
         issuable: issuableBodyProps.issuable,
         enableAutocomplete: issuableBodyProps.enableAutocomplete,
         descriptionPreviewPath: issuableBodyProps.descriptionPreviewPath,
         descriptionHelpPath: issuableBodyProps.descriptionHelpPath,
       });
-      expect(editFormEl.find('button.js-save').exists()).toBe(true);
-      expect(editFormEl.find('button.js-cancel').exists()).toBe(true);
+      expect(findIssuableEditFormButton('save').exists()).toBe(true);
+      expect(findIssuableEditFormButton('cancel').exists()).toBe(true);
     });
 
     describe('events', () => {
       it('component emits `edit-issuable` event bubbled via issuable-title', () => {
-        const issuableTitle = wrapper.findComponent(IssuableTitle);
-
-        issuableTitle.vm.$emit('edit-issuable');
+        findIssuableTitle().vm.$emit('edit-issuable');
 
         expect(wrapper.emitted('edit-issuable')).toHaveLength(1);
       });
 
       it.each(['keydown-title', 'keydown-description'])(
         'component emits `%s` event with event object and issuableMeta params via issuable-edit-form',
-        async (eventName) => {
+        (eventName) => {
           const eventObj = {
             preventDefault: jest.fn(),
             stopPropagation: jest.fn(),
@@ -213,15 +184,11 @@ describe('IssuableBody', () => {
             issuableDescription: 'foobar',
           };
 
-          wrapper.setProps({
+          createComponent({
             editFormVisible: true,
           });
 
-          await nextTick();
-
-          const issuableEditForm = wrapper.findComponent(IssuableEditForm);
-
-          issuableEditForm.vm.$emit(eventName, eventObj, issuableMeta);
+          findIssuableEditForm().vm.$emit(eventName, eventObj, issuableMeta);
 
           expect(wrapper.emitted(eventName)).toHaveLength(1);
           expect(wrapper.emitted(eventName)[0]).toMatchObject([eventObj, issuableMeta]);

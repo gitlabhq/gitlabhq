@@ -49,10 +49,12 @@ RSpec.describe 'ci/status/_badge' do
 
       context 'status has external target url' do
         before do
-          external_job = create(:generic_commit_status,
-                                status: :running,
-                                pipeline: pipeline,
-                                target_url: 'http://gitlab.com')
+          external_job = create(
+            :generic_commit_status,
+            status: :running,
+            pipeline: pipeline,
+            target_url: 'http://gitlab.com'
+          )
 
           render_status(external_job)
         end

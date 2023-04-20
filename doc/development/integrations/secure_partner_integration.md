@@ -42,7 +42,7 @@ best place to integrate your own product and its results into GitLab.
 - Pipeline jobs serve a variety of purposes. Jobs can do scanning for and have
   implications for app security, corporate policy, or compliance. When complete,
   the job reports back on its status and creates a
-  [job artifact](../../ci/pipelines/job_artifacts.md) as a result.
+  [job artifact](../../ci/jobs/job_artifacts.md) as a result.
 - The [Merge Request Security Widget](../../ci/testing/index.md#security-reports)
   displays the results of the pipeline's security checks and the developer can
   review them. The developer can review both a summary and a detailed version
@@ -84,7 +84,7 @@ and complete an integration with the Secure stage.
    to successfully display your own product's results with the rest of GitLab.
    - See detailed [technical directions](secure.md) for this step.
    - Read more about [job report artifacts](../../ci/yaml/index.md#artifactsreports).
-   - Read about [job artifacts](../../ci/pipelines/job_artifacts.md).
+   - Read about [job artifacts](../../ci/jobs/job_artifacts.md).
    - Your report artifact must be in one of our currently supported formats.
      For more information, see the [documentation on reports](secure.md#report).
      - Documentation for [SAST reports](../../user/application_security/sast/index.md#reports-json-format).
@@ -95,7 +95,7 @@ and complete an integration with the Secure stage.
        and add the label `devops::secure`.
    - Once the job is completed, the data can be seen:
       - In the [Merge Request Security Report](../../ci/testing/index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
-      - While [browsing a Job Artifact](../../ci/pipelines/job_artifacts.md).
+      - While [browsing a Job Artifact](../../ci/jobs/job_artifacts.md).
       - In the [Security Dashboard](../../user/application_security/security_dashboard/index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
 1. Optional: Provide a way to interact with results as Vulnerabilities:
    - Users can interact with the findings from your artifact within their workflow. They can dismiss the findings or accept them and create a backlog issue.

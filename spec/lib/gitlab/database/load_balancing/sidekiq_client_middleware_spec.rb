@@ -67,16 +67,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
 
       let(:location) { '0/D525E3A8' }
 
-      context 'when feature flag is disabled' do
-        let(:expected_consistency) { :always }
-
-        before do
-          stub_feature_flags(load_balancing_for_test_data_consistency_worker: false)
-        end
-
-        include_examples 'does not pass database locations'
-      end
-
       context 'when write was not performed' do
         before do
           allow(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary?).and_return(false)
@@ -106,7 +96,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
             expected_location = {}
 
             Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-              expect(lb).to receive(:host).and_return(nil)
+              expect(lb).to receive(:host).at_least(:once).and_return(nil)
               expect(lb).to receive(:primary_write_location).and_return(location)
 
               expected_location[lb.name] = location

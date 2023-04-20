@@ -66,6 +66,10 @@ The **CI/CD** settings contain:
   [risks are involved](../../packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries)
   in enabling some of these settings.
 
+## Security and Compliance settings
+
+- [License compliance settings](security_and_compliance.md#choose-package-registry-metadata-to-sync): Enable or disable synchronization of package metadata by a registry type.
+
 ### Geo **(PREMIUM SELF)**
 
 The **Geo** setting contains:
@@ -136,6 +140,7 @@ The **Network** settings contain:
   number of inbound alerts that can be sent to a project.
 - [Notes creation limit](rate_limit_on_notes_creation.md) - Set a rate limit on the note creation requests.
 - [Get single user limit](rate_limit_on_users_api.md) - Set a rate limit on users API endpoint to get a user by ID.
+- [Projects API rate limits for unauthenticated requests](rate_limit_on_projects_api.md) - Set a rate limit on Projects list API endpoint for unauthenticated requests.
 
 ### Preferences
 

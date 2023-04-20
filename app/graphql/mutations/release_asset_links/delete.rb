@@ -19,7 +19,7 @@ module Mutations
             description: 'Deleted release asset link.'
 
       def resolve(id:)
-        link = authorized_find!(id)
+        link = authorized_find!(id: id)
 
         result = ::Releases::Links::DestroyService
           .new(link.release, current_user)
@@ -30,10 +30,6 @@ module Mutations
         else
           { link: nil, errors: result.message }
         end
-      end
-
-      def find_object(id)
-        GitlabSchema.find_by_gid(id)
       end
     end
   end

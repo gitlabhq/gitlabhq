@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::State do
+RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
   subject { create(:terraform_state, :with_version) }
 
   it { is_expected.to belong_to(:project) }

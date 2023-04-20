@@ -7,7 +7,7 @@ module API
 
       before { authenticate! }
 
-      feature_category :kubernetes_management
+      feature_category :deployment_management
 
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'

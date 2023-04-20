@@ -141,7 +141,7 @@ RSpec.describe API::Search, feature_category: :global_search do
       end
     end
 
-    context 'when DB timeouts occur from global searches', :aggregate_errors do
+    context 'when DB timeouts occur from global searches', :aggregate_failures do
       %w(
         issues
         merge_requests

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 FactoryBot.define do
   factory :ml_candidates, class: '::Ml::Candidate' do
-    association :experiment, factory: :ml_experiments
+    association :project, factory: :project
     association :user
+
+    experiment { association :ml_experiments, project_id: project.id }
 
     trait :with_metrics_and_params do
       after(:create) do |candidate|
@@ -19,10 +21,10 @@ FactoryBot.define do
 
     trait :with_artifact do
       after(:create) do |candidate|
-        FactoryBot.create(:generic_package,
-                          name: candidate.package_name,
-                          version: candidate.package_version,
-                          project: candidate.project)
+        candidate.package = FactoryBot.create(:generic_package,
+                              name: candidate.package_name,
+                              version: candidate.package_version,
+                              project: candidate.project)
       end
     end
   end

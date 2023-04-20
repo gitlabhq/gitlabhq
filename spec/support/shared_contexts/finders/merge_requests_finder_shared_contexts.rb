@@ -54,34 +54,44 @@ RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests 
   let_it_be(:label2) { create(:label, project: project1) }
 
   let!(:merge_request1) do
-    create(:merge_request, assignees: [user], author: user, reviewers: [user2],
-                           source_project: project2, target_project: project1,
-                           target_branch: 'merged-target')
+    create(
+      :merge_request, assignees: [user], author: user, reviewers: [user2],
+      source_project: project2, target_project: project1,
+      target_branch: 'merged-target'
+    )
   end
 
   let!(:merge_request2) do
-    create(:merge_request, :conflict, assignees: [user], author: user, reviewers: [user2],
-                                      source_project: project2, target_project: project1,
-                                      state: 'closed')
+    create(
+      :merge_request, :conflict, assignees: [user], author: user, reviewers: [user2],
+      source_project: project2, target_project: project1,
+      state: 'closed'
+    )
   end
 
   let!(:merge_request3) do
-    create(:merge_request, :simple, author: user, assignees: [user2], reviewers: [user],
-                                    source_project: project2, target_project: project2,
-                                    state: 'locked',
-                                    title: 'thing WIP thing')
+    create(
+      :merge_request, :simple, author: user, assignees: [user2], reviewers: [user],
+      source_project: project2, target_project: project2,
+      state: 'locked',
+      title: 'thing WIP thing'
+    )
   end
 
   let!(:merge_request4) do
-    create(:merge_request, :simple, author: user,
-                                    source_project: project3, target_project: project3,
-                                    title: 'WIP thing')
+    create(
+      :merge_request, :simple, author: user,
+      source_project: project3, target_project: project3,
+      title: 'WIP thing'
+    )
   end
 
   let_it_be(:merge_request5) do
-    create(:merge_request, :simple, author: user,
-                                    source_project: project4, target_project: project4,
-                                    title: '[WIP]')
+    create(
+      :merge_request, :simple, author: user,
+      source_project: project4, target_project: project4,
+      title: '[WIP]'
+    )
   end
 
   let!(:label_link) { create(:label_link, label: label, target: merge_request2) }

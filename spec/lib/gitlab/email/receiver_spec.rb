@@ -11,9 +11,10 @@ RSpec.describe Gitlab::Email::Receiver do
   shared_examples 'successful receive' do
     let(:handler) { double(:handler, project: project, execute: true, metrics_event: nil, metrics_params: nil) }
     let(:client_id) { 'email/jake@example.com' }
+    let(:mail_key) { 'gitlabhq/gitlabhq+auth_token' }
 
     it 'correctly finds the mail key' do
-      expect(Gitlab::Email::Handler).to receive(:for).with(an_instance_of(Mail::Message), 'gitlabhq/gitlabhq+auth_token').and_return(handler)
+      expect(Gitlab::Email::Handler).to receive(:for).with(an_instance_of(Mail::Message), mail_key).and_return(handler)
 
       receiver.execute
     end
@@ -90,6 +91,16 @@ RSpec.describe Gitlab::Email::Receiver do
       let(:meta_value) { ["<incoming+gitlabhq/gitlabhq+auth_token@appmail.example.com>"] }
 
       it_behaves_like 'successful receive'
+    end
+
+    context 'when mail key is in the references header with a comma' do
+      let(:email_raw) { fixture_file('emails/valid_reply_with_references_in_comma.eml') }
+      let(:meta_key) { :references }
+      let(:meta_value) { ['"<reply-59d8df8370b7e95c5a49fbf86aeb2c93@localhost>,<issue_1@localhost>,<exchange@microsoft.com>"'] }
+
+      it_behaves_like 'successful receive' do
+        let(:mail_key) { '59d8df8370b7e95c5a49fbf86aeb2c93' }
+      end
     end
 
     context 'when all other headers are missing' do

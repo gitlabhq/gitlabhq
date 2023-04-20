@@ -1,0 +1,8 @@
+---
+name: record_issue_and_mr_assignee_events
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117545
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397050
+milestone: '15.11'
+type: development
+group: group::optimize
+default_enabled: false

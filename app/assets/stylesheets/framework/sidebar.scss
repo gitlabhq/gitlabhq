@@ -83,7 +83,7 @@
 }
 
 .right-sidebar {
-  border-left: 1px solid $gray-100;
+  border-left: 1px solid $gray-50;
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(lg) {
@@ -271,6 +271,24 @@
   }
 }
 
+.merge-request-approved-icon {
+  animation: approval-animate 350ms ease-in;
+}
+
+@include keyframes(approval-animate) {
+  0% {
+    transform: scale(0);
+  }
+
+  75% {
+    transform: scale(1.4);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 .assignee-grid,
 .reviewer-grid {
   [data-css-area='attention'] {
@@ -288,21 +306,22 @@
 
 @mixin right-sidebar {
   position: fixed;
-  top: $header-height;
-  // Default value for CSS var must contain a unit
-  // stylelint-disable-next-line length-zero-no-unit
-  bottom: var(--review-bar-height, 0px);
+  top: calc(#{$header-height} + #{$calc-application-bars-height});
+  bottom: calc(#{$calc-application-footer-height} + var(--mr-review-bar-height));
   right: 0;
   transition: width $gl-transition-duration-medium;
   background-color: $white;
   z-index: 200;
   overflow: hidden;
-
 }
 
 .right-sidebar {
   &:not(.right-sidebar-merge-requests) {
     @include right-sidebar;
+
+    @include media-breakpoint-down(sm) {
+      z-index: 251;
+    }
   }
 
   &.right-sidebar-merge-requests {
@@ -310,10 +329,6 @@
       @include right-sidebar;
       z-index: 251;
     }
-  }
-
-  @include media-breakpoint-down(sm) {
-    z-index: 251;
   }
 
   a:not(.btn) {
@@ -469,28 +484,14 @@
           padding: 0;
 
           .issuable-context-form {
-            --initial-top: calc(#{$header-height} + 76px);
-            --top: var(--initial-top);
+            $issue-sticky-header-height: 76px;
 
-            @include gl-sticky;
-            @include gl-overflow-auto;
-
-            top: var(--top);
-            height: calc(100vh - var(--top));
+            top: calc(#{$calc-application-header-height} + #{$issue-sticky-header-height});
+            height: calc(#{$calc-application-viewport-height} - #{$issue-sticky-header-height} - var(--mr-review-bar-height));
+            position: sticky;
+            overflow: auto;
             padding: 0 15px;
-            margin-bottom: calc(var(--top) * -1);
-
-            .with-performance-bar & {
-              --top: calc(var(--initial-top) + #{$performance-bar-height});
-            }
-
-            .with-system-header & {
-              --top: calc(var(--initial-top) + #{$system-header-height});
-            }
-
-            .with-performance-bar.with-system-header & {
-              --top: calc(var(--initial-top) + #{$system-header-height} + #{$performance-bar-height});
-            }
+            margin-bottom: calc((#{$header-height} + $issue-sticky-header-height) * -1);
           }
         }
       }
@@ -740,10 +741,6 @@
     }
 
   }
-}
-
-.with-performance-bar .right-sidebar {
-  top: calc(#{$header-height} + #{$performance-bar-height});
 }
 
 .issuable-show-labels {

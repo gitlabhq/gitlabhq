@@ -6,7 +6,7 @@ module Groups
     before_action :verify_usage_quotas_enabled!
     before_action :push_frontend_feature_flags
 
-    feature_category :subscription_cost_management
+    feature_category :consumables_cost_management
     urgency :low
 
     def index

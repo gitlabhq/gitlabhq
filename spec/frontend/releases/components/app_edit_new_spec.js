@@ -31,6 +31,8 @@ describe('Release edit/new component', () => {
   let actions;
   let getters;
   let state;
+  let refActions;
+  let refState;
   let mock;
 
   const factory = async ({ featureFlags = {}, store: storeUpdates = {} } = {}) => {
@@ -62,6 +64,20 @@ describe('Release edit/new component', () => {
         tagNameValidation: new ValidationResult(),
       }),
       formattedReleaseNotes: () => 'these notes are formatted',
+      isCreating: jest.fn(),
+      isSearching: jest.fn(),
+      isExistingTag: jest.fn(),
+      isNewTag: jest.fn(),
+    };
+
+    refState = {
+      matches: [],
+    };
+
+    refActions = {
+      setEnabledRefTypes: jest.fn(),
+      setProjectId: jest.fn(),
+      search: jest.fn(),
     };
 
     const store = new Vuex.Store(
@@ -73,6 +89,11 @@ describe('Release edit/new component', () => {
               actions,
               state,
               getters,
+            },
+            ref: {
+              namespaced: true,
+              actions: refActions,
+              state: refState,
             },
           },
         },

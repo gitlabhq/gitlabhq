@@ -59,7 +59,7 @@ You can use the following analytics features to analyze and visualize the perfor
 - [Value stream analytics for groups](../group/value_stream_analytics/index.md)
 - [Value streams dashboard](value_streams_dashboard.md)
 
-## Definitions
+## Glossary
 
 We use the following terms to describe GitLab analytics:
 

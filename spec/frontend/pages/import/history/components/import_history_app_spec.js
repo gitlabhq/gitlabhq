@@ -61,7 +61,6 @@ describe('ImportHistoryApp', () => {
 
   beforeEach(() => {
     gon.api_version = 'v4';
-    gon.features = { fullPathProjectSearch: true };
     mock = new MockAdapter(axios);
   });
 
@@ -167,7 +166,7 @@ describe('ImportHistoryApp', () => {
       return axios.waitForAll();
     });
 
-    it('renders details button if relevant item has failed', async () => {
+    it('renders details button if relevant item has failed', () => {
       expect(
         extendedWrapper(wrapper.find('tbody').findAll('tr').at(1)).findByText('Details').exists(),
       ).toBe(true);

@@ -1,7 +1,9 @@
 import mockJobsCount from 'test_fixtures/graphql/jobs/get_jobs_count.query.graphql.json';
 import mockJobsEmpty from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.empty.json';
 import mockJobsPaginated from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.paginated.json';
+import mockAllJobsPaginated from 'test_fixtures/graphql/jobs/get_all_jobs.query.graphql.paginated.json';
 import mockJobs from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.json';
+import mockAllJobs from 'test_fixtures/graphql/jobs/get_all_jobs.query.graphql.json';
 import mockJobsAsGuest from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.as_guest.json';
 import { TEST_HOST } from 'spec/test_constants';
 import { TOKEN_TYPE_STATUS } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -11,8 +13,10 @@ threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 
 // Fixtures generated at spec/frontend/fixtures/jobs.rb
 export const mockJobsResponsePaginated = mockJobsPaginated;
+export const mockAllJobsResponsePaginated = mockAllJobsPaginated;
 export const mockJobsResponseEmpty = mockJobsEmpty;
 export const mockJobsNodes = mockJobs.data.project.jobs.nodes;
+export const mockAllJobsNodes = mockAllJobs.data.jobs.nodes;
 export const mockJobsNodesAsGuest = mockJobsAsGuest.data.project.jobs.nodes;
 export const mockJobsCountResponse = mockJobsCount;
 
@@ -921,6 +925,14 @@ export const stages = [
     dropdown_path: '/gitlab-org/gitlab-shell/pipelines/27/stage.json?stage=notify',
   },
 ];
+
+export const statuses = {
+  success: 'SUCCESS',
+  failed: 'FAILED',
+  canceled: 'CANCELED',
+  pending: 'PENDING',
+  running: 'RUNNING',
+};
 
 export default {
   id: 4757,

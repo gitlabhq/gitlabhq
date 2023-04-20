@@ -14,3 +14,5 @@ class Dashboard::ApplicationController < ApplicationController
     @projects ||= current_user.authorized_projects.sorted_by_updated_desc.non_archived
   end
 end
+
+Dashboard::ApplicationController.prepend_mod

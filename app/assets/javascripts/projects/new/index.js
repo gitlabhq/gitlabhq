@@ -18,6 +18,7 @@ export function initNewProjectCreation() {
     parentGroupUrl,
     parentGroupName,
     projectsUrl,
+    rootPath,
   } = el.dataset;
 
   const props = {
@@ -27,6 +28,7 @@ export function initNewProjectCreation() {
     parentGroupUrl,
     parentGroupName,
     projectsUrl,
+    rootPath,
   };
 
   const provide = {

@@ -456,15 +456,21 @@ module API
           'google-play' => [
             {
               required: true,
+              name: :package_name,
+              type: String,
+              desc: 'The package name of the app in Google Play'
+            },
+            {
+              required: true,
               name: :service_account_key,
               type: String,
-              desc: 'The Google Play Service Account Key'
+              desc: 'The Google Play service account key'
             },
             {
               required: true,
               name: :service_account_key_file_name,
               type: String,
-              desc: 'The Google Play Service Account Key File Name'
+              desc: 'The filename of the Google Play service account key'
             }
           ],
           'hangouts-chat' => [
@@ -608,6 +614,18 @@ module API
               name: :jira_issue_transition_id,
               type: String,
               desc: 'The ID of one or more transitions for custom issue transitions'
+            },
+            {
+              required: false,
+              name: :jira_issue_prefix,
+              type: String,
+              desc: 'Prefix to match Jira issue keys'
+            },
+            {
+              required: false,
+              name: :jira_issue_regex,
+              type: String,
+              desc: 'Regular expression to match Jira issue keys'
             },
             {
               required: false,

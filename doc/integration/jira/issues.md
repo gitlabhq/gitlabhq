@@ -62,6 +62,41 @@ After you enable this feature, a merge request that doesn't reference an associa
 Jira issue can't be merged. The merge request displays the message
 **To merge, a Jira issue key must be mentioned in the title or description.**
 
+## Customize Jira issue matching in GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112826) in GitLab 15.10.
+
+You can configure custom rules for how GitLab matches Jira issue keys by defining:
+
+- [A regex pattern](#use-regular-expression)
+- [A prefix](#use-a-prefix)
+
+When you don't configure custom rules, the [default behavior](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/regex.rb#L509) is used. For more information, see the [RE2 wiki](https://github.com/google/re2/wiki/Syntax).
+
+### Use regular expression
+
+To define a regex pattern for Jira issue keys:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Jira**.
+1. Go to the **Jira issue matching** section.
+1. In the **Jira issue regex** text box, enter a regex pattern.
+1. Select **Save changes**.
+
+For more information, see the [Atlassian documentation](https://confluence.atlassian.com/adminjiraserver073/changing-the-project-key-format-861253229.html).
+
+### Use a prefix
+
+To define a prefix for Jira issue keys:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Jira**.
+1. Go to the **Jira issue matching** section.
+1. In the **Jira issue prefix** text box, enter a prefix.
+1. Select **Save changes**.
+
 ## Close Jira issues in GitLab
 
 If you have configured GitLab transition IDs, you can close a Jira issue directly

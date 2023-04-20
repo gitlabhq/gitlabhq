@@ -28,7 +28,9 @@ export default {
     class="timeline-entry note note-wrapper discussion-filter-note js-discussion-filter-note"
     data-qa-selector="discussion_filter_container"
   >
-    <div class="timeline-icon d-none d-lg-flex">
+    <div
+      class="gl-float-left gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 gl-bg-gray-50 gl-text-gray-600"
+    >
       <gl-icon name="comment" />
     </div>
     <div class="timeline-content gl-pl-8">

@@ -61,7 +61,7 @@ describe('Deploy Board', () => {
       const icon = iconSpan.findComponent(GlIcon);
 
       expect(tooltip.props('target')()).toBe(iconSpan.element);
-      expect(icon.props('name')).toBe('question');
+      expect(icon.props('name')).toBe('question-o');
     });
 
     it('renders the canary weight selector', () => {
@@ -116,7 +116,7 @@ describe('Deploy Board', () => {
       const icon = iconSpan.findComponent(GlIcon);
 
       expect(tooltip.props('target')()).toBe(iconSpan.element);
-      expect(icon.props('name')).toBe('question');
+      expect(icon.props('name')).toBe('question-o');
     });
 
     it('renders the canary weight selector', () => {

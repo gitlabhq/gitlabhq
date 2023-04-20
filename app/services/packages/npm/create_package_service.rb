@@ -3,15 +3,27 @@ module Packages
   module Npm
     class CreatePackageService < ::Packages::CreatePackageService
       include Gitlab::Utils::StrongMemoize
+      include ExclusiveLeaseGuard
 
-      PACKAGE_JSON_NOT_ALLOWED_FIELDS = %w[readme readmeFilename].freeze
+      PACKAGE_JSON_NOT_ALLOWED_FIELDS = %w[readme readmeFilename licenseText].freeze
+      DEFAULT_LEASE_TIMEOUT = 1.hour.to_i
 
       def execute
         return error('Version is empty.', 400) if version.blank?
         return error('Package already exists.', 403) if current_package_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 
-        ApplicationRecord.transaction { create_npm_package! }
+        if Feature.enabled?(:npm_obtain_lease_to_create_package, project)
+          package = try_obtain_lease do
+            ApplicationRecord.transaction { create_npm_package! }
+          end
+
+          return error('Could not obtain package lease.', 400) unless package
+
+          package
+        else
+          ApplicationRecord.transaction { create_npm_package! }
+        end
       end
 
       private
@@ -102,6 +114,16 @@ module Packages
 
       def file_size_exceeded?
         project.actual_limits.exceeded?(:npm_max_file_size, calculated_package_file_size)
+      end
+
+      # used by ExclusiveLeaseGuard
+      def lease_key
+        "packages:npm:create_package_service:packages:#{project.id}_#{name}_#{version}"
+      end
+
+      # used by ExclusiveLeaseGuard
+      def lease_timeout
+        DEFAULT_LEASE_TIMEOUT
       end
     end
   end

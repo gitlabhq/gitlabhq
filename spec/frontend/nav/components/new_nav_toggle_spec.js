@@ -9,6 +9,7 @@ import NewNavToggle from '~/nav/components/new_nav_toggle.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+import { mockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/alert');
 
@@ -18,6 +19,7 @@ describe('NewNavToggle', () => {
   useMockLocationHelper();
 
   let wrapper;
+  let trackingSpy;
 
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findDisclosureItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
@@ -29,6 +31,8 @@ describe('NewNavToggle', () => {
         ...propsData,
       },
     });
+
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
   };
 
   const getByText = (text, options) =>
@@ -61,15 +65,17 @@ describe('NewNavToggle', () => {
     });
 
     describe.each`
-      desc                               | actFn
-      ${'when toggle button is clicked'} | ${() => findToggle().trigger('click')}
-      ${'on menu item action'}           | ${() => findDisclosureItem().vm.$emit('action')}
-    `('$desc', ({ actFn }) => {
+      desc                                | actFn                                                 | toggleValue | trackingLabel             | trackingProperty
+      ${'when toggle button is clicked'}  | ${() => findToggle().trigger('click')}                | ${false}    | ${'enable_new_nav_beta'}  | ${'navigation_top'}
+      ${'when menu item text is clicked'} | ${() => getByText('New navigation').trigger('click')} | ${false}    | ${'enable_new_nav_beta'}  | ${'navigation_top'}
+      ${'when toggle button is clicked'}  | ${() => findToggle().trigger('click')}                | ${true}     | ${'disable_new_nav_beta'} | ${'nav_user_menu'}
+      ${'when menu item text is clicked'} | ${() => getByText('New navigation').trigger('click')} | ${true}     | ${'disable_new_nav_beta'} | ${'nav_user_menu'}
+    `('$desc', ({ actFn, toggleValue, trackingLabel, trackingProperty }) => {
       let mock;
 
       beforeEach(() => {
         mock = new MockAdapter(axios);
-        createComponent({ enabled: false, newNavigation: true });
+        createComponent({ enabled: toggleValue });
       });
 
       it('reloads the page on success', async () => {
@@ -100,7 +106,17 @@ describe('NewNavToggle', () => {
       it('changes the toggle', async () => {
         await actFn();
 
-        expect(findToggle().props('value')).toBe(true);
+        expect(findToggle().props('value')).toBe(!toggleValue);
+      });
+
+      it('tracks the Snowplow event', async () => {
+        mock.onPut(TEST_ENDPONT).reply(HTTP_STATUS_OK);
+        await actFn();
+        await waitForPromises();
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_toggle', {
+          label: trackingLabel,
+          property: trackingProperty,
+        });
       });
 
       afterEach(() => {
@@ -136,15 +152,17 @@ describe('NewNavToggle', () => {
     });
 
     describe.each`
-      desc                                | actFn
-      ${'when toggle button is clicked'}  | ${() => findToggle().trigger('click')}
-      ${'when menu item text is clicked'} | ${() => getByText('New navigation').trigger('click')}
-    `('$desc', ({ actFn }) => {
+      desc                                | actFn                                                 | toggleValue | trackingLabel             | trackingProperty
+      ${'when toggle button is clicked'}  | ${() => findToggle().trigger('click')}                | ${false}    | ${'enable_new_nav_beta'}  | ${'navigation_top'}
+      ${'when menu item text is clicked'} | ${() => getByText('New navigation').trigger('click')} | ${false}    | ${'enable_new_nav_beta'}  | ${'navigation_top'}
+      ${'when toggle button is clicked'}  | ${() => findToggle().trigger('click')}                | ${true}     | ${'disable_new_nav_beta'} | ${'nav_user_menu'}
+      ${'when menu item text is clicked'} | ${() => getByText('New navigation').trigger('click')} | ${true}     | ${'disable_new_nav_beta'} | ${'nav_user_menu'}
+    `('$desc', ({ actFn, toggleValue, trackingLabel, trackingProperty }) => {
       let mock;
 
       beforeEach(() => {
         mock = new MockAdapter(axios);
-        createComponent({ enabled: false });
+        createComponent({ enabled: toggleValue });
       });
 
       it('reloads the page on success', async () => {
@@ -175,7 +193,17 @@ describe('NewNavToggle', () => {
       it('changes the toggle', async () => {
         await actFn();
 
-        expect(findToggle().props('value')).toBe(true);
+        expect(findToggle().props('value')).toBe(!toggleValue);
+      });
+
+      it('tracks the Snowplow event', async () => {
+        mock.onPut(TEST_ENDPONT).reply(HTTP_STATUS_OK);
+        await actFn();
+        await waitForPromises();
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_toggle', {
+          label: trackingLabel,
+          property: trackingProperty,
+        });
       });
 
       afterEach(() => {

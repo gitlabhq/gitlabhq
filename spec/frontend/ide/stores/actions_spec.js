@@ -210,7 +210,7 @@ describe('Multi-file store actions', () => {
         expect(store.dispatch).toHaveBeenCalledWith('setFileActive', 'test');
       });
 
-      it('creates alert message if file already exists', async () => {
+      it('creates alert if file already exists', async () => {
         const f = file('test', '1', 'blob');
         store.state.trees['abcproject/mybranch'].tree = [f];
         store.state.entries[f.path] = f;
@@ -440,7 +440,7 @@ describe('Multi-file store actions', () => {
   });
 
   describe('setErrorMessage', () => {
-    it('commis error messsage', () => {
+    it('commis error message', () => {
       return testAction(
         setErrorMessage,
         'error',

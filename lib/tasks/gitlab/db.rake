@@ -109,9 +109,11 @@ namespace :gitlab do
       load_database = connection.tables.count <= 1
 
       if load_database
+        puts "Running db:schema:load#{database_name} rake task"
         Gitlab::Database.add_post_migrate_path_to_rails(force: true)
         Rake::Task["db:schema:load#{database_name}"].invoke
       else
+        puts "Running db:migrate#{database_name} rake task"
         Rake::Task["db:migrate#{database_name}"].invoke
       end
 
@@ -441,6 +443,31 @@ namespace :gitlab do
     Rake::Task['db:migrate'].enhance do
       if Rails.env.development? && Gitlab::Database::BackgroundMigration::BatchedMigration.table_exists?
         Rake::Task['gitlab:db:execute_batched_migrations'].invoke
+      end
+    end
+
+    namespace :schema_checker do
+      desc 'Checks schema inconsistencies'
+      task run: :environment do
+        database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
+        database = Gitlab::Database::SchemaValidation::Database.new(database_model.connection)
+
+        stucture_sql_path = Rails.root.join('db/structure.sql')
+        structure_sql = Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
+
+        inconsistencies = Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute
+
+        gitlab_url = 'gitlab-org/gitlab'
+
+        inconsistencies.each do |inconsistency|
+          Gitlab::Database::SchemaValidation::TrackInconsistency.new(
+            inconsistency,
+            Project.find_by_full_path(gitlab_url),
+            User.support_bot
+          ).execute
+
+          puts inconsistency.inspect
+        end
       end
     end
 

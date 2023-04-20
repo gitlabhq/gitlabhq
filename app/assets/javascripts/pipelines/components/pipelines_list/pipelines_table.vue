@@ -15,7 +15,7 @@ import PipelinesStatusBadge from './pipelines_status_badge.vue';
 const DEFAULT_TD_CLASS = 'gl-p-5!';
 const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
 const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1! gl-font-sm!';
+  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
 
 export default {
   components: {

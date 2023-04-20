@@ -19,7 +19,7 @@ RSpec.shared_examples 'manage applications' do
     expect(page).to have_content _('This is the only time the secret is accessible. Copy the secret and store it securely')
     expect(page).to have_link('Continue', href: index_path)
 
-    expect(page).to have_css("button[title=\"Copy secret\"]", text: 'Copy')
+    expect(page).to have_button(_('Copy secret'))
 
     click_on 'Edit'
 

@@ -5,7 +5,6 @@ description: Count of service desk issues
 product_section: dev
 product_stage: plan
 product_group: certify
-product_category: service_desk
 value_type: number
 status: active
 time_frame: all

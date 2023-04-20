@@ -44,12 +44,14 @@ module APIInternalBaseHelpers
   end
 
   def push(key, container, protocol = 'ssh', env: nil, changes: nil)
-    push_with_path(key,
-                   full_path: full_path_for(container),
-                   gl_repository: gl_repository_for(container),
-                   protocol: protocol,
-                   env: env,
-                   changes: changes)
+    push_with_path(
+      key,
+      full_path: full_path_for(container),
+      gl_repository: gl_repository_for(container),
+      protocol: protocol,
+      env: env,
+      changes: changes
+    )
   end
 
   def push_with_path(key, full_path:, gl_repository: nil, protocol: 'ssh', env: nil, changes: nil)

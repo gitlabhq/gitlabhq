@@ -20,7 +20,7 @@ RSpec.shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    expect(dropdown).to have_button('Report abuse to administrator')
+    expect(dropdown).to have_button('Report abuse')
 
     if type == 'issue' || type == 'merge_request'
       expect(dropdown).to have_button('Delete comment')
@@ -33,7 +33,7 @@ RSpec.shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    dropdown.click_button('Report abuse to administrator')
+    dropdown.click_button('Report abuse')
 
     choose "They're posting spam."
     click_button "Next"

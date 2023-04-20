@@ -39,6 +39,8 @@ Some features such as [publishing](#publish-a-nuget-package) a package are only 
 
 When asking for versions of a given NuGet package name, the GitLab Package Registry returns a maximum of 300 most recent versions.
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 WARNING:
 Because of how NuGet handles credentials, the Package Registry rejects anonymous requests on the group-level endpoint.
 To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).

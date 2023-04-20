@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::TransactionTimeoutSettings, feature_category: :pods do
+RSpec.describe Gitlab::Database::TransactionTimeoutSettings, feature_category: :cell do
   let(:connection) { ActiveRecord::Base.connection }
 
   subject { described_class.new(connection) }

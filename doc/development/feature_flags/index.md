@@ -83,7 +83,7 @@ used for deploying unfinished code to production. Most feature flags used at
 GitLab are the `development` type.
 
 A `development` feature flag must have a rollout issue
-created from the [Feature Flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
+created from the [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md).
 
 The format for `development` feature flags is `Feature.<state>(:<dev_flag_name>)`.
 To enable and disable them, run on the GitLab Rails console:
@@ -252,7 +252,7 @@ deleting feature flags.
 
 ## Develop with a feature flag
 
-There are two main ways of using Feature Flags in the GitLab codebase:
+There are two main ways of using feature flags in the GitLab codebase:
 
 - [Backend code (Rails)](#backend)
 - [Frontend code (VueJS)](#frontend)

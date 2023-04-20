@@ -45,8 +45,8 @@ module Gitlab
           end
         end
 
-        def find_object(*args)
-          raise NotImplementedError, "Implement #find_object in #{self.class.name}"
+        def find_object(id:)
+          GitlabSchema.find_by_gid(id)
         end
 
         def authorized_find!(*args, **kwargs)

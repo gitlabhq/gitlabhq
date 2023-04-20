@@ -46,7 +46,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)
-    push_frontend_feature_flag(:content_editor_on_issues, project)
+    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
+    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:service_desk_new_note_email_native_attachments, project)
     push_frontend_feature_flag(:saved_replies, current_user)
   end
@@ -66,7 +67,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:incident_event_tags, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

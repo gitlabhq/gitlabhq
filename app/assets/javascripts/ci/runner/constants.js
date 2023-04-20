@@ -93,6 +93,7 @@ export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
 export const I18N_VERSION_LABEL = s__('Runners|Version %{version}');
 export const I18N_LAST_CONTACT_LABEL = s__('Runners|Last contact: %{timeAgo}');
 export const I18N_CREATED_AT_LABEL = s__('Runners|Created %{timeAgo}');
+export const I18N_CREATED_AT_BY_LABEL = s__('Runners|Created %{timeAgo} by %{avatar}');
 export const I18N_SHOW_ONLY_INHERITED = s__('Runners|Show only inherited');
 export const I18N_ADMIN = s__('Runners|Administrator');
 
@@ -141,6 +142,7 @@ export const PARAM_KEY_PLATFORM = 'platform';
 export const INSTANCE_TYPE = 'INSTANCE_TYPE';
 export const GROUP_TYPE = 'GROUP_TYPE';
 export const PROJECT_TYPE = 'PROJECT_TYPE';
+export const RUNNER_TYPES = [INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE];
 
 // CiRunnerStatus
 

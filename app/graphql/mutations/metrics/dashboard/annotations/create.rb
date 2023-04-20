@@ -83,10 +83,6 @@ module Mutations
             super(**args)
           end
 
-          def find_object(id:)
-            GitlabSchema.find_by_gid(id)
-          end
-
           def annotation_create_params(args)
             annotation_source = AnnotationSource.new(object: annotation_source(args))
 

@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_stdout,
-               :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
+               :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/db/decomposition/rollback/bump_ci_sequences'
 
@@ -86,7 +86,7 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
 
   context 'when multiple databases' do
     before do
-      skip_if_multiple_databases_not_setup(:ci)
+      skip_if_shared_database(:ci)
     end
 
     it 'does not change ci sequences on the ci database' do

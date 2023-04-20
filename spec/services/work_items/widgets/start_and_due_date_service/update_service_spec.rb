@@ -12,10 +12,9 @@ RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService, featur
   describe '#before_update_callback' do
     let(:start_date) { Date.today }
     let(:due_date) { 1.week.from_now.to_date }
+    let(:service) { described_class.new(widget: widget, current_user: user) }
 
-    subject(:update_params) do
-      described_class.new(widget: widget, current_user: user).before_update_callback(params: params)
-    end
+    subject(:update_params) { service.before_update_callback(params: params) }
 
     context 'when start and due date params are present' do
       let(:params) { { start_date: Date.today, due_date: 1.week.from_now.to_date } }
@@ -56,6 +55,23 @@ RSpec.describe WorkItems::Widgets::StartAndDueDateService::UpdateService, featur
             not_change(work_item, :due_date).from(due_date)
           )
         end
+      end
+    end
+
+    context 'when widget does not exist in new type' do
+      let(:params) { {} }
+
+      before do
+        allow(service).to receive(:new_type_excludes_widget?).and_return(true)
+        work_item.update!(start_date: start_date, due_date: due_date)
+      end
+
+      it 'sets both dates to null' do
+        expect do
+          update_params
+        end.to change(work_item, :start_date).from(start_date).to(nil).and(
+          change(work_item, :due_date).from(due_date).to(nil)
+        )
       end
     end
   end

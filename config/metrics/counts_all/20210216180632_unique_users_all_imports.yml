@@ -5,7 +5,6 @@ description: Distinct count of users that triggered any kind of import
 product_section: dev
 product_stage: manage
 product_group: import
-product_category: importers
 value_type: number
 status: active
 time_frame: all

@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
 ---
 
 # Bidirectional mirroring **(PREMIUM)**
@@ -168,4 +167,4 @@ Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/manual
 
 ## Related topics
 
-- [Configure server hooks](../../../../administration/server_hooks.md) on a GitLab server.
+- [Configure server hooks](../../../../administration/server_hooks.md)

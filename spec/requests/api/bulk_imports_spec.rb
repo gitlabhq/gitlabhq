@@ -75,6 +75,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   end
 
   describe 'POST /bulk_imports' do
+    let_it_be(:destination_namespace) { create(:group) }
+
     let(:request) { post api('/bulk_imports', user), params: params }
     let(:destination_param) { { destination_slug: 'destination_slug' } }
     let(:params) do
@@ -87,11 +89,14 @@ RSpec.describe API::BulkImports, feature_category: :importers do
           {
             source_type: 'group_entity',
             source_full_path: 'full_path',
-            destination_namespace: 'destination_namespace'
+            destination_namespace: destination_namespace.path
           }.merge(destination_param)
         ]
       }
     end
+
+    let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[:entities][0][:source_type]) }
+    let(:source_entity_identifier) { ERB::Util.url_encode(params[:entities][0][:source_full_path]) }
 
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
@@ -103,6 +108,10 @@ RSpec.describe API::BulkImports, feature_category: :importers do
           .to receive(:instance_enterprise)
           .and_return(false)
       end
+      stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
+        .to_return(status: 200, body: "", headers: {})
+
+      destination_namespace.add_owner(user)
     end
 
     shared_examples 'starting a new migration' do
@@ -192,7 +201,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
             {
               source_type: 'group_entity',
               source_full_path: 'full_path',
-              destination_namespace: 'destination_namespace'
+              destination_namespace: destination_namespace.path
             }
           ]
         }
@@ -214,20 +223,17 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         request
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq("entities[0][source_full_path] must be a relative path and not include protocol, sub-domain, " \
-                                             "or domain information. E.g. 'source/full/path' not 'https://example.com/source/full/path'")
+                                             "or domain information. For example, 'source/full/path' not 'https://example.com/source/full/path'")
       end
     end
 
-    context 'when the destination_namespace is invalid' do
+    context 'when the destination_namespace does not exist' do
       it 'returns invalid error' do
-        params[:entities][0][:destination_namespace] = "?not a destination-namespace"
+        params[:entities][0][:destination_namespace] = "invalid-destination-namespace"
 
         request
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq("entities[0][destination_namespace] cannot start with a dash or forward slash, " \
-                                             "or end with a period or forward slash. It can only contain alphanumeric " \
-                                             "characters, periods, underscores, forward slashes and dashes. " \
-                                             "E.g. 'destination_namespace' or 'destination/namespace'")
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Import failed. Destination 'invalid-destination-namespace' is invalid, or you don't have permission.")
       end
     end
 
@@ -243,15 +249,35 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     end
 
     context 'when the destination_slug is invalid' do
-      it 'returns invalid error' do
+      it 'returns invalid error when restricting special characters is disabled' do
+        Feature.disable(:restrict_special_characters_in_namespace_path)
+
         params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
 
         request
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include("entities[0][destination_slug] cannot start with a dash " \
-                                                  "or forward slash, or end with a period or forward slash. " \
-                                                  "It can only contain alphanumeric characters, periods, underscores, and dashes. " \
-                                                  "E.g. 'destination_namespace' not 'destination/namespace'")
+        expect(json_response['error']).to include("entities[0][destination_slug] cannot start with " \
+                                                  "a non-alphanumeric character except for periods or " \
+                                                  "underscores, can contain only alphanumeric characters, " \
+                                                  "periods, and underscores, cannot end with a period or " \
+                                                  "forward slash, and has no leading or trailing forward " \
+                                                  "slashes. It can only contain alphanumeric characters, " \
+                                                  "periods, underscores, and dashes. For example, " \
+                                                  "'destination_namespace' not 'destination/namespace'")
+      end
+
+      it 'returns invalid error when restricting special characters is enabled' do
+        Feature.enable(:restrict_special_characters_in_namespace_path)
+
+        params[:entities][0][:destination_slug] = 'des?tin?atoi-slugg'
+
+        request
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include("entities[0][destination_slug] must not start or " \
+                                                  "end with a special character and must not contain " \
+                                                  "consecutive special characters. It can only contain " \
+                                                  "alphanumeric characters, periods, underscores, and " \
+                                                  "dashes. For example, 'destination_namespace' not 'destination/namespace'")
       end
     end
 
@@ -271,12 +297,41 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         }
       end
 
-      it 'returns blocked url error' do
+      it 'returns blocked url message in the error' do
         request
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
 
-        expect(json_response['message']).to eq('Validation failed: Url is blocked: Only allowed schemes are http, https')
+        expect(json_response['message']).to include("Url is blocked: Only allowed schemes are http, https")
+      end
+    end
+
+    context 'when source instance setting is disabled' do
+      let(:params) do
+        {
+          configuration: {
+            url: 'http://gitlab.example',
+            access_token: 'access_token'
+          },
+          entities: [
+            source_type: 'group_entity',
+            source_full_path: 'full_path',
+            destination_slug: 'destination_slug',
+            destination_namespace: 'destination_namespace'
+          ]
+        }
+      end
+
+      it 'returns blocked url error' do
+        stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
+          .to_return(status: 404, body: "", headers: {})
+
+        request
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+
+        expect(json_response['message']).to include("Group import disabled on source or destination instance. " \
+                                                    "Ask an administrator to enable it on both instances and try again.")
       end
     end
 

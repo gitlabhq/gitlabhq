@@ -114,10 +114,16 @@ class Admin::UsersController < Admin::ApplicationController
   def block
     result = Users::BlockService.new(current_user).execute(user)
 
-    if result[:status] == :success
-      redirect_back_or_admin_user(notice: _("Successfully blocked"))
-    else
-      redirect_back_or_admin_user(alert: _("Error occurred. User was not blocked"))
+    respond_to do |format|
+      if result[:status] == :success
+        notice = _("Successfully blocked")
+        format.json { render json: { notice: notice } }
+        format.html { redirect_back_or_admin_user(notice: notice) }
+      else
+        alert = _("Error occurred. User was not blocked")
+        format.json { render json: { error: alert } }
+        format.html { redirect_back_or_admin_user(alert: alert) }
+      end
     end
   end
 

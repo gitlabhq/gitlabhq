@@ -249,6 +249,29 @@ Example 2:
 1. A job that has no tags defined is executed and run.
 1. A second job that has a `docker` tag defined is stuck.
 
+### A runner and a job have multiple tags
+
+The selection logic that matches the job and runner is based on the list of `tags`
+defined in the job.
+
+The following examples illustrate the impact of a runner and a job having multiple tags. For a runner to be
+selected to run a job, it must have all of the tags defined in the job script block.
+
+Example 1:
+
+1. The runner is configured with the tags `[docker, shell, gpu]`.
+1. The job has the tags `[docker, shell, gpu]` and is executed and run.
+
+Example 2:
+
+1. The runner is configured with the tags `[docker, shell, gpu]`.
+1. The job has the tags `[docker, shell,]` and is executed and run.
+
+Example 3:
+
+1. The runner is configured with the tags `[docker, shell]`.
+1. The job has the tags `[docker, shell, gpu]` and is not executed.
+
 ### Use tags to run jobs on different platforms
 
 You can use tags to run different jobs on different platforms. For
@@ -257,16 +280,14 @@ example, if you have an OS X runner with tag `osx` and a Windows runner with tag
 
 ```yaml
 windows job:
-  stage:
-    - build
+  stage: build
   tags:
     - windows
   script:
     - echo Hello, %USERNAME%!
 
 osx job:
-  stage:
-    - build
+  stage: build
   tags:
     - osx
   script:
@@ -313,6 +334,7 @@ globally or for individual jobs:
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
+- [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
 - [`GIT_SUBMODULE_DEPTH`](#git-submodule-depth)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
@@ -569,6 +591,23 @@ You should be aware of the implications for the security, stability, and reprodu
 your builds when using the `--remote` flag. In most cases, it is better to explicitly track
 submodule commits as designed, and update them using an auto-remediation/dependency bot.
 
+### Rewrite submodule URLs to HTTPS
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+
+Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
+This allows you to clone submodules on the same GitLab instance that use absolute URLs, even if they were
+configured with a Git or SSH protocol.
+
+```yaml
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+```
+
+When enabled, GitLab Runner uses a [CI/CD job token](../jobs/ci_job_token.md) to clone the submodules with
+the permissions of the user executing the job, and does not require SSH credentials.
+
 ### Shallow cloning
 
 > Introduced in GitLab 8.9 as an experimental feature.
@@ -782,7 +821,7 @@ variables:
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
 
-GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The filename is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name) in the CI file. The filename, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The filename is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name) in the CI file. The filename, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
 
 ### Attestation format
 

@@ -1,10 +1,11 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
+import { GlBadge, GlSprintf } from '@gitlab/ui';
 import { isUserBusy } from '~/set_status_modal/utils';
 
 export default {
   name: 'UserNameWithStatus',
   components: {
+    GlBadge,
     GlSprintf,
   },
   props: {
@@ -40,17 +41,17 @@ export default {
 </script>
 <template>
   <span :class="containerClasses">
-    <gl-sprintf :message="s__('UserAvailability|%{author} %{spanStart}(Busy)%{spanEnd}')">
+    <gl-sprintf :message="s__('UserAvailability|%{author}%{badgeStart}Busy%{badgeEnd}')">
       <template #author
-        >{{ name }}
-        <span v-if="hasPronouns" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal"
+        ><span>{{ name }}</span
+        ><span v-if="hasPronouns" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-ml-1"
           >({{ pronouns }})</span
         ></template
       >
-      <template #span="{ content }"
-        ><span v-if="isBusy" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal">{{
-          content
-        }}</span>
+      <template #badge="{ content }">
+        <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-2">
+          {{ content }}
+        </gl-badge>
       </template>
     </gl-sprintf>
   </span>

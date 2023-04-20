@@ -72,12 +72,18 @@ export default {
 };
 </script>
 <template>
-  <state-container :mr="mr" status="failed" :is-loading="isLoading">
+  <state-container
+    status="failed"
+    :is-loading="isLoading"
+    is-collapsible
+    :collapsed="mr.mergeDetailsCollapsed"
+    @toggle="() => mr.toggleMergeDetails()"
+  >
     <template #loading>
-      <gl-skeleton-loader :width="334" :height="30">
-        <rect x="0" y="7" width="150" height="16" rx="4" />
-        <rect x="158" y="7" width="84" height="16" rx="4" />
-        <rect x="250" y="7" width="84" height="16" rx="4" />
+      <gl-skeleton-loader :width="334" :height="24">
+        <rect x="0" y="0" width="24" height="24" rx="4" />
+        <rect x="32" y="2" width="150" height="20" rx="4" />
+        <rect x="190" y="2" width="144" height="20" rx="4" />
       </gl-skeleton-loader>
     </template>
     <template v-if="!isLoading">
@@ -106,7 +112,7 @@ export default {
         v-if="userPermissions.canMerge"
         size="small"
         variant="confirm"
-        category="secondary"
+        category="tertiary"
         data-testid="merge-locally-button"
         class="js-check-out-modal-trigger gl-align-self-start"
       >

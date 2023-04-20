@@ -79,6 +79,25 @@ RSpec.describe CloudProfilerAgent::Looper, feature_category: :application_perfor
       end
     end
 
+    context 'when the block raises an Exception' do
+      let(:exception_subject) do
+        subject.run do
+          raise Exception, 'bam'
+        end
+      end
+
+      it 'logs the error and re-raises the exception' do
+        expect_any_instance_of(Logger).to receive(:error).with(
+          hash_including(
+            gcp_ruby_status: "exception",
+            error: "#<Exception: bam>"
+          )
+        )
+
+        expect { exception_subject }.to raise_exception
+      end
+    end
+
     context 'when Google asks for backoff' do
       it 'slows down' do
         subject.run(2) do

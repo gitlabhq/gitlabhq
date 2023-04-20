@@ -78,13 +78,13 @@ their own. To do this:
    it can't be changed at the project level.
 1. Select **Save changes**.
 
-Depending on your version of GitLab, [code owners](../../code_owners.md) who commit
+Depending on your version of GitLab, [code owners](../../codeowners/index.md) who commit
 to a merge request may or may not be able to approve the work:
 
-- In GitLab 13.10 and earlier, [code owners](../../code_owners.md) who commit
+- In GitLab 13.10 and earlier, code owners who commit
   to a merge request can approve it, even if the merge request affects files they own.
 - In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/331548),
-  [code owners](../../code_owners.md) who commit
+  code owners who commit
   to a merge request cannot approve it, when the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
@@ -140,7 +140,7 @@ However, approvals are reset if the target branch is changed.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
 
-If you only want to remove approvals by Code Owners whose files have been changed:
+If you only want to remove approvals by Code Owners whose files have been changed when a commit is added:
 
 Prerequisite:
 
@@ -152,13 +152,6 @@ To do this:
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Remove approvals by Code Owners if their files changed**.
 1. Select **Save changes**.
-
-## Code coverage check approvals
-
-You can require specific approvals if a merge request would result in a decline in code test
-coverage.
-
-For more information, see [Coverage check approval rule](../../../../ci/pipelines/settings.md#coverage-check-approval-rule).
 
 ## Settings cascading
 

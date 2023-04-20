@@ -50,9 +50,9 @@ RSpec.describe PersonalFileUploader do
 
   context 'object_store is LOCAL' do
     it_behaves_like 'builds correct paths',
-                    store_dir: %r[uploads/-/system/personal_snippet/\d+/\h+],
-                    upload_path: %r[\h+/\S+],
-                    absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/\h+/\S+$]
+      store_dir: %r[uploads/-/system/personal_snippet/\d+/\h+],
+      upload_path: %r[\h+/\S+],
+      absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/\h+/\S+$]
 
     it_behaves_like '#base_dir'
     it_behaves_like '#to_h'
@@ -66,8 +66,8 @@ RSpec.describe PersonalFileUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like 'builds correct paths',
-                    store_dir: %r[\d+/\h+],
-                    upload_path: %r[^personal_snippet/\d+/\h+/<filename>]
+      store_dir: %r[\d+/\h+],
+      upload_path: %r[^personal_snippet/\d+/\h+/<filename>]
 
     it_behaves_like '#base_dir'
     it_behaves_like '#to_h'

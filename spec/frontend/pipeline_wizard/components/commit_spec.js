@@ -128,7 +128,7 @@ describe('Pipeline Wizard - Commit Page', () => {
         await waitForPromises();
       });
 
-      it('will not show an error', async () => {
+      it('will not show an error', () => {
         expect(wrapper.findByTestId('commit-error').exists()).not.toBe(true);
       });
 
@@ -155,7 +155,7 @@ describe('Pipeline Wizard - Commit Page', () => {
         await waitForPromises();
       });
 
-      it('will show an error', async () => {
+      it('will show an error', () => {
         expect(wrapper.findByTestId('commit-error').exists()).toBe(true);
         expect(wrapper.findByTestId('commit-error').text()).toBe(i18n.errors.commitError);
       });
@@ -236,11 +236,11 @@ describe('Pipeline Wizard - Commit Page', () => {
           await waitForPromises();
         });
 
-        it('sets up without error', async () => {
+        it('sets up without error', () => {
           expect(consoleSpy).not.toHaveBeenCalled();
         });
 
-        it('does not show a load error', async () => {
+        it('does not show a load error', () => {
           expect(wrapper.findByTestId('load-error').exists()).not.toBe(true);
         });
 

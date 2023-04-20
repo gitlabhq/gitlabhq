@@ -3,7 +3,7 @@ table_name: cluster_agent_tokens
 classes:
 - Clusters::AgentToken
 feature_categories:
-- kubernetes_management
+- deployment_management
 description: Tokens used by cluster agents to connect to GitLab
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33228
 milestone: '13.3'

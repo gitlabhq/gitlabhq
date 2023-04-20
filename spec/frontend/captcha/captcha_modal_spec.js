@@ -61,12 +61,12 @@ describe('Captcha Modal', () => {
   describe('functionality', () => {
     describe('when modal is shown', () => {
       describe('when initRecaptchaScript promise resolves successfully', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           createComponent({ props: { needsCaptchaResponse: true } });
           findGlModal().vm.$emit('shown');
         });
 
-        it('shows modal', async () => {
+        it('shows modal', () => {
           expect(showSpy).toHaveBeenCalled();
         });
 
@@ -90,7 +90,7 @@ describe('Captcha Modal', () => {
             expect(wrapper.emitted('receivedCaptchaResponse')).toEqual([[captchaResponse]]);
           });
 
-          it('hides modal with null trigger', async () => {
+          it('hides modal with null trigger', () => {
             // Assert that hide is called with zero args, so that we don't trigger the logic
             // for hiding the modal via cancel, esc, headerclose, etc, without a captcha response
             expect(hideSpy).toHaveBeenCalledWith();

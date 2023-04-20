@@ -115,7 +115,7 @@ describe('BoardForm', () => {
       expect(findForm().exists()).toBe(true);
     });
 
-    it('focuses an input field', async () => {
+    it('focuses an input field', () => {
       expect(document.activeElement).toBe(wrapper.vm.$refs.name);
     });
   });

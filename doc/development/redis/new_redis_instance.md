@@ -119,7 +119,7 @@ Migration Requirements:
 
 - No downtime.
 - No loss of stored data until the TTL for storing data expires.
-- Partial rollout using Feature Flags or ENV vars or combinations of both.
+- Partial rollout using feature flags or ENV vars or combinations of both.
 - Monitoring of the switch.
 - Prometheus metrics in place.
 - Easy rollback without downtime in case the new instance or logic does not behave as expected.

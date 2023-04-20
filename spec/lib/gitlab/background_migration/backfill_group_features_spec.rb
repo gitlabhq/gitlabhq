@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillGroupFeatures, :migration, schema: 20220302114046 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillGroupFeatures, :migration, schema: 20220314184009 do
   let(:group_features) { table(:group_features) }
   let(:namespaces) { table(:namespaces) }
 

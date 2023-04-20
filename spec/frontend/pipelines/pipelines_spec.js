@@ -245,7 +245,7 @@ describe('Pipelines', () => {
             await waitForPromises();
           });
 
-          it('should filter pipelines', async () => {
+          it('should filter pipelines', () => {
             expect(findPipelinesTable().exists()).toBe(true);
 
             expect(findPipelineUrlLinks()).toHaveLength(1);
@@ -287,7 +287,7 @@ describe('Pipelines', () => {
             await waitForPromises();
           });
 
-          it('should filter pipelines', async () => {
+          it('should filter pipelines', () => {
             expect(findEmptyState().text()).toBe('There are currently no pipelines.');
           });
 
@@ -330,11 +330,11 @@ describe('Pipelines', () => {
           await waitForPromises();
         });
 
-        it('requests data with query params on filter submit', async () => {
+        it('requests data with query params on filter submit', () => {
           expect(mock.history.get[1].params).toEqual(expectedParams);
         });
 
-        it('renders filtered pipelines', async () => {
+        it('renders filtered pipelines', () => {
           expect(findPipelineUrlLinks()).toHaveLength(1);
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.id}`);
         });
@@ -356,7 +356,7 @@ describe('Pipelines', () => {
           await waitForPromises();
         });
 
-        it('requests data with query params on filter submit', async () => {
+        it('requests data with query params on filter submit', () => {
           expect(mock.history.get[1].params).toEqual({ page: '1', scope: 'all' });
         });
 
@@ -516,7 +516,7 @@ describe('Pipelines', () => {
           expect(findNavigationTabs().exists()).toBe(true);
         });
 
-        it('is loading after a time', async () => {
+        it('is loading after a time', () => {
           expect(findPipelineUrlLinks()).toHaveLength(mockPipelinesIds.length);
           expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockPipelinesIds[0]}`);
           expect(findPipelineUrlLinks().at(1).text()).toBe(`#${mockPipelinesIds[1]}`);
@@ -727,7 +727,7 @@ describe('Pipelines', () => {
   });
 
   describe('when pipelines cannot be loaded', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mock.onGet(mockPipelinesEndpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
     });
 

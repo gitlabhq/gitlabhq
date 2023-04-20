@@ -30,7 +30,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to have_many(:merge_request_diffs) }
     it { is_expected.to have_many(:user_mentions).class_name("MergeRequestUserMention") }
     it { is_expected.to belong_to(:milestone) }
-    it { is_expected.to belong_to(:iteration) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_many(:draft_notes) }
@@ -38,6 +37,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to have_many(:reviewed_by_users).through(:reviews).source(:author) }
     it { is_expected.to have_one(:cleanup_schedule).inverse_of(:merge_request) }
     it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
+    it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent').inverse_of(:merge_request) }
 
     context 'for forks' do
       let!(:project) { create(:project) }
@@ -4487,7 +4487,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:expected_merge_status) { 'checking' }
 
         include_examples 'for a valid state transition'
-        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is checking' do
@@ -4507,7 +4507,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:expected_merge_status) { 'cannot_be_merged_rechecking' }
 
         include_examples 'for a valid state transition'
-        it_behaves_like 'transition triggering mergeRequestMergeStatusUpdated GraphQL subscription'
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
       end
 
       context 'when the status is cannot_be_merged' do
@@ -4725,9 +4725,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       [:closed, :merged].each do |state|
-        let(:state) { state }
-
         context state do
+          let(:state) { state }
+
           it 'does not notify' do
             expect(notification_service).not_to receive(:merge_request_unmergeable)
             expect(todo_service).not_to receive(:merge_request_became_unmergeable)

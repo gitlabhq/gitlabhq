@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_category: :code_review_workflow do
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::InviteMembersModalHelpers
 
   let(:project) { create(:project, :public, :repository) }
   let(:protected_branch) { create(:protected_branch, :maintainers_can_push, name: 'master', project: project) }

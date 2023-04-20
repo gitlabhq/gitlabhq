@@ -22,6 +22,9 @@ vulnerabilities. By including an extra Container Scanning job in your pipeline t
 vulnerabilities and displays them in a merge request, you can use GitLab to audit your Docker-based
 apps.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
+
 Container Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system
 dependencies that are almost always imported from external sources, rather than sourced from items
@@ -696,6 +699,14 @@ These reports must follow a format defined in the
 
 For more information, see [Security scanner integration](../../../development/integrations/secure.md).
 
+### CycloneDX Software Bill of Materials
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396381) in GitLab 15.11.
+
+In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
+
+You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
+
 ## Security Dashboard
 
 The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
@@ -774,7 +785,7 @@ To prevent the error, ensure the Docker version that the runner is using is
 
 ### Getting warning message `gl-container-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/pipelines/job_artifacts.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 ## Changes
 

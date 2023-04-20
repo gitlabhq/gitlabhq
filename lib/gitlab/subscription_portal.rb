@@ -70,6 +70,10 @@ module Gitlab
       "#{self.subscriptions_url}/gitlab/namespaces/#{group_id}/renew"
     end
 
+    def self.subscriptions_legacy_sign_in_url
+      "#{self.subscriptions_url}/customers/sign_in?legacy=true"
+    end
+
     def self.edit_account_url
       "#{self.subscriptions_url}/customers/edit"
     end
@@ -90,6 +94,7 @@ end
 
 Gitlab::SubscriptionPortal.prepend_mod
 Gitlab::SubscriptionPortal::SUBSCRIPTIONS_URL = Gitlab::SubscriptionPortal.subscriptions_url.freeze
+Gitlab::SubscriptionPortal::SUBSCRIPTIONS_LEGACY_SIGN_IN_URL = Gitlab::SubscriptionPortal.subscriptions_legacy_sign_in_url.freeze
 Gitlab::SubscriptionPortal::PAYMENT_FORM_URL = Gitlab::SubscriptionPortal.payment_form_url.freeze
 Gitlab::SubscriptionPortal::PAYMENT_VALIDATION_FORM_ID = Gitlab::SubscriptionPortal.payment_validation_form_id.freeze
 Gitlab::SubscriptionPortal::RENEWAL_SERVICE_EMAIL = Gitlab::SubscriptionPortal.renewal_service_email.freeze

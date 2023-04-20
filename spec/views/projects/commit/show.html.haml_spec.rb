@@ -28,19 +28,6 @@ RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code_
     allow(view).to receive(:pagination_params).and_return({})
   end
 
-  context 'inline diff view' do
-    before do
-      allow(view).to receive(:diff_view).and_return(:inline)
-      allow(view).to receive(:diff_view).and_return(:inline)
-
-      render
-    end
-
-    it 'has limited width' do
-      expect(rendered).to have_selector('.limit-container-width')
-    end
-  end
-
   context 'parallel diff view' do
     before do
       allow(view).to receive(:diff_view).and_return(:parallel)

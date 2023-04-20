@@ -46,7 +46,8 @@ module Sidebars
 
         override :pill_count
         def pill_count
-          @pill_count ||= context.project.open_merge_requests_count
+          count = @pill_count ||= context.project.open_merge_requests_count
+          format_cached_count(1000, count)
         end
 
         override :pill_html_options

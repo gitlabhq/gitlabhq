@@ -17,8 +17,38 @@ module Gitlab
             }
           end
 
+          def has_action?
+            current_processable.present?
+          end
+
+          def action_icon
+            nil
+          end
+
+          def action_title
+            nil
+          end
+
+          def action_button_title
+            _('View job currently using resource')
+          end
+
+          def action_path
+            project_job_path(subject.project, current_processable)
+          end
+
+          def action_method
+            :get
+          end
+
           def self.matches?(processable, _)
             processable.waiting_for_resource?
+          end
+
+          private
+
+          def current_processable
+            @current_processable ||= subject.resource_group.current_processable
           end
         end
       end

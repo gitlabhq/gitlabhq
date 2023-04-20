@@ -5,6 +5,8 @@ import ImageOutput from './image.vue';
 import LatexOutput from './latex.vue';
 import MarkdownOutput from './markdown.vue';
 import ErrorOutput from './error.vue';
+import DataframeOutput from './dataframe.vue';
+import { isDataframe } from './dataframe_util';
 
 const TEXT_MARKDOWN = 'text/markdown';
 const ERROR_OUTPUT_TYPE = 'error';
@@ -66,6 +68,8 @@ export default {
         return ImageOutput;
       } else if (output.data['image/jpeg']) {
         return ImageOutput;
+      } else if (isDataframe(output)) {
+        return DataframeOutput;
       } else if (output.data['text/html']) {
         return HtmlOutput;
       } else if (output.data['text/latex']) {

@@ -10,6 +10,7 @@ const defaultProvide = {
   newProjectPath: '/projects/new?namespace_id=231',
   newSubgroupIllustration: '/assets/illustrations/group-new.svg',
   newSubgroupPath: '/groups/new?parent_id=231',
+  emptyProjectsIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
   emptySubgroupIllustration: '/assets/illustrations/empty-state/empty-subgroup-md.svg',
   canCreateSubgroups: true,
   canCreateProjects: true,

@@ -59,22 +59,22 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         textarea = first(".gfm-form textarea")
 
         page.within(form) do
-          click_button("Preview")
+          click_link("Preview")
 
-          preview = find(".js-md-preview") # this element is findable only when the "Preview" link is clicked.
+          preview = find(".js-vue-md-preview") # this element is findable only when the "Preview" link is clicked.
 
           expect(preview).to have_content("Nothing to preview.")
 
-          click_button("Write")
+          click_link("Write")
           fill_in("Description", with: "Bug fixed :smile:")
-          click_button("Preview")
+          click_link("Preview")
 
           expect(preview).to have_css("gl-emoji")
           expect(textarea).not_to be_visible
 
-          click_button("Write")
+          click_link("Write")
           fill_in("Description", with: "/confidential")
-          click_button("Preview")
+          click_link("Preview")
 
           expect(form).to have_content('Makes this issue confidential.')
         end
@@ -126,6 +126,8 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         end
       end
     end
+
+    it_behaves_like 'edits content using the content editor'
 
     context 'dropzone upload file', :js do
       before do
@@ -184,7 +186,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with issue type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Issue')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Issue')
       end
 
       it 'does not hide the milestone select' do
@@ -200,7 +202,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'does not pre-fill the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).not_to have_content('Incident')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).not_to have_content('Incident')
       end
 
       it 'shows the milestone select' do
@@ -257,7 +259,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .dropdown-toggle-text')).to have_content('Incident')
+        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Incident')
       end
 
       it 'hides the epic select' do

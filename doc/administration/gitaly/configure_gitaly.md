@@ -6,25 +6,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Configure Gitaly **(FREE SELF)**
 
-The Gitaly service itself is configured by using a [TOML configuration file](reference.md).
+Configure Gitaly in one of two ways:
 
-To change Gitaly settings:
+::Tabs
 
-**For Omnibus GitLab**
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb` and add or change the
    [Gitaly settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/1dd07197c7e5ae23626aad5a4a070a800b670380/files/gitlab-config-template/gitlab.rb.template#L1622-1676).
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitaly/config.toml` and add or change the [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example).
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
+::EndTabs
+
 The following configuration options are also available:
 
 - Enabling [TLS support](#enable-tls-support).
-- Configuring the [number of `gitaly-ruby` workers](#configure-number-of-gitaly-ruby-workers).
 - Limiting [RPC concurrency](#limit-rpc-concurrency).
 
 ## About the Gitaly token
@@ -138,7 +139,11 @@ Gitaly and GitLab use two shared secrets for authentication:
 - _Gitaly token_: used to authenticate gRPC requests to Gitaly
 - _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API
 
-**For Omnibus GitLab**
+Configure authentication in one of two ways:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
 
@@ -167,7 +172,7 @@ Edit `/etc/gitlab/gitlab.rb`:
    gitlab_shell['secret_token'] = 'shellsecret'
    ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Copy `/home/git/gitlab/.gitlab_shell_secret` from the Gitaly client to the same path on the
    Gitaly servers (and any other Gitaly clients).
@@ -189,18 +194,25 @@ Edit `/etc/gitlab/gitlab.rb`:
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
+::EndTabs
+
 #### Configure Gitaly server
-
-**For Omnibus GitLab**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
 
 <!--
 Updates to example must be made at:
+
 - https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
 - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
-- all reference architecture pages
+- All reference architecture pages
 -->
+
+Configure Gitaly server in one of two ways:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    # Avoid running unnecessary services on the Gitaly server
@@ -294,7 +306,7 @@ Updates to example must be made at:
    - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
    - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitaly/config.toml`:
 
@@ -345,6 +357,8 @@ Updates to example must be made at:
    - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
    - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
 
+::EndTabs
+
 WARNING:
 If directly copying repository data from a GitLab server to Gitaly, ensure that the metadata file,
 default path `/var/opt/gitlab/git-data/repositories/.gitaly-metadata`, is not included in the transfer.
@@ -381,7 +395,11 @@ You can't define Gitaly servers with some as a local Gitaly server
 server (with `gitaly_address`) unless you use
 [mixed configuration](#mixed-configuration).
 
-**For Omnibus GitLab**
+Configure Gitaly clients in one of two ways:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -415,7 +433,7 @@ server (with `gitaly_address`) unless you use
    sudo gitlab-ctl tail gitaly
    ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -450,6 +468,8 @@ server (with `gitaly_address`) unless you use
    ```shell
    tail -f /home/git/gitlab/log/gitaly.log
    ```
+
+::EndTabs
 
 When you tail the Gitaly logs on your Gitaly server, you should see requests coming in. One sure way
 to trigger a Gitaly request is to clone a repository from GitLab over HTTP or HTTPS.
@@ -532,9 +552,11 @@ Disabling Gitaly on the GitLab instance makes sense only when you run GitLab in 
 Gitaly runs on a separate machine from the GitLab instance. Disabling Gitaly on all machines in the cluster is not
 a valid configuration (some machines much act as Gitaly servers).
 
-To disable Gitaly on a GitLab server:
+Disable Gitaly on a GitLab server in one of two ways:
 
-**For Omnibus GitLab**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -544,7 +566,7 @@ To disable Gitaly on a GitLab server:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `/etc/default/gitlab`:
 
@@ -553,6 +575,8 @@ To disable Gitaly on a GitLab server:
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+
+::EndTabs
 
 ## Enable TLS support
 
@@ -585,9 +609,11 @@ If you use a load balancer, it must be able to negotiate HTTP/2 using the ALPN T
 
 ### Configure Gitaly with TLS
 
-To configure Gitaly with TLS:
+Configure Gitaly with TLS in one of two ways:
 
-**For Omnibus GitLab**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Create certificates for Gitaly servers.
 1. On the Gitaly clients, copy the certificates (or their certificate authority) into
@@ -651,7 +677,7 @@ To configure Gitaly with TLS:
    1. Saving the file.
    1. [Reconfiguring GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Create certificates for Gitaly servers.
 1. On the Gitaly clients, copy the certificates into the system trusted certificates:
@@ -727,72 +753,12 @@ To configure Gitaly with TLS:
    1. Saving the file.
    1. [Restarting GitLab](../restart_gitlab.md#installations-from-source).
 
+::EndTabs
+
 ### Observe type of Gitaly connections
 
 For information on observing the type of Gitaly connections being served, see the
 [relevant documentation](monitoring.md#queries).
-
-## `gitaly-ruby`
-
-Gitaly was developed to replace the Ruby application code in GitLab.
-
-To save time and avoid the risk of rewriting existing application logic, we chose to copy some
-application code from GitLab into Gitaly.
-
-To be able to run that code, `gitaly-ruby` was created, which is a "sidecar" process for the main
-Gitaly Go process. Some examples of things that are implemented in `gitaly-ruby` are:
-
-- RPCs that deal with wikis.
-- RPCs that create commits on behalf of a user, such as merge commits.
-
-Recommended settings:
-
-- At least 300 MB memory per worker.
-- No more than one worker per core.
-
-NOTE:
-[Epic 2862](https://gitlab.com/groups/gitlab-org/-/epics/2862) proposes to remove `gitaly-ruby`.
-
-### Configure number of `gitaly-ruby` workers
-
-`gitaly-ruby` has much less capacity than Gitaly implemented in Go. If your Gitaly server has to handle lots of
-requests, the default setting of having just one active `gitaly-ruby` sidecar might not be enough.
-
-If you see `ResourceExhausted` errors from Gitaly, it's very likely that you have not enough
-`gitaly-ruby` capacity.
-
-You can increase the number of `gitaly-ruby` processes on your Gitaly server with the following
-settings:
-
-**For Omnibus GitLab**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitaly['configuration'] = {
-      # ...
-      'gitaly-ruby': {
-        # ...
-        #
-        # Default is 2 workers. The minimum is 2; 1 worker is always reserved as
-        # a passive stand-by.
-        num_workers: 4
-      },
-   }
-   ```
-
-1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-
-**For installations from source**
-
-1. Edit `/home/git/gitaly/config.toml`:
-
-   ```toml
-   [gitaly-ruby]
-   num_workers = 4
-   ```
-
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 
 ## Limit RPC concurrency
 
@@ -1025,7 +991,11 @@ WARNING:
 Background repository optimization is an experimental feature and may place significant load on the host while running.
 Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
 
-**For Omnibus GitLab**
+Configure background repository optimization in one of two ways:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 Edit `/etc/gitlab/gitlab.rb` and add:
 
@@ -1042,7 +1012,7 @@ gitaly['configuration'] = {
 }
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 Edit `/home/git/gitaly/config.toml` and add:
 
@@ -1053,6 +1023,8 @@ start_minute = 30
 duration = '30m'
 storages = ["default"]
 ```
+
+::EndTabs
 
 ## Rotate Gitaly authentication token
 
@@ -1210,7 +1182,8 @@ automatically keep parts of the pack-objects cache files in RAM,
 making it faster.
 
 Because the pack-objects cache can lead to a significant increase in
-disk write IO, it is off by default.
+disk write IO, it is off by default. In GitLab 15.11 and later,
+the write workload is approximately 50% lower, but the cache is still disabled by default.
 
 ### Configure the cache
 
@@ -1222,6 +1195,7 @@ below.
 | `enabled` | `false`                                            | Turns on the cache. When off, Gitaly runs a dedicated `git pack-objects` process for each request. |
 | `dir`     | `<PATH TO FIRST STORAGE>/+gitaly/PackObjectsCache` | Local directory where cache files get stored.                                                      |
 | `max_age` | `5m` (5 minutes)                                   | Cache entries older than this get evicted and removed from disk.                                   |
+| `min_occurrences` | 1 | Minimum times a key must occur before a cache entry is created. |
 
 In `/etc/gitlab/gitlab.rb`, set:
 
@@ -1233,6 +1207,7 @@ gitaly['configuration'] = {
     enabled: true,
     # dir: '/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache',
     # max_age: '5m',
+    # min_occurrences: 1,
   },
 }
 ```
@@ -1290,12 +1265,30 @@ a guarantee. Peak size may exceed this average.
 
 The `max_age` configuration setting lets you control the chance of a
 cache hit and the average amount of storage used by cache files.
-Entries older than `max_age` get evicted from the in-memory metadata
-store, and deleted from disk.
+Entries older than `max_age` get deleted from the disk.
 
 Eviction does not interfere with ongoing requests. It is OK for `max_age` to be less than the time it takes to do a
 fetch over a slow connection because Unix filesystems do not truly delete a file until all processes that are reading
 the deleted file have closed it.
+
+#### Minimum key occurrences `min_occurrences`
+
+> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2222) in GitLab 15.11.
+
+The `min_occurrences` setting controls how often an identical request
+must occur before we create a new cache entry. The default value is `1`,
+meaning that unique requests do not get written into the cache.
+
+If you:
+
+- Increase this number, your cache hit rate goes down and the
+cache uses less disk space.
+- Decrease this number, your cache hit
+rate goes up and the cache uses more disk space.
+
+You should set `min_occurrences` to `1`. On GitLab.com,
+going from 0 to 1 saved us 50% cache disk space while barely affecting
+the cache hit rate.
 
 ### Observe the cache
 
@@ -1515,10 +1508,14 @@ By default, Gitaly doesn't sign commits made using GitLab UI. For example, commi
 - Web IDE.
 - Merge requests.
 
-You can configure Gitaly to sign commits made using GitLab UI. The commits show as unverified and signed by an unknown user. Support for improvements is
-proposed in issue [19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
+You can configure Gitaly to sign commits made with the GitLab UI. The commits show as unverified and signed by an unknown
+user. Support for improvements is proposed in [issue 19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
-**For Omnibus GitLab**
+Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
    and export it. For optimal performance, consider using an EdDSA key.
@@ -1542,7 +1539,7 @@ proposed in issue [19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
    and export it. For optimal performance, consider using an EdDSA key.
@@ -1560,3 +1557,60 @@ proposed in issue [19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+
+::EndTabs
+
+## Generate configuration using an external command
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4828) in GitLab 15.11.
+
+You can generate parts of the Gitaly configuration using an external command. You might do this:
+
+- To configure nodes without having to distribute the full configuration to each of them.
+- To configure using auto-discovery of the node's settings. For example, using DNS entries.
+- To configure secrets at startup of the node, so that don't need to be visible in plain text.
+
+To generate configuration using an external command, you must provide a script that dumps the
+desired configuration of the Gitaly node in JSON format to its standard output.
+
+For example, the following command configures the HTTP password used to connect to the
+GitLab internal API using an AWS secret:
+
+```ruby
+#!/usr/bin/env ruby
+require 'json'
+JSON.generate({"gitlab": {"http_settings": {"password": `aws get-secret-value --secret-id ...`}}})
+```
+
+You must then make the script path known to Gitaly in one of two ways:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `config_command`:
+
+```ruby
+gitaly['configuration'] = {
+    config_command: '/path/to/config_command',
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `config_command`:
+
+```toml
+config_command = "/path/to/config_command"
+```
+
+::EndTabs
+
+After configuration, Gitaly executes the command on startup and parses its
+standard output as JSON. The resulting configuration is then merged back into
+the other Gitaly configuration.
+
+Gitaly fails to start up if either:
+
+- The configuration command fails.
+- The output produced by the command cannot be parsed as valid JSON.

@@ -121,4 +121,22 @@ describe('ScopeNavigation', () => {
       expect(findGlNavItemActive().findComponent(GlIcon).exists()).toBe(true);
     });
   });
+
+  describe.each`
+    searchTherm | hasBeenCalled
+    ${null}     | ${0}
+    ${'test'}   | ${1}
+  `('fetchSidebarCount', ({ searchTherm, hasBeenCalled }) => {
+    beforeEach(() => {
+      createComponent({
+        urlQuery: {
+          search: searchTherm,
+        },
+      });
+    });
+
+    it('is only called when search term is set', () => {
+      expect(actionSpies.fetchSidebarCount).toHaveBeenCalledTimes(hasBeenCalled);
+    });
+  });
 });

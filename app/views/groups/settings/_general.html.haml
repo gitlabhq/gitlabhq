@@ -19,6 +19,11 @@
         = f.label :description, s_('Groups|Group description (optional)'), class: 'label-bold'
         = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
 
+    .row.gl-mt-3
+      .form-group.col-md-5
+        = f.label :description, s_('Groups|Group README'), class: 'label-bold'
+        #js-group-settings-readme{ data: group_settings_readme_app_data(@group) }
+
   = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
   = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 

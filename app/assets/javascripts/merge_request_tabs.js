@@ -13,7 +13,7 @@ import axios from './lib/utils/axios_utils';
 
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
-import { __ } from './locale';
+import { __, s__ } from './locale';
 import syntaxHighlight from './syntax_highlight';
 
 // MergeRequestTabs
@@ -316,7 +316,7 @@ export default class MergeRequestTabs {
           })
           .catch(() => {
             toggleLoader(false);
-            createAlert({ message: __('MergeRequest|Failed to load the page') });
+            createAlert({ message: s__('MergeRequest|Failed to load the page') });
           });
       }
 

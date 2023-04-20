@@ -19,7 +19,6 @@ describe('ManageTwoFactorForm', () => {
     wrapper = mountExtended(ManageTwoFactorForm, {
       provide: {
         ...defaultProvide,
-        webauthnEnabled: options?.webauthnEnabled ?? false,
         isCurrentPasswordRequired: options?.currentPasswordRequired ?? true,
       },
       stubs: {
@@ -40,16 +39,6 @@ describe('ManageTwoFactorForm', () => {
   const findDisableButton = () => wrapper.findByTestId('test-2fa-disable-button');
   const findRegenerateCodesButton = () => wrapper.findByTestId('test-2fa-regenerate-codes-button');
   const findConfirmationModal = () => wrapper.findComponent(GlModal);
-
-  const itShowsConfirmationModal = (confirmText) => {
-    it('shows confirmation modal', async () => {
-      await wrapper.findByLabelText('Current password').setValue('foo bar');
-      await findDisableButton().trigger('click');
-
-      expect(findConfirmationModal().props('visible')).toBe(true);
-      expect(findConfirmationModal().html()).toContain(confirmText);
-    });
-  };
 
   const itShowsValidationMessageIfCurrentPasswordFieldIsEmpty = (findButtonFunction) => {
     it('shows validation message if `Current password` is empty', async () => {
@@ -91,16 +80,12 @@ describe('ManageTwoFactorForm', () => {
     describe('when clicked', () => {
       itShowsValidationMessageIfCurrentPasswordFieldIsEmpty(findDisableButton);
 
-      itShowsConfirmationModal(i18n.confirm);
+      it('shows confirmation modal', async () => {
+        await wrapper.findByLabelText('Current password').setValue('foo bar');
+        await findDisableButton().trigger('click');
 
-      describe('when webauthnEnabled', () => {
-        beforeEach(() => {
-          createComponent({
-            webauthnEnabled: true,
-          });
-        });
-
-        itShowsConfirmationModal(i18n.confirmWebAuthn);
+        expect(findConfirmationModal().props('visible')).toBe(true);
+        expect(findConfirmationModal().html()).toContain(i18n.confirmWebAuthn);
       });
 
       it('modifies the form action and method when submitted through the button', async () => {

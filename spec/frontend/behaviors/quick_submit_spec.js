@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import '~/behaviors/quick_submit';
 
 describe('Quick Submit behavior', () => {
@@ -8,7 +9,7 @@ describe('Quick Submit behavior', () => {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
   beforeEach(() => {
-    loadHTMLFixture('snippets/show.html');
+    setHTMLFixture(htmlSnippetsShow);
 
     testContext = {};
 
@@ -60,22 +61,15 @@ describe('Quick Submit behavior', () => {
     expect(testContext.spies.submit).not.toHaveBeenCalled();
   });
 
-  it('disables input of type submit', () => {
-    const submitButton = $('.js-quick-submit input[type=submit]');
-    testContext.textarea.trigger(keydownEvent());
-
-    expect(submitButton).toBeDisabled();
-  });
-
-  it('disables button of type submit', () => {
-    const submitButton = $('.js-quick-submit input[type=submit]');
+  it('disables submit', () => {
+    const submitButton = $('.js-quick-submit [type=submit]');
     testContext.textarea.trigger(keydownEvent());
 
     expect(submitButton).toBeDisabled();
   });
 
   it('only clicks one submit', () => {
-    const existingSubmit = $('.js-quick-submit input[type=submit]');
+    const existingSubmit = $('.js-quick-submit [type=submit]');
     // Add an extra submit button
     const newSubmit = $('<button type="submit">Submit it</button>');
     newSubmit.insertAfter(testContext.textarea);

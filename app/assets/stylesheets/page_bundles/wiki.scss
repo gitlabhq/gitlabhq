@@ -102,24 +102,42 @@
     }
   }
 
-  .active > a {
-    color: var(--black, $black);
-  }
-
   .active > .wiki-list {
     a,
     .wiki-list-expand-button,
     .wiki-list-collapse-button {
-      color: var(--black, $black);
+      color: $black;
+    }
+  }
+
+  .wiki-list {
+    height: $gl-spacing-scale-8;
+
+    &:hover {
+      background: $gray-10;
+
+      .wiki-list-create-child-button {
+        display: block;
+        box-shadow: none;
+
+        &:focus {
+          box-shadow: 0 0 0 1px #fff, 0 0 0 3px $blue-400;
+        }
+
+        &:active {
+          background: $gray-100 !important;
+          box-shadow: 0 0 0 1px #fff, 0 0 0 3px $blue-400;
+        }
+      }
     }
   }
 
   .wiki-list-expand-button,
   .wiki-list-collapse-button {
-    color: var(--gray-400, $gray-400);
+    color: $gray-400;
 
     &:hover {
-      color: var(--black, $black);
+      color: $black;
     }
   }
 
@@ -128,10 +146,6 @@
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-
-  ul.wiki-pages li {
-    margin: 5px 0 10px;
   }
 
   ul.wiki-pages ul {
@@ -172,6 +186,10 @@ ul.wiki-pages-list.content-list {
 }
 
 .wiki-list {
+  .wiki-list-create-child-button {
+    display: none;
+  }
+
   .wiki-list-expand-button,
   .wiki-list-collapse-button {
     left: -$gl-spacing-scale-5;
@@ -198,17 +216,12 @@ ul.wiki-pages-list.content-list {
 
 .drawio-editor {
   position: fixed;
-  top: calc(var(--header-height, 48px));
+  top: 0;
   left: 0;
   bottom: 0;
-  width: 100%;
-  height: calc(100% - var(--header-height, 48px));
+  width: 100vw;
+  height: 100vh;
   border: 0;
   z-index: 1100;
   visibility: hidden;
-}
-
-.with-performance-bar .drawio-editor {
-  top: calc(var(--header-height, 48px) + 35px);
-  height: calc(100% - var(--header-height, 48px) - 35px);
 }

@@ -16,11 +16,12 @@ module QA
         MSG
 
         def initialize(name)
-          @image = 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine'
+          @image = "#{QA::Runtime::Env.container_registry_host}/gitlab-org/gitlab-runner:alpine"
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
           @run_untagged = true
           @executor = :shell
-          @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
+          @executor_image = "#{QA::Runtime::Env.container_registry_host}/
+            gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7"
 
           super()
         end
@@ -104,7 +105,15 @@ module QA
         # Ping Cloudflare DNS, should fail
         # Ping Registry, should fail to resolve
         def prove_airgap
-          gitlab_ip = Resolv.getaddress 'registry.gitlab.com'
+          begin
+            gitlab_ip = Resolv.getaddress 'registry.gitlab.com'
+          rescue Resolv::ResolvError => e
+            Runtime::Logger.debug("prove_airgap unable to get ip address for endpoint - #{e.message}")
+            # If Resolv.getaddress fails, it implies we cannot access the URL in question
+            # This may occur in offline-environment/airgapped testing
+            return 'true'
+          end
+
           <<~CMD
             echo "Checking airgapped connectivity..."
             nc -zv -w 10 #{gitlab_ip} 80 && (echo "Airgapped network faulty. Connectivity netcat check failed." && exit 1) || (echo "Connectivity netcat check passed." && exit 0)

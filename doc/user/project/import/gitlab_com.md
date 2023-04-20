@@ -33,7 +33,5 @@ When the importer is done, a new GitLab project is created with your imported da
 
 ## Related topics
 
-- To automate user, group, and project import API calls, see
-  [Automate group and project import](index.md#automate-group-and-project-import).
-- To import Wiki and merge request data to your new instance,
-  see [exporting a project](../settings/import_export.md#export-a-project-and-its-data).
+- [Automate group and project import](index.md#automate-group-and-project-import)
+- [Export a project](../settings/import_export.md#export-a-project-and-its-data)

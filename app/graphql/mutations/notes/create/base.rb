@@ -47,10 +47,6 @@ module Mutations
 
         private
 
-        def find_object(id:)
-          GitlabSchema.find_by_gid(id)
-        end
-
         def create_note_params(noteable, args)
           {
             noteable: noteable,

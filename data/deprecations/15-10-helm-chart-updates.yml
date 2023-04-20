@@ -1,0 +1,36 @@
+# This is a template for announcing a feature deprecation or other important planned change.
+#
+# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
+# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
+#
+# Deprecations and other future breaking changes must be announced at least
+# three releases prior to removal.
+#
+# Breaking changes must happen in a major release.
+#
+# See the OPTIONAL END OF SUPPORT FIELDS section below if an End of Support period also applies.
+#
+# For more information please refer to the handbook documentation here:
+# https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
+#
+# Please delete this line and above before submitting your merge request.
+#
+# REQUIRED FIELDS
+#
+- title: "Major bundled Helm Chart updates for the GitLab Helm Chart"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.10"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: twk3  # (required) GitLab username of the person reporting the change
+  stage: enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3442 # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    To coincide with GitLab 16.0, the GitLab Helm Chart will release the 7.0 major version. The following major bundled chart updates will be included:
+
+    - In GitLab 16.0, [PostgreSQL 12 support is being removed, and PostgreSQL 13 is becoming the new minimum](#postgresql-12-deprecated).
+      - Installs using production-ready external databases will need to complete their migration to a newer PostgreSQL version before upgrading.
+      - Installs using the [non-production bundled PostgreSQL 12 chart](https://docs.gitlab.com/charts/installation/tools.html#postgresql) will have the chart upgraded to the new version. For more information, [see issue 4118](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4118)
+    - Installs using the [non-production bundled Redis chart](https://docs.gitlab.com/charts/installation/tools.html#redis) will have the chart upgraded to a newer version. For more information, [see issue 3375](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3375)
+    - Installs using the [bundled cert-manager chart](https://docs.gitlab.com/charts/installation/tls.html#option-1-cert-manager-and-lets-encrypt) will have the chart upgraded to a newer version. For more information, [see issue 4313](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4313)
+
+    The full GitLab Helm Chart 7.0 upgrade steps will be available in the [upgrade docs](https://docs.gitlab.com/charts/installation/upgrade.html).

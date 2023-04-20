@@ -1,0 +1,7 @@
+#import "ee_else_ce/boards/graphql/issue.fragment.graphql"
+
+query activeBoardItem {
+  activeBoardItem @client {
+    ...Issue
+  }
+}

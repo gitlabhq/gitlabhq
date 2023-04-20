@@ -325,36 +325,41 @@ module API
 
         file_name, format = extract_format(params[:file_name])
 
-        result = ::Packages::Maven::FindOrCreatePackageService
-          .new(user_project, current_user, params.merge(build: current_authenticated_job)).execute
+        ::Gitlab::Database::LoadBalancing::Session.current.use_primary do
+          result = ::Packages::Maven::FindOrCreatePackageService
+                     .new(user_project, current_user, params.merge(build: current_authenticated_job)).execute
 
-        bad_request!(result.errors.first) if result.error?
+          bad_request!(result.errors.first) if result.error?
 
-        package = result.payload[:package]
+          package = result.payload[:package]
 
-        case format
-        when 'sha1'
-          # After uploading a file, Maven tries to upload a sha1 and md5 version of it.
-          # Since we store md5/sha1 in database we simply need to validate our hash
-          # against one uploaded by Maven. We do this for `sha1` format.
-          package_file = ::Packages::PackageFileFinder
-            .new(package, file_name).execute!
+          case format
+          when 'sha1'
+            # After uploading a file, Maven tries to upload a sha1 and md5 version of it.
+            # Since we store md5/sha1 in database we simply need to validate our hash
+            # against one uploaded by Maven. We do this for `sha1` format.
+            package_file = ::Packages::PackageFileFinder
+              .new(package, file_name).execute!
 
-          verify_package_file(package_file, params[:file])
-        when 'md5'
-          ''
-        else
-          file_params = {
-            file: params[:file],
-            size: params['file.size'],
-            file_name: file_name,
-            file_type: params['file.type'],
-            file_sha1: params['file.sha1'],
-            file_md5: params['file.md5']
-          }
+            verify_package_file(package_file, params[:file])
+          when 'md5'
+            ''
+          else
+            file_params = {
+              file: params[:file],
+              size: params['file.size'],
+              file_name: file_name,
+              file_sha1: params['file.sha1'],
+              file_md5: params['file.md5']
+            }
 
-          ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
-          track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
+            if Feature.enabled?(:read_fingerprints_from_uploaded_file_in_maven_upload, user_project)
+              file_params.merge!(size: params[:file].size, file_sha1: params[:file].sha1, file_md5: params[:file].md5)
+            end
+
+            ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
+            track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)
+          end
         end
       end
     end

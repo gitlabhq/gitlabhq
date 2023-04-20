@@ -37,7 +37,7 @@ describe('UserNameWithStatus', () => {
     });
 
     it('will render "Busy"', () => {
-      expect(wrapper.text()).toContain('(Busy)');
+      expect(wrapper.text()).toContain('Busy');
     });
   });
 
@@ -49,7 +49,7 @@ describe('UserNameWithStatus', () => {
     });
 
     it("renders user's name with pronouns", () => {
-      expect(wrapper.text()).toMatchInterpolatedText(`${name} (${pronouns})`);
+      expect(wrapper.text()).toMatchInterpolatedText(`${name}(${pronouns})`);
     });
   });
 

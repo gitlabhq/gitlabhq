@@ -86,6 +86,12 @@ RSpec.describe Oauth::ApplicationsController do
       it_behaves_like 'redirects to login page when the user is not signed in'
       it_behaves_like 'redirects to 2fa setup page when the user requires it'
 
+      it 'returns the secret in json format' do
+        subject
+
+        expect(json_response['secret']).not_to be_nil
+      end
+
       context 'when renew fails' do
         before do
           allow_next_found_instance_of(Doorkeeper::Application) do |application|
@@ -94,7 +100,7 @@ RSpec.describe Oauth::ApplicationsController do
         end
 
         it { expect { subject }.not_to change { application.reload.secret } }
-        it { is_expected.to redirect_to(oauth_application_url(application)) }
+        it { is_expected.to have_gitlab_http_status(:unprocessable_entity) }
       end
     end
 

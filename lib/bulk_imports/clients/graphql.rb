@@ -38,12 +38,9 @@ module BulkImports
         @url = Gitlab::Utils.append_path(url, '/api/graphql')
         @token = token
         @client = Graphlient::Client.new(@url, options(http: HTTP))
-        @compatible_instance_version = false
       end
 
       def execute(...)
-        validate_instance_version!
-
         client.execute(...)
       end
 
@@ -56,19 +53,6 @@ module BulkImports
             'Authorization' => "Bearer #{@token}"
           }
         }.merge(extra)
-      end
-
-      def validate_instance_version!
-        return if @compatible_instance_version
-
-        response = client.execute('{ metadata { version } }')
-        version = Gitlab::VersionInfo.parse(response.data.metadata.version)
-
-        if version.major < BulkImport::MIN_MAJOR_VERSION
-          raise ::BulkImports::Error.unsupported_gitlab_version
-        else
-          @compatible_instance_version = true
-        end
       end
     end
   end

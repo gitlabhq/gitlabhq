@@ -1,5 +1,5 @@
 {
-  "version": "14.0.4",
+  "version": "15.0.4",
   "vulnerabilities": [
     {
       "id": "2e5656ff30e2e7cc93c36b4845c8a689ddc47fdbccf45d834c67442fbaa89be0",
@@ -51,6 +51,15 @@
     }
   ],
   "scan": {
+    "analyzer": {
+      "id": "find_sec_bugs_analyzer",
+      "name": "Find Security Bugs Analyzer",
+      "url": "https://gitlab.com",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "1.0.0"
+    },
     "scanner": {
       "id": "gosec",
       "name": "Gosec",

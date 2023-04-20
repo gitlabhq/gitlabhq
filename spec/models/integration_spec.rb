@@ -1092,7 +1092,7 @@ RSpec.describe Integration, feature_category: :integrations do
         field :foo_dt, storage: :data_fields
 
         field :bar, type: 'password'
-        field :password
+        field :password, is_secret: true
 
         field :webhook
 

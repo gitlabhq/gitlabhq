@@ -1,6 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-$mr-review-bar-height: calc(2rem + 13px);
 $mr-widget-margin-left: 40px;
 $mr-widget-min-height: 69px;
 $tabs-holder-z-index: 250;
@@ -181,6 +180,10 @@ $tabs-holder-z-index: 250;
     .content + .content {
       @include gl-border-t;
     }
+
+    .notes-content {
+      border: 0;
+    }
   }
 
   &.inline-diff-view {
@@ -242,18 +245,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.with-system-header {
-  --system-header-height: #{$system-header-height};
-}
-
-.with-performance-bar {
-  --performance-bar-height: #{$performance-bar-height};
-}
-
-.review-bar-visible {
-  --review-bar-height: #{$mr-review-bar-height};
-}
-
 .diff-tree-list {
   // This 11px value should match the additional value found in
   //      /assets/stylesheets/framework/diffs.scss
@@ -264,21 +255,19 @@ $tabs-holder-z-index: 250;
   // If they don't match, the file tree and the diff files stick
   // to the top at different heights, which is a bad-looking defect
   $diff-file-header-top: 11px;
-  --initial-pos: calc(#{$header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
-  --top-pos: var(--initial-pos);
 
-  position: -webkit-sticky;
   position: sticky;
-  top: calc(var(--top-pos) + var(--performance-bar-height, 0px));
+  top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
   min-height: 300px;
-  height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
+  height: calc(#{$calc-application-viewport-height} - (#{$mr-tabs-height} + #{$diff-file-header-top}));
 
   .drag-handle {
     bottom: 16px;
   }
 
   &.is-sidebar-moved {
-    --top-pos: calc(var(--initial-pos) + 26px);
+    height: calc(#{$calc-application-viewport-height} - (#{$mr-tabs-height} + #{$diff-file-header-top} + 26px));
+    top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top} + 26px);
   }
 }
 
@@ -915,15 +904,6 @@ $tabs-holder-z-index: 250;
   &:not(:first-child) {
     margin-top: $gl-padding;
   }
-
-  &:not(:last-child)::before {
-    content: '';
-    border-left: 2px solid var(--border-color, $border-color);
-    position: absolute;
-    bottom: -17px;
-    left: 26px;
-    height: 16px;
-  }
 }
 
 .mr-version-controls {
@@ -992,8 +972,8 @@ $tabs-holder-z-index: 250;
 .merge-request-overview {
   @include media-breakpoint-up(lg) {
     display: grid;
-    grid-template-columns: calc(95% - 285px) auto;
-    grid-gap: 5%;
+    grid-template-columns: calc(97% - 285px) auto;
+    grid-gap: 3%;
   }
 }
 
@@ -1156,7 +1136,7 @@ $tabs-holder-z-index: 250;
 
 .review-bar-component {
   position: fixed;
-  bottom: 0;
+  bottom: $calc-application-footer-height;
   left: 0;
   z-index: $zindex-dropdown-menu;
   display: flex;
@@ -1240,4 +1220,71 @@ $tabs-holder-z-index: 250;
       flex-direction: row-reverse;
     }
   }
+}
+
+.mr-state-loader {
+  svg {
+    vertical-align: middle;
+  }
+
+  .gl-skeleton-loader {
+    max-width: 334px;
+  }
+}
+
+.mr-system-note-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+
+  &.gl-bg-green-100 {
+    --bg-color: var(--green-100, #{$green-100});
+  }
+
+  &.gl-bg-red-100 {
+    --bg-color: var(--red-100, #{$red-100});
+  }
+
+  &.gl-bg-blue-100 {
+    --bg-color: var(--blue-100, #{$blue-100});
+  }
+}
+
+.mr-system-note-icon:not(.mr-system-note-empty)::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: calc(50% - 1px);
+  bottom: 100%;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, var(--bg-color));
+
+  .system-note:first-child & {
+    display: none;
+  }
+}
+
+.mr-system-note-icon:not(.mr-system-note-empty)::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 100%;
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, var(--bg-color), transparent);
+
+  .system-note:last-child & {
+    display: none;
+  }
+}
+
+.mr-system-note-empty {
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  margin-left: 12px;
+  margin-right: 8px;
+  border: 2px solid var(--gray-50, $gray-50);
 }

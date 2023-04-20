@@ -298,10 +298,6 @@ To add a task to an iteration:
 > - Filtering activity [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389971) in GitLab 15.10.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.10.
 
-Prerequisites:
-
-- You must have at least the Reporter role for the project.
-
 You can view all the system notes related to the task. By default they are sorted by **Oldest first**.
 You can always change the sorting order to **Newest first**, which is remembered across sessions.
 You can also filter activity by **Comments only** and **History only** in addition to the default **All activity** which is remembered across sessions.

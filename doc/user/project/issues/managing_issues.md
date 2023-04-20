@@ -103,7 +103,7 @@ When bulk editing issues in a group, you can edit the following attributes:
 ## Move an issue
 
 When you move an issue, it's closed and copied to the target project.
-The original issue is not deleted. A system note, which indicates
+The original issue is not deleted. A [system note](../system_notes.md), which indicates
 where it came from and went to, is added to both issues.
 
 Be careful when moving an issue to a project with different access rules. Before moving the issue, make sure it does not contain sensitive data.
@@ -298,7 +298,7 @@ To disable automatic issue closing:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Repository**.
-1. Expand **Default branch**.
+1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
 1. Select **Save changes**.
 

@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Deploy
+group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -245,7 +245,7 @@ release:
 ```
 
 NOTE:
-Directly attaching [job artifacts](../../../ci/pipelines/job_artifacts.md)
+Directly attaching [job artifacts](../../../ci/jobs/job_artifacts.md)
 links to a release is not recommended, because artifacts are ephemeral and
 are used to pass data in the same pipeline. This means there's a risk that
 they could either expire or someone might manually delete them.

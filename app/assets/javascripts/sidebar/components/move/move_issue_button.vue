@@ -26,10 +26,11 @@ export default {
     },
   },
   methods: {
-    moveIssue(targetProject) {
+    async moveIssue(targetProject) {
       this.moveInProgress = true;
-      return this.$apollo
-        .mutate({
+
+      try {
+        const { data } = await this.$apollo.mutate({
           mutation: moveIssueMutation,
           variables: {
             moveIssueInput: {
@@ -38,24 +39,25 @@ export default {
               targetProjectPath: targetProject.full_path,
             },
           },
-        })
-        .then(({ data = {} }) => {
-          if (!data.issueMove) return;
-
-          const { errors } = data.issueMove;
-          if (errors?.length > 0) {
-            throw new Error(`Error moving the issue. Error message: ${errors[0].message}`);
-          }
-          visitUrl(data.issueMove?.issue.webUrl);
-        })
-        .catch((error) => {
-          this.moveInProgress = false;
-          createAlert({
-            message: this.$options.i18n.moveErrorMessage,
-            captureError: true,
-            error,
-          });
         });
+
+        if (!data.issueMove) return;
+
+        const { errors } = data.issueMove;
+        if (errors?.length > 0) {
+          throw new Error(`Error moving the issue. Error message: ${errors[0].message}`);
+        }
+
+        visitUrl(data.issueMove?.issue.webUrl);
+      } catch (error) {
+        createAlert({
+          message: this.$options.i18n.moveErrorMessage,
+          captureError: true,
+          error,
+        });
+      } finally {
+        this.moveInProgress = false;
+      }
     },
   },
 };

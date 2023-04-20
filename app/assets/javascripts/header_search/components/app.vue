@@ -1,7 +1,6 @@
 <script>
 import {
   GlSearchBoxByType,
-  GlOutsideDirective as Outside,
   GlIcon,
   GlToken,
   GlTooltipDirective,
@@ -36,6 +35,7 @@ import {
   IS_SEARCHING,
   IS_FOCUSED,
   IS_NOT_FOCUSED,
+  DROPDOWN_CLOSE_TIMEOUT,
 } from '../constants';
 import HeaderSearchAutocompleteItems from './header_search_autocomplete_items.vue';
 import HeaderSearchDefaultItems from './header_search_default_items.vue';
@@ -53,7 +53,7 @@ export default {
     SEARCH_RESULTS_SCOPE,
     KBD_HELP,
   },
-  directives: { Outside, GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
+  directives: { GlTooltip: GlTooltipDirective, GlResizeObserverDirective },
   components: {
     GlSearchBoxByType,
     HeaderSearchDefaultItems,
@@ -65,7 +65,6 @@ export default {
   },
   data() {
     return {
-      showDropdown: false,
       isFocused: false,
       currentFocusIndex: SEARCH_BOX_INDEX,
     };
@@ -91,7 +90,7 @@ export default {
       return Boolean(gon?.current_username);
     },
     showSearchDropdown() {
-      if (!this.showDropdown || !this.isLoggedIn) {
+      if (!this.isFocused || !this.isLoggedIn) {
         return false;
       }
       return this.searchOptions?.length > 0;
@@ -108,7 +107,6 @@ export default {
       }
       return FIRST_DROPDOWN_INDEX;
     },
-
     searchInputDescribeBy() {
       if (this.isLoggedIn) {
         return this.$options.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN;
@@ -160,29 +158,18 @@ export default {
   methods: {
     ...mapActions(['setSearch', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     openDropdown() {
-      this.showDropdown = true;
+      this.isFocused = true;
+      this.$emit('expandSearchBar');
 
-      // check isFocused state to avoid firing duplicate events
-      if (!this.isFocused) {
-        this.isFocused = true;
-        this.$emit('expandSearchBar', true);
-
-        Tracking.event(undefined, 'focus_input', {
-          label: 'global_search',
-          property: 'navigation_top',
-        });
-      }
-    },
-    closeDropdown() {
-      this.showDropdown = false;
+      Tracking.event(undefined, 'focus_input', {
+        label: 'global_search',
+        property: 'navigation_top',
+      });
     },
     collapseAndCloseSearchBar() {
-      // we need a delay on this method
-      // for the search bar not to remove
-      // the clear button from dom
-      // and register clicks on dropdown items
+      // without timeout dropdown closes
+      // before click event is dispatched
       setTimeout(() => {
-        this.showDropdown = false;
         this.isFocused = false;
         this.$emit('collapseSearchBar');
 
@@ -190,7 +177,7 @@ export default {
           label: 'global_search',
           property: 'navigation_top',
         });
-      }, 200);
+      }, DROPDOWN_CLOSE_TIMEOUT);
     },
     submitSearch() {
       if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS && this.currentFocusIndex < 0) {
@@ -226,7 +213,6 @@ export default {
 
 <template>
   <form
-    v-outside="closeDropdown"
     role="search"
     :aria-label="$options.i18n.SEARCH_GITLAB"
     class="header-search gl-relative gl-rounded-base gl-w-full"
@@ -244,12 +230,11 @@ export default {
       :placeholder="$options.i18n.SEARCH_GITLAB"
       :aria-activedescendant="currentFocusedId"
       :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
-      @focus="openDropdown"
-      @click="openDropdown"
-      @blur="collapseAndCloseSearchBar"
+      @focusin="openDropdown"
+      @focusout="collapseAndCloseSearchBar"
       @input="getAutocompleteOptions"
       @keydown.enter.stop.prevent="submitSearch"
-      @keydown.esc.stop.prevent="closeDropdown"
+      @keydown.esc.stop.prevent="collapseAndCloseSearchBar"
     />
     <gl-token
       v-if="showScopeHelp"
@@ -301,7 +286,7 @@ export default {
           :max="searchOptions.length - 1"
           :min="$options.FIRST_DROPDOWN_INDEX"
           :default-index="defaultIndex"
-          @tab="closeDropdown"
+          :enable-cycle="true"
         />
         <header-search-default-items
           v-if="showDefaultItems"

@@ -45,11 +45,13 @@ module Projects
 
       duration = ::Gitlab::Metrics::System.monotonic_time - start_time
 
-      Gitlab::AppJsonLogger.info(class: self.class.name,
-                                 namespace_id: source_project.namespace_id,
-                                 project_id: source_project.id,
-                                 duration_s: duration.to_f,
-                                 error: exception.class.name)
+      Gitlab::AppJsonLogger.info(
+        class: self.class.name,
+        namespace_id: source_project.namespace_id,
+        project_id: source_project.id,
+        duration_s: duration.to_f,
+        error: exception.class.name
+      )
     end
 
     def move_relationships_between(source_project, target_project)
@@ -83,9 +85,11 @@ module Projects
       # we won't be able to query the database (only through its cached data),
       # for its former relationships. That's why we're adding it to the network
       # as a fork of the target project
-      ForkNetworkMember.create!(fork_network: fork_network,
-                                project: source_project,
-                                forked_from_project: @project)
+      ForkNetworkMember.create!(
+        fork_network: fork_network,
+        project: source_project,
+        forked_from_project: @project
+      )
     end
 
     def remove_source_project_from_fork_network(source_project)

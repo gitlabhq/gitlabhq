@@ -1,6 +1,0 @@
----
-Rake/Require:
-  Details: grace period
-  Exclude:
-    - 'lib/tasks/tokens.rake'
-    - 'qa/tasks/webdrivers.rake'

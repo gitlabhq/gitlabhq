@@ -1,6 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import { Emitter } from 'monaco-editor';
-import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -28,6 +27,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
   let panelSpy;
   let mockAxios;
   let extension;
+  let resizeCallback;
   const previewMarkdownPath = '/gitlab/fooGroup/barProj/preview_markdown';
   const firstLine = 'This is a';
   const secondLine = 'multiline';
@@ -35,6 +35,8 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
   const text = `${firstLine}\n${secondLine}\n${thirdLine}`;
   const markdownPath = 'foo.md';
   const responseData = '<div>FooBar</div>';
+  const observeSpy = jest.fn();
+  const disconnectSpy = jest.fn();
 
   const togglePreview = async () => {
     instance.togglePreview();
@@ -43,8 +45,22 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    setHTMLFixture('<div id="editor" data-editor-loading></div>');
+    setHTMLFixture(
+      '<div style="width: 500px; height: 500px"><div id="editor" data-editor-loading></div></div>',
+    );
     editorEl = document.getElementById('editor');
+    global.ResizeObserver = class {
+      constructor(callback) {
+        resizeCallback = callback;
+        this.observe = (node) => {
+          return observeSpy(node);
+        };
+        this.disconnect = () => {
+          return disconnectSpy();
+        };
+      }
+    };
+
     editor = new SourceEditor();
     instance = editor.createInstance({
       el: editorEl,
@@ -77,9 +93,6 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       actions: expect.any(Object),
       shown: false,
       modelChangeListener: undefined,
-      layoutChangeListener: {
-        dispose: expect.anything(),
-      },
       path: previewMarkdownPath,
       actionShowPreviewCondition: expect.any(Object),
       eventEmitter: expect.any(Object),
@@ -94,36 +107,64 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     expect(panelSpy).toHaveBeenCalled();
   });
 
-  describe('onDidLayoutChange', () => {
-    const emitter = new Emitter();
-    let layoutSpy;
-
-    useFakeRequestAnimationFrame();
-
-    beforeEach(() => {
-      instance.unuse(extension);
-      instance.onDidLayoutChange = emitter.event;
-      extension = instance.use({
-        definition: EditorMarkdownPreviewExtension,
-        setupOptions: { previewMarkdownPath },
-      });
-      layoutSpy = jest.spyOn(instance, 'layout');
-    });
-
-    it('does not trigger the layout when the preview is not active [default]', async () => {
-      expect(instance.markdownPreview.shown).toBe(false);
-      expect(layoutSpy).not.toHaveBeenCalled();
-      await emitter.fire();
-      expect(layoutSpy).not.toHaveBeenCalled();
-    });
-
-    it('triggers the layout if the preview panel is opened', async () => {
-      expect(layoutSpy).not.toHaveBeenCalled();
+  describe('ResizeObserver handler', () => {
+    it('sets a ResizeObserver to observe the container DOM node', () => {
+      observeSpy.mockClear();
       instance.togglePreview();
-      layoutSpy.mockReset();
+      expect(observeSpy).toHaveBeenCalledWith(instance.getContainerDomNode());
+    });
 
-      await emitter.fire();
-      expect(layoutSpy).toHaveBeenCalledTimes(1);
+    describe('disconnects the ResizeObserver when…', () => {
+      beforeEach(() => {
+        instance.togglePreview();
+        instance.markdownPreview.modelChangeListener = {
+          dispose: jest.fn(),
+        };
+      });
+
+      it('the preview gets closed', () => {
+        expect(disconnectSpy).not.toHaveBeenCalled();
+        instance.togglePreview();
+        expect(disconnectSpy).toHaveBeenCalled();
+      });
+
+      it('the extension is unused', () => {
+        expect(disconnectSpy).not.toHaveBeenCalled();
+        instance.unuse(extension);
+        expect(disconnectSpy).toHaveBeenCalled();
+      });
+    });
+
+    describe('layout behavior', () => {
+      let layoutSpy;
+      let instanceDimensions;
+      let newInstanceWidth;
+
+      beforeEach(() => {
+        instanceDimensions = instance.getLayoutInfo();
+      });
+
+      it('does not trigger the layout if the preview panel is closed', () => {
+        layoutSpy = jest.spyOn(instance, 'layout');
+        newInstanceWidth = instanceDimensions.width + 100;
+
+        // Manually trigger the resize event
+        resizeCallback([{ contentRect: { width: newInstanceWidth } }]);
+        expect(layoutSpy).not.toHaveBeenCalled();
+      });
+
+      it('triggers the layout if the preview panel is opened, and width of the editor has changed', () => {
+        instance.togglePreview();
+        layoutSpy = jest.spyOn(instance, 'layout');
+        newInstanceWidth = instanceDimensions.width + 100;
+
+        // Manually trigger the resize event
+        resizeCallback([{ contentRect: { width: newInstanceWidth } }]);
+        expect(layoutSpy).toHaveBeenCalledWith({
+          width: newInstanceWidth * EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH,
+          height: instanceDimensions.height,
+        });
+      });
     });
   });
 
@@ -226,11 +267,10 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       expect(newWidth === width / EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH).toBe(true);
     });
 
-    it('disposes the layoutChange listener and does not re-layout on layout changes', () => {
-      expect(instance.markdownPreview.layoutChangeListener).toBeDefined();
+    it('disconnects the ResizeObserver', () => {
       instance.unuse(extension);
 
-      expect(instance.markdownPreview?.layoutChangeListener).toBeUndefined();
+      expect(disconnectSpy).toHaveBeenCalled();
     });
 
     it('does not trigger the re-layout after instance is unused', async () => {

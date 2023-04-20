@@ -32,6 +32,7 @@ module Gitlab
           select_one
           select_rows
           quote_column_name
+          schema_cache
         ).freeze
 
         # hosts - The hosts to use for load balancing.

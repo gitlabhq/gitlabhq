@@ -7,9 +7,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::ConvertToBigint, feature_cate
     using RSpec::Parameterized::TableSyntax
 
     where(:dot_com, :dev_or_test, :jh, :expectation) do
-      true  | true  | true  | false
+      true  | true  | true  | true
       true  | false | true  | false
-      false | true  | true  | false
+      false | true  | true  | true
       false | false | true  | false
       true  | true  | false | true
       true  | false | false | true

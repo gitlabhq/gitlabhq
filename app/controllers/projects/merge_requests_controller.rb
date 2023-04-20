@@ -33,15 +33,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   before_action only: [:show, :diffs] do
-    push_frontend_feature_flag(:content_editor_on_issues, project)
+    push_frontend_feature_flag(:content_editor_on_issues, project&.group)
+    push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
-    push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
+    push_frontend_feature_flag(:deprecate_vulnerabilities_feedback, @project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
+    push_frontend_feature_flag(:single_file_file_by_file, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:realtime_mr_status_change, project)
     push_frontend_feature_flag(:saved_replies, current_user)
+    push_frontend_feature_flag(:code_quality_inline_drawer, project)
+    push_frontend_feature_flag(:hide_create_issue_resolve_all, project)
+    push_frontend_feature_flag(:auto_merge_labels_mr_widget, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -263,6 +268,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return access_check_result if access_check_result
 
     status = merge!
+
+    Gitlab::ApplicationContext.push(merge_action_status: status.to_s)
 
     if @merge_request.merge_error
       render json: { status: status, merge_error: @merge_request.merge_error }

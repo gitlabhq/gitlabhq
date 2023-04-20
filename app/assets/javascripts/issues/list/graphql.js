@@ -1,6 +1,8 @@
 import produce from 'immer';
-import createDefaultClient from '~/lib/graphql';
+import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphql';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
+
+let client;
 
 const resolvers = {
   Mutation: {
@@ -22,6 +24,10 @@ const resolvers = {
   },
 };
 
-export const gqlClient = gon.features?.frontendCaching
-  ? createDefaultClient(resolvers, { localCacheKey: 'issues_list' })
-  : createDefaultClient(resolvers);
+export async function gqlClient() {
+  if (client) return client;
+  client = gon.features?.frontendCaching
+    ? await createApolloClientWithCaching(resolvers, { localCacheKey: 'issues_list' })
+    : createDefaultClient(resolvers);
+  return client;
+}

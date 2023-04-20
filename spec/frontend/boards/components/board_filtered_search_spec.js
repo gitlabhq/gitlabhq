@@ -123,7 +123,7 @@ describe('BoardFilteredSearch', () => {
       jest.spyOn(wrapper.vm, 'performSearch').mockImplementation();
     });
 
-    it('sets the url params to the correct results', async () => {
+    it('sets the url params to the correct results', () => {
       const mockFilters = [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'root', operator: '=' } },
         { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'root', operator: '=' } },

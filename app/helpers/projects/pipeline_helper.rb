@@ -8,7 +8,7 @@ module Projects
       {
         failed_jobs_count: pipeline.failed_builds.count,
         failed_jobs_summary: prepare_failed_jobs_summary_data(pipeline.failed_builds),
-        full_path: project.full_path,
+        project_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: project.namespace, project_id: project, format: :json),
         pipeline_iid: pipeline.iid,

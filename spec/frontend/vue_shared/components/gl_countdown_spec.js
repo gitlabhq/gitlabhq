@@ -11,7 +11,7 @@ describe('GlCountdown', () => {
   });
 
   describe('when there is time remaining', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = mount(GlCountdown, {
         propsData: {
           endDateString: '2000-01-01T01:02:03Z',
@@ -33,7 +33,7 @@ describe('GlCountdown', () => {
   });
 
   describe('when there is no time remaining', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = mount(GlCountdown, {
         propsData: {
           endDateString: '1900-01-01T00:00:00Z',

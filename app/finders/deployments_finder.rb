@@ -52,10 +52,6 @@ class DeploymentsFinder
 
   private
 
-  def raise_for_inefficient_updated_at_query?
-    params.fetch(:raise_for_inefficient_updated_at_query, Rails.env.development? || Rails.env.test?)
-  end
-
   def validate!
     if filter_by_updated_at? && filter_by_finished_at?
       raise InefficientQueryError, 'Both `updated_at` filter and `finished_at` filter can not be specified'
@@ -68,7 +64,7 @@ class DeploymentsFinder
 
       Gitlab::ErrorTracking.log_exception(error)
 
-      raise error if raise_for_inefficient_updated_at_query?
+      raise error if Feature.enabled?(:deployments_raise_updated_at_inefficient_error)
     end
 
     if filter_by_finished_at? && !order_by_finished_at?

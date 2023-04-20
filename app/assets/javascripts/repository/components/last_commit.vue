@@ -12,6 +12,8 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import getRefMixin from '../mixins/get_ref';
 import projectPathQuery from '../queries/project_path.query.graphql';
+import eventHub from '../event_hub';
+import { FORK_UPDATED_EVENT } from '../constants';
 
 export default {
   components: {
@@ -97,9 +99,18 @@ export default {
       this.commit = null;
     },
   },
+  mounted() {
+    eventHub.$on(FORK_UPDATED_EVENT, this.refetchLastCommit);
+  },
+  beforeDestroy() {
+    eventHub.$off(FORK_UPDATED_EVENT, this.refetchLastCommit);
+  },
   methods: {
     toggleShowDescription() {
       this.showDescription = !this.showDescription;
+    },
+    refetchLastCommit() {
+      this.$apollo.queries.commit.refetch();
     },
   },
   defaultAvatarUrl,

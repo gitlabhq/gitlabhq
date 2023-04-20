@@ -69,6 +69,8 @@ en:
       read_repository: Allows read-only access to the repository
       write_repository: Allows read-write access to the repository
       read_registry: Grants permission to read container registry images
+      read_observability: Allows read-only access to GitLab Observability
+      write_observability: Allows read-write access to GitLab Observability
       openid: Authenticate using OpenID Connect
       sudo: Perform API actions as any user in the system
       profile: Allows read-only access to the user's personal information using OpenID Connect
@@ -88,6 +90,10 @@ en:
         Grants read-only access to container registry images on private projects.
       write_registry:
         Grants write access to container registry images on private projects.
+      read_observability:
+        Grants read-only access to GitLab Observability.
+      write_observability:
+        Grants write access to GitLab Observability.
       openid:
         Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
       sudo:

@@ -34,7 +34,8 @@ module QA
         # @return [Boolean] whether the filter returned any group
         def filter_group(name)
           fill_element(:groups_filter_field, name).send_keys(:return)
-          finished_loading?
+          # Loading starts a moment after `return` is sent. We mustn't jump ahead
+          wait_for_requests if spinner_exists?
           has_element?(:groups_list_tree_container, wait: 1)
         end
       end

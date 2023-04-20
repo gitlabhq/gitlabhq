@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Admin Groups', feature_category: :subgroups do
-  include Spec::Support::Helpers::Features::MembersHelpers
-  include Spec::Support::Helpers::Features::InviteMembersModalHelper
+  include Features::MembersHelpers
+  include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }

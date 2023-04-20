@@ -19,7 +19,9 @@ module Gitlab
           status: 'Status',
           requirement_legacy: 'Requirement legacy',
           test_reports: 'Test reports',
-          notifications: 'Notifications'
+          notifications: 'Notifications',
+          current_user_todos: "Current user todos",
+          award_emoji: 'Award emoji'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -34,18 +36,24 @@ module Gitlab
             :iteration,
             :weight,
             :health_status,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ],
           incident: [
             :description,
             :hierarchy,
             :notes,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ],
           test_case: [
             :description,
             :notes,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ],
           requirement: [
             :description,
@@ -53,7 +61,9 @@ module Gitlab
             :status,
             :requirement_legacy,
             :test_reports,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ],
           task: [
             :assignees,
@@ -65,7 +75,9 @@ module Gitlab
             :notes,
             :iteration,
             :weight,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ],
           objective: [
             :assignees,
@@ -76,7 +88,9 @@ module Gitlab
             :notes,
             :health_status,
             :progress,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ],
           key_result: [
             :assignees,
@@ -87,7 +101,9 @@ module Gitlab
             :notes,
             :health_status,
             :progress,
-            :notifications
+            :notifications,
+            :current_user_todos,
+            :award_emoji
           ]
         }.freeze
 

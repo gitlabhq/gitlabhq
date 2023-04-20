@@ -55,6 +55,9 @@ Blueprint statuses you can use:
 
 -->
 
+<!-- Blueprints often contain forward-looking statements -->
+<!-- vale gitlab.FutureTense = NO -->
+
 # {+ Title of Blueprint +}
 
 <!--

@@ -77,7 +77,7 @@ module QA
       imported_group.import_details.sum([]) { |details| details[:failures] }
     end
 
-    let(:cleanup!) {}
+    let(:cleanup!) {} # rubocop:disable Lint/EmptyBlock
 
     def expect_group_import_finished_successfully
       imported_group # trigger import

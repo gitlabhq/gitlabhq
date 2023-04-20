@@ -74,6 +74,10 @@ export default {
     'maskableRegex',
   ],
   props: {
+    areEnvironmentsLoading: {
+      type: Boolean,
+      required: true,
+    },
     areScopedVariablesAvailable: {
       type: Boolean,
       required: false,
@@ -142,7 +146,11 @@ export default {
     isTipVisible() {
       return !this.isTipDismissed && AWS_TOKEN_CONSTANTS.includes(this.variable.key);
     },
-    joinedEnvironments() {
+    environmentsList() {
+      if (this.glFeatures?.ciLimitEnvironmentScope) {
+        return this.environments;
+      }
+
       return createJoinedEnvironments(this.variables, this.environments, this.newEnvironments);
     },
     maskedFeedback() {
@@ -368,10 +376,12 @@ export default {
             </template>
             <ci-environments-dropdown
               v-if="areScopedVariablesAvailable"
+              :are-environments-loading="areEnvironmentsLoading"
               :selected-environment-scope="variable.environmentScope"
-              :environments="joinedEnvironments"
+              :environments="environmentsList"
               @select-environment="setEnvironmentScope"
               @create-environment-scope="createEnvironmentScope"
+              @search-environment-scope="$emit('search-environment-scope', $event)"
             />
 
             <gl-form-input v-else :value="$options.i18n.defaultScope" class="gl-w-full" readonly />
@@ -450,7 +460,7 @@ export default {
         data-testid="aws-guidance-tip"
         @dismiss="dismissTip"
       >
-        <div class="gl-display-flex gl-flex-direction-row gl-md-flex-wrap-nowraps gl-gap-3">
+        <div class="gl-display-flex gl-flex-direction-row gl-flex-wrap gl-md-flex-nowrap gl-gap-3">
           <div>
             <p>
               <gl-sprintf :message="$options.i18n.awsTipMessage">
@@ -505,7 +515,6 @@ export default {
         ref="deleteCiVariable"
         variant="danger"
         category="secondary"
-        data-qa-selector="ci_variable_delete_button"
         @click="deleteVarAndClose"
         >{{ __('Delete variable') }}</gl-button
       >

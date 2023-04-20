@@ -20,7 +20,7 @@ For instructions on how to work with the Go Proxy, see the [Go Proxy package doc
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Go Proxy package documentation](../../user/packages/go_proxy/index.md)
-for details on which headers and token types are supported.
+for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## List
 

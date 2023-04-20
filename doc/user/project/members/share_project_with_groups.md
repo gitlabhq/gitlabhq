@@ -28,12 +28,14 @@ To invite a group to a project, you must be at least one of the following:
 
 In addition:
 
-- The group you're inviting must have a more restrictive
- [visibility level](../../public_access.md#project-and-group-visibility)
-  than the project. For example, you can invite:
-  - A private group to a public project.
-  - An internal group to a public project.
-  - A private group to an internal project.
+- The [visibility level](../../public_access.md#project-and-group-visibility) of the group you're inviting
+must be at least as restrictive as that of the project. For example, you can invite:
+  - A _private_ group to a _private_ project
+  - A _private_ group to an _internal_ project.
+  - A _private_ group to a _public_ project.
+  - An _internal_ group to an _internal_ project.
+  - An _internal_ group to a _public_ project.
+  - A _public_ group to a _public_ project.
 
 - The group or subgroup must be in the project's [namespace](../../namespace/index.md).
   For example, a project in the namespace `group/subgroup01/project`:

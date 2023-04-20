@@ -7,6 +7,8 @@ import store from '~/mr_notes/stores';
 export const initReviewBar = () => {
   const el = document.getElementById('js-review-bar');
 
+  if (!el) return;
+
   Vue.use(VueApollo);
 
   // eslint-disable-next-line no-new
@@ -18,7 +20,7 @@ export const initReviewBar = () => {
       ReviewBar: () => import('./components/review_bar.vue'),
     },
     provide: {
-      newSavedRepliesPath: el.dataset.savedRepliesNewPath,
+      newCommentTemplatePath: el.dataset.newCommentTemplatePath,
     },
     computed: {
       ...mapGetters('batchComments', ['draftsCount']),

@@ -9,6 +9,7 @@ import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
 import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import initConfirmDanger from '~/init_confirm_danger';
+import { initGroupSettingsReadme } from '~/groups/settings/init_group_settings_readme';
 
 initFilePickers();
 initConfirmDanger();
@@ -27,3 +28,5 @@ initProjectSelects();
 
 initSearchSettings();
 initCascadingSettingsLockPopovers();
+
+initGroupSettingsReadme();

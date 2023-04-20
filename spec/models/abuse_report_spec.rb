@@ -68,6 +68,17 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
         "https://gitlab.com/#{SecureRandom.alphanumeric(494)}"
       ]).for(:links_to_spam)
     }
+
+    context 'for screenshot' do
+      let(:txt_file) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
+      let(:img_file) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
+
+      it { is_expected.not_to allow_value(txt_file).for(:screenshot) }
+      it { is_expected.to allow_value(img_file).for(:screenshot) }
+
+      it { is_expected.to allow_value(nil).for(:screenshot) }
+      it { is_expected.to allow_value('').for(:screenshot) }
+    end
   end
 
   describe 'scopes' do
@@ -142,6 +153,30 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
       expect(AbuseReportMailer).not_to receive(:notify)
 
       report.notify
+    end
+  end
+
+  describe '#screenshot_path' do
+    let(:report) { create(:abuse_report, :with_screenshot) }
+
+    context 'with asset host configured' do
+      let(:asset_host) { 'https://gitlab-assets.example.com' }
+
+      before do
+        allow(ActionController::Base).to receive(:asset_host) { asset_host }
+      end
+
+      it 'returns a full URL with the asset host and system path' do
+        expect(report.screenshot_path).to eq("#{asset_host}#{report.screenshot.url}")
+      end
+    end
+
+    context 'when no asset path configured' do
+      let(:base_url) { Gitlab.config.gitlab.base_url }
+
+      it 'returns a full URL with the base url and system path' do
+        expect(report.screenshot_path).to eq("#{base_url}#{report.screenshot.url}")
+      end
     end
   end
 

@@ -5,7 +5,6 @@ description: Count of MAU using the `/reassign @user1` quick action
 product_section: dev
 product_stage: plan
 product_group: project_management
-product_category: issue_tracking
 value_type: number
 status: active
 time_frame: 28d

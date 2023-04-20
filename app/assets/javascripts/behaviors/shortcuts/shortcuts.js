@@ -204,7 +204,11 @@ export default class Shortcuts {
   }
 
   static focusSearch(e) {
-    $('#search').focus();
+    if (gon.use_new_navigation) {
+      document.querySelector('#super-sidebar-search')?.click();
+    } else {
+      document.querySelector('#search')?.focus();
+    }
 
     if (e.preventDefault) {
       e.preventDefault();

@@ -40,25 +40,24 @@ export const FILTERED_SEARCH_TOKEN_STATUS = {
 };
 
 export const DEFAULT_SORT = 'created_at_desc';
+export const SORT_UPDATED_AT = Object.freeze({
+  id: 20,
+  title: __('Updated date'),
+  sortDirection: {
+    descending: 'updated_at_desc',
+    ascending: 'updated_at_asc',
+  },
+});
+const SORT_CREATED_AT = Object.freeze({
+  id: 10,
+  title: __('Created date'),
+  sortDirection: {
+    descending: DEFAULT_SORT,
+    ascending: 'created_at_asc',
+  },
+});
 
-export const SORT_OPTIONS = [
-  {
-    id: 10,
-    title: __('Created date'),
-    sortDirection: {
-      descending: DEFAULT_SORT,
-      ascending: 'created_at_asc',
-    },
-  },
-  {
-    id: 20,
-    title: __('Updated date'),
-    sortDirection: {
-      descending: 'updated_at_desc',
-      ascending: 'updated_at_asc',
-    },
-  },
-];
+export const SORT_OPTIONS = [SORT_CREATED_AT, SORT_UPDATED_AT];
 
 export const isValidSortKey = (key) =>
   SORT_OPTIONS.some(
@@ -79,3 +78,12 @@ export const FILTERED_SEARCH_TOKENS = [
   FILTERED_SEARCH_TOKEN_REPORTER,
   FILTERED_SEARCH_TOKEN_STATUS,
 ];
+
+export const ACTIONS_I18N = {
+  blockUserConfirm: __('USER WILL BE BLOCKED! Are you sure?'),
+  blockUser: __('Block user'),
+  alreadyBlocked: __('Already blocked'),
+  removeUserAndReportConfirm: __('USER %{user} WILL BE REMOVED! Are you sure?'),
+  removeUserAndReport: __('Remove user & report'),
+  removeReport: __('Remove report'),
+};

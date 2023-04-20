@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMMIT_REF=${1:-$CI_COMMIT_REF_SLUG}
+COMMIT_REF=${1:-$CI_COMMIT_SHA}
 RSPEC_ARGS=$2
 
 if [ -z "${COMMIT_REF}" ]; then

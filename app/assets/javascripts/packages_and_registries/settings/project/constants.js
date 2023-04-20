@@ -1,6 +1,6 @@
 import { s__, __ } from '~/locale';
 
-export const CONTAINER_CLEANUP_POLICY_TITLE = s__(`ContainerRegistry|Clean up image tags`);
+export const CONTAINER_CLEANUP_POLICY_TITLE = s__('ContainerRegistry|Cleanup policies');
 export const CONTAINER_CLEANUP_POLICY_DESCRIPTION = s__(
   `ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}`,
 );

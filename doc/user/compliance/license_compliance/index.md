@@ -5,13 +5,13 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License compliance (deprecated) **(ULTIMATE)**
+# License Compliance (deprecated) **(ULTIMATE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5483) in GitLab 11.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9.
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9. Users should migrate over to use the [new method of license scanning](../license_scanning_of_cyclonedx_files/index.md) prior to GitLab 16.0.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561) in GitLab 15.9. You should instead migrate to use [License approval policies](../license_approval_policies.md) and the [new method of license scanning](../license_scanning_of_cyclonedx_files/index.md) prior to GitLab 16.0.
 
 If you're using [GitLab CI/CD](../../../ci/index.md), you can use License Compliance to search your
 project's dependencies for their licenses. You can then decide whether to allow or deny the use of
@@ -48,6 +48,38 @@ that you can later download and analyze.
 
 WARNING:
 License Compliance Scanning does not support run-time installation of compilers and interpreters.
+
+## Enable License Compliance
+
+To enable License Compliance in your project's pipeline, either:
+
+- Enable [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
+  (provided by [Auto DevOps](../../../topics/autodevops/index.md)).
+- Include the [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+
+License Compliance is not supported when GitLab is run with FIPS mode enabled.
+
+### Include the License Scanning template
+
+Prerequisites:
+
+- [GitLab Runner](../../../ci/runners/index.md) available, with the
+  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html). If you're using the
+  shared runners on GitLab.com, this is enabled by default.
+- License Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the
+  `.gitlab-ci.yml` file, the `test` stage is required.
+- [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) must be disabled.
+
+To [include](../../../ci/yaml/index.md#includetemplate) the
+[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml), add it to your `.gitlab-ci.yml` file:
+
+```yaml
+include:
+  - template: Security/License-Scanning.gitlab-ci.yml
+```
+
+The included template creates a `license_scanning` job in your CI/CD pipeline and scans your
+dependencies to find their licenses.
 
 ## License expressions
 
@@ -89,39 +121,7 @@ The reported licenses might be incomplete or inaccurate.
 | Rust       | [Cargo](https://crates.io/)                                                                                   |
 | PHP        | [Composer](https://getcomposer.org/)                                                                          |
 
-## Enable License Compliance
-
-To enable License Compliance in your project's pipeline, either:
-
-- Enable [Auto License Compliance](../../../topics/autodevops/stages.md#auto-license-compliance)
-  (provided by [Auto DevOps](../../../topics/autodevops/index.md)).
-- Include the [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
-License Compliance is not supported when GitLab is run with FIPS mode enabled.
-
-### Include the License Scanning template
-
-Prerequisites:
-
-- [GitLab Runner](../../../ci/runners/index.md) available, with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html). If you're using the
-  shared runners on GitLab.com, this is enabled by default.
-- License Scanning runs in the `test` stage, which is available by default. If you redefine the stages in the
-  `.gitlab-ci.yml` file, the `test` stage is required.
-- [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) must be disabled.
-
-To [include](../../../ci/yaml/index.md#includetemplate) the
-[`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml), add it to your `.gitlab-ci.yml` file:
-
-```yaml
-include:
-  - template: Security/License-Scanning.gitlab-ci.yml
-```
-
-The included template creates a `license_scanning` job in your CI/CD pipeline and scans your
-dependencies to find their licenses.
-
-### Available CI/CD variables
+## Available CI/CD variables
 
 License Compliance can be configured using CI/CD variables.
 
@@ -141,7 +141,7 @@ License Compliance can be configured using CI/CD variables.
 | `SECURE_ANALYZERS_PREFIX`   | no       | Set the Docker registry base address to download the analyzer from. |
 | `SETUP_CMD`                 | no       | Custom setup for the dependency installation (experimental). |
 
-### Installing custom dependencies
+## Installing custom dependencies
 
 > Introduced in GitLab 11.4.
 
@@ -169,7 +169,7 @@ variables:
 In this example, `my-custom-install-script.sh` is a shell script at the root
 directory of your project.
 
-### Working with Monorepos
+## Working with Monorepos
 
 Depending on your language, you may need to specify the path to the individual
 projects of a monorepo using the `LICENSE_FINDER_CLI_OPTS` variable. Passing in
@@ -184,7 +184,7 @@ variables:
   LICENSE_FINDER_CLI_OPTS: "--aggregate_paths=relative-path/to/sub-project/one relative-path/to/sub-project/two"
 ```
 
-### Overriding the template
+## Overriding the template
 
 WARNING:
 Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
@@ -203,7 +203,7 @@ license_scanning:
     CI_DEBUG_TRACE: "true"
 ```
 
-### Configuring Maven projects
+## Configuring Maven projects
 
 The License Compliance tool provides a `MAVEN_CLI_OPTS` CI/CD variable which can hold
 the command line arguments to pass to the `mvn install` command which is executed under the hood.
@@ -227,7 +227,7 @@ to explicitly add `-DskipTests` to your options.
 If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 `MAVEN_CLI_OPTS`.
 
-#### Using private Maven repositories
+### Using private Maven repositories
 
 If you have a private Maven repository which requires login credentials,
 you can use the `MAVEN_CLI_OPTS` CI/CD variable.
@@ -250,13 +250,13 @@ Alternatively, you can use a Java key store to verify the TLS connection. For in
 generate a key store file, see the
 [Maven Guide to Remote repository access through authenticated HTTPS](https://maven.apache.org/guides/mini/guide-repository-ssl.html).
 
-### Selecting the version of Java
+## Selecting the version of Java
 
 License Compliance uses Java 8 by default. You can specify a different Java version using `LM_JAVA_VERSION`.
 
 `LM_JAVA_VERSION` only accepts versions: 8, 11, 14, 15.
 
-### Selecting the version of Python
+## Selecting the version of Python
 
 > - [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/-/merge_requests/36) in GitLab 12.0.
 > - In [GitLab 12.2](https://gitlab.com/gitlab-org/gitlab/-/issues/12032), Python 3.5 became the default.
@@ -277,22 +277,22 @@ license_scanning:
 
 `LM_PYTHON_VERSION` or `ASDF_PYTHON_VERSION` can be used to specify the desired version of Python. When both variables are specified `LM_PYTHON_VERSION` takes precedence.
 
-### Custom root certificates for Python
+## Custom root certificates for Python
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 
-#### Using private Python repositories
+### Using private Python repositories
 
 If you have a private Python repository you can use the `PIP_INDEX_URL` [CI/CD variable](#available-cicd-variables)
 to specify its location.
 
-### Configuring npm projects
+## Configuring npm projects
 
 You can configure npm projects by using an [`.npmrc`](https://docs.npmjs.com/configuring-npm/npmrc.html/)
 file.
 
-#### Using private npm registries
+### Using private npm registries
 
 If you have a private npm registry you can use the
 [`registry`](https://docs.npmjs.com/using-npm/config/#registry)
@@ -304,7 +304,7 @@ For example:
 registry = https://npm.example.com
 ```
 
-#### Custom root certificates for npm
+### Custom root certificates for npm
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
@@ -318,12 +318,12 @@ For example:
 strict-ssl = false
 ```
 
-### Configuring Yarn projects
+## Configuring Yarn projects
 
 You can configure Yarn projects by using a [`.yarnrc.yml`](https://yarnpkg.com/configuration/yarnrc/)
 file.
 
-#### Using private Yarn registries
+### Using private Yarn registries
 
 If you have a private Yarn registry you can use the
 [`npmRegistryServer`](https://yarnpkg.com/configuration/yarnrc/#npmRegistryServer)
@@ -335,17 +335,17 @@ For example:
 npmRegistryServer: "https://npm.example.com"
 ```
 
-#### Custom root certificates for Yarn
+### Custom root certificates for Yarn
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).
 
-### Configuring Bower projects
+## Configuring Bower projects
 
 You can configure Bower projects by using a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
-#### Using private Bower registries
+### Using private Bower registries
 
 If you have a private Bower registry you can use the
 [`registry`](https://bower.io/docs/config/#bowerrc-specification)
@@ -359,16 +359,16 @@ For example:
 }
 ```
 
-#### Custom root certificates for Bower
+### Custom root certificates for Bower
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
 specifying a `ca` setting in a [`.bowerrc`](https://bower.io/docs/config/#bowerrc-specification)
 file.
 
-### Configuring Bundler projects
+## Configuring Bundler projects
 
-#### Using private Bundler registries
+### Using private Bundler registries
 
 If you have a private Bundler registry you can use the
 [`source`](https://bundler.io/man/gemfile.5.html#GLOBAL-SOURCES)
@@ -380,7 +380,7 @@ For example:
 source "https://gems.example.com"
 ```
 
-#### Custom root certificates for Bundler
+### Custom root certificates for Bundler
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
@@ -388,9 +388,9 @@ specifying a [`BUNDLE_SSL_CA_CERT`](https://bundler.io/v2.0/man/bundle-config.1.
 [variable](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 in the job definition.
 
-### Configuring Cargo projects
+## Configuring Cargo projects
 
-#### Using private Cargo registries
+### Using private Cargo registries
 
 If you have a private Cargo registry you can use the
 [`registries`](https://doc.rust-lang.org/cargo/reference/registries.html)
@@ -403,7 +403,7 @@ For example:
 my-registry = { index = "https://my-intranet:8080/git/index" }
 ```
 
-#### Custom root certificates for Cargo
+### Custom root certificates for Cargo
 
 To supply a custom root certificate to complete TLS verification, do one of the following:
 
@@ -412,9 +412,9 @@ To supply a custom root certificate to complete TLS verification, do one of the 
   [variable](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
   in the job definition.
 
-### Configuring Composer projects
+## Configuring Composer projects
 
-#### Using private Composer registries
+### Using private Composer registries
 
 If you have a private Composer registry you can use the
 [`repositories`](https://getcomposer.org/doc/05-repositories.md)
@@ -437,7 +437,7 @@ For example:
 }
 ```
 
-#### Custom root certificates for Composer
+### Custom root certificates for Composer
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables), or by
@@ -445,7 +445,7 @@ specifying a [`COMPOSER_CAFILE`](https://getcomposer.org/doc/03-cli.md#composer-
 [variable](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 in the job definition.
 
-### Configuring Conan projects
+## Configuring Conan projects
 
 You can configure [Conan](https://conan.io/) projects by adding a `.conan` directory to your
 project root. The project root serves as the [`CONAN_USER_HOME`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home).
@@ -474,7 +474,7 @@ NOTE:
 `license_scanning` image ships with [Mono](https://www.mono-project.com/) and [MSBuild](https://github.com/mono/msbuild#microsoftbuild-msbuild).
 Additional setup may be required to build packages for this project configuration.
 
-#### Using private Conan registries
+### Using private Conan registries
 
 By default, [Conan](https://conan.io/) uses the `conan-center` remote. For example:
 
@@ -508,7 +508,7 @@ example:
 If credentials are required to authenticate then you can configure a [protected CI/CD variable](../../../ci/variables/index.md#protect-a-cicd-variable)
 following the naming convention described in the [`CONAN_LOGIN_USERNAME` documentation](https://docs.conan.io/en/latest/reference/env_vars.html#conan-login-username-conan-login-username-remote-name).
 
-#### Custom root certificates for Conan
+### Custom root certificates for Conan
 
 You can provide custom certificates by adding a `.conan/cacert.pem` file to the project root and
 setting [`CA_CERT_PATH`](https://docs.conan.io/en/latest/reference/env_vars.html#conan-cacert-path)
@@ -518,7 +518,7 @@ If you specify the `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-
 variable's X.509 certificates are installed in the Docker image's default trust store and Conan is
 configured to use this as the default `CA_CERT_PATH`.
 
-### Configuring Go projects
+## Configuring Go projects
 
 To configure [Go modules](https://github.com/golang/go/wiki/Modules)
 based projects, specify [CI/CD variables](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
@@ -528,14 +528,14 @@ If a project has [vendored](https://pkg.go.dev/cmd/go#hdr-Vendor_Directories) it
 then the combination of the `vendor` directory and `mod.sum` file are used to detect the software
 licenses associated with the Go module dependencies.
 
-#### Using private Go registries
+### Using private Go registries
 
 You can use the [`GOPRIVATE`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 and [`GOPROXY`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
 environment variables to control where modules are sourced from. Alternatively, you can use
 [`go mod vendor`](https://go.dev/ref/mod#tmp_28) to vendor a project's modules.
 
-#### Custom root certificates for Go
+### Custom root certificates for Go
 
 You can specify the [`-insecure`](https://pkg.go.dev/cmd/go/internal/get) flag by exporting the
 [`GOFLAGS`](https://pkg.go.dev/cmd/go#hdr-Environment_variables)
@@ -550,7 +550,7 @@ license_scanning:
     GOFLAGS: '-insecure'
 ```
 
-#### Using private NuGet registries
+### Using private NuGet registries
 
 If you have a private NuGet registry you can add it as a source
 by adding it to the [`packageSources`](https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file#package-source-sections)
@@ -568,7 +568,7 @@ For example:
 </configuration>
 ```
 
-#### Custom root certificates for NuGet
+### Custom root certificates for NuGet
 
 You can supply a custom root certificate to complete TLS verification by using the
 `ADDITIONAL_CA_CERT_BUNDLE` [CI/CD variable](#available-cicd-variables).

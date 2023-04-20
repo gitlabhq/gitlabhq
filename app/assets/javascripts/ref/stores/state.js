@@ -15,5 +15,6 @@ export default () => ({
     commits: createRefTypeState(),
   },
   selectedRef: null,
+  params: null,
   requestCount: 0,
 });

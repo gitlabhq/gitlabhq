@@ -1,4 +1,4 @@
-import { GlDropdown, GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlLink, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -133,7 +133,7 @@ describe('SidebarDropdownWidget', () => {
           $apollo: {
             mutate: mutationPromise(),
             queries: {
-              currentAttribute: { loading: false },
+              issuable: { loading: false },
               attributesList: { loading: false },
               ...queries,
             },
@@ -145,26 +145,22 @@ describe('SidebarDropdownWidget', () => {
         stubs: {
           SidebarEditableItem,
           GlSearchBoxByType,
-          GlDropdown,
         },
       }),
     );
 
     wrapper.vm.$refs.dropdown.show = jest.fn();
-
-    // We need to mock out `showDropdown` which
-    // invokes `show` method of BDropdown used inside GlDropdown.
-    jest.spyOn(wrapper.vm, 'showDropdown').mockImplementation();
   };
 
   describe('when not editing', () => {
     beforeEach(() => {
       createComponent({
         data: {
-          currentAttribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+          issuable: {
+            attribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+          },
         },
         stubs: {
-          GlDropdown,
           SidebarEditableItem,
         },
       });
@@ -185,7 +181,7 @@ describe('SidebarDropdownWidget', () => {
     it('shows a loading spinner while fetching the current attribute', () => {
       createComponent({
         queries: {
-          currentAttribute: { loading: true },
+          issuable: { loading: true },
         },
       });
 
@@ -199,7 +195,7 @@ describe('SidebarDropdownWidget', () => {
           selectedTitle: 'Some milestone title',
         },
         queries: {
-          currentAttribute: { loading: false },
+          issuable: { loading: false },
         },
       });
 
@@ -224,10 +220,10 @@ describe('SidebarDropdownWidget', () => {
         createComponent({
           data: {
             hasCurrentAttribute: true,
-            currentAttribute: null,
+            issuable: {},
           },
           queries: {
-            currentAttribute: { loading: false },
+            issuable: { loading: false },
           },
         });
 
@@ -251,7 +247,9 @@ describe('SidebarDropdownWidget', () => {
                       { id: '123', title: '123' },
                       { id: 'id', title: 'title' },
                     ],
-                    currentAttribute: { id: '123' },
+                    issuable: {
+                      attribute: { id: '123' },
+                    },
                   },
                   mutationPromise: mutationResp,
                 });

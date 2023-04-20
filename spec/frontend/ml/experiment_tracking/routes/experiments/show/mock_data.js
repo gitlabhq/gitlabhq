@@ -7,6 +7,8 @@ export const MOCK_PAGE_INFO = {
   hasPreviousPage: true,
 };
 
+export const MOCK_EXPERIMENT = { name: 'experiment', path: '/path/to/experiment' };
+
 export const MOCK_CANDIDATES = [
   {
     rmse: 1,

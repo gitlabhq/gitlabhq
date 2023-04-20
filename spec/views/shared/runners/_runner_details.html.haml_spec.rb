@@ -6,11 +6,14 @@ RSpec.describe 'shared/runners/_runner_details.html.haml' do
   include PageLayoutHelper
 
   let(:runner) do
-    create(:ci_runner, name: 'test runner',
-                       version: '11.4.0',
-                       ip_address: '127.1.2.3',
-                       revision: 'abcd1234',
-                       architecture: 'amd64' )
+    create(
+      :ci_runner,
+      name: 'test runner',
+      version: '11.4.0',
+      ip_address: '127.1.2.3',
+      revision: 'abcd1234',
+      architecture: 'amd64'
+    )
   end
 
   before do

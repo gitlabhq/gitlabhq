@@ -147,6 +147,7 @@ exceptions:
   - NPM
   - NTP
   - OCI
+  - OIDC
   - OKD
   - OKR
   - ONLY

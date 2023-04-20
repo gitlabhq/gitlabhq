@@ -14,7 +14,7 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script hooks
                             environment coverage retry parallel interruptible timeout
-                            release id_tokens].freeze
+                            release id_tokens publish].freeze
 
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
@@ -45,6 +45,8 @@ module Gitlab
                 errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs") if missing_needs.any?
               end
             end
+
+            validates :publish, absence: { message: "can only be used within a `pages` job" }, unless: -> { pages_job? }
           end
 
           entry :before_script, Entry::Commands,
@@ -125,10 +127,14 @@ module Gitlab
             inherit: false,
             metadata: { composable_class: ::Gitlab::Ci::Config::Entry::IdToken }
 
+          entry :publish, Entry::Publish,
+            description: 'Path to be published with Pages',
+            inherit: false
+
           attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout,
-                     :release, :allow_failure
+                     :release, :allow_failure, :publish
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -169,12 +175,17 @@ module Gitlab
               allow_failure_criteria: allow_failure_criteria,
               needs: needs_defined? ? needs_value : nil,
               scheduling_type: needs_defined? ? :dag : :stage,
-              id_tokens: id_tokens_value
+              id_tokens: id_tokens_value,
+              publish: publish
             ).compact
           end
 
           def ignored?
             allow_failure_defined? ? static_allow_failure : manual_action?
+          end
+
+          def pages_job?
+            name == :pages
           end
 
           def self.allowed_keys

@@ -9,7 +9,7 @@ module Gitlab
 
         attr_reader :attributes
 
-        expose_attribute :author, :note, :review_type, :submitted_at, :merge_request_id, :review_id
+        expose_attribute :author, :note, :review_type, :submitted_at, :merge_request_id, :merge_request_iid, :review_id
 
         # Builds a PullRequestReview from a GitHub API response.
         #
@@ -19,6 +19,7 @@ module Gitlab
 
           new(
             merge_request_id: review[:merge_request_id],
+            merge_request_iid: review[:merge_request_iid],
             author: user,
             note: review[:body],
             review_type: review[:state],
@@ -49,8 +50,8 @@ module Gitlab
 
         def github_identifiers
           {
-            review_id: review_id,
-            merge_request_id: merge_request_id
+            merge_request_iid: merge_request_iid,
+            review_id: review_id
           }
         end
       end

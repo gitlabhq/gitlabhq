@@ -1,4 +1,4 @@
-- if Feature.enabled?(:webauthn) && Feature.enabled?(:webauthn_without_totp)
+- if Feature.enabled?(:webauthn_without_totp)
   #js-device-registration{ data: device_registration_data(current_password_required: current_password_required?, target_path: target_path, webauthn_error: @webauthn_error) }
 - else
   #js-register-token-2fa

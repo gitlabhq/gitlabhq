@@ -5,11 +5,13 @@ module Gitlab
     module SchemaValidation
       module Validators
         class MissingTriggers < BaseValidator
-          def execute
-            structure_sql.triggers.filter_map do |index|
-              next if database.trigger_exists?(index.name)
+          ERROR_MESSAGE = "The trigger %s is missing from the database"
 
-              build_inconsistency(self.class, index)
+          def execute
+            structure_sql.triggers.filter_map do |structure_sql_trigger|
+              next if database.trigger_exists?(structure_sql_trigger.name)
+
+              build_inconsistency(self.class, structure_sql_trigger, nil)
             end
           end
         end

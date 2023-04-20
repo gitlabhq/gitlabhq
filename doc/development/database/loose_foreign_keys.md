@@ -64,7 +64,7 @@ The tool ensures that all aspects of swapping a foreign key are covered. This in
 
 - Creating a migration to remove a foreign key.
 - Updating `db/structure.sql` with the new migration.
-- Updating `lib/gitlab/database/gitlab_loose_foreign_keys.yml` to add the new loose foreign key.
+- Updating `config/gitlab_loose_foreign_keys.yml` to add the new loose foreign key.
 - Creating or updating a model's specs to ensure that the loose foreign key is properly supported.
 
 The tool is located at `scripts/decomposition/generate-loose-foreign-key`:

@@ -2,16 +2,19 @@
 
 class ServiceDeskSetting < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
+  include IgnorableColumns
 
   CUSTOM_EMAIL_VERIFICATION_SUBADDRESS = '+verify'
 
+  ignore_columns %i[
+    custom_email_smtp_address
+    custom_email_smtp_port
+    custom_email_smtp_username
+    encrypted_custom_email_smtp_password
+    encrypted_custom_email_smtp_password_iv
+  ], remove_with: '16.1', remove_after: '2023-05-22'
+
   attribute :custom_email_enabled, default: false
-  attr_encrypted :custom_email_smtp_password,
-    mode: :per_attribute_iv,
-    algorithm: 'aes-256-gcm',
-    key: Settings.attr_encrypted_db_key_base_32,
-    encode: false,
-    encode_iv: false
 
   belongs_to :project
 
@@ -20,48 +23,32 @@ class ServiceDeskSetting < ApplicationRecord
   validate :valid_project_key
   validates :outgoing_name, length: { maximum: 255 }, allow_blank: true
   validates :project_key,
-            length: { maximum: 255 },
-            allow_blank: true,
-            format: { with: /\A[a-z0-9_]+\z/, message: -> (setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
+    length: { maximum: 255 },
+    allow_blank: true,
+    format: { with: /\A[a-z0-9_]+\z/, message: -> (setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
 
   validates :custom_email,
-            length: { maximum: 255 },
-            uniqueness: true,
-            allow_nil: true,
-            format: /\A[\w\-._]+@[\w\-.]+\.{1}[a-zA-Z]{2,}\z/
-  validates :custom_email_smtp_address, length: { maximum: 255 }
-  validates :custom_email_smtp_username, length: { maximum: 255 }
+    length: { maximum: 255 },
+    uniqueness: true,
+    allow_nil: true,
+    format: /\A[\w\-._]+@[\w\-.]+\.{1}[a-zA-Z]{2,}\z/
 
+  validates :custom_email_credential,
+    presence: true,
+    if: :needs_custom_email_credentials?
   validates :custom_email,
-            presence: true,
-            devise_email: true,
-            if: :needs_custom_email_smtp_credentials?
-  validates :custom_email_smtp_address,
-            presence: true,
-            hostname: { allow_numeric_hostname: true, require_valid_tld: true },
-            if: :needs_custom_email_smtp_credentials?
-  validates :custom_email_smtp_username,
-            presence: true,
-            if: :needs_custom_email_smtp_credentials?
-  validates :custom_email_smtp_port,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 },
-            if: :needs_custom_email_smtp_credentials?
+    presence: true,
+    devise_email: true,
+    if: :needs_custom_email_credentials?
 
   scope :with_project_key, ->(key) { where(project_key: key) }
 
-  def custom_email_verification
-    project&.service_desk_custom_email_verification
+  def custom_email_credential
+    project&.service_desk_custom_email_credential
   end
 
-  def custom_email_delivery_options
-    {
-      user_name: custom_email_smtp_username,
-      password: custom_email_smtp_password,
-      address: custom_email_smtp_address,
-      domain: Mail::Address.new(custom_email).domain,
-      port: custom_email_smtp_port || 587
-    }
+  def custom_email_verification
+    project&.service_desk_custom_email_verification
   end
 
   def custom_email_address_for_verification
@@ -116,7 +103,7 @@ class ServiceDeskSetting < ApplicationRecord
     end
   end
 
-  def needs_custom_email_smtp_credentials?
+  def needs_custom_email_credentials?
     custom_email_enabled? || custom_email_verification.present?
   end
 end

@@ -1,6 +1,5 @@
 - page_title _('Preferences')
 - add_page_specific_style 'page_bundles/profiles/preferences'
-- @content_class = "limit-container-width" unless fluid_layout
 - user_theme_id = Gitlab::Themes.for_user(@user).id
 - user_color_schema_id = Gitlab::ColorSchemes.for_user(@user).id
 - user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json
@@ -37,7 +36,7 @@
       %h4.gl-mt-0
         = s_('Preferences|Syntax highlighting theme')
       %p
-        = s_('Preferences|This setting allows you to customize the appearance of the syntax.')
+        = s_('Preferences|Customize the appearance of the syntax.')
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8.syntax-theme
@@ -69,7 +68,7 @@
       %h4.gl-mt-0
         = s_('Preferences|Behavior')
       %p
-        = s_('Preferences|This setting allows you to customize the behavior of the system layout and default views.')
+        = s_('Preferences|Customize the behavior of the system layout and default views.')
         = succeed '.' do
           = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
     .col-lg-8
@@ -79,7 +78,7 @@
         = f.select :layout, layout_choices, {}, class: 'gl-form-select custom-select'
         .form-text.text-muted
           = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
-      .js-listbox-input{ data: { label: s_('Preferences|Dashboard'), description: s_('Preferences|Choose what content you want to see by default on your dashboard.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard } }
+      .js-listbox-input{ data: { label: s_('Preferences|Homepage'), description: s_('Preferences|Choose what content you want to see by default on your homepage.'), name: 'user[dashboard]', items: dashboard_choices.to_json, value: current_user.dashboard } }
 
       = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 

@@ -18,6 +18,8 @@ export const extractHrefFromMarkdownLink = (match) => {
 };
 
 export default Link.extend({
+  inclusive: false,
+
   addOptions() {
     return {
       ...this.parent?.(),
@@ -62,6 +64,20 @@ export default Link.extend({
         default: false,
         renderHTML: () => '',
       },
+    };
+  },
+  addCommands() {
+    return {
+      ...this.parent?.(),
+      editLink: (attrs) => ({ chain }) => {
+        chain().setMeta('creatingLink', true).setLink(attrs).run();
+      },
+    };
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      'Mod-k': () => this.editor.commands.editLink(),
     };
   },
 });

@@ -16,7 +16,9 @@ const (
 
 // QueueRequests creates a new request queue
 // name specifies the name of queue, used to label Prometheus metrics
-//      Don't call QueueRequests twice with the same name argument!
+//
+//	Don't call QueueRequests twice with the same name argument!
+//
 // h specifies a http.Handler which will handle the queue requests
 // limit specifies number of requests run concurrently
 // queueLimit specifies maximum number of requests that can be queued

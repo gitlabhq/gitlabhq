@@ -1,22 +1,13 @@
 # frozen_string_literal: true
 
 require_relative '../../../../lib/gitlab_edition'
+require_relative '../helpers/file_handler'
 
 # Returns system specs files that are related to the JS files that were changed in the MR.
 module Tooling
   module Mappings
     class Base
-      # Input: A list of space-separated files
-      # Output: A list of space-separated specs files (JS, Ruby, ...)
-      def execute(changed_files)
-        raise "Not Implemented"
-      end
-
-      # Input: A list of space-separated files
-      # Output: array/hash of files
-      def filter_files(changed_files)
-        raise "Not Implemented"
-      end
+      include Helpers::FileHandler
 
       # Input: A folder
       # Output: An array of folders, each prefixed with a GitLab edition

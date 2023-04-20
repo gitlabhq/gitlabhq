@@ -33,6 +33,19 @@ RSpec.describe Ci::BuildReportResult do
         expect(build_report_result.errors.full_messages).to eq(["Data must be a valid json schema"])
       end
     end
+
+    context 'when data tests is invalid' do
+      it 'returns errors' do
+        build_report_result.data = {
+          'tests' => {
+            'invalid' => 'invalid'
+          }
+        }
+
+        expect(build_report_result).to be_invalid
+        expect(build_report_result.errors.full_messages).to eq(["Data must be a valid json schema"])
+      end
+    end
   end
 
   describe '#tests_name' do

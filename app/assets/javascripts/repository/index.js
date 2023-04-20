@@ -32,7 +32,16 @@ Vue.use(PerformancePlugin, {
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
   const { dataset } = el;
-  const { projectPath, projectShortPath, ref, escapedRef, fullName } = dataset;
+  const {
+    projectPath,
+    projectShortPath,
+    ref,
+    escapedRef,
+    fullName,
+    resourceId,
+    userId,
+    explainCodeAvailable,
+  } = dataset;
   const router = createRouter(projectPath, escapedRef);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -70,11 +79,15 @@ export default function setupVueRepositoryList() {
       return null;
     }
     const {
+      selectedBranch,
       sourceName,
       sourcePath,
       sourceDefaultBranch,
+      createMrPath,
+      canSyncBranch,
       aheadComparePath,
       behindComparePath,
+      canUserCreateMrInFork,
     } = forkEl.dataset;
     return new Vue({
       el: forkEl,
@@ -82,13 +95,16 @@ export default function setupVueRepositoryList() {
       render(h) {
         return h(ForkInfo, {
           props: {
+            canSyncBranch: parseBoolean(canSyncBranch),
             projectPath,
-            selectedBranch: ref,
+            selectedBranch,
             sourceName,
             sourcePath,
             sourceDefaultBranch,
             aheadComparePath,
             behindComparePath,
+            createMrPath,
+            canUserCreateMrInFork,
           },
         });
       },
@@ -138,6 +154,7 @@ export default function setupVueRepositoryList() {
             projectId,
             value: refType ? joinPaths('refs', refType, ref) : ref,
             useSymbolicRefNames: true,
+            queryParams: { sort: 'updated_desc' },
           },
           on: {
             input(selectedRef) {
@@ -151,8 +168,8 @@ export default function setupVueRepositoryList() {
 
   initLastCommitApp();
   initBlobControlsApp();
-  initForkInfo();
   initRefSwitcher();
+  initForkInfo();
 
   router.afterEach(({ params: { path } }) => {
     setTitle(path, ref, fullName);
@@ -273,6 +290,7 @@ export default function setupVueRepositoryList() {
     store: createStore(),
     router,
     apolloProvider,
+    provide: { resourceId, userId, explainCodeAvailable: parseBoolean(explainCodeAvailable) },
     render(h) {
       return h(App);
     },

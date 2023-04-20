@@ -22,6 +22,13 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ##
+# Install 1Password CLI
+#
+RUN wget -P /tmp/ https://downloads.1password.com/linux/debian/$(dpkg --print-architecture)/stable/1password-cli-$(dpkg --print-architecture)-latest.deb
+RUN dpkg -i /tmp/1password-cli-$(dpkg --print-architecture)-latest.deb
+RUN op --version
+
+##
 # Install root certificate
 #
 RUN mkdir -p /usr/share/ca-certificates/gitlab

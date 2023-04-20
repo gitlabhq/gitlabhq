@@ -56,14 +56,14 @@ feature_category: :importers do
           project_id: project.id,
           importer: described_class.name,
           message: ['Title is invalid'],
-          github_identifier: 1
+          github_identifiers: { title: 'bug,bug', object_type: :label }
         )
 
       rows, errors = importer.build_labels
 
       expect(rows).to be_empty
       expect(errors.length).to eq(1)
-      expect(errors[0].full_messages).to match_array(['Title is invalid'])
+      expect(errors[0][:validation_errors].full_messages).to match_array(['Title is invalid'])
     end
   end
 

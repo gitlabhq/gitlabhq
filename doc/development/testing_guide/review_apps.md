@@ -47,8 +47,8 @@ Maintainers can elect to use the [process for merging during broken `master`](ht
 
 ## Performance Metrics
 
-On every [pipeline](https://gitlab.com/gitlab-org/gitlab/pipelines/125315730) in the `qa` stage, the
-`review-performance` job is automatically started: this job does basic
+On every Review App child pipeline in the `qa` stage, the
+`browser_performance` job is automatically started: this job does basic
 browser performance testing using a
 [Sitespeed.io Container](../../ci/testing/browser_performance_testing.md).
 
@@ -227,7 +227,7 @@ Review apps are automatically stopped 2 days after the last deployment thanks to
 the [Environment auto-stop](../../ci/environments/index.md#stop-an-environment-after-a-certain-time-period) feature.
 
 If you need your review app to stay up for a longer time, you can
-[pin its environment](../../ci/environments/index.md#override-a-deployments-scheduled-stop-time) or retry the
+[pin its environment](../../ci/environments/index.md#override-a-environments-scheduled-stop-date-and-time) or retry the
 `review-deploy` job to update the "latest deployed at" time.
 
 The `review-cleanup` job that automatically runs in scheduled

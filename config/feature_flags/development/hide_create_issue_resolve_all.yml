@@ -1,0 +1,8 @@
+---
+name: hide_create_issue_resolve_all
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116322
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404498
+milestone: '15.11'
+type: development
+group: group::ux paper cuts
+default_enabled: false

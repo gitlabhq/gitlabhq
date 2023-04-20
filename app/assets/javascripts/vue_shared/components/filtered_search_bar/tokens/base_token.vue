@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 
-import { DEBOUNCE_DELAY, FILTERS_NONE_ANY, OPERATOR_NOT } from '../constants';
+import { DEBOUNCE_DELAY, FILTERS_NONE_ANY, OPERATOR_NOT, OPERATOR_OR } from '../constants';
 import {
   getRecentlyUsedSuggestions,
   setTokenValueToRecentlyUsed,
@@ -100,7 +100,7 @@ export default {
       return this.getActiveTokenValue(this.suggestions, this.value.data);
     },
     availableDefaultSuggestions() {
-      if (this.value.operator === OPERATOR_NOT) {
+      if ([OPERATOR_NOT, OPERATOR_OR].includes(this.value.operator)) {
         return this.defaultSuggestions.filter(
           (suggestion) => !FILTERS_NONE_ANY.includes(suggestion.value),
         );

@@ -81,7 +81,7 @@ describe('AdminRunnerShowApp', () => {
       await createComponent({ mountFn: mountExtended });
     });
 
-    it('expect GraphQL ID to be requested', async () => {
+    it('expect GraphQL ID to be requested', () => {
       expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunnerGraphqlId });
     });
 
@@ -89,7 +89,7 @@ describe('AdminRunnerShowApp', () => {
       expect(findRunnerHeader().text()).toContain(`Runner #${mockRunnerId}`);
     });
 
-    it('displays the runner edit and pause buttons', async () => {
+    it('displays the runner edit and pause buttons', () => {
       expect(findRunnerEditButton().attributes('href')).toBe(mockRunner.editAdminUrl);
       expect(findRunnerPauseButton().exists()).toBe(true);
       expect(findRunnerDeleteButton().exists()).toBe(true);
@@ -99,7 +99,7 @@ describe('AdminRunnerShowApp', () => {
       expect(findRunnerDetailsTabs().props('runner')).toEqual(mockRunner);
     });
 
-    it('shows basic runner details', async () => {
+    it('shows basic runner details', () => {
       const expected = `Description My Runner
                         Last contact Never contacted
                         Version 1.0.0

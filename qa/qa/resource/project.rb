@@ -123,12 +123,13 @@ module QA
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         response = super
+        return response unless template_name || import
 
         # If a project is being imported, wait until it completes before we let the test continue.
         # Otherwise we see Git repository errors
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/356101
-        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 5) do
-          %w[none finished].include?(reload!.api_resource[:import_status])
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 5, retry_on_exception: true) do
+          reload!.api_resource[:import_status] == "finished"
         end
 
         response

@@ -8,10 +8,10 @@
     = render 'peek/bar'
     = render "layouts/header/empty"
     .layout-page
-      .content-wrapper.content-wrapper-margin.gl-pt-6{ class: 'gl-md-pt-11!' }
+      .content-wrapper.gl-pt-6{ class: 'gl-md-pt-11!' }
         .alert-wrapper.gl-force-block-formatting-context
           = render "layouts/broadcast"
-        .limit-container-width{ class: container_class }
+        %div{ class: container_class }
           %main#content-body.content
             = render "layouts/flash" unless @hide_flash
             = yield

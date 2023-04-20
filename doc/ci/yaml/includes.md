@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD include examples **(FREE)**
+# Use CI/CD configuration from other files **(FREE)**
 
 You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
 
@@ -405,7 +405,8 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 > - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4. Feature flag `ci_include_rules` removed.
-> - [Support for `exists` keyword added](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
+> - Support for `exists` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
+> - Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
 
@@ -414,11 +415,6 @@ these keywords:
 
 - [`rules:if`](index.md#rulesif).
 - [`rules:exists`](index.md#rulesexists).
-
-You cannot use [`needs:`](index.md#needs) to create a job dependency that points to
-a job added with `include:local:rules`. When the configuration is validated,
-GitLab returns `undefined need: <job-name>`. [Issue 345377](https://gitlab.com/gitlab-org/gitlab/-/issues/345377)
-proposes improving this behavior.
 
 ### `include` with `rules:if`
 
@@ -506,6 +502,88 @@ When the pipeline runs, GitLab:
   # This matches all `.yml` files only in subfolders of `configs`.
   include: 'configs/**/*.yml'
   ```
+
+## Define inputs for configuration added with `include` (Beta)
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+
+FLAG:
+`spec` and `with` are experimental [Open Beta features](../../policy/alpha-beta-support.md#beta)
+and subject to change without notice.
+
+### Define input parameters with `spec:inputs`
+
+Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
+to a pipeline with `include`. Use [`include:with`](#set-input-parameter-values-with-includewith)
+to define the values to use when the pipeline runs.
+
+The specs must be declared at the top of the configuration file, in a header section.
+Separate the header from the rest of the configuration with `---`.
+
+Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
+The inputs are evaluated and interpolated once, when the configuration is fetched
+during pipeline creation, but before the configuration is merged with the contents of the `.gitlab-ci.yml`.
+
+```yaml
+spec:
+  inputs:
+    environment:
+    job-stage:
+---
+
+scan-website:
+  stage: $[[ inputs.job-stage ]]
+  script: ./scan-website $[[ inputs.environment ]]
+```
+
+When using `spec:inputs`:
+
+- Defined inputs are mandatory by default.
+- Inputs can be made optional by specifying a `default`. Use `default: null` to have no default value.
+- A string containing an interpolation block must not exceed 1 MB.
+- The string inside an interpolation block must not exceed 1 KB.
+
+For example, a `custom_configuration.yml`:
+
+```yaml
+spec:
+  inputs:
+    website:
+    user:
+      default: 'test-user'
+    flags:
+      default: null
+---
+
+# The pipeline configuration would follow...
+```
+
+In this example:
+
+- `website` is mandatory and must be defined.
+- `user` is optional. If not defined, the value is `test-user`.
+- `flags` is optional. If not defined, it has no value.
+
+### Set input parameter values with `include:with`
+
+Use `include:with` to set the values for the parameters when the included configuration
+is added to the pipeline.
+
+For example, to include a `custom_configuration.yml` that has the same specs
+as the [example above](#define-input-parameters-with-specinputs):
+
+```yaml
+include:
+  - local: 'custom_configuration.yml'
+    with:
+      website: "My website"
+```
+
+In this example:
+
+- `website` has a value of `My website` for the included configuration.
+- `user` has a value of `test-user`, because that is the default when not specified.
+- `flags` has no value, because it is optional and has no default when not specified.
 
 ## Troubleshooting
 

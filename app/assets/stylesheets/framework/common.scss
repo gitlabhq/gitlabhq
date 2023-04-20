@@ -1,3 +1,32 @@
+// stylelint-disable length-zero-no-unit
+:root {
+  --performance-bar-height: 0px;
+  --system-header-height: 0px;
+  --top-bar-height: 0px;
+  --system-footer-height: 0px;
+  --mr-review-bar-height: 0px;
+}
+
+.with-performance-bar {
+  --performance-bar-height: #{$performance-bar-height};
+}
+
+.with-system-header {
+  --system-header-height: #{$system-header-height};
+}
+
+.with-top-bar {
+  --top-bar-height: #{$top-bar-height};
+}
+
+.with-system-footer {
+  --system-footer-height: #{$system-footer-height};
+}
+
+.review-bar-visible {
+  --mr-review-bar-height: #{$mr-review-bar-height};
+}
+
 /** COLORS **/
 .cgray { color: $gl-text-color; }
 .clgray { color: $gray-200; }
@@ -251,12 +280,6 @@ li.note {
     box-shadow: none;
     background-color: $border-gray-light;
   }
-}
-
-img.emoji {
-  height: 16px;
-  vertical-align: top;
-  width: 20px;
 }
 
 .chart {

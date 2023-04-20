@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Editing file blob', :js, feature_category: :projects do
-  include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
+  include Features::SourceEditorSpecHelpers
   include TreeHelper
-  include BlobSpecHelpers
+  include Features::BlobSpecHelpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master') }

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :package_registry do
@@ -19,14 +20,14 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
         expect { subject.execute }
           .to not_change(Packages::Package, :count)
           .and not_change(Packages::PackageFile, :count)
-          .and change(Packages::Debian::Publication, :count).by(1)
+          .and change { Packages::Debian::Publication.count }.by(1)
           .and not_change(package.package_files, :count)
           .and change { package.reload.name }.to('sample')
           .and change { package.reload.version }.to('1.2.3~alpha2')
           .and change { package.reload.status }.from('processing').to('default')
           .and change { package.reload.debian_publication }.from(nil)
-          .and change(debian_file_metadatum, :file_type).from('unknown').to(expected_file_type)
-          .and change(debian_file_metadatum, :component).from(nil).to(component_name)
+          .and change { debian_file_metadatum.file_type }.from('unknown').to(expected_file_type)
+          .and change { debian_file_metadatum.component }.from(nil).to(component_name)
       end
     end
 
@@ -67,18 +68,39 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
             expect(::Packages::Debian::GenerateDistributionWorker)
               .to receive(:perform_async).with(:project, distribution.id)
             expect { subject.execute }
-              .to change(Packages::Package, :count).from(2).to(1)
-              .and change(Packages::PackageFile, :count).from(16).to(9)
+              .to change { Packages::Package.count }.from(2).to(1)
+              .and change { Packages::PackageFile.count }.from(16).to(9)
               .and not_change(Packages::Debian::Publication, :count)
-              .and change(package.package_files, :count).from(8).to(0)
-              .and change(package_file, :package).from(package).to(matching_package)
+              .and change { package.package_files.count }.from(8).to(0)
+              .and change { package_file.package }.from(package).to(matching_package)
               .and not_change(matching_package, :name)
               .and not_change(matching_package, :version)
-              .and change(debian_file_metadatum, :file_type).from('unknown').to(expected_file_type)
-              .and change(debian_file_metadatum, :component).from(nil).to(component_name)
+              .and change { debian_file_metadatum.file_type }.from('unknown').to(expected_file_type)
+              .and change { debian_file_metadatum.component }.from(nil).to(component_name)
 
             expect { package.reload }
               .to raise_error(ActiveRecord::RecordNotFound)
+          end
+        end
+
+        context 'when there is a matching published package in another distribution' do
+          let!(:matching_package) do
+            create(
+              :debian_package,
+              project: distribution.project,
+              name: 'sample',
+              version: '1.2.3~alpha2'
+            )
+          end
+
+          it 'raise ArgumentError', :aggregate_failures do
+            expect(::Packages::Debian::GenerateDistributionWorker).not_to receive(:perform_async)
+            expect { subject.execute }
+              .to not_change(Packages::Package, :count)
+              .and not_change(Packages::PackageFile, :count)
+              .and not_change(package.package_files, :count)
+              .and raise_error(ArgumentError, "Debian package sample 1.2.3~alpha2 exists " \
+                                              "in distribution #{matching_package.debian_distribution.codename}")
           end
         end
 

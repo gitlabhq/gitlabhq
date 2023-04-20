@@ -1,7 +1,6 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -28,7 +27,7 @@ jest.mock('~/lib/utils/autosave');
 
 const workItemId = workItemQueryResponse.data.workItem.id;
 
-describe('WorkItemCommentForm', () => {
+describe('Work item add note', () => {
   let wrapper;
 
   Vue.use(VueApollo);
@@ -38,6 +37,7 @@ describe('WorkItemCommentForm', () => {
   let workItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
+  const findTextarea = () => wrapper.findByTestId('note-reply-textarea');
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
@@ -50,7 +50,6 @@ describe('WorkItemCommentForm', () => {
     workItemType = 'Task',
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
-
     if (signedIn) {
       window.gon.current_user_id = '1';
       window.gon.current_user_avatar_url = 'avatar.png';
@@ -76,7 +75,7 @@ describe('WorkItemCommentForm', () => {
     });
 
     const { id } = workItemQueryResponse.data.workItem;
-    wrapper = shallowMount(WorkItemAddNote, {
+    wrapper = shallowMountExtended(WorkItemAddNote, {
       apolloProvider,
       propsData: {
         workItemId: id,
@@ -84,6 +83,8 @@ describe('WorkItemCommentForm', () => {
         queryVariables,
         fetchByIid,
         workItemType,
+        markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        autocompleteDataSources: {},
       },
       stubs: {
         WorkItemCommentLocked,
@@ -93,7 +94,7 @@ describe('WorkItemCommentForm', () => {
     await waitForPromises();
 
     if (isEditing) {
-      wrapper.findComponent(GlButton).vm.$emit('click');
+      findTextarea().trigger('click');
     }
   };
 
@@ -208,6 +209,38 @@ describe('WorkItemCommentForm', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([[error]]);
+    });
+
+    it('ignores errors when mutation returns additional information as errors for quick actions', async () => {
+      await createComponent({
+        isEditing: true,
+        mutationHandler: jest.fn().mockResolvedValue({
+          data: {
+            createNote: {
+              note: {
+                id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                discussion: {
+                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+                  notes: {
+                    nodes: [],
+                    __typename: 'NoteConnection',
+                  },
+                  __typename: 'Discussion',
+                },
+                __typename: 'Note',
+              },
+              __typename: 'CreateNotePayload',
+              errors: ['Commands only Removed assignee @foobar.', 'Command names ["unassign"]'],
+            },
+          },
+        }),
+      });
+
+      findCommentForm().vm.$emit('submitForm', 'updated desc');
+
+      await waitForPromises();
+
+      expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
     });
   });
 

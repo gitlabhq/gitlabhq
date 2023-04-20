@@ -38,7 +38,7 @@ module Gitlab
       def lock_writes
         if table_locked_for_writes?
           logger&.info "Skipping lock_writes, because #{table_name} is already locked for writes"
-          return
+          return result_hash(action: 'skipped')
         end
 
         logger&.info "Database: '#{database_name}', Table: '#{table_name}': Lock Writes".color(:yellow)
@@ -50,6 +50,8 @@ module Gitlab
         SQL
 
         execute_sql_statement(sql_statement)
+
+        result_hash(action: 'locked')
       end
 
       def unlock_writes
@@ -59,6 +61,8 @@ module Gitlab
         SQL
 
         execute_sql_statement(sql_statement)
+
+        result_hash(action: 'unlocked')
       end
 
       private
@@ -112,6 +116,10 @@ module Gitlab
 
       def write_trigger_name
         "gitlab_schema_write_trigger_for_#{table_name_without_schema}"
+      end
+
+      def result_hash(action:)
+        { action: action, database: database_name, table: table_name, dry_run: dry_run }
       end
     end
   end

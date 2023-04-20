@@ -4,7 +4,8 @@ module HasUserType
   extend ActiveSupport::Concern
 
   USER_TYPES = {
-    human: nil,
+    human_deprecated: nil,
+    human: 0,
     support_bot: 1,
     alert_bot: 2,
     visual_review_bot: 3,
@@ -17,7 +18,8 @@ module HasUserType
     security_policy_bot: 10, # Currently not in use. See https://gitlab.com/gitlab-org/gitlab/-/issues/384174
     admin_bot: 11,
     suggested_reviewers_bot: 12,
-    service_account: 13
+    service_account: 13,
+    llm_bot: 14
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[
@@ -32,15 +34,20 @@ module HasUserType
     admin_bot
     suggested_reviewers_bot
     service_account
+    llm_bot
   ].freeze
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations
   # `service_user` is an internal, `gitlab-com`-specific user type for integrations like suggested reviewers
-  NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account].freeze
+  NON_INTERNAL_USER_TYPES = %w[human human_deprecated project_bot service_user service_account].freeze
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 
   included do
-    scope :humans, -> { where(user_type: :human) }
+    enum user_type: USER_TYPES
+
+    scope :humans, -> { where(user_type: :human).or(where(user_type: :human_deprecated)) }
+    # Override default scope to include temporary human type. See https://gitlab.com/gitlab-org/gitlab/-/issues/386474
+    scope :human, -> { humans }
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
     scope :without_bots, -> { humans.or(where(user_type: USER_TYPES.keys - BOT_USER_TYPES)) }
     scope :non_internal, -> { humans.or(where(user_type: NON_INTERNAL_USER_TYPES)) }
@@ -48,10 +55,8 @@ module HasUserType
     scope :without_project_bot, -> { humans.or(where(user_type: USER_TYPES.keys - ['project_bot'])) }
     scope :human_or_service_user, -> { humans.or(where(user_type: :service_user)) }
 
-    enum user_type: USER_TYPES
-
     def human?
-      super || user_type.nil?
+      super || human_deprecated? || user_type.nil?
     end
   end
 

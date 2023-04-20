@@ -278,7 +278,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         end
 
         before do
-          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
           visit_project_pipelines
         end
 
@@ -289,12 +288,17 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         it 'has link to the manual action' do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
+          wait_for_requests
+
           expect(page).to have_button('manual build')
         end
 
         context 'when manual action was played' do
           before do
             find('[data-testid="pipelines-manual-actions-dropdown"]').click
+
+            wait_for_requests
+
             click_button('manual build')
           end
 
@@ -309,11 +313,11 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           create(:ci_build, :scheduled,
             pipeline: pipeline,
             name: 'delayed job 1',
-            stage: 'test')
+            stage: 'test',
+            scheduled_at: 2.hours.since + 2.minutes)
         end
 
         before do
-          stub_feature_flags(lazy_load_pipeline_dropdown_actions: false)
           visit_project_pipelines
         end
 
@@ -324,9 +328,12 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
         it "has link to the delayed job's action" do
           find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
-          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
+          wait_for_requests
+
           expect(page).to have_button('delayed job 1')
-          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+
+          time_diff = [0, delayed_job.scheduled_at - Time.zone.now].max
+          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M"))
         end
 
         context 'when delayed job is expired already' do
@@ -339,6 +346,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it "shows 00:00:00 as the remaining time" do
             find('[data-testid="pipelines-manual-actions-dropdown"]').click
+
+            wait_for_requests
 
             expect(page).to have_content("00:00:00")
           end

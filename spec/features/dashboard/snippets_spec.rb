@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Dashboard snippets', feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  it_behaves_like 'a dashboard page with sidebar', :dashboard_snippets_path, :snippets
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_snippets_path, :snippets
 
   it 'links to the "Explore snippets" page' do
     sign_in(user)
@@ -44,7 +44,8 @@ RSpec.describe 'Dashboard snippets', feature_category: :source_code_management d
       element = page.find('.row.empty-state')
 
       expect(element).to have_content("Code snippets")
-      expect(element.find('.svg-content img.js-lazy-loaded')['src']).to have_content('illustrations/snippets_empty')
+      expect(element.find('.svg-content img.js-lazy-loaded')['src'])
+        .to have_content('illustrations/empty-state/empty-snippets-md')
     end
 
     it 'shows new snippet button in main content area' do

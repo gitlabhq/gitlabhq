@@ -21,13 +21,13 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-    let_it_be(:runner_machine) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
     let_it_be(:user) { create(:user) }
 
     describe 'PUT /api/v4/jobs/:id' do
       let_it_be_with_reload(:job) do
         create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user,
-          runner_id: runner.id, runner_machine: runner_machine)
+          runner_id: runner.id, runner_manager: runner_manager)
       end
 
       before do
@@ -40,18 +40,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       it 'updates runner info' do
         expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
-                                               .and change { runner_machine.reload.contacted_at }
-      end
-
-      context 'when runner_machine_heartbeat is disabled' do
-        before do
-          stub_feature_flags(runner_machine_heartbeat: false)
-        end
-
-        it 'does not load runner machine' do
-          queries = ActiveRecord::QueryRecorder.new { update_job(state: 'success') }
-          expect(queries.log).not_to include(/ci_runner_machines/)
-        end
+                                               .and change { runner_manager.reload.contacted_at }
       end
 
       context 'when status is given' do

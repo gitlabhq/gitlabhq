@@ -151,7 +151,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     end
   end
 
-  context 'when inviting an unregistered user' do
+  context 'when inviting an unregistered user', :js do
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
@@ -208,7 +208,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
       context 'email confirmation enabled' do
         context 'when user is not valid in sign up form' do
-          let(:new_user) { build_stubbed(:user, first_name: '', last_name: '') }
+          let(:new_user) { build_stubbed(:user, password: '11111111') }
 
           it 'fails sign up and redirects back to sign up', :aggregate_failures do
             expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }

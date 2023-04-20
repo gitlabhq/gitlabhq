@@ -79,7 +79,7 @@ Administrators can set a default branch protection level in the
 
 Configure protected branches for all projects in a group, or just for a project.
 
-### For all projects in a group
+### For all projects in a group **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 behind a feature flag, disabled by default.
 
@@ -100,8 +100,8 @@ To protect a branch for all the projects in a group:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. In the **Branch** text box, type the branch name or a wildcard.
-1. From the **Allowed to merge** list, select a role, group, or user that can merge into this branch.
-1. From the **Allowed to push** list, select a role, group, or user that can push to this branch.
+1. From the **Allowed to merge** list, select a role that can merge into this branch.
+1. From the **Allowed to push** list, select a role that can push to this branch.
 1. Select **Protect**.
 
 The protected branch is added to the list of protected branches.
@@ -270,7 +270,7 @@ Members who can push to this branch can now also force push.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 
-For a protected branch, you can require at least one approval by a [Code Owner](code_owners.md).
+For a protected branch, you can require at least one approval by a [Code Owner](codeowners/index.md).
 
 To protect a new branch and enable Code Owner's approval:
 

@@ -256,7 +256,7 @@ describe('Snippet header component', () => {
   });
 
   describe('submit snippet as spam', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
     });
 

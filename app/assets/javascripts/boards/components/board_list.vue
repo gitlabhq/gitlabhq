@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { mapActions, mapState } from 'vuex';
+import { STATUS_CLOSED } from '~/issues/constants';
 import { sprintf, __ } from '~/locale';
 import { defaultSortableOptions } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
@@ -158,10 +159,10 @@ export default {
       return this.isApolloBoard ? this.isLoadingMore : this.listsFlags[this.list.id]?.isLoadingMore;
     },
     epicCreateFormVisible() {
-      return this.isEpicBoard && this.list.listType !== 'closed' && this.showEpicForm;
+      return this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showEpicForm;
     },
     issueCreateFormVisible() {
-      return !this.isEpicBoard && this.list.listType !== 'closed' && this.showIssueForm;
+      return !this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showIssueForm;
     },
     listRef() {
       // When list is draggable, the reference to the list needs to be accessed differently
@@ -418,7 +419,6 @@ export default {
             v-if="loadingMore"
             size="sm"
             :label="$options.i18n.loadingMoreboardItems"
-            data-testid="count-loading-icon"
           />
           <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
           <span v-else>{{ paginatedIssueText }}</span>

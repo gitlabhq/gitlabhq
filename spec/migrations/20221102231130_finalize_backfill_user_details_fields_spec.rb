@@ -26,6 +26,10 @@ RSpec.describe FinalizeBackfillUserDetailsFields, :migration, feature_category: 
     end
 
     context 'when migration is missing' do
+      before do
+        batched_migrations.where(job_class_name: migration).delete_all
+      end
+
       it 'warns migration not found' do
         expect(Gitlab::AppLogger)
           .to receive(:warn).with(/Could not find batched background migration for the given configuration:/)

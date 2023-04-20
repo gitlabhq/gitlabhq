@@ -37,7 +37,7 @@ describe('AdminRegisterRunnerApp', () => {
   };
 
   describe('When showing runner details', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       createComponent();
     });
 
@@ -64,7 +64,7 @@ describe('AdminRegisterRunnerApp', () => {
   });
 
   describe('When another platform has been selected', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       setWindowLocation(`?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`);
 
       createComponent();

@@ -1,9 +1,8 @@
 ---
 stage: Create
-group: Editor
+group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/shortcuts.html'
 ---
 
 # GitLab keyboard shortcuts **(FREE)**
@@ -242,7 +241,7 @@ This shortcut is available when viewing a [wiki page](project/wiki/index.md):
 ### Content editor
 
 These shortcuts are available when editing a file with the
-[Content Editor](https://about.gitlab.com/direction/create/editor/content_editor/):
+[Content Editor](https://about.gitlab.com/direction/plan/knowledge/content_editor/):
 
 | macOS shortcut | Windows shortcut | Description |
 |----------------|------------------|-------------|

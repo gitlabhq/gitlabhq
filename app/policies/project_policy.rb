@@ -222,8 +222,8 @@ class ProjectPolicy < BasePolicy
     condition(:"#{f}_disabled", score: 32) { !access_allowed_to?(f.to_sym) }
   end
 
-  condition(:project_runner_registration_allowed) do
-    Gitlab::CurrentSettings.valid_runner_registrars.include?('project')
+  condition(:project_runner_registration_allowed, scope: :subject) do
+    Gitlab::CurrentSettings.valid_runner_registrars.include?('project') && @subject.runner_registration_enabled
   end
 
   condition :registry_enabled do
@@ -241,6 +241,8 @@ class ProjectPolicy < BasePolicy
   condition(:create_runner_workflow_enabled) do
     Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
   end
+
+  condition(:namespace_catalog_available) { namespace_catalog_available? }
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
@@ -261,7 +263,6 @@ class ProjectPolicy < BasePolicy
     enable :reporter_access
     enable :developer_access
     enable :maintainer_access
-    enable :add_catalog_resource
 
     enable :change_namespace
     enable :change_visibility_level
@@ -279,9 +280,6 @@ class ProjectPolicy < BasePolicy
     enable :set_show_default_award_emojis
     enable :set_show_diff_preview_in_email
     enable :set_warn_about_potentially_unwanted_characters
-
-    enable :register_project_runners
-    enable :create_project_runners
     enable :manage_owners
   end
 
@@ -354,7 +352,6 @@ class ProjectPolicy < BasePolicy
     enable :metrics_dashboard
     enable :read_confidential_issues
     enable :read_package
-    enable :read_product_analytics
     enable :read_ci_cd_analytics
     enable :read_external_emails
     enable :read_grafana
@@ -464,7 +461,8 @@ class ProjectPolicy < BasePolicy
     enable :destroy_environment
     enable :create_deployment
     enable :update_deployment
-    enable :read_cluster
+    enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
+    enable :read_cluster_agent
     enable :use_k8s_proxies
     enable :create_release
     enable :update_release
@@ -537,7 +535,9 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :register_project_runners
-    enable :create_project_runners
+    enable :create_runner
+    enable :admin_project_runners
+    enable :read_project_runners
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_project_aws
@@ -844,7 +844,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~admin & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
-    prevent :create_project_runners
+    prevent :create_runner
   end
 
   rule { can?(:admin_project_member) }.policy do
@@ -870,11 +870,19 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_project_runners
+    prevent :create_runner
   end
 
   # Should be matched with GroupPolicy#read_internal_note
   rule { admin | can?(:reporter_access) }.enable :read_internal_note
+
+  rule { can?(:developer_access) & namespace_catalog_available }.policy do
+    enable :read_namespace_catalog
+  end
+
+  rule { can?(:owner_access) & namespace_catalog_available }.policy do
+    enable :add_catalog_resource
+  end
 
   private
 
@@ -968,6 +976,10 @@ class ProjectPolicy < BasePolicy
 
   def project
     @subject
+  end
+
+  def namespace_catalog_available?
+    false
   end
 end
 

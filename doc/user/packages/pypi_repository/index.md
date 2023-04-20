@@ -34,6 +34,8 @@ To do this, you can use:
   `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#authenticate-with-a-ci-job-token).
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 ### Authenticate with a personal access token
 
 To authenticate with a personal access token, edit the `~/.pypirc` file and add:

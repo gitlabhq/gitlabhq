@@ -34,10 +34,6 @@ default framework cannot be deleted.
 
 A compliance framework that is set to default has a **default** label.
 
-NOTE:
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/394630), only group owners can apply the default compliance framework when creating
-new projects or importing projects.
-
 ### Set and remove as default
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
@@ -108,8 +104,11 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
-See [example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
-labeled project pipeline configuration.
+For more information, see:
+
+- [Example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
+  labeled project pipeline configuration.
+- The [Create a compliance pipeline](../../tutorials/create_compliance_pipeline.md) tutorial.
 
 ### Effect on labeled projects
 
@@ -348,3 +347,53 @@ mutation {
   }
 }
 ```
+
+### Compliance jobs are overwritten by target repository
+
+If you use the `extends` statement in a compliance pipeline configuration, compliance jobs are overwritten by the target repository job. For example,
+you could have the following `.compliance-gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  extends:
+    - .compliance_template
+  stage: build
+
+.compliance_template:
+  script:
+    - echo "take compliance action"
+```
+
+You could also have the following `.gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  stage: test
+  script:
+    - echo "overwriting compliance action"
+```
+
+This configuration results in the target repository pipeline overwriting the compliance pipeline, and you get the following message:
+`overwriting compliance action`.
+
+To avoid overwriting a compliance job, don't use the `extends` keyword in compliance pipeline configuration. For example,
+you could have the following `.compliance-gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  stage: build
+  script:
+    - echo "take compliance action"
+```
+
+You could also have the following `.gitlab-ci.yml` configuration:
+
+```yaml
+"compliance job":
+  stage: test
+  script:
+    - echo "overwriting compliance action"
+```
+
+This configuration doesn't overwrite the compliance pipeline and you get the following message:
+`take compliance action`.

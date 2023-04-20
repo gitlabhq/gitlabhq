@@ -1,9 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
 
-const userDataMock = () => ({
+const userDataMock = ({ approved = false } = {}) => ({
   id: 1,
   name: 'Root',
   state: 'active',
@@ -14,14 +15,21 @@ const userDataMock = () => ({
     canMerge: true,
     canUpdate: true,
     reviewed: true,
-    approved: false,
+    approved,
   },
 });
 
 describe('UncollapsedReviewerList component', () => {
   let wrapper;
 
-  const reviewerApprovalIcons = () => wrapper.findAll('[data-testid="re-approved"]');
+  const findAllRerequestButtons = () => wrapper.findAll('[data-testid="re-request-button"]');
+  const findAllReviewerApprovalIcons = () => wrapper.findAll('[data-testid="approved"]');
+  const findAllReviewedNotApprovedIcons = () =>
+    wrapper.findAll('[data-testid="reviewed-not-approved"]');
+  const findAllReviewerAvatarLinks = () => wrapper.findAllComponents(ReviewerAvatarLink);
+
+  const hasApprovalIconAnimation = () =>
+    findAllReviewerApprovalIcons().at(0).classes('merge-request-approved-icon');
 
   function createComponent(props = {}, glFeatures = {}) {
     const propsData = {
@@ -48,27 +56,17 @@ describe('UncollapsedReviewerList component', () => {
     });
 
     it('only has one user', () => {
-      expect(wrapper.findAllComponents(ReviewerAvatarLink).length).toBe(1);
+      expect(findAllReviewerAvatarLinks()).toHaveLength(1);
     });
 
     it('shows one user with avatar, and author name', () => {
-      expect(wrapper.text()).toContain(user.name);
+      expect(wrapper.text()).toBe(user.name);
     });
 
     it('renders re-request loading icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 1: 'loading' } });
+      await findAllRerequestButtons().at(0).vm.$emit('click');
 
-      expect(wrapper.find('[data-testid="re-request-button"]').props('loading')).toBe(true);
-    });
-
-    it('renders re-request success icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 1: 'success' } });
-
-      expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
+      expect(findAllRerequestButtons().at(0).props('loading')).toBe(true);
     });
   });
 
@@ -84,51 +82,126 @@ describe('UncollapsedReviewerList component', () => {
         approved: true,
       },
     };
+    const user3 = {
+      ...user,
+      id: 3,
+      name: 'lizabeth-wilderman',
+      username: 'lizabeth-wilderman',
+      mergeRequestInteraction: {
+        ...user.mergeRequestInteraction,
+        approved: false,
+        reviewed: true,
+      },
+    };
 
     beforeEach(() => {
       createComponent({
-        users: [user, user2],
+        users: [user, user2, user3],
       });
     });
 
-    it('has both users', () => {
-      expect(wrapper.findAllComponents(ReviewerAvatarLink).length).toBe(2);
+    it('has three users', () => {
+      expect(findAllReviewerAvatarLinks()).toHaveLength(3);
     });
 
-    it('shows both users with avatar, and author name', () => {
+    it('shows all users with avatar, and author name', () => {
       expect(wrapper.text()).toContain(user.name);
       expect(wrapper.text()).toContain(user2.name);
+      expect(wrapper.text()).toContain(user3.name);
     });
 
     it('renders approval icon', () => {
-      expect(reviewerApprovalIcons().length).toBe(1);
+      expect(findAllReviewerApprovalIcons()).toHaveLength(1);
     });
 
     it('shows that hello-world approved', () => {
-      const icon = reviewerApprovalIcons().at(0);
+      const icon = findAllReviewerApprovalIcons().at(0);
 
-      expect(icon.attributes('title')).toEqual('Approved by @hello-world');
+      expect(icon.attributes('title')).toBe('Approved by @hello-world');
+    });
+
+    it('shows that lizabeth-wilderman reviewed but did not approve', () => {
+      const icon = findAllReviewedNotApprovedIcons().at(1);
+
+      expect(icon.attributes('title')).toBe('Reviewed by @lizabeth-wilderman but not yet approved');
     });
 
     it('renders re-request loading icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 2: 'loading' } });
+      await findAllRerequestButtons().at(1).vm.$emit('click');
 
-      expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(2);
-      expect(wrapper.findAll('[data-testid="re-request-button"]').at(1).props('loading')).toBe(
-        true,
+      const allRerequestButtons = findAllRerequestButtons();
+
+      expect(allRerequestButtons).toHaveLength(3);
+      expect(allRerequestButtons.at(1).props('loading')).toBe(true);
+    });
+  });
+
+  describe('when updating reviewers list', () => {
+    it('does not animate icon on initial page load', () => {
+      const user = userDataMock({ approved: true });
+      createComponent({ users: [user] });
+
+      expect(hasApprovalIconAnimation()).toBe(false);
+    });
+
+    it('does not animate icon when adding a new reviewer', async () => {
+      const user = userDataMock({ approved: true });
+      const anotherUser = { ...user, id: 2 };
+      createComponent({ users: [user] });
+
+      await wrapper.setProps({ users: [user, anotherUser] });
+
+      expect(
+        findAllReviewerApprovalIcons().wrappers.every((w) =>
+          w.classes('merge-request-approved-icon'),
+        ),
+      ).toBe(false);
+    });
+
+    it('removes animation CSS class after 1500ms', async () => {
+      const previousUserState = userDataMock({ approved: false });
+      const currentUserState = userDataMock({ approved: true });
+
+      createComponent({
+        users: [previousUserState],
+      });
+
+      await wrapper.setProps({
+        users: [currentUserState],
+      });
+
+      expect(hasApprovalIconAnimation()).toBe(true);
+
+      jest.advanceTimersByTime(1500);
+      await nextTick();
+
+      expect(findAllReviewerApprovalIcons().at(0).classes('merge-request-approved-icon')).toBe(
+        false,
       );
     });
 
-    it('renders re-request success icon', async () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      await wrapper.setData({ loadingStates: { 2: 'success' } });
+    describe('when reviewer was present in the list', () => {
+      it.each`
+        previousApprovalState | currentApprovalState | shouldAnimate
+        ${false}              | ${true}              | ${true}
+        ${true}               | ${true}              | ${false}
+      `(
+        'when approval state changes from $previousApprovalState to $currentApprovalState',
+        async ({ previousApprovalState, currentApprovalState, shouldAnimate }) => {
+          const previousUserState = userDataMock({ approved: previousApprovalState });
+          const currentUserState = userDataMock({ approved: currentApprovalState });
 
-      expect(wrapper.findAll('[data-testid="re-request-button"]').length).toBe(1);
-      expect(wrapper.findAll('[data-testid="re-request-success"]').length).toBe(1);
-      expect(wrapper.find('[data-testid="re-request-success"]').exists()).toBe(true);
+          createComponent({
+            users: [previousUserState],
+          });
+
+          await wrapper.setProps({
+            users: [currentUserState],
+          });
+
+          expect(hasApprovalIconAnimation()).toBe(shouldAnimate);
+        },
+      );
     });
   });
 });

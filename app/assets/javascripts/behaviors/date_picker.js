@@ -9,7 +9,7 @@ export default function initDatePickers() {
 
     const calendar = new Pikaday({
       field: $datePicker.get(0),
-      theme: 'gitlab-theme animate-picker',
+      theme: 'gl-datepicker-theme animate-picker',
       format: 'yyyy-mm-dd',
       container: $datePicker.parent().get(0),
       parse: (dateString) => parsePikadayDate(dateString),

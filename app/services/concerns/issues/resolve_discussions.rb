@@ -16,7 +16,11 @@ module Issues
     # rubocop: disable CodeReuse/ActiveRecord
     def merge_request_to_resolve_discussions_of
       strong_memoize(:merge_request_to_resolve_discussions_of) do
-        MergeRequestsFinder.new(current_user, project_id: project.id)
+        # sometimes this will be a Group, when work item is created at group level.
+        # Not sure if we will need to handle resolving an MR with an issue at group level?
+        next unless container.is_a?(Project)
+
+        MergeRequestsFinder.new(current_user, project_id: container.id)
           .find_by(iid: merge_request_to_resolve_discussions_of_iid)
       end
     end

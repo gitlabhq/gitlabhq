@@ -11,6 +11,7 @@ module BulkImports
     data_consistency :always
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
+    worker_resource_boundary :memory
 
     def perform(user_id, portable_id, portable_class, relation)
       user = User.find(user_id)

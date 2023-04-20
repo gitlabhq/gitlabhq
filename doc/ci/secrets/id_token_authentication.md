@@ -35,60 +35,64 @@ services with which a token can authenticate. This reduces the severity of havin
 
 ### Token payload
 
-The following fields are included in each ID token:
+The following standard claims are included in each ID token:
+
+| Field                                                              | Description |
+|--------------------------------------------------------------------|-------------|
+| [`iss`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1) | Issuer of the token, which is the domain of the GitLab instance ("issuer" claim). |
+| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` ("subject" claim). |
+| [`aud`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3) | Intended audience for the token ("audience" claim). Specified in the [ID tokens](../yaml/index.md#id_tokens) configuration. The domain of the GitLab instance by default. |
+| [`exp`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4) | The expiration time ("expiration time" claim). |
+| [`nbf`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.5) | The time after which the token becomes valid ("not before" claim). |
+| [`iat`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6) | The time the JWT was issued ("issued at" claim). |
+| [`jti`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7) | Unique identifier for the token ("JWT ID" claim). |
+
+The token also includes custom claims provided by GitLab:
 
 | Field                   | When                         | Description |
 |-------------------------|------------------------------|-------------|
-| [`aud`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3) | Always | Intended audience for the token ("audience" claim). Configured in GitLab the CI/CD configuration. The domain of the GitLab instance by default. |
-| [`exp`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4) | Always | The expiration time ("expiration time" claim). |
-| [`iat`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6) | Always | The time the JWT was issued ("issued at" claim). |
-| [`iss`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1) | Always | Issuer of the token, which is the domain of the GitLab instance ("issuer" claim). |
-| [`jti`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7) | Always | Unique identifier for the token ("JWT ID" claim). |
-| [`nbf`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.5) | Always | The time after which the token becomes valid ("not before" claim). |
-| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | Always | `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` ("subject" claim). |
-| `deployment_tier`       | Job specifies an environment | [Deployment tier](../environments/index.md#deployment-tier-of-environments) of the environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2. |
-| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9. |
-| `environment`           | Job specifies an environment | Environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9. |
-| `job_id`                | Always                       | ID of the job. |
-| `namespace_id`          | Always                       | Use to scope to group or user level namespace by ID. |
-| `namespace_path`        | Always                       | Use to scope to group or user level namespace by path. |
-| `pipeline_id`           | Always                       | ID of the pipeline. |
-| `pipeline_source`       | Always                       | [Pipeline source](../jobs/job_control.md#common-if-clauses-for-rules). |
-| `project_id`            | Always                       | Use to scope to project by ID. |
-| `project_path`          | Always                       | Use to scope to project by path. |
-| `ref_protected`         | Always                       | `true` if the Git ref is protected, `false` otherwise. |
-| `ref_type`              | Always                       | Git ref type, either `branch` or `tag`. |
-| `ref`                   | Always                       | Git ref for the job. |
-| `user_email`            | Always                       | Email of the user executing the job. |
+| `namespace_id`          | Always                       | Use this to scope to group or user level namespace by ID. |
+| `namespace_path`        | Always                       | Use this to scope to group or user level namespace by path. |
+| `project_id`            | Always                       | Use this to scope to project by ID. |
+| `project_path`          | Always                       | Use this to scope to project by path. |
 | `user_id`               | Always                       | ID of the user executing the job. |
 | `user_login`            | Always                       | Username of the user executing the job. |
-
-Example ID token payload:
+| `user_email`            | Always                       | Email of the user executing the job. |
+| `pipeline_id`           | Always                       | ID of the pipeline. |
+| `pipeline_source`       | Always                       | [Pipeline source](../jobs/job_control.md#common-if-clauses-for-rules). |
+| `job_id`                | Always                       | ID of the job. |
+| `ref`                   | Always                       | Git ref for the job. |
+| `ref_type`              | Always                       | Git ref type, either `branch` or `tag`. |
+| `ref_protected`         | Always                       | `true` if the Git ref is protected, `false` otherwise. |
+| `environment`           | Job specifies an environment | Environment this job deploys to ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9). |
+| `environment_protected` | Job specifies an environment | `true` if deployed environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9). |
+| `deployment_tier`       | Job specifies an environment | [Deployment tier](../environments/index.md#deployment-tier-of-environments) of the environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2. |
 
 ```json
 {
-  "jti": "c82eeb0c-5c6f-4a33-abf5-4c474b92b558",
-  "aud": "hashicorp.example.com",
-  "iss": "gitlab.example.com",
-  "iat": 1585710286,
-  "nbf": 1585798372,
-  "exp": 1585713886,
-  "sub": "job_1212",
-  "namespace_id": "1",
-  "namespace_path": "mygroup",
-  "project_id": "22",
-  "project_path": "mygroup/myproject",
-  "user_id": "42",
-  "user_login": "myuser",
-  "user_email": "myuser@example.com",
-  "pipeline_id": "1212",
-  "pipeline_source": "web",
-  "job_id": "1212",
-  "ref": "auto-deploy-2020-04-01",
+  "namespace_id": "72",
+  "namespace_path": "my-group",
+  "project_id": "20",
+  "project_path": "my-group/my-project",
+  "user_id": "1",
+  "user_login": "sample-user",
+  "user_email": "sample-user@example.com",
+  "pipeline_id": "574",
+  "pipeline_source": "push",
+  "job_id": "302",
+  "ref": "feature-branch-1",
   "ref_type": "branch",
-  "ref_protected": "true",
-  "environment": "production",
-  "environment_protected": "true"
+  "ref_protected": "false",
+  "environment": "test-environment2",
+  "environment_protected": "false",
+  "deployment_tier": "testing",
+  "jti": "235b3a54-b797-45c7-ae9a-f72d7bc6ef5b",
+  "iss": "https://gitlab.example.com",
+  "iat": 1681395193,
+  "nbf": 1681395188,
+  "exp": 1681398793,
+  "sub": "project_path:my-group/my-project:ref_type:branch:ref:feature-branch-1",
+  "aud": "https://vault.example.com"
 }
 ```
 

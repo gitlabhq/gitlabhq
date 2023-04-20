@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
+  extend ::Gitlab::Utils::Override
   include EachBatch
   include AfterCommitQueue
   include Sortable
@@ -359,6 +360,10 @@ class Member < ApplicationRecord
     def valid_email?(email)
       Devise.email_regexp.match?(email)
     end
+
+    def pluck_user_ids
+      pluck(:user_id)
+    end
   end
 
   def real_source_type
@@ -572,7 +577,7 @@ class Member < ApplicationRecord
   end
 
   def after_decline_invite
-    # override in subclass
+    notification_service.decline_invite(self)
   end
 
   def after_accept_request

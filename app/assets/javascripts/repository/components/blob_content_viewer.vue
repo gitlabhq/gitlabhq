@@ -34,12 +34,14 @@ export default {
     ForkSuggestion,
     WebIdeLink,
     CodeIntelligence,
+    AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
   mixins: [getRefMixin, glFeatureFlagMixin()],
   inject: {
     originalBranch: {
       default: '',
     },
+    explainCodeAvailable: { default: false },
   },
   apollo: {
     projectInfo: {
@@ -142,6 +144,9 @@ export default {
     };
   },
   computed: {
+    shouldRenderGenie() {
+      return this.explainCodeAvailable;
+    },
     isLoggedIn() {
       return isLoggedIn();
     },
@@ -316,9 +321,9 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-relative">
     <gl-loading-icon v-if="isLoading" size="sm" />
-    <div v-if="blobInfo && !isLoading" class="file-holder">
+    <div v-if="blobInfo && !isLoading" id="fileHolder" class="file-holder">
       <blob-header
         :blob="blobInfo"
         :hide-viewer-switcher="!hasRichViewer || isBinaryFileType || isUsingLfs"
@@ -393,5 +398,11 @@ export default {
         :wrap-text-nodes="glFeatures.highlightJs"
       />
     </div>
+    <ai-genie
+      v-if="shouldRenderGenie"
+      container-id="fileHolder"
+      :file-path="path"
+      class="gl-ml-7"
+    />
   </div>
 </template>

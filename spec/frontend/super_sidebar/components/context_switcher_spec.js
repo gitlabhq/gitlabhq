@@ -1,10 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSearchBoxByType } from '@gitlab/ui';
+import { GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
+import NavItem from '~/super_sidebar/components/nav_item.vue';
 import ProjectsList from '~/super_sidebar/components/projects_list.vue';
 import GroupsList from '~/super_sidebar/components/groups_list.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -22,7 +23,11 @@ jest.mock('~/super_sidebar/utils', () => ({
     .formatContextSwitcherItems,
   trackContextAccess: jest.fn(),
 }));
+const focusInputMock = jest.fn();
 
+const persistentLinks = [
+  { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
+];
 const username = 'root';
 const projectsPath = 'projectsPath';
 const groupsPath = 'groupsPath';
@@ -33,9 +38,12 @@ describe('ContextSwitcher component', () => {
   let wrapper;
   let mockApollo;
 
+  const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findGroupsList = () => wrapper.findComponent(GroupsList);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const triggerSearchQuery = async () => {
     findSearchBox().vm.$emit('input', 'foo');
@@ -60,6 +68,7 @@ describe('ContextSwitcher component', () => {
     wrapper = shallowMountExtended(ContextSwitcher, {
       apolloProvider: mockApollo,
       propsData: {
+        persistentLinks,
         username,
         projectsPath,
         groupsPath,
@@ -68,6 +77,7 @@ describe('ContextSwitcher component', () => {
       stubs: {
         GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
           props: ['placeholder'],
+          methods: { focusInput: focusInputMock },
         }),
         ProjectsList: stubComponent(ProjectsList, {
           props: ['username', 'viewAllLink', 'isSearch', 'searchResults'],
@@ -84,9 +94,20 @@ describe('ContextSwitcher component', () => {
       createWrapper();
     });
 
+    it('renders the persistent links', () => {
+      const navItems = findNavItems();
+      const firstNavItem = navItems.at(0);
+
+      expect(navItems.length).toBe(persistentLinks.length);
+      expect(firstNavItem.props('item')).toBe(persistentLinks[0]);
+      expect(firstNavItem.props('linkClasses')).toEqual({
+        [persistentLinks[0].link_classes]: persistentLinks[0].link_classes,
+      });
+    });
+
     it('passes the placeholder to the search box', () => {
       expect(findSearchBox().props('placeholder')).toBe(
-        s__('Navigation|Search for projects or groups'),
+        s__('Navigation|Search your projects or groups'),
       );
     });
 
@@ -108,8 +129,21 @@ describe('ContextSwitcher component', () => {
       });
     });
 
+    it('focuses the search input when focusInput is called', () => {
+      wrapper.vm.focusInput();
+
+      expect(focusInputMock).toHaveBeenCalledTimes(1);
+    });
+
     it('does not trigger the search query on mount', () => {
       expect(searchUserProjectsAndGroupsHandlerSuccess).not.toHaveBeenCalled();
+    });
+
+    it('shows a loading spinner when search query is typed in', async () => {
+      findSearchBox().vm.$emit('input', 'foo');
+      await nextTick();
+
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 
@@ -138,8 +172,16 @@ describe('ContextSwitcher component', () => {
       return triggerSearchQuery();
     });
 
+    it('hides persistent links', () => {
+      expect(findNavItems().length).toBe(0);
+    });
+
     it('triggers the search query on search', () => {
       expect(searchUserProjectsAndGroupsHandlerSuccess).toHaveBeenCalled();
+    });
+
+    it('hides the loading spinner', () => {
+      expect(findLoadingIcon().exists()).toBe(false);
     });
 
     it('passes the projects to the frequent projects list', () => {
@@ -192,7 +234,7 @@ describe('ContextSwitcher component', () => {
       jest.spyOn(Sentry, 'captureException');
     });
 
-    it('captures exception if response is formatted incorrectly', async () => {
+    it('captures exception and shows an alert if response is formatted incorrectly', async () => {
       createWrapper({
         requestHandlers: {
           searchUserProjectsAndGroupsQueryHandler: jest.fn().mockResolvedValue({
@@ -203,9 +245,10 @@ describe('ContextSwitcher component', () => {
       await triggerSearchQuery();
 
       expect(Sentry.captureException).toHaveBeenCalled();
+      expect(findAlert().exists()).toBe(true);
     });
 
-    it('captures exception if query fails', async () => {
+    it('captures exception and shows an alert if query fails', async () => {
       createWrapper({
         requestHandlers: {
           searchUserProjectsAndGroupsQueryHandler: jest.fn().mockRejectedValue(),
@@ -214,6 +257,7 @@ describe('ContextSwitcher component', () => {
       await triggerSearchQuery();
 
       expect(Sentry.captureException).toHaveBeenCalled();
+      expect(findAlert().exists()).toBe(true);
     });
   });
 });

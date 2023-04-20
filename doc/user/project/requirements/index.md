@@ -24,6 +24,12 @@ If an industry standard *requires* that your application has a certain feature o
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
+NOTE:
+Requirements and [test cases](../../../ci/test_cases/index.md) are being
+[migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
+[Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
+For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab 12.10 Introduces Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
 

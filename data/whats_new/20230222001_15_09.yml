@@ -7,7 +7,7 @@
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/permissions.html#custom-roles
   image_url: https://img.youtube.com/vi/46cp_-Rtxps/hqdefault.jpg
-  published_at: 2023-02-02  # YYYY-MM-DD
+  published_at: 2023-02-22  # YYYY-MM-DD
   release: 15.9
 - name: Manage license approval policies
   description: |  # Do not modify this line, instead modify the lines below.
@@ -26,7 +26,7 @@
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html
   image_url: https://img.youtube.com/vi/34qBQ9t8qO8/hqdefault.jpg
-  published_at: 2023-02-02  # YYYY-MM-DD
+  published_at: 2023-02-22  # YYYY-MM-DD
   release: 15.9
 - name: New License Compliance scanner
   description: |  # Do not modify this line, instead modify the lines below.
@@ -41,7 +41,7 @@
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/
   image_url: https://about.gitlab.com/images/15_9/new_license_scanner.png
-  published_at: 2023-02-02  # YYYY-MM-DD
+  published_at: 2023-02-22  # YYYY-MM-DD
   release: 15.9
 - name: Notifications now available in the GitLab for Slack app
   description: |  # Do not modify this line, instead modify the lines below.
@@ -56,7 +56,7 @@
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html#slack-notifications
   image_url: https://about.gitlab.com/images/15_9/slack_notifications_jan_31-optimized.png
-  published_at: 2023-02-02  # YYYY-MM-DD
+  published_at: 2023-02-22  # YYYY-MM-DD
   release: 15.9
 - name: Code Suggestions available in closed beta
   description: |  # Do not modify this line, instead modify the lines below.
@@ -71,5 +71,5 @@
   available_in: [Ultimate]
   documentation_link: https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta
   image_url: https://about.gitlab.com/images/15_9/DemoFastApi.gif
-  published_at: 2023-02-02  # YYYY-MM-DD
+  published_at: 2023-02-22  # YYYY-MM-DD
   release: 15.9

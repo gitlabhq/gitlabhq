@@ -60,7 +60,7 @@ module Gitlab
 
         def prepare_attributes
           attributes.dup.tap do |atts|
-            atts.delete('group') unless epic? || iteration?
+            atts.delete('group') unless group_level_object?
 
             if label?
               atts['type'] = 'ProjectLabel' # Always create project labels
@@ -142,10 +142,6 @@ module Gitlab
           klass == MergeRequestDiffCommit
         end
 
-        def iteration?
-          klass == Iteration
-        end
-
         # If an existing group milestone used the IID
         # claim the IID back and set the group milestone to use one available
         # This is necessary to fix situations like the following:
@@ -164,7 +160,11 @@ module Gitlab
         end
 
         def group_relation_without_group?
-          (epic? || iteration?) && group.nil?
+          group_level_object? && group.nil?
+        end
+
+        def group_level_object?
+          epic?
         end
       end
     end

@@ -269,13 +269,15 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
       let(:resource_group) { create(:ci_resource_group, project: project) }
 
       before do
+        resource_group.assign_resource_to(create(:ci_build))
+
         visit project_job_path(project, job)
         wait_for_requests
       end
 
       it 'shows correct UI components' do
         expect(page).to have_content("This job is waiting for resource: #{resource_group.key}")
-        expect(page).to have_link("Cancel this job")
+        expect(page).to have_link("View job currently using resource")
       end
     end
 

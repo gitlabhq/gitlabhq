@@ -50,6 +50,7 @@ export default {
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: __('Compare submodule commit revisions'),
+    fileModeTooltip: __('File permissions'),
   },
   props: {
     discussionPath: {
@@ -201,6 +202,9 @@ export default {
     externalUrlLabel() {
       return sprintf(__('View on %{url}'), { url: this.diffFile.formatted_external_url });
     },
+    labelToggleFile() {
+      return this.expanded ? __('Hide file contents') : __('Show file contents');
+    },
   },
   watch: {
     'idState.moreActionsShown': {
@@ -287,12 +291,14 @@ export default {
     @click.self="handleToggleFile"
   >
     <div class="file-header-content">
-      <gl-icon
+      <gl-button
         v-if="collapsible"
-        ref="collapseIcon"
-        :name="collapseIcon"
-        :size="16"
-        class="diff-toggle-caret gl-mr-2"
+        ref="collapseButton"
+        class="gl-mr-2"
+        category="tertiary"
+        size="small"
+        :icon="collapseIcon"
+        :aria-label="labelToggleFile"
         @click.stop="handleToggleFile"
       />
       <a
@@ -342,7 +348,13 @@ export default {
         data-track-property="diff_copy_file"
       />
 
-      <small v-if="isModeChanged" ref="fileMode" class="mr-1">
+      <small
+        v-if="isModeChanged"
+        ref="fileMode"
+        v-gl-tooltip.hover
+        class="mr-1"
+        :title="$options.i18n.fileModeTooltip"
+      >
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
@@ -364,7 +376,7 @@ export default {
         v-if="isReviewable && showLocalFileReviews"
         v-gl-tooltip.hover
         data-testid="fileReviewCheckbox"
-        class="gl-mr-5 gl-display-flex gl-align-items-center"
+        class="gl-mr-5 gl-mb-n3 gl-display-flex gl-align-items-center"
         :title="$options.i18n.fileReviewTooltip"
         :checked="reviewed"
         @change="toggleReview"

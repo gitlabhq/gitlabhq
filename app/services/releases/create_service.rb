@@ -18,6 +18,12 @@ module Releases
 
       return tag unless tag.is_a?(Gitlab::Git::Tag)
 
+      if project.catalog_resource
+        response = Ci::Catalog::ValidateResourceService.new(project, ref).execute
+
+        return error(response.message) if response.error?
+      end
+
       create_release(tag, evidence_pipeline)
     end
 

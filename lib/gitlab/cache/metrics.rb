@@ -58,7 +58,6 @@ module Gitlab
 
       def labels
         @labels ||= {
-          caller_id: cache_metadata.caller_id,
           cache_identifier: cache_metadata.cache_identifier,
           feature_category: cache_metadata.feature_category,
           backing_resource: cache_metadata.backing_resource

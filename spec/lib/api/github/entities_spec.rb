@@ -12,7 +12,7 @@ RSpec.describe API::Github::Entities do
 
     subject { entity.as_json }
 
-    specify :aggregate_failure do
+    specify :aggregate_failures do
       expect(subject[:id]).to eq user.id
       expect(subject[:login]).to eq 'name_of_user'
       expect(subject[:url]).to eq expected_user_url

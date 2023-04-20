@@ -567,6 +567,53 @@ Example
   });
 ```
 
+### Testing local-only Apollo queries and mutations
+
+To add a new query or mutation before it is added to the backend, we can use the `@client` directive. For example:
+
+```graphql
+mutation setActiveBoardItemEE($boardItem: LocalBoardItem, $isIssue: Boolean = true) {
+  setActiveBoardItem(boardItem: $boardItem) @client {
+    ...Issue @include(if: $isIssue)
+    ...EpicDetailed @skip(if: $isIssue)
+  }
+}
+```
+
+When writing test cases for such calls, we can use resolvers to make sure they are called with the correct parameters.
+
+For example, when creating the wrapper, we should make sure the resolver is mapped to the query or mutation.
+The mutation we are mocking here is `setActiveBoardItem`:
+
+```javascript
+const mockSetActiveBoardItemResolver = jest.fn();
+const mockApollo = createMockApollo([], {
+    Mutation: {
+      setActiveBoardItem: mockSetActiveBoardItemResolver,
+    },
+});
+```
+
+In the following code, we must pass four arguments. The second one must be the collection of input variables of the query or mutation mocked.
+To test that the mutation is called with the correct parameters:
+
+```javascript
+it('calls setActiveBoardItemMutation on close', async () => {
+    wrapper.findComponent(GlDrawer).vm.$emit('close');
+
+    await waitForPromises();
+
+    expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
+        {},
+        {
+            boardItem: null,
+        },
+        expect.anything(),
+        expect.anything(),
+    );
+});
+```
+
 ### Jest best practices
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34209) in GitLab 13.2.
@@ -819,10 +866,10 @@ often using fixtures to validate correct integration with the backend code.
 
 ### Use fixtures
 
-To import a JSON fixture, `import` it using the `test_fixtures` alias.
+To import a JSON or HTML fixture, `import` it using the `test_fixtures` alias.
 
 ```javascript
-import responseBody from 'test_fixtures/some/fixture.json' // loads spec/frontend/fixtures/some/fixture.json
+import responseBody from 'test_fixtures/some/fixture.json' // loads tmp/tests/frontend/fixtures-ee/some/fixture.json
 
 it('makes a request', () => {
   axiosMock.onGet(endpoint).reply(200, responseBody);
@@ -830,23 +877,6 @@ it('makes a request', () => {
   myButton.click();
 
   // ...
-});
-```
-
-For other fixtures, Jest uses `spec/frontend/__helpers__/fixtures.js` to import them in tests.
-
-The following are examples of tests that work for Jest:
-
-```javascript
-it('uses some HTML element', () => {
-  loadHTMLFixture('some/page.html'); // loads spec/frontend/fixtures/some/page.html and adds it to the DOM
-
-  const element = document.getElementById('#my-id');
-
-  // ...
-
-  // Jest does not clean up the DOM automatically
-  resetHTMLFixture();
 });
 ```
 

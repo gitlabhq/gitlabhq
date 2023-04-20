@@ -392,6 +392,30 @@ RSpec.shared_examples_for "bulk member creation" do
     expect(members.first).to be_invite
   end
 
+  context 'with different source types' do
+    shared_examples 'supports multiple sources' do
+      specify do
+        members = described_class.add_members(sources, [user1, user2], :maintainer)
+
+        expect(members.map(&:user)).to contain_exactly(user1, user2, user1, user2)
+        expect(members).to all(be_a(member_type))
+        expect(members).to all(be_persisted)
+      end
+    end
+
+    context 'with an array of sources' do
+      let_it_be(:sources) { [source, source2] }
+
+      it_behaves_like 'supports multiple sources'
+    end
+
+    context 'with a query producing sources' do
+      let_it_be(:sources) { source_type.id_in([source, source2]) }
+
+      it_behaves_like 'supports multiple sources'
+    end
+  end
+
   context 'with de-duplication' do
     it 'has the same user by id and user' do
       members = described_class.add_members(source, [user1.id, user1, user1.id, user2, user2.id, user2], :maintainer)

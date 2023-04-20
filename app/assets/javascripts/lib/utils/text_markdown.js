@@ -371,7 +371,7 @@ export function insertMarkdownText({
   });
 }
 
-function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
+export function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
   const $textArea = $(textArea);
   textArea = $textArea.get(0);
   const text = $textArea.val();
@@ -627,10 +627,9 @@ export function addMarkdownListeners(form) {
     });
 
   const $allToolbarBtns = $(form)
-    .off('click', '.js-md, .saved-replies-dropdown li')
-    .on('click', '.js-md, .saved-replies-dropdown li', function () {
-      const $savedReplyContent = $('.js-saved-reply-content', this);
-      const $toolbarBtn = $savedReplyContent.length ? $savedReplyContent : $(this);
+    .off('click', '.js-md')
+    .on('click', '.js-md', function () {
+      const $toolbarBtn = $(this);
 
       return updateTextForToolbarBtn($toolbarBtn);
     });

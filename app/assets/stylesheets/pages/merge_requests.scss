@@ -209,18 +209,10 @@ $comparison-empty-state-height: 62px;
 }
 
 .merge-request-tabs-holder {
-  top: $header-height;
+  top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
   background-color: $body-bg;
   border-bottom: 1px solid $border-color;
-
-  .with-system-header & {
-    top: calc(#{$header-height} + #{$system-header-height});
-  }
-
-  .with-system-header.with-performance-bar & {
-    top: calc(#{$header-height} + #{$system-header-height} + #{$performance-bar-height});
-  }
 
   @include media-breakpoint-up(md) {
     position: sticky;
@@ -237,12 +229,6 @@ $comparison-empty-state-height: 62px;
 
   .nav-links {
     border: 0;
-  }
-}
-
-.with-performance-bar {
-  .merge-request-tabs-holder {
-    top: calc(#{$header-height} + #{$performance-bar-height});
   }
 }
 
@@ -336,11 +322,7 @@ $comparison-empty-state-height: 62px;
 
 .mr-compare {
   .diff-file .file-title-flex-parent {
-    top: calc(#{$header-height} + #{$mr-tabs-height});
-
-    .with-performance-bar & {
-      top: calc(#{$performance-bar-height} + #{$header-height} + #{$mr-tabs-height});
-    }
+    top: calc(#{$calc-application-header-height} + #{$mr-tabs-height});
   }
 }
 

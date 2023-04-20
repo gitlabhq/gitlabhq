@@ -175,7 +175,7 @@ RSpec.describe Ci::BuildRunnerSession, model: true, feature_category: :continuou
     end
   end
 
-  describe 'partitioning' do
+  describe 'partitioning', :ci_partitionable do
     include Ci::PartitioningHelpers
 
     let(:new_pipeline) { create(:ci_pipeline) }

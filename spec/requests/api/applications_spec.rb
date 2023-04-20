@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Applications, :api, feature_category: :system_access do
+RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :system_access do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:scopes) { 'api' }
@@ -135,7 +135,7 @@ RSpec.describe API::Applications, :api, feature_category: :system_access do
     context 'authorized user without authorization' do
       it 'does not create application' do
         expect do
-          post api('/applications', user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
+          post api(path, user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
         end.not_to change { Doorkeeper::Application.count }
       end
     end

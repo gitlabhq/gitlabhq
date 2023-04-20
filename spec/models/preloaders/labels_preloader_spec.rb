@@ -18,14 +18,24 @@ RSpec.describe Preloaders::LabelsPreloader do
 
   context 'project labels' do
     let_it_be(:projects) { create_list(:project, 3, :public, :repository) }
-    let_it_be(:labels) { projects.each { |p| create(:label, project: p) } }
+    let_it_be(:labels) { projects.map { |p| create(:label, project: p) } }
 
     it_behaves_like 'an efficient database query'
+
+    it 'preloads the max access level', :request_store do
+      labels_with_preloaded_data
+
+      query_count = ActiveRecord::QueryRecorder.new do
+        projects.first.team.max_member_access_for_user_ids([user.id])
+      end.count
+
+      expect(query_count).to eq(0)
+    end
   end
 
   context 'group labels' do
     let_it_be(:groups) { create_list(:group, 3) }
-    let_it_be(:labels) { groups.each { |g| create(:group_label, group: g) } }
+    let_it_be(:labels) { groups.map { |g| create(:group_label, group: g) } }
 
     it_behaves_like 'an efficient database query'
   end

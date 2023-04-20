@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Create a new cluster agent token', feature_category: :kubernetes_management do
+RSpec.describe 'Create a new cluster agent token', feature_category: :deployment_management do
   include GraphqlHelpers
 
   let_it_be(:cluster_agent) { create(:cluster_agent) }

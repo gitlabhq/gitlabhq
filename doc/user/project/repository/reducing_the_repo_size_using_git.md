@@ -22,16 +22,27 @@ Rewriting repository history is a destructive operation. Make sure to back up yo
 you begin. The best way to back up a repository is to
 [export the project](../settings/import_export.md#export-a-project-and-its-data).
 
+## Calculate repository size
+
+The size of a repository is determined by computing the accumulated size of all files in the repository.
+It is similar to executing `du --summarize --bytes` on your repository's
+[hashed storage path](../../../administration/repository_storage_types.md).
+
 ## Purge files from repository history
 
-To reduce the size of your repository in GitLab, you must first remove references to large files from branches, tags, *and*
-other internal references (refs) that are automatically created by GitLab. These refs include:
+GitLab [prunes unreachable objects](../../../administration/housekeeping.md#prune-unreachable-objects)
+as part of housekeeping. In GitLab, to reduce the disk size of your repository manually, you must
+first remove references to large files from branches, tags, *and* other internal references (refs)
+created by GitLab. These refs include:
 
-- `refs/merge-requests/*` for merge requests.
-- `refs/pipelines/*` for
-  [pipelines](../../../ci/troubleshooting.md#fatal-reference-is-not-a-tree-error).
-- `refs/environments/*` for environments.
-- `refs/keep-around/*` are created as hidden refs to prevent commits referenced in the database from being removed
+- `refs/merge-requests/*`
+- `refs/pipelines/*`
+- `refs/environments/*`
+- `refs/keep-around/*`
+
+NOTE:
+For details on each of these references, see
+[GitLab-specific references](../../../development/gitaly.md#gitlab-specific-references).
 
 These refs are not automatically downloaded and hidden refs are not advertised, but we can remove these refs using a project export.
 

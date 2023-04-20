@@ -6,10 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Google Play **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `google_play_integration`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `google_play_integration`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `google_play_integration`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389611) in GitLab 15.11. Feature flag `google_play_integration` removed.
 
 With the Google Play integration, you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console) to build and release apps for Android devices.
 
@@ -27,11 +25,12 @@ To enable the Google Play integration in GitLab:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Integrations**.
 1. Select **Google Play**.
-1. In **Enable Integration**, select the **Active** checkbox.
+1. In **Enable integration**, select the **Active** checkbox.
+1. In **Package name**, enter the package name of the app (for example, `com.gitlab.app_name`).
 1. In **Service account key (.JSON)**, drag or upload your key file.
 1. Select **Save changes**.
 
-After you enable the integration, the global variable `$SUPPLY_JSON_KEY_DATA` is created for CI/CD use.
+After you enable the integration, the global variables `$SUPPLY_PACKAGE_NAME` and `$SUPPLY_JSON_KEY_DATA` are created for CI/CD use.
 
 ### CI/CD variable security
 

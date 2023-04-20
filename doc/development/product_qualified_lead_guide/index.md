@@ -117,7 +117,7 @@ expect(wrapper.findComponent(HandRaiseLeadButton).exists()).toBe(true);
 The flow of a PQL lead is as follows:
 
 1. A user triggers a [`HandRaiseLeadButton` component](#embed-a-hand-raise-lead-form) on `gitlab.com`.
-1. The `HandRaiseLeadButton` submits any information to the following API endpoint: `/-/trials/create_hand_raise_lead`.
+1. The `HandRaiseLeadButton` submits any information to the following API endpoint: `/-/subscriptions/hand_raise_leads`.
 1. That endpoint reposts the form to the CustomersDot `trials/create_hand_raise_lead` endpoint.
 1. CustomersDot records the form data to the `leads` table and posts the form to [Workato](https://about.gitlab.com/handbook/marketing/marketing-operations/workato/).
 1. Workato sends the form to Marketo.
@@ -170,7 +170,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     HandRaiseForm Vue Component->>TrialsController#create_hand_raise_lead: GitLab.com frontend sends [lead] to backend
-    TrialsController#create_hand_raise_lead->>CreateHandRaiseLeadService: [lead]
+    Subscriptions::HandRaiseLeadsController#create->>CreateHandRaiseLeadService: [lead]
     CreateHandRaiseLeadService->>SubscriptionPortalClient: [lead]
     SubscriptionPortalClient->>CustomersDot|TrialsController#create_hand_raise_lead: GitLab.com sends [lead] to CustomersDot
 ```

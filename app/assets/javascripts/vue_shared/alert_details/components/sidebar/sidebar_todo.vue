@@ -53,11 +53,11 @@ export default {
   },
   methods: {
     updateToDoCount(add) {
-      const oldCount = parseInt(document.querySelector('.js-todos-count').innerText, 10);
+      const oldCount = parseInt(document.querySelector('.js-todos-count').innerText, 10) || 0;
       const count = add ? oldCount + 1 : oldCount - 1;
       const headerTodoEvent = new CustomEvent('todo:toggle', {
         detail: {
-          count,
+          count: Math.max(count, 0),
         },
       });
 

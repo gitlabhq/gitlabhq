@@ -1,3 +1,6 @@
+import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
+import { __ } from '~/locale';
+
 const commonTooltips = () => ({
   mode: 'x',
   intersect: false,
@@ -97,4 +100,39 @@ export const firstAndLastY = (data) => {
   const lastY = lastEntry[1];
 
   return [firstY, lastY];
+};
+
+const toolboxIconSvgPath = async (name) => {
+  return `path://${await getSvgIconPathContent(name)}`;
+};
+
+export const getToolboxOptions = async () => {
+  const promises = ['marquee-selection', 'redo', 'repeat', 'download'].map(toolboxIconSvgPath);
+
+  try {
+    const [marqueeSelectionPath, redoPath, repeatPath, downloadPath] = await Promise.all(promises);
+
+    return {
+      toolbox: {
+        feature: {
+          dataZoom: {
+            icon: { zoom: marqueeSelectionPath, back: redoPath },
+          },
+          restore: {
+            icon: repeatPath,
+          },
+          saveAsImage: {
+            icon: downloadPath,
+          },
+        },
+      },
+    };
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn(__('SVG could not be rendered correctly: '), e);
+    }
+
+    return {};
+  }
 };

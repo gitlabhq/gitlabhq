@@ -1,6 +1,8 @@
 <script>
 import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerName from '../runner_name.vue';
@@ -14,6 +16,7 @@ import {
   I18N_VERSION_LABEL,
   I18N_LAST_CONTACT_LABEL,
   I18N_CREATED_AT_LABEL,
+  I18N_CREATED_AT_BY_LABEL,
 } from '../../constants';
 import RunnerSummaryField from './runner_summary_field.vue';
 
@@ -28,6 +31,7 @@ export default {
     RunnerTypeBadge,
     RunnerUpgradeStatusIcon: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
+    UserAvatarLink,
     TooltipOnTruncate,
   },
   directives: {
@@ -43,6 +47,16 @@ export default {
     jobCount() {
       return formatJobCount(this.runner.jobCount);
     },
+    createdBy() {
+      return this.runner?.createdBy;
+    },
+    createdByImgAlt() {
+      const name = this.createdBy?.name;
+      if (name) {
+        return sprintf(__("%{name}'s avatar"), { name });
+      }
+      return null;
+    },
   },
   i18n: {
     I18N_NO_DESCRIPTION,
@@ -50,6 +64,7 @@ export default {
     I18N_VERSION_LABEL,
     I18N_LAST_CONTACT_LABEL,
     I18N_CREATED_AT_LABEL,
+    I18N_CREATED_AT_BY_LABEL,
   },
 };
 </script>
@@ -106,11 +121,30 @@ export default {
       </runner-summary-field>
 
       <runner-summary-field icon="calendar">
-        <gl-sprintf :message="$options.i18n.I18N_CREATED_AT_LABEL">
-          <template #timeAgo>
-            <time-ago v-if="runner.createdAt" :time="runner.createdAt" />
-          </template>
-        </gl-sprintf>
+        <template v-if="createdBy">
+          <gl-sprintf :message="$options.i18n.I18N_CREATED_AT_BY_LABEL">
+            <template #timeAgo>
+              <time-ago v-if="runner.createdAt" :time="runner.createdAt" />
+            </template>
+            <template #avatar>
+              <user-avatar-link
+                :link-href="createdBy.webUrl"
+                :img-src="createdBy.avatarUrl"
+                img-css-classes="gl-vertical-align-top"
+                :img-size="16"
+                :img-alt="createdByImgAlt"
+                :tooltip-text="createdBy.username"
+              />
+            </template>
+          </gl-sprintf>
+        </template>
+        <template v-else>
+          <gl-sprintf :message="$options.i18n.I18N_CREATED_AT_LABEL">
+            <template #timeAgo>
+              <time-ago v-if="runner.createdAt" :time="runner.createdAt" />
+            </template>
+          </gl-sprintf>
+        </template>
       </runner-summary-field>
     </div>
 

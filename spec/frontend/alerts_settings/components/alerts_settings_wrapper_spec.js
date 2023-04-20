@@ -429,7 +429,7 @@ describe('AlertsSettingsWrapper', () => {
     });
 
     describe('Test alert', () => {
-      it('makes `updateTestAlert` service call', async () => {
+      it('makes `updateTestAlert` service call', () => {
         jest.spyOn(alertsUpdateService, 'updateTestAlert').mockResolvedValueOnce();
         const testPayload = '{"title":"test"}';
         findAlertsSettingsForm().vm.$emit('test-alert-payload', testPayload);

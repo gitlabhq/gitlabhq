@@ -8,10 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
-to contribute to GitLab in a way that is easy for everyone.
+to contribute to the development of GitLab in a way that is easy for everyone.
 
-For a first-time step-by-step guide to the contribution process, see our
-[Contributing to GitLab](https://about.gitlab.com/community/contribute/) page.
+For a first-time step-by-step guide to the contribution process for development, see [Tutorial: Make a GitLab contribution](first_contribution.md).
+
+For other ways to contribute see our [Contributing to GitLab](https://about.gitlab.com/community/contribute/) page.
 
 Looking for something to work on? See the
 [How to contribute](#how-to-contribute) section for more information.
@@ -43,27 +44,10 @@ If you would like to contribute to GitLab:
   slowest tests. These tests are good candidates for improving and checking if any of
   [best practices](../testing_guide/best_practices.md)
   could speed them up.
-- Consult the [Contribution Flow](#contribution-flow) section to learn the process.
 
-### Contribution flow
+For a walkthrough of the contribution process, see [Tutorial: Make a GitLab contribution](first_contribution.md).
 
-The general flow of contributing to GitLab is:
-
-1. [Read about](https://gitlab.com/gitlab-community/meta) and [request access](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks)
-   to the GitLab Community forks. In some cases, you will want to set up the
-   [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) to
-   [develop against the GitLab community fork](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#develop-in-your-own-gitlab-fork).
-1. Create a feature branch and make changes in the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab).
-1. When you're ready, [create a new merge request](../../user/project/merge_requests/creating_merge_requests.md).
-1. In the merge request's description:
-   - Ensure you provide complete and accurate information.
-   - Review the provided checklist.
-1. Once you're ready, mark your MR as ready for review with `@gitlab-bot ready`.
-   - This will add the `~"workflow::ready for review"` label, and then automatically assign a merge request coach as reviewer.
-   - If you know a relevant reviewer (for example, someone that was involved a related issue), you can also
-     assign them directly with `@gitlab-bot ready @username`.
-
-#### Review process
+### Review process
 
 When you submit code to GitLab, we really want it to get merged! However, we always review
 submissions carefully, and this takes time. Code submissions will usually be reviewed by two
@@ -95,7 +79,7 @@ Lastly, keep the following in mind when submitting merge requests:
   be merged, as well as some guidance. The maintainers will be open to discussion about how to change
   the code so it can be approved and merged in the future.
 
-#### Getting attention on your merge request
+### Getting attention on your merge request
 
 GitLab will do its best to review community contributions as quickly as possible. Specially
 appointed developers review community contributions daily. Look at the
@@ -119,7 +103,7 @@ This [documentation](issue_workflow.md) outlines the current issue workflow:
 - [Technical and UX debt](../labels/index.md#technical-and-ux-debt)
 - [Technical debt in follow-up issues](issue_workflow.md#technical-debt-in-follow-up-issues)
 
-#### Merge requests workflow
+### Merge requests workflow
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 
@@ -136,9 +120,9 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 ## Getting an Enterprise Edition License
 
 If you need a license for contributing to an EE-feature, see
-[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/code-contributor-program/operations/#contributing-to-the-gitlab-enterprise-edition-ee).
+[relevant information](https://about.gitlab.com/handbook/marketing/community-relations/contributor-success/community-contributors-workflows.html#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Finding help
 
 - [Get help](https://about.gitlab.com/get-help/).
-- Join the community-run [Discord server](https://discord.com/invite/gitlab) and find other contributors in the `#contribute` channel.
+- Join the community-run [Discord server](https://discord.gg/gitlab) and find other contributors in the `#contribute` channel.

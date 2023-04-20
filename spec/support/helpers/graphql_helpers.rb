@@ -89,13 +89,16 @@ module GraphqlHelpers
     # All mutations accept a single `:input` argument. Wrap arguments here.
     args = { input: args } if resolver_class <= ::Mutations::BaseMutation && !args.key?(:input)
 
-    resolve_field(field, obj,
-                  args: args,
-                  ctx: ctx,
-                  schema: schema,
-                  object_type: resolver_parent,
-                  extras: { parent: parent, lookahead: lookahead },
-                  arg_style: arg_style)
+    resolve_field(
+      field,
+      obj,
+      args: args,
+      ctx: ctx,
+      schema: schema,
+      object_type: resolver_parent,
+      extras: { parent: parent, lookahead: lookahead },
+      arg_style: arg_style
+    )
   end
 
   # Resolve the value of a field on an object.
@@ -513,20 +516,23 @@ module GraphqlHelpers
   end
 
   def post_graphql_mutation(mutation, current_user: nil, token: {})
-    post_graphql(mutation.query,
-                 current_user: current_user,
-                 variables: mutation.variables,
-                 token: token)
+    post_graphql(
+      mutation.query,
+      current_user: current_user,
+      variables: mutation.variables,
+      token: token
+    )
   end
 
   def post_graphql_mutation_with_uploads(mutation, current_user: nil)
     file_paths = file_paths_in_mutation(mutation)
     params = mutation_to_apollo_uploads_param(mutation, files: file_paths)
 
-    workhorse_post_with_file(api('/', current_user, version: 'graphql'),
-                             params: params,
-                             file_key: '1'
-                            )
+    workhorse_post_with_file(
+      api('/', current_user, version: 'graphql'),
+      params: params,
+      file_key: '1'
+    )
   end
 
   def file_paths_in_mutation(mutation)

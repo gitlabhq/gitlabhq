@@ -428,7 +428,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       described_class.track_event('event4', values: entity2, time: 2.days.ago)
     end
 
-    it 'calculates union of given events', :aggregate_failure do
+    it 'calculates union of given events', :aggregate_failures do
       expect(described_class.calculate_events_union(**time_range.merge(event_names: %w[event4]))).to eq 2
       expect(described_class.calculate_events_union(**time_range.merge(event_names: %w[event1_slot event2_slot event3_slot]))).to eq 3
     end

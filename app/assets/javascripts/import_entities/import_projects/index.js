@@ -66,12 +66,16 @@ export default function mountImportProjectsTable({
 
   const store = initStoreFromElement(mountElement);
   const props = initPropsFromElement(mountElement);
+  const { detailsPath } = mountElement.dataset;
 
   return new Vue({
     el: mountElement,
     name: 'ImportProjectsRoot',
     store,
     apolloProvider,
+    provide: {
+      detailsPath,
+    },
     render(createElement) {
       // We are using attrs instead of props so root-level component with inheritAttrs
       // will be able to pass them down

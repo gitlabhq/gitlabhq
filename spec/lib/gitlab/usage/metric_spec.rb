@@ -13,7 +13,6 @@ RSpec.describe Gitlab::Usage::Metric do
       product_section: "dev",
       product_stage: "plan",
       product_group: "plan",
-      product_category: "issue_tracking",
       value_type: "number",
       status: "active",
       time_frame: "all",

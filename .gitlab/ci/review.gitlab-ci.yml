@@ -16,7 +16,7 @@ review-cleanup:
     - install_gitlab_gem
     - setup_gcloud
   script:
-    - scripts/review_apps/automated_cleanup.rb || (scripts/slack review-apps-monitoring "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL} - <https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/review-apps.md#review-cleanup-job-failed|📗 RUNBOOK 📕>" warning "GitLab Bot" && exit 1);
+    - scripts/review_apps/automated_cleanup.rb --dry-run="${DRY_RUN:-false}" || (scripts/slack review-apps-monitoring "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL} - <https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/review-apps.md#review-cleanup-job-failed|📗 RUNBOOK 📕>" warning "GitLab Bot" && exit 1);
 
 review-stop:
   extends:

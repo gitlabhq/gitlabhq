@@ -58,6 +58,10 @@ module Ci
       end
     end
 
+    def current_processable
+      Ci::Processable.find_by('(id, partition_id) IN (?)', resources.select('build_id, partition_id'))
+    end
+
     private
 
     # In order to avoid deadlock, we do NOT specify the job execution order in the same pipeline.

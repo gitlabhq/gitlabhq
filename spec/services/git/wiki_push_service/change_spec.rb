@@ -60,11 +60,13 @@ RSpec.describe Git::WikiPushService::Change, feature_category: :source_code_mana
       end
 
       %i[added renamed modified].each do |op|
-        let(:operation) { op }
-        let(:slug) { new_path.chomp('.md') }
-        let(:revision) { change[:newrev] }
+        context "the operation is #{op}" do
+          let(:operation) { op }
+          let(:slug) { new_path.chomp('.md') }
+          let(:revision) { change[:newrev] }
 
-        it { is_expected.to have_attributes(page: wiki_page) }
+          it { is_expected.to have_attributes(page: wiki_page) }
+        end
       end
     end
   end

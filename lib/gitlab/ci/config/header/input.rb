@@ -6,6 +6,7 @@ module Gitlab
       module Header
         ##
         # Input parameter used for interpolation with the CI configuration.
+        #
         class Input < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable

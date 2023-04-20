@@ -8,6 +8,7 @@ import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import { findHierarchyWidgetChildren } from '~/work_items/utils';
+import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 
 export const config = {
   typeDefs,
@@ -81,6 +82,14 @@ export const config = {
               });
             },
           },
+          userPermissions: {
+            read(permission = {}) {
+              return {
+                ...permission,
+                setWorkItemMetadata: false,
+              };
+            },
+          },
         },
       },
       MemberInterfaceConnection: {
@@ -124,6 +133,33 @@ export const config = {
                   ...incoming,
                   nodes: [...existing.nodes, ...incoming.nodes],
                 };
+              },
+            },
+            Group: {
+              fields: {
+                projects: {
+                  keyArgs: ['includeSubgroups', 'search'],
+                },
+                descendantGroups: {
+                  keyArgs: ['includeSubgroups', 'search'],
+                },
+              },
+            },
+            ProjectConnection: {
+              fields: {
+                nodes: concatPagination(),
+              },
+            },
+            GroupConnection: {
+              fields: {
+                nodes: concatPagination(),
+              },
+            },
+            Board: {
+              fields: {
+                epics: {
+                  keyArgs: ['boardId'],
+                },
               },
             },
             BoardEpicConnection: {
@@ -173,6 +209,13 @@ export const resolvers = {
         draftData.issueState = { issueType, isDirty };
       });
       cache.writeQuery({ query: getIssueStateQuery, data });
+    },
+    setActiveBoardItem(_, { boardItem }, { cache }) {
+      cache.writeQuery({
+        query: activeBoardItemQuery,
+        data: { activeBoardItem: boardItem },
+      });
+      return boardItem;
     },
   },
 };

@@ -22,6 +22,8 @@ You need an token to publish a package. There are different tokens available dep
 
 Create a token and save it to use later in the process.
 
+Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
+
 ### Edit the `settings.xml`
 
 Add the following section to your
@@ -63,6 +65,13 @@ The three endpoints are:
 - **Project-level**: Use when you have a few Maven packages and they are not in the same GitLab group.
 - **Group-level**: Use when you want to install packages from many different projects in the same GitLab group. GitLab does not guarantee the uniqueness of package names within the group. You can have two projects with the same package name and package version. As a result, GitLab serves whichever one is more recent.
 - **Instance-level**: Use when you have many packages in different GitLab groups or in their own namespace.
+
+For the instance-level endpoint, ensure the relevant section of your `pom.xml` in Maven looks like this:
+
+```xml
+  <groupId>group-slug.subgroup-slug</groupId>
+  <artifactId>project-slug</artifactId>
+```
 
 **Only packages that have the same path as the project** are exposed by the instance-level endpoint.
 

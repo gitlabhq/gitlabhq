@@ -39,9 +39,9 @@ module Sidebars
           'rocket'
         end
 
-        override :pick_into_super_sidebar?
-        def pick_into_super_sidebar?
-          true
+        override :serialize_as_menu_item_args
+        def serialize_as_menu_item_args
+          nil
         end
 
         private
@@ -50,6 +50,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Pipelines'),
             link: project_pipelines_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-pipelines' },
             active_routes: { path: pipelines_routes },
             item_id: :pipelines
@@ -78,8 +79,9 @@ module Sidebars
           }
 
           ::Sidebars::MenuItem.new(
-            title: s_('Pipelines|Editor'),
+            title: context.is_super_sidebar ? _('Pipeline editor') : s_('Pipelines|Editor'),
             link: project_ci_pipeline_editor_path(context.project, params),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             active_routes: { path: 'projects/ci/pipeline_editor#show' },
             item_id: :pipelines_editor
           )
@@ -89,6 +91,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Jobs'),
             link: project_jobs_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { controller: :jobs },
             item_id: :jobs
@@ -103,6 +106,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Artifacts'),
             link: project_artifacts_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { path: 'artifacts#index' },
             item_id: :artifacts
@@ -111,8 +115,9 @@ module Sidebars
 
         def pipeline_schedules_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Schedules'),
+            title: context.is_super_sidebar ? _('Pipeline schedules') : _('Schedules'),
             link: pipeline_schedules_path(context.project),
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::BuildMenu,
             container_html_options: { class: 'shortcuts-builds' },
             active_routes: { controller: :pipeline_schedules },
             item_id: :pipeline_schedules

@@ -6,13 +6,19 @@ module Packages
       include Gitlab::Utils::StrongMemoize
 
       def execute
-        package = project.packages
-                         .debian
-                         .with_name(params[:name])
-                         .with_version(params[:version])
-                         .with_debian_codename_or_suite(params[:distribution_name])
-                         .not_pending_destruction
-                         .first
+        packages = project.packages
+                          .existing_debian_packages_with(name: params[:name], version: params[:version])
+
+        package = packages.with_debian_codename_or_suite(params[:distribution_name]).first
+
+        unless package
+          package_in_other_distribution = packages.first
+
+          if package_in_other_distribution
+            raise ArgumentError, "Debian package #{params[:name]} #{params[:version]} exists " \
+                                 "in distribution #{package_in_other_distribution.debian_distribution.codename}"
+          end
+        end
 
         package ||= create_package!(
           :debian,
@@ -25,13 +31,12 @@ module Packages
       private
 
       def distribution
-        strong_memoize(:distribution) do
-          Packages::Debian::DistributionsFinder.new(
-            project,
-            codename_or_suite: params[:distribution_name]
-          ).execute.last!
-        end
+        Packages::Debian::DistributionsFinder.new(
+          project,
+          codename_or_suite: params[:distribution_name]
+        ).execute.last!
       end
+      strong_memoize_attr :distribution
     end
   end
 end

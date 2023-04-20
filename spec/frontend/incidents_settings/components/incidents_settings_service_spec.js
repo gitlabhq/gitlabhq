@@ -33,7 +33,7 @@ describe('IncidentsSettingsService', () => {
       });
     });
 
-    it('should display an alert message on update error', () => {
+    it('should display an alert on update error', () => {
       mock.onPatch().reply(HTTP_STATUS_BAD_REQUEST);
 
       return service.updateSettings({}).then(() => {

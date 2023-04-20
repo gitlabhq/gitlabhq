@@ -69,7 +69,6 @@ eslint-report.html
 /rails_best_practices_output.html
 /tags
 /vendor/bundle/*
-/vendor/gitaly-ruby
 /vendor/package_metadata_db/
 /builds*
 /.gitlab_workhorse_secret

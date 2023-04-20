@@ -21,7 +21,7 @@ export function getProjects(query, options, callback = () => {}) {
     defaults.membership = true;
   }
 
-  if (gon.features.fullPathProjectSearch && query?.includes('/')) {
+  if (query?.includes('/')) {
     defaults.search_namespaces = true;
   }
 
@@ -33,6 +33,13 @@ export function getProjects(query, options, callback = () => {}) {
       callback(data);
       return { data, headers };
     });
+}
+
+export function createProject(projectData) {
+  const url = buildApiUrl(PROJECTS_PATH);
+  return axios.post(url, projectData).then(({ data }) => {
+    return data;
+  });
 }
 
 export function importProjectMembers(sourceId, targetId) {

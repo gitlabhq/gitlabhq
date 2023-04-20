@@ -13,10 +13,12 @@ RSpec.describe Banzai::Filter::KrokiFilter, feature_category: :team_planning do
   end
 
   it 'replaces nomnoml pre tag with img tag if both kroki and plantuml are enabled' do
-    stub_application_setting(kroki_enabled: true,
-                             kroki_url: "http://localhost:8000",
-                             plantuml_enabled: true,
-                             plantuml_url: "http://localhost:8080")
+    stub_application_setting(
+      kroki_enabled: true,
+      kroki_url: "http://localhost:8000",
+      plantuml_enabled: true,
+      plantuml_url: "http://localhost:8080"
+    )
     doc = filter("<pre lang='nomnoml'><code>[Pirate|eyeCount: Int|raid();pillage()|\n  [beard]--[parrot]\n  [beard]-:>[foul mouth]\n]</code></pre>")
 
     expect(doc.to_s).to eq '<img src="http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjligUAMhEd0g==" class="js-render-kroki" data-diagram="nomnoml" data-diagram-src="data:text/plain;base64,W1BpcmF0ZXxleWVDb3VudDogSW50fHJhaWQoKTtwaWxsYWdlKCl8CiAgW2JlYXJkXS0tW3BhcnJvdF0KICBbYmVhcmRdLTo+W2ZvdWwgbW91dGhdCl0=">'
@@ -30,10 +32,12 @@ RSpec.describe Banzai::Filter::KrokiFilter, feature_category: :team_planning do
   end
 
   it 'does not replace plantuml pre tag with img tag if both kroki and plantuml are enabled' do
-    stub_application_setting(kroki_enabled: true,
-                             kroki_url: "http://localhost:8000",
-                             plantuml_enabled: true,
-                             plantuml_url: "http://localhost:8080")
+    stub_application_setting(
+      kroki_enabled: true,
+      kroki_url: "http://localhost:8000",
+      plantuml_enabled: true,
+      plantuml_url: "http://localhost:8080"
+    )
     doc = filter("<pre lang='plantuml'><code>Bob->Alice : hello</code></pre>")
 
     expect(doc.to_s).to eq '<pre lang="plantuml"><code>Bob-&gt;Alice : hello</code></pre>'

@@ -85,18 +85,21 @@ Learn how to create [merge requests for confidential issues](../merge_requests/c
 
 There are two kinds of level access for confidential issues. The general rule
 is that confidential issues are visible only to members of a project with at
-least the Reporter role. However, a guest user can also create
+least the **Reporter role**.
+
+However, a user with the **Guest role** can create
 confidential issues, but can only view the ones that they created themselves.
-Users with the Guest role or non-members can also read the confidential issue if they are assigned to the issue.
+
+Users with the Guest role or non-members can read the confidential issue if they are assigned to the issue.
 When a Guest user or non-member is unassigned from a confidential issue,
 they can no longer view it.
 
-Confidential issues are also hidden in search results for unprivileged users.
+Confidential issues are hidden in search results for unprivileged users.
 For example, here's what a user with the Maintainer role and the Guest role
-sees in the project's search results respectively.
+sees in the project's search results:
 
-| Maintainer role                                                                        | Guest role                                                                     |
-|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------|
+| Maintainer role | Guest role |
+|:----------------|:-----------|
 | ![Confidential issues search by maintainer](img/confidential_issues_search_master.png) | ![Confidential issues search by guest](img/confidential_issues_search_guest.png) |
 
 ## Related topics

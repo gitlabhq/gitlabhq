@@ -24,7 +24,7 @@ package registry, see the [Debian registry documentation](../../user/packages/de
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
 See the [Debian registry documentation](../../user/packages/debian_repository/index.md)
-for details on which headers and token types are supported.
+for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Debian API
 
@@ -46,7 +46,8 @@ See [Authenticate to the Debian Package Repositories](../../user/packages/debian
 
 ## Upload a package file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62028) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62028) in GitLab 14.0.
+> - Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
 
 Upload a Debian package file:
 
@@ -54,16 +55,27 @@ Upload a Debian package file:
 PUT projects/:id/packages/debian/:file_name
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`        | string | yes | The ID or full path of the project.  |
-| `file_name` | string | yes | The name of the Debian package file. |
+| Attribute      | Type   | Required | Description |
+| -------------- | ------ | -------- | ----------- |
+| `id`           | string | yes      | The ID or full path of the project.  |
+| `file_name`    | string | yes      | The name of the Debian package file. |
+| `distribution` | string | no       | The distribution codename or suite. Used with `component` for upload with explicit distribution and component. |
+| `component`    | string | no       | The package file component. Used with `distribution` for upload with explicit distribution and component. |
 
 ```shell
 curl --request PUT \
-     --user <username>:<personal_access_token> \
+     --user "<username>:<personal_access_token>" \
      --upload-file path/to/mypkg.deb \
      "https://gitlab.example.com/api/v4/projects/1/packages/debian/mypkg.deb"
+```
+
+Upload with explicit distribution and component:
+
+```shell
+curl --request PUT \
+  --user "<username>:<personal_access_token>" \
+  --upload-file  /path/to/myother.deb \
+  "https://gitlab.example.com/api/v4/projects/1/packages/debian/myother.deb?distribution=sid&component=main"
 ```
 
 ## Download a package

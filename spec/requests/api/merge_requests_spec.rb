@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequests, feature_category: :source_code_management do
+RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let_it_be(:base_time) { Time.now }
@@ -50,6 +50,27 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
         expect_successful_response_with_paginated_array
       end
 
+      context 'when merge request is unchecked' do
+        let(:check_service_class) { MergeRequests::MergeabilityCheckService }
+        let(:mr_entity) { json_response.find { |mr| mr['id'] == merge_request.id } }
+        let(:merge_request) { create(:merge_request, :simple, author: user, source_project: project, title: "Test") }
+
+        before do
+          merge_request.mark_as_unchecked!
+        end
+
+        context 'with merge status recheck projection' do
+          it 'does not enqueue a merge status recheck' do
+            expect(check_service_class).not_to receive(:new)
+
+            get(api(endpoint_path), params: { with_merge_status_recheck: true })
+
+            expect_successful_response_with_paginated_array
+            expect(mr_entity['merge_status']).to eq('unchecked')
+          end
+        end
+      end
+
       it_behaves_like 'issuable API rate-limited search' do
         let(:url) { endpoint_path }
         let(:issuable) { merge_request }
@@ -85,28 +106,67 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
           merge_request.mark_as_unchecked!
         end
 
-        context 'with merge status recheck projection' do
-          it 'checks mergeability asynchronously' do
-            expect_next_instances_of(check_service_class, (1..2)) do |service|
-              expect(service).not_to receive(:execute)
-              expect(service).to receive(:async_execute).and_call_original
+        context 'with a developer+ role' do
+          before do
+            project.add_developer(user2)
+          end
+
+          context 'with merge status recheck projection' do
+            it 'checks mergeability asynchronously' do
+              expect_next_instances_of(check_service_class, (1..2)) do |service|
+                expect(service).not_to receive(:execute)
+                expect(service).to receive(:async_execute).and_call_original
+              end
+
+              get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+              expect_successful_response_with_paginated_array
+              expect(mr_entity['merge_status']).to eq('checking')
             end
+          end
 
-            get(api(endpoint_path, user), params: { with_merge_status_recheck: true })
+          context 'without merge status recheck projection' do
+            it 'does not enqueue a merge status recheck' do
+              expect(check_service_class).not_to receive(:new)
 
-            expect_successful_response_with_paginated_array
-            expect(mr_entity['merge_status']).to eq('checking')
+              get api(endpoint_path, user2)
+
+              expect_successful_response_with_paginated_array
+              expect(mr_entity['merge_status']).to eq('unchecked')
+            end
           end
         end
 
-        context 'without merge status recheck projection' do
-          it 'does not enqueue a merge status recheck' do
-            expect(check_service_class).not_to receive(:new)
+        context 'with a reporter role' do
+          context 'with merge status recheck projection' do
+            it 'does not enqueue a merge status recheck' do
+              expect(check_service_class).not_to receive(:new)
 
-            get api(endpoint_path, user)
+              get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
-            expect_successful_response_with_paginated_array
-            expect(mr_entity['merge_status']).to eq('unchecked')
+              expect_successful_response_with_paginated_array
+              expect(mr_entity['merge_status']).to eq('unchecked')
+            end
+          end
+
+          context 'when restrict_merge_status_recheck FF is disabled' do
+            before do
+              stub_feature_flags(restrict_merge_status_recheck: false)
+            end
+
+            context 'with merge status recheck projection' do
+              it 'does enqueue a merge status recheck' do
+                expect_next_instances_of(check_service_class, (1..2)) do |service|
+                  expect(service).not_to receive(:execute)
+                  expect(service).to receive(:async_execute).and_call_original
+                end
+
+                get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+
+                expect_successful_response_with_paginated_array
+                expect(mr_entity['merge_status']).to eq('checking')
+              end
+            end
           end
         end
       end
@@ -247,6 +307,35 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/merge_requests')
+      end
+
+      context 'with approved param' do
+        let(:approved_mr) { create(:merge_request, target_project: project, source_project: project) }
+
+        before do
+          create(:approval, merge_request: approved_mr)
+        end
+
+        it 'returns only approved merge requests' do
+          path = endpoint_path + '?approved=yes'
+
+          get api(path, user)
+
+          expect_paginated_array_response([approved_mr.id])
+        end
+
+        it 'returns only non-approved merge requests' do
+          path = endpoint_path + '?approved=no'
+
+          get api(path, user)
+
+          expect_paginated_array_response([
+            merge_request_merged.id,
+            merge_request_locked.id,
+            merge_request_closed.id,
+            merge_request.id
+          ])
+        end
       end
 
       it 'returns an empty array if no issue matches milestone' do
@@ -494,7 +583,7 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
           create(:label_link, label: label2, target: merge_request2)
         end
 
-        it 'returns merge requests without any of the labels given', :aggregate_failures do
+        it 'returns merge requests without any of the labels given' do
           get api(endpoint_path, user), params: { not: { labels: ["#{label.title}, #{label2.title}"] } }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -505,7 +594,7 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
           end
         end
 
-        it 'returns merge requests without any of the milestones given', :aggregate_failures do
+        it 'returns merge requests without any of the milestones given' do
           get api(endpoint_path, user), params: { not: { milestone: milestone.title } }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -516,7 +605,7 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
           end
         end
 
-        it 'returns merge requests without the author given', :aggregate_failures do
+        it 'returns merge requests without the author given' do
           get api(endpoint_path, user), params: { not: { author_id: user2.id } }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -527,7 +616,7 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
           end
         end
 
-        it 'returns merge requests without the assignee given', :aggregate_failures do
+        it 'returns merge requests without the assignee given' do
           get api(endpoint_path, user), params: { not: { assignee_id: user2.id } }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -3448,8 +3537,13 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/subscribe' do
+    it_behaves_like 'POST request permissions for admin mode' do
+      let(:path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe" }
+      let(:params) { {} }
+    end
+
     it 'subscribes to a merge request' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['subscribed']).to eq(true)
@@ -3492,7 +3586,7 @@ RSpec.describe API::MergeRequests, feature_category: :source_code_management do
     end
 
     it 'returns 304 if not subscribed' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", admin, admin_mode: true)
 
       expect(response).to have_gitlab_http_status(:not_modified)
     end

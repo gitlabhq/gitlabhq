@@ -74,11 +74,13 @@ RSpec.describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:project,
-               :public,
-               :issues_private,
-               :snippets_private,
-               :merge_requests_private)
+        create(
+          :project,
+          :public,
+          :issues_private,
+          :snippets_private,
+          :merge_requests_private
+        )
       end
 
       it 'publicly excludes notes on merge requests' do
@@ -123,6 +125,51 @@ RSpec.describe NotesFinder do
       it 'shows only public notes when the current_user has guest access' do
         notes = described_class.new(guest_member, project: public_project).execute
         expect(notes).to contain_exactly public_note
+      end
+    end
+
+    context 'for notes from users who have been banned', :enable_admin_mode, feature_category: :instance_resiliency do
+      subject(:finder) { described_class.new(user, project: project).execute }
+
+      let_it_be(:banned_user) { create(:banned_user).user }
+      let!(:banned_note) { create(:note_on_issue, project: project, author: banned_user) }
+
+      context 'when :hidden_notes feature is not enabled' do
+        before do
+          stub_feature_flags(hidden_notes: false)
+        end
+
+        context 'when user is not an admin' do
+          it { is_expected.to include(banned_note) }
+        end
+
+        context 'when @current_user is nil' do
+          let(:user) { nil }
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when :hidden_notes feature is enabled' do
+        before do
+          stub_feature_flags(hidden_notes: true)
+        end
+
+        context 'when user is an admin' do
+          let(:user) { create(:admin) }
+
+          it { is_expected.to include(banned_note) }
+        end
+
+        context 'when user is not an admin' do
+          it { is_expected.not_to include(banned_note) }
+        end
+
+        context 'when @current_user is nil' do
+          let(:user) { nil }
+
+          it { is_expected.to be_empty }
+        end
       end
     end
 

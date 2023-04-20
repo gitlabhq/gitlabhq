@@ -40,6 +40,7 @@ class RegistrationsController < Devise::RegistrationsController
     set_resource_fields
 
     super do |new_user|
+      record_arkose_data
       accept_pending_invitations if new_user.persisted?
 
       persist_accepted_terms_if_required(new_user)
@@ -135,8 +136,10 @@ class RegistrationsController < Devise::RegistrationsController
     # after user confirms and comes back, he will be redirected
     store_location_for(:redirect, after_sign_up_path)
 
-    if custom_confirmation_enabled?
+    if identity_verification_enabled?
       session[:verification_user_id] = resource.id # This is needed to find the user on the identity verification page
+      User.sticking.stick_or_unstick_request(request.env, :user, resource.id)
+
       return identity_verification_redirect_path
     end
 
@@ -290,11 +293,16 @@ class RegistrationsController < Devise::RegistrationsController
     current_user
   end
 
-  def identity_verification_redirect_path
+  def record_arkose_data
     # overridden by EE module
   end
 
-  def custom_confirmation_enabled?
+  def identity_verification_enabled?
+    # overridden by EE module
+    false
+  end
+
+  def identity_verification_redirect_path
     # overridden by EE module
   end
 

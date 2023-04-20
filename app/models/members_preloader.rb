@@ -8,15 +8,12 @@ class MembersPreloader
   end
 
   def preload_all
-    user_associations = [:status]
-    user_associations << :webauthn_registrations if Feature.enabled?(:webauthn)
-
     ActiveRecord::Associations::Preloader.new(
       records: members,
       associations: [
         :source,
         :created_by,
-        { user: user_associations }
+        { user: [:status, :webauthn_registrations] }
       ]
     ).call
   end

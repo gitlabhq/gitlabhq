@@ -2,14 +2,8 @@
 
 - offset = defined?(first_line_number) ? first_line_number : 1
 - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
-- file_line_blame = Feature.enabled?(:file_line_blame)
-
-- if file_line_blame
-  - line_class = "js-line-links"
-  - blame_path = project_blame_path(@project, tree_join(@ref, blob.path))
-- else
-  - line_class = nil
-  - blame_path = nil
+- line_class = "js-line-links"
+- blame_path = project_blame_path(@project, tree_join(@ref, blob.path))
 
 - highlighted_blob = blob.present.highlight
 

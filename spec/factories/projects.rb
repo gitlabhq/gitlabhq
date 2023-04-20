@@ -535,4 +535,11 @@ FactoryBot.define do
   trait :in_subgroup do
     namespace factory: [:group, :nested]
   end
+
+  trait :readme do
+    custom_repo
+
+    name { 'gitlab-profile' }
+    files { { 'README.md' => 'Hello World' } }
+  end
 end

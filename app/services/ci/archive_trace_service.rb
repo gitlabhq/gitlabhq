@@ -45,28 +45,11 @@ module Ci
         return
       end
 
-      # TODO: Remove this logging once we confirmed new live trace architecture is functional.
-      # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667.
-      unless job.has_live_trace?
-        Sidekiq.logger.warn(class: worker_name,
-                            message: 'The job does not have live trace but going to be archived.',
-                            job_id: job.id)
-        return
-      end
-
       job.trace.archive!
       job.remove_pending_state!
 
       if job.job_artifacts_trace.present?
         job.project.execute_integrations(Gitlab::DataBuilder::ArchiveTrace.build(job), :archive_trace_hooks)
-      end
-
-      # TODO: Remove this logging once we confirmed new live trace architecture is functional.
-      # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667.
-      unless job.has_archived_trace?
-        Sidekiq.logger.warn(class: worker_name,
-                            message: 'The job does not have archived trace after archiving.',
-                            job_id: job.id)
       end
     rescue ::Gitlab::Ci::Trace::AlreadyArchivedError
       # It's already archived, thus we can safely ignore this exception.

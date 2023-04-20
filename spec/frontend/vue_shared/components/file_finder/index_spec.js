@@ -79,7 +79,7 @@ describe('File finder item spec', () => {
       expect(vm.$el.querySelector('.dropdown-input-search').classList).toContain('hidden');
     });
 
-    it('clear button resets searchText', async () => {
+    it('clear button resets searchText', () => {
       vm.searchText = 'index';
 
       vm.clearSearchInput();

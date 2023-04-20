@@ -62,7 +62,7 @@ You can access a test coverage report badge image by using the following link:
 https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
-You can define the regular expression for the [coverage report](../../ci/pipelines/settings.md#merge-request-test-coverage-results)
+You can define the regular expression for the [coverage report](../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr)
 that each job log is matched against.
 This means that each job in the pipeline can have the test coverage percentage value defined.
 
@@ -279,7 +279,7 @@ To add a new badge with a custom image to a group or project:
 1. Select **Add badge**.
 
 To learn how to use custom images generated through a pipeline, see the documentation on
-[accessing the latest job artifacts by URL](../../ci/pipelines/job_artifacts.md#access-the-latest-job-artifacts).
+[accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#from-a-url).
 
 ## Placeholders
 

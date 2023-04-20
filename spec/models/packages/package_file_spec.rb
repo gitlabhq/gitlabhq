@@ -178,6 +178,17 @@ RSpec.describe Packages::PackageFile, type: :model do
     describe '#with_debian_architecture_name' do
       it { expect(described_class.with_debian_architecture_name('mipsel')).to contain_exactly(debian_mipsel) }
     end
+
+    describe '#with_debian_unknown_since' do
+      let_it_be(:incoming) { create(:debian_incoming, project: project) }
+
+      before do
+        incoming.package_files.first.debian_file_metadatum.update! updated_at: 1.day.ago
+        incoming.package_files.second.update! updated_at: 1.day.ago, status: :error
+      end
+
+      it { expect(described_class.with_debian_unknown_since(1.hour.ago)).to contain_exactly(incoming.package_files.first) }
+    end
   end
 
   describe '.for_helm_with_channel' do

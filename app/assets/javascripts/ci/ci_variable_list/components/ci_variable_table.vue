@@ -175,12 +175,7 @@ export default {
       v-if="glFeatures.ciVariablesPages"
       class="ci-variable-actions gl-display-flex gl-justify-content-end gl-my-3"
     >
-      <gl-button
-        v-if="!isTableEmpty"
-        data-qa-selector="reveal_ci_variable_value_button"
-        @click="toggleHiddenState"
-        >{{ valuesButtonText }}</gl-button
-      >
+      <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{ valuesButtonText }}</gl-button>
       <gl-button
         v-gl-modal-directive="$options.modalId"
         class="gl-mx-3"
@@ -317,12 +312,7 @@ export default {
         @click="setSelectedVariable()"
         >{{ __('Add variable') }}</gl-button
       >
-      <gl-button
-        v-if="!isTableEmpty"
-        data-qa-selector="reveal_ci_variable_value_button"
-        @click="toggleHiddenState"
-        >{{ valuesButtonText }}</gl-button
-      >
+      <gl-button v-if="!isTableEmpty" @click="toggleHiddenState">{{ valuesButtonText }}</gl-button>
     </div>
     <div v-else class="gl-display-flex gl-justify-content-center gl-mt-6">
       <gl-keyset-pagination

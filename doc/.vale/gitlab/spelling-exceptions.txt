@@ -327,6 +327,7 @@ ETag
 ETags
 Etsy
 Excon
+exfiltrate
 exfiltration
 ExifTool
 expirable
@@ -392,6 +393,8 @@ Gitter
 GLab
 globals
 globbing
+globstar
+globstars
 Gmail
 Godep
 Golang
@@ -1055,6 +1058,7 @@ unencoded
 unencoder
 unencodes
 unencrypted
+unescaped
 unfollow
 unfollowed
 unfollows
@@ -1074,6 +1078,7 @@ unoptimize
 unoptimized
 unoptimizes
 unoptimizing
+unparsable
 unpatched
 unpause
 unprioritized

@@ -6,7 +6,6 @@ description: Distinct count of creator_id from projects with an active Jira Clou
 product_section: dev
 product_stage: manage
 product_group: integration
-product_category: integrations
 value_type: number
 status: active
 time_frame: all

@@ -7,7 +7,8 @@ module QA
         attr_accessor :cni_enabled
 
         def initialize
-          @image = 'registry.gitlab.com/gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci/releases/v0.9.1'
+          @image = "#{QA::Runtime::Env.container_registry_host}/
+            gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci/releases/v0.9.1"
           @name = 'k3s'
           @cni_enabled = false
           super

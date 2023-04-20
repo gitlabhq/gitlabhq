@@ -68,7 +68,7 @@ describe('Pipeline config reference card', () => {
       });
     };
 
-    it('tracks help page links', async () => {
+    it('tracks help page links', () => {
       const {
         CI_EXAMPLES_LINK,
         CI_HELP_LINK,

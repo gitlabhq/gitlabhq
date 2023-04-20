@@ -8,6 +8,7 @@ import {
   PROJECT_TYPE,
   DEFAULT_MEMBERSHIP,
   DEFAULT_SORT,
+  STATUS_ONLINE,
 } from '~/ci/runner/constants';
 
 const mockSearch = {
@@ -111,7 +112,7 @@ describe('RunnerTypeTabs', () => {
   it('Renders a count next to each tab', () => {
     const mockVariables = {
       paused: true,
-      status: 'ONLINE',
+      status: STATUS_ONLINE,
     };
 
     createComponent({

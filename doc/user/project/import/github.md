@@ -7,7 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Import your project from GitHub to GitLab **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378267) in GitLab 15.11, GitLab instances behind proxies no longer require `github.com` and `api.github.com` entries in the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
@@ -52,17 +54,16 @@ To import projects from GitHub:
   are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
   may have to add it on existing accounts.
 
-See also [Branch protection rules and project settings](#branch-protection-rules-and-project-settings) for additional
-prerequisites for those imports.
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an OmniAuth provider, ensure that the URL
+perimeter is specified in the [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
 
 ### Importing from GitHub Enterprise to self-managed GitLab
 
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
-- If GitLab is behind an HTTP/HTTPS proxy, you must populate the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains)
-  with `github.com` and `api.github.com` to solve the hostname. For more information, read the issue
-  [Importing a GitHub project requires DNS resolution even when behind a proxy](https://gitlab.com/gitlab-org/gitlab/-/issues/37941).
+- For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
+  [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
 ### Importing from GitHub.com to self-managed GitLab
 
@@ -80,10 +81,9 @@ Before you begin, ensure that any GitHub user you want to map to a GitLab user h
 [publicly visible email address](https://docs.github.com/en/rest/users#get-a-user) on GitHub.
 
 If you are importing to GitLab.com, you can alternatively import GitHub repositories using a [personal access token](#use-a-github-token).
-We do not recommend this method, as it does not associate all user activity (such as issues and pull requests) with matching GitLab users.
 
-User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
-the user account that is performing the import.
+If a GitHub user's public email address doesn't match any GitLab user email address, the user's activity is associated with the user account that is
+performing the import.
 
 NOTE:
 If you are using a self-managed GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
@@ -101,9 +101,7 @@ Prerequisite:
 
 - Authentication token with administrator access.
 
-Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
-you can use a personal access token to import your project from GitHub, but this method cannot
-associate all user activity (such as issues and pull requests) with matching GitLab users.
+If you are a GitLab.com user, you can use a personal access token to import your project from GitHub.
 If you are an administrator of a self-managed GitLab instance or if you are importing from
 GitHub Enterprise, you cannot use a personal access token.
 The [GitHub integration method (above)](#use-the-github-integration) is recommended for all users.
@@ -255,10 +253,7 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** (1) | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a Premium license, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
-
-1. To successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** rule, you must add to the parent group in GitLab
-   the users that are allowed to bypass required pull requests before you begin importing.
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch) **(PREMIUM)**. Without a **Premium** subscription, the list of users that are allowed to push is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue
@@ -282,7 +277,7 @@ These GitHub collaborator roles are mapped to these GitLab [member roles](../../
 
 GitHub Enterprise Cloud has
 [custom repository roles](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-peoples-access-to-your-organization-with-roles/about-custom-repository-roles).
-These roles aren't supported and cause partial imports.
+These roles aren't supported and cause partially completed imports.
 
 To import GitHub collaborators, you must have at least the Write role on the GitHub project. Otherwise collaborators import is skipped.
 

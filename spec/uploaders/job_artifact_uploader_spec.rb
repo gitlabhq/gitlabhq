@@ -10,9 +10,9 @@ RSpec.describe JobArtifactUploader do
   subject { uploader }
 
   it_behaves_like "builds correct paths",
-                  store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z],
-                  cache_dir: %r[artifacts/tmp/cache],
-                  work_dir: %r[artifacts/tmp/work]
+    store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z],
+    cache_dir: %r[artifacts/tmp/cache],
+    work_dir: %r[artifacts/tmp/work]
 
   context "object store is REMOTE" do
     before do
@@ -22,7 +22,7 @@ RSpec.describe JobArtifactUploader do
     include_context 'with storage', described_class::Store::REMOTE
 
     it_behaves_like "builds correct paths",
-                    store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z]
+      store_dir: %r[\h{2}/\h{2}/\h{64}/\d{4}_\d{1,2}_\d{1,2}/\d+/\d+\z]
 
     describe '#cdn_enabled_url' do
       it 'returns URL and false' do

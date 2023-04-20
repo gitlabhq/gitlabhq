@@ -416,7 +416,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         initialTitleText: issue.title,
         initialDescriptionHtml: '<p dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
-        initialTaskStatus: '0 of 0 checklist items completed',
+        initialTaskCompletionStatus: { completed_count: 0, count: 0 },
         issueType: 'issue',
         iid: issue.iid.to_s,
         isHidden: false
@@ -692,6 +692,39 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
       it 'returns icon with tooltip' do
         expect(helper.hidden_issuable_icon(issuable)).to eq("<span class=\"has-tooltip\" title=\"This merge request is hidden because its author has been banned\">#{mock_svg}</span>")
+      end
+    end
+  end
+
+  describe '#issuable_type_selector_data' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project) { create(:project) }
+
+    where(:issuable_type, :issuable_display_type, :is_issue_allowed, :is_incident_allowed) do
+      :issue         | 'issue'    | true  | false
+      :incident      | 'incident' | false | true
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      before do
+        allow(helper).to receive(:create_issue_type_allowed?).with(project, :issue).and_return(is_issue_allowed)
+        allow(helper).to receive(:create_issue_type_allowed?).with(project, :incident).and_return(is_incident_allowed)
+        assign(:project, project)
+      end
+
+      it 'returns the correct data for the issuable type selector' do
+        expected_data = {
+          selected_type: issuable_display_type,
+          is_issue_allowed: is_issue_allowed.to_s,
+          is_incident_allowed: is_incident_allowed.to_s,
+          issue_path: new_project_issue_path(project),
+          incident_path: new_project_issue_path(project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
+        }
+
+        expect(helper.issuable_type_selector_data(issuable)).to match(expected_data)
       end
     end
   end

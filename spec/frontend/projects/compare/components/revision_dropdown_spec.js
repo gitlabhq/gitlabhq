@@ -78,7 +78,7 @@ describe('RevisionDropdown component', () => {
     });
   });
 
-  it('shows alert message on error', async () => {
+  it('shows an alert on error', async () => {
     axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
     createComponent();
@@ -104,7 +104,7 @@ describe('RevisionDropdown component', () => {
   });
 
   describe('search', () => {
-    it('shows alert message on error', async () => {
+    it('shows alert on error', async () => {
       axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
 
       createComponent();

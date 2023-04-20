@@ -116,7 +116,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :team_pl
         include_examples "XSS prevention", lang
 
         include_examples "XSS prevention",
-                         "#{lang} data-meta=\"foo-bar-kux\"&lt;script&gt;alert(1)&lt;/script&gt;"
+          "#{lang} data-meta=\"foo-bar-kux\"&lt;script&gt;alert(1)&lt;/script&gt;"
 
         include_examples "XSS prevention",
           "#{lang} data-meta=\"foo-bar-kux\"<script>alert(1)</script>"

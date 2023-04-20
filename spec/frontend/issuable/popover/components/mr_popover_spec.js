@@ -95,7 +95,7 @@ describe('MR Popover', () => {
       expect(wrapper.text()).toContain('foo/bar!1');
     });
 
-    it('shows CI Icon if there is pipeline data', async () => {
+    it('shows CI Icon if there is pipeline data', () => {
       expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
     });
   });
@@ -108,7 +108,7 @@ describe('MR Popover', () => {
       return waitForPromises();
     });
 
-    it('does not show CI icon if there is no pipeline data', async () => {
+    it('does not show CI icon if there is no pipeline data', () => {
       expect(wrapper.findComponent(CiIcon).exists()).toBe(false);
     });
   });

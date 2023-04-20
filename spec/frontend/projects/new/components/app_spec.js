@@ -7,7 +7,7 @@ describe('Experimental new project creation app', () => {
 
   const createComponent = (propsData) => {
     wrapper = shallowMount(App, {
-      propsData: { projectsUrl: '/dashboard/projects', ...propsData },
+      propsData: { rootPath: '/', projectsUrl: '/dashboard/projects', ...propsData },
     });
   };
 
@@ -45,6 +45,7 @@ describe('Experimental new project creation app', () => {
     createComponent();
 
     expect(findNewNamespacePage().props('initialBreadcrumbs')).toEqual([
+      { href: '/', text: 'Your work' },
       { href: '/dashboard/projects', text: 'Projects' },
       { href: '#', text: 'New project' },
     ]);

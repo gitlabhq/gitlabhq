@@ -30,7 +30,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
   let(:github_identifiers) do
     {
       some_id: 1,
-      some_type: '_some_type_'
+      some_type: '_some_type_',
+      object_type: 'dummy'
     }
   end
 
@@ -52,7 +53,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
       def github_identifiers
         {
           some_id: 1,
-          some_type: '_some_type_'
+          some_type: '_some_type_',
+          object_type: 'dummy'
         }
       end
     end

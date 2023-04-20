@@ -7,14 +7,13 @@ module Atlassian
         expose :id do |branch|
           Digest::SHA256.hexdigest(branch.name)
         end
-        expose :issueKeys do |branch|
-          JiraIssueKeyExtractor.new(branch.name).issue_keys
+        expose :issueKeys do |branch, options|
+          JiraIssueKeyExtractors::Branch.new(options[:project], branch.name).issue_keys
         end
         expose :name
         expose :lastCommit, using: JiraConnect::Serializers::CommitEntity do |branch, options|
           options[:project].commit(branch.dereferenced_target)
         end
-
         expose :url do |branch, options|
           project_commits_url(options[:project], branch.name)
         end

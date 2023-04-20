@@ -66,11 +66,13 @@ RSpec.describe UpdateHeadPipelineForMergeRequestWorker, feature_category: :conti
 
     context 'when a merge request pipeline exists' do
       let_it_be(:merge_request_pipeline) do
-        create(:ci_pipeline,
-               project: project,
-               source: :merge_request_event,
-               sha: latest_sha,
-               merge_request: merge_request)
+        create(
+          :ci_pipeline,
+          project: project,
+          source: :merge_request_event,
+          sha: latest_sha,
+          merge_request: merge_request
+        )
       end
 
       it 'sets the merge request pipeline as the head pipeline' do

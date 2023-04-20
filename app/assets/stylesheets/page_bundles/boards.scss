@@ -208,14 +208,10 @@
 }
 
 .boards-sidebar {
-  top: $header-height !important;
+  top: $calc-application-header-height !important;
   height: auto;
-  bottom: 0;
+  bottom: $calc-application-footer-height;
   padding-bottom: 0.5rem;
-
-  .with-performance-bar & {
-    top: calc(#{$header-height} + #{$performance-bar-height}) !important;
-  }
 
   .sidebar-collapsed-icon {
     @include gl-display-none;

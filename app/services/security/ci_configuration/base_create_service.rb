@@ -59,7 +59,8 @@ module Security
         YAML.safe_load(@gitlab_ci_yml) if @gitlab_ci_yml
       rescue Psych::BadAlias
         raise Gitlab::Graphql::Errors::MutationError,
-              ".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."
+        Gitlab::Utils::ErrorMessage.to_user_facing(
+          _(".gitlab-ci.yml with aliases/anchors is not supported. Please change the CI configuration manually."))
       rescue Psych::Exception => e
         Gitlab::AppLogger.error("Failed to process existing .gitlab-ci.yml: #{e.message}")
         raise Gitlab::Graphql::Errors::MutationError,

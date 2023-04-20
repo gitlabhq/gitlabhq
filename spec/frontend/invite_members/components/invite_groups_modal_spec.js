@@ -12,6 +12,12 @@ import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
+import {
+  GROUP_MODAL_TO_GROUP_ALERT_BODY,
+  GROUP_MODAL_TO_GROUP_ALERT_LINK,
+  GROUP_MODAL_TO_PROJECT_ALERT_BODY,
+  GROUP_MODAL_TO_PROJECT_ALERT_LINK,
+} from '~/invite_members/constants';
 import { propsData, sharedGroup } from '../mock_data/group_modal';
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
@@ -90,6 +96,26 @@ describe('InviteGroupsModal', () => {
       createComponent();
 
       expect(findInviteGroupAlert().exists()).toBe(false);
+    });
+
+    it('shows the user limit notification alert with correct link and text for group', () => {
+      createComponent({ freeUserCapEnabled: true });
+
+      expect(findInviteGroupAlert().props()).toMatchObject({
+        name: propsData.name,
+        notificationText: GROUP_MODAL_TO_GROUP_ALERT_BODY,
+        notificationLink: GROUP_MODAL_TO_GROUP_ALERT_LINK,
+      });
+    });
+
+    it('shows the user limit notification alert with correct link and text for project', () => {
+      createComponent({ freeUserCapEnabled: true, isProject: true });
+
+      expect(findInviteGroupAlert().props()).toMatchObject({
+        name: propsData.name,
+        notificationText: GROUP_MODAL_TO_PROJECT_ALERT_BODY,
+        notificationLink: GROUP_MODAL_TO_PROJECT_ALERT_LINK,
+      });
     });
   });
 

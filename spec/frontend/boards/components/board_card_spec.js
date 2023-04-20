@@ -1,8 +1,10 @@
 import { GlLabel } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
+import VueApollo from 'vue-apollo';
 
+import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import { inactiveId } from '~/boards/constants';
@@ -14,6 +16,14 @@ describe('Board card', () => {
   let mockActions;
 
   Vue.use(Vuex);
+  Vue.use(VueApollo);
+
+  const mockSetActiveBoardItemResolver = jest.fn();
+  const mockApollo = createMockApollo([], {
+    Mutation: {
+      setActiveBoardItem: mockSetActiveBoardItemResolver,
+    },
+  });
 
   const createStore = ({ initialState = {} } = {}) => {
     mockActions = {
@@ -36,11 +46,11 @@ describe('Board card', () => {
   const mountComponent = ({
     propsData = {},
     provide = {},
-    mountFn = shallowMount,
     stubs = { BoardCardInner },
     item = mockIssue,
   } = {}) => {
-    wrapper = mountFn(BoardCard, {
+    wrapper = shallowMountExtended(BoardCard, {
+      apolloProvider: mockApollo,
       stubs: {
         ...stubs,
         BoardCardInner,
@@ -56,9 +66,9 @@ describe('Board card', () => {
         groupId: null,
         rootPath: '/',
         scopedLabelsAvailable: false,
+        isIssueBoard: true,
         isEpicBoard: false,
         issuableType: 'issue',
-        isProjectBoard: false,
         isGroupBoard: true,
         disabled: false,
         isApolloBoard: false,
@@ -96,7 +106,7 @@ describe('Board card', () => {
     });
   });
 
-  it('should not highlight the card by default', async () => {
+  it('should not highlight the card by default', () => {
     createStore();
     mountComponent();
 
@@ -104,7 +114,7 @@ describe('Board card', () => {
     expect(wrapper.classes()).not.toContain('multi-select');
   });
 
-  it('should highlight the card with a correct style when selected', async () => {
+  it('should highlight the card with a correct style when selected', () => {
     createStore({
       initialState: {
         activeId: mockIssue.id,
@@ -116,7 +126,7 @@ describe('Board card', () => {
     expect(wrapper.classes()).not.toContain('multi-select');
   });
 
-  it('should highlight the card with a correct style when multi-selected', async () => {
+  it('should highlight the card with a correct style when multi-selected', () => {
     createStore({
       initialState: {
         activeId: inactiveId,
@@ -216,6 +226,27 @@ describe('Board card', () => {
         expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
       );
       expect(wrapper.attributes('style')).toBeUndefined();
+    });
+  });
+
+  describe('Apollo boards', () => {
+    beforeEach(async () => {
+      createStore();
+      mountComponent({ provide: { isApolloBoard: true } });
+      await nextTick();
+    });
+
+    it('set active board item on client when clicking on card', async () => {
+      await selectCard();
+
+      expect(mockSetActiveBoardItemResolver).toHaveBeenCalledWith(
+        {},
+        {
+          boardItem: mockIssue,
+        },
+        expect.anything(),
+        expect.anything(),
+      );
     });
   });
 });

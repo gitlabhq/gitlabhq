@@ -13,8 +13,7 @@ RSpec.describe Sidebars::Projects::Menus::SnippetsMenu, feature_category: :navig
     let(:menu) { subject }
     let(:extra_attrs) do
       {
-        super_sidebar_parent: ::Sidebars::Projects::Menus::RepositoryMenu,
-        super_sidebar_before: :contributors,
+        super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
         item_id: :project_snippets
       }
     end

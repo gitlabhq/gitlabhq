@@ -1,4 +1,4 @@
-import { languageFilterData } from '~/search/sidebar/constants/language_filter_data';
+import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 
 export const convertFiltersData = (rawBuckets) =>
   rawBuckets.reduce(

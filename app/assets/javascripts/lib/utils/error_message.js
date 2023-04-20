@@ -1,20 +1,15 @@
-export const USER_FACING_ERROR_MESSAGE_PREFIX = 'UF:';
-
-const getMessageFromError = (error = '') => {
-  return error.message || error;
-};
-
-export const parseErrorMessage = (error = '') => {
-  const messageString = getMessageFromError(error);
-
-  if (messageString.startsWith(USER_FACING_ERROR_MESSAGE_PREFIX)) {
-    return {
-      message: messageString.replace(USER_FACING_ERROR_MESSAGE_PREFIX, '').trim(),
-      userFacing: true,
-    };
-  }
-  return {
-    message: messageString,
-    userFacing: false,
-  };
+/**
+ * Utility to parse an error object returned from API.
+ *
+ *
+ * @param { Object } error - An error object directly from API response
+ * @param { string } error.message - The error message, returned from API.
+ * @param { string } defaultMessage - Default user-facing error message
+ * @returns { string } - A transformed user-facing error message, or defaultMessage
+ */
+export const parseErrorMessage = (error = {}, defaultMessage = '') => {
+  const messageString = error.message || '';
+  return messageString.startsWith(window.gon.uf_error_prefix)
+    ? messageString.replace(window.gon.uf_error_prefix, '').trim()
+    : defaultMessage;
 };

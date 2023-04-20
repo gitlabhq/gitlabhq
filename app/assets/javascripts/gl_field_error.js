@@ -54,6 +54,7 @@ import { __ } from '~/locale';
 
 const errorMessageClass = 'gl-field-error';
 const inputErrorClass = 'gl-field-error-outline';
+const validInputHintClass = '.gl-field-hint-valid';
 const errorAnchorSelector = '.gl-field-error-anchor';
 const ignoreInputSelector = '.gl-field-error-ignore';
 
@@ -151,6 +152,7 @@ export default class GlFieldError {
   renderInvalid() {
     this.inputElement.addClass(inputErrorClass);
     this.scopedSiblings.addClass('hidden');
+    this.inputElement.parents('.form-group').find(validInputHintClass).addClass('hidden');
     return this.fieldErrorElement.removeClass('hidden');
   }
 

@@ -99,64 +99,11 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
       end
     end
 
-    context 'when :new_header_search is true' do
+    context 'when header search' do
       context 'search code within refs' do
         let(:ref_name) { 'v1.0.0' }
 
         before do
-          # This feature is disabled by default in spec_helper.rb.
-          # We missed a feature breaking bug, so to prevent this regression, testing both scenarios for this spec.
-          # This can be removed as part of closing https://gitlab.com/gitlab-org/gitlab/-/issues/339348.
-          stub_feature_flags(new_header_search: true)
-          visit(project_tree_path(project, ref_name))
-
-          submit_search('gitlab-grack')
-          select_search_scope('Code')
-        end
-
-        it 'shows ref switcher in code result summary' do
-          expect(find('.ref-selector')).to have_text(ref_name)
-        end
-
-        it 'persists branch name across search' do
-          find('.gl-search-box-by-click-search-button').click
-          expect(find('.ref-selector')).to have_text(ref_name)
-        end
-
-        #  this example is use to test the design that the refs is not
-        #  only represent the branch as well as the tags.
-        it 'ref switcher list all the branches and tags' do
-          find('.ref-selector').click
-          wait_for_requests
-
-          page.within('.ref-selector') do
-            expect(page).to have_selector('li', text: 'add-ipython-files')
-            expect(page).to have_selector('li', text: 'v1.0.0')
-          end
-        end
-
-        it 'search result changes when refs switched' do
-          expect(find('.results')).not_to have_content('path = gitlab-grack')
-
-          find('.ref-selector').click
-          wait_for_requests
-
-          select_listbox_item('add-ipython-files')
-
-          expect(page).to have_selector('.results', text: 'path = gitlab-grack')
-        end
-      end
-    end
-
-    context 'when :new_header_search is false' do
-      context 'search code within refs' do
-        let(:ref_name) { 'v1.0.0' }
-
-        before do
-          # This feature is disabled by default in spec_helper.rb.
-          # We missed a feature breaking bug, so to prevent this regression, testing both scenarios for this spec.
-          # This can be removed as part of closing https://gitlab.com/gitlab-org/gitlab/-/issues/339348.
-          stub_feature_flags(new_header_search: false)
           visit(project_tree_path(project, ref_name))
 
           submit_search('gitlab-grack')

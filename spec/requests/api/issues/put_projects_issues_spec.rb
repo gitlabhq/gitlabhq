@@ -80,6 +80,11 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update only title' do
+    it_behaves_like 'PUT request permissions for admin mode' do
+      let(:path) { "/projects/#{project.id}/issues/#{confidential_issue.iid}" }
+      let(:params) { { title: updated_title } }
+    end
+
     it 'updates a project issue', :aggregate_failures do
       put api_for_user, params: { title: updated_title }
 
@@ -88,7 +93,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns 404 error if issue iid not found' do
-      put api("/projects/#{project.id}/issues/44444", user), params: { title: updated_title }
+      put api("/projects/#{project.id}/issues/#{non_existing_record_id}", user), params: { title: updated_title }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

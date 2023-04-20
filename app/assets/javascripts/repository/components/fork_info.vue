@@ -1,13 +1,15 @@
 <script>
 import { GlIcon, GlLink, GlSkeletonLoader, GlLoadingIcon, GlSprintf, GlButton } from '@gitlab/ui';
 import { s__, sprintf, n__ } from '~/locale';
-import { createAlert } from '~/alert';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import syncForkMutation from '~/repository/mutations/sync_fork.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import eventHub from '../event_hub';
 import {
   POLLING_INTERVAL_DEFAULT,
   POLLING_INTERVAL_BACKOFF,
   FIVE_MINUTES_IN_MS,
+  FORK_UPDATED_EVENT,
 } from '../constants';
 import forkDetailsQuery from '../queries/fork_details.query.graphql';
 import ConflictsModal from './fork_sync_conflicts_modal.vue';
@@ -22,7 +24,11 @@ export const i18n = {
   behindAhead: s__('ForksDivergence|%{messages} the upstream repository.'),
   limitedVisibility: s__('ForksDivergence|Source project has a limited visibility.'),
   error: s__('ForksDivergence|Failed to fetch fork details. Try again later.'),
-  sync: s__('ForksDivergence|Update fork'),
+  updateFork: s__('ForksDivergence|Update fork'),
+  createMergeRequest: s__('ForksDivergence|Create merge request'),
+  successMessage: s__(
+    'ForksDivergence|Successfully fetched and merged from the upstream repository.',
+  ),
 };
 
 export default {
@@ -55,7 +61,16 @@ export default {
         });
       },
       result({ loading }) {
-        this.handlePolingInterval(loading);
+        if (!loading && this.isSyncing) {
+          this.increasePollInterval();
+        }
+        if (this.isForkUpdated) {
+          createAlert({
+            message: this.$options.i18n.successMessage,
+            variant: VARIANT_INFO,
+          });
+          eventHub.$emit(FORK_UPDATED_EVENT);
+        }
       },
       pollInterval() {
         return this.pollInterval;
@@ -86,6 +101,11 @@ export default {
       required: false,
       default: '',
     },
+    canSyncBranch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     aheadComparePath: {
       type: String,
       required: false,
@@ -96,12 +116,21 @@ export default {
       required: false,
       default: '',
     },
+    createMrPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    canUserCreateMrInFork: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       project: {},
       currentPollInterval: null,
-      isSyncTriggered: false,
     };
   },
   computed: {
@@ -125,6 +154,9 @@ export default {
     },
     isSyncing() {
       return this.forkDetails?.isSyncing;
+    },
+    isForkUpdated() {
+      return this.isUpToDate && this.currentPollInterval;
     },
     ahead() {
       return this.project?.forkDetails?.ahead;
@@ -163,11 +195,15 @@ export default {
     hasBehindAheadMessage() {
       return this.behindAheadMessage.length > 0;
     },
-    isSyncButtonAvailable() {
+    hasUpdateButton() {
       return (
         this.glFeatures.synchronizeFork &&
+        this.canSyncBranch &&
         ((this.sourceName && this.forkDetails && this.behind) || this.isUnknownDivergence)
       );
+    },
+    hasCreateMrButton() {
+      return this.canUserCreateMrInFork && this.ahead && this.createMrPath;
     },
     forkDivergenceMessage() {
       if (!this.forkDetails) {
@@ -186,9 +222,8 @@ export default {
   },
   watch: {
     hasConflicts(newVal) {
-      if (newVal && this.isSyncTriggered) {
+      if (newVal && this.currentPollInterval) {
         this.showConflictsModal();
-        this.isSyncTriggered = false;
       }
     },
   },
@@ -227,7 +262,6 @@ export default {
       this.$refs.modal.show();
     },
     startSyncing() {
-      this.isSyncTriggered = true;
       this.syncForkWithPolling();
     },
     checkIfSyncIsPossible() {
@@ -237,18 +271,11 @@ export default {
         this.startSyncing();
       }
     },
-    handlePolingInterval(loading) {
-      if (!loading && this.isSyncing) {
-        const backoff = POLLING_INTERVAL_BACKOFF;
-        const interval = this.currentPollInterval;
-        const newInterval = Math.min(interval * backoff, FIVE_MINUTES_IN_MS);
-        this.currentPollInterval = this.currentPollInterval
-          ? newInterval
-          : POLLING_INTERVAL_DEFAULT;
-      }
-      if (this.currentPollInterval === FIVE_MINUTES_IN_MS) {
-        this.$apollo.queries.forkDetailsQuery.stopPolling();
-      }
+    increasePollInterval() {
+      const backoff = POLLING_INTERVAL_BACKOFF;
+      const interval = this.currentPollInterval;
+      const newInterval = Math.min(interval * backoff, FIVE_MINUTES_IN_MS);
+      this.currentPollInterval = this.currentPollInterval ? newInterval : POLLING_INTERVAL_DEFAULT;
     },
   },
 };
@@ -283,16 +310,29 @@ export default {
         >
           {{ $options.i18n.inaccessibleProject }}
         </div>
-        <gl-button
-          v-if="isSyncButtonAvailable"
-          :disabled="forkDetails.isSyncing"
-          @click="checkIfSyncIsPossible"
-        >
-          <gl-loading-icon v-if="forkDetails.isSyncing" class="gl-display-inline" size="sm" />
-          <span>{{ $options.i18n.sync }}</span>
-        </gl-button>
+        <div class="gl-display-flex gl-xs-display-none!">
+          <gl-button
+            v-if="hasCreateMrButton"
+            class="gl-ml-4"
+            :href="createMrPath"
+            data-testid="create-mr-button"
+          >
+            <span>{{ $options.i18n.createMergeRequest }}</span>
+          </gl-button>
+          <gl-button
+            v-if="hasUpdateButton"
+            class="gl-ml-4"
+            :disabled="forkDetails.isSyncing"
+            data-testid="update-fork-button"
+            @click="checkIfSyncIsPossible"
+          >
+            <gl-loading-icon v-if="forkDetails.isSyncing" class="gl-display-inline" size="sm" />
+            <span>{{ $options.i18n.updateFork }}</span>
+          </gl-button>
+        </div>
         <conflicts-modal
           ref="modal"
+          :selected-branch="selectedBranch"
           :source-name="sourceName"
           :source-path="sourcePath"
           :source-default-branch="sourceDefaultBranch"

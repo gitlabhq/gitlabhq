@@ -11,18 +11,9 @@ RSpec.describe Projects::AllMergeRequestsCountService, :use_clean_rails_memory_s
 
   describe '#count' do
     it 'returns the number of all merge requests' do
-      create(:merge_request,
-             :opened,
-             source_project: project,
-             target_project: project)
-      create(:merge_request,
-             :closed,
-             source_project: project,
-             target_project: project)
-      create(:merge_request,
-             :merged,
-             source_project: project,
-             target_project: project)
+      create(:merge_request, :opened, source_project: project, target_project: project)
+      create(:merge_request, :closed, source_project: project, target_project: project)
+      create(:merge_request, :merged, source_project: project, target_project: project)
 
       expect(subject.count).to eq(3)
     end

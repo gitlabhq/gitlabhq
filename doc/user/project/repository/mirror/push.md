@@ -2,7 +2,6 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-disqus_identifier: 'https://docs.gitlab.com/ee/workflow/repository_mirroring.html'
 ---
 
 # Push mirroring **(FREE)**
@@ -196,4 +195,4 @@ If it isn't working correctly, a red `error` tag appears, and shows the error me
 
 ## Related topics
 
-- [Remote mirrors API](../../../../api/remote_mirrors.md).
+- [Remote mirrors API](../../../../api/remote_mirrors.md)

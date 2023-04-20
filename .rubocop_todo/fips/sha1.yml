@@ -30,7 +30,6 @@ Fips/SHA1:
     - 'ee/spec/lib/gitlab/ci/reports/security/locations/dast_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/security/locations/dependency_scanning_spec.rb'
     - 'ee/spec/migrations/update_vulnerability_occurrences_location_spec.rb'
-    - 'ee/spec/models/merge_train_spec.rb'
     - 'ee/spec/models/resource_weight_event_spec.rb'
     - 'ee/spec/models/vulnerabilities/finding_signature_spec.rb'
     - 'ee/spec/models/vulnerabilities/finding_spec.rb'

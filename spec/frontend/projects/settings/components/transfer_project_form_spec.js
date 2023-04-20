@@ -64,17 +64,17 @@ describe('Transfer project form', () => {
       expect(findTransferLocations().props('value')).toEqual(selectedItem);
     });
 
-    it('emits the `selectTransferLocation` event when a namespace is selected', async () => {
+    it('emits the `selectTransferLocation` event when a namespace is selected', () => {
       const args = [selectedItem.id];
 
       expect(wrapper.emitted('selectTransferLocation')).toEqual([args]);
     });
 
-    it('enables the confirm button', async () => {
+    it('enables the confirm button', () => {
       expect(findConfirmDanger().attributes('disabled')).toBeUndefined();
     });
 
-    it('clicking the confirm button emits the `confirm` event', async () => {
+    it('clicking the confirm button emits the `confirm` event', () => {
       findConfirmDanger().vm.$emit('confirm');
 
       expect(wrapper.emitted('confirm')).toBeDefined();

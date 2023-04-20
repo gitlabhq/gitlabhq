@@ -42,6 +42,7 @@ class Project < ApplicationRecord
   include BlocksUnsafeSerialization
   include Subquery
   include IssueParent
+  include UpdatedAtFilterable
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -168,6 +169,7 @@ class Project < ApplicationRecord
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
+  has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 
@@ -222,6 +224,7 @@ class Project < ApplicationRecord
   has_one :zentao_integration, class_name: 'Integrations::Zentao'
 
   has_one :wiki_repository, class_name: 'Projects::WikiRepository', inverse_of: :project
+  has_one :design_management_repository, class_name: 'DesignManagement::Repository', inverse_of: :project
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,
@@ -258,6 +261,8 @@ class Project < ApplicationRecord
   has_many :debian_distributions,
            class_name: 'Packages::Debian::ProjectDistribution',
            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :npm_metadata_caches,
+           class_name: 'Packages::Npm::MetadataCache'
   has_one :packages_cleanup_policy,
           class_name: 'Packages::Cleanup::Policy',
           inverse_of: :project
@@ -275,6 +280,7 @@ class Project < ApplicationRecord
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
   has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
+  has_one :service_desk_custom_email_credential, class_name: 'ServiceDesk::CustomEmailCredential'
 
   # Merge requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -491,6 +497,7 @@ class Project < ApplicationRecord
            to: :project_setting, allow_nil: true
 
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?,
+           :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
            to: :project_setting
 
   delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :project_setting
@@ -499,7 +506,7 @@ class Project < ApplicationRecord
   delegate :previous_default_branch, :previous_default_branch=, to: :project_setting
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
-  delegate :add_member, :add_members, to: :team
+  delegate :add_member, :add_members, :member?, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role, to: :team
   delegate :group_runners_enabled, :group_runners_enabled=, to: :ci_cd_settings, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
@@ -1579,7 +1586,7 @@ class Project < ApplicationRecord
   end
 
   def new_issuable_address(author, address_type)
-    return unless Gitlab::IncomingEmail.supports_issue_creation? && author
+    return unless Gitlab::Email::IncomingEmail.supports_issue_creation? && author
 
     # check since this can come from a request parameter
     return unless %w(issue merge_request).include?(address_type)
@@ -1590,7 +1597,7 @@ class Project < ApplicationRecord
 
     # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-issue@localhost.com
     # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-merge-request@localhost.com
-    Gitlab::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
+    Gitlab::Email::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
   end
 
   def build_commit_note(commit)
@@ -1624,7 +1631,7 @@ class Project < ApplicationRecord
   end
 
   def external_issue_reference_pattern
-    external_issue_tracker.class.reference_pattern(only_long: issues_enabled?)
+    external_issue_tracker.reference_pattern(only_long: issues_enabled?)
   end
 
   def default_issues_tracker?
@@ -1664,9 +1671,7 @@ class Project < ApplicationRecord
   end
 
   def disabled_integrations
-    disabled_integrations = []
-    disabled_integrations << 'google_play' unless Feature.enabled?(:google_play_integration, self)
-    disabled_integrations
+    []
   end
 
   def find_or_initialize_integration(name)
@@ -2060,7 +2065,7 @@ class Project < ApplicationRecord
   end
 
   def group_runners
-    @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_group_of_project(self.id) : Ci::Runner.none
+    @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_groups_of_project(self.id) : Ci::Runner.none
   end
 
   def all_runners
@@ -2160,6 +2165,10 @@ class Project < ApplicationRecord
     pages_url_for(project_setting.pages_unique_domain)
   end
 
+  def pages_unique_host
+    URI(pages_unique_url).host
+  end
+
   def pages_namespace_url
     pages_url_for(pages_subdomain)
   end
@@ -2237,7 +2246,7 @@ class Project < ApplicationRecord
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)
-    ProjectCacheWorker.perform_async(self.id, [], [:repository_size])
+    ProjectCacheWorker.perform_async(self.id, [], [:repository_size, :wiki_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
     enqueue_record_project_target_platforms
@@ -2399,6 +2408,8 @@ class Project < ApplicationRecord
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s)
       .append(key: 'CI_SERVER_PROTOCOL', value: Gitlab.config.gitlab.protocol)
+      .append(key: 'CI_SERVER_SHELL_SSH_HOST', value: Gitlab.config.gitlab_shell.ssh_host.to_s)
+      .append(key: 'CI_SERVER_SHELL_SSH_PORT', value: Gitlab.config.gitlab_shell.ssh_port.to_s)
       .append(key: 'CI_SERVER_NAME', value: 'GitLab')
       .append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
       .append(key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s)
@@ -2419,6 +2430,7 @@ class Project < ApplicationRecord
   def api_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+      variables.append(key: 'CI_API_GRAPHQL_URL', value: Gitlab::Routing.url_helpers.api_graphql_url)
     end
   end
 
@@ -2832,11 +2844,15 @@ class Project < ApplicationRecord
   end
 
   def all_protected_branches
-    if Feature.enabled?(:group_protected_branches, group)
+    if allow_protected_branches_for_group?
       @all_protected_branches ||= ProtectedBranch.from_union([protected_branches, group_protected_branches])
     else
       protected_branches
     end
+  end
+
+  def allow_protected_branches_for_group?
+    Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
   end
 
   def self_monitoring?
@@ -2891,11 +2907,11 @@ class Project < ApplicationRecord
   end
 
   def service_desk_custom_address
-    return unless Gitlab::ServiceDeskEmail.enabled?
+    return unless Gitlab::Email::ServiceDeskEmail.enabled?
 
     key = service_desk_setting&.project_key || default_service_desk_suffix
 
-    Gitlab::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+    Gitlab::Email::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
   end
 
   def default_service_desk_suffix
@@ -3083,6 +3099,10 @@ class Project < ApplicationRecord
     pending_delete? || hidden?
   end
 
+  def content_editor_on_issues_feature_flag_enabled?
+    group&.content_editor_on_issues_feature_flag_enabled? || Feature.enabled?(:content_editor_on_issues, self)
+  end
+
   def work_items_feature_flag_enabled?
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
@@ -3142,10 +3162,16 @@ class Project < ApplicationRecord
     false
   end
 
+  def crm_enabled?
+    return false unless group
+
+    group.crm_enabled?
+  end
+
   private
 
   def pages_unique_domain_enabled?
-    Feature.enabled?(:pages_unique_domain) &&
+    Feature.enabled?(:pages_unique_domain, self) &&
       project_setting.pages_unique_domain_enabled?
   end
 

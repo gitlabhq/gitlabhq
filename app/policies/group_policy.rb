@@ -165,7 +165,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :developer_access
     enable :admin_crm_organization
     enable :admin_crm_contact
-    enable :read_cluster
+    enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
+    enable :read_cluster_agent
     enable :read_group_all_available_runners
     enable :use_k8s_proxies
   end
@@ -190,6 +191,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_package
     enable :admin_package
     enable :create_projects
+    enable :import_projects
     enable :admin_pipeline
     enable :admin_build
     enable :add_cluster
@@ -213,7 +215,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_runners
     enable :admin_group_runners
     enable :register_group_runners
-    enable :create_group_runners
+    enable :create_runner
 
     enable :set_note_created_at
     enable :set_emails_disabled
@@ -260,14 +262,20 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end.enable :change_share_with_group_lock
 
   rule { developer & developer_maintainer_access }.enable :create_projects
-  rule { create_projects_disabled }.prevent :create_projects
+  rule { create_projects_disabled }.policy do
+    prevent :create_projects
+    prevent :import_projects
+  end
 
   rule { owner | admin }.policy do
     enable :owner_access
     enable :read_statistics
   end
 
-  rule { maintainer & can?(:create_projects) }.enable :transfer_projects
+  rule { maintainer & can?(:create_projects) }.policy do
+    enable :transfer_projects
+    enable :import_projects
+  end
 
   rule { read_package_registry_deploy_token }.policy do
     enable :read_package
@@ -324,7 +332,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
-    prevent :create_group_runners
+    prevent :create_runner
   end
 
   rule { migration_bot }.policy do
@@ -341,7 +349,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   rule { ~create_runner_workflow_enabled }.policy do
-    prevent :create_group_runners
+    prevent :create_runner
   end
 
   # Should be matched with ProjectPolicy#read_internal_note

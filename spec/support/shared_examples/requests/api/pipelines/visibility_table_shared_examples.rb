@@ -224,10 +224,10 @@ RSpec.shared_examples 'pipelines visibility table' do
       project.project_feature.update!(project_feature_attributes)
       project.add_role(ci_user, user_role) if user_role && user_role != :non_member
 
-      get api(pipelines_api_path, api_user)
+      get api(pipelines_api_path, api_user, admin_mode: is_admin)
     end
 
-    it do
+    specify do
       expect(response).to have_gitlab_http_status(response_status)
       expect(api_response).to match(expected_response)
     end

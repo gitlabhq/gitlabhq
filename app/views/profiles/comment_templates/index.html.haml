@@ -1,0 +1,10 @@
+- page_title _('Comment Templates')
+
+#js-comment-templates-root.row.gl-mt-5{ data: { base_path: profile_comment_templates_path } }
+  .col-lg-4
+    %h4.gl-mt-0
+      = page_title
+    %p
+      = _('Comment templates can be used when creating comments inside issues, merge requests, and epics.')
+  .col-lg-8
+    = gl_loading_icon(size: 'lg')

@@ -195,6 +195,8 @@ export default {
       @close-drawer="closeDrawer"
     />
     <job-assistant-drawer
+      :ci-config-data="ciConfigData"
+      :ci-file-content="ciFileContent"
       :is-visible="showJobAssistantDrawer"
       :z-index="jobAssistantIndex"
       v-on="$listeners"

@@ -49,17 +49,11 @@ compile-production-assets:
   after_script:
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
-compile-production-assets-esbuild:
-  allow_failure: true
+compile-production-assets as-if-foss:
   extends:
-    - .compile-assets-base
-    - .frontend:rules:compile-production-assets
-  variables:
-    NODE_ENV: "production"
-    RAILS_ENV: "production"
-    WEBPACK_USE_ESBUILD_LOADER: "true"
-  after_script:
-    - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
+    - compile-production-assets
+    - .as-if-foss
+    - .frontend:rules:compile-production-assets-as-if-foss
 
 compile-test-assets:
   extends:
@@ -72,14 +66,6 @@ compile-test-assets:
       - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
-
-compile-test-assets-esbuild:
-  allow_failure: true
-  extends:
-    - .compile-assets-base
-    - .frontend:rules:compile-test-assets
-  variables:
-    WEBPACK_USE_ESBUILD_LOADER: "true"
 
 compile-test-assets as-if-foss:
   extends:
@@ -116,17 +102,56 @@ update-storybook-yarn-cache:
   script:
     - yarn_install_script
 
+retrieve-frontend-fixtures:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .frontend:rules:default-frontend-jobs
+  stage: prepare
+  script:
+    - source scripts/utils.sh
+    - source scripts/gitlab_component_helpers.sh
+    - install_gitlab_gem
+    - export_fixtures_sha_for_download
+    - |
+      if check_fixtures_download; then
+        run_timed_command "download_and_extract_fixtures"
+      fi
+  artifacts:
+    paths:
+      - tmp/tests/frontend/
+
+# Download fixtures only when a merge request contains changes to only JS files
+# and fixtures are present in the package registry.
 .frontend-fixtures-base:
   extends:
     - .default-retry
     - .default-before_script
     - .rails-cache
-    - .use-pg12
+    - .use-pg13
   stage: fixtures
-  needs: ["setup-test-env", "retrieve-tests-metadata"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "retrieve-frontend-fixtures"]
   variables:
+    # Don't add `CRYSTALBALL: "false"` here as we're enabling Crystalball for scheduled pipelines (in `.gitlab-ci.yml`), so that we get coverage data
+    # for the `frontend fixture RSpec files` that will be added to the Crystalball mapping in `update-tests-metadata`.
+    # More information in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003.
     WEBPACK_VENDOR_DLL: "true"
   script:
+    - source scripts/utils.sh
+    - source scripts/gitlab_component_helpers.sh
+    - |
+      if [[ -d "tmp/tests/frontend" ]]; then
+        # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
+        # jobs don't download the exact same artifact multiple times.
+        if [[ -n "${CI_NODE_INDEX}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
+          echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}.";
+          rm -rf "tmp/tests/frontend";
+        fi
+        exit 0
+      else
+        echo "No frontend fixtures directory, generating frontend fixtures."
+      fi
     - run_timed_command "gem install knapsack --no-document"
     - run_timed_command "scripts/gitaly-test-spawn"
     - source ./scripts/rspec_helpers.sh
@@ -157,6 +182,12 @@ rspec-all frontend_fixture as-if-foss:
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture-as-if-foss
     - .as-if-foss
+  variables:
+    # We explicitely disable Crystalball here so as even in scheduled pipelines we don't need it since it's already enabled for `rspec-all frontend_fixture` there.
+    CRYSTALBALL: "false"
+    WEBPACK_VENDOR_DLL: "true"
+    KNAPSACK_GENERATE_REPORT: ""
+    FLAKY_RSPEC_GENERATE_REPORT: ""
   needs:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets as-if-foss"
@@ -170,7 +201,9 @@ upload-frontend-fixtures:
   stage: fixtures
   needs: ["rspec-all frontend_fixture"]
   script:
+    - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
+    - export_fixtures_sha_for_upload
     - 'fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
     - run_timed_command "create_fixtures_package"
     - run_timed_command "upload_fixtures_package"
@@ -272,9 +305,7 @@ jest-integration:
     - .frontend:rules:default-frontend-jobs
   script:
     - run_timed_command "yarn jest:integration --ci"
-  needs:
-    - job: "rspec-all frontend_fixture"
-    - job: "graphql-schema-dump"
+  needs: ["rspec-all frontend_fixture", "graphql-schema-dump"]
 
 coverage-frontend:
   extends:
@@ -357,9 +388,7 @@ startup-css-check:
   extends:
     - .startup-css-check-base
     - .frontend:rules:default-frontend-jobs
-  needs:
-    - job: "compile-test-assets"
-    - job: "rspec-all frontend_fixture"
+  needs: ["compile-test-assets", "rspec-all frontend_fixture"]
 
 startup-css-check as-if-foss:
   extends:

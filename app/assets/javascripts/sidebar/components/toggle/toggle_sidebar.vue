@@ -32,9 +32,22 @@ export default {
       return [this.cssClasses, { 'js-sidebar-collapsed': this.collapsed }];
     },
   },
+  watch: {
+    collapsed(value) {
+      this.updateLayout(value);
+    },
+  },
+  mounted() {
+    this.page = document.querySelector('.layout-page');
+  },
   methods: {
     toggle() {
       this.$emit('toggle');
+      this.updateLayout();
+    },
+    updateLayout(collapsed) {
+      this.page?.classList.remove(collapsed ? 'right-sidebar-expanded' : 'right-sidebar-collapsed');
+      this.page?.classList.add(collapsed ? 'right-sidebar-collapsed' : 'right-sidebar-expanded');
     },
   },
 };

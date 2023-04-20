@@ -12,7 +12,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/index.html#group-wikis
+  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/index.html
   image_url: https://about.gitlab.com/images/13_5/cdybenko-group-wiki.png
   published_at: 2020-10-22
   release: 13.5

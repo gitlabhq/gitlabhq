@@ -28,7 +28,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, feature_category
 
   let(:exportable_path) { 'project' }
   let(:logger) { Gitlab::Export::Logger.build }
-  let(:json_writer) { instance_double('Gitlab::ImportExport::Json::LegacyWriter') }
+  let(:json_writer) { instance_double('Gitlab::ImportExport::Json::NdjsonWriter') }
   let(:hash) { { name: exportable.name, description: exportable.description }.stringify_keys }
   let(:include) { [] }
   let(:custom_orderer) { nil }

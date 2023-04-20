@@ -6,7 +6,7 @@ module Groups
 
     skip_cross_project_access_check :show, :update
 
-    feature_category :pipeline_composition
+    feature_category :secrets_management
 
     urgency :low, [:show]
 

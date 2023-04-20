@@ -91,7 +91,7 @@ describe('EmojiToken', () => {
       describe('when request is successful', () => {
         const searchTerm = 'foo';
 
-        beforeEach(async () => {
+        beforeEach(() => {
           wrapper = createComponent({
             config: {
               fetchEmojis: jest.fn().mockResolvedValue({ data: mockEmojis }),
@@ -119,7 +119,7 @@ describe('EmojiToken', () => {
           return triggerFetchEmojis();
         });
 
-        it('calls `createAlert` with alert error message', () => {
+        it('calls `createAlert`', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: 'There was a problem fetching emojis.',
           });
@@ -135,7 +135,7 @@ describe('EmojiToken', () => {
   describe('template', () => {
     const defaultEmojis = OPTIONS_NONE_ANY;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper = createComponent({
         value: { data: `"${mockEmojis[0].name}"` },
         config: {

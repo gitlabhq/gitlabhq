@@ -21,8 +21,17 @@ class CustomEnvironment extends TestEnvironment {
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39496#note_503084332
     setGlobalDateToFakeDate();
 
+    const { error: originalErrorFn } = context.console;
     Object.assign(context.console, {
       error(...args) {
+        if (
+          args?.[0]?.includes('[Vue warn]: Missing required prop') ||
+          args?.[0]?.includes('[Vue warn]: Invalid prop')
+        ) {
+          originalErrorFn.apply(context.console, args);
+          return;
+        }
+
         throw new ErrorWithStack(
           `Unexpected call of console.error() with:\n\n${args.join(', ')}`,
           this.error,
@@ -30,7 +39,7 @@ class CustomEnvironment extends TestEnvironment {
       },
 
       warn(...args) {
-        if (args[0].includes('The updateQuery callback for fetchMore is deprecated')) {
+        if (args?.[0]?.includes('The updateQuery callback for fetchMore is deprecated')) {
           return;
         }
         throw new ErrorWithStack(

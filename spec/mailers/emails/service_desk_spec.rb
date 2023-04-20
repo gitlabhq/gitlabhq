@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-RSpec.describe Emails::ServiceDesk do
+RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
   include EmailHelpers
@@ -16,6 +16,9 @@ RSpec.describe Emails::ServiceDesk do
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:email) { 'someone@gitlab.com' }
   let_it_be(:expected_unsubscribe_url) { unsubscribe_sent_notification_url('b7721fc7e8419911a8bea145236a0519') }
+  let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
+  let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
+  let_it_be(:service_desk_setting) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
 
   let(:template) { double(content: template_content) }
 
@@ -77,6 +80,37 @@ RSpec.describe Emails::ServiceDesk do
 
       it 'uses the default template' do
         is_expected.to have_body_text(default_text)
+      end
+    end
+  end
+
+  shared_examples 'a custom email verification process email' do
+    it 'contains custom email and project in subject' do
+      expect(subject.subject).to include(service_desk_setting.custom_email)
+      expect(subject.subject).to include(service_desk_setting.project.name)
+    end
+  end
+
+  shared_examples 'a custom email verification process notification email' do
+    it 'has correct recipient' do
+      expect(subject.to).to eq(['owner@example.com'])
+    end
+
+    it 'contains custom email and project in body' do
+      is_expected.to have_body_text(service_desk_setting.custom_email)
+      is_expected.to have_body_text(service_desk_setting.project.name)
+    end
+  end
+
+  shared_examples 'a custom email verification process result email with error' do |error_identifier, expected_text|
+    context "when having #{error_identifier} error" do
+      before do
+        service_desk_setting.custom_email_verification.error = error_identifier
+      end
+
+      it 'contains correct error message headline in text part' do
+        # look for text part because we can ignore HTML tags then
+        expect(subject.text_part.body).to match(expected_text)
       end
     end
   end
@@ -304,5 +338,60 @@ RSpec.describe Emails::ServiceDesk do
         it_behaves_like 'handle template content', 'new_note'
       end
     end
+  end
+
+  describe '.service_desk_custom_email_verification_email' do
+    subject { Notify.service_desk_custom_email_verification_email(service_desk_setting) }
+
+    it_behaves_like 'a custom email verification process email'
+
+    it 'uses service bot name and custom email as sender' do
+      expect_sender(User.support_bot, sender_email: service_desk_setting.custom_email)
+    end
+
+    it 'forcibly uses SMTP delivery method and has correct settings' do
+      expect_service_desk_custom_email_delivery_options(service_desk_setting)
+    end
+
+    it 'uses verification email address as recipient' do
+      expect(subject.to).to eq([service_desk_setting.custom_email_address_for_verification])
+    end
+
+    it 'contains verification token' do
+      is_expected.to have_body_text("Verification token: #{verification.token}")
+    end
+  end
+
+  describe '.service_desk_verification_triggered_email' do
+    before do
+      service_desk_setting.custom_email_verification.triggerer = user
+    end
+
+    subject { Notify.service_desk_verification_triggered_email(service_desk_setting, 'owner@example.com') }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'a custom email verification process email'
+    it_behaves_like 'a custom email verification process notification email'
+
+    it 'contains triggerer username' do
+      is_expected.to have_body_text("@#{user.username}")
+    end
+  end
+
+  describe '.service_desk_verification_result_email' do
+    before do
+      service_desk_setting.custom_email_verification.triggerer = user
+    end
+
+    subject { Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com') }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'a custom email verification process email'
+    it_behaves_like 'a custom email verification process notification email'
+    it_behaves_like 'a custom email verification process result email with error', 'smtp_host_issue', 'SMTP host issue'
+    it_behaves_like 'a custom email verification process result email with error', 'invalid_credentials', 'Invalid credentials'
+    it_behaves_like 'a custom email verification process result email with error', 'mail_not_received_within_timeframe', 'Verification email not received within timeframe'
+    it_behaves_like 'a custom email verification process result email with error', 'incorrect_from', 'Incorrect From header'
+    it_behaves_like 'a custom email verification process result email with error', 'incorrect_token', 'Incorrect verification token'
   end
 end

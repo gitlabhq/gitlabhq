@@ -10,4 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: suggestion
 scope: raw
 raw:
-  - '(?<=\n)#{5,}\s.*'
+  - '(?<=\n)#{6,}\s.*'

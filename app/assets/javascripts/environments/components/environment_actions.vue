@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { formatTime } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -7,12 +7,9 @@ import eventHub from '../event_hub';
 import actionMutation from '../graphql/mutations/action.mutation.graphql';
 
 export default {
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdownItem,
+    GlDisclosureDropdown,
     GlIcon,
   },
   props: {
@@ -36,6 +33,16 @@ export default {
     title() {
       return __('Deploy to...');
     },
+    actionItems() {
+      return this.actions.map((actionItem) => ({
+        text: actionItem.name,
+        action: () => this.onClickAction(actionItem),
+        extraAttrs: {
+          disabled: this.isActionDisabled(actionItem),
+        },
+        ...actionItem,
+      }));
+    },
   },
   methods: {
     async onClickAction(action) {
@@ -48,7 +55,6 @@ export default {
         );
 
         const confirmed = await confirmAction(confirmationMessage);
-
         if (!confirmed) {
           return;
         }
@@ -80,30 +86,31 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    v-gl-tooltip
+  <gl-disclosure-dropdown
     :text="title"
     :title="title"
     :loading="isLoading"
     :aria-label="title"
+    :items="actionItems"
     icon="play"
     text-sr-only
     right
     data-container="body"
     data-testid="environment-actions-button"
   >
-    <gl-dropdown-item
-      v-for="(action, i) in actions"
-      :key="i"
-      :disabled="isActionDisabled(action)"
+    <gl-disclosure-dropdown-item
+      v-for="item in actionItems"
+      :key="item.name"
+      :item="item"
       data-testid="manual-action-link"
-      @click="onClickAction(action)"
     >
-      <span class="gl-flex-grow-1">{{ action.name }}</span>
-      <span v-if="action.scheduledAt" class="gl-text-gray-500 float-right">
-        <gl-icon name="clock" />
-        {{ remainingTime(action) }}
-      </span>
-    </gl-dropdown-item>
-  </gl-dropdown>
+      <template #list-item>
+        <span class="gl-flex-grow-1">{{ item.text }}</span>
+        <span v-if="item.scheduledAt" class="gl-text-gray-500 float-right">
+          <gl-icon name="clock" />
+          {{ remainingTime(item) }}
+        </span>
+      </template>
+    </gl-disclosure-dropdown-item>
+  </gl-disclosure-dropdown>
 </template>

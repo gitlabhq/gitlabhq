@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_base,
-               :suppress_gitlab_schemas_validate_connection, feature_category: :pods do
+               :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
   include MigrationsHelpers
 
   let(:min_batch_size) { 1 }
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
     end
 
     before do
-      skip_if_multiple_databases_not_setup(:ci)
+      skip_if_shared_database(:ci)
 
       # Creating some test tables on the main database
       main_tables_sql = <<~SQL
@@ -79,8 +79,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         ALTER TABLE _test_gitlab_hook_logs DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_hook_logs_202201;
       SQL
 
-      main_connection.execute(main_tables_sql)
-      ci_connection.execute(main_tables_sql)
+      execute_on_each_database(main_tables_sql)
 
       ci_tables_sql = <<~SQL
         CREATE TABLE _test_gitlab_ci_items (id serial NOT NULL PRIMARY KEY);
@@ -92,15 +91,13 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         );
       SQL
 
-      main_connection.execute(ci_tables_sql)
-      ci_connection.execute(ci_tables_sql)
+      execute_on_each_database(ci_tables_sql)
 
       internal_tables_sql = <<~SQL
         CREATE TABLE _test_gitlab_shared_items (id serial NOT NULL PRIMARY KEY);
       SQL
 
-      main_connection.execute(internal_tables_sql)
-      ci_connection.execute(internal_tables_sql)
+      execute_on_each_database(internal_tables_sql)
 
       # Filling the tables
       5.times do |i|
@@ -314,8 +311,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
   context 'when running with multiple shared databases' do
     before do
       skip_if_multiple_databases_not_setup(:ci)
-      ci_db_config = Ci::ApplicationRecord.connection_db_config
-      allow(::Gitlab::Database).to receive(:db_config_share_with).with(ci_db_config).and_return('main')
+      skip_if_database_exists(:ci)
     end
 
     it 'raises an error when truncating the main database that it is a single database setup' do

@@ -17,6 +17,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter do
     let(:importer_attrs) { [instance_of(Gitlab::GithubImport::Representation::NoteText), project, client] }
 
     it 'imports each project release' do
+      expect(project.releases).to receive(:select).with(:id, :description, :tag).and_call_original
+
       expect(Gitlab::GithubImport::Importer::NoteAttachmentsImporter).to receive(:new)
         .with(*importer_attrs).twice.and_return(importer_stub)
       expect(importer_stub).to receive(:execute).twice

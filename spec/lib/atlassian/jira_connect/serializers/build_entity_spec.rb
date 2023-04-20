@@ -49,7 +49,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::BuildEntity, feature_categor
       end
     end
 
-    context 'in the pipeline\'s commit messsage' do
+    context 'in the pipeline\'s commit message' do
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
       let(:commit_message) { "Merge branch 'staging' into 'master'\n\nFixes bug described in PROJ-1234" }
 

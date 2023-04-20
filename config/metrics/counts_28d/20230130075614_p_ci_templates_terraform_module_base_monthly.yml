@@ -4,7 +4,6 @@ description: Count of pipelines using the Terraform Module Base template
 product_section: ops
 product_stage: configure
 product_group: configure
-product_category: infrastructure_as_code
 value_type: number
 status: active
 milestone: "15.9"

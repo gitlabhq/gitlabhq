@@ -8,6 +8,8 @@ owning-stage: "~devops::release"
 participating-stages: [Configure, Release]
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # View and manage resources deployed by GitLab Agent For Kuberenetes
 
 ## Summary

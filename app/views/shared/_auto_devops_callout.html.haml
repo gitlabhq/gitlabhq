@@ -1,4 +1,4 @@
-- container = @no_breadcrumb_container ? 'container-fluid' : container_class
+- container = @no_top_bar_container ? 'container-fluid' : container_class
 
 %div{ class: [container, @content_class, 'gl-pt-5!'] }
   = render Pajamas::BannerComponent.new(button_text: s_('AutoDevOps|Enable in settings'),

@@ -16,28 +16,56 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Matcher, feature_category: 
   subject(:matcher) { described_class.new(context) }
 
   describe '#process' do
-    let(:locations) do
-      [
-        { local: 'file.yml' },
-        { file: 'file.yml', project: 'namespace/project' },
-        { component: 'gitlab.com/org/component@1.0' },
-        { remote: 'https://example.com/.gitlab-ci.yml' },
-        { template: 'file.yml' },
-        { artifact: 'generated.yml', job: 'test' }
-      ]
-    end
-
     subject(:process) { matcher.process(locations) }
 
-    it 'returns an array of file objects' do
-      is_expected.to contain_exactly(
-        an_instance_of(Gitlab::Ci::Config::External::File::Local),
-        an_instance_of(Gitlab::Ci::Config::External::File::Project),
-        an_instance_of(Gitlab::Ci::Config::External::File::Component),
-        an_instance_of(Gitlab::Ci::Config::External::File::Remote),
-        an_instance_of(Gitlab::Ci::Config::External::File::Template),
-        an_instance_of(Gitlab::Ci::Config::External::File::Artifact)
-      )
+    context 'with ci_include_components FF disabled' do
+      before do
+        stub_feature_flags(ci_include_components: false)
+      end
+
+      let(:locations) do
+        [
+          { local: 'file.yml' },
+          { file: 'file.yml', project: 'namespace/project' },
+          { remote: 'https://example.com/.gitlab-ci.yml' },
+          { template: 'file.yml' },
+          { artifact: 'generated.yml', job: 'test' }
+        ]
+      end
+
+      it 'returns an array of file objects' do
+        is_expected.to contain_exactly(
+          an_instance_of(Gitlab::Ci::Config::External::File::Local),
+          an_instance_of(Gitlab::Ci::Config::External::File::Project),
+          an_instance_of(Gitlab::Ci::Config::External::File::Remote),
+          an_instance_of(Gitlab::Ci::Config::External::File::Template),
+          an_instance_of(Gitlab::Ci::Config::External::File::Artifact)
+        )
+      end
+    end
+
+    context 'with ci_include_components FF enabled' do
+      let(:locations) do
+        [
+          { local: 'file.yml' },
+          { file: 'file.yml', project: 'namespace/project' },
+          { component: 'gitlab.com/org/component@1.0' },
+          { remote: 'https://example.com/.gitlab-ci.yml' },
+          { template: 'file.yml' },
+          { artifact: 'generated.yml', job: 'test' }
+        ]
+      end
+
+      it 'returns an array of file objects' do
+        is_expected.to contain_exactly(
+          an_instance_of(Gitlab::Ci::Config::External::File::Local),
+          an_instance_of(Gitlab::Ci::Config::External::File::Project),
+          an_instance_of(Gitlab::Ci::Config::External::File::Component),
+          an_instance_of(Gitlab::Ci::Config::External::File::Remote),
+          an_instance_of(Gitlab::Ci::Config::External::File::Template),
+          an_instance_of(Gitlab::Ci::Config::External::File::Artifact)
+        )
+      end
     end
 
     context 'when a location is not valid' do

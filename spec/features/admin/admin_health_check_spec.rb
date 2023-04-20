@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Health Check", :js, feature_category: :continuous_verification do
+RSpec.describe "Admin Health Check", :js, feature_category: :error_budgets do
   include StubENV
   include Spec::Support::Helpers::ModalHelpers
   let_it_be(:admin) { create(:admin) }

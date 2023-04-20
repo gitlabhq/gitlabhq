@@ -26,7 +26,14 @@ export function dispatchSnowplowEvent(
   }
 
   try {
-    window.snowplow('trackStructEvent', category, action, label, property, value, contexts);
+    window.snowplow('trackStructEvent', {
+      category,
+      action,
+      label,
+      property,
+      value,
+      context: contexts,
+    });
     return true;
   } catch (error) {
     Sentry.captureException(error);

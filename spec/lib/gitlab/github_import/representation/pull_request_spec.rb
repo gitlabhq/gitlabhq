@@ -287,7 +287,8 @@ RSpec.describe Gitlab::GithubImport::Representation::PullRequest do
   describe '#github_identifiers' do
     it 'returns a hash with needed identifiers' do
       github_identifiers = {
-        iid: 1
+        iid: 1,
+        title: 'My Pull Request'
       }
       other_attributes = { something_else: '_something_else_' }
       pr = described_class.new(github_identifiers.merge(other_attributes))

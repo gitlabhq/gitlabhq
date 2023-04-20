@@ -267,7 +267,7 @@ RSpec.describe WebHook, feature_category: :integrations do
       end
 
       context 'without url variables' do
-        subject(:hook) { build_stubbed(:project_hook, project: project, url: 'http://example.com') }
+        subject(:hook) { build_stubbed(:project_hook, project: project, url: 'http://example.com', url_variables: nil) }
 
         it 'does not reset url variables' do
           hook.url = 'http://example.com/{one}/{two}'

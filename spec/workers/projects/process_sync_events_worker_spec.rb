@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ProcessSyncEventsWorker, feature_category: :pods do
+RSpec.describe Projects::ProcessSyncEventsWorker, feature_category: :cell do
   let!(:group) { create(:group) }
   let!(:project) { create(:project) }
 

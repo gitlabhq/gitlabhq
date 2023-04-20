@@ -8,16 +8,16 @@ RSpec.describe Ci::Runners::StaleMachinesCleanupCronWorker, feature_category: :r
   describe '#perform', :freeze_time do
     subject(:perform) { worker.perform }
 
-    let!(:runner_machine1) do
+    let!(:runner_manager1) do
       create(:ci_runner_machine, created_at: 7.days.ago, contacted_at: 7.days.ago)
     end
 
-    let!(:runner_machine2) { create(:ci_runner_machine) }
-    let!(:runner_machine3) { create(:ci_runner_machine, created_at: 6.days.ago) }
+    let!(:runner_manager2) { create(:ci_runner_machine) }
+    let!(:runner_manager3) { create(:ci_runner_machine, created_at: 6.days.ago) }
 
     it_behaves_like 'an idempotent worker' do
       it 'delegates to Ci::Runners::StaleMachinesCleanupService' do
-        expect_next_instance_of(Ci::Runners::StaleMachinesCleanupService) do |service|
+        expect_next_instance_of(Ci::Runners::StaleManagersCleanupService) do |service|
           expect(service)
             .to receive(:execute).and_call_original
         end
@@ -26,16 +26,16 @@ RSpec.describe Ci::Runners::StaleMachinesCleanupCronWorker, feature_category: :r
 
         expect(worker.logging_extras).to eq({
           "extra.ci_runners_stale_machines_cleanup_cron_worker.status" => :success,
-          "extra.ci_runners_stale_machines_cleanup_cron_worker.deleted_machines" => true
+          "extra.ci_runners_stale_machines_cleanup_cron_worker.deleted_managers" => true
         })
       end
 
-      it 'cleans up stale runner machines', :aggregate_failures do
-        expect(Ci::RunnerMachine.stale.count).to eq 1
+      it 'cleans up stale runner managers', :aggregate_failures do
+        expect(Ci::RunnerManager.stale.count).to eq 1
 
-        expect { perform }.to change { Ci::RunnerMachine.count }.from(3).to(2)
+        expect { perform }.to change { Ci::RunnerManager.count }.from(3).to(2)
 
-        expect(Ci::RunnerMachine.all).to match_array [runner_machine2, runner_machine3]
+        expect(Ci::RunnerManager.all).to match_array [runner_manager2, runner_manager3]
       end
     end
   end

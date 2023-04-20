@@ -54,5 +54,33 @@ RSpec.describe Admin::ProjectsController, :enable_admin_mode, feature_category: 
         expect { subject }.not_to change { project.reload.name }
       end
     end
+
+    context 'when disabling runner registration' do
+      let(:project_params) { { runner_registration_enabled: false } }
+
+      it 'changes runner registration' do
+        expect { subject }.to change { project.reload.runner_registration_enabled }.to(false)
+      end
+
+      it 'resets the registration token' do
+        expect { subject }.to change { project.reload.runners_token }
+      end
+    end
+
+    context 'when enabling runner registration' do
+      before do
+        project.update!(runner_registration_enabled: false)
+      end
+
+      let(:project_params) { { runner_registration_enabled: true } }
+
+      it 'changes runner registration' do
+        expect { subject }.to change { project.reload.runner_registration_enabled }.to(true)
+      end
+
+      it 'does not reset the registration token' do
+        expect { subject }.not_to change { project.reload.runners_token }
+      end
+    end
   end
 end

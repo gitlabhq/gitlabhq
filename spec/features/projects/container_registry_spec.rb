@@ -101,7 +101,11 @@ RSpec.describe 'Container Registry', :js, feature_category: :projects do
         first('[data-testid="additional-actions"]').click
         first('[data-testid="single-delete-button"]').click
         expect(find('.modal .modal-title')).to have_content _('Remove tag')
+        stub_container_registry_tags(repository: %r{my/image}, tags: ('1'..'19').to_a, with_manifest: true)
         find('.modal .modal-footer .btn-danger').click
+
+        expect(page).to have_content '19 tags'
+        expect(page).not_to have_content '20 tags'
       end
 
       it('pagination navigate to the second page') do

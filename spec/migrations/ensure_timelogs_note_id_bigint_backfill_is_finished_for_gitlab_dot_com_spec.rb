@@ -5,8 +5,6 @@ require_migration!
 
 RSpec.describe EnsureTimelogsNoteIdBigintBackfillIsFinishedForGitlabDotCom, feature_category: :database do
   describe '#up' do
-    using RSpec::Parameterized::TableSyntax
-
     let(:migration_arguments) do
       {
         job_class_name: 'CopyColumnUsingBackgroundMigrationJob',

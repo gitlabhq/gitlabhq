@@ -57,7 +57,7 @@ module QA
               page.has_content?(folder_name)
 
               # Commit Button
-              page.find('a.monaco-description-button').click
+              page.find('a.monaco-text-button').click
               page.has_css?('.notification-list-item-details-row', visible: true)
             end
           end

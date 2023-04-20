@@ -326,7 +326,9 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       it 'logs an error and creates a metric when wiki can not be created' do
         project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
 
-        expect_any_instance_of(ProjectWiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
+        expect_next_instance_of(ProjectWiki) do |project_wiki|
+          expect(project_wiki).to receive(:create_wiki_repository).and_raise(Wiki::CouldNotCreateWikiError)
+        end
         expect_any_instance_of(described_class).to receive(:log_error).with("Could not create wiki for #{project.full_name}")
 
         counter = double(:counter)
@@ -516,6 +518,25 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       end
     end
 
+    context 'when updating #runner_registration_enabled' do
+      it 'updates the attribute' do
+        expect { update_project(project, user, runner_registration_enabled: false) }
+          .to change { project.runner_registration_enabled }
+          .to(false)
+      end
+
+      context 'when runner registration is disabled for all projects' do
+        before do
+          stub_application_setting(valid_runner_registrars: [])
+        end
+
+        it 'restricts updating the attribute' do
+          expect { update_project(project, user, runner_registration_enabled: false) }
+            .not_to change { project.runner_registration_enabled }
+        end
+      end
+    end
+
     context 'when updating runners settings' do
       let(:settings) do
         { instance_runners_enabled: true, namespace_traversal_ids: [123] }
@@ -621,17 +642,19 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
     context 'when updating nested attributes for prometheus integration' do
       context 'prometheus integration exists' do
         let(:prometheus_integration_attributes) do
-          attributes_for(:prometheus_integration,
-                         project: project,
-                         properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
-                        )
+          attributes_for(
+            :prometheus_integration,
+            project: project,
+            properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
+          )
         end
 
         let!(:prometheus_integration) do
-          create(:prometheus_integration,
-                 project: project,
-                 properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
-                )
+          create(
+            :prometheus_integration,
+            project: project,
+            properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
+          )
         end
 
         it 'updates existing record' do
@@ -645,10 +668,11 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       context 'prometheus integration does not exist' do
         context 'valid parameters' do
           let(:prometheus_integration_attributes) do
-            attributes_for(:prometheus_integration,
-                           project: project,
-                           properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
-                          )
+            attributes_for(
+              :prometheus_integration,
+              project: project,
+              properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
+            )
           end
 
           it 'creates new record' do
@@ -661,10 +685,11 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
 
         context 'invalid parameters' do
           let(:prometheus_integration_attributes) do
-            attributes_for(:prometheus_integration,
-                           project: project,
-                           properties: { api_url: nil, manual_configuration: "1" }
-                          )
+            attributes_for(
+              :prometheus_integration,
+              project: project,
+              properties: { api_url: nil, manual_configuration: "1" }
+            )
           end
 
           it 'does not create new record' do

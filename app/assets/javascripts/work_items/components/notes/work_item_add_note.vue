@@ -1,9 +1,9 @@
 <script>
-import { GlAvatar, GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { clearDraft } from '~/lib/utils/autosave';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
+import { __ } from '~/locale';
+import { clearDraft } from '~/lib/utils/autosave';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getWorkItemQuery } from '../../utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
@@ -17,8 +17,6 @@ export default {
     avatarUrl: window.gon.current_user_avatar_url,
   },
   components: {
-    GlAvatar,
-    GlButton,
     WorkItemNoteSignedOut,
     WorkItemCommentLocked,
     WorkItemCommentForm,
@@ -66,11 +64,25 @@ export default {
       required: false,
       default: ASC,
     },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    autocompleteDataSources: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    isNewDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       workItem: {},
-      isEditing: false,
+      isEditing: this.isNewDiscussion,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
     };
@@ -109,28 +121,9 @@ export default {
         property: `type_${this.workItemType}`,
       };
     },
-    markdownPreviewPath() {
-      return `${gon.relative_url_root || ''}/${this.fullPath}/preview_markdown?target_type=${
-        this.workItemType
-      }`;
-    },
-    isLockedOutOrSignedOut() {
-      return !this.signedIn || !this.canUpdate;
-    },
-    lockedOutUserWarningInReplies() {
-      return this.addPadding && this.isLockedOutOrSignedOut;
-    },
-    timelineEntryClass() {
-      return {
-        'timeline-entry gl-mb-3 note note-wrapper note-comment': true,
-        'gl-bg-gray-10 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-p-5! gl-mx-n3 gl-mb-n2!': this
-          .lockedOutUserWarningInReplies,
-      };
-    },
     timelineEntryInnerClass() {
       return {
-        'timeline-entry-inner': true,
-        'gl-pb-3': this.addPadding,
+        'timeline-entry-inner': this.isNewDiscussion,
       };
     },
     timelineContentClass() {
@@ -141,8 +134,7 @@ export default {
     },
     parentClass() {
       return {
-        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-wrap-nowrap': !this
-          .isEditing,
+        'gl-relative gl-display-flex gl-align-items-flex-start gl-flex-nowrap': !this.isEditing,
       };
     },
     isProjectArchived() {
@@ -150,6 +142,18 @@ export default {
     },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
+    },
+    workItemState() {
+      return this.workItem?.state;
+    },
+    commentButtonText() {
+      return this.isNewDiscussion ? __('Comment') : __('Reply');
+    },
+    timelineEntryClass() {
+      return this.isNewDiscussion
+        ? 'timeline-entry note-form'
+        : // eslint-disable-next-line @gitlab/require-i18n-strings
+          'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix';
     },
   },
   watch: {
@@ -166,7 +170,6 @@ export default {
     async updateWorkItem(commentText) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
-
       try {
         this.track('add_work_item_comment');
 
@@ -180,24 +183,55 @@ export default {
             },
           },
           update(store, createNoteData) {
-            if (createNoteData.data?.createNote?.errors?.length) {
+            const numErrors = createNoteData.data?.createNote?.errors?.length;
+
+            if (numErrors) {
+              const { errors } = createNoteData.data.createNote;
+
+              // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/346557
+              // When a note only contains quick actions,
+              // additional "helpful" messages are embedded in the errors field.
+              // For instance, a note solely composed of "/assign @foobar" would
+              // return a message "Commands only Assigned @root." as an error on creation
+              // even though the quick action successfully executed.
+              if (
+                numErrors === 2 &&
+                errors[0].includes('Commands only') &&
+                errors[1].includes('Command names')
+              ) {
+                return;
+              }
+
               throw new Error(createNoteData.data?.createNote?.errors[0]);
             }
           },
         });
-        clearDraft(this.autosaveKey);
+        /**
+         * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
+         *
+         * Once form is successfully submitted, emit replied event,
+         * mark isSubmitting to false and clear storage before hiding the form.
+         * This will restrict comment form to restore the value while textarea
+         * input triggered due to keyboard event meta+enter.
+         *
+         */
         this.$emit('replied');
+        clearDraft(this.autosaveKey);
         this.cancelEditing();
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
+      } finally {
+        this.isSubmitting = false;
       }
-
-      this.isSubmitting = false;
     },
     cancelEditing() {
-      this.isEditing = false;
+      this.isEditing = this.isNewDiscussion;
       this.$emit('cancelEditing');
+    },
+    showReplyForm() {
+      this.isEditing = true;
+      this.$emit('startReplying');
     },
   },
 };
@@ -212,9 +246,6 @@ export default {
       :is-project-archived="isProjectArchived"
     />
     <div v-else :class="timelineEntryInnerClass">
-      <div class="timeline-avatar gl-float-left">
-        <gl-avatar :src="$options.constantOptions.avatarUrl" :size="32" class="gl-mr-3" />
-      </div>
       <div :class="timelineContentClass">
         <div :class="parentClass">
           <work-item-comment-form
@@ -223,15 +254,27 @@ export default {
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"
             :autosave-key="autosaveKey"
+            :is-new-discussion="isNewDiscussion"
+            :autocomplete-data-sources="autocompleteDataSources"
+            :markdown-preview-path="markdownPreviewPath"
+            :work-item-state="workItemState"
+            :work-item-id="workItemId"
+            :autofocus="autofocus"
+            :comment-button-text="commentButtonText"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
           />
-          <gl-button
+          <textarea
             v-else
-            class="gl-flex-grow-1 gl-justify-content-start! gl-text-secondary!"
-            @click="isEditing = true"
-            >{{ __('Add a reply') }}</gl-button
-          >
+            ref="textarea"
+            rows="1"
+            class="reply-placeholder-text-field gl-font-regular!"
+            data-testid="note-reply-textarea"
+            :placeholder="__('Reply')"
+            :aria-label="__('Reply to comment')"
+            @focus="showReplyForm"
+            @click="showReplyForm"
+          ></textarea>
         </div>
       </div>
     </div>

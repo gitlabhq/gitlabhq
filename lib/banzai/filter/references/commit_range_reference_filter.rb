@@ -32,8 +32,7 @@ module Banzai
 
         def url_for_object(range, project)
           h = Gitlab::Routing.url_helpers
-          h.project_compare_url(project,
-                                          range.to_param.merge(only_path: context[:only_path]))
+          h.project_compare_url(project, range.to_param.merge(only_path: context[:only_path]))
         end
 
         def object_link_title(range, matches)

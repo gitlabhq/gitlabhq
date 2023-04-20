@@ -15,7 +15,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'views the merge request email patches', :can_use_large_setup, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347742' do
+      it 'views the merge request patches', :can_use_large_setup, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347742' do
         Page::MergeRequest::Show.perform(&:view_email_patches)
 
         expect(page.text).to start_with('From')

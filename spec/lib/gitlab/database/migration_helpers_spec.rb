@@ -14,6 +14,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     allow(model).to receive(:puts)
   end
 
+  it { expect(model.singleton_class.ancestors).to include(described_class::WraparoundVacuumHelpers) }
+
   describe 'overridden dynamic model helpers' do
     let(:test_table) { '_test_batching_table' }
 
@@ -117,157 +119,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       expect do
         model.add_timestamps_with_timezone(:foo, columns: [:bar])
       end.to raise_error %r/Illegal timestamp column name/
-    end
-  end
-
-  describe '#create_table_with_constraints' do
-    let(:table_name) { :test_table }
-    let(:column_attributes) do
-      [
-        { name: 'id',         sql_type: 'bigint',                   null: false, default: nil    },
-        { name: 'created_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
-        { name: 'updated_at', sql_type: 'timestamp with time zone', null: false, default: nil    },
-        { name: 'some_id',    sql_type: 'integer',                  null: false, default: nil    },
-        { name: 'active',     sql_type: 'boolean',                  null: false, default: 'true' },
-        { name: 'name',       sql_type: 'text',                     null: true,  default: nil    }
-      ]
-    end
-
-    before do
-      allow(model).to receive(:transaction_open?).and_return(true)
-    end
-
-    context 'when no check constraints are defined' do
-      it 'creates the table as expected' do
-        model.create_table_with_constraints table_name do |t|
-          t.timestamps_with_timezone
-          t.integer :some_id, null: false
-          t.boolean :active, null: false, default: true
-          t.text :name
-        end
-
-        expect_table_columns_to_match(column_attributes, table_name)
-      end
-    end
-
-    context 'when check constraints are defined' do
-      context 'when the text_limit is explicity named' do
-        it 'creates the table as expected' do
-          model.create_table_with_constraints table_name do |t|
-            t.timestamps_with_timezone
-            t.integer :some_id, null: false
-            t.boolean :active, null: false, default: true
-            t.text :name
-
-            t.text_limit :name, 255, name: 'check_name_length'
-            t.check_constraint :some_id_is_positive, 'some_id > 0'
-          end
-
-          expect_table_columns_to_match(column_attributes, table_name)
-
-          expect_check_constraint(table_name, 'check_name_length', 'char_length(name) <= 255')
-          expect_check_constraint(table_name, 'some_id_is_positive', 'some_id > 0')
-        end
-      end
-
-      context 'when the text_limit is not named' do
-        it 'creates the table as expected, naming the text limit' do
-          model.create_table_with_constraints table_name do |t|
-            t.timestamps_with_timezone
-            t.integer :some_id, null: false
-            t.boolean :active, null: false, default: true
-            t.text :name
-
-            t.text_limit :name, 255
-            t.check_constraint :some_id_is_positive, 'some_id > 0'
-          end
-
-          expect_table_columns_to_match(column_attributes, table_name)
-
-          expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 255')
-          expect_check_constraint(table_name, 'some_id_is_positive', 'some_id > 0')
-        end
-      end
-
-      it 'runs the change within a with_lock_retries' do
-        expect(model).to receive(:with_lock_retries).ordered.and_yield
-        expect(model).to receive(:create_table).ordered.and_call_original
-        expect(model).to receive(:execute).with(<<~SQL).ordered
-          ALTER TABLE "#{table_name}"\nADD CONSTRAINT "check_cda6f69506" CHECK (char_length("name") <= 255)
-        SQL
-
-        model.create_table_with_constraints table_name do |t|
-          t.text :name
-          t.text_limit :name, 255
-        end
-      end
-
-      context 'when with_lock_retries re-runs the block' do
-        it 'only creates constraint for unique definitions' do
-          expected_sql = <<~SQL
-            ALTER TABLE "#{table_name}"\nADD CONSTRAINT "check_cda6f69506" CHECK (char_length("name") <= 255)
-          SQL
-
-          expect(model).to receive(:create_table).twice.and_call_original
-
-          expect(model).to receive(:execute).with(expected_sql).and_raise(ActiveRecord::LockWaitTimeout)
-          expect(model).to receive(:execute).with(expected_sql).and_call_original
-
-          model.create_table_with_constraints table_name do |t|
-            t.timestamps_with_timezone
-            t.integer :some_id, null: false
-            t.boolean :active, null: false, default: true
-            t.text :name
-
-            t.text_limit :name, 255
-          end
-
-          expect_table_columns_to_match(column_attributes, table_name)
-
-          expect_check_constraint(table_name, 'check_cda6f69506', 'char_length(name) <= 255')
-        end
-      end
-
-      context 'when constraints are given invalid names' do
-        let(:expected_max_length) { described_class::MAX_IDENTIFIER_NAME_LENGTH }
-        let(:expected_error_message) { "The maximum allowed constraint name is #{expected_max_length} characters" }
-
-        context 'when the explicit text limit name is not valid' do
-          it 'raises an error' do
-            too_long_length = expected_max_length + 1
-
-            expect do
-              model.create_table_with_constraints table_name do |t|
-                t.timestamps_with_timezone
-                t.integer :some_id, null: false
-                t.boolean :active, null: false, default: true
-                t.text :name
-
-                t.text_limit :name, 255, name: ('a' * too_long_length)
-                t.check_constraint :some_id_is_positive, 'some_id > 0'
-              end
-            end.to raise_error(expected_error_message)
-          end
-        end
-
-        context 'when a check constraint name is not valid' do
-          it 'raises an error' do
-            too_long_length = expected_max_length + 1
-
-            expect do
-              model.create_table_with_constraints table_name do |t|
-                t.timestamps_with_timezone
-                t.integer :some_id, null: false
-                t.boolean :active, null: false, default: true
-                t.text :name
-
-                t.text_limit :name, 255
-                t.check_constraint ('a' * too_long_length), 'some_id > 0'
-              end
-            end.to raise_error(expected_error_message)
-          end
-        end
-      end
     end
   end
 
@@ -1195,6 +1046,38 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
     context 'specifying a target table' do
       let(:target_table) { referenced_table_name }
+
+      it_behaves_like 'foreign key checks'
+    end
+
+    context 'if the schema cache does not include the constrained_columns column' do
+      let(:target_table) { nil }
+
+      around do |ex|
+        model.transaction do
+          require_migration!('add_columns_to_postgres_foreign_keys')
+          AddColumnsToPostgresForeignKeys.new.down
+          Gitlab::Database::PostgresForeignKey.reset_column_information
+          Gitlab::Database::PostgresForeignKey.columns_hash # Force populate the column hash in the old schema
+          AddColumnsToPostgresForeignKeys.new.up
+
+          # Rolling back reverts the schema cache information, so we need to run the example here before the rollback.
+          ex.run
+
+          raise ActiveRecord::Rollback
+        end
+
+        # make sure that we're resetting the schema cache here so that we don't leak the change to other tests.
+        Gitlab::Database::PostgresForeignKey.reset_column_information
+        # Double-check that the column information is back to normal
+        expect(Gitlab::Database::PostgresForeignKey.columns_hash.keys).to include('constrained_columns')
+      end
+
+      # This test verifies that the situation we're trying to set up for the shared examples is actually being
+      # set up correctly
+      it 'correctly sets up the test without the column in the columns_hash' do
+        expect(Gitlab::Database::PostgresForeignKey.columns_hash.keys).not_to include('constrained_columns')
+      end
 
       it_behaves_like 'foreign key checks'
     end

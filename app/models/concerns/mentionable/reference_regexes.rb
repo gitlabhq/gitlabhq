@@ -5,9 +5,7 @@ module Mentionable
     extend Gitlab::Utils::StrongMemoize
 
     def self.reference_pattern(link_patterns, issue_pattern)
-      Regexp.union(link_patterns,
-                   issue_pattern,
-                   *other_patterns)
+      Regexp.union(link_patterns, issue_pattern, *other_patterns)
     end
 
     def self.other_patterns
@@ -29,7 +27,7 @@ module Mentionable
 
     def self.external_pattern
       strong_memoize(:external_pattern) do
-        issue_pattern = Integrations::BaseIssueTracker.reference_pattern
+        issue_pattern = Integrations::BaseIssueTracker.base_reference_pattern
         link_patterns = URI::DEFAULT_PARSER.make_regexp(%w(http https))
         reference_pattern(link_patterns, issue_pattern)
       end

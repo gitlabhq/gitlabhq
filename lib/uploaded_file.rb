@@ -7,6 +7,7 @@ require "fileutils"
 class UploadedFile
   InvalidPathError = Class.new(StandardError)
   UnknownSizeError = Class.new(StandardError)
+  ALLOWED_KWARGS = %i[filename content_type sha256 remote_id size upload_duration sha1 md5].freeze
 
   # The filename, *not* including the path, of the "uploaded" file
   attr_reader :original_filename
@@ -17,12 +18,11 @@ class UploadedFile
   # The content type of the "uploaded" file
   attr_accessor :content_type
 
-  attr_reader :remote_id
-  attr_reader :sha256
-  attr_reader :size
-  attr_reader :upload_duration
+  attr_reader :remote_id, :sha256, :size, :upload_duration, :sha1, :md5
 
-  def initialize(path, filename: nil, content_type: "application/octet-stream", sha256: nil, remote_id: nil, size: nil, upload_duration: nil)
+  def initialize(path, **kwargs)
+    validate_kwargs(kwargs)
+
     if path.present?
       raise InvalidPathError, "#{path} file does not exist" unless ::File.exist?(path)
 
@@ -30,23 +30,24 @@ class UploadedFile
       @size = @tempfile.size
     else
       begin
-        @size = Integer(size)
+        @size = Integer(kwargs[:size])
       rescue ArgumentError, TypeError
         raise UnknownSizeError, 'Unable to determine file size'
       end
     end
 
     begin
-      @upload_duration = Float(upload_duration)
+      @upload_duration = Float(kwargs[:upload_duration])
     rescue ArgumentError, TypeError
       @upload_duration = 0
     end
 
-    @content_type = content_type
-    @original_filename = sanitize_filename(filename || path || '')
-    @content_type = content_type
-    @sha256 = sha256
-    @remote_id = remote_id
+    @content_type = kwargs[:content_type] || 'application/octet-stream'
+    @original_filename = sanitize_filename(kwargs[:filename] || path || '')
+    @sha256 = kwargs[:sha256]
+    @sha1 = kwargs[:sha1]
+    @md5 = kwargs[:md5]
+    @remote_id = kwargs[:remote_id]
   end
 
   def self.from_params(params, upload_paths)
@@ -65,14 +66,16 @@ class UploadedFile
       end
     end
 
-    UploadedFile.new(
+    new(
       file_path,
       filename: params['name'],
       content_type: params['type'] || 'application/octet-stream',
       sha256: params['sha256'],
       remote_id: remote_id,
       size: params['size'],
-      upload_duration: params['upload_duration']
+      upload_duration: params['upload_duration'],
+      sha1: params['sha1'],
+      md5: params['md5']
     ).tap do |uploaded_file|
       ::Gitlab::Instrumentation::Uploads.track(uploaded_file)
     end
@@ -110,5 +113,12 @@ class UploadedFile
 
   def respond_to?(method_name, include_private = false) #:nodoc:
     @tempfile.respond_to?(method_name, include_private) || super
+  end
+
+  private
+
+  def validate_kwargs(kwargs)
+    invalid_kwargs = kwargs.keys - ALLOWED_KWARGS
+    raise ArgumentError, "unknown keyword(s): #{invalid_kwargs.join(', ')}" if invalid_kwargs.any?
   end
 end

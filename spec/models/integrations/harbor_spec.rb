@@ -48,7 +48,7 @@ RSpec.describe Integrations::Harbor do
 
     before do
       allow_next_instance_of(Gitlab::Harbor::Client) do |client|
-        allow(client).to receive(:ping).and_return(test_response)
+        allow(client).to receive(:check_project_availability).and_return(test_response)
       end
     end
 

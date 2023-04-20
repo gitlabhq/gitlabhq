@@ -57,9 +57,9 @@ class IssueBoardEntity < Grape::Entity
   end
 
   expose :issue_type,
-         as: :type,
-         format_with: :upcase,
-         documentation: { type: "String", desc: "One of #{::WorkItems::Type.base_types.keys.map(&:upcase)}" }
+    as: :type,
+    format_with: :upcase,
+    documentation: { type: "String", desc: "One of #{::WorkItems::Type.base_types.keys.map(&:upcase)}" }
 end
 
 IssueBoardEntity.prepend_mod_with('IssueBoardEntity')
