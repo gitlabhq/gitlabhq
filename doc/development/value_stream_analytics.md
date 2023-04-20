@@ -344,9 +344,25 @@ Seed issues and merge requests for value stream analytics:
 
 Seed DORA daily metrics for value stream, insights and CI/CD analytics:
 
-1. [Create an environment from the UI](../ci/environments/index.md#create-a-static-environment) named `production`.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the project's homepage, in the upper-left corner, copy the **Project ID**. You need it in a later step.
+1. [Create an environment for your selected project from the UI](../ci/environments/index.md#create-a-static-environment) named `production`.
 1. Open the rails console:
 
    ```shell
    rails c
    ```
+
+1. In the rails console, find the created environment by searching for the project ID:
+
+    ```shell
+    e = Environment.find_by(project_id: <project-id>, name: "production")
+    ```
+
+1. To seed data for the past 100 days for the environment, run the following command:
+
+    ```shell
+    100.times { |i| Dora::DailyMetrics.create(environment_id: e.id, date: (i + 1).days.ago, deployment_frequency: rand(50), incidents_count: rand(5),   lead_time_for_changes_in_seconds: rand(50000), time_to_restore_service_in_seconds: rand(100000)) }
+    ```
+
+DORA metric data should now be available for your selected project and any group or subgroup it belongs to.

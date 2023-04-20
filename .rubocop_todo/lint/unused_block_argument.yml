@@ -135,7 +135,6 @@ Lint/UnusedBlockArgument:
     - 'ee/spec/factories/projects.rb'
     - 'ee/spec/factories/protected_branches.rb'
     - 'ee/spec/factories/protected_environments.rb'
-    - 'ee/spec/factories/slack_integrations.rb'
     - 'ee/spec/factories/users.rb'
     - 'ee/spec/features/groups/group_settings_spec.rb'
     - 'ee/spec/graphql/mutations/dast/profiles/update_spec.rb'

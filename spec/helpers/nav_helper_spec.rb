@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NavHelper do
+RSpec.describe NavHelper, feature_category: :navigation do
   describe '#header_links' do
     include_context 'custom session'
 
@@ -136,23 +136,8 @@ RSpec.describe NavHelper do
   end
 
   describe '#show_super_sidebar?' do
-    shared_examples '#show_super_sidebar returns false' do
-      it 'returns false' do
-        expect(helper.show_super_sidebar?).to eq(false)
-      end
-    end
-
-    it 'returns false by default' do
-      allow(helper).to receive(:current_user).and_return(nil)
-
-      expect(helper.show_super_sidebar?).to be_falsy
-    end
-
-    context 'when used is signed-in' do
-      let_it_be(:user) { create(:user) }
-
+    shared_examples 'show_super_sidebar is supposed to' do
       before do
-        allow(helper).to receive(:current_user).and_return(user)
         stub_feature_flags(super_sidebar_nav: new_nav_ff)
         user.update!(use_new_navigation: user_preference)
       end
@@ -163,13 +148,13 @@ RSpec.describe NavHelper do
         context 'when user has new nav disabled' do
           let(:user_preference) { false }
 
-          it_behaves_like '#show_super_sidebar returns false'
+          specify { expect(subject).to eq false }
         end
 
         context 'when user has new nav enabled' do
           let(:user_preference) { true }
 
-          it_behaves_like '#show_super_sidebar returns false'
+          specify { expect(subject).to eq false }
         end
       end
 
@@ -179,16 +164,46 @@ RSpec.describe NavHelper do
         context 'when user has new nav disabled' do
           let(:user_preference) { false }
 
-          it_behaves_like '#show_super_sidebar returns false'
+          specify { expect(subject).to eq false }
         end
 
         context 'when user has new nav enabled' do
           let(:user_preference) { true }
 
-          it 'returns true' do
-            expect(helper.show_super_sidebar?).to eq(true)
-          end
+          specify { expect(subject).to eq true }
         end
+      end
+    end
+
+    context 'when nil is provided' do
+      specify { expect(helper.show_super_sidebar?(nil)).to eq false }
+    end
+
+    context 'when no user is signed-in' do
+      specify do
+        allow(helper).to receive(:current_user).and_return(nil)
+
+        expect(helper.show_super_sidebar?).to eq false
+      end
+    end
+
+    context 'when user is signed-in' do
+      let_it_be(:user) { create(:user) }
+
+      context 'with current_user as a default' do
+        before do
+          allow(helper).to receive(:current_user).and_return(user)
+        end
+
+        subject { helper.show_super_sidebar? }
+
+        it_behaves_like 'show_super_sidebar is supposed to'
+      end
+
+      context 'with user provided as an argument' do
+        subject { helper.show_super_sidebar?(user) }
+
+        it_behaves_like 'show_super_sidebar is supposed to'
       end
     end
   end

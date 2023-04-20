@@ -38,7 +38,10 @@ class MergeRequest < ApplicationRecord
 
   ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
     'Ci::CompareMetricsReportsService' => ->(project) { true },
-    'Ci::CompareCodequalityReportsService' => ->(project) { true }
+    'Ci::CompareCodequalityReportsService' => ->(project) { true },
+    'Ci::CompareSecurityReportsService' => ->(project) do
+      Feature.enabled?(:use_merge_base_for_security_widget, project)
+    end
   }.freeze
 
   belongs_to :target_project, class_name: "Project"

@@ -35,8 +35,9 @@ GitLab supports enabling the Apple App Store integration at the project level. C
 
 After the Apple App Store integration is activated:
 
-- The global variables `$APP_STORE_CONNECT_API_KEY_ISSUER_ID`, `$APP_STORE_CONNECT_API_KEY_KEY_ID`, and `$APP_STORE_CONNECT_API_KEY_KEY` are created for CI/CD use.
+- The global variables `$APP_STORE_CONNECT_API_KEY_ISSUER_ID`, `$APP_STORE_CONNECT_API_KEY_KEY_ID`, `$APP_STORE_CONNECT_API_KEY_KEY`, and `$APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64` are created for CI/CD use.
 - `$APP_STORE_CONNECT_API_KEY_KEY` contains the Base64 encoded Private Key.
+- `$APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64` is always `true`.
 
 ## Security considerations
 
@@ -51,7 +52,5 @@ Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variab
 Because this integration works out of the box with fastlane adding the code below to an app's `fastlane/Fastfile` activates the integration, and create the connection for any interactions with the Apple App Store uploading a Test Flight or public App Store release.
 
 ```ruby
-app_store_connect_api_key(
-  is_key_content_base64: true
-)
+app_store_connect_api_key
 ```

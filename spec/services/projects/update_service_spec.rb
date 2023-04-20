@@ -357,24 +357,26 @@ RSpec.describe Projects::UpdateService, feature_category: :projects do
       # Using some sample features for testing.
       # Not using all the features because some of them must be enabled/disabled together
       %w[issues wiki forking].each do |feature_name|
-        let(:feature) { "#{feature_name}_access_level" }
-        let(:params) do
-          { project_feature_attributes: { feature => ProjectFeature::ENABLED } }
-        end
+        context "with feature_name:#{feature_name}" do
+          let(:feature) { "#{feature_name}_access_level" }
+          let(:params) do
+            { project_feature_attributes: { feature => ProjectFeature::ENABLED } }
+          end
 
-        before do
-          project.project_feature.update!(feature => ProjectFeature::DISABLED)
-        end
+          before do
+            project.project_feature.update!(feature => ProjectFeature::DISABLED)
+          end
 
-        it 'publishes Projects::ProjectFeaturesChangedEvent' do
-          expect { update_project(project, user, params) }
-            .to publish_event(Projects::ProjectFeaturesChangedEvent)
-            .with(
-              project_id: project.id,
-              namespace_id: project.namespace_id,
-              root_namespace_id: project.root_namespace.id,
-              features: ["updated_at", feature]
-            )
+          it 'publishes Projects::ProjectFeaturesChangedEvent' do
+            expect { update_project(project, user, params) }
+              .to publish_event(Projects::ProjectFeaturesChangedEvent)
+              .with(
+                project_id: project.id,
+                namespace_id: project.namespace_id,
+                root_namespace_id: project.root_namespace.id,
+                features: array_including(feature, "updated_at")
+              )
+          end
         end
       end
     end

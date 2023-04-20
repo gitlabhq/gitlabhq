@@ -20,7 +20,7 @@ module Tooling
     end
 
     def initialize(
-      backend_glob: "{ee,app,lib,config,locale}/**/*.{rb,erb,haml}",
+      backend_glob: "{ee/,}{app,lib,config,locale}/**/*.{rb,erb,haml}",
       glob_base: nil,
       package_name: 'gitlab',
       package_version: '1.0.0'

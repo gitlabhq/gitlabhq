@@ -81,6 +81,12 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
             value: apple_app_store_integration.app_store_key_id,
             masked: true,
             public: false
+          },
+          {
+            key: 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64',
+            value: described_class::IS_KEY_CONTENT_BASE64,
+            masked: false,
+            public: false
           }
         ]
 

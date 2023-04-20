@@ -75,6 +75,7 @@ export const SPECIAL_FILTER = 'specialFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const i18n = {
+  actionsLabel: __('Actions'),
   calendarLabel: __('Subscribe to calendar'),
   closed: __('Closed'),
   closedMoved: __('Closed (moved)'),

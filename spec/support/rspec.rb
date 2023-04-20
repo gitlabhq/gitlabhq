@@ -50,7 +50,10 @@ RSpec.configure do |config|
   # Add warning for example missing feature_category
   config.before do |example|
     if warn_missing_feature_category && example.metadata[:feature_category].blank? && !ENV['CI']
-      warn "Missing metadata feature_category: #{example.location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
+      location =
+        example.metadata[:shared_group_inclusion_backtrace].last&.formatted_inclusion_location ||
+        example.location
+      warn "Missing metadata feature_category: #{location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
     end
   end
 end

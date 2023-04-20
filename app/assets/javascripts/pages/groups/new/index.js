@@ -27,9 +27,6 @@ function initNewGroupCreation(el) {
     parentGroupUrl,
     parentGroupName,
     importExistingGroupPath,
-    verificationRequired,
-    verificationFormUrl,
-    subscriptionsUrl,
   } = el.dataset;
 
   const props = {
@@ -48,11 +45,6 @@ function initNewGroupCreation(el) {
   return new Vue({
     el,
     apolloProvider,
-    provide: {
-      verificationRequired: parseBoolean(verificationRequired),
-      verificationFormUrl,
-      subscriptionsUrl,
-    },
     render(h) {
       return h(NewGroupCreationApp, { props });
     },

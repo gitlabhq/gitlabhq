@@ -859,6 +859,9 @@ msgstr ""
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
+msgid "%{linkStart}Approval settings%{linkEnd} prevent approvals by its eligible approvers."
+msgstr ""
+
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -1303,15 +1306,6 @@ msgid "'%{data}' at %{location} is not: %{const}"
 msgstr ""
 
 msgid "'%{level}' is not a valid visibility level"
-msgstr ""
-
-msgid "'%{name}' Value Stream created"
-msgstr ""
-
-msgid "'%{name}' Value Stream deleted"
-msgstr ""
-
-msgid "'%{name}' Value Stream saved"
 msgstr ""
 
 msgid "'%{source}' is not a import source"
@@ -5502,37 +5496,7 @@ msgstr ""
 msgid "Approvals required"
 msgstr ""
 
-msgid "Approvals|%{count} of %{total}"
-msgstr ""
-
-msgid "Approvals|Action required"
-msgstr ""
-
-msgid "Approvals|Auto approved"
-msgstr ""
-
-msgid "Approvals|It looks like there was a conflict between the rules for approving this Merge Request and the users who were eligible to approve it. As a result, the system has automatically approved it to keep things moving."
-msgstr ""
-
-msgid "Approvals|Rule automatically approved"
-msgstr ""
-
-msgid "Approvals|Rule cannot be approved"
-msgstr ""
-
 msgid "Approvals|Section: %section"
-msgstr ""
-
-msgid "Approvals|The number of people who need to approve this is more than those who are allowed to. Please ask the project owner to update %{securityPolicy}."
-msgstr ""
-
-msgid "Approvals|Verify the number of %{linkStart}eligible security approvers%{linkEnd} matches the required approvers for the security policy."
-msgstr ""
-
-msgid "Approvals|Verify your %{eligibleApproverLinkStart}eligible approvers%{eligibleApproverLinkEnd} and %{approvalSettingsLinkStart}approval settings%{approvalSettingsLinkEnd} agree with each other."
-msgstr ""
-
-msgid "Approvals|Verify your %{linkStart}approval settings%{linkEnd} do not conflict with this rule."
 msgstr ""
 
 msgid "Approve"
@@ -9107,9 +9071,6 @@ msgstr ""
 msgid "Child issues and epics"
 msgstr ""
 
-msgid "Child removed"
-msgstr ""
-
 msgid "Chinese language support using"
 msgstr ""
 
@@ -11852,9 +11813,6 @@ msgstr ""
 msgid "ContributionAnalytics|The given date range is larger than %{number_of_days} days"
 msgstr ""
 
-msgid "ContributionAnalytics|The given date range is larger than 93 days"
-msgstr ""
-
 msgid "ContributionAnalytics|The to date is earlier than the given from date"
 msgstr ""
 
@@ -12351,9 +12309,6 @@ msgid "Create new"
 msgstr ""
 
 msgid "Create new %{name} by email"
-msgstr ""
-
-msgid "Create new Value Stream"
 msgstr ""
 
 msgid "Create new branch"
@@ -13082,9 +13037,6 @@ msgid "CycleAnalytics|Show"
 msgstr ""
 
 msgid "CycleAnalytics|Stage time: %{title}"
-msgstr ""
-
-msgid "CycleAnalytics|Tasks by type"
 msgstr ""
 
 msgid "CycleAnalytics|The average time items spent in this stage. Data limited to items completed within this date range."
@@ -15892,9 +15844,6 @@ msgstr ""
 msgid "Edit image description"
 msgstr ""
 
-msgid "Edit image text or link"
-msgstr ""
-
 msgid "Edit in pipeline editor"
 msgstr ""
 
@@ -17494,9 +17443,6 @@ msgid "Existing projects will be able to use cleanup policies. Avoid enabling th
 msgstr ""
 
 msgid "Existing sign in methods may be removed"
-msgstr ""
-
-msgid "Exit."
 msgstr ""
 
 msgid "Expand"
@@ -21869,12 +21815,6 @@ msgstr ""
 msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
-msgid "IdentityVerification|Before you create your first project, we need you to verify your identity with a valid payment method. You will not be charged during this step. If we ever need to charge you, we will let you know."
-msgstr ""
-
-msgid "IdentityVerification|Before you create your group, we need you to verify your identity with a valid payment method. You will not be charged during this step. If we ever need to charge you, we will let you know."
-msgstr ""
-
 msgid "IdentityVerification|Before you finish creating your account, we need to verify your identity. On the verification page, enter the following code."
 msgstr ""
 
@@ -21885,9 +21825,6 @@ msgid "IdentityVerification|Complete verification to sign in."
 msgstr ""
 
 msgid "IdentityVerification|Confirm your email address"
-msgstr ""
-
-msgid "IdentityVerification|Create a project"
 msgstr ""
 
 msgid "IdentityVerification|Didn't receive a code?"
@@ -22011,9 +21948,6 @@ msgid "IdentityVerification|We've sent a verification code to %{email}"
 msgstr ""
 
 msgid "IdentityVerification|We've sent a verification code to +%{phoneNumber}"
-msgstr ""
-
-msgid "IdentityVerification|You can always verify your account at a later time to create a group."
 msgstr ""
 
 msgid "IdentityVerification|You will receive a text containing a code. Standard charges may apply."
@@ -23770,6 +23704,9 @@ msgstr ""
 msgid "Introducing Your DevOps Reports"
 msgstr ""
 
+msgid "Invalid"
+msgstr ""
+
 msgid "Invalid Insights config file detected"
 msgstr ""
 
@@ -23831,6 +23768,9 @@ msgid "Invalid repository bundle for snippet with id %{snippet_id}"
 msgstr ""
 
 msgid "Invalid repository path"
+msgstr ""
+
+msgid "Invalid rules are automatically approved to unblock the merge request."
 msgstr ""
 
 msgid "Invalid server response"
@@ -24463,6 +24403,9 @@ msgid "Issues|There was an error while moving the issues."
 msgstr ""
 
 msgid "Issue|Title"
+msgstr ""
+
+msgid "It doesn't have any %{linkStart}eligible approvers%{linkEnd}."
 msgstr ""
 
 msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
@@ -30752,9 +30695,6 @@ msgstr ""
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
 msgstr ""
 
-msgid "Only group members with at least the Reporter role can view or be notified about this epic"
-msgstr ""
-
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
@@ -31516,9 +31456,6 @@ msgid "PackageRegistry|There are no other versions of this package."
 msgstr ""
 
 msgid "PackageRegistry|There are no packages yet"
-msgstr ""
-
-msgid "PackageRegistry|There are security risks if packages are deleted while request forwarding is enabled."
 msgstr ""
 
 msgid "PackageRegistry|There are security risks if packages are deleted while request forwarding is enabled. %{docLinkStart}What are the risks?%{docLinkEnd}"
@@ -33426,9 +33363,6 @@ msgid "Prev"
 msgstr ""
 
 msgid "Prevent auto-stopping"
-msgstr ""
-
-msgid "Prevent editing approval rules in projects and merge requests"
 msgstr ""
 
 msgid "Prevent environment from auto-stopping"
@@ -36557,9 +36491,6 @@ msgstr ""
 msgid "RegistrationFeatures|Read more about the %{link_start}Registration Features Program%{link_end}."
 msgstr ""
 
-msgid "RegistrationFeatures|Registration Features Program"
-msgstr ""
-
 msgid "RegistrationFeatures|Want to %{feature_title} for free?"
 msgstr ""
 
@@ -38930,10 +38861,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} actions for the %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan on runner that %{tags}"
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Run a %{scan} scan on runner that %{tags}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run %{dastProfiles} with tags %{tags}"
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Run a %{scan} scan with %{dastProfiles} with tags %{tags}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|A pipeline is run"
@@ -41449,9 +41380,6 @@ msgstr ""
 msgid "Showing version #%{versionNumber}"
 msgstr ""
 
-msgid "Shows issues for group '%{group_name}' from Nov 1, 2019 to Dec 31, 2019"
-msgstr ""
-
 msgid "Side-by-side"
 msgstr ""
 
@@ -43707,6 +43635,9 @@ msgstr ""
 msgid "Target branch or tag"
 msgstr ""
 
+msgid "Target branch: %{target_branch}"
+msgstr ""
+
 msgid "Target roles"
 msgstr ""
 
@@ -45638,6 +45569,9 @@ msgstr ""
 msgid "This repository was last checked %{last_check_timestamp}. The check passed."
 msgstr ""
 
+msgid "This rule is invalid because no one can approve it for one or more of these reasons:"
+msgstr ""
+
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
@@ -46873,9 +46807,6 @@ msgid "Two-factor authentication has been disabled for this user"
 msgstr ""
 
 msgid "Two-factor authentication has been disabled for your GitLab account."
-msgstr ""
-
-msgid "Two-factor authentication has been disabled successfully for %{user_email}!"
 msgstr ""
 
 msgid "Two-factor authentication has been disabled successfully for %{username}!"
@@ -49868,6 +49799,9 @@ msgstr ""
 msgid "Why can't I approve?"
 msgstr ""
 
+msgid "Why is this rule invalid?"
+msgstr ""
+
 msgid "Wiki"
 msgstr ""
 
@@ -51536,9 +51470,6 @@ msgstr ""
 msgid "Your top-level group %{namespace_name} will move to a read-only state soon"
 msgstr ""
 
-msgid "Your top-level group %{name} will move to a read-only state soon"
-msgstr ""
-
 msgid "Your top-level group is over the user and storage limits and has been placed in a read-only state."
 msgstr ""
 
@@ -51783,9 +51714,6 @@ msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can only have one escalation policy"
-msgstr ""
-
-msgid "can't be blank"
 msgstr ""
 
 msgid "can't be enabled when delayed group deletion is disabled"
@@ -52958,12 +52886,6 @@ msgstr ""
 msgid "mrWidget|%{boldStart}Ready to be merged automatically.%{boldEnd} Ask someone with write access to this repository to merge this request."
 msgstr ""
 
-msgid "mrWidget|%{dangerStart}%{rules} rule can't be approved%{dangerEnd}"
-msgstr ""
-
-msgid "mrWidget|%{dangerStart}%{rules} rules can't be approved%{dangerEnd}"
-msgstr ""
-
 msgid "mrWidget|%{mergeError}."
 msgstr ""
 
@@ -52979,10 +52901,10 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
-msgid "mrWidget|%{rules} invalid rule has been approved automatically"
+msgid "mrWidget|%{rules} invalid rule has been approved automatically, as no one can approve it."
 msgstr ""
 
-msgid "mrWidget|%{rules} invalid rules have been approved automatically"
+msgid "mrWidget|%{rules} invalid rules have been approved automatically, as no one can approve them."
 msgstr ""
 
 msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."

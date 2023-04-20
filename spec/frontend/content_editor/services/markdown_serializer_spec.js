@@ -186,6 +186,19 @@ comment -->
     );
   });
 
+  it('correctly renders a comment with markdown in it without adding any slashes', () => {
+    expect(serialize(paragraph('hi'), comment('this is a list\n- a\n- b\n- c'))).toBe(
+      `
+hi
+
+<!--this is a list
+- a
+- b
+- c-->
+      `.trim(),
+    );
+  });
+
   it('correctly serializes a line break', () => {
     expect(serialize(paragraph('hello', hardBreak(), 'world'))).toBe('hello\\\nworld');
   });

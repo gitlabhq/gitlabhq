@@ -136,7 +136,7 @@ To do so:
 1. Fill in the name field. You can't specify a description if creating a label this way.
    You can add a description later by [editing the label](#edit-a-label).
 1. Select a color by selecting from the available colors, or enter a hex color value for a specific color.
-1. Select **Create**.
+1. Select **Create**. Your label is created and selected.
 
 ### Create a group label
 

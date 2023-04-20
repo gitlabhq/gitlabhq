@@ -173,6 +173,21 @@ describe('DropdownContent', () => {
       expect(findCreateView().exists()).toBe(false);
       expect(findLabelsView().exists()).toBe(true);
     });
+
+    it('selects created labels', async () => {
+      const createdLabel = {
+        id: 29,
+        title: 'new label',
+        description: null,
+        color: '#FF0000',
+        textColor: '#FFFFFF',
+      };
+
+      findCreateView().vm.$emit('labelCreated', createdLabel);
+      await nextTick();
+
+      expect(findLabelsView().props('localSelectedLabels')).toContain(createdLabel);
+    });
   });
 
   describe('Labels view', () => {

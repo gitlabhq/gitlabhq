@@ -132,7 +132,7 @@ export default {
         if (labelCreate.errors.length) {
           [this.error] = labelCreate.errors;
         } else {
-          this.$emit('hideCreateView');
+          this.$emit('labelCreated', labelCreate.label);
         }
       } catch {
         createAlert({ message: errorMessage });

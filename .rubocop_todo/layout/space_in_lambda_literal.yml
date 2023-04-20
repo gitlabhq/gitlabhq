@@ -233,7 +233,6 @@ Layout/SpaceInLambdaLiteral:
     - 'ee/app/models/security/scan.rb'
     - 'ee/app/models/security/training.rb'
     - 'ee/app/models/security/training_provider.rb'
-    - 'ee/app/models/slack_integration.rb'
     - 'ee/app/models/software_license.rb'
     - 'ee/app/models/software_license_policy.rb'
     - 'ee/app/models/vulnerabilities/external_issue_link.rb'

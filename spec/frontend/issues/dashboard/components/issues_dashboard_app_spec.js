@@ -1,4 +1,4 @@
-import { GlEmptyState } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
@@ -78,6 +78,7 @@ describe('IssuesDashboardApp component', () => {
   }
 
   const findCalendarButton = () => wrapper.findByRole('link', { name: i18n.calendarLabel });
+  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -113,11 +114,10 @@ describe('IssuesDashboardApp component', () => {
   });
 
   describe('UI components', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       setWindowLocation(locationSearch);
       mountComponent();
-      jest.runOnlyPendingTimers();
-      return waitForPromises();
+      await waitForPromises();
     });
 
     // https://gitlab.com/gitlab-org/gitlab/-/issues/391722
@@ -154,12 +154,24 @@ describe('IssuesDashboardApp component', () => {
       });
     });
 
-    it('renders RSS button link', () => {
-      expect(findRssButton().attributes('href')).toBe(defaultProvide.rssPath);
-    });
+    describe('actions dropdown', () => {
+      it('renders', () => {
+        expect(findDisclosureDropdown().props()).toMatchObject({
+          category: 'tertiary',
+          icon: 'ellipsis_v',
+          noCaret: true,
+          textSrOnly: true,
+          toggleText: 'Actions',
+        });
+      });
 
-    it('renders calendar button link', () => {
-      expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
+      it('renders RSS button link', () => {
+        expect(findRssButton().attributes('href')).toBe(defaultProvide.rssPath);
+      });
+
+      it('renders calendar button link', () => {
+        expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
+      });
     });
 
     it('renders issue time information', () => {
@@ -174,11 +186,10 @@ describe('IssuesDashboardApp component', () => {
   describe('fetching issues', () => {
     describe('with a search query', () => {
       describe('when there are issues returned', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           setWindowLocation(locationSearch);
           mountComponent();
-          jest.runOnlyPendingTimers();
-          return waitForPromises();
+          await waitForPromises();
         });
 
         it('renders the issues', () => {
@@ -193,12 +204,12 @@ describe('IssuesDashboardApp component', () => {
       });
 
       describe('when there are no issues returned', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           setWindowLocation(locationSearch);
           mountComponent({
             issuesQueryHandler: jest.fn().mockResolvedValue(emptyIssuesQueryResponse),
           });
-          return waitForPromises();
+          await waitForPromises();
         });
 
         it('renders no issues', () => {
@@ -218,10 +229,10 @@ describe('IssuesDashboardApp component', () => {
     describe('with no search query', () => {
       let issuesQueryHandler;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse);
         mountComponent({ issuesQueryHandler });
-        return waitForPromises();
+        await waitForPromises();
       });
 
       it('does not call issues query', () => {
@@ -307,11 +318,10 @@ describe('IssuesDashboardApp component', () => {
       ${'fetching issues'}       | ${'issuesQueryHandler'}       | ${i18n.errorFetchingIssues}
       ${'fetching issue counts'} | ${'issuesCountsQueryHandler'} | ${i18n.errorFetchingCounts}
     `('when there is an error $error', ({ mountOption, message }) => {
-      beforeEach(() => {
+      beforeEach(async () => {
         setWindowLocation(locationSearch);
         mountComponent({ [mountOption]: jest.fn().mockRejectedValue(new Error('ERROR')) });
-        jest.runOnlyPendingTimers();
-        return waitForPromises();
+        await waitForPromises();
       });
 
       it('shows an error message', () => {

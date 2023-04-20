@@ -4082,12 +4082,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
-    context 'when service class is Ci::CompareCodequalityReportsService' do
-      let(:service_class) { 'Ci::CompareCodequalityReportsService' }
+    context 'when service class uses merge base pipeline' do
+      where(:service_class) do
+        %w[
+          Ci::CompareMetricsReportsService
+          Ci::CompareCodequalityReportsService
+          Ci::CompareSecurityReportsService
+        ]
+      end
 
       context 'when merge request has a merge request pipeline' do
         let(:merge_request) do
-          create(:merge_request, :with_merge_request_pipeline)
+          create(:merge_request, :with_merge_request_pipeline, source_project: project)
         end
 
         let(:merge_base_pipeline) do
@@ -4099,8 +4105,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           merge_request.update_head_pipeline
         end
 
-        it 'returns the merge_base_pipeline' do
-          expect(pipeline).to eq(merge_base_pipeline)
+        with_them do
+          it 'returns the merge_base_pipeline' do
+            expect(pipeline).to eq(merge_base_pipeline)
+          end
+        end
+      end
+
+      context 'when merge does not have a merge request pipeline' do
+        with_them do
+          it 'returns the base_pipeline' do
+            expect(pipeline).to eq(base_pipeline)
+          end
+        end
+      end
+    end
+
+    context 'when service class is Ci::CompareSecurityReportsService and feature flag is off' do
+      let(:service_class) { 'Ci::CompareSecurityReportsService' }
+
+      before do
+        stub_feature_flags(use_merge_base_for_security_widget: false)
+      end
+
+      context 'when merge request has a merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request, :with_merge_request_pipeline, source_project: project)
+        end
+
+        it 'returns the base pipeline' do
+          expect(pipeline).to eq(base_pipeline)
         end
       end
 

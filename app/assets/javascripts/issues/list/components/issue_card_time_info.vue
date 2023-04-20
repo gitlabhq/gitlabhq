@@ -74,7 +74,7 @@ export default {
   <span>
     <span
       v-if="issue.milestone"
-      class="issuable-milestone gl-mr-3"
+      class="issuable-milestone gl-mr-3 gl-text-truncate gl-max-w-26 gl-display-inline-block gl-vertical-align-bottom"
       data-testid="issuable-milestone"
     >
       <gl-link v-gl-tooltip :href="milestoneLink" :title="milestoneDate" class="gl-font-sm">

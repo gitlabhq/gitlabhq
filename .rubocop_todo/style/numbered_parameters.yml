@@ -25,7 +25,6 @@ Style/NumberedParameters:
     - 'app/services/web_hooks/log_execution_service.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/security/finding.rb'
-    - 'ee/app/models/slack_integration.rb'
     - 'ee/app/models/vulnerabilities/feedback.rb'
     - 'ee/app/services/security/ingestion/tasks/hooks_execution.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_remediations.rb'

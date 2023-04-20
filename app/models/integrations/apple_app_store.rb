@@ -6,6 +6,7 @@ module Integrations
   class AppleAppStore < Integration
     ISSUER_ID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/.freeze
     KEY_ID_REGEX = /\A(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+\z/.freeze
+    IS_KEY_CONTENT_BASE64 = "true"
 
     SECTION_TYPE_APPLE_APP_STORE = 'apple_app_store'
 
@@ -43,7 +44,8 @@ module Integrations
       variable_list = [
         '<code>APP_STORE_CONNECT_API_KEY_ISSUER_ID</code>',
         '<code>APP_STORE_CONNECT_API_KEY_KEY_ID</code>',
-        '<code>APP_STORE_CONNECT_API_KEY_KEY</code>'
+        '<code>APP_STORE_CONNECT_API_KEY_KEY</code>',
+        '<code>APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64</code>'
       ]
 
       # rubocop:disable Layout/LineLength
@@ -92,7 +94,9 @@ module Integrations
         { key: 'APP_STORE_CONNECT_API_KEY_ISSUER_ID', value: app_store_issuer_id, masked: true, public: false },
         { key: 'APP_STORE_CONNECT_API_KEY_KEY', value: Base64.encode64(app_store_private_key), masked: true,
           public: false },
-        { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: app_store_key_id, masked: true, public: false }
+        { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: app_store_key_id, masked: true, public: false },
+        { key: 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64', value: IS_KEY_CONTENT_BASE64, masked: false,
+          public: false }
       ]
     end
 

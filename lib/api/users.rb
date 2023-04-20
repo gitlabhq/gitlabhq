@@ -1227,7 +1227,7 @@ module API
 
         attrs = declared_params(include_missing: false)
 
-        service = ::Users::UpsertCreditCardValidationService.new(attrs, user).execute
+        service = ::Users::UpsertCreditCardValidationService.new(attrs).execute
 
         if service.success?
           present user.credit_card_validation, with: Entities::UserCreditCardValidations
@@ -1243,7 +1243,8 @@ module API
       params do
         optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
-        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs
+        optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities as CI information'
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt
       end
       put "preferences", feature_category: :user_profile, urgency: :high do
         authenticate!

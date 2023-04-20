@@ -1118,7 +1118,6 @@ Layout/ArgumentAlignment:
     - 'ee/app/models/scim_identity.rb'
     - 'ee/app/models/security/finding.rb'
     - 'ee/app/models/security/orchestration_policy_rule_schedule.rb'
-    - 'ee/app/models/slack_integration.rb'
     - 'ee/app/models/smartcard_identity.rb'
     - 'ee/app/models/status_page/project_setting.rb'
     - 'ee/app/models/vulnerabilities/external_issue_link.rb'

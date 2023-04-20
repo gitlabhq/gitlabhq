@@ -28,7 +28,7 @@ databases to be replicated across regions.
 
 Users are not directly exposed to the concept of Cells but instead they see
 different data dependent on their chosen "organization".
-[Organizations](index.md#organizations) will be a new model introduced to enforce isolation in the
+[Organizations](glossary.md#organizations) will be a new model introduced to enforce isolation in the
 application and allow us to decide which request route to which cell, since an
 organization can only be on a single cell.
 

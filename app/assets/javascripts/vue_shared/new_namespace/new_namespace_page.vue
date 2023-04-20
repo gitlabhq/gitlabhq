@@ -13,16 +13,9 @@ export default {
     GlIcon,
     WelcomePage,
     LegacyContainer,
-    CreditCardVerification: () =>
-      import('ee_component/namespaces/verification/components/credit_card_verification.vue'),
   },
   directives: {
     SafeHtml,
-  },
-  inject: {
-    verificationRequired: {
-      default: false,
-    },
   },
   props: {
     title: {
@@ -51,7 +44,6 @@ export default {
   data() {
     return {
       activePanelName: null,
-      verificationCompleted: false,
     };
   },
 
@@ -82,10 +74,6 @@ export default {
             },
           ]
         : this.initialBreadcrumbs;
-    },
-
-    shouldVerify() {
-      return this.verificationRequired && !this.verificationCompleted;
     },
 
     showNewTopLevelGroupAlert() {
@@ -121,16 +109,12 @@ export default {
         localStorage.setItem(this.persistenceKey, this.activePanelName);
       }
     },
-    onVerified() {
-      this.verificationCompleted = true;
-    },
   },
 };
 </script>
 
 <template>
-  <credit-card-verification v-if="shouldVerify" @verified="onVerified" />
-  <div v-else-if="!activePanelName" class="gl-mt-4">
+  <div v-if="!activePanelName" class="gl-mt-4">
     <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
     <welcome-page :panels="panels" :title="title">
       <template #footer>

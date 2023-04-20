@@ -12,3 +12,5 @@ module WorkItems
     }
   end
 end
+
+WorkItems::ResourceLinkEvent.prepend_mod

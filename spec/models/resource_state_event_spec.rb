@@ -41,23 +41,6 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
     end
   end
 
-  describe 'scopes' do
-    describe '.aliased_for_timebox_report', :freeze_time do
-      let!(:event) { create(:resource_state_event, issue: issue) }
-
-      let(:scope) { described_class.aliased_for_timebox_report.first }
-
-      it 'returns correct values with aliased names', :aggregate_failures do
-        expect(scope.event_type).to eq('state')
-        expect(scope.id).to eq(event.id)
-        expect(scope.issue_id).to eq(event.issue_id)
-        expect(scope.value).to eq(issue.state_id)
-        expect(scope.action).to eq(nil)
-        expect(scope.created_at).to eq(event.created_at)
-      end
-    end
-  end
-
   context 'callbacks' do
     describe '#issue_usage_metrics' do
       describe 'when an issue is closed' do

@@ -5,7 +5,7 @@ import { STATUS_MERGED } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '../../event_hub';
 import approvalsMixin from '../../mixins/approvals';
@@ -84,22 +84,13 @@ export default {
       return Boolean(this.action);
     },
     invalidRules() {
-      return this.approvals.approvalState?.rules?.filter((rule) => rule.invalid) || [];
-    },
-    invalidApprovedRules() {
-      return this.invalidRules.filter((rule) => rule.allowMergeWhenInvalid);
-    },
-    invalidFailedRules() {
-      return this.invalidRules.filter((rule) => !rule.allowMergeWhenInvalid);
+      return this.approvals.approvalState?.invalidApproversRules || [];
     },
     hasInvalidRules() {
       return this.mr.mergeRequestApproversAvailable && this.invalidRules.length;
     },
-    hasInvalidApprovedRules() {
-      return this.mr.mergeRequestApproversAvailable && this.invalidApprovedRules.length;
-    },
-    hasInvalidFailedRules() {
-      return this.mr.mergeRequestApproversAvailable && this.invalidFailedRules.length;
+    invalidRulesText() {
+      return this.invalidRules.length;
     },
     approvedBy() {
       return this.approvals.approvedBy?.nodes || [];
@@ -142,28 +133,10 @@ export default {
 
       return null;
     },
-    pluralizedApprovedRuleText() {
-      return this.invalidApprovedRules.length > 1
+    pluralizedRuleText() {
+      return this.invalidRules.length > 1
         ? this.$options.i18n.invalidRulesPlural
         : this.$options.i18n.invalidRuleSingular;
-    },
-    pluralizedFailedRuleText() {
-      return this.invalidFailedRules.length > 1
-        ? this.$options.i18n.invalidFailedRulesPlural
-        : this.$options.i18n.invalidFailedRuleSingular;
-    },
-    pluralizedRuleText() {
-      return [
-        this.hasInvalidFailedRules
-          ? sprintf(this.pluralizedFailedRuleText, { rules: this.invalidFailedRules.length })
-          : null,
-        this.hasInvalidApprovedRules
-          ? sprintf(this.pluralizedApprovedRuleText, { rules: this.invalidApprovedRules.length })
-          : null,
-      ]
-        .filter((text) => Boolean(text))
-        .join(', ')
-        .concat('.');
     },
   },
   methods: {
@@ -232,13 +205,11 @@ export default {
   FETCH_LOADING,
   linkToInvalidRules: INVALID_RULES_DOCS_PATH,
   i18n: {
-    invalidRuleSingular: s__('mrWidget|%{rules} invalid rule has been approved automatically'),
-    invalidRulesPlural: s__('mrWidget|%{rules} invalid rules have been approved automatically'),
-    invalidFailedRuleSingular: s__(
-      "mrWidget|%{dangerStart}%{rules} rule can't be approved%{dangerEnd}",
+    invalidRuleSingular: s__(
+      'mrWidget|%{rules} invalid rule has been approved automatically, as no one can approve it.',
     ),
-    invalidFailedRulesPlural: s__(
-      "mrWidget|%{dangerStart}%{rules} rules can't be approved%{dangerEnd}",
+    invalidRulesPlural: s__(
+      'mrWidget|%{rules} invalid rules have been approved automatically, as no one can approve them.',
     ),
     learnMore: __('Learn more.'),
   },
@@ -284,9 +255,7 @@ export default {
           </div>
           <div v-if="hasInvalidRules" class="gl-text-gray-400 gl-mt-2" data-testid="invalid-rules">
             <gl-sprintf :message="pluralizedRuleText">
-              <template #danger="{ content }">
-                <span class="gl-font-weight-bold text-danger">{{ content }}</span>
-              </template>
+              <template #rules>{{ invalidRulesText }}</template>
             </gl-sprintf>
           </div>
         </div>

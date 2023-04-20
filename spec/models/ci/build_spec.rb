@@ -3743,7 +3743,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         [
           { key: 'APP_STORE_CONNECT_API_KEY_ISSUER_ID', value: apple_app_store_integration.app_store_issuer_id, masked: true, public: false },
           { key: 'APP_STORE_CONNECT_API_KEY_KEY', value: Base64.encode64(apple_app_store_integration.app_store_private_key), masked: true, public: false },
-          { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: apple_app_store_integration.app_store_key_id, masked: true, public: false }
+          { key: 'APP_STORE_CONNECT_API_KEY_KEY_ID', value: apple_app_store_integration.app_store_key_id, masked: true, public: false },
+          { key: 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64', value: "true", masked: false, public: false }
         ]
       end
 
@@ -3769,6 +3770,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
             expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
             expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
+            expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64' }).to be_nil
           end
         end
       end
@@ -3778,6 +3780,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_ISSUER_ID' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY' }).to be_nil
           expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_KEY_ID' }).to be_nil
+          expect(subject.find { |v| v[:key] == 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64' }).to be_nil
         end
       end
     end

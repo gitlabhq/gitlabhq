@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe UserPreferences::UpdateService, feature_category: :user_profile do
   let(:user) { create(:user) }
-  let(:params) { { view_diffs_file_by_file: false } }
+  let(:params) { { view_diffs_file_by_file: false, pass_user_identities_to_ci_jwt: true } }
 
   describe '#execute' do
     subject(:service) { described_class.new(user, params) }
@@ -15,6 +15,8 @@ RSpec.describe UserPreferences::UpdateService, feature_category: :user_profile d
 
         expect(result.status).to eq(:success)
         expect(result.payload[:preferences].view_diffs_file_by_file).to eq(params[:view_diffs_file_by_file])
+        expect(result.payload[:preferences].pass_user_identities_to_ci_jwt
+              ).to eq(params[:pass_user_identities_to_ci_jwt])
       end
     end
 

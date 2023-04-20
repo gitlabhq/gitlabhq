@@ -338,9 +338,9 @@ export function renderPlayable(state, node) {
 }
 
 export function renderComment(state, node) {
-  state.text('<!--');
-  state.text(node.textContent);
-  state.text('-->');
+  state.write('<!--');
+  state.write(node.textContent);
+  state.write('-->');
   state.closeBlock(node);
 }
 

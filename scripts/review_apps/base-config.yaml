@@ -27,7 +27,7 @@ gitlab:
         #
         # Data over the 3 months (2023-02-24 - 2023-04-19)
         #
-        # The average is around 0.100vCPU (setting request accordingly)
+        # The average seems to be around 0.100vCPU (setting request accordingly). Note that this is a guesstimate based on the chart.
         #
         # The maximum CPU usage was 0.196vCPU (setting limit accordingly)
         cpu: 150m
@@ -53,7 +53,7 @@ gitlab:
         #
         # Data over the 3 months (2023-02-24 - 2023-04-19)
         #
-        # The average is around 0.01vCPU (setting request accordingly)
+        # The average seems to be around 0.01vCPU (setting request accordingly). Note that this is a guesstimate based on the chart.
         #
         # The maximum CPU usage was 0.127vCPU (setting limit accordingly)
         cpu: 10m
@@ -105,7 +105,7 @@ gitlab:
         #
         # Data over the 3 months (2023-02-24 - 2023-04-19)
         #
-        # The average seems to be around 0.100vCPU
+        # The average seems to be around 0.100vCPU. Note that this is a guesstimate based on the chart.
         #
         # The maximum CPU usage was 0.250vCPU (setting limit accordingly)
         cpu: 150m
@@ -149,14 +149,14 @@ gitlab-runner:
       #
       # Data over the 3 months (2023-02-24 - 2023-04-19)
       #
-      # The average seems to be around 0.01vCPU
+      # The average seems to be around 0.01vCPU. Note that this is a guesstimate based on the chart.
       #
       # The maximum CPU usage was 0.015vCPU (setting limit accordingly)
       cpu: 10m
       memory: 100Mi
     limits:
       # In case somebody would like to use runners in review-apps, we set the limit higher than the requests
-      cpu: 400m
+      cpu: 1015m
       memory: 150Mi
   nodeSelector:
     preemptible: "true"
@@ -186,7 +186,7 @@ nginx-ingress:
         #
         # Data over the 3 months (2023-02-24 - 2023-04-19)
         #
-        # The average seems to be around 0.02vCPU
+        # The average seems to be around 0.02vCPU. Note that this is a guesstimate based on the chart.
         #
         # The maximum CPU usage was 0.07vCPU (setting limit accordingly)
         cpu: 10m
@@ -222,7 +222,7 @@ postgresql:
       #
       # Data over the 3 months (2023-02-24 - 2023-04-19)
       #
-      # The average seems to be around 0.150vCPU
+      # The average seems to be around 0.150vCPU. Note that this is a guesstimate based on the chart.
       #
       # The maximum CPU usage was 0.420vCPU (setting limit accordingly)
       cpu: 150m
@@ -248,7 +248,7 @@ redis:
       #
       # Data over the 3 months (2023-02-24 - 2023-04-19)
       #
-      # The average seems to be around 0.03vCPU
+      # The average seems to be around 0.03vCPU. Note that this is a guesstimate based on the chart.
       #
       # The maximum CPU usage was 0.500vCPU (setting limit accordingly)
       cpu: 10m
@@ -271,7 +271,7 @@ registry:
     #
     # Data over the 3 months (2023-02-24 - 2023-04-19)
     #
-    # The average seems to be around 0.0005vCPU
+    # The average seems to be around 0.0005vCPU. Note that this is a guesstimate based on the chart.
     #
     # The maximum CPU usage was 0.0.003vCPU (setting limit accordingly)
     requests:

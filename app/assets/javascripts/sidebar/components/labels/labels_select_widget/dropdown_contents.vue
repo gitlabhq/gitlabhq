@@ -188,6 +188,11 @@ export default {
     selectFirstItem() {
       this.$refs.dropdownContentsView.selectFirstItem();
     },
+    handleNewLabel(label) {
+      this.localSelectedLabels = [...this.localSelectedLabels, label];
+      this.toggleDropdownContent();
+      this.clearSearch();
+    },
   },
 };
 </script>
@@ -229,6 +234,7 @@ export default {
         :attr-workspace-path="attrWorkspacePath"
         :label-create-type="labelCreateType"
         @hideCreateView="toggleDropdownContent"
+        @labelCreated="handleNewLabel"
         @input="clearSearch"
       />
     </template>

@@ -57,7 +57,7 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
         gon.time_display_relative = current_user.time_display_relative
-        gon.use_new_navigation = Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation
+        gon.use_new_navigation = NavHelper.show_super_sidebar?(current_user)
       end
 
       # Initialize gon.features with any flags that should be

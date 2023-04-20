@@ -76,7 +76,6 @@ Rails/InverseOf:
     - 'ee/app/models/incident_management/escalation_rule.rb'
     - 'ee/app/models/incident_management/oncall_participant.rb'
     - 'ee/app/models/insight.rb'
-    - 'ee/app/models/integrations/gitlab_slack_application.rb'
     - 'ee/app/models/iteration.rb'
     - 'ee/app/models/requirements_management/requirement.rb'
     - 'ee/app/models/requirements_management/test_report.rb'

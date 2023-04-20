@@ -1,5 +1,10 @@
 <script>
-import { GlButton, GlEmptyState, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlEmptyState,
+  GlFilteredSearchToken,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -64,7 +69,7 @@ export default {
   i18n,
   IssuableListTabs,
   components: {
-    GlButton,
+    GlDisclosureDropdown,
     GlEmptyState,
     IssuableList,
     IssueCardStatistics,
@@ -155,6 +160,12 @@ export default {
   computed: {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
+    },
+    dropdownItems() {
+      return [
+        { href: this.rssPath, text: i18n.rssLabel },
+        { href: this.calendarPath, text: i18n.calendarLabel },
+      ];
     },
     emptyStateDescription() {
       return this.hasSearch ? this.$options.i18n.noSearchResultsDescription : undefined;
@@ -458,19 +469,14 @@ export default {
     @sort="handleSort"
   >
     <template #nav-actions>
-      <gl-button
-        v-gl-tooltip
-        :href="rssPath"
-        icon="rss"
-        :title="$options.i18n.rssLabel"
-        class="has-tooltip btn-icon"
-      />
-      <gl-button
-        v-gl-tooltip
-        :href="calendarPath"
-        icon="calendar"
-        :title="$options.i18n.calendarLabel"
-        class="has-tooltip btn-icon"
+      <gl-disclosure-dropdown
+        v-gl-tooltip="$options.i18n.actionsLabel"
+        category="tertiary"
+        icon="ellipsis_v"
+        :items="dropdownItems"
+        no-caret
+        text-sr-only
+        :toggle-text="$options.i18n.actionsLabel"
       />
     </template>
 

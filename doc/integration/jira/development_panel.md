@@ -34,7 +34,7 @@ The information displayed in the Jira development panel depends on where you men
 
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
-| Merge request title or description             | Link to the merge request<br>[GitLab 15.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/354373): Link to the branch |
+| Merge request title or description             | Link to the merge request<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11) |
 | Branch name                                    | Link to the branch                                    |
 | Commit message                                 | Link to the commit                                    |
 | [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |

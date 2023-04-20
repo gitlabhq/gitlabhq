@@ -987,3 +987,7 @@ SidekiqLoadBalancing/WorkerDataConsistency:
   Include:
     - 'app/workers/**/*'
     - 'ee/app/workers/**/*'
+
+# This cop is disabled for Ruby 3.0+ anyway.
+Lint/NonDeterministicRequireOrder:
+  Enabled: false

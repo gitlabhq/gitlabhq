@@ -11,7 +11,7 @@ include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
   - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
   - project: gitlab-org/quality/pipeline-common
-    ref: 3.1.2
+    ref: 3.1.3
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml

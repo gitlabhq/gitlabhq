@@ -104,10 +104,12 @@ export default {
         return sprintf(__('closed %{timeago}'), {
           timeago: getTimeago().format(this.issuable.closedAt),
         });
+      } else if (this.issuable.updatedAt !== this.issuable.createdAt) {
+        return sprintf(__('updated %{timeAgo}'), {
+          timeAgo: getTimeago().format(this.issuable.updatedAt),
+        });
       }
-      return sprintf(__('updated %{timeAgo}'), {
-        timeAgo: getTimeago().format(this.issuable.updatedAt),
-      });
+      return undefined;
     },
     issuableTitleProps() {
       if (this.isIssuableUrlExternal) {

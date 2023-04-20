@@ -1,6 +1,6 @@
 ---
-stage: none
-group: Tutorials
+stage: Data Stores
+group: Tenant Scale
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
