@@ -25,6 +25,10 @@ module QA
             element :sign_out_link
             element :edit_profile_link
           end
+
+          view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
+            element :user_profile_link
+          end
         else
           view 'app/views/layouts/header/_default.html.haml' do
             element :navbar, required: true
@@ -257,6 +261,7 @@ module QA
 
         def enable_new_navigation
           Runtime::Logger.info("Enabling super sidebar!")
+          return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
           return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
 
           within_user_menu { click_element(:new_navigation_toggle) }

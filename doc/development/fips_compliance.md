@@ -59,8 +59,7 @@ listed here that also do not work properly in FIPS mode:
 - [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
 - [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
 - [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
-- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md)
-  does not support operating in FIPS-compliant mode.
+- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/index.md) supports a reduced set of analyzers. Browser-based and proxy-based analyzers are not available in FIPS mode today, however DAST API and DAST API Fuzzing images are available.
 - [License compliance](../user/compliance/license_compliance/index.md).
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
   for yarn projects.

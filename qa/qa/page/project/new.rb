@@ -48,11 +48,9 @@ module QA
         end
 
         def choose_namespace(namespace)
-          retry_on_exception do
-            click_element :select_namespace_dropdown
-            fill_element :select_namespace_dropdown_search_field, namespace
-            click_button namespace
-          end
+          click_element :select_namespace_dropdown
+          fill_element :select_namespace_dropdown_search_field, namespace
+          within_element(:select_namespace_dropdown) { click_button namespace }
         end
 
         def click_import_project

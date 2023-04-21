@@ -141,7 +141,7 @@ module API
             optional :certificate, type: String, desc: %q(Session's certificate)
             optional :authorization, type: String, desc: %q(Session's authorization)
           end
-          optional :job_age, type: Integer, desc: %q(Job should be older than passed age in seconds to be ran on runner)
+          optional :job_age, type: Integer, desc: %q(DEPRECATED and will be REMOVED in GitLab 16.0. Job should be older than passed age in seconds to be ran on runner)
         end
 
         # Since we serialize the build output ourselves to ensure Gitaly
@@ -166,6 +166,10 @@ module API
           end
 
           runner_params = declared_params(include_missing: false)
+
+          if Feature.enabled?(:remove_job_age_from_jobs_api)
+            runner_params.delete(:job_age)
+          end
 
           if current_runner.runner_queue_value_latest?(runner_params[:last_update])
             header 'X-GitLab-Last-Update', runner_params[:last_update]

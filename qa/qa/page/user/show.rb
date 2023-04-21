@@ -22,6 +22,8 @@ module QA
         end
 
         def click_following_tab
+          return click_element(:nav_item_link, submenu_item: 'Following') if Runtime::Env.super_sidebar_enabled?
+
           click_element(:following_tab)
         end
 

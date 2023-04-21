@@ -1,7 +1,7 @@
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
 
 .tree-ref-container.gl-display-flex.gl-flex-wrap.gl-gap-2.mb-2.mb-md-0
-  .tree-ref-holder.gl-max-w-26
+  .tree-ref-holder.gl-max-w-26{ data: { qa_selector: 'ref_dropdown_container' } }
     #js-tree-ref-switcher{ data: { project_id: @project.id, ref_type: @ref_type.to_s, project_root_path: project_path(@project) } }
 
   #js-repo-breadcrumb{ data: breadcrumb_data_attributes }

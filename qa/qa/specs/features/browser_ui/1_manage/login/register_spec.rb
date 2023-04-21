@@ -16,7 +16,8 @@ module QA
   end
 
   RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin, product_group: :authentication_and_authorization do
-    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
+      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin
         # So we need to set it to nil in order to create a new token for admin user so that we are able to set_application_settings
@@ -29,22 +30,22 @@ module QA
         ldap_username = Runtime::Env.ldap_username
         Runtime::Env.ldap_username = nil
 
-        set_require_admin_approval_after_user_signup_via_api(false)
+        set_require_admin_approval_after_user_signup(false)
 
         Runtime::Env.ldap_username = ldap_username
       end
 
-      it_behaves_like 'registration and login'
-
       after do
         Runtime::Env.personal_access_token = @personal_access_token
       end
+
+      it_behaves_like 'registration and login'
     end
 
     describe 'standard', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
       context 'when admin approval is not required' do
         before(:all) do
-          set_require_admin_approval_after_user_signup_via_api(false)
+          set_require_admin_approval_after_user_signup(false)
         end
 
         it_behaves_like 'registration and login'
@@ -70,7 +71,15 @@ module QA
             Support::Waiter.wait_until(max_duration: 120, sleep_interval: 3) { !user.exists? }
           end
 
-          it 'allows recreating with same credentials', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
+          after do
+            if @recreated_user
+              @recreated_user.api_client = admin_api_client
+              @recreated_user.remove_via_api!
+            end
+          end
+
+          it 'allows recreating with same credentials', :reliable,
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
             Flow::Login.sign_in(as: user, skip_page_validation: true)
@@ -86,13 +95,6 @@ module QA
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
           end
 
-          after do
-            if @recreated_user
-              @recreated_user.api_client = admin_api_client
-              @recreated_user.remove_via_api!
-            end
-          end
-
           def admin_api_client
             @admin_api_client ||= Runtime::API::Client.as_admin
           end
@@ -100,29 +102,42 @@ module QA
       end
 
       context 'when admin approval is required' do
-        let(:signed_up_waiting_approval_text) { 'You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator.' }
-        let(:pending_approval_blocked_text) { 'Your account is pending approval from your GitLab administrator and hence blocked. Please contact your GitLab administrator if you think this is an error.' }
+        let(:signed_up_waiting_approval_text) do
+          'You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator.'
+        end
 
-        before do
-          enable_require_admin_approval_after_user_signup_via_ui
+        let(:pending_approval_blocked_text) do
+          'Your account is pending approval from your GitLab administrator and hence blocked. Please contact your GitLab administrator if you think this is an error.'
+        end
 
-          Support::Retrier.retry_on_exception do
-            @user = Resource::User.fabricate_via_browser_ui! do |user|
-              user.expect_fabrication_success = false
-            end
+        let(:user) do
+          Resource::User.fabricate_via_browser_ui! do |user|
+            user.expect_fabrication_success = false
           end
         end
 
-        it 'allows user login after approval', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871' do
+        before do
+          set_require_admin_approval_after_user_signup(true)
+        end
+
+        after do
+          set_require_admin_approval_after_user_signup(false)
+          user.remove_via_api! if user
+        end
+
+        it 'allows user login after approval',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871' do
+          user # sign up user
+
           expect(page).to have_text(signed_up_waiting_approval_text)
 
-          Flow::Login.sign_in(as: @user, skip_page_validation: true)
+          Flow::Login.sign_in(as: user, skip_page_validation: true)
 
           expect(page).to have_text(pending_approval_blocked_text)
 
-          approve_user(@user)
+          approve_user(user)
 
-          Flow::Login.sign_in(as: @user, skip_page_validation: true)
+          Flow::Login.sign_in(as: user, skip_page_validation: true)
 
           Flow::UserOnboarding.onboard_user
 
@@ -130,11 +145,6 @@ module QA
           # the purpose of this test
           Runtime::Browser.visit(:gitlab, Page::Dashboard::Welcome)
           Page::Main::Menu.perform(&:has_personal_area?)
-        end
-
-        after do
-          set_require_admin_approval_after_user_signup_via_api(false)
-          @user.remove_via_api! if @user
         end
       end
     end
@@ -158,36 +168,17 @@ module QA
       end
     end
 
-    def set_require_admin_approval_after_user_signup_via_api(enable_or_disable)
-      return if get_require_admin_approval_after_user_signup_via_api == enable_or_disable
+    def set_require_admin_approval_after_user_signup(enable_or_disable)
+      return if get_require_admin_approval_after_user_signup == enable_or_disable
 
       Runtime::ApplicationSettings.set_application_settings(require_admin_approval_after_user_signup: enable_or_disable)
-
-      sleep 10 # It takes a moment for the setting to come into effect
-    end
-
-    def get_require_admin_approval_after_user_signup_via_api
-      Runtime::ApplicationSettings.get_application_settings[:require_admin_approval_after_user_signup]
-    end
-
-    def enable_require_admin_approval_after_user_signup_via_ui
-      unless get_require_admin_approval_after_user_signup_via_api
-        QA::Support::Retrier.retry_until do
-          Flow::Login.while_signed_in_as_admin do
-            Page::Main::Menu.perform(&:go_to_admin_area)
-            QA::Page::Admin::Menu.perform(&:go_to_general_settings)
-            Page::Admin::Settings::General.perform do |setting|
-              setting.expand_sign_up_restrictions do |settings|
-                settings.require_admin_approval_after_user_signup
-              end
-            end
-          end
-
-          sleep 15 # It takes a moment for the setting to come into effect
-
-          get_require_admin_approval_after_user_signup_via_api
-        end
+      QA::Support::Retrier.retry_until(max_duration: 10, sleep_interval: 1) do
+        get_require_admin_approval_after_user_signup == enable_or_disable
       end
+    end
+
+    def get_require_admin_approval_after_user_signup
+      Runtime::ApplicationSettings.get_application_settings[:require_admin_approval_after_user_signup]
     end
   end
 end

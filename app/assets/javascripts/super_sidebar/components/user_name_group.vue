@@ -41,6 +41,7 @@ export default {
         item.extraAttrs = {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_profile',
+          'data-qa-selector': 'user_profile_link',
         };
       }
 

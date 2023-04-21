@@ -343,6 +343,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
 
+          # TODO: Remove this with https://gitlab.com/gitlab-org/gitlab/-/issues/334253
           context 'when job filtered by job_age' do
             let!(:job) do
               create(:ci_build, :pending, :queued, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, queued_at: 60.seconds.ago)
@@ -355,20 +356,48 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             context 'job is queued less than job_age parameter' do
               let(:job_age) { 120 }
 
-              it 'gives 204' do
+              it 'ignores the param and picks the job' do
                 request_job(job_age: job_age)
 
-                expect(response).to have_gitlab_http_status(:no_content)
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response['id']).to eq(job.id)
               end
             end
 
             context 'job is queued more than job_age parameter' do
               let(:job_age) { 30 }
 
-              it 'picks a job' do
+              it 'ignores the param and picks the job' do
                 request_job(job_age: job_age)
 
                 expect(response).to have_gitlab_http_status(:created)
+                expect(json_response['id']).to eq(job.id)
+              end
+            end
+
+            context 'when FF remove_job_age_from_jobs_api is disabled' do
+              before do
+                stub_feature_flags(remove_job_age_from_jobs_api: false)
+              end
+
+              context 'job is queued less than job_age parameter' do
+                let(:job_age) { 120 }
+
+                it 'gives 204' do
+                  request_job(job_age: job_age)
+
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end
+              end
+
+              context 'job is queued more than job_age parameter' do
+                let(:job_age) { 30 }
+
+                it 'picks a job' do
+                  request_job(job_age: job_age)
+
+                  expect(response).to have_gitlab_http_status(:created)
+                end
               end
             end
           end

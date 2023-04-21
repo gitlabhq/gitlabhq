@@ -74,6 +74,10 @@ module QA
           element :download_source_code_button
         end
 
+        view 'app/views/projects/tree/_tree_header.html.haml' do
+          element :ref_dropdown_container
+        end
+
         def wait_for_viewers_to_load
           has_no_element?(:spinner_placeholder, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
         end
@@ -172,8 +176,10 @@ module QA
         end
 
         def switch_to_branch(branch_name)
-          expand_select_list
-          select_item(branch_name)
+          within_element(:ref_dropdown_container) do
+            expand_select_list
+            select_item(branch_name)
+          end
         end
 
         def wait_for_import

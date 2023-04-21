@@ -249,7 +249,7 @@ module QA
             terms.accept_terms if terms.visible?
           end
 
-          Page::Main::Menu.perform(&:enable_new_navigation) if Runtime::Env.super_sidebar_enabled? && !on_login_page?
+          Page::Main::Menu.perform(&:enable_new_navigation) if Runtime::Env.super_sidebar_enabled?
           Page::Main::Menu.validate_elements_present! unless skip_page_validation
         end
 

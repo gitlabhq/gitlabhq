@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import {
   GlIcon,
   GlLoadingIcon,
@@ -7,12 +8,13 @@ import {
   GlSearchBoxByType,
   GlButton,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-
-import { nextTick } from 'vue';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import IssuableMoveDropdown from '~/sidebar/components/move/issuable_move_dropdown.vue';
+import { stubComponent } from 'helpers/stub_component';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
 const mockProjects = [
   {
@@ -45,20 +47,35 @@ const mockEvent = {
   preventDefault: jest.fn(),
 };
 
+const focusInputMock = jest.fn();
+const hideMock = jest.fn();
+
 describe('IssuableMoveDropdown', () => {
   let mock;
   let wrapper;
 
   const createComponent = (propsData = mockProps) => {
-    wrapper = shallowMount(IssuableMoveDropdown, {
+    wrapper = shallowMountExtended(IssuableMoveDropdown, {
       propsData,
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown, {
+          methods: {
+            hide: hideMock,
+          },
+        }),
+        GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
+          methods: {
+            focusInput: focusInputMock,
+          },
+        }),
+      },
     });
-    wrapper.vm.$refs.dropdown.hide = jest.fn();
-    wrapper.vm.$refs.searchInput.focusInput = jest.fn();
   };
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
+    mock.onGet(mockProps.projectsFetchPath).reply(HTTP_STATUS_OK, mockProjects);
+
     createComponent();
   });
 
@@ -66,38 +83,46 @@ describe('IssuableMoveDropdown', () => {
     mock.restore();
   });
 
+  const findCollapsedEl = () => wrapper.findByTestId('move-collapsed');
+  const findFooter = () => wrapper.findByTestId('footer');
+  const findHeader = () => wrapper.findByTestId('header');
+  const findFailedLoadResults = () => wrapper.findByTestId('failed-load-results');
+  const findDropdownContent = () => wrapper.findByTestId('content');
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findDropdownEl = () => wrapper.findComponent(GlDropdown);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+
   describe('watch', () => {
     describe('searchKey', () => {
       it('calls `fetchProjects` with value of the prop', async () => {
-        jest.spyOn(wrapper.vm, 'fetchProjects');
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          searchKey: 'foo',
+        jest.spyOn(axios, 'get');
+        findSearchBox().vm.$emit('input', 'foo');
+
+        await waitForPromises();
+
+        expect(axios.get).toHaveBeenCalledWith('/-/autocomplete/projects?project_id=1', {
+          params: { search: 'foo' },
         });
-
-        await nextTick();
-
-        expect(wrapper.vm.fetchProjects).toHaveBeenCalledWith('foo');
       });
     });
   });
 
   describe('methods', () => {
     describe('fetchProjects', () => {
-      it('sets projectsListLoading to true and projectsListLoadFailed to false', () => {
-        wrapper.vm.fetchProjects();
+      it('sets projectsListLoading to true and projectsListLoadFailed to false', async () => {
+        findDropdownEl().vm.$emit('shown');
+        await nextTick();
 
-        expect(wrapper.vm.projectsListLoading).toBe(true);
-        expect(wrapper.vm.projectsListLoadFailed).toBe(false);
+        expect(findLoadingIcon().exists()).toBe(true);
+        expect(findFailedLoadResults().exists()).toBe(false);
       });
 
-      it('calls `axios.get` with `projectsFetchPath` and query param `search`', () => {
-        jest.spyOn(axios, 'get').mockResolvedValue({
-          data: mockProjects,
-        });
+      it('calls `axios.get` with `projectsFetchPath` and query param `search`', async () => {
+        jest.spyOn(axios, 'get');
 
-        wrapper.vm.fetchProjects('foo');
+        findSearchBox().vm.$emit('input', 'foo');
+        await waitForPromises();
 
         expect(axios.get).toHaveBeenCalledWith(
           mockProps.projectsFetchPath,
@@ -110,74 +135,65 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('sets response to `projects` and focuses on searchInput when request is successful', async () => {
-        jest.spyOn(axios, 'get').mockResolvedValue({
-          data: mockProjects,
-        });
+        jest.spyOn(axios, 'get');
 
-        await wrapper.vm.fetchProjects('foo');
+        findSearchBox().vm.$emit('input', 'foo');
+        await waitForPromises();
 
-        expect(wrapper.vm.projects).toBe(mockProjects);
-        expect(wrapper.vm.$refs.searchInput.focusInput).toHaveBeenCalled();
+        expect(findAllDropdownItems()).toHaveLength(mockProjects.length);
+        expect(focusInputMock).toHaveBeenCalled();
       });
 
       it('sets projectsListLoadFailed to true when request fails', async () => {
         jest.spyOn(axios, 'get').mockRejectedValue({});
 
-        await wrapper.vm.fetchProjects('foo');
+        findSearchBox().vm.$emit('input', 'foo');
+        await waitForPromises();
 
-        expect(wrapper.vm.projectsListLoadFailed).toBe(true);
+        expect(findFailedLoadResults().exists()).toBe(true);
       });
 
       it('sets projectsListLoading to false when request completes', async () => {
-        jest.spyOn(axios, 'get').mockResolvedValue({
-          data: mockProjects,
-        });
+        jest.spyOn(axios, 'get');
 
-        await wrapper.vm.fetchProjects('foo');
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
-        expect(wrapper.vm.projectsListLoading).toBe(false);
+        expect(findLoadingIcon().exists()).toBe(false);
       });
     });
 
     describe('isSelectedProject', () => {
       it.each`
-        project            | selectedProject    | title                       | returnValue
-        ${mockProjects[0]} | ${mockProjects[0]} | ${'are same projects'}      | ${true}
-        ${mockProjects[0]} | ${mockProjects[1]} | ${'are different projects'} | ${false}
+        projectIndex | selectedProjectIndex | title                       | returnValue
+        ${0}         | ${0}                 | ${'are same projects'}      | ${true}
+        ${0}         | ${1}                 | ${'are different projects'} | ${false}
       `(
         'returns $returnValue when selectedProject and provided project param $title',
-        async ({ project, selectedProject, returnValue }) => {
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            selectedProject,
-          });
+        async ({ projectIndex, selectedProjectIndex, returnValue }) => {
+          findDropdownEl().vm.$emit('shown');
+          await waitForPromises();
+
+          findAllDropdownItems().at(selectedProjectIndex).vm.$emit('click', mockEvent);
 
           await nextTick();
 
-          expect(wrapper.vm.isSelectedProject(project)).toBe(returnValue);
+          expect(findAllDropdownItems().at(projectIndex).props('isChecked')).toBe(returnValue);
         },
       );
 
       it('returns false when selectedProject is null', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedProject: null,
-        });
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
-        await nextTick();
-
-        expect(wrapper.vm.isSelectedProject(mockProjects[0])).toBe(false);
+        expect(findAllDropdownItems().at(0).props('isChecked')).toBe(false);
       });
     });
   });
 
   describe('template', () => {
-    const findDropdownEl = () => wrapper.findComponent(GlDropdown);
-
     it('renders collapsed state element with icon', () => {
-      const collapsedEl = wrapper.find('[data-testid="move-collapsed"]');
+      const collapsedEl = findCollapsedEl();
 
       expect(collapsedEl.exists()).toBe(true);
       expect(collapsedEl.attributes('title')).toBe(mockProps.dropdownButtonTitle);
@@ -197,12 +213,11 @@ describe('IssuableMoveDropdown', () => {
 
       it('renders disabled dropdown when `disabled` is true', () => {
         createComponent({ ...mockProps, disabled: true });
-
-        expect(findDropdownEl().attributes('disabled')).toBe('true');
+        expect(findDropdownEl().props('disabled')).toBe(true);
       });
 
       it('renders header element', () => {
-        const headerEl = findDropdownEl().find('[data-testid="header"]');
+        const headerEl = findHeader();
 
         expect(headerEl.exists()).toBe(true);
         expect(headerEl.find('span').text()).toBe(mockProps.dropdownHeaderTitle);
@@ -220,125 +235,87 @@ describe('IssuableMoveDropdown', () => {
       });
 
       it('renders gl-loading-icon component when projectsListLoading prop is true', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          projectsListLoading: true,
-        });
-
+        findDropdownEl().vm.$emit('shown');
         await nextTick();
 
-        expect(findDropdownEl().findComponent(GlLoadingIcon).exists()).toBe(true);
+        expect(findLoadingIcon().exists()).toBe(true);
       });
 
       it('renders gl-dropdown-item components for available projects', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          projects: mockProjects,
-          selectedProject: mockProjects[0],
-        });
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
+        findAllDropdownItems().at(0).vm.$emit('click', mockEvent);
         await nextTick();
 
-        const dropdownItems = wrapper.findAllComponents(GlDropdownItem);
-
-        expect(dropdownItems).toHaveLength(mockProjects.length);
-        expect(dropdownItems.at(0).props()).toMatchObject({
+        expect(findAllDropdownItems()).toHaveLength(mockProjects.length);
+        expect(findAllDropdownItems().at(0).props()).toMatchObject({
           isCheckItem: true,
           isChecked: true,
         });
-        expect(dropdownItems.at(0).text()).toBe(mockProjects[0].name_with_namespace);
+        expect(findAllDropdownItems().at(0).text()).toBe(mockProjects[0].name_with_namespace);
       });
 
       it('renders string "No matching results" when search does not yield any matches', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          searchKey: 'foo',
-        });
+        mock.onGet(mockProps.projectsFetchPath).reply(HTTP_STATUS_OK, []);
 
-        // Wait for `searchKey` watcher to run.
-        await nextTick();
+        findSearchBox().vm.$emit('input', 'foo');
+        await waitForPromises();
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          projects: [],
-          projectsListLoading: false,
-        });
-
-        await nextTick();
-
-        const dropdownContentEl = wrapper.find('[data-testid="content"]');
-
-        expect(dropdownContentEl.text()).toContain('No matching results');
+        expect(findDropdownContent().text()).toContain('No matching results');
       });
 
       it('renders string "Failed to load projects" when loading projects list fails', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          projects: [],
-          projectsListLoading: false,
-          projectsListLoadFailed: true,
-        });
+        mock.onGet(mockProps.projectsFetchPath).reply(HTTP_STATUS_OK, []);
+        jest.spyOn(axios, 'get').mockRejectedValue({});
 
-        await nextTick();
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
-        const dropdownContentEl = wrapper.find('[data-testid="content"]');
-
-        expect(dropdownContentEl.text()).toContain('Failed to load projects');
+        expect(findDropdownContent().text()).toContain('Failed to load projects');
       });
 
       it('renders gl-button within footer', async () => {
-        const moveButtonEl = wrapper.find('[data-testid="footer"]').findComponent(GlButton);
+        const moveButtonEl = findFooter().findComponent(GlButton);
 
         expect(moveButtonEl.text()).toBe('Move');
         expect(moveButtonEl.attributes('disabled')).toBe('true');
 
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedProject: mockProjects[0],
-        });
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
+        findAllDropdownItems().at(0).vm.$emit('click', mockEvent);
         await nextTick();
 
-        expect(
-          wrapper.find('[data-testid="footer"]').findComponent(GlButton).attributes('disabled'),
-        ).not.toBeDefined();
+        expect(findFooter().findComponent(GlButton).attributes('disabled')).not.toBeDefined();
       });
     });
 
     describe('events', () => {
       it('collapsed state element emits `toggle-collapse` event on component when clicked', () => {
-        wrapper.find('[data-testid="move-collapsed"]').trigger('click');
+        findCollapsedEl().trigger('click');
 
         expect(wrapper.emitted('toggle-collapse')).toHaveLength(1);
       });
 
       it('gl-dropdown component calls `fetchProjects` on `shown` event', () => {
-        jest.spyOn(axios, 'get').mockResolvedValue({
-          data: mockProjects,
-        });
+        jest.spyOn(axios, 'get');
 
         findDropdownEl().vm.$emit('shown');
 
         expect(axios.get).toHaveBeenCalled();
       });
 
-      it('gl-dropdown component prevents dropdown body from closing on `hide` event when `projectItemClick` prop is true', () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          projectItemClick: true,
-        });
+      it('gl-dropdown component prevents dropdown body from closing on `hide` event when `projectItemClick` prop is true', async () => {
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
+
+        findAllDropdownItems().at(0).vm.$emit('click', mockEvent);
+        await nextTick();
 
         findDropdownEl().vm.$emit('hide', mockEvent);
 
         expect(mockEvent.preventDefault).toHaveBeenCalled();
-        expect(wrapper.vm.projectItemClick).toBe(false);
       });
 
       it('gl-dropdown component emits `dropdown-close` event on component from `hide` event', () => {
@@ -347,38 +324,33 @@ describe('IssuableMoveDropdown', () => {
         expect(wrapper.emitted('dropdown-close')).toHaveLength(1);
       });
 
-      it('close icon in dropdown header closes the dropdown when clicked', () => {
-        wrapper.find('[data-testid="header"]').findComponent(GlButton).vm.$emit('click', mockEvent);
+      it('close icon in dropdown header closes the dropdown when clicked', async () => {
+        findHeader().findComponent(GlButton).vm.$emit('click', mockEvent);
 
-        expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalled();
+        await nextTick();
+        expect(hideMock).toHaveBeenCalled();
       });
 
       it('sets project for clicked gl-dropdown-item to selectedProject', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          projects: mockProjects,
-        });
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
+        findAllDropdownItems().at(0).vm.$emit('click', mockEvent);
         await nextTick();
 
-        wrapper.findAllComponents(GlDropdownItem).at(0).vm.$emit('click', mockEvent);
-
-        expect(wrapper.vm.selectedProject).toBe(mockProjects[0]);
+        expect(findAllDropdownItems().at(0).props('isChecked')).toBe(true);
       });
 
       it('hides dropdown and emits `move-issuable` event when move button is clicked', async () => {
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          selectedProject: mockProjects[0],
-        });
+        findDropdownEl().vm.$emit('shown');
+        await waitForPromises();
 
+        findAllDropdownItems().at(0).vm.$emit('click', mockEvent);
         await nextTick();
 
-        wrapper.find('[data-testid="footer"]').findComponent(GlButton).vm.$emit('click');
+        findFooter().findComponent(GlButton).vm.$emit('click');
 
-        expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalled();
+        expect(hideMock).toHaveBeenCalled();
         expect(wrapper.emitted('move-issuable')).toHaveLength(1);
         expect(wrapper.emitted('move-issuable')[0]).toEqual([mockProjects[0]]);
       });
