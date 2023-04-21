@@ -60,9 +60,9 @@ module Sidebars
         override :active_routes
         def active_routes
           if context.project.issues_enabled?
-            { controller: 'projects/merge_requests' }
+            { controller: ['projects/merge_requests', :conflicts] }
           else
-            { controller: ['projects/merge_requests', :milestones] }
+            { controller: ['projects/merge_requests', :milestones, :conflicts] }
           end
         end
 

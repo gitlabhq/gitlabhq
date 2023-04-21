@@ -53,7 +53,7 @@ module Gitlab
         end
 
         def search_repos_query(string, options = {})
-          base = "#{string} in:name is:public,private"
+          base = "#{string} in:name is:public,private fork:true"
 
           case options[:relation_type]
           when 'organization' then organization_repos_query(base, options)

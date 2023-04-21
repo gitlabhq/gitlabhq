@@ -1,8 +1,0 @@
----
-name: limited_commit_parser
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117188
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/406461
-milestone: '15.11'
-type: development
-group: group::source code
-default_enabled: false

@@ -9,7 +9,7 @@
   }
 
   table.code tr:last-of-type td:last-of-type {
-    @include gl-rounded-bottom-right-base();
+    border-bottom-right-radius: $border-radius-default - 1px;
   }
 
   .file-title,
@@ -546,7 +546,7 @@ table.code {
   .line_holder:last-of-type {
     .diff-td:first-child,
     td:first-child {
-      border-bottom-left-radius: $border-radius-default;
+      border-bottom-left-radius: $border-radius-default - 1px;
     }
   }
 

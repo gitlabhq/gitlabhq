@@ -16,6 +16,9 @@ We recommend that you use fuzz testing in addition to [GitLab Secure](../index.m
 other security scanners and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
 you can run fuzz tests as part your CI/CD workflow.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Web API Fuzzing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
+
 ## When Web API fuzzing runs
 
 Web API fuzzing runs in the `fuzz` stage of the CI/CD pipeline. To ensure API fuzzing scans the

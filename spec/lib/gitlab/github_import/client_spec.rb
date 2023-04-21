@@ -580,7 +580,10 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
     end
 
     describe '#search_repos_by_name_graphql' do
-      let(:expected_query) { 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2' }
+      let(:expected_query) do
+        'test in:name is:public,private fork:true user:user repo:repo1 repo:repo2 org:org1 org:org2'
+      end
+
       let(:expected_graphql_params) { "type: REPOSITORY, query: \"#{expected_query}\"" }
       let(:expected_graphql) do
         <<-TEXT
@@ -617,7 +620,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
       context 'when relation type option present' do
         context 'when relation type is owned' do
-          let(:expected_query) { 'test in:name is:public,private user:user' }
+          let(:expected_query) { 'test in:name is:public,private fork:true user:user' }
 
           it 'searches for repositories within the organization based on name' do
             expect(client.octokit).to receive(:post).with(
@@ -629,7 +632,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         end
 
         context 'when relation type is organization' do
-          let(:expected_query) { 'test in:name is:public,private org:test-login' }
+          let(:expected_query) { 'test in:name is:public,private fork:true org:test-login' }
 
           it 'searches for repositories within the organization based on name' do
             expect(client.octokit).to receive(:post).with(
@@ -643,7 +646,7 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         end
 
         context 'when relation type is collaborated' do
-          let(:expected_query) { 'test in:name is:public,private repo:repo1 repo:repo2' }
+          let(:expected_query) { 'test in:name is:public,private fork:true repo:repo1 repo:repo2' }
 
           it 'searches for collaborated repositories based on name' do
             expect(client.octokit).to receive(:post).with(
@@ -710,8 +713,8 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
 
     describe '#count_repos_by_relation_type_graphql' do
       relation_types = {
-        'owned' => ' in:name is:public,private user:user',
-        'collaborated' => ' in:name is:public,private repo:repo1 repo:repo2',
+        'owned' => ' in:name is:public,private fork:true user:user',
+        'collaborated' => ' in:name is:public,private fork:true repo:repo1 repo:repo2',
         'organization' => 'org:org1 org:org2'
       }
 

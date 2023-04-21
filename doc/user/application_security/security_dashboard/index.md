@@ -19,6 +19,9 @@ To use the Security Dashboards, you must:
   shared runners on GitLab.com, you are using the correct version.
 - Have the [correct role](../../permissions.md) for the project or group.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=QHQHN4luNpc).
+
 ## When Security Dashboards are updated
 
 The Security Dashboards show results of scans from the most recent completed pipeline on the

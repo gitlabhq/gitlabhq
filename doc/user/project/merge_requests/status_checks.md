@@ -71,7 +71,7 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 
 ## View the status checks on a project
 
-Within each project's settings, you can see a list of status checks added to the project:
+Within each project's settings, you can see a list of status check services added to the project:
 
 1. In your project, go to **Settings > Merge requests** section.
 1. Scroll down to **Status checks**.
@@ -81,9 +81,9 @@ Within each project's settings, you can see a list of status checks added to the
 This list shows the service name, API URL, and targeted branch.
 It also provides actions to allow you to create, edit, or remove status checks.
 
-## Add or update a status check
+## Add or update a status check service
 
-### Add a status check
+### Add a status check service
 
 Within the **Status checks** sub-section, select the **Add status check** button.
 The **Add status check** form is then shown.
@@ -92,7 +92,7 @@ The **Add status check** form is then shown.
 
 Filling in the form and selecting the **Add status check** button creates a new status check.
 
-### Update a status check
+### Update a status check service
 
 Within the **Status checks** sub-section, select the **Edit** button
 next to the status check you want to edit.
@@ -135,7 +135,7 @@ for doesn't appear immediately. The search box requires
 If you want the status check to be applied to **all** merge requests,
 you can select the **All branches** option.
 
-## Delete a status check
+## Delete a status check service
 
 Within the **Status checks** sub-section, select the **Remove...** button
 next to the status check you want to delete.

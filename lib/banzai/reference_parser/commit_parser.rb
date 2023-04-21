@@ -21,30 +21,14 @@ module Banzai
       end
 
       def find_commits(project, ids)
-        return limited_commits(project, ids) if Feature.enabled?(:limited_commit_parser, project)
-
-        commits = []
-
-        return commits unless project.valid_repo?
-
-        ids.each do |id|
-          commit = project.commit(id)
-
-          commits << commit if commit
-        end
-
-        commits
-      end
-
-      private
-
-      def limited_commits(project, ids)
         return [] unless project.valid_repo?
 
         ids = ids.take(COMMITS_LIMIT)
 
         project.commits_by(oids: ids)
       end
+
+      private
 
       def can_read_reference?(user, ref_project, node)
         can?(user, :download_code, ref_project)

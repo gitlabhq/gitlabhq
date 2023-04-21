@@ -268,6 +268,22 @@ to the `gitlab-runner register` command.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Required Pipeline Configuration is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+Required Pipeline Configuration will be removed in the 17.0 release. This impacts self-managed users on the Ultimate license.
+
+We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
+that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Self-managed certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">
@@ -1541,22 +1557,6 @@ If you are using your own Redis 5.0 instance, you should upgrade it to Redis 6.0
 The `job_age` parameter, returned from the `POST /jobs/request` API endpoint used in communication with GitLab Runner, was never used by any GitLab or Runner feature. This parameter will be removed in GitLab 16.0.
 
 This could be a breaking change for anyone that developed their own runner that relies on this parameter being returned by the endpoint. This is not a breaking change for anyone using an officially released version of GitLab Runner, including public shared runners on GitLab.com.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Required Pipeline Configuration is deprecated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-Required Pipeline Configuration will be removed in the 16.0 release. This impacts self-managed users on the Ultimate license.
-
-We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
-that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
 
 </div>
 

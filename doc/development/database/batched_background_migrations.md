@@ -444,24 +444,6 @@ background migration.
      - Continues using the data as before.
      - Ensures that both existing and new data are migrated.
 
-1. In the next release, add a database migration to remove the trigger.
-
-   ```ruby
-   class RemoveNamepaceIdTriggerFromRoutes < Gitlab::Database::Migration[2.1]
-     FUNCTION_NAME = 'example_function'
-     TRIGGER_NAME = 'example_trigger'
-
-     def up
-       drop_trigger(TRIGGER_NAME, :routes)
-       drop_function(FUNCTION_NAME)
-     end
-
-     def down
-       # Should reverse the trigger and the function in the up method of the migration that added it
-     end
-   end
-   ```
-
 1. Add a new post-deployment migration
    that checks that the batched background migration is completed. For example:
 
@@ -496,6 +478,24 @@ background migration.
    If the application does not depend on the data being 100% migrated (for
    instance, the data is advisory, and not mission-critical), then you can skip this
    final step. This step confirms that the migration is completed, and all of the rows were migrated.
+
+1. Add a database migration to remove the trigger.
+
+   ```ruby
+   class RemoveNamepaceIdTriggerFromRoutes < Gitlab::Database::Migration[2.1]
+     FUNCTION_NAME = 'example_function'
+     TRIGGER_NAME = 'example_trigger'
+
+     def up
+       drop_trigger(TRIGGER_NAME, :routes)
+       drop_function(FUNCTION_NAME)
+     end
+
+     def down
+       # Should reverse the trigger and the function in the up method of the migration that added it
+     end
+   end
+   ```
 
 After the batched migration is completed, you can safely depend on the
 data in `routes.namespace_id` being populated.

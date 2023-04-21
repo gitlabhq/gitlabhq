@@ -245,12 +245,13 @@ To enable or disable the banner:
 
 ## Required pipeline configuration **(ULTIMATE SELF)**
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
 
-NOTE:
-An alternative [compliance solution](../../group/compliance_frameworks.md#compliance-pipelines)
-is available. We recommend this alternative solution because it provides greater flexibility,
-allowing required pipelines to be assigned to specific compliance framework labels.
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
+and is planned for removal in 17.0. Use [compliance pipelines](../../group/compliance_frameworks.md#compliance-pipelines)
+instead. This change is a breaking change.
 
 You can set a [CI/CD template](../../../ci/examples/index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can

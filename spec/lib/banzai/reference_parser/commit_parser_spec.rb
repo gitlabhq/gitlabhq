@@ -154,28 +154,6 @@ RSpec.describe Banzai::ReferenceParser::CommitParser, feature_category: :source_
         "b83d6e391c22777fca1ed3012fce84f633d7fed0"
       ])
     end
-
-    context 'when limited_commit_parser feature flag disabled' do
-      before do
-        stub_feature_flags(limited_commit_parser: false)
-      end
-
-      it 'returns an Array of commit objects' do
-        commit = double(:commit)
-
-        expect(project).to receive(:commit).with('123').and_return(commit)
-        expect(project).to receive(:valid_repo?).and_return(true)
-
-        expect(subject.find_commits(project, %w{123})).to eq([commit])
-      end
-
-      it 'skips commit IDs for which no commit could be found' do
-        expect(project).to receive(:commit).with('123').and_return(nil)
-        expect(project).to receive(:valid_repo?).and_return(true)
-
-        expect(subject.find_commits(project, %w{123})).to eq([])
-      end
-    end
   end
 
   context 'when checking commits on another projects', :request_store do

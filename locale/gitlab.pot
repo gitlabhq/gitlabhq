@@ -27304,6 +27304,9 @@ msgstr ""
 msgid "Merge commit message"
 msgstr ""
 
+msgid "Merge conflicts"
+msgstr ""
+
 msgid "Merge details"
 msgstr ""
 
@@ -50745,7 +50748,7 @@ msgstr ""
 msgid "You can only transfer the project to namespaces you manage."
 msgstr ""
 
-msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}."
 msgstr ""
 
 msgid "You can see your chat accounts."

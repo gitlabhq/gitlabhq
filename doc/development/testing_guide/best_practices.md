@@ -1216,10 +1216,16 @@ When you want to ensure that no event got called, you can use `expect_no_snowplo
     it 'does not track any snowplow events' do
       get :show
 
-      expect_no_snowplow_event
+      expect_no_snowplow_event(category: described_class.name, action: 'some_action')
     end
   end
 ```
+
+Even though `category` and `action` can be omitted, you should at least
+specify a `category` to avoid flaky tests. For example,
+`Users::ActivityService` may track a Snowplow event after an API
+request, and `expect_no_snowplow_event` will fail if that happens to run
+when no arguments are specified.
 
 #### Test Snowplow context against the schema
 
