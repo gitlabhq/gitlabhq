@@ -27,26 +27,6 @@ RSpec.describe Gitlab::Database::BackgroundMigrationJob do
     end
   end
 
-  describe '.for_partitioning_migration' do
-    let!(:job1) { create(:background_migration_job, arguments: [1, 100, 'other_table']) }
-    let!(:job2) { create(:background_migration_job, arguments: [1, 100, 'audit_events']) }
-    let!(:job3) { create(:background_migration_job, class_name: 'OtherJob', arguments: [1, 100, 'audit_events']) }
-
-    it 'returns jobs matching class_name and the table_name job argument' do
-      relation = described_class.for_partitioning_migration('TestJob', 'audit_events')
-
-      expect(relation.count).to eq(1)
-      expect(relation.first).to have_attributes(class_name: 'TestJob', arguments: [1, 100, 'audit_events'])
-    end
-
-    it 'normalizes class names by removing leading ::' do
-      relation = described_class.for_partitioning_migration('::TestJob', 'audit_events')
-
-      expect(relation.count).to eq(1)
-      expect(relation.first).to have_attributes(class_name: 'TestJob', arguments: [1, 100, 'audit_events'])
-    end
-  end
-
   describe '.mark_all_as_succeeded' do
     let!(:job1) { create(:background_migration_job, arguments: [1, 100]) }
     let!(:job2) { create(:background_migration_job, arguments: [1, 100]) }

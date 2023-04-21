@@ -243,6 +243,99 @@ export const updateWorkItemMutationErrorResponse = {
   },
 };
 
+export const convertWorkItemMutationErrorResponse = {
+  data: {
+    workItemConvert: {
+      __typename: 'WorkItemConvertPayload',
+      errors: ['Error!'],
+      workItem: {},
+    },
+  },
+};
+
+export const convertWorkItemMutationResponse = {
+  data: {
+    workItemConvert: {
+      __typename: 'WorkItemConvertPayload',
+      errors: [],
+      workItem: {
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
+        title: 'Updated title',
+        state: 'OPEN',
+        description: 'description',
+        confidential: false,
+        createdAt: '2022-08-03T12:41:54Z',
+        updatedAt: '2022-08-08T12:41:54Z',
+        closedAt: null,
+        author: {
+          ...mockAssignees[0],
+        },
+        project: {
+          __typename: 'Project',
+          id: '1',
+          fullPath: 'test-project-path',
+          archived: false,
+        },
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/4',
+          name: 'Objective',
+          iconName: 'issue-type-objective',
+        },
+        userPermissions: {
+          deleteWorkItem: false,
+          updateWorkItem: false,
+          setWorkItemMetadata: false,
+          __typename: 'WorkItemPermissions',
+        },
+        widgets: [
+          {
+            type: 'HIERARCHY',
+            children: {
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/444',
+                  iid: '4',
+                  createdAt: '2022-08-03T12:41:54Z',
+                  closedAt: null,
+                  confidential: false,
+                  title: '123',
+                  state: 'OPEN',
+                  workItemType: {
+                    id: '1',
+                    name: 'Task',
+                    iconName: 'issue-type-task',
+                  },
+                },
+              ],
+            },
+            __typename: 'WorkItemConnection',
+          },
+          {
+            __typename: 'WorkItemWidgetAssignees',
+            type: 'ASSIGNEES',
+            allowsMultipleAssignees: true,
+            canInviteMembers: true,
+            assignees: {
+              nodes: [mockAssignees[0]],
+            },
+          },
+          {
+            __typename: 'WorkItemWidgetLabels',
+            type: 'LABELS',
+            allowsScopedLabels: false,
+            labels: {
+              nodes: mockLabels,
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const mockParent = {
   parent: {
     id: 'gid://gitlab/Issue/1',
@@ -515,6 +608,8 @@ export const projectWorkItemTypesQueryResponse = {
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
           { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident' },
           { id: 'gid://gitlab/WorkItems::Type/3', name: 'Task' },
+          { id: 'gid://gitlab/WorkItems::Type/4', name: 'Objective' },
+          { id: 'gid://gitlab/WorkItems::Type/5', name: 'Key Result' },
         ],
       },
     },

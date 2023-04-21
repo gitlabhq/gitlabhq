@@ -52,7 +52,7 @@ RSpec.describe "Sync project fork", feature_category: :source_code_management do
 
   context 'when the branch is protected', :use_clean_rails_redis_caching do
     let_it_be(:protected_branch) do
-      create(:protected_branch, :no_one_can_push, :no_one_can_merge, project: project, name: target_branch)
+      create(:protected_branch, :no_one_can_push, project: project, name: target_branch)
     end
 
     it_behaves_like 'a mutation that returns a top-level access error'

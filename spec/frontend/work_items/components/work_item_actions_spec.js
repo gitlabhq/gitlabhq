@@ -12,9 +12,17 @@ import {
   TEST_ID_NOTIFICATIONS_TOGGLE_ACTION,
   TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   TEST_ID_DELETE_ACTION,
+  TEST_ID_PROMOTE_ACTION,
 } from '~/work_items/constants';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
-import { workItemResponseFactory } from '../mock_data';
+import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
+import {
+  workItemResponseFactory,
+  convertWorkItemMutationResponse,
+  projectWorkItemTypesQueryResponse,
+  convertWorkItemMutationErrorResponse,
+} from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -24,6 +32,7 @@ describe('WorkItemActions component', () => {
 
   let wrapper;
   let glModalDirective;
+  let mockApollo;
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
@@ -31,6 +40,7 @@ describe('WorkItemActions component', () => {
   const findNotificationsToggleButton = () =>
     wrapper.findByTestId(TEST_ID_NOTIFICATIONS_TOGGLE_ACTION);
   const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
+  const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
   const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
@@ -45,6 +55,19 @@ describe('WorkItemActions component', () => {
     });
   const findNotificationsToggle = () => wrapper.findComponent(GlToggle);
 
+  const $toast = {
+    show: jest.fn(),
+    hide: jest.fn(),
+  };
+
+  const convertWorkItemMutationSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(convertWorkItemMutationResponse);
+  const convertWorkItemMutationErrorHandler = jest
+    .fn()
+    .mockResolvedValue(convertWorkItemMutationErrorResponse);
+  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+
   const createComponent = ({
     canUpdate = true,
     canDelete = true,
@@ -52,12 +75,19 @@ describe('WorkItemActions component', () => {
     subscribed = false,
     isParentConfidential = false,
     notificationsMock = [updateWorkItemNotificationsMutation, jest.fn()],
+    convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
+    workItemType = 'Task',
   } = {}) => {
     const handlers = [notificationsMock];
     glModalDirective = jest.fn();
+    mockApollo = createMockApollo([
+      ...handlers,
+      [convertWorkItemMutation, convertWorkItemMutationHandler],
+      [projectWorkItemTypesQuery, typesQuerySuccessHandler],
+    ]);
     wrapper = shallowMountExtended(WorkItemActions, {
-      apolloProvider: createMockApollo(handlers),
       isLoggedIn: isLoggedIn(),
+      apolloProvider: mockApollo,
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         canUpdate,
@@ -65,7 +95,7 @@ describe('WorkItemActions component', () => {
         isConfidential,
         subscribed,
         isParentConfidential,
-        workItemType: 'Task',
+        workItemType,
       },
       directives: {
         glModal: {
@@ -73,6 +103,13 @@ describe('WorkItemActions component', () => {
             glModalDirective(value);
           },
         },
+      },
+      provide: {
+        fullPath: 'gitlab-org/gitlab',
+        glFeatures: { workItemsMvc2: true },
+      },
+      mocks: {
+        $toast,
       },
     });
   };
@@ -273,6 +310,53 @@ describe('WorkItemActions component', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('error')).toEqual([[errorMessage]]);
+    });
+  });
+
+  describe('promote action', () => {
+    it.each`
+      workItemType   | show
+      ${'Task'}      | ${false}
+      ${'Objective'} | ${false}
+    `('does not show promote button for $workItemType', ({ workItemType, show }) => {
+      createComponent({ workItemType });
+
+      expect(findPromoteButton().exists()).toBe(show);
+    });
+
+    it('promote key result to objective', async () => {
+      createComponent({ workItemType: 'Key Result' });
+
+      // wait for work item types
+      await waitForPromises();
+
+      expect(findPromoteButton().exists()).toBe(true);
+      findPromoteButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
+      expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
+    });
+
+    it('emits error when promote mutation fails', async () => {
+      createComponent({
+        workItemType: 'Key Result',
+        convertWorkItemMutationHandler: convertWorkItemMutationErrorHandler,
+      });
+
+      // wait for work item types
+      await waitForPromises();
+
+      expect(findPromoteButton().exists()).toBe(true);
+      findPromoteButton().vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(convertWorkItemMutationErrorHandler).toHaveBeenCalled();
+      expect(wrapper.emitted('error')).toEqual([
+        ['Something went wrong while promoting the key result. Please try again.'],
+      ]);
     });
   });
 });

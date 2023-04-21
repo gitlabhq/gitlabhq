@@ -142,7 +142,7 @@ module ProjectsHelper
       source_name: source_project.full_name,
       source_path: project_path(source_project),
       source_default_branch: source_default_branch,
-      can_sync_branch: ::Gitlab::UserAccess.new(current_user, container: project).can_update_branch?(ref).to_s,
+      can_sync_branch: can_sync_branch?(project, ref).to_s,
       ahead_compare_path: project_compare_path(
         project, from: source_default_branch, to: ref, from_project_id: source_project.id
       ),
@@ -546,6 +546,12 @@ module ProjectsHelper
       source_project: project,
       to: source_project.default_branch,
       target_project: source_project)
+  end
+
+  def can_sync_branch?(project, ref)
+    return false unless project.repository.branch_exists?(ref)
+
+    ::Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(ref)
   end
 
   def localized_access_names

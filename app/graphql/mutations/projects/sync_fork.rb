@@ -61,7 +61,7 @@ module Mutations
       def authorized_find!(project_path, target_branch)
         project = find_object(project_path)
 
-        return project if ::Gitlab::UserAccess.new(current_user, container: project).can_update_branch?(target_branch)
+        return project if ::Gitlab::UserAccess.new(current_user, container: project).can_push_to_branch?(target_branch)
 
         raise_resource_not_available_error!
       end

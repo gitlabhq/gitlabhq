@@ -32,7 +32,6 @@ module Gitlab
           select_one
           select_rows
           quote_column_name
-          schema_cache
         ).freeze
 
         # hosts - The hosts to use for load balancing.
@@ -60,6 +59,13 @@ module Gitlab
           define_method(name) do |*args, **kwargs, &block|
             current_session.write!
             write_using_load_balancer(name, *args, **kwargs, &block)
+          end
+        end
+
+        def schema_cache(*args, **kwargs, &block)
+          # Ignore primary stickiness for schema_cache queries and always use replicas
+          @load_balancer.read do |connection|
+            connection.public_send(:schema_cache, *args, **kwargs, &block)
           end
         end
 

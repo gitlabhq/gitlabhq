@@ -143,7 +143,7 @@ describe('Create work item component', () => {
     });
 
     it('displays a list of work item types', () => {
-      expect(findSelect().attributes('options').split(',')).toHaveLength(4);
+      expect(findSelect().attributes('options').split(',')).toHaveLength(6);
     });
 
     it('selects a work item type on click', async () => {

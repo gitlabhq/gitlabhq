@@ -61,6 +61,9 @@ export const I18N_WORK_ITEM_ERROR_CREATING = s__(
 export const I18N_WORK_ITEM_ERROR_UPDATING = s__(
   'WorkItem|Something went wrong while updating the %{workItemType}. Please try again.',
 );
+export const I18N_WORK_ITEM_ERROR_CONVERTING = s__(
+  'WorkItem|Something went wrong while promoting the %{workItemType}. Please try again.',
+);
 export const I18N_WORK_ITEM_ERROR_DELETING = s__(
   'WorkItem|Something went wrong when deleting the %{workItemType}. Please try again.',
 );
@@ -211,3 +214,4 @@ export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-act
 export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action';
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
+export const TEST_ID_PROMOTE_ACTION = 'promote-action';

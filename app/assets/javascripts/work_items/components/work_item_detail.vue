@@ -216,6 +216,9 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
+    workItemTypeId() {
+      return this.workItem.workItemType?.id;
+    },
     workItemBreadcrumbReference() {
       return this.workItemType ? `${this.workItemType} #${this.workItem.iid}` : '';
     },
@@ -563,6 +566,7 @@ export default {
             :work-item-id="workItem.id"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
+            :work-item-type-id="workItemTypeId"
             :can-delete="canDelete"
             :can-update="canUpdate"
             :is-confidential="workItem.confidential"

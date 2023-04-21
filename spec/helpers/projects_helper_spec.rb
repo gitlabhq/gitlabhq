@@ -6,7 +6,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   include ProjectForksHelper
   include AfterNextHelpers
 
-  let_it_be_with_reload(:project) { create(:project) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be_with_refind(:project_with_repo) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -1470,9 +1470,10 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
         merge_request =
           create(:merge_request, source_project: project, target_project: project_with_repo,
-            source_branch: 'ref', target_branch: project_with_repo.default_branch)
+            source_branch: project.default_branch, target_branch: project_with_repo.default_branch)
 
-        expect(helper.vue_fork_divergence_data(project, 'ref')).to include({
+        expect(helper.vue_fork_divergence_data(project, project.default_branch)).to include({
+          can_sync_branch: 'true',
           create_mr_path: nil,
           view_mr_path: "/#{source_project.full_path}/-/merge_requests/#{merge_request.iid}"
         })
