@@ -100,3 +100,6 @@ Gitlab::SubscriptionPortal::PAYMENT_VALIDATION_FORM_ID = Gitlab::SubscriptionPor
 Gitlab::SubscriptionPortal::RENEWAL_SERVICE_EMAIL = Gitlab::SubscriptionPortal.renewal_service_email.freeze
 Gitlab::SubscriptionPortal::REGISTRATION_VALIDATION_FORM_URL = Gitlab::SubscriptionPortal.registration_validation_form_url.freeze
 Gitlab::SubscriptionPortal::REGISTRATION_VALIDATION_FORM_ID = Gitlab::SubscriptionPortal.registration_validation_form_id.freeze
+Gitlab::SubscriptionPortal::SUBSCRIPTION_PORTAL_ADMIN_EMAIL = Gitlab::SubscriptionPortal.subscription_portal_admin_email.freeze
+Gitlab::SubscriptionPortal::SUBSCRIPTION_PORTAL_ADMIN_TOKEN = Gitlab::SubscriptionPortal.subscription_portal_admin_token.freeze
+Gitlab::SubscriptionPortal::SUBSCRIPTIONS_MANAGE_URL = ::Gitlab::SubscriptionPortal.subscriptions_manage_url.freeze

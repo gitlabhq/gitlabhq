@@ -1353,7 +1353,6 @@
       allow_failure: true
     - <<: *if-merge-request
       changes: *dependency-patterns
-      allow_failure: true
       variables:
         OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
     - <<: *if-merge-request-labels-run-all-e2e

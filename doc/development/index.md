@@ -6,7 +6,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 description: "Development Guidelines: learn how to contribute to GitLab."
 ---
 
-# Contribute to the development of GitLab
+# Contribute to development
 
 Learn how to contribute to the development of the GitLab product.
 

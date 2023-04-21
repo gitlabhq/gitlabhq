@@ -75,7 +75,7 @@ Configuring both the client and the server is unnecessary.
   ```
 
 - On Windows, if you are using PuTTY, go to your session properties, then
-  navigate to "Connection" and under "Sending of null packets to keep
+  go to "Connection" and under "Sending of null packets to keep
   session active", set `Seconds between keepalives (0 to turn off)` to `60`.
 
 **To configure SSH on the server side**, edit `/etc/ssh/sshd_config` and add:
@@ -186,7 +186,7 @@ fatal: early EOF
 fatal: index-pack failed
 ```
 
-This is a common problem with Git itself, due to its inability to handle large files or large quantities of files.
+This problem is common in Git itself, due to its inability to handle large files or large quantities of files.
 [Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/) was created to work around this problem; however, even it has limitations. It's usually due to one of these reasons:
 
 - The number of files in the repository.
@@ -288,3 +288,105 @@ The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 If you receive an `HTTP Basic: Access denied` error when using Git over HTTP(S),
 refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication.md#troubleshooting).
+
+## `401` errors logged during successful `git clone`
+
+When cloning a repository via HTTP, the
+[`production_json.log`](../../administration/logs/index.md#production_jsonlog) file
+may show an initial status of `401` (unauthorized), quickly followed by a `200`.
+
+```json
+{
+   "method":"GET",
+   "path":"/group/project.git/info/refs",
+   "format":"*/*",
+   "controller":"Repositories::GitHttpController",
+   "action":"info_refs",
+   "status":401,
+   "time":"2023-04-18T22:55:15.371Z",
+   "remote_ip":"x.x.x.x",
+   "ua":"git/2.39.2",
+   "correlation_id":"01GYB98MBM28T981DJDGAD98WZ",
+   "duration_s":0.03585
+}
+{
+   "method":"GET",
+   "path":"/group/project.git/info/refs",
+   "format":"*/*",
+   "controller":"Repositories::GitHttpController",
+   "action":"info_refs",
+   "status":200,
+   "time":"2023-04-18T22:55:15.714Z",
+   "remote_ip":"x.x.x.x",
+   "user_id":1,
+   "username":"root",
+   "ua":"git/2.39.2",
+   "correlation_id":"01GYB98MJ0CA3G9K8WDH7HWMQX",
+   "duration_s":0.17111
+}
+```
+
+You should expect this initial `401` log entry for each Git operation performed over HTTP,
+due to how [HTTP Basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) works.
+
+When the Git client initiates a clone, the initial request sent to GitLab does not provide
+any authentication details. GitLab returns a `401 Unauthorized` result for that request.
+A few milliseconds later, the Git client sends a follow-up request containing authentication
+details. This second request should succeed, and result in a `200 OK` log entry.
+
+If a `401` log entry lacks a corresponding `200` log entry, the Git client is likely using either:
+
+- An incorrect password.
+- An expired or revoked token.an incorrect
+
+If not rectified, you could encounter
+[`403` (Forbidden) errors](#403-error-when-performing-git-operations-over-http)
+instead.
+
+## `403` error when performing Git operations over HTTP
+
+When performing Git operations over HTTP, a `403` (Forbidden) error indicates that
+your IP address has been blocked by the failed-authentication ban:
+
+```plaintext
+fatal: unable to access 'https://gitlab.com/group/project.git/': The requested URL returned error: 403
+```
+
+The `403` can be seen in the [`production_json.log`](../../administration/logs/index.md#production_jsonlog):
+
+```json
+{
+   "method":"GET",
+   "path":"/group/project.git/info/refs",
+   "format":"*/*",
+   "controller":"Repositories::GitHttpController",
+   "action":"info_refs",
+   "status":403,
+   "time":"2023-04-19T22:14:25.894Z",
+   "remote_ip":"x.x.x.x",
+   "user_id":1,
+   "username":"root",
+   "ua":"git/2.39.2",
+   "correlation_id":"01GYDSAKAN2SPZPAMJNRWW5H8S",
+   "duration_s":0.00875
+}
+```
+
+If your IP address has been blocked, a corresponding log entry exists in the
+[`auth_json.log`](../../administration/logs/index.md#auth_jsonlog):
+
+```json
+{
+    "severity":"ERROR",
+    "time":"2023-04-19T22:14:25.893Z",
+    "correlation_id":"01GYDSAKAN2SPZPAMJNRWW5H8S",
+    "message":"Rack_Attack",
+    "env":"blocklist",
+    "remote_ip":"x.x.x.x",
+    "request_method":"GET",
+    "path":"/group/project.git/info/refs?service=git-upload-pack"}
+```
+
+The failed authentication ban limits differ depending if you are using a
+[self-managed instance](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
+or [GitLab.com](../../user/gitlab_com/index.md#ip-blocks).

@@ -39,13 +39,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div class="gl-display-flex">
     <gl-form-checkbox
       v-gl-tooltip
       :checked="value"
       :disabled="isDisabled"
       name="squash"
-      class="js-squash-checkbox gl-mr-2 gl-display-flex gl-align-items-center"
+      class="js-squash-checkbox gl-mr-2"
       data-qa-selector="squash_checkbox"
       :title="tooltipTitle"
       @change="(checked) => $emit('input', checked)"
@@ -57,7 +57,7 @@ export default {
       v-gl-tooltip
       :href="helpPath"
       :title="$options.i18n.helpLabel"
-      class="gl-text-blue-600"
+      class="gl-text-blue-600 gl-line-height-1"
       target="_blank"
     >
       <gl-icon name="question-o" />

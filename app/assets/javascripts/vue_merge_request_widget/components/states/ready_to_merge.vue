@@ -545,14 +545,14 @@ export default {
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <template v-if="shouldShowMergeControls">
               <div
-                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap gl-w-full gl-md-pb-2"
+                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap gl-w-full"
               >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
-                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5 gl-mb-3 gl-md-mb-0"
+                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5"
                   data-testid="delete-source-branch-checkbox"
                 >
                   {{ __('Delete source branch') }}
@@ -564,14 +564,13 @@ export default {
                   v-model="squashBeforeMerge"
                   :help-path="mr.squashBeforeMergeHelpPath"
                   :is-disabled="isSquashReadOnly"
-                  class="gl-mr-5 gl-mb-3 gl-md-mb-0"
+                  class="gl-mr-5"
                 />
 
                 <gl-form-checkbox
                   v-if="shouldShowSquashEdit || shouldShowMergeEdit"
                   v-model="editCommitMessage"
                   data-testid="widget_edit_commit_message"
-                  class="gl-display-flex gl-align-items-center gl-mb-3 gl-md-mb-0"
                 >
                   {{ __('Edit commit message') }}
                 </gl-form-checkbox>

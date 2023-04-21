@@ -5,9 +5,9 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
+import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import getJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs.query.graphql';
 import AdminJobsTableApp from '~/pages/admin/jobs/components/table/admin_jobs_table_app.vue';
-import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 
 import {
@@ -86,6 +86,16 @@ describe('Job table app', () => {
       expect(findTable().exists()).toBe(true);
       expect(findSkeletonLoader().exists()).toBe(false);
       expect(findLoadingSpinner().exists()).toBe(false);
+    });
+
+    it('should refetch jobs query on fetchJobsByStatus event', async () => {
+      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
+
+      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+
+      await findTabs().vm.$emit('fetchJobsByStatus');
+
+      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
     });
   });
 

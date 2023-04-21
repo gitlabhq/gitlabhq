@@ -242,6 +242,10 @@ Continuing the above example, the migration would look like:
 class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
+  disable_ddl_transaction!
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   def up
     enqueue_partitioning_data_migration :audit_events
   end
@@ -252,17 +256,12 @@ class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
 end
 ```
 
-This step uses the same mechanism as any background migration, so you
-may want to read the [Background Migration](background_migrations.md)
-guide for details on that process. Background jobs are scheduled every
-2 minutes and copy `50_000` records at a time, which can be used to
-estimate the timing of the background migration portion of the
-partitioning migration.
+This step [queues a batched background migration](batched_background_migrations.md#queueing) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer [Batched Background migrations guide](batched_background_migrations.md) for more details.
 
 ### Step 3: Post-backfill cleanup (Release N+1)
 
-The third step must occur at least one release after the release that
-includes the background migration. This gives time for the background
+This step must occur at least one release after the release that
+includes step (2). This gives time for the background
 migration to execute properly in self-managed installations. In this step,
 add another post-deployment migration that cleans up after the
 background migration. This includes forcing any remaining jobs to
@@ -275,6 +274,10 @@ Once again, continuing the example, this migration would look like:
 class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
+  disable_ddl_transaction!
+
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
   def up
     finalize_backfilling_partitioned_table :audit_events
   end
@@ -285,16 +288,45 @@ class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.1]
 end
 ```
 
-After this migration has completed, the original table and partitioned
+After this migration completes, the original table and partitioned
 table should contain identical data. The trigger installed on the
 original table guarantees that the data remains in sync going forward.
 
 ### Step 4: Swap the partitioned and non-partitioned tables (Release N+1)
 
-The final step of the migration makes the partitioned table ready
-for use by the application. This section will be updated when the
-migration helper is ready, for now development can be followed in the
-[Tracking Issue](https://gitlab.com/gitlab-org/gitlab/-/issues/241267).
+This step replaces the non-partitioned table with its partitioned copy, this should be used only after all other migration steps have completed successfully.
+
+Some limitations to this method MUST be handled before, or during, the swap migration:
+
+- Secondary indexes and foreign keys are not automatically recreated on the partitioned table.
+- Some types of constraints (UNIQUE and EXCLUDE) which rely on indexes, are not automatically recreated
+  on the partitioned table, since the underlying index will not be present.
+- Foreign keys referencing the original non-partitioned table should be updated to reference the
+  partitioned table. This is not supported in PostgreSQL 11.
+- Views referencing the original table are not automatically updated to reference the partitioned table.
+
+```ruby
+# frozen_string_literal: true
+
+class SwapPartitionedAuditEvents < ActiveRecord::Migration[6.0]
+  include Gitlab::Database::PartitioningMigrationHelpers
+
+  def up
+    replace_with_partitioned_table :audit_events
+  end
+
+  def down
+    rollback_replace_with_partitioned_table :audit_events
+  end
+end
+```
+
+After this migration completes:
+
+- The partitioned table replaces the non-partitioned (original) table.
+- The sync trigger created earlier is dropped.
+
+The partitioned table is now ready for use by the application.
 
 ## Partitioning a table (Hash)
 

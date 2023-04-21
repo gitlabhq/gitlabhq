@@ -17,6 +17,7 @@ module Issues
                         end
 
       @issue = model_klass.new(issue_params.merge(container_param)).tap do |issue|
+        set_work_item_type(issue)
         initialize_callbacks!(issue) if initialize_callbacks
       end
     end
@@ -73,6 +74,26 @@ module Issues
     end
 
     private
+
+    def set_work_item_type(issue)
+      work_item_type = if params[:work_item_type_id].present?
+                         params.delete(:work_item_type)
+                         WorkItems::Type.find_by(id: params.delete(:work_item_type_id)) # rubocop: disable CodeReuse/ActiveRecord
+                       else
+                         params.delete(:work_item_type)
+                       end
+
+      base_type = work_item_type&.base_type
+      if create_issue_type_allowed?(container, base_type)
+        issue.work_item_type = work_item_type
+        # Up to this point issue_type might be set to the default, so we need to sync if a work item type is provided
+        issue.issue_type = work_item_type.base_type
+      end
+
+      # If no work item type was provided, we need to set it to whatever issue_type was up to this point,
+      # and that includes the column default
+      issue.work_item_type = WorkItems::Type.default_by_type(issue.issue_type)
+    end
 
     def model_klass
       ::Issue

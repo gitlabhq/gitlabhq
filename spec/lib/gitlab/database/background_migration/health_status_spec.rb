@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
+RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus, feature_category: :database do
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
 
   around do |example|
@@ -55,10 +55,23 @@ RSpec.describe Gitlab::Database::BackgroundMigration::HealthStatus do
     end
 
     it 'logs interesting signals' do
-      signal = instance_double("#{health_status}::Signals::Stop", log_info?: true)
+      signal = instance_double(
+        "#{health_status}::Signals::Stop",
+        log_info?: true,
+        indicator_class: autovacuum_indicator_class,
+        short_name: 'Stop',
+        reason: 'Test Exception'
+      )
 
       expect(autovacuum_indicator).to receive(:evaluate).and_return(signal)
-      expect(described_class).to receive(:log_signal).with(signal, migration)
+
+      expect(Gitlab::BackgroundMigration::Logger).to receive(:info).with(
+        migration_id: migration.id,
+        health_status_indicator: autovacuum_indicator_class.to_s,
+        indicator_signal: 'Stop',
+        signal_reason: 'Test Exception',
+        message: "#{migration} signaled: #{signal}"
+      )
 
       evaluate
     end

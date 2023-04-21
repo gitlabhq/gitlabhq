@@ -31,9 +31,12 @@ module Gitlab
         end
 
         def self.log_signal(signal, migration)
-          Gitlab::AppLogger.info(
-            message: "#{migration} signaled: #{signal}",
-            migration_id: migration.id
+          Gitlab::BackgroundMigration::Logger.info(
+            migration_id: migration.id,
+            health_status_indicator: signal.indicator_class.to_s,
+            indicator_signal: signal.short_name,
+            signal_reason: signal.reason,
+            message: "#{migration} signaled: #{signal}"
           )
         end
       end

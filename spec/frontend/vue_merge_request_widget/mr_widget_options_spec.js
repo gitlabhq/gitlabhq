@@ -151,7 +151,9 @@ describe('MrWidgetOptions', () => {
       return createComponent();
     });
 
-    describe('data', () => {
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/385238
+    // eslint-disable-next-line jest/no-disabled-tests
+    describe.skip('data', () => {
       it('should instantiate Store and Service', () => {
         expect(wrapper.vm.mr).toBeDefined();
         expect(wrapper.vm.service).toBeDefined();

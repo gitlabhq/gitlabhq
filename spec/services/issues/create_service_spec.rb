@@ -858,49 +858,5 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         subject.execute
       end
     end
-
-    describe 'setting issue type' do
-      using RSpec::Parameterized::TableSyntax
-
-      let_it_be(:guest) { user.tap { |u| project.add_guest(u) } }
-      let_it_be(:reporter) { assignee.tap { |u| project.add_reporter(u) } }
-
-      context 'with a corresponding WorkItems::Type' do
-        let_it_be(:type_issue_id) { WorkItems::Type.default_issue_type.id }
-        let_it_be(:type_incident_id) { WorkItems::Type.default_by_type(:incident).id }
-
-        where(:issue_type, :current_user, :work_item_type_id, :resulting_issue_type) do
-          nil           | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'issue'       | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'incident'    | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'incident'    | ref(:reporter) | ref(:type_incident_id)    | 'incident'
-          # update once support for test_case is enabled
-          'test_case'   | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          # update once support for requirement is enabled
-          'requirement' | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'invalid'     | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          # ensure that we don't set a value which has a permission check but is an invalid issue type
-          'project'     | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-        end
-
-        with_them do
-          let(:user) { current_user }
-          let(:params) { { title: 'title', issue_type: issue_type } }
-          let(:issue) do
-            described_class.new(
-              container: project,
-              current_user: user,
-              params: params,
-              spam_params: spam_params
-            ).execute[:issue]
-          end
-
-          it 'creates an issue' do
-            expect(issue.issue_type).to eq(resulting_issue_type)
-            expect(issue.work_item_type_id).to eq(work_item_type_id)
-          end
-        end
-      end
-    end
   end
 end

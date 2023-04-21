@@ -28,8 +28,6 @@ module Gitlab
             end
             # :nocov:
 
-            private
-
             def short_name
               self.class.name.demodulize
             end

@@ -13213,6 +13213,9 @@ msgstr ""
 msgid "DORA4Metrics|Something went wrong while getting time to restore service data."
 msgstr ""
 
+msgid "DORA4Metrics|The Value Streams Dashboard allows all stakeholders from executives to individual contributors to identify trends, patterns, and opportunities for software development improvements."
+msgstr ""
+
 msgid "DORA4Metrics|The chart displays the frequency of deployments to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
 msgstr ""
 
@@ -13226,6 +13229,9 @@ msgid "DORA4Metrics|Time to restore service"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service (median days)"
+msgstr ""
+
+msgid "DORA4Metrics|Value Streams Dashboard"
 msgstr ""
 
 msgid "DSN"
@@ -15192,9 +15198,6 @@ msgid "DevopsAdoption|Total number of features adopted"
 msgstr ""
 
 msgid "DevopsAdoption|You cannot remove the group you are currently in."
-msgstr ""
-
-msgid "DevopsMetricsDashboard|%{strongStart}Beta feature:%{strongEnd} Leave your thoughts in the %{linkStart}feedback issue%{linkEnd}."
 msgstr ""
 
 msgid "DevopsReport|DevOps Score"
@@ -48324,9 +48327,6 @@ msgid "Value Stream Analytics"
 msgstr ""
 
 msgid "Value Stream Analytics can help you determine your team’s velocity"
-msgstr ""
-
-msgid "Value Streams Dashboard (Beta)"
 msgstr ""
 
 msgid "Value Streams Dashboard | DORA"

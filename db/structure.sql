@@ -32444,6 +32444,8 @@ CREATE INDEX index_todos_on_group_id ON todos USING btree (group_id);
 
 CREATE INDEX index_todos_on_note_id ON todos USING btree (note_id);
 
+CREATE INDEX index_todos_on_note_id_convert_to_bigint ON todos USING btree (note_id_convert_to_bigint);
+
 CREATE INDEX index_todos_on_project_id_and_id ON todos USING btree (project_id, id);
 
 CREATE INDEX index_todos_on_target_type_and_target_id ON todos USING btree (target_type, target_id);
@@ -37181,6 +37183,9 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_note_id FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY todos
+    ADD CONSTRAINT fk_todos_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY u2f_registrations
     ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

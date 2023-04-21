@@ -27,11 +27,10 @@ module Issues
       # We should not initialize the callback classes during the build service execution because these will be
       # initialized when we call #create below
       @issue = @build_service.execute(initialize_callbacks: false)
-      set_work_item_type(@issue)
 
-      # issue_type is set in BuildService, so we can delete it from params, in later phase
-      # it can be set also from quick actions - in that case work_item_id is synced later again
-      params.delete(:issue_type)
+      # issue_type and work_item_type are set in BuildService, so we can delete it from params, in later phase
+      # it can be set also from quick actions
+      [:issue_type, :work_item_type, :work_item_type_id].each { |attribute| params.delete(attribute) }
 
       handle_move_between_ids(@issue)
 
@@ -105,26 +104,6 @@ module Issues
     end
 
     private
-
-    def set_work_item_type(issue)
-      work_item_type = if params[:work_item_type_id].present?
-                         params.delete(:work_item_type)
-                         WorkItems::Type.find_by(id: params.delete(:work_item_type_id)) # rubocop: disable CodeReuse/ActiveRecord
-                       else
-                         params.delete(:work_item_type)
-                       end
-
-      base_type = work_item_type&.base_type
-      if create_issue_type_allowed?(container, base_type)
-        issue.work_item_type = work_item_type
-        # Up to this point issue_type might be set to the default, so we need to sync if a work item type is provided
-        issue.issue_type = work_item_type.base_type
-      end
-
-      # If no work item type was provided, we need to set it to whatever issue_type was up to this point,
-      # and that includes the column default
-      issue.work_item_type = WorkItems::Type.default_by_type(issue.issue_type)
-    end
 
     def authorization_action
       :create_issue
