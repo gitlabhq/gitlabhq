@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.10.4 (2023-04-21)
+
+### Fixed (1 change)
+
+- [Patch mail gem to handle TLS settings properly](gitlab-org/gitlab@cd4cfc46e17c91dbf5ef10ab1ca0a473d6b2a4d6) ([merge request](gitlab-org/gitlab!117559))
+
 ## 15.10.3 (2023-04-14)
 
 ### Fixed (3 changes)
