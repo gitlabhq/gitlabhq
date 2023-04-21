@@ -579,6 +579,21 @@ export const workItemResponseFactory = ({
   },
 });
 
+export const workItemByIidResponseFactory = (options) => {
+  const response = workItemResponseFactory(options);
+  return {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItems: {
+          nodes: [response.data.workItem],
+        },
+      },
+    },
+  };
+};
+
 export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
   data: {
     issue: {

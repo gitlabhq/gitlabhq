@@ -739,6 +739,30 @@ RSpec.describe API::Members, feature_category: :subgroups do
           end.to change { source.members.count }.by(-1)
         end
 
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :member_delete do
+          let(:current_user) { maintainer }
+
+          let(:another_member) { create(:user) }
+
+          before do
+            source.add_developer(another_member)
+          end
+
+          # We rate limit scoped by the group / project
+          let(:delete_paths) do
+            [
+              api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
+              api("/#{source_type.pluralize}/#{source.id}/members/#{another_member.id}", maintainer)
+            ]
+          end
+
+          def request
+            delete_member_path = delete_paths.shift
+
+            delete delete_member_path
+          end
+        end
+
         it_behaves_like '412 response' do
           let(:request) { api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer) }
         end

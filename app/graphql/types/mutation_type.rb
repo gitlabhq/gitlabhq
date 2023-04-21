@@ -52,6 +52,7 @@ module Types
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
     mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
+    mount_mutation Mutations::Environments::Stop
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, alpha: { milestone: '15.6' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update

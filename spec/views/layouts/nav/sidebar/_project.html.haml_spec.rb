@@ -466,7 +466,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
       it 'has a link to the terraform page' do
         render
 
-        expect(rendered).to have_link('Terraform', href: project_terraform_index_path(project))
+        expect(rendered).to have_link('Terraform states', href: project_terraform_index_path(project))
       end
 
       describe 'when the user does not have access' do
@@ -475,7 +475,7 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
         it 'does not have a link to the terraform page' do
           render
 
-          expect(rendered).not_to have_link('Terraform')
+          expect(rendered).not_to have_link('Terraform states')
         end
       end
     end

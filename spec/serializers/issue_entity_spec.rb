@@ -19,7 +19,7 @@ RSpec.describe IssueEntity do
 
       # This was already a path and not a url when the work items change was introduced
       it 'has a work item path with iid' do
-        expect(subject[:web_url]).to eq(project_work_items_path(project, resource.iid, iid_path: true))
+        expect(subject[:web_url]).to eq(project_work_items_path(project, resource.iid))
       end
     end
   end

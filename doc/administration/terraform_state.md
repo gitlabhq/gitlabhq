@@ -27,7 +27,7 @@ or because your instance doesn't use Terraform.
 
 When Terraform state administration is disabled:
 
-- On the left sidebar, you cannot select **Infrastructure > Terraform**.
+- On the left sidebar, you cannot select **Infrastructure > Terraform states**.
 - Any CI/CD jobs that access the Terraform state fail with this error:
 
     ```shell

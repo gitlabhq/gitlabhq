@@ -64,13 +64,13 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
         subject.renderable_items.delete(find_menu_item(:kubernetes))
       end
 
-      it 'menu link points to Terraform page' do
-        expect(subject.link).to eq find_menu_item(:terraform).link
+      it 'menu link points to Terraform states page' do
+        expect(subject.link).to eq find_menu_item(:terraform_states).link
       end
 
-      context 'when Terraform menu is not visible' do
+      context 'when Terraform states menu is not visible' do
         before do
-          subject.renderable_items.delete(find_menu_item(:terraform))
+          subject.renderable_items.delete(find_menu_item(:terraform_states))
         end
 
         it 'menu link points to Google Cloud page' do
@@ -103,8 +103,8 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu, feature_category: 
       it_behaves_like 'access rights checks'
     end
 
-    describe 'Terraform' do
-      let(:item_id) { :terraform }
+    describe 'Terraform states' do
+      let(:item_id) { :terraform_states }
 
       it_behaves_like 'access rights checks'
 

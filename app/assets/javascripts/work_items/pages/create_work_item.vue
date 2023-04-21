@@ -132,7 +132,7 @@ export default {
           },
         } = response;
         const routerParams = this.fetchByIid
-          ? { name: 'workItem', params: { id: iid }, query: { iid_path: 'true' } }
+          ? { name: 'workItem', params: { id: iid } }
           : { name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } };
         this.$router.push(routerParams);
       } catch {

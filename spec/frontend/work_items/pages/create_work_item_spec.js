@@ -105,7 +105,6 @@ describe('Create work item component', () => {
       expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
         name: 'workItem',
         params: { id: '1' },
-        query: { iid_path: 'true' },
       });
     });
 

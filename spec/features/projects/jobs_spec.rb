@@ -232,7 +232,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :proj
           expect(page).to have_link('New issue')
         end
 
-        it 'links to issues/new with the title and description filled in' do
+        it 'links to issues/new with the title and description filled in', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408222' do
           button_title = "Job Failed ##{job.id}"
           job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }

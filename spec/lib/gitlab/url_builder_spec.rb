@@ -22,8 +22,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :group_board       | ->(board)         { "/groups/#{board.group.full_path}/-/boards/#{board.id}" }
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
-      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}?iid_path=true" }
-      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}?iid_path=true" }
+      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}" }
+      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }

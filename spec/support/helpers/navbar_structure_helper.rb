@@ -100,7 +100,7 @@ module NavbarStructureHelper
 
   def insert_infrastructure_google_cloud_nav
     insert_after_sub_nav_item(
-      _('Terraform'),
+      s_('Terraform|Terraform states'),
       within: _('Infrastructure'),
       new_sub_nav_item_name: _('Google Cloud')
     )

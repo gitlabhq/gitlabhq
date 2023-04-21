@@ -110,8 +110,8 @@ describe('TerraformList', () => {
         return waitForPromises();
       });
 
-      it('displays a states tab and count', () => {
-        expect(findTab().text()).toContain('States');
+      it('displays a terraform states tab and count', () => {
+        expect(findTab().text()).toContain('Terraform states');
         expect(findBadge().text()).toBe('2');
       });
 
@@ -158,8 +158,8 @@ describe('TerraformList', () => {
         return waitForPromises();
       });
 
-      it('displays a states tab with no count', () => {
-        expect(findTab().text()).toContain('States');
+      it('displays a terraform states tab with no count', () => {
+        expect(findTab().text()).toContain('Terraform states');
         expect(findBadge().exists()).toBe(false);
       });
 

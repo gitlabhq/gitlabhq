@@ -3,16 +3,20 @@ import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 
+import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
+import { sidebarState, JS_TOGGLE_EXPAND_CLASS } from '~/super_sidebar/constants';
 import LegacyContainer from './components/legacy_container.vue';
 import WelcomePage from './components/welcome.vue';
 
 export default {
+  JS_TOGGLE_EXPAND_CLASS,
   components: {
     NewTopLevelGroupAlert,
     GlBreadcrumb,
     GlIcon,
     WelcomePage,
     LegacyContainer,
+    SuperSidebarToggle,
   },
   directives: {
     SafeHtml,
@@ -83,6 +87,10 @@ export default {
 
       return this.activePanel.detailProps.parentGroupName === '';
     },
+
+    showSuperSidebarToggle() {
+      return gon.use_new_navigation && sidebarState.isCollapsed;
+    },
   },
 
   created() {
@@ -114,32 +122,40 @@ export default {
 </script>
 
 <template>
-  <div v-if="!activePanelName" class="gl-mt-4">
-    <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
-    <welcome-page :panels="panels" :title="title">
+  <div>
+    <div
+      class="top-bar-container gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
+    >
+      <super-sidebar-toggle
+        v-if="showSuperSidebarToggle"
+        class="gl-mr-2"
+        :class="$options.JS_TOGGLE_EXPAND_CLASS"
+      />
+      <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
+    </div>
+
+    <template v-if="activePanel">
+      <div class="gl-display-flex gl-align-items-center gl-py-5">
+        <div v-safe-html="activePanel.illustration" class="gl-text-white col-auto"></div>
+        <div class="col">
+          <h4>{{ activePanel.title }}</h4>
+
+          <p v-if="hasTextDetails">{{ details }}</p>
+          <component :is="details" v-else v-bind="detailProps" />
+        </div>
+
+        <slot name="extra-description"></slot>
+      </div>
+      <div>
+        <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
+        <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
+      </div>
+    </template>
+
+    <welcome-page v-else :panels="panels" :title="title">
       <template #footer>
-        <slot name="welcome-footer"> </slot>
+        <slot name="welcome-footer"></slot>
       </template>
     </welcome-page>
-  </div>
-  <div v-else class="gl-pt-4">
-    <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
-    <div
-      class="gl-display-flex gl-align-items-center gl-mt-4 gl-py-5 gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
-    >
-      <div v-safe-html="activePanel.illustration" class="gl-text-white col-auto"></div>
-      <div class="col">
-        <h4>{{ activePanel.title }}</h4>
-
-        <p v-if="hasTextDetails">{{ details }}</p>
-        <component :is="details" v-else v-bind="detailProps" />
-      </div>
-
-      <slot name="extra-description"></slot>
-    </div>
-    <div>
-      <new-top-level-group-alert v-if="showNewTopLevelGroupAlert" />
-      <legacy-container :key="activePanel.name" :selector="activePanel.selector" />
-    </div>
   </div>
 </template>

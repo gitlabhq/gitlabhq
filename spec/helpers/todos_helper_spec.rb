@@ -142,7 +142,7 @@ RSpec.describe TodosHelper do
       it 'responds with an appropriate path using iid' do
         path = helper.todo_target_path(todo)
 
-        expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.iid}?iid_path=true")
+        expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.iid}")
       end
     end
 

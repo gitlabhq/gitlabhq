@@ -49,7 +49,7 @@ RSpec.describe LinkedProjectIssueEntity do
 
       it 'returns a work items path using iid' do
         expect(serialized_entity).to include(
-          path: project_work_items_path(related_issue.project, related_issue.iid, iid_path: true)
+          path: project_work_items_path(related_issue.project, related_issue.iid)
         )
       end
     end

@@ -62,7 +62,7 @@ RSpec.describe IssueBoardEntity do
       let(:resource) { create(:issue, :task, project: project) }
 
       it 'has a work item path with iid' do
-        expect(subject[:real_path]).to eq(project_work_items_path(project, resource.iid, iid_path: true))
+        expect(subject[:real_path]).to eq(project_work_items_path(project, resource.iid))
       end
     end
   end

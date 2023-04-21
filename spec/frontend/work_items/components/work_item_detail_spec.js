@@ -27,7 +27,6 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import { i18n } from '~/work_items/constants';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
@@ -39,11 +38,10 @@ import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_ta
 import {
   mockParent,
   workItemDatesSubscriptionResponse,
-  workItemResponseFactory,
+  workItemByIidResponseFactory as workItemResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemAssigneesSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
-  projectWorkItemResponse,
   objectiveType,
 } from '../mock_data';
 
@@ -59,7 +57,6 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const successByIidHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
   const milestoneSubscriptionHandler = jest
@@ -69,6 +66,7 @@ describe('WorkItemDetail component', () => {
     .fn()
     .mockResolvedValue(workItemAssigneesSubscriptionResponse);
   const showModalHandler = jest.fn();
+  const { id } = workItemQueryResponse.data.workspace.workItems.nodes[0];
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -94,7 +92,7 @@ describe('WorkItemDetail component', () => {
   const createComponent = ({
     isModal = false,
     updateInProgress = false,
-    workItemId = workItemQueryResponse.data.workItem.id,
+    workItemId = id,
     workItemIid = '1',
     handler = successHandler,
     subscriptionHandler = titleSubscriptionHandler,
@@ -103,12 +101,11 @@ describe('WorkItemDetail component', () => {
     workItemsMvc2Enabled = false,
   } = {}) => {
     const handlers = [
-      [workItemQuery, handler],
+      [workItemByIidQuery, handler],
       [workItemTitleSubscription, subscriptionHandler],
       [workItemDatesSubscription, datesSubscriptionHandler],
       [workItemAssigneesSubscription, assigneesSubscriptionHandler],
       [workItemMilestoneSubscription, milestoneSubscriptionHandler],
-      [workItemByIidQuery, successByIidHandler],
       confidentialityMock,
     ];
 
@@ -223,16 +220,14 @@ describe('WorkItemDetail component', () => {
     const confidentialWorkItem = workItemResponseFactory({
       confidential: true,
     });
+    const workItem = confidentialWorkItem.data.workspace.workItems.nodes[0];
 
     // Mocks for work item without parent
-    const withoutParentExpectedInputVars = {
-      id: workItemQueryResponse.data.workItem.id,
-      confidential: true,
-    };
+    const withoutParentExpectedInputVars = { id, confidential: true };
     const toggleConfidentialityWithoutParentHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem: confidentialWorkItem.data.workItem,
+          workItem,
           errors: [],
         },
       },
@@ -252,17 +247,17 @@ describe('WorkItemDetail component', () => {
     // Mocks for work item with parent
     const withParentExpectedInputVars = {
       id: mockParent.parent.id,
-      taskData: { id: workItemQueryResponse.data.workItem.id, confidential: true },
+      taskData: { id, confidential: true },
     };
     const toggleConfidentialityWithParentHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
           workItem: {
-            id: confidentialWorkItem.data.workItem.id,
-            descriptionHtml: confidentialWorkItem.data.workItem.description,
+            id: workItem.id,
+            descriptionHtml: workItem.description,
           },
           task: {
-            workItem: confidentialWorkItem.data.workItem,
+            workItem,
             confidential: true,
           },
           errors: [],
@@ -446,7 +441,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('shows work item type and iid', () => {
-        const { iid, workItemType } = workItemQueryResponse.data.workItem;
+        const { iid, workItemType } = workItemQueryResponse.data.workspace.workItems.nodes[0];
         expect(findParent().text()).toContain(`${workItemType.name} #${iid}`);
       });
     });
@@ -478,9 +473,7 @@ describe('WorkItemDetail component', () => {
       createComponent();
       await waitForPromises();
 
-      expect(titleSubscriptionHandler).toHaveBeenCalledWith({
-        issuableId: workItemQueryResponse.data.workItem.id,
-      });
+      expect(titleSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
     });
 
     describe('assignees subscription', () => {
@@ -489,9 +482,7 @@ describe('WorkItemDetail component', () => {
           createComponent();
           await waitForPromises();
 
-          expect(assigneesSubscriptionHandler).toHaveBeenCalledWith({
-            issuableId: workItemQueryResponse.data.workItem.id,
-          });
+          expect(assigneesSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
         });
       });
 
@@ -513,9 +504,7 @@ describe('WorkItemDetail component', () => {
           createComponent();
           await waitForPromises();
 
-          expect(datesSubscriptionHandler).toHaveBeenCalledWith({
-            issuableId: workItemQueryResponse.data.workItem.id,
-          });
+          expect(datesSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
         });
       });
 
@@ -615,9 +604,7 @@ describe('WorkItemDetail component', () => {
           createComponent();
           await waitForPromises();
 
-          expect(milestoneSubscriptionHandler).toHaveBeenCalledWith({
-            issuableId: workItemQueryResponse.data.workItem.id,
-          });
+          expect(milestoneSubscriptionHandler).toHaveBeenCalledWith({ issuableId: id });
         });
       });
 
@@ -634,40 +621,18 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('calls the global ID work item query when there is no `iid_path` parameter in URL', async () => {
+  it('calls the work item query', async () => {
     createComponent();
     await waitForPromises();
 
-    expect(successHandler).toHaveBeenCalledWith({
-      id: workItemQueryResponse.data.workItem.id,
-    });
-    expect(successByIidHandler).not.toHaveBeenCalled();
+    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
   });
 
-  it('calls the IID work item query when `iid_path` route parameter is present', async () => {
-    setWindowLocation(`?iid_path=true`);
-
-    createComponent();
-    await waitForPromises();
-
-    expect(successHandler).not.toHaveBeenCalled();
-    expect(successByIidHandler).toHaveBeenCalledWith({
-      fullPath: 'group/project',
-      iid: '1',
-    });
-  });
-
-  it('calls the IID work item query when `iid_path` route parameter is present and is a modal', async () => {
-    setWindowLocation(`?iid_path=true`);
-
+  it('calls the work item query when isModal=true', async () => {
     createComponent({ isModal: true });
     await waitForPromises();
 
-    expect(successHandler).not.toHaveBeenCalled();
-    expect(successByIidHandler).toHaveBeenCalledWith({
-      fullPath: 'group/project',
-      iid: '1',
-    });
+    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
   });
 
   describe('hierarchy widget', () => {

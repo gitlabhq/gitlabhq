@@ -18,6 +18,8 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
 
       visit project_issues_path(project)
 
+      wait_for_all_requests
+
       page.within ".nav-controls" do
         click_link "New issue"
       end

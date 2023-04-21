@@ -87,7 +87,7 @@ export const resolvers = (endpoint) => ({
     },
   },
   Mutation: {
-    stopEnvironment(_, { environment }, { client }) {
+    stopEnvironmentREST(_, { environment }, { client }) {
       client.writeQuery({
         query: isEnvironmentStoppingQuery,
         variables: { environment },

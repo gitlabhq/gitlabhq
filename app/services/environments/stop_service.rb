@@ -5,13 +5,27 @@ module Environments
     attr_reader :ref
 
     def execute(environment)
-      return unless can?(current_user, :stop_environment, environment)
+      unless can?(current_user, :stop_environment, environment)
+        return ServiceResponse.error(
+          message: 'Unauthorized to stop the environment',
+          payload: { environment: environment }
+        )
+      end
 
       if params[:force]
         environment.stop_complete!
       else
         environment.stop_with_actions!(current_user)
       end
+
+      unless environment.saved_change_to_attribute?(:state)
+        return ServiceResponse.error(
+          message: 'Attemped to stop the environment but failed to change the status',
+          payload: { environment: environment }
+        )
+      end
+
+      ServiceResponse.success(payload: { environment: environment })
     end
 
     def execute_for_branch(branch_name)

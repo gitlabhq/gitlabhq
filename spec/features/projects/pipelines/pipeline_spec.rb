@@ -850,7 +850,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
         expect(page).to have_content('Cancel running')
       end
 
-      it 'does not link to job' do
+      it 'does not link to job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do
         expect(page).not_to have_selector('.js-pipeline-graph-job-link')
       end
     end
@@ -913,7 +913,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
           expect(page).to have_selector('table.ci-table > tbody > tr > td', text: 'blocked user schedule')
         end
 
-        it 'does not create a new Pipeline' do
+        it 'does not create a new Pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do
           visit project_pipelines_path(project)
 
           expect(page).not_to have_selector('.ci-table')

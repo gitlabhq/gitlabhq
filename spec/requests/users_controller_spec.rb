@@ -528,7 +528,7 @@ RSpec.describe UsersController, feature_category: :user_management do
 
           get user_calendar_activities_url public_user.username
 
-          expect(response.body).to include(project_work_items_path(project, work_item.iid, iid_path: true))
+          expect(response.body).to include(project_work_items_path(project, work_item.iid))
           expect(response.body).to include(project_issue_path(project, issue))
         end
 

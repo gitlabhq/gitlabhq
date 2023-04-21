@@ -9,7 +9,7 @@ module Sidebars
           return false unless feature_enabled?
 
           add_item(kubernetes_menu_item)
-          add_item(terraform_menu_item)
+          add_item(terraform_states_menu_item)
           add_item(google_cloud_menu_item)
           add_item(aws_menu_item)
 
@@ -73,17 +73,17 @@ module Sidebars
                     auto_devops_help_path: help_page_path('topics/autodevops/index.md') } }
         end
 
-        def terraform_menu_item
+        def terraform_states_menu_item
           unless can?(context.current_user, :read_terraform_state, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :terraform)
+            return ::Sidebars::NilMenuItem.new(item_id: :terraform_states)
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Terraform'),
+            title: s_('Terraform|Terraform states'),
             link: project_terraform_index_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             active_routes: { controller: :terraform },
-            item_id: :terraform
+            item_id: :terraform_states
           )
         end
 

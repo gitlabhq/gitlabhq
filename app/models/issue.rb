@@ -601,7 +601,7 @@ class Issue < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def update_project_counter_caches
     # TODO: Fix counter cache for issues in group
-    # TODO: see https://gitlab.com/gitlab-org/gitlab/-/work_items/393125?iid_path=true
+    # TODO: see https://gitlab.com/gitlab-org/gitlab/-/work_items/393125
     return unless project
 
     Projects::OpenIssuesCountService.new(project).refresh_cache
@@ -699,7 +699,7 @@ class Issue < ApplicationRecord
 
   def expire_etag_cache
     # TODO: Fix this for the case when issues is created at group level
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/395814?iid_path=true
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/395814
     return unless project
 
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
@@ -731,7 +731,7 @@ class Issue < ApplicationRecord
   def check_issue_type_in_sync!
     # We might have existing records out of sync, so we need to skip this check unless the value is changed
     # so those records can still be updated until we fix them and remove the issue_type column
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158?iid_path=true
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158
     return unless (changes.keys & %w[issue_type work_item_type_id]).any?
 
     if issue_type != work_item_type.base_type
@@ -781,7 +781,7 @@ class Issue < ApplicationRecord
   override :persist_pg_full_text_search_vector
   def persist_pg_full_text_search_vector(search_vector)
     # TODO: Fix search vector for issues at group level
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126?iid_path=true
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
     return unless project
 
     Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
@@ -824,7 +824,7 @@ class Issue < ApplicationRecord
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
     # TODO: We should switch to DEFAULT_ISSUE_TYPE here when the issue_type column is dropped
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700?iid_path=true
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700
     self.work_item_type = WorkItems::Type.default_by_type(issue_type)
   end
 

@@ -88,7 +88,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  stopEnvironment(environment: LocalEnvironmentInput): LocalErrors
+  stopEnvironmentREST(environment: LocalEnvironmentInput): LocalErrors
   deleteEnvironment(environment: LocalEnvironmentInput): LocalErrors
   rollbackEnvironment(environment: LocalEnvironmentInput): LocalErrors
   cancelAutoStop(autoStopUrl: String!): LocalErrors

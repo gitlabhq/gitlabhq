@@ -192,6 +192,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
         [['zadd', 'foobar', 1, 'a']] | ['bzpopmax', 'foobar', 0]
         [['xadd', 'mystream', 1, 'myfield', 'mydata']] | ['xread', 'block', 1, 'streams', 'mystream', '0-0']
         [['xadd', 'foobar', 1, 'myfield', 'mydata'], ['xgroup', 'create', 'foobar', 'mygroup', 0]] | ['xreadgroup', 'group', 'mygroup', 'myconsumer', 'block', 1, 'streams', 'foobar', '0-0']
+        [] | ['command']
       end
 
       with_them do

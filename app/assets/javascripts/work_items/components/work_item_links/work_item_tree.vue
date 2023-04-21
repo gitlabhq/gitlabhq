@@ -3,7 +3,6 @@ import { isEmpty } from 'lodash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -78,7 +77,7 @@ export default {
   },
   computed: {
     fetchByIid() {
-      return parseBoolean(getParameterByName('iid_path'));
+      return true;
     },
     childrenIds() {
       return this.children.map((c) => c.id);

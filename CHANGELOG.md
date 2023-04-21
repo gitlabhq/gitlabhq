@@ -817,6 +817,12 @@ entry.
 - [Update header section](gitlab-org/gitlab@cf4ab283267d84fa1c0dc90fefb1b6ddd2617b5c) ([merge request](gitlab-org/gitlab!114102)) **GitLab Enterprise Edition**
 - [Swap merge_request_user_mentions.note_id to bigint](gitlab-org/gitlab@96baed47326db4f0cc9f60b2e74215211effd814) ([merge request](gitlab-org/gitlab!113928))
 
+## 15.10.4 (2023-04-21)
+
+### Fixed (1 change)
+
+- [Patch mail gem to handle TLS settings properly](gitlab-org/gitlab@cd4cfc46e17c91dbf5ef10ab1ca0a473d6b2a4d6) ([merge request](gitlab-org/gitlab!117559))
+
 ## 15.10.3 (2023-04-14)
 
 ### Fixed (3 changes)
@@ -1589,6 +1595,12 @@ entry.
 ### change (1 change)
 
 - [Update submit buttons to use Pajamas component](gitlab-org/gitlab@4ffb92755e6be3268c78f02e471f5c2a21f437be) ([merge request](gitlab-org/gitlab!114246))
+
+## 15.9.5 (2023-04-21)
+
+### Fixed (1 change)
+
+- [Fix automatically-retried jobs stuck in pending state](gitlab-org/gitlab@752fbfcd613259b71af37f62a83321e8f573219b) ([merge request](gitlab-org/gitlab!117281))
 
 ## 15.9.4 (2023-03-30)
 

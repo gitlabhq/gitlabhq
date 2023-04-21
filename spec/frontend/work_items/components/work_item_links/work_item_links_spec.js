@@ -270,128 +270,56 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  describe('when work item is fetched by id', () => {
-    describe('prefetching child items', () => {
-      let firstChild;
+  describe('prefetching child items', () => {
+    let firstChild;
 
-      beforeEach(async () => {
-        await createComponent();
+    beforeEach(async () => {
+      setWindowLocation('?iid_path=true');
+      await createComponent();
 
-        firstChild = findFirstWorkItemLinkChild();
-      });
+      firstChild = findFirstWorkItemLinkChild();
+    });
 
-      it('does not fetch the child work item by id before hovering work item links', () => {
-        expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
-      });
+    it('does not fetch the child work item by iid before hovering work item links', () => {
+      expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
+    });
 
-      it('fetches the child work item by id if link is hovered for 250+ ms', async () => {
-        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-        await waitForPromises();
+    it('fetches the child work item by iid if link is hovered for 250+ ms', async () => {
+      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
 
-        expect(childWorkItemQueryHandler).toHaveBeenCalledWith({
-          id: 'gid://gitlab/WorkItem/2',
-        });
-      });
-
-      it('does not fetch the child work item by id if link is hovered for less than 250 ms', async () => {
-        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-        jest.advanceTimersByTime(200);
-        firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
-        await waitForPromises();
-
-        expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
-      });
-
-      it('does not fetch work item by iid if link is hovered for 250+ ms', async () => {
-        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-        await waitForPromises();
-
-        expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
+      expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
+        fullPath: 'project/path',
+        iid: '2',
       });
     });
 
-    it('starts prefetching work item by id if URL contains work item id', async () => {
-      setWindowLocation('?work_item_id=5');
-      await createComponent();
+    it('does not fetch the child work item by iid if link is hovered for less than 250 ms', async () => {
+      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+      jest.advanceTimersByTime(200);
+      firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
+      await waitForPromises();
 
-      expect(childWorkItemQueryHandler).toHaveBeenCalledWith({
-        id: 'gid://gitlab/WorkItem/5',
-      });
+      expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
     });
 
-    it('does not open the modal if work item id URL parameter is not found in child items', async () => {
-      setWindowLocation('?work_item_id=555');
-      await createComponent();
+    it('does not fetch work item by id if link is hovered for 250+ ms', async () => {
+      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+      await waitForPromises();
 
-      expect(showModal).not.toHaveBeenCalled();
-      expect(wrapper.findComponent(WorkItemDetailModal).props('workItemId')).toBe(null);
-    });
-
-    it('opens the modal if work item id URL parameter is found in child items', async () => {
-      setWindowLocation('?work_item_id=2');
-      await createComponent();
-
-      expect(showModal).toHaveBeenCalled();
-      expect(wrapper.findComponent(WorkItemDetailModal).props('workItemId')).toBe(
-        'gid://gitlab/WorkItem/2',
-      );
+      expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
     });
   });
 
-  describe('when work item is fetched by iid', () => {
-    describe('prefetching child items', () => {
-      let firstChild;
+  it('starts prefetching work item by iid if URL contains work item id', async () => {
+    setWindowLocation('?work_item_iid=5&iid_path=true');
+    await createComponent();
 
-      beforeEach(async () => {
-        setWindowLocation('?iid_path=true');
-        await createComponent();
-
-        firstChild = findFirstWorkItemLinkChild();
-      });
-
-      it('does not fetch the child work item by iid before hovering work item links', () => {
-        expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
-      });
-
-      it('fetches the child work item by iid if link is hovered for 250+ ms', async () => {
-        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-        await waitForPromises();
-
-        expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
-          fullPath: 'project/path',
-          iid: '2',
-        });
-      });
-
-      it('does not fetch the child work item by iid if link is hovered for less than 250 ms', async () => {
-        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-        jest.advanceTimersByTime(200);
-        firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
-        await waitForPromises();
-
-        expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
-      });
-
-      it('does not fetch work item by id if link is hovered for 250+ ms', async () => {
-        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-        await waitForPromises();
-
-        expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('starts prefetching work item by iid if URL contains work item id', async () => {
-      setWindowLocation('?work_item_iid=5&iid_path=true');
-      await createComponent();
-
-      expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
-        iid: '5',
-        fullPath: 'project/path',
-      });
+    expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
+      iid: '5',
+      fullPath: 'project/path',
     });
   });
 

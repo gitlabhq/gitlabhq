@@ -9,7 +9,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }
   let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
-  let(:work_items_path) { project_work_items_path(project, work_items_path: work_item.iid, iid_path: true) }
+  let(:work_items_path) { project_work_items_path(project, work_items_path: work_item.iid) }
 
   context 'for signed in user' do
     before do

@@ -1,5 +1,5 @@
 mutation stopEnvironment($environment: LocalEnvironment) {
-  stopEnvironment(environment: $environment) @client {
+  stopEnvironmentREST(environment: $environment) @client {
     errors
   }
 }

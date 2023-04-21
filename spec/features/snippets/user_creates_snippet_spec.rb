@@ -128,7 +128,7 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
     expect(page).not_to have_content(files_validation_message)
   end
 
-  it 'previews a snippet with file' do
+  it 'previews a snippet with file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408203' do
     # Click placeholder first to expand full description field
     snippet_fill_in_description('My Snippet')
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')

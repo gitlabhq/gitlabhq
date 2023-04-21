@@ -43755,9 +43755,6 @@ msgstr ""
 msgid "Terms of service"
 msgstr ""
 
-msgid "Terraform"
-msgstr ""
-
 msgid "Terraform Module Registry"
 msgstr ""
 
@@ -43888,13 +43885,13 @@ msgstr ""
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
 msgstr ""
 
-msgid "Terraform|States"
-msgstr ""
-
 msgid "Terraform|Terraform init command"
 msgstr ""
 
 msgid "Terraform|Terraform reports"
+msgstr ""
+
+msgid "Terraform|Terraform states"
 msgstr ""
 
 msgid "Terraform|The job %{strong_start}%{name}%{strong_end} failed to generate a report."

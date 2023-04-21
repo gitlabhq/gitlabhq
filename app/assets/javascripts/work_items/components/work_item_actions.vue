@@ -101,11 +101,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      initialSubscribed: this.subscribedToNotifications,
-    };
-  },
   apollo: {
     workItemTypes: {
       query: projectWorkItemTypesQuery,
@@ -266,7 +261,7 @@ export default {
         >
           <div class="gl-px-5 gl-pb-2 gl-pt-1">
             <gl-toggle
-              v-model="initialSubscribed"
+              :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
               :data-testid="$options.notificationsToggleTestId"
               label-position="left"

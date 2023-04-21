@@ -45,13 +45,10 @@ module Routing
     def work_item_url(entity, *args)
       # TODO: we do not have a route to access group level work items yet.
       # That is to be done as part of view group level work item issue:
-      # see https://gitlab.com/gitlab-org/gitlab/-/work_items/393987?iid_path=true
+      # see https://gitlab.com/gitlab-org/gitlab/-/work_items/393987
       return unless entity.project.present?
 
-      options = args.first || {}
-      options[:iid_path] = true
-
-      project_work_items_url(entity.project, entity.iid, **options)
+      project_work_items_url(entity.project, entity.iid, *args)
     end
 
     def merge_request_url(entity, *args)

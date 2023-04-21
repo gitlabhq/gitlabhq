@@ -21,7 +21,7 @@ module QA
             end
 
             def go_to_terraform
-              open_operate_submenu('Terraform')
+              open_operate_submenu('Terraform states')
             end
 
             private

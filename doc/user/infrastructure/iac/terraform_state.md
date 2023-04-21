@@ -119,7 +119,7 @@ inconsistent. Instead, use a remote storage resource.
 1. Copy a pre-populated Terraform `init` command:
 
    1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Infrastructure > Terraform**.
+   1. On the left sidebar, select **Infrastructure > Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       (**{ellipsis_v}**) and select **Copy Terraform init command**.
 
@@ -297,7 +297,7 @@ To read the Terraform state in the target project, you need at least the Develop
 To view Terraform state files:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Infrastructure > Terraform**.
+1. On the left sidebar, select **Infrastructure > Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 
@@ -323,7 +323,7 @@ curl --header "Private-Token: <your_access_token>" --request DELETE "https://git
 
 If you have at least the Maintainer role, you can remove a state file.
 
-1. On the left sidebar, select **Infrastructure > Terraform**.
+1. On the left sidebar, select **Infrastructure > Terraform states**.
 1. In the **Actions** column, select **Actions** (**{ellipsis_v}**) and then **Remove state file and versions**.
 
 ### Remove a state file by using the API

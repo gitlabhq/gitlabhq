@@ -20,7 +20,7 @@ module Sidebars
             :packages_registry,
             :container_registry,
             :kubernetes,
-            :terraform,
+            :terraform_states,
             :infrastructure_registry,
             :activity,
             :google_cloud,

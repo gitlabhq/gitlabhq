@@ -3,7 +3,7 @@
 module Gitlab
   module Instrumentation
     module RedisInterceptor
-      APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
+      APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax command xread xreadgroup].freeze
 
       def call(command)
         instrument_call([command]) do

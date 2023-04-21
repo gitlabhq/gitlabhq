@@ -444,7 +444,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def redirect_if_work_item
     return unless use_work_items_path?(issue)
 
-    redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
+    redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters)
   end
 
   def require_incident_for_incident_routes

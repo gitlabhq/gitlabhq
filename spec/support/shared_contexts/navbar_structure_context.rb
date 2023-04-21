@@ -76,7 +76,7 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Infrastructure'),
         nav_sub_items: [
           _('Kubernetes clusters'),
-          _('Terraform')
+          s_('Terraform|Terraform states')
         ]
       },
       {

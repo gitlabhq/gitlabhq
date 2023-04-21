@@ -200,13 +200,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       );
     });
   });
-  describe('stopEnvironment', () => {
+  describe('stopEnvironmentREST', () => {
     it('should post to the stop environment path', async () => {
       mock.onPost(ENDPOINT).reply(HTTP_STATUS_OK);
 
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
-      await mockResolvers.Mutation.stopEnvironment(null, { environment }, { client });
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),
@@ -223,7 +223,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
 
       const client = { writeQuery: jest.fn() };
       const environment = { stopPath: ENDPOINT };
-      await mockResolvers.Mutation.stopEnvironment(null, { environment }, { client });
+      await mockResolvers.Mutation.stopEnvironmentREST(null, { environment }, { client });
 
       expect(mock.history.post).toContainEqual(
         expect.objectContaining({ url: ENDPOINT, method: 'post' }),

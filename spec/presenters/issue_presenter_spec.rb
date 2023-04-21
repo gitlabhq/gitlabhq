@@ -37,7 +37,7 @@ RSpec.describe IssuePresenter do
 
       it 'returns a work item url using iid for the task' do
         expect(presenter.web_url).to eq(
-          project_work_items_url(project, work_items_path: presented_issue.iid, iid_path: true)
+          project_work_items_url(project, work_items_path: presented_issue.iid)
         )
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe IssuePresenter do
 
       it 'returns a work item path using iid for the task' do
         expect(presenter.issue_path).to eq(
-          project_work_items_path(project, work_items_path: presented_issue.iid, iid_path: true)
+          project_work_items_path(project, work_items_path: presented_issue.iid)
         )
       end
     end

@@ -1031,6 +1031,25 @@ See [Google Secure LDAP](google_secure_ldap.md) for detailed configuration instr
 For more information on synchronizing users and groups between LDAP and GitLab, see
 [LDAP synchronization](ldap_synchronization.md).
 
+## Move from LDAP to SAML
+
+1. [Configure SAML](../../../integration/saml.md). Add `auto_link_ldap_user` to:
+   - [`gitlab.rb` for Omnibus](../../../integration/saml.html?tab=Linux+package+%28Omnibus%29).
+   - [`values.yml` for Kubernetes](../../../integration/saml.html?tab=Helm+chart+%28Kubernetes%29).
+   For more information, see the [initial settings for all providers](../../../integration/omniauth.md#configure-initial-settings).
+
+1. Optional. [Disable the LDAP auth from the sign-in page](#disable-ldap-web-sign-in).
+
+1. Optional. To fix issues with linking users, you can first [remove those users' LDAP identities](ldap-troubleshooting.md#remove-the-identity-records-that-relate-to-the-removed-ldap-server).
+
+1. Confirm that users are able to sign in to their accounts. If a user cannot sign in, check if that user's LDAP is still there and remove it if necessary. If this issue persists, check the logs to identify the problem.
+
+1. In the configuration file, change:
+   - `omniauth_auto_link_user` to `saml` only.
+   - `auto_link_ldap_user` to false.
+   - `ldap_enabled` to `false`. 
+   You can also comment out the LDAP provider settings.
+
 ## Troubleshooting
 
 See our [administrator guide to troubleshooting LDAP](ldap-troubleshooting.md).

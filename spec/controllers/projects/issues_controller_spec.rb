@@ -186,7 +186,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
         it 'redirects to work item page using iid' do
           make_request
 
-          expect(response).to redirect_to(project_work_items_path(project, task.iid, query.merge(iid_path: true)))
+          expect(response).to redirect_to(project_work_items_path(project, task.iid, query))
         end
       end
 

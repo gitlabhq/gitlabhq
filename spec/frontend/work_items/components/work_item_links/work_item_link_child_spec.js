@@ -126,9 +126,7 @@ describe('WorkItemLinkChild', () => {
     });
 
     it('renders item title', () => {
-      expect(titleEl.attributes('href')).toBe(
-        '/gitlab-org/gitlab-test/-/work_items/4?iid_path=true',
-      );
+      expect(titleEl.attributes('href')).toBe('/gitlab-org/gitlab-test/-/work_items/4');
       expect(titleEl.text()).toBe(workItemTask.title);
     });
 
@@ -140,9 +138,7 @@ describe('WorkItemLinkChild', () => {
       });
 
       it('renders item title with correct href', () => {
-        expect(titleEl.attributes('href')).toBe(
-          '/test/gitlab-org/gitlab-test/-/work_items/4?iid_path=true',
-        );
+        expect(titleEl.attributes('href')).toBe('/test/gitlab-org/gitlab-test/-/work_items/4');
       });
 
       it('renders item title with correct text', () => {

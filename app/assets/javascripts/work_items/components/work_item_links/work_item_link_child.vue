@@ -123,7 +123,7 @@ export default {
     childPath() {
       return `${gon?.relative_url_root || ''}/${this.projectPath}/-/work_items/${
         this.childItem.iid
-      }?iid_path=true`;
+      }`;
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
