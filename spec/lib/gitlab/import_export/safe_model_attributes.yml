@@ -927,6 +927,11 @@ DesignManagement::Version:
 - created_at
 - sha
 - author_id
+DesignManagement::Repository:
+- id
+- project_id
+- created_at
+- updated_at
 ZoomMeeting:
 - id
 - project_id

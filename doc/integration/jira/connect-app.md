@@ -40,13 +40,11 @@ To install the GitLab for Jira Cloud app:
 For an overview, see
 [Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
 
-After a namespace is added:
+After you add a namespace, the following data is synced to Jira for all projects in that namespace:
 
-- All future commits, branches, and merge requests of all projects in that namespace
-  are synced to Jira.
-- In GitLab 13.8 and later, existing merge request data is synced to Jira.
-
-For more information about syncing existing branch and commit data, see [issue 263240](https://gitlab.com/gitlab-org/gitlab/-/issues/263240).
+- New merge requests, branches, and commits
+- Existing merge requests (GitLab 13.8 and later)
+- Existing branches and commits (GitLab 15.11 and later)
 
 ## Update the GitLab for Jira Cloud app
 

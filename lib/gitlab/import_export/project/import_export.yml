@@ -121,6 +121,7 @@ tree:
         - label:
           - :priorities
     - :service_desk_setting
+    - :design_management_repository
   group_members:
     - :user
 

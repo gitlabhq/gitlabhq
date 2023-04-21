@@ -22,6 +22,7 @@ module Gitlab
                       create_access_levels: 'ProtectedTag::CreateAccessLevel',
                       design: 'DesignManagement::Design',
                       designs: 'DesignManagement::Design',
+                      design_management_repository: 'DesignManagement::Repository',
                       design_versions: 'DesignManagement::Version',
                       actions: 'DesignManagement::Action',
                       labels: :project_labels,

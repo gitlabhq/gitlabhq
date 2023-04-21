@@ -133,19 +133,14 @@ For more information, see [Install the GitLab for Jira Cloud app](../connect-app
 ### Feature comparison of DVCS and GitLab for Jira Cloud app
 
 | Feature            | DVCS                   | GitLab for Jira Cloud app |
-|--------------------|------------------------|---------------------------|
-| Smart Commits      | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync MRs           | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync branches      | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync commits       | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync builds        | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync deployments   | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync feature flags | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync interval      | 60 Minutes             | Real time              |
-| Create branches    | **{dotted-circle}** No | **{check-circle}** Yes (Only GitLab SaaS) |
-| Historic data sync | **{check-circle}** Yes | **{dotted-circle}** No |
-
-### Risks of migrating
-
-The GitLab for Jira Cloud app has a limited ability to sync historic data.
-Only branches, commits, builds, deployments, and feature flags created after installing the GitLab for Jira Cloud app are synced with Jira.
+|---------------------|------------------------|---------------------------|
+| Smart Commits       | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync merge requests | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync branches       | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync commits        | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync existing data  | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync builds         | **{dotted-circle}** No | **{check-circle}** Yes |
+| Sync deployments    | **{dotted-circle}** No | **{check-circle}** Yes |
+| Sync feature flags  | **{dotted-circle}** No | **{check-circle}** Yes |
+| Sync interval       | 60 minutes             | Real time              |
+| Create branches     | **{dotted-circle}** No | **{check-circle}** Yes (GitLab SaaS only) |

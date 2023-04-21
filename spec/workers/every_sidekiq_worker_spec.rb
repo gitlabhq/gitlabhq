@@ -482,7 +482,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Wikis::GitGarbageCollectWorker' => false,
         'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
-        'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3
+        'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3,
+        'Zoekt::IndexerWorker' => 2
       }.merge(extra_retry_exceptions)
     end
 

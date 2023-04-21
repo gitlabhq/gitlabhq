@@ -2,6 +2,821 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.0 (2023-04-21)
+
+### Added (175 changes)
+
+- [Add error logic for admin jobs vue](gitlab-org/gitlab@fa55b3a412e76a431ed689527d1b957f62c5b82b) by @TrueKalix ([merge request](gitlab-org/gitlab!117990))
+- [Added migration and models for instance external audit events](gitlab-org/gitlab@c3101feb41ed7e3bdd6be97eea1e304651d04826) ([merge request](gitlab-org/gitlab!116909)) **GitLab Enterprise Edition**
+- [Add "explain this vulnerability" feature to vuln details page](gitlab-org/gitlab@8733ceb1d611b099aea06435a21c0aa24d4e5fb6) ([merge request](gitlab-org/gitlab!117657)) **GitLab Enterprise Edition**
+- [Add empty state to admins jobs vue](gitlab-org/gitlab@ea124629c7fdf109781a1420feb643e4de7e8e74) by @TrueKalix ([merge request](gitlab-org/gitlab!118030))
+- [Add support for snowplow PA configurator](gitlab-org/gitlab@bd92c8664934d10a15e82ec9f9ff48f6f15f88d3) ([merge request](gitlab-org/gitlab!117141))
+- [GraphQL project fields to get refs tipping at a commit](gitlab-org/gitlab@fc4e77db4a81daaa42a447a0b246889b56280a5d) ([merge request](gitlab-org/gitlab!116697))
+- [Add vulnerabilityIssueLinkCreate GraphQL mutation](gitlab-org/gitlab@5388b8a5f717d0ac502a4764ca04c71935d91f24) ([merge request](gitlab-org/gitlab!114304)) **GitLab Enterprise Edition**
+- [Add milestone reference to removed milestone note](gitlab-org/gitlab@27d9abcb69807e6c4029bf9db8ccdee7a01a2332) ([merge request](gitlab-org/gitlab!117529))
+- [Add user_identities field to JWTv2](gitlab-org/gitlab@b0d92f33023afb99fec95ec34996e2435da144d9) by @joe-snyder ([merge request](gitlab-org/gitlab!117541))
+- [Create GraphQL endpoint for Explain Vulnerability](gitlab-org/gitlab@ddcae59b448bd53d58faa31e714c87fcf79e0c96) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117472)) **GitLab Enterprise Edition**
+- [Automatically index projects in Zoekt when namespace is enabled](gitlab-org/gitlab@5670f066793539d243bcde0e5ceb555c1f74562f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117634)) **GitLab Enterprise Edition**
+- [Add AwardEmoji widget update](gitlab-org/gitlab@0a24f6cc11564deb973d9ac27034107d77b0ebe0) ([merge request](gitlab-org/gitlab!117265))
+- [Add runner's creator to runner admin and group](gitlab-org/gitlab@ff0ebf173485693f587072d328223cee08a64934) ([merge request](gitlab-org/gitlab!115463))
+- [Include Jira issue keys for related MRs](gitlab-org/gitlab@c847e8b15934d1b515e74cda42bf130510d7353b) ([merge request](gitlab-org/gitlab!117350))
+- [Adds service desk verification result email](gitlab-org/gitlab@c57d6ab4711856c9e15a88565cd7441bbf42c828) ([merge request](gitlab-org/gitlab!116370))
+- [Enable pages unique domain feature flag by default](gitlab-org/gitlab@49946c62fb39606629322604a800457a0f484fd4) ([merge request](gitlab-org/gitlab!117795))
+- [Add "explain this vulnerability" feature to vuln details page](gitlab-org/gitlab@62119898a9e27367c95b7767b657ff2f5e48b460) ([merge request](gitlab-org/gitlab!117667)) **GitLab Enterprise Edition**
+- [Prepare job artifacts file_final_path column](gitlab-org/gitlab@c2c7e53c359522ce1c383d5c5932b3c73c855634) ([merge request](gitlab-org/gitlab!117432))
+- [Add awardEmoji field to merge request graphql type](gitlab-org/gitlab@d9c7a9003b8d4be2897494d6c988558f709a92a8) by @Taucher2003 ([merge request](gitlab-org/gitlab!116484))
+- [Event tracking for Debian packages](gitlab-org/gitlab@56861905f2e38c818dbe7e11ba67833760f9147b) by @sathieu ([merge request](gitlab-org/gitlab!116474))
+- [Show pods on Environment index page](gitlab-org/gitlab@335a8918d0df62defea403f7fe6a7043274cf862) ([merge request](gitlab-org/gitlab!115225))
+- [Add table and data to view](gitlab-org/gitlab@d05769e9e84628f4babbf03ee34aeb5c8b6d008e) by @TrueKalix ([merge request](gitlab-org/gitlab!101227))
+- [Add llm_bot for LLM-generated content attribution](gitlab-org/gitlab@e653e8617c409f10b56a687da4db7eb48a886f2f) ([merge request](gitlab-org/gitlab!117458))
+- [Allow pasting raw content in content editor](gitlab-org/gitlab@d1b76a51bf78dba5a785f2a4a8dd16164b179fab) ([merge request](gitlab-org/gitlab!116918))
+- [Add frontend testing guidelines for apollo mock queries/mutations](gitlab-org/gitlab@94dbcd07831d9b97f26f90d1da7c3b5fad2396df) ([merge request](gitlab-org/gitlab!117355))
+- [Add pnpm to Dependency API](gitlab-org/gitlab@c72392928b99ba53df687be75f61b04d1211001d) ([merge request](gitlab-org/gitlab!117684)) **GitLab Enterprise Edition**
+- [Add link to feedback issue](gitlab-org/gitlab@87001324e1278d87f39277878b3e06d4c7ebe2ce) ([merge request](gitlab-org/gitlab!117673)) **GitLab Enterprise Edition**
+- [Project specific runner registration control for admins](gitlab-org/gitlab@ef84e518e2f61d983f85f4575c27efcf6b2d1f31) by @markus.ferrell ([merge request](gitlab-org/gitlab!115412))
+- [Adds navigation menu for Model experiments](gitlab-org/gitlab@5ddcf5e9ba7aead1894e86688f0bcedf0d9cd518) ([merge request](gitlab-org/gitlab!116919))
+- [Enable CI Interpolation feature flag](gitlab-org/gitlab@c4a65d30cd5f557e6468b4df56928735137e8a69) ([merge request](gitlab-org/gitlab!117651))
+- [Add ability to filter compliance violations by target branch](gitlab-org/gitlab@3d549bf711794e1e4a2c532451095abc96add24b) ([merge request](gitlab-org/gitlab!117240)) **GitLab Enterprise Edition**
+- [Enable multi-doc YAML parsing by default](gitlab-org/gitlab@3da944a2983cf3f51a3d46e10017c6e0e2455486) ([merge request](gitlab-org/gitlab!117390))
+- [Add index for namespaces by root namespace lookup](gitlab-org/gitlab@ce8d6914cf9418853d190ab1e256ff761e800532) ([merge request](gitlab-org/gitlab!117638))
+- [Add issue/merge_request_assignment_events tables](gitlab-org/gitlab@e8aec94191eafa60a0132d14f9ac03f60416ce5c) ([merge request](gitlab-org/gitlab!117379))
+- [Add PNPM support](gitlab-org/gitlab@c39c2d657f48f2f5f4380eb2813acf0db5ed9976) ([merge request](gitlab-org/gitlab!117427))
+- [Adds package forwarding warning to delete modal](gitlab-org/gitlab@51626b11ba186c1b84ba9c53a45a32fb1eb02cef) ([merge request](gitlab-org/gitlab!117342))
+- [Add /admin/search/zoekt APIs for controlling Zoekt rollout](gitlab-org/gitlab@1b8da271d259b3493776a26f3e0e464374de52c4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116650)) **GitLab Enterprise Edition**
+- [Record work item linking events](gitlab-org/gitlab@a0440b2008105a16bb14328172a44ae4e53c778a) ([merge request](gitlab-org/gitlab!116903))
+- [Adds new MergeRequests::Llm::SummarizeMergeRequestService](gitlab-org/gitlab@6df183373f076dbb858ffb64a4a419c58bacee12) ([merge request](gitlab-org/gitlab!117449)) **GitLab Enterprise Edition**
+- [Add worker to sync approval rules from security_findings](gitlab-org/gitlab@c8b9a1ac341becbc6f134178f689c55d2af6b37d) ([merge request](gitlab-org/gitlab!115825)) **GitLab Enterprise Edition**
+- [Expose unified approvals via GraphQL](gitlab-org/gitlab@18a61f09f413142ca8fdd687b214fedebfe7f246) ([merge request](gitlab-org/gitlab!117548)) **GitLab Enterprise Edition**
+- [Add abuse_trust_scores table](gitlab-org/gitlab@be87aaa0cc8bc4968edd80931a6bb6d5cc11c9e1) ([merge request](gitlab-org/gitlab!117301))
+- [Allow project migrations in GitLab Direct Transfer](gitlab-org/gitlab@b460b4acd28b85aec2b1404589d124d9983fe023) ([merge request](gitlab-org/gitlab!117306))
+- [Add admin setting to sync license db](gitlab-org/gitlab@343f88d217cbbe198f8ad255a3b1d6b36853ee2e) ([merge request](gitlab-org/gitlab!116797))
+- [Add REST endpoint to create runner associated to a user](gitlab-org/gitlab@885ebc5dc3efc7fab70256859f8cc8a0d08250b1) ([merge request](gitlab-org/gitlab!116119))
+- [Groups - Remove show_group_readme FF](gitlab-org/gitlab@99fa4d3215ff15c5be87f4a416414a8aa8a875ce) ([merge request](gitlab-org/gitlab!117308))
+- [Notification widget for work items](gitlab-org/gitlab@388af7795e613eb60834cf02291ca378af95e487) ([merge request](gitlab-org/gitlab!115511)) **GitLab Enterprise Edition**
+- [Download candidate data as csv](gitlab-org/gitlab@4a96ffeab4d6d492530168768f87d9b087781d23) ([merge request](gitlab-org/gitlab!116968))
+- [Add missing approval rule settings to group project templates](gitlab-org/gitlab@159efbde07b3919fed27090483e0196da141ee05) ([merge request](gitlab-org/gitlab!107498))
+- [Backfill the missing wiki permissions in the main index](gitlab-org/gitlab@45dfb0de66d0585e8c2b850e5e4bf5525b220c7f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116944)) **GitLab Enterprise Edition**
+- [Add UI to summarize notes](gitlab-org/gitlab@251106dd3e4ffee068181e1f7d3df509a516bdde) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117327)) **GitLab Enterprise Edition**
+- [Update runner manager records when runner managers poll for jobs](gitlab-org/gitlab@cf5597b3d305cc112fd763ce798c34f73b9a717b) ([merge request](gitlab-org/gitlab!117500))
+- [Enable creation of runner manager records for active runner managers](gitlab-org/gitlab@17554be0cf9bfcfa967d9af4c37a4731591cceac) ([merge request](gitlab-org/gitlab!117500))
+- [Prepare system_note_metadata for bigint migration](gitlab-org/gitlab@3562ab7ce610fc91554e2407f27250a4292dcc9c) ([merge request](gitlab-org/gitlab!117485))
+- [Expose GitLab Maintenance Mode to internal metrics](gitlab-org/gitlab@dc1fa77690c59757fe0e9e31ac40c766435aecfd) ([merge request](gitlab-org/gitlab!114981))
+- [Change order for issue_user_mentions PK swap](gitlab-org/gitlab@d45dd36f78df4019820b1cd64fe50bf89dfa8fe1) ([merge request](gitlab-org/gitlab!117476))
+- [Adds new MergeRequests::Llm::SummarizeMergeRequestService](gitlab-org/gitlab@780117fb4df86c1fc42dd8e1262eaf0a138b0245) ([merge request](gitlab-org/gitlab!117194)) **GitLab Enterprise Edition**
+- [Add Silent mode application setting](gitlab-org/gitlab@9f8b2dd00d26537e937bc8a0acf1478799bebac8) ([merge request](gitlab-org/gitlab!115625))
+- [Added the AiGenie component](gitlab-org/gitlab@782d16e78e287b22d63b519d9f6ee2c0701d412c) ([merge request](gitlab-org/gitlab!116875)) **GitLab Enterprise Edition**
+- [Adds new MergeRequests::Llm::SummarizeMergeRequestService](gitlab-org/gitlab@021b1ac2ab3297f8b1658da9b66d27d68cde71a8) ([merge request](gitlab-org/gitlab!116879)) **GitLab Enterprise Edition**
+- [Swap issue_user_mentions.note_id to bigint](gitlab-org/gitlab@f5e33cbacfd755ba85d35d744cab9d8d2e281712) ([merge request](gitlab-org/gitlab!116509))
+- [Implement GraphQL mutation/subscription for AI](gitlab-org/gitlab@a9317bca49de85188270ae8aefacecf352d9e41d) ([merge request](gitlab-org/gitlab!117250)) **GitLab Enterprise Edition**
+- [Roll out Import remote file from AWS S3](gitlab-org/gitlab@d944a3c07cbe74374832218f229437b9524b3fbd) ([merge request](gitlab-org/gitlab!117323))
+- [Allow users to delete experiments](gitlab-org/gitlab@2123b7dbb1af91abb11f8b5939358bb8593f829b) ([merge request](gitlab-org/gitlab!116288))
+- [Feat(Subscription Purchase): error_attribute_map](gitlab-org/gitlab@ef1475b8427f283c8de17d98cb98a8c8adb4e629) ([merge request](gitlab-org/gitlab!116149)) **GitLab Enterprise Edition**
+- [Track npm dist tags routes via snowplow](gitlab-org/gitlab@74873af466274ec12ed7dcc8c3cb6246c51d14bb) ([merge request](gitlab-org/gitlab!115545))
+- [Add User Identities toggle to User Preferences](gitlab-org/gitlab@e25214af86715bdf5c4c0d876ffadcbe897cf409) by @joe-snyder ([merge request](gitlab-org/gitlab!108477))
+- [Add AwardEmoji widget to work items](gitlab-org/gitlab@1605f93776739810b458ea9cfbf6018f48d9ca73) ([merge request](gitlab-org/gitlab!116687))
+- [Add audit event for code suggestions](gitlab-org/gitlab@513300a0a57ba8acbff8dc2710432e9bb6f3c930) ([merge request](gitlab-org/gitlab!117174)) **GitLab Enterprise Edition**
+- [Instrument database mode in service ping report](gitlab-org/gitlab@eae9e82905b8b531ebff9b8455472c94d5ccd09a) ([merge request](gitlab-org/gitlab!115900))
+- [Work item comment reply changes](gitlab-org/gitlab@1690dcb4f17afc9e92e737537ca9125c204c5dde) ([merge request](gitlab-org/gitlab!115298))
+- [Add shared examples to ci, issues und pages tests](gitlab-org/gitlab@552a44b537e47d5aa99d70abf1fb8ed72a912553) by @TrueKalix ([merge request](gitlab-org/gitlab!116478))
+- [Add code suggestions UI](gitlab-org/gitlab@0385c52e24d46fbb688fefb0a3d0bf0b46fc6e18) ([merge request](gitlab-org/gitlab!117017)) **GitLab Enterprise Edition**
+- [Add reveal-conceal password option](gitlab-org/gitlab@25e269303ffa786ef964ae4dd016b2b99ec67309) ([merge request](gitlab-org/gitlab!115357)) **GitLab Enterprise Edition**
+- [Add create mr button](gitlab-org/gitlab@26c57f6c2c8187d4dd3816b8e5ceda8313000435) ([merge request](gitlab-org/gitlab!116554))
+- [Add service for syncing approval rules from security_findings](gitlab-org/gitlab@95439d6a7a559068d7fc9c99e9f7e4938e9a796f) ([merge request](gitlab-org/gitlab!115798)) **GitLab Enterprise Edition**
+- [Adds service desk custom email verification email](gitlab-org/gitlab@e69cef18ba874f0fa6c57c1fe0b3513f755e0264) ([merge request](gitlab-org/gitlab!116664))
+- [Add audit event schema definitions](gitlab-org/gitlab@4d1d0eb7e98d8fdbc4e1925163a8478a194c7b03) ([merge request](gitlab-org/gitlab!114990)) **GitLab Enterprise Edition**
+- [feat: Bump Code-Quality image to 0.94.0](gitlab-org/gitlab@aa2a36b2beccc826946943e043db0362090e6c37) ([merge request](gitlab-org/gitlab!116982))
+- [Send e-mail when achievements are awarded](gitlab-org/gitlab@88f1c3a2682c492f73561a37dfed64c479cd5a7c) ([merge request](gitlab-org/gitlab!116417))
+- [Audit unban action](gitlab-org/gitlab@c8e5094d8b0bd8a698ff9d06729b411834aebf71) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116221)) **GitLab Enterprise Edition**
+- [Add support for project wiki repositories in the Geo SSF](gitlab-org/gitlab@f9693d248bca3ccfd055187f5310fe5015264d65) ([merge request](gitlab-org/gitlab!110675)) **GitLab Enterprise Edition**
+- [Add ability to cycle around with keyboard in the header search](gitlab-org/gitlab@cce178e2399eda3c532b4e18873144e64bc22d37) ([merge request](gitlab-org/gitlab!115334))
+- [Allows for fetching candidate data as csv](gitlab-org/gitlab@28df9bdf5ff3c85c81b231bee7fe3d33f2616f50) ([merge request](gitlab-org/gitlab!116551))
+- [Add link to branch rules from codeowners block](gitlab-org/gitlab@fd5d53d9341be1358d562e11d9b8bf1d2e278abc) ([merge request](gitlab-org/gitlab!116682))
+- [Enable Web IDE Beta by default](gitlab-org/gitlab@bbdaac13d430f04c2032941ba930a15e911cf54c) ([merge request](gitlab-org/gitlab!115741))
+- [Create ResourceLinkEvent model and table](gitlab-org/gitlab@bb87f888d5de9df3c9b6c39050f44a3afa868021) ([merge request](gitlab-org/gitlab!114394))
+- [Add parent_oid and is_valid to postgres_foreign_keys](gitlab-org/gitlab@f68521922b27eea6dbf7c66a4141f47e94d06201) ([merge request](gitlab-org/gitlab!116737))
+- [Add global time tracking report](gitlab-org/gitlab@dd707f32e724b9cd4119dfbf895d1f4471388293) by @zillemarco ([merge request](gitlab-org/gitlab!108368))
+- [Add API endpoint for retrieving limit exclusions](gitlab-org/gitlab@8de8525b8ac45434ac37ea28a332a4291754062f) ([merge request](gitlab-org/gitlab!116532)) **GitLab Enterprise Edition**
+- [Adds mutation to create a catalog resource](gitlab-org/gitlab@73ff5ca7313f56d46d944d9297753cd3d0e52661) ([merge request](gitlab-org/gitlab!114762))
+- [Added the FE support to Experimental API](gitlab-org/gitlab@aeb238643b63acee8f331bcead96ddaa63b8e9b2) ([merge request](gitlab-org/gitlab!116801)) **GitLab Enterprise Edition**
+- [Add API for deleting limit exclusion records](gitlab-org/gitlab@77a5ff113ac2d8c8af0b65f590f6552f172a74a6) ([merge request](gitlab-org/gitlab!116531)) **GitLab Enterprise Edition**
+- [Add project group link delete cascade fk](gitlab-org/gitlab@36702a8355dc904e12784dd1d8e24f69e531568a) ([merge request](gitlab-org/gitlab!111257))
+- [Add API for creating limit exclusions](gitlab-org/gitlab@9e9ea1e35d1fdf9aebdae1a84db1e13b7b3bc36d) ([merge request](gitlab-org/gitlab!116518)) **GitLab Enterprise Edition**
+- [Include Jira issue keys for related MRs](gitlab-org/gitlab@cabf53e4aed2c013e145f80f5263370151ae2eb8) ([merge request](gitlab-org/gitlab!115448))
+- [Adds adjacentWorkItemId and relativePosition fields to Work Item Update](gitlab-org/gitlab@5dd95833c40e3f415b1f893190310d9a58110a86) by @pkor-ext ([merge request](gitlab-org/gitlab!114509))
+- [Show which CI job currently uses the resource group](gitlab-org/gitlab@447c57bf9e4ae467ffc9e61cf1122b57057d4a33) ([merge request](gitlab-org/gitlab!115958))
+- [Check if user has exceeded git rate limits before forking project](gitlab-org/gitlab@ef720dd627d0e7527b2ddad310e3c84789f10fed) ([merge request](gitlab-org/gitlab!115638)) **GitLab Enterprise Edition**
+- [Add CurrentUserTodos widget to add and mark todos](gitlab-org/gitlab@f8372d97744ba5892a3776bbb4cde30754548265) ([merge request](gitlab-org/gitlab!115529))
+- [Adds Projects::Ml::CandidatesController.detroy](gitlab-org/gitlab@a4aa18d49e7d98f654b9e9773ca197442e15955d) ([merge request](gitlab-org/gitlab!116297))
+- [Expose server SSH host and port in predefined CI variables](gitlab-org/gitlab@e05b6c7b7324bee4680c4fa7075a66716d4965cc) by @nejc ([merge request](gitlab-org/gitlab!111393))
+- [Exclude namespace-banned users from being counted as billable members](gitlab-org/gitlab@bbda536c0867651ae930ae85e29542153b99cb77) ([merge request](gitlab-org/gitlab!114199)) **GitLab Enterprise Edition**
+- [Add a "root_directory" to the pages deployment](gitlab-org/gitlab@796eef69bad768e57d252b3a35c11a44755a41c0) ([merge request](gitlab-org/gitlab!115720))
+- [Prepare issue_user_mentions for bigint migration](gitlab-org/gitlab@cc23fe939a98c195471b92c4c052b6f3ceed6450) ([merge request](gitlab-org/gitlab!116614))
+- [Add audit events schema definition](gitlab-org/gitlab@52b9ac104a9fc938371c531b17f320cd8c8b2ff1) ([merge request](gitlab-org/gitlab!114989)) **GitLab Enterprise Edition**
+- [Remove flag: multiple environment approval rules](gitlab-org/gitlab@902ecfc938a446692d72ad823ec8e36fa6282593) ([merge request](gitlab-org/gitlab!116575))
+- [Display how far a fork is behind/ahead of its upstream by default](gitlab-org/gitlab@826d35ac41bac7e3d9699fcae49d30e12325663d) ([merge request](gitlab-org/gitlab!116252))
+- [Add forks storage size columns to root storage statistics table](gitlab-org/gitlab@e834ab70367dfe61d8cc1308c7ed4e9f042cac32) ([merge request](gitlab-org/gitlab!116581))
+- [Adds link to settings from package registry list page](gitlab-org/gitlab@15d17f4c4c9c084179ee35e141a9a3c66594a270) ([merge request](gitlab-org/gitlab!116060))
+- [Show promotional blurb when applicable](gitlab-org/gitlab@d8bda603b3993a3e5fab014df7b807b90618ba16) ([merge request](gitlab-org/gitlab!116502)) **GitLab Enterprise Edition**
+- [Assign/Unassign WI note to commentator](gitlab-org/gitlab@a10d9a78f2c2acd2b037b5df79fb4389386d29e4) ([merge request](gitlab-org/gitlab!114848))
+- [Make menu items in new navigation sidebar pinnable](gitlab-org/gitlab@3ba0cf03deb3329230724b198a36ea907b6af1cd) ([merge request](gitlab-org/gitlab!113292))
+- [Add secret detection in Issue description](gitlab-org/gitlab@61b0963f78a117a1cb0bf50f4906705c84e36ad1) ([merge request](gitlab-org/gitlab!115502))
+- [Enable parallel execution for batched migrations](gitlab-org/gitlab@3b3af5171dbb14418d01fcdce6ac8ea3d4fd775b) ([merge request](gitlab-org/gitlab!116198))
+- [Add batched migrations parallel limit setting](gitlab-org/gitlab@39c8eea3c9e60c0d394aa0686451e2d9e14d58e9) ([merge request](gitlab-org/gitlab!114666))
+- [Add filtering to compliance framework report](gitlab-org/gitlab@7b23e5fc52306f958aa7b119fca20ce8ba36cf24) ([merge request](gitlab-org/gitlab!115274)) **GitLab Enterprise Edition**
+- [Add user toggle for achievements](gitlab-org/gitlab@cdf3854bca18a8e849627e0c21c1660f39c16078) ([merge request](gitlab-org/gitlab!116258))
+- [Add audit event schema definitions](gitlab-org/gitlab@3b9ac9ed7d38e43eaaa00f651a2efc1536d28041) ([merge request](gitlab-org/gitlab!115499)) **GitLab Enterprise Edition**
+- [Add achievement update GraphQL mutation](gitlab-org/gitlab@2e32c5fb9a36a6d70916d8f40049ba0c4299e290) ([merge request](gitlab-org/gitlab!116052))
+- [Introduce a model for npm metadata](gitlab-org/gitlab@256d79546f208d0176b3aa1ee95c1b010685d6f4) ([merge request](gitlab-org/gitlab!114312))
+- [Add CurrentUserTodos widget](gitlab-org/gitlab@5cb4373a0bd43fc7197d49de6458e211e6c81a4a) ([merge request](gitlab-org/gitlab!115527))
+- [Cleanup Debian incoming files daily](gitlab-org/gitlab@f90f732539d73606250feacf7ed5720b7994e927) by @sathieu
+- [Rolls out incident_event_tags feature](gitlab-org/gitlab@4a2bde8b2f106c550140ab020c5a3679fa1c6762)
+- [Add sync index vulnerability_finding_signatures_on_signature_sha](gitlab-org/gitlab@2a19eb5900200c4c13803afcbac3e0becbbda39b)
+- [Enable Value Stream Dashboard FF](gitlab-org/gitlab@160cb01e3af6f77d9d4779f964be401e35dc4f1c) ([merge request](gitlab-org/gitlab!116138)) **GitLab Enterprise Edition**
+- [Rolls out incident_event_tags feature](gitlab-org/gitlab@c25ff718883eeada2a716b78189a5dbb03860762) ([merge request](gitlab-org/gitlab!115834))
+- [Initialize conversion of events.target_id](gitlab-org/gitlab@660584600c8be848ba666478e969ad72bc7a37a3) ([merge request](gitlab-org/gitlab!115932))
+- [Add workItemConvert mutation](gitlab-org/gitlab@89182e4686c199aca16cbc99a0972c29300388be) ([merge request](gitlab-org/gitlab!112221))
+- [Audit ban action](gitlab-org/gitlab@c1b52fdb49eef509f36db30427daa09bd2ddffbf) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103)) **GitLab Enterprise Edition**
+- [Cleanup Debian incoming files daily](gitlab-org/gitlab@efc7a54d5a036b4e7c72152255c03f9e85aedd82) by @sathieu ([merge request](gitlab-org/gitlab!103694))
+- [Add a "publish" instruction to the pages job](gitlab-org/gitlab@3984d6c9003fc3e8c283267ecee0f0a91d84b5e6) ([merge request](gitlab-org/gitlab!115340))
+- [Pause batched migration when patroni apdex drop below SLO](gitlab-org/gitlab@e1dc462465e6bd3b584e7a7e3bd8875c9e4fee53) ([merge request](gitlab-org/gitlab!97087))
+- [Make frequent projects/groups list editable](gitlab-org/gitlab@bc52daeecae1cde4e05600fd16076bec63218f15) ([merge request](gitlab-org/gitlab!115763))
+- [Expose Agent ID in agent view page](gitlab-org/gitlab@7a8a49d3afb61b9c8a16e48c3be82a5da5a46d3b) ([merge request](gitlab-org/gitlab!114545))
+- [Implement bulk applying compliance framework](gitlab-org/gitlab@08198553eb0053bafcc311be33679312fd827b77) ([merge request](gitlab-org/gitlab!115031)) **GitLab Enterprise Edition**
+- [Add plan limits of access tokens](gitlab-org/gitlab@f7ae283543a0acfb971f4e4d01d1e558479ae3c8) ([merge request](gitlab-org/gitlab!115394))
+- [Add screenshot field to report abuse form](gitlab-org/gitlab@76eae7400d191befe59558fbaa0af8dd73d5f300) ([merge request](gitlab-org/gitlab!114852))
+- [Prepare async index security_scans_on_pipeline_id_and_scan_type](gitlab-org/gitlab@82e93c2579c6f7bcbb97565693e1ba0f8b40fe10) ([merge request](gitlab-org/gitlab!116010))
+- [Add audit event schema definitions](gitlab-org/gitlab@1350de73052baea97a0a65864647f0715dc2fbda) ([merge request](gitlab-org/gitlab!115501)) **GitLab Enterprise Edition**
+- [Update group-level branch selector to a dropdown](gitlab-org/gitlab@10540405abec5e41807787c79351d854fb041482) ([merge request](gitlab-org/gitlab!115438)) **GitLab Enterprise Edition**
+- [Release CODEOWNERS default owners](gitlab-org/gitlab@436ec562b120ea0ebc9b18aa252cb3cb1f3cd665) ([merge request](gitlab-org/gitlab!115888))
+- [Adds UI sorting by total storage size column](gitlab-org/gitlab@cb2a1ff95888fb3a061995afc8b0b34a07a57bbb) ([merge request](gitlab-org/gitlab!115543)) **GitLab Enterprise Edition**
+- [Removes ci_recreate_downstream_pipeline feature flag](gitlab-org/gitlab@515cdb2df4c3a386f425e0b330a5a17711fb8b1b) ([merge request](gitlab-org/gitlab!114731))
+- [Adds internal_id and project_id to Ml::Candidate](gitlab-org/gitlab@1ca096f41eeb44c5ece4da1acd5272d26d6d8f0a) ([merge request](gitlab-org/gitlab!115401))
+- [Initialize conversion of awardable_id to bigint](gitlab-org/gitlab@866d004ed2df6773a541384d21f599b5b2a65d38) ([merge request](gitlab-org/gitlab!115928))
+- [Add sync index vulnerability_finding_signatures_on_signature_sha](gitlab-org/gitlab@3158010d9bf6917a44443a9f5d9bf8723dfd689c) ([merge request](gitlab-org/gitlab!115914))
+- [Add rails endpoint for work item import](gitlab-org/gitlab@8e3075e84eb9997bcf8a1d36239938c538f7a187) ([merge request](gitlab-org/gitlab!113484))
+- [Add DoraPerformanceScore model](gitlab-org/gitlab@f161a2573012f1622b9a29664568e95714a5e136) ([merge request](gitlab-org/gitlab!115689))
+- [Validate ci_builds partitioning constraint](gitlab-org/gitlab@2ba5dece94ca65c113ec22cd7b5a937f7061a6d4) ([merge request](gitlab-org/gitlab!115840))
+- [User unblock audit event](gitlab-org/gitlab@52fb7d53c48a519167d0d11bd1693da4b7332986) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115727)) **GitLab Enterprise Edition**
+- [Add secret detection for replies](gitlab-org/gitlab@5cefa4433e07887e56dba5883b31d656d20ece19) ([merge request](gitlab-org/gitlab!115493))
+- [Add `approved` filter to merge requests api](gitlab-org/gitlab@ea77c3ee4ab14a79e9a6e6260db6cacf98b84cfb) by @Taucher2003 ([merge request](gitlab-org/gitlab!115121))
+- [Index vulnerability findings on uuid including vuln id](gitlab-org/gitlab@6e735436dff4fb04f0313898c01f48a9f53a9827) ([merge request](gitlab-org/gitlab!115175))
+- [Support quick actions for new work item comments](gitlab-org/gitlab@21f2eef7eaf53eb44aa6f47ba71ffc8913c6fd6a) ([merge request](gitlab-org/gitlab!113646))
+- [Prepare note_diff_files for bigint migration](gitlab-org/gitlab@7ed406b9fed3a3297374d86a0777f4f1fe299bfb) ([merge request](gitlab-org/gitlab!115614))
+- [Added support for CODEOWNERS syntax highlighting](gitlab-org/gitlab@320393251a194f1118a9cd14b61973fb68702808) ([merge request](gitlab-org/gitlab!114868))
+- [Add updated_after and updated_before to projects REST API](gitlab-org/gitlab@218db4f9dd17fda211092bc62cd43c102ddad5ca) ([merge request](gitlab-org/gitlab!113602))
+- [Add role_approvers to scan result policy](gitlab-org/gitlab@13a07cb8d4b46953de4ce3e5b2ec0a3d9870900d) ([merge request](gitlab-org/gitlab!113604)) **GitLab Enterprise Edition**
+- [Add index to package files on package_id and created_at DESC](gitlab-org/gitlab@d8ddcc4361c12320c3db512f7b988d6d617e26c3) ([merge request](gitlab-org/gitlab!115316))
+- [Add a table for design repo and a class for the corresponding git repo](gitlab-org/gitlab@0c854aa700c234f9a90ad6b164e07eafd98d80c1) ([merge request](gitlab-org/gitlab!111555))
+- [Finalize issues iids scoping to namespace_id](gitlab-org/gitlab@6e5ef1db7deb9891bb833bbe9381a05ad6a5f334) ([merge request](gitlab-org/gitlab!114699))
+- [Allow WIT changes and fix issue types changes](gitlab-org/gitlab@0dc0b8028628173400cb161e00fe75a58cab6cd4) ([merge request](gitlab-org/gitlab!113852))
+- [Perform asynchronous index creation](gitlab-org/gitlab@a1dc699df0d78204ad798c313ca94fb379ce182e) ([merge request](gitlab-org/gitlab!115084))
+- [Add role_approvers to graphql response](gitlab-org/gitlab@7633a4750f0d74ba604a4d59b26e1d6b9a83ec99) ([merge request](gitlab-org/gitlab!114733)) **GitLab Enterprise Edition**
+- [Warn users about tokens in the comments](gitlab-org/gitlab@e3038a2b2dd04c7c5cdf6dae0db7ea15a255128f) ([merge request](gitlab-org/gitlab!114621))
+- [Log slowest HTTP requests](gitlab-org/gitlab@70f73e8f0b70607ebf83bc929486a2105be86e34) ([merge request](gitlab-org/gitlab!114851))
+- [Enable Slack slash command to declare incidents](gitlab-org/gitlab@c319b3840e7443812b9cf4dc16c1678672eac8e8) ([merge request](gitlab-org/gitlab!113992))
+- [Add bulk publish endpoint to Draft Notes API](gitlab-org/gitlab@9da37d05ceb668d0fa208ad74cd1df390a0f6e8a) ([merge request](gitlab-org/gitlab!115237))
+- [Adds check for release service](gitlab-org/gitlab@e0acd19fb1ee646682f65f22b975b5995d08e0bc) ([merge request](gitlab-org/gitlab!114617))
+- [Add delete achievement mutation and service](gitlab-org/gitlab@5623cd100209e5db9e362fa091840a87af266063) ([merge request](gitlab-org/gitlab!114874))
+- [Add tracking to language filter component](gitlab-org/gitlab@ef91c4c52f7149e7a0a8bd3de52ca5a06d33361c) ([merge request](gitlab-org/gitlab!111054))
+- [Clean-up feature-flag git_abuse_rate_limit_feature_flag & keep code](gitlab-org/gitlab@66e607d646997070f96b10d840c400a40f427ca3) ([merge request](gitlab-org/gitlab!113934))
+- [Update issue epic links in real-time](gitlab-org/gitlab@5a1b34fc39d3c80ea3500c3b5f965fc8d85bc08c) ([merge request](gitlab-org/gitlab!114445)) **GitLab Enterprise Edition**
+- [Set email confirmation setting from ff](gitlab-org/gitlab@4be3cdba71c25213028da1c756e1518283d00dcf) ([merge request](gitlab-org/gitlab!114642))
+
+### Fixed (197 changes)
+
+- [GraphQL: Fix sort order of CiRunner.projects](gitlab-org/gitlab@fc8404b275bfcc49e14088d8807e2a3ecf5b7e88) ([merge request](gitlab-org/gitlab!117992))
+- [Use proxied_site for geo proxied clone urls](gitlab-org/gitlab@3ac6a9cae5e1f57ed3206311f30960203a5b7631) ([merge request](gitlab-org/gitlab!118058)) **GitLab Enterprise Edition**
+- [Add migration to re-sync scan result policies for namepsaces](gitlab-org/gitlab@91df6b7addb871e6facab89a475b6cdf9b52064b) ([merge request](gitlab-org/gitlab!116608)) **GitLab Enterprise Edition**
+- [Fix "Something went wrong. Please try again" error after merging](gitlab-org/gitlab@e3bb1d633d6b59c808234c8c07defecea9998142) ([merge request](gitlab-org/gitlab!117981))
+- [Update gitlab-net-dns to v0.9.2](gitlab-org/gitlab@c2bfa8701813667a3ef32405469cab567bffb23d) ([merge request](gitlab-org/gitlab!117961))
+- [Fix Todo Dashboard SAML reauth for projects in user namespaces](gitlab-org/gitlab@a7d00a3d051384de68777c0180e84c2fc570954f) ([merge request](gitlab-org/gitlab!117936)) **GitLab Enterprise Edition**
+- [Fix divergence counts for tags and commits](gitlab-org/gitlab@4ef16baa9d0c65cd4c070f2c274c7f7558ca2865) ([merge request](gitlab-org/gitlab!117786))
+- [Fix subscribe to label dropdown](gitlab-org/gitlab@c528e9481c2891ad4039fb64be6798b7ebf8b41a) ([merge request](gitlab-org/gitlab!117893))
+- [Allow to select project value stream using URL parameter](gitlab-org/gitlab@c6452cd47a8a323e0589db49c2f3cb8f90e8aa9e) ([merge request](gitlab-org/gitlab!117170)) **GitLab Enterprise Edition**
+- [Change copy for conflicts modal](gitlab-org/gitlab@f9fd162f016871446da5213fe897a2681f7d5f4a) ([merge request](gitlab-org/gitlab!117851))
+- [Remove max width restriction from state loader](gitlab-org/gitlab@ffe929c30198a6858ab11b7520b813aae9c458b4) ([merge request](gitlab-org/gitlab!117396))
+- [Fix for notification toggle not working on modal](gitlab-org/gitlab@10d018e0310bd4561d529972bdf163a4d59c5cc5) ([merge request](gitlab-org/gitlab!117819))
+- [Remove `allow_dots_on_tf_state_names` FF](gitlab-org/gitlab@ae929a9f217b1ffa3ee335e821a4309ac565f88f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117824))
+- [Place dependency proxy skeleton loader underneath the images list header](gitlab-org/gitlab@61e41c6f4cbe217993cd83fbe1c608bd24f74b20) by @glauciellesa ([merge request](gitlab-org/gitlab!117106))
+- [Fix User missing attribute error during audit](gitlab-org/gitlab@c2be121a6cb2213fe5626eb05c620e6efc0dd7e0) ([merge request](gitlab-org/gitlab!117273)) **GitLab Enterprise Edition**
+- [Fallback to start commit when merge base is missing](gitlab-org/gitlab@751d9de0f3064851ad55aa860b033736516cae6a) ([merge request](gitlab-org/gitlab!117827))
+- [Fix merge request Jira sync problems due to branch](gitlab-org/gitlab@76179b20e357083c9d1437a0cf784e0b89b5348f) ([merge request](gitlab-org/gitlab!117616))
+- [Fixed explain code button background color](gitlab-org/gitlab@a48937370cb2eee54317bc37af4e0a66602cf239) ([merge request](gitlab-org/gitlab!117787)) **GitLab Enterprise Edition**
+- [Skip DNS rebinding checks if HTTP_PROXY present](gitlab-org/gitlab@2f2b77f118ba2e498698dc9e2d6a8aa233acd808) ([merge request](gitlab-org/gitlab!115343))
+- [Change from `path` to `to_param`](gitlab-org/gitlab@36bf807eedd69f50521ab3d000264d5279fc8475) ([merge request](gitlab-org/gitlab!117741))
+- [Fix bug in SyncFindingsToApprovalRulesWorker](gitlab-org/gitlab@a004ecd15da7889bdb72cdecbf2b5bd9bf10ce8d) ([merge request](gitlab-org/gitlab!117593)) **GitLab Enterprise Edition**
+- [Show groups from group shares in fork targets](gitlab-org/gitlab@de1202768a4326f6548608c9b3632b5f3b2192dc) ([merge request](gitlab-org/gitlab!117366))
+- [Reschedule migration to add admin_mode scope for PATs](gitlab-org/gitlab@c224c5230885b8996864537a0b4d0cad050c06fd) ([merge request](gitlab-org/gitlab!117255))
+- [Use primary ssh_url_to_repo for geo proxied ssh clone url](gitlab-org/gitlab@71ade6b206c9172a07ca44e5218cde0d828bf90e) ([merge request](gitlab-org/gitlab!117247)) **GitLab Enterprise Edition**
+- [Use root ancestor path for filtering in frameworks table](gitlab-org/gitlab@12e673e6d414a4fa85be4941342e513c29e70752) ([merge request](gitlab-org/gitlab!117605)) **GitLab Enterprise Edition**
+- [Use root ancestor for listing compliance frameworks](gitlab-org/gitlab@1d3fae10afd91002f6139f90067d7646546c621c) ([merge request](gitlab-org/gitlab!117604)) **GitLab Enterprise Edition**
+- [Fix vulnerability status bulk updates](gitlab-org/gitlab@62b8379dbb747f7674c217b177a50ebd628221d5) ([merge request](gitlab-org/gitlab!117436)) **GitLab Enterprise Edition**
+- [Patch doorkeeper-openid_connect to use RFC7638 thumbprint](gitlab-org/gitlab@744680d699fc7c869bfa7d2c429403df7bfc22b9) ([merge request](gitlab-org/gitlab!117468))
+- [Send password reset email to approved users when user caps are enabled](gitlab-org/gitlab@bf030778acdd53b214d8d29cd5300c2d7575c41d) ([merge request](gitlab-org/gitlab!117187))
+- [Diff header: Fix checkbox alignment](gitlab-org/gitlab@47705e6f2ab364774b31075b33949fffa56099bf) ([merge request](gitlab-org/gitlab!117573))
+- [Fix NoMethodError for empty repositories](gitlab-org/gitlab@c07baaabb51bf8240ff4753a6ae551bd34ad9d3f) ([merge request](gitlab-org/gitlab!117264))
+- [Fix duplicate name validation in ProcessScanResultPolicyWorker](gitlab-org/gitlab@94319c3efe710ef7fea4199d7865fc4c4e5b026c) ([merge request](gitlab-org/gitlab!117397)) **GitLab Enterprise Edition**
+- [Changes order of text style in Content Editor](gitlab-org/gitlab@571b26851d8873d255b778538cfb5807b4231ff8) ([merge request](gitlab-org/gitlab!117496))
+- [Fix milestone_id=0 not clearing milestone](gitlab-org/gitlab@383b02aeff48325916be09961bef25da81b05fdb) ([merge request](gitlab-org/gitlab!117479))
+- [This MR fixes growing width of preview panel](gitlab-org/gitlab@79e82b673fb351fa8ac7d64088763d8b488e33c1) ([merge request](gitlab-org/gitlab!117109)) **GitLab Enterprise Edition**
+- [Requeue the BackfillProjectWikiRepositories migration](gitlab-org/gitlab@8bd4da4dd0fe68e6b0563ea42a8935dfb222a4db) ([merge request](gitlab-org/gitlab!116869))
+- [Show error message from API if any while adding Epic](gitlab-org/gitlab@becbf5525d84a430d3a0dfd19d4b1d9ca94bacd0) ([merge request](gitlab-org/gitlab!117162)) **GitLab Enterprise Edition**
+- [Fix NoMethodError for BlameController](gitlab-org/gitlab@28d124a0051a71a7fc3e10ffe341aa5cd1295703) ([merge request](gitlab-org/gitlab!117434))
+- [Fix gitlab_username_claim by reading also extra.raw_info](gitlab-org/gitlab@d6af6748b9cd7d9a09bd5a76bf756bcf0811e739) by @bufferoverflow ([merge request](gitlab-org/gitlab!116722))
+- [Calculate correct access level of shared group member](gitlab-org/gitlab@760e1ed68e2b6d7b36d7840fa2b3ede374dd960e) ([merge request](gitlab-org/gitlab!115346))
+- [Patch mail gem to handle TLS settings properly](gitlab-org/gitlab@90beaced0a186921f0b71546d37cda28fef65208) ([merge request](gitlab-org/gitlab!116925))
+- [Fixing pipeline minutes calculations](gitlab-org/gitlab@e31a569ee6a05e8f19a0802482d91dfab34f306b) ([merge request](gitlab-org/gitlab!117325)) **GitLab Enterprise Edition**
+- [Remove unnecessary write tab for content editor](gitlab-org/gitlab@c14237354c151a356e3f35e18b9130ff563be120) ([merge request](gitlab-org/gitlab!117215))
+- [Fix invite a group on project wording and link](gitlab-org/gitlab@816c15cb125d9a2691ba6f09af5aa90161e43c7f) ([merge request](gitlab-org/gitlab!116593))
+- [Make ProcessScanResultPolicyWorker idempotent and add deduplication](gitlab-org/gitlab@1f5b7932975cd8211b56141b03edad70f2f9fd40) ([merge request](gitlab-org/gitlab!116485)) **GitLab Enterprise Edition**
+- [Add admin_parent_link permission to hide Add button in issue](gitlab-org/gitlab@bb332210b9c784e171263fa397a01fda78308152) ([merge request](gitlab-org/gitlab!117241))
+- [Sign and verify ansi2json state](gitlab-org/gitlab@9a8fdf8f8d0bffab41fec8d65331bdf8ac8c466b) ([merge request](gitlab-org/gitlab!116625))
+- [Approvals widget: Fix approvers table cell width](gitlab-org/gitlab@bcc08a666d86bad7084c6c9aeec2f18c2d7ca2d4) ([merge request](gitlab-org/gitlab!117219))
+- [Force nowrap on tree body container](gitlab-org/gitlab@670679559d6da52ff15383703c9587dbd9a04ed9) ([merge request](gitlab-org/gitlab!117135))
+- [Show reference in root Work Item breadcrumb](gitlab-org/gitlab@9ae78b812d845a523b5fc85c64d5be32bd4ebc91) ([merge request](gitlab-org/gitlab!117134))
+- [Fix harbor registry menu item active status](gitlab-org/gitlab@e29e6ac0a08f76da1c424f558c4eb9f8aae58f0e) by @orozot ([merge request](gitlab-org/gitlab!117033))
+- [Do not display security widget when pipeline is active](gitlab-org/gitlab@5bbab2ce575270c08ffc42a7fc343f5afe54bd7a) ([merge request](gitlab-org/gitlab!116790)) **GitLab Enterprise Edition**
+- [Use dummy email address for Ghost gitea users](gitlab-org/gitlab@43ccfdf70f8fb24e687757d8c9dc63df3ef665e3) ([merge request](gitlab-org/gitlab!116855))
+- [Apply correct background for dark mode](gitlab-org/gitlab@9e02ee900baa6bf866833e0fac01cfb977a27827) ([merge request](gitlab-org/gitlab!116675)) **GitLab Enterprise Edition**
+- [Update codeowners default owner regex](gitlab-org/gitlab@6d5ef409767d9521cb7bbfca2ce529d8bbe7c244) ([merge request](gitlab-org/gitlab!116613)) **GitLab Enterprise Edition**
+- [Convert some regex to use Gitlab::UntrustedRegexp](gitlab-org/gitlab@7c1d21360532ad4473da1b4d1717eb0182f93044) ([merge request](gitlab-org/gitlab!116610))
+- [Remove cascading delete of scan_result_policy_reads](gitlab-org/gitlab@6ad0745b97e954a8ca6adf0f46edd6b040eda6f9) ([merge request](gitlab-org/gitlab!116569)) **GitLab Enterprise Edition**
+- [Only enqueue Sbom::IngestReportsWorker on default branches](gitlab-org/gitlab@67192cd2e4556d1bdff46f64dcf3d8b292cae73a) ([merge request](gitlab-org/gitlab!116971)) **GitLab Enterprise Edition**
+- [Replace find with find_by_id in SyncScanPoliciesWorker](gitlab-org/gitlab@45e5b343726c0aecfce9f03be967013b20ce40a4) ([merge request](gitlab-org/gitlab!116948)) **GitLab Enterprise Edition**
+- [Fix NoMethodError for WebHook](gitlab-org/gitlab@89bace10268e880152233a9c8e4117727612615e) ([merge request](gitlab-org/gitlab!116835))
+- [Fix job filtering after token clear](gitlab-org/gitlab@a5f72b4dc7f4cbf3390f96b9c4c486ad50c86a41) ([merge request](gitlab-org/gitlab!116579))
+- [Fix minor bug with checkboxes in a table](gitlab-org/gitlab@891f65d6428ea520afb3fc9aa387587171613dd5) ([merge request](gitlab-org/gitlab!116758))
+- [Fix bugs in Groups::AcceptingProjectSharesFinder](gitlab-org/gitlab@78fc9a93409d23e1cabfed64fc9f6d182bd3fa83) ([merge request](gitlab-org/gitlab!116652))
+- [Fix SD blob path when scan is run in "no git" mode](gitlab-org/gitlab@17434c74674210c506306eb17323391a2b3d856e) ([merge request](gitlab-org/gitlab!116908)) **GitLab Enterprise Edition**
+- [Generate system notes for same state dismissals](gitlab-org/gitlab@acda580f64af3f99543ac3c100cbad7952548094) ([merge request](gitlab-org/gitlab!116796)) **GitLab Enterprise Edition**
+- [Fix: mr approvers alignment](gitlab-org/gitlab@a05f0eb520137bf1d7ae8f2688240d5c91a20e21) ([merge request](gitlab-org/gitlab!116910))
+- [Remove extra space above mermaid sequence diagrams](gitlab-org/gitlab@6ec8d1c215d17f981715c7b508b5da1b5a214494) ([merge request](gitlab-org/gitlab!116882))
+- [Fix awardEmoji authorization in epic type](gitlab-org/gitlab@9ea917abe734bf67fcdbc425894d71efaf16873b) by @Taucher2003 ([merge request](gitlab-org/gitlab!116483)) **GitLab Enterprise Edition**
+- [Merge request: fix status icon color](gitlab-org/gitlab@0cfd22c06bd2751b7554925445dc4421576284b5) ([merge request](gitlab-org/gitlab!116659))
+- [Approvals table: Fix overflow issue](gitlab-org/gitlab@4213a9420a79f3556003cbeb5aebc0f358619953) ([merge request](gitlab-org/gitlab!116828))
+- [Resolve setWorkItemMetadata in apollo client](gitlab-org/gitlab@00f2269e8076eab450255919d617002cae2ad098) ([merge request](gitlab-org/gitlab!116795))
+- [Enable FF pages_deploy_upload_file_outside_transaction by default](gitlab-org/gitlab@81cd2538c2b07f1b620713eb7ea4fef979829212) ([merge request](gitlab-org/gitlab!116821))
+- [Merge request: Fixes a console error](gitlab-org/gitlab@cec9033e51a9b6cadb681aed705e5347d119b5ac) ([merge request](gitlab-org/gitlab!116663))
+- [Allow CI job to need an undefined, optional job](gitlab-org/gitlab@3c899c06aea1eec81e5ed39cd93b765f104cc49e) ([merge request](gitlab-org/gitlab!116335))
+- [Disallow field licenseText for npm](gitlab-org/gitlab@fb32d902d46d435106859809d3a74e0ba8b7771d) ([merge request](gitlab-org/gitlab!115846))
+- [Replace message by name for vulnerabilities](gitlab-org/gitlab@2396d199612a44e9bd2ca8fe42edbe19994eb460) ([merge request](gitlab-org/gitlab!116419)) **GitLab Enterprise Edition**
+- [Verify deploy keys settings for protected tags](gitlab-org/gitlab@2d88de5f2012bc9b68ac41abca49706f9aa95d7d) ([merge request](gitlab-org/gitlab!116780))
+- [Resolve ambiguous references for archive metadata](gitlab-org/gitlab@c969ca903ca5654a70ec166b769dba8655fba786) ([merge request](gitlab-org/gitlab!116566))
+- [Fix Authorize user page for Mattermost](gitlab-org/gitlab@263889844230c4af4d87df209787e919fd0c0e29) ([merge request](gitlab-org/gitlab!116492))
+- [Fix poor performing groups list API query](gitlab-org/gitlab@962dbf86672bdb211498b0928ff9df9379e89495) ([merge request](gitlab-org/gitlab!116748))
+- [Updates foreign_keys for Ml::Candidate relations](gitlab-org/gitlab@cc3d894a85e748a8cc50595808f6464b8263cd4f) ([merge request](gitlab-org/gitlab!116264))
+- [Fix unreadable text in dark-themed editor tooltips](gitlab-org/gitlab@2168aa323167e2e8ee0a545eefc6d636bcee6d91) ([merge request](gitlab-org/gitlab!116709))
+- [Dont show Security::Findings dismissed on the default branch](gitlab-org/gitlab@ed9160189d7cfe26482e592e233d55b0312908b5) ([merge request](gitlab-org/gitlab!113711)) **GitLab Enterprise Edition**
+- [FIx markdown toolbar button actions in MRs](gitlab-org/gitlab@a36e41a581d1d7ab8c21f35723c42e1da7ae9095) ([merge request](gitlab-org/gitlab!116678))
+- [Fix collapse button alignment](gitlab-org/gitlab@dfe2c83f0fd082e6d5b246553257d9e1d398beeb) ([merge request](gitlab-org/gitlab!116662))
+- [Update bulk_imports entity validation for destination_name](gitlab-org/gitlab@3fe015fd90d36c7fc64fdbe74b963e30cc95a3bd) ([merge request](gitlab-org/gitlab!113417))
+- [Always update compliance report filtered projects list](gitlab-org/gitlab@18d3044ed65e406148f3f652f4797d918236fab4) ([merge request](gitlab-org/gitlab!116630)) **GitLab Enterprise Edition**
+- [Fix user reference styles in content editor](gitlab-org/gitlab@9c7c1982be6a8069603270246714742703b528ef) ([merge request](gitlab-org/gitlab!116220))
+- [Fix border radius of clear filter button](gitlab-org/gitlab@3d4c8b69ec704a808e308ceeb85ed3c4e2e55ac7) ([merge request](gitlab-org/gitlab!116598))
+- [Use admin_bot for adding the default compliance framework](gitlab-org/gitlab@6b29c649166dd3418a1ae079b70a9418a6fc5786) ([merge request](gitlab-org/gitlab!116541)) **GitLab Enterprise Edition**
+- [Fix duplication of thread comments on commit page](gitlab-org/gitlab@1068b2afe3ff3ee54427a48e272221aba88a3e38) ([merge request](gitlab-org/gitlab!116086))
+- [Fix invite redirect for use of relative root](gitlab-org/gitlab@b39466a8b1b9fa82ce2cc6c186e8810a686b789e) ([merge request](gitlab-org/gitlab!116560))
+- [Changes path for ML::Candidate artifacts](gitlab-org/gitlab@1eb8aad538e9800550aed10c2455b054156c22a4) ([merge request](gitlab-org/gitlab!114863))
+- [Don't enforce SSO for public groups](gitlab-org/gitlab@1253b41cb02bd274902ae46176be2ea0af93c06a) ([merge request](gitlab-org/gitlab!114111)) **GitLab Enterprise Edition**
+- [Fix a replica latency bug on the Maven package registry upload endpoint](gitlab-org/gitlab@517807e28a41e83be6866af69399320e8e0b3a81) ([merge request](gitlab-org/gitlab!116543))
+- [Increase padding for dropdown in content editor](gitlab-org/gitlab@ff2fd3a58fd97493d0a6f43ce04d217045bbf318) ([merge request](gitlab-org/gitlab!116367))
+- [Fix JS error for dropdown widget on issue board](gitlab-org/gitlab@188cdf4155a4f1223ab646d65fb086b06d00308c) ([merge request](gitlab-org/gitlab!116516))
+- [Vue 3 spec violations fixed](gitlab-org/gitlab@f996b357a88d2fda59b4888da60faf1182018d8e) ([merge request](gitlab-org/gitlab!116511))
+- [Work item copy link fixed for modals](gitlab-org/gitlab@72809026ff81f54b73abac451de01d416d8ba681) ([merge request](gitlab-org/gitlab!116508))
+- [Fix markdown toolbar button actions](gitlab-org/gitlab@da726440b433a36194a8f8e2d307a3899f20b094) ([merge request](gitlab-org/gitlab!116500))
+- [Start pipeline in after_commit callback when retrying jobs](gitlab-org/gitlab@6e151a36f1c6b21f7bbd611ecf3055c1fd3acb18) ([merge request](gitlab-org/gitlab!116480))
+- [When replying comments, the text box isn't focused](gitlab-org/gitlab@89e7d99400430b4c156294d6bd16f1fa3b46f432) ([merge request](gitlab-org/gitlab!116348))
+- [Fix demoting of the admin with OIDC enabled](gitlab-org/gitlab@2400c7a9b86f233222333ebe5a17ba82e126619c) ([merge request](gitlab-org/gitlab!116082)) **GitLab Enterprise Edition**
+- [Fix alignment of file tree search icon](gitlab-org/gitlab@a8310a5aeaa5e24fd465a13e9f8c026bc31a1f22) ([merge request](gitlab-org/gitlab!116454))
+- [Deletes compliance framework setting when transferring project](gitlab-org/gitlab@3b9b824ab4b783bcc55a712c2d2fdb8a76b83d97) ([merge request](gitlab-org/gitlab!115938)) **GitLab Enterprise Edition**
+- [Fix spacing of referenced commands in comment preview](gitlab-org/gitlab@94db04f5f649497edb23067c4dceba584bcaafd3) ([merge request](gitlab-org/gitlab!116337))
+- [Use read_code to authorize GET protected_branches](gitlab-org/gitlab@3df103b248888c427a9914f63029e07c48d3c290) ([merge request](gitlab-org/gitlab!115495)) **GitLab Enterprise Edition**
+- [Refetch container image tags list after deletion](gitlab-org/gitlab@376be39d1f72e59dbd59db5b2d0e91e3d535130f) ([merge request](gitlab-org/gitlab!115634))
+- [[Geo] Fix token timeout for container registry sync](gitlab-org/gitlab@f34ebe73c80fa330b97fd69373940451a6c2e6a0) ([merge request](gitlab-org/gitlab!114511))
+- [Remove subtransaction in Security::ProcessScanResultPolicyWorker](gitlab-org/gitlab@cd5d601b5af6c182cdd78e3b3b0ba3432ca7120d) ([merge request](gitlab-org/gitlab!114785)) **GitLab Enterprise Edition**
+- [Fix incorrectly added VSA FF check](gitlab-org/gitlab@0ed8f291dcbb89647281265454317fa1e49c9721) ([merge request](gitlab-org/gitlab!116398)) **GitLab Enterprise Edition**
+- [Enhance license dependency equality](gitlab-org/gitlab@aa26c93acdfa3269d65f0f7cf4bf127a251d48fe) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115402)) **GitLab Enterprise Edition**
+- [Fix commits ref switcher](gitlab-org/gitlab@4149875b1ceb6b2919920b2b3f85cca1f2f63e01) ([merge request](gitlab-org/gitlab!116372))
+- [Fix broken trait specs - package](gitlab-org/gitlab@b8e620cb6d64c9907f4836ca3a3da206d6fef3f1) by @sathieu ([merge request](gitlab-org/gitlab!116365))
+- [Fix reconcile needed message for offline license](gitlab-org/gitlab@74f9b67f3a88d3474c4df7a1cac44f5cb0539a61) ([merge request](gitlab-org/gitlab!116350)) **GitLab Enterprise Edition**
+- [Diff: Fix border radius of thread](gitlab-org/gitlab@32f826a26b830b2ff0c66edcc91f6d6a81616130)
+- [Skip epic cache update if epic can not be saved](gitlab-org/gitlab@492111cb6d605076fc80704666a4cc20fe72de39) ([merge request](gitlab-org/gitlab!115688)) **GitLab Enterprise Edition**
+- [Fix date issue for broadcast message edit on firefox](gitlab-org/gitlab@b0877a91449070e37371ef68f8f31581773e8fc7) ([merge request](gitlab-org/gitlab!116161))
+- [Fix licensed VSA page without parity FF](gitlab-org/gitlab@289a9f60c68c3fffb9a4880d55382b24e54d7c60) ([merge request](gitlab-org/gitlab!116272)) **GitLab Enterprise Edition**
+- [Diff: Fix border radius of thread](gitlab-org/gitlab@11c4127d9fdb5e5272ff3ab30276cfb6810b218a) ([merge request](gitlab-org/gitlab!116113))
+- [Fix bug in scope `Group.project_creation_allowed`](gitlab-org/gitlab@98c38271d214651e9c9581e773ce9fdbecb53ce3) ([merge request](gitlab-org/gitlab!116168))
+- [Ensure backup restore clears storages before restoring](gitlab-org/gitlab@4be1f22815bede67d1f61a42fa4608b94b121bc6) ([merge request](gitlab-org/gitlab!115283))
+- [User with custom role + read_code can view MD link](gitlab-org/gitlab@a4f37efcca2fbf2e213240a8e1f301aaadd556f6) ([merge request](gitlab-org/gitlab!115916)) **GitLab Enterprise Edition**
+- [Append tag notes when creating a new tag too](gitlab-org/gitlab@a04e7d9c2b5970693d95e0996762932b2954f70f) ([merge request](gitlab-org/gitlab!116153))
+- [Fix N+1 query for max access level in project lists](gitlab-org/gitlab@303fc633f81b36153cdc4b9cb4da340c1b46be1c) ([merge request](gitlab-org/gitlab!115758))
+- [Fix item height in wiki sidebar](gitlab-org/gitlab@66932e93d62b9ed155be8288e229be849d014f1b) by @qk44077907 ([merge request](gitlab-org/gitlab!115929))
+- [Add a loading indicator for suggestions](gitlab-org/gitlab@c8bd5858b98d05c32ffc9bbea7ddab8c8b86219f) ([merge request](gitlab-org/gitlab!115981))
+- [Fix autofocus on work item description](gitlab-org/gitlab@d995e6fb4c25d8cbe10962b841a4e23ef97c5863) ([merge request](gitlab-org/gitlab!113795))
+- [Hide pipeline links tip in Stage view](gitlab-org/gitlab@40d0d8e864a3bbcf724a7cb807dc476719a89ce5) by @homersimpsons ([merge request](gitlab-org/gitlab!115806))
+- [Fix assignee avatars alignment on issues list](gitlab-org/gitlab@b872df2c1efc684003d31fd0e20fa7d681be4458) ([merge request](gitlab-org/gitlab!115973))
+- [Fix missing caller_id for GraphQL subscriptions](gitlab-org/gitlab@c4ec91bcc3d005c806231caee21b3e427fcd0069) ([merge request](gitlab-org/gitlab!115995))
+- [Security Finding: fix note link to project](gitlab-org/gitlab@5f5ece874fee956e52b7de0cb44afee987e0e3af) ([merge request](gitlab-org/gitlab!115904)) **GitLab Enterprise Edition**
+- [Fix loading multi-doc YAMLs for CI configurations](gitlab-org/gitlab@8a22877fc892558a5306fb68c14c97a3f98b76c3) ([merge request](gitlab-org/gitlab!115703))
+- [Do not change object reference when body is nil](gitlab-org/gitlab@3d2ef2205662ec7a0334acbac54ab8e091e13df9) ([merge request](gitlab-org/gitlab!115931))
+- [Fix reference styles in content editor](gitlab-org/gitlab@8d1f7ece48c5f843e5b6120eb215ba99a05f9a74) ([merge request](gitlab-org/gitlab!115978))
+- [Add relative root to broadcast messages](gitlab-org/gitlab@d54fb1a852e469ba7f6df7ac078c60a1d5ac1bdb) ([merge request](gitlab-org/gitlab!115901))
+- [Fix board_list_spec.js vue3 test violations](gitlab-org/gitlab@aece5903f8241b47c46f458dcfa07b65082a3ca0) ([merge request](gitlab-org/gitlab!115767))
+- [Adds relation package_id to ml_candidates](gitlab-org/gitlab@8bac13b6d5d12f32ae417ac7e334785949a3fa52) ([merge request](gitlab-org/gitlab!114067))
+- [Enforce merge request approval settings](gitlab-org/gitlab@4158b15ad5ac0d1655e3572718e90df5f9c67ba6) ([merge request](gitlab-org/gitlab!115936)) **GitLab Enterprise Edition**
+- [Display fallback emoji images with correct aspect ratio](gitlab-org/gitlab@dfc2e67084020bde50c3db2a95a42b40c8f998ac) ([merge request](gitlab-org/gitlab!115145))
+- [Use UUID to match findings with issue feedback records](gitlab-org/gitlab@0aefecba5bc5a85fe926b3fb76ea4c05b5847641) ([merge request](gitlab-org/gitlab!115397)) **GitLab Enterprise Edition**
+- [Cells: Fix loose foreign key trigger validation routine](gitlab-org/gitlab@42e05afdc203818393ff16d9d547e7ed35cb7884) ([merge request](gitlab-org/gitlab!115672))
+- [Hide achievements on private profiles](gitlab-org/gitlab@963fd144dee96f41cdfbfd3f2c1b07edd78a695f) by @Taucher2003 ([merge request](gitlab-org/gitlab!115427))
+- [Fix unlocking of job artifacts on pipeline state transitions](gitlab-org/gitlab@7dfa00954fd96f8cd924d97c75d3d5f5755118b5) ([merge request](gitlab-org/gitlab!114426))
+- [Hide inactive approvers](gitlab-org/gitlab@b5f88fbbbd4e2d8f1f9a2aa1ae64f7082dbebe9f) ([merge request](gitlab-org/gitlab!115814)) **GitLab Enterprise Edition**
+- [Correctly compute blob URL for Secret Detection](gitlab-org/gitlab@54c260a8ade2b1d9f5cbaf9d490031d753213516) ([merge request](gitlab-org/gitlab!115470)) **GitLab Enterprise Edition**
+- [Add top margin to merge request description](gitlab-org/gitlab@d8140b7f9da9e9dcc3c7c7c2f444237acda93a76) ([merge request](gitlab-org/gitlab!115235))
+- [Allow HEAD ref when viewing blob, commits and compare page](gitlab-org/gitlab@40eb37104109eaf54f0b09333b9a864e6d4f271d) ([merge request](gitlab-org/gitlab!115762))
+- [Do not serialize data image urls](gitlab-org/gitlab@2f0d338314fa120510ad2519fff0dcb179c505b7) ([merge request](gitlab-org/gitlab!115760))
+- [Update mail gem to v2.8.1](gitlab-org/gitlab@030273dd6f3d5fa91f47732e2901e8d8cfdb52a1) ([merge request](gitlab-org/gitlab!115755))
+- [Don't generate invalid SQL checking foreign keys](gitlab-org/gitlab@14952978d06ccc2e0404e6863ad31019d80a9bb3) ([merge request](gitlab-org/gitlab!113437))
+- [Fix agent version comparison with KAS rc](gitlab-org/gitlab@3d24565c0f620ba194379d93b0954dabaea5c62b) ([merge request](gitlab-org/gitlab!114897))
+- [Improves dataframe rendering in Python Notebooks](gitlab-org/gitlab@4c25189caacbc70f36fde5e83654a16c582d80ff) ([merge request](gitlab-org/gitlab!114561))
+- [Jobs list: remove double bottom border](gitlab-org/gitlab@43bb24780f851baf58fe32093467256cb1fa60c3) ([merge request](gitlab-org/gitlab!115010))
+- [Fix(Purchase): handle email taken error](gitlab-org/gitlab@c00c51439ce3eb2848bca4c8ead96f720c80ca87) ([merge request](gitlab-org/gitlab!115373)) **GitLab Enterprise Edition**
+- [Fixes the ref switcher encoding](gitlab-org/gitlab@cb4e7475b6e00dbcef71aeff12b36920e3f19639) ([merge request](gitlab-org/gitlab!115663))
+- [Child issues and epics: fix closed state](gitlab-org/gitlab@f17669b7f55d016656e175b86a27e68902f82271) ([merge request](gitlab-org/gitlab!115652)) **GitLab Enterprise Edition**
+- [Add sync_name check to Gitlab::Auth::Ldap::Access](gitlab-org/gitlab@a23f6bf8c713b2d4b1624fa58169ba2dcf35cc13) by @zhzhang93 ([merge request](gitlab-org/gitlab!115496)) **GitLab Enterprise Edition**
+- [Unstuck VSA background aggregations](gitlab-org/gitlab@bf15233ffd181966dfad27758c4cce701417ea74) ([merge request](gitlab-org/gitlab!115484))
+- [Fix trial creation action reload with select](gitlab-org/gitlab@cfc05510fd29cf4ca3c870119204111d8153a42a) ([merge request](gitlab-org/gitlab!115423)) **GitLab Enterprise Edition**
+- [Improve paste markdown behavior in Content Editor](gitlab-org/gitlab@2ca0309fff7196fab5160f00060168eeeac2912f) ([merge request](gitlab-org/gitlab!115574))
+- [Fixing CI mirrored tables mermaid chart](gitlab-org/gitlab@50ec6b045fd7e5a2788078d271ffc7f9a6785aa1) ([merge request](gitlab-org/gitlab!115560))
+- [Remove temporary workaround for DeployAccessLevel](gitlab-org/gitlab@44f3cfda003c30a83b12fc971c810a6637882f0b) ([merge request](gitlab-org/gitlab!115559))
+- [Show Projects menu as active while on Starred or Trending projects pages](gitlab-org/gitlab@a0f6c5fbde5166c85ce3fa033c911c4ac5e1da11) ([merge request](gitlab-org/gitlab!114703))
+- [Add constraint for deploy_access_level](gitlab-org/gitlab@bb69f4f944f6d21f18a2151e6afe160f1376a61a) ([merge request](gitlab-org/gitlab!115557))
+- [Fix alignment of commit changes block](gitlab-org/gitlab@ef30ceb2cd14e4a89c2f5dfef84d0e56790f950a) ([merge request](gitlab-org/gitlab!115417))
+- [Fix invalid protected environment access levels](gitlab-org/gitlab@055be18831e288173ad2985c70176e9dff1efce5) ([merge request](gitlab-org/gitlab!115549)) **GitLab Enterprise Edition**
+- [Fix Debian doc for direct upload with older curl](gitlab-org/gitlab@dc5d1f862fde83d11cf0da065f1fe5c6f106bf0d) by @sathieu ([merge request](gitlab-org/gitlab!114951))
+- [Validate DeployAccessLevel options](gitlab-org/gitlab@836d0a52895d6c26a1a9d75a0e5ca6a69ab2b185) ([merge request](gitlab-org/gitlab!114449)) **GitLab Enterprise Edition**
+- [Use `method` to resolve access_level_description field](gitlab-org/gitlab@4b350ff21e011a2e5c5dd554bc5b74aad19b1572) ([merge request](gitlab-org/gitlab!115541))
+- [Fix dropdown closing prematurely when clicking inside](gitlab-org/gitlab@9a8ab38d79aab843f814eea7c3e68c446cd20bda) ([merge request](gitlab-org/gitlab!115528))
+- [Fix alignment of user readme breadcrumb chevron](gitlab-org/gitlab@30c82f5eeea02632dd5e209fd2b915c56e698555) ([merge request](gitlab-org/gitlab!115378))
+- [Fix inconsistent behaviour in work items comments](gitlab-org/gitlab@982131ba23f3a43a15a292cedeb35111ff6a4aaa) ([merge request](gitlab-org/gitlab!115222))
+- [Remove long-running transaction while deduplicating the findings](gitlab-org/gitlab@7536f408978a0e69039cc164c5401620e41397c9) ([merge request](gitlab-org/gitlab!115491)) **GitLab Enterprise Edition**
+- [Fix issue dashboard returning issues from archived projects](gitlab-org/gitlab@d68e880b1018c2d6e3dc4586406840d37e424171) ([merge request](gitlab-org/gitlab!115236))
+- [Fix command-only note not clearing commment form](gitlab-org/gitlab@6b4b6352d5cdd0fdc8af04e749b79a69ec4abdef) ([merge request](gitlab-org/gitlab!114581))
+- [Widget item: fix status :focus](gitlab-org/gitlab@b7eb0d7c901cd78f88ce6e7965d38523af50d70a) ([merge request](gitlab-org/gitlab!115375))
+- [Canonicalize dependency list names](gitlab-org/gitlab@752438c9df2142c42b6b560a1ead43509bf837d8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114616)) **GitLab Enterprise Edition**
+- [Fix branch rules details breadcrumbs](gitlab-org/gitlab@44fbb20c8c87d6f8e887f99cc2eafdc1507b7426) ([merge request](gitlab-org/gitlab!115320))
+- [Merge request widget: Fix alignment of cancel button](gitlab-org/gitlab@d8574f0ed7ce15fa0830e4b1509cfece48d87d4f) ([merge request](gitlab-org/gitlab!115307))
+- [Prevent updating a comment with empty text (deprecated_notes.js)](gitlab-org/gitlab@713b7428510fae06a8ee9f1f57da9bcf109c5c48) ([merge request](gitlab-org/gitlab!114563))
+- [Search only descendant groups when applicable](gitlab-org/gitlab@7c88f03f091f053879d690b8781536fd191eb6cb) ([merge request](gitlab-org/gitlab!113625)) **GitLab Enterprise Edition**
+- [Sync security policy rule schedules that may have been deleted by bug](gitlab-org/gitlab@3af3bd23c3a4bfd4ff26f7a32c3503be20b930e7) ([merge request](gitlab-org/gitlab!114337))
+- [Fix clipping of review bar component when system footer exists](gitlab-org/gitlab@aab12443d6a0598d4b42a2cd58d13d8f5c77955f) ([merge request](gitlab-org/gitlab!115249))
+- [Fixing database backup rake task in single-db-two-connections mode](gitlab-org/gitlab@760c2a010d2fed824d062de87ec2f2fb21cb76bc) ([merge request](gitlab-org/gitlab!115230))
+- [Fix 500 error for diff_files endpoint](gitlab-org/gitlab@674548f78791562fcfd7d9be05399c14f57bab2d) ([merge request](gitlab-org/gitlab!115311))
+- [Fix LDAP sync_name option bug](gitlab-org/gitlab@505b2dc9c8c6e0ee0a136d6e16759c76b7f79c92) by @zhzhang93 ([merge request](gitlab-org/gitlab!112427))
+- [Fix license available of group-protected branches](gitlab-org/gitlab@a189af3d508651d417aebed75964ad5b998847f9) by @songhuangcn ([merge request](gitlab-org/gitlab!114846)) **GitLab Enterprise Edition**
+- [Decrease indent for profile page bio](gitlab-org/gitlab@af2c97d97fd626934d57811e9e6bd9924bba671c) ([merge request](gitlab-org/gitlab!115191))
+- [This MR fixes radio button overlay](gitlab-org/gitlab@b96fe03b214cb940d28c9bd41a53bc2aa0f00029) ([merge request](gitlab-org/gitlab!115190)) **GitLab Enterprise Edition**
+- [Fix openapi viewer for relative url instances](gitlab-org/gitlab@867c06b74eaeea29f265bdb79c2cd566ffe3e3b8) ([merge request](gitlab-org/gitlab!114542))
+- [Avoid duplicate key error messages when inserting state record](gitlab-org/gitlab@2d79bc09abf3c4517e2432e246e8eb0e38837c88) ([merge request](gitlab-org/gitlab!115139))
+- [Fix Google CDN not encoding UTF-8 characters](gitlab-org/gitlab@4eaa944cd12bff260b6e94c75e7c6dd3b9058f07) ([merge request](gitlab-org/gitlab!115079))
+- [Linked items fixes](gitlab-org/gitlab@ae136b135e5ea3e955e8280e3b09dc0819c21f45) ([merge request](gitlab-org/gitlab!114715)) **GitLab Enterprise Edition**
+- [Fix caching to cover whole Service Ping payload](gitlab-org/gitlab@fedf1360c2fbc5e06ccb7c14ab53a33aba362d69) ([merge request](gitlab-org/gitlab!114992))
+- [Update wiki repository size after migration](gitlab-org/gitlab@dbbe01dfb0c1cfa57f3b27750b2091497e61474e) ([merge request](gitlab-org/gitlab!114988))
+- [Fix TypeError when json file is an array](gitlab-org/gitlab@c56dedef9a0c0a66f8bb780e0935de04b989d411) ([merge request](gitlab-org/gitlab!114770))
+
+### Changed (275 changes)
+
+- [Add support for npm deprecate](gitlab-org/gitlab@fe98e7c75861acf64e44bf363530db50d82b2968) ([merge request](gitlab-org/gitlab!117009))
+- [Extend issue type change note](gitlab-org/gitlab@4150f4a6fcb30c63e06ea56599d0fd70f907d332) ([merge request](gitlab-org/gitlab!117858))
+- [Update new label form](gitlab-org/gitlab@5e0951bb4096f334231deeace5d7e18872270404) ([merge request](gitlab-org/gitlab!117918))
+- [Visual tweaks for new sidebar nav search menu](gitlab-org/gitlab@d343279cce1ce942c0671c47a0fbfd9b44351374) ([merge request](gitlab-org/gitlab!116013))
+- [Backfill code suggestions to true for all namespaces](gitlab-org/gitlab@c2a7f37542ab4336cbea8b4025dd55e90ae52a58) ([merge request](gitlab-org/gitlab!117899))
+- [Removing FF lazy_load_pipeline_dropdown_actions](gitlab-org/gitlab@40df9091e573fb5e73503300a569a6e682d1557b) ([merge request](gitlab-org/gitlab!117442))
+- [Leave candidate as default code path](gitlab-org/gitlab@f9d4eb8155d4a8a3d8f67a2292fa342a032d0b6b) ([merge request](gitlab-org/gitlab!116591)) **GitLab Enterprise Edition**
+- [Extend approvals UI with fail-closed rules](gitlab-org/gitlab@8eaad85cac3dcfe543f18375ba462499103982c2) ([merge request](gitlab-org/gitlab!117423)) **GitLab Enterprise Edition**
+- [Guard legacy runner status in graphql by feature flag](gitlab-org/gitlab@d97e90c1b981f2aa928b067911c8d293c8bcf178) ([merge request](gitlab-org/gitlab!117875))
+- [Change code suggestions namespace setting default to true](gitlab-org/gitlab@189832f00456bb313418ee660e186bc8c2180de6) ([merge request](gitlab-org/gitlab!117895))
+- [Format explain vulnerability responses with markdown format headers](gitlab-org/gitlab@44b77c8fefa5814f271ec86087c13188a92f361d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117902)) **GitLab Enterprise Edition**
+- [Animate approval icon in merge request sidebar](gitlab-org/gitlab@30e980cc65f62de78495a0def8a436efa2882776) ([merge request](gitlab-org/gitlab!116839))
+- [Remove top border to prevent overlap](gitlab-org/gitlab@b7dd36134e0fca8bda1c223caaf145af80356101) ([merge request](gitlab-org/gitlab!117810))
+- [Add "fork" to word list and remove docs link from UI](gitlab-org/gitlab@32a265a7e39eb504ca06e61410c5826ecd1fa859) ([merge request](gitlab-org/gitlab!117486))
+- [Replace Deployment Icon with Release Icon on Project Home](gitlab-org/gitlab@e6f275ac592f3c087f91cde8fb8d9dd34b13c06b) by @glauciellesa ([merge request](gitlab-org/gitlab!117803))
+- [Update scheduled Scan Execution Policy for secret_detection](gitlab-org/gitlab@0823f6b45b233dc37aed90f305fd2ccef342f1f4) ([merge request](gitlab-org/gitlab!114952))
+- [Allow logging of all IssuableExportCsvWorker parameters](gitlab-org/gitlab@c74d06887e351132e0d4e786d635dbd3792a5471) ([merge request](gitlab-org/gitlab!117570))
+- [Adds frontend for candidate deletion](gitlab-org/gitlab@3c07d53495f94c7cc13e42727f1f32386ad7e45f) ([merge request](gitlab-org/gitlab!116953)) **GitLab Enterprise Edition**
+- [Enable geo_project_wiki_repository_replication feature flag](gitlab-org/gitlab@8f141a8a2b67b2061cebb0c81573bcf741e4ec2c) ([merge request](gitlab-org/gitlab!117705)) **GitLab Enterprise Edition**
+- [Add reviewed but not approved state in MR sidebar](gitlab-org/gitlab@9891e780fbc714f720d04eac6a273b8787735fc2) ([merge request](gitlab-org/gitlab!117302))
+- [Better error message when branch name does not match push rules settings](gitlab-org/gitlab@cc38eb9d33a08ffde80f11266573d6abd108a64c) ([merge request](gitlab-org/gitlab!115530)) **GitLab Enterprise Edition**
+- [Update status check documentation](gitlab-org/gitlab@005eaa0fa463afe9d8fcba7c4f7c55897085678a) ([merge request](gitlab-org/gitlab!117683))
+- [Add extra information to the github identifiers of importer failures](gitlab-org/gitlab@ceaef14f876f1682fae103f80b0523a27b642d9b) ([merge request](gitlab-org/gitlab!114839))
+- [Replace namespace_id with group_id and project_id for POST /user/runners](gitlab-org/gitlab@a312d9d60db028ed947161aac7aae100875d899a) ([merge request](gitlab-org/gitlab!117542))
+- [Apply changes to order of secure nav items](gitlab-org/gitlab@bcb69dd0e2131aeb9fe8b0ca7bd7142fb1b1ed23) ([merge request](gitlab-org/gitlab!117299))
+- [Add tables and columns support to database schema validations](gitlab-org/gitlab@9f15c81e9fe6582c65bae35bdff81ede6e8e5aab) ([merge request](gitlab-org/gitlab!117477))
+- [Add experiment label to ai chat header](gitlab-org/gitlab@09d26be8bea3e8385893028935fc5d58de1ae337) ([merge request](gitlab-org/gitlab!117583))
+- [Use badge component for "busy" status](gitlab-org/gitlab@86088cbf0228ecbbfed021f6227a8ed4d934fde3) ([merge request](gitlab-org/gitlab!117074))
+- [Replaced VSA Overview "Total time" line chart with stacked area chart](gitlab-org/gitlab@b533f2b1d1e1fc3e42629250456dd439307f09a4) ([merge request](gitlab-org/gitlab!114484)) **GitLab Enterprise Edition**
+- [Extend GraphQL approval rules with indication of invalid rules](gitlab-org/gitlab@567616c3e8dfd85f70b9a140792eafa72164d90c) ([merge request](gitlab-org/gitlab!116969)) **GitLab Enterprise Edition**
+- [Fix spacing in content editor code blocks](gitlab-org/gitlab@0ad7f2ee79c345f69e65175e5500929a6756202d) ([merge request](gitlab-org/gitlab!117507))
+- [Convert admin menu from haml to panel](gitlab-org/gitlab@b1d0a5dbe96799e035d34a1d05cde51f41b45fde) ([merge request](gitlab-org/gitlab!115162)) **GitLab Enterprise Edition**
+- [Log warnings on invalid ansi2json state inputs](gitlab-org/gitlab@43806fd4cba90aa9ed38cb15b1132a25ea6f550a) ([merge request](gitlab-org/gitlab!117592))
+- [Clean up runners_availability_section experiment](gitlab-org/gitlab@10b5c45699a188925461b971d6e9c72355780d72) ([merge request](gitlab-org/gitlab!117315))
+- [Sets the default 'Documentation pages URL' to https://docs.gitlab.com](gitlab-org/gitlab@27885bfbc6343d9a2f8c10abdf153a7534820ed0) ([merge request](gitlab-org/gitlab!116857))
+- [Remove tooltip from merge request actions dropdown](gitlab-org/gitlab@13a79ff175ead84d81098fd9ebf5203c0dfc8850) ([merge request](gitlab-org/gitlab!116853))
+- [Enable license scanning feature again](gitlab-org/gitlab@448dc3ff2e4b75556b1f87ba65e0c1df9ea39d85) ([merge request](gitlab-org/gitlab!117554)) **GitLab Enterprise Edition**
+- [Fix insert link in content editor](gitlab-org/gitlab@c2458281fdd6025a93e119bb1c1635287dd23b43) ([merge request](gitlab-org/gitlab!116555))
+- [Only allow developers or higher to trigger merge_status_recheck](gitlab-org/gitlab@c104f6b841c79e83f8824900ddb38fdded00bb92) ([merge request](gitlab-org/gitlab!115948))
+- [Synchronize temporary index](gitlab-org/gitlab@63579a3650729aa2cafcc2dac9a8152d2a33b7c2) ([merge request](gitlab-org/gitlab!116529))
+- [Experiment Cleanup: removed the `cart_abandonment_modal` experiment](gitlab-org/gitlab@8646d262439aa00fc807742180703c6a54d06580) ([merge request](gitlab-org/gitlab!116812)) **GitLab Enterprise Edition**
+- [It casts EXTRACT as double precision](gitlab-org/gitlab@aea7814d08b2e5eb24d43676895b9a8d4eca055e) ([merge request](gitlab-org/gitlab!117150))
+- [Adjust tests to api admin mode](gitlab-org/gitlab@62bab8ad6a95b9a0fa75f316d1e7812cac27fc02) by @TrueKalix ([merge request](gitlab-org/gitlab!114136))
+- [Update security policies docs after fixing concurrent execution bug](gitlab-org/gitlab@dc6df401eb99795c62ba4e812cada74f97bc8b70) ([merge request](gitlab-org/gitlab!117503))
+- [Add 'broadcasting' label to Action Cable counter](gitlab-org/gitlab@48f8bc948042a6bf7a15ea834e97c6250638a037) ([merge request](gitlab-org/gitlab!117253))
+- [Left align emoji picker on descriptions and notes](gitlab-org/gitlab@53090eee739e330cb7a262d34ac0212d4e5a9e22) ([merge request](gitlab-org/gitlab!117502))
+- [Finalize EncryptCiTriggerToken background migration](gitlab-org/gitlab@ade0d70fa887a3f3d37ea95cae612b70b6444647) ([merge request](gitlab-org/gitlab!117483))
+- [Allow immediate deletion of projects using API](gitlab-org/gitlab@ed095b666710a2cab00756435e6b179023bdf790) ([merge request](gitlab-org/gitlab!116957)) **GitLab Enterprise Edition**
+- [Add table validators to schema validation framework](gitlab-org/gitlab@cf9c4cdfa7b4218955fa80215a699a277c21a5de) ([merge request](gitlab-org/gitlab!117013))
+- [Merge request header: add icon to indicate fork](gitlab-org/gitlab@08cea41f58bddb696abea63deef4a7a191c18e1a) ([merge request](gitlab-org/gitlab!116284))
+- [Enable strict_ip_enforcement by default](gitlab-org/gitlab@39bb39c10366287e9fa55cacb0282870b346d99f) ([merge request](gitlab-org/gitlab!112756)) **GitLab Enterprise Edition**
+- [Improve rendering of HTML-only emails in issue responses](gitlab-org/gitlab@f6127ae30f5f9520a11033cd2d86e4953ba207e1) ([merge request](gitlab-org/gitlab!116809))
+- [Add basic implementation of loading only a single diff file](gitlab-org/gitlab@357a768eafecaee5efc9234297550290b4d403b8) ([merge request](gitlab-org/gitlab!111895))
+- [Update wiki diagram editor to be fullscreen](gitlab-org/gitlab@7be5a544497f60a1a0043615d500f467463f3106) ([merge request](gitlab-org/gitlab!116746))
+- [Skip setting base path for GitLab.com](gitlab-org/gitlab@44b7f7bf16b0c2ab31627f1c69d4c913243d69be) ([merge request](gitlab-org/gitlab!117371))
+- [Introduce Breach and Attack Simulation features](gitlab-org/gitlab@4b441592d9ec92121a13a51c05018835dd46bcf3) ([merge request](gitlab-org/gitlab!116889))
+- [Stop flashing issue description on details toggle](gitlab-org/gitlab@fb10dba38e677da360ac0d2324591f7d6c27759e) ([merge request](gitlab-org/gitlab!117180))
+- [Feat(Subscription Purchase): update CDot link](gitlab-org/gitlab@b4d7438fce7fe3411e9938e8798601a13d25fade) ([merge request](gitlab-org/gitlab!116825)) **GitLab Enterprise Edition**
+- [Disable Net::HTTP monkey patch for Ruby 3.1](gitlab-org/gitlab@bf6831feed1506d2f994722d5106e07dedd00f03) ([merge request](gitlab-org/gitlab!117167))
+- [This MR creates new filtering layout](gitlab-org/gitlab@2f6314662ccff9626c1cc9f046770e6384fe2dea) ([merge request](gitlab-org/gitlab!116493)) **GitLab Enterprise Edition**
+- [Drop retry_job_start_pipeline_after_commit feature flag](gitlab-org/gitlab@f710cd993357804b1cde623aa6eb9cd6b0e001a3) ([merge request](gitlab-org/gitlab!117275))
+- [Autofills create label form](gitlab-org/gitlab@013d99cda2d294efb009255d42ec145089c0b7e4) ([merge request](gitlab-org/gitlab!116590))
+- [Rename "Infrastructure Registry" menu to "Terraform modules"](gitlab-org/gitlab@003a27abce2e719a5aa001deef67307325638229) ([merge request](gitlab-org/gitlab!116488))
+- [Users list: change user actions](gitlab-org/gitlab@455f104e0ce5ed98750a8d03fadf1e0b902bc7dd) ([merge request](gitlab-org/gitlab!117236))
+- [Change dashboard to homepage ](gitlab-org/gitlab@6920d32526928a62379f740f3f32e1e709c0baf5) ([merge request](gitlab-org/gitlab!114523))
+- [Refactor compliance frameworks create/edit to modals](gitlab-org/gitlab@0eea2ef049113c0ae8e738f992a2da61ecee76b0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113637)) **GitLab Enterprise Edition**
+- [Related branches: add widget styles](gitlab-org/gitlab@afcd622e95b63f0c8294bd12f03fe5f25dfc5de9) ([merge request](gitlab-org/gitlab!116946))
+- [Cache inexistence of the GitHub username](gitlab-org/gitlab@0a2d0b8985f1b4135909c5a9b85d2eefdf2d025a) ([merge request](gitlab-org/gitlab!117179))
+- [Change viewing to editing for editor switcher](gitlab-org/gitlab@ad7dc9108f8c7c004cd0d522857005703d309a08) ([merge request](gitlab-org/gitlab!117205))
+- [Upgrade bundler to v2.4.11](gitlab-org/gitlab@63e78f4019445c449f4c2f02276f015c7c6c5da0) ([merge request](gitlab-org/gitlab!117183))
+- [Add reviewed but not approved state in MR sidebar](gitlab-org/gitlab@f08873eaab772996627dcf381398e5b06e8ad3db) ([merge request](gitlab-org/gitlab!116861))
+- [Migration to backfill hashed_root_namespace_id to commit index](gitlab-org/gitlab@cb62dfa4368822b0ca29f333fbeac05c74585552) ([merge request](gitlab-org/gitlab!115411)) **GitLab Enterprise Edition**
+- [Update excon to v0.99.0](gitlab-org/gitlab@1f89069e3432770fa8296f78b5ebfde37575aa86) ([merge request](gitlab-org/gitlab!117117))
+- [Update ruby_parser to v3.20](gitlab-org/gitlab@1463273b1ff21f1ef2467232d25cf040708e4df5) ([merge request](gitlab-org/gitlab!117067))
+- [Remove the move_year_dropdown_usage_charts feature flag](gitlab-org/gitlab@7da078a6bedcc1cf0477e81719428bb3d077ed94) ([merge request](gitlab-org/gitlab!116865))
+- [Removing google_play_integration feature flag](gitlab-org/gitlab@c9c52e99cb8881ab706b44137af9b02c767282fe) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116834))
+- [Use YAML.safe_load_file for import/export config](gitlab-org/gitlab@d3f7dab03894e18008f59d43ad4e62df54400e8a) ([merge request](gitlab-org/gitlab!117027))
+- [Use YAML.safe_load_file for mail_room config loading](gitlab-org/gitlab@30f238a6e1beeaaabc70a010b71cdaed915319eb) ([merge request](gitlab-org/gitlab!117004))
+- [Rename CodeOwners::File#entries_for_path method](gitlab-org/gitlab@8d333b48c2deef2165fb74929058822ee0c26f8b) ([merge request](gitlab-org/gitlab!116996)) **GitLab Enterprise Edition**
+- [Add unlimited members during trial alert on all Project/Group pages](gitlab-org/gitlab@5ad15c4064731a36b08a37fe46fbe03491784f57) ([merge request](gitlab-org/gitlab!116325)) **GitLab Enterprise Edition**
+- [Update gitlab-pages version](gitlab-org/gitlab@3b17b080e1edf2ef64bb80fe9185b4b7a0bf81c5) ([merge request](gitlab-org/gitlab!116994))
+- [Update output of backup timestamps](gitlab-org/gitlab@aeaab24e18302a1c2ba059fdf8b79699f823056d) by @quatauta ([merge request](gitlab-org/gitlab!116864))
+- [Remove option to create new issue to resolve all threads in widget](gitlab-org/gitlab@a198905d195cff8fd380e1b27f170f8d68fb0dde) ([merge request](gitlab-org/gitlab!116322))
+- [Ensure terraform artifacts are not public](gitlab-org/gitlab@fcfbd8f107c27dc2bc0490de5afbda5c97f683c1) ([merge request](gitlab-org/gitlab!116495))
+- [added: Creating marketing cookie to log active user sessions](gitlab-org/gitlab@a278b9883f9b64ab31fc2ce093fb208d349d5495) ([merge request](gitlab-org/gitlab!113761))
+- [Adds a unique index for storage limit exclusions](gitlab-org/gitlab@543c1c9d52b7ac357d628616a92276c219ab0f8c) ([merge request](gitlab-org/gitlab!116802))
+- [Remove help icon on code review summary comment](gitlab-org/gitlab@b6cac3b31dcb3a6a0f6de804988c0faf34ac3c97) ([merge request](gitlab-org/gitlab!116723))
+- [Refactor default framework assignments](gitlab-org/gitlab@6b4e748142be8d38fb847d61f41dc8db373db15f) ([merge request](gitlab-org/gitlab!116964)) **GitLab Enterprise Edition**
+- [New/edit MR: Migrate merge options checkbox](gitlab-org/gitlab@95cd1b1523ed9d641a69ba6fe8ddb1fe26f72bea) ([merge request](gitlab-org/gitlab!116776))
+- [Moves container registry to the far right on Usage Quotas](gitlab-org/gitlab@90a520e05bc5de330b36985da3344498d8b4b5b1) ([merge request](gitlab-org/gitlab!116099)) **GitLab Enterprise Edition**
+- [New merge request: change empty state](gitlab-org/gitlab@0840180b92bebe400c03233a6ed3ac20484a66e4) ([merge request](gitlab-org/gitlab!116127))
+- [Approvals table: Update styling](gitlab-org/gitlab@beb857e66d1248089c98d7edc08214c5feab59a0) ([merge request](gitlab-org/gitlab!116938))
+- [Help icon refactor](gitlab-org/gitlab@9ef5a0fe2d4d12d01878100d142845af5cba3ec6) ([merge request](gitlab-org/gitlab!116933))
+- [Filtered search bar: Fix height & focus state](gitlab-org/gitlab@05e1d2d2526698e2ed75c03b8ca474c172702eab) ([merge request](gitlab-org/gitlab!116818))
+- [Issuable widgets: more improvements](gitlab-org/gitlab@86ae672c6e7fcdca64b907f2cbad80db539629ae) ([merge request](gitlab-org/gitlab!116404))
+- [Avoid double submission on app secret renewal](gitlab-org/gitlab@8af9426df1d49f837a4612b16f57d1a019dabd3f) ([merge request](gitlab-org/gitlab!115359))
+- [Allow NULL file_md5 to Debian component files](gitlab-org/gitlab@64af14a68c908f004a70541c322edfa52c746f46) by @sathieu ([merge request](gitlab-org/gitlab!116892))
+- [Update UI text on create issue to resolve all threads option](gitlab-org/gitlab@960643b22b2dff36e8c6d6c427c4e1f2ec3774d4) ([merge request](gitlab-org/gitlab!116460))
+- [Allow updates to mail_room in Gemfile again](gitlab-org/gitlab@3712e169b506feb21b2da6f195f4f217ee9f7cfe) ([merge request](gitlab-org/gitlab!116858))
+- [This MR adds base layout for security result policy](gitlab-org/gitlab@e1e48798ae828c90981a737e155dfe8ed73ff6bb) ([merge request](gitlab-org/gitlab!115732)) **GitLab Enterprise Edition**
+- [Reschedule async temp index on finding report types](gitlab-org/gitlab@b3bebc3fa94e2e022a8c550bf23d5fc938831b0a) ([merge request](gitlab-org/gitlab!116522))
+- [Move admin jobs files](gitlab-org/gitlab@e7c75fdaccec639c2a89c1a3fc9c9329d4be537e) by @TrueKalix ([merge request](gitlab-org/gitlab!116798))
+- [Add root level breadcrumb to "Your work" EE pages](gitlab-org/gitlab@387756be8f3e01bd81f359e8e21c62b08152f1de) ([merge request](gitlab-org/gitlab!116763)) **GitLab Enterprise Edition**
+- [Omit OpenGraph/Twitter tags in redirected sign-in page](gitlab-org/gitlab@3adb8fd0809827ac9385774a327ffb29bf33ac9e) by @aubiyko ([merge request](gitlab-org/gitlab!116479))
+- [Cleanup of old help icons](gitlab-org/gitlab@c81e05565a4047125a747af3a8e0553cf420db6f) ([merge request](gitlab-org/gitlab!116681))
+- [Add toasts for variable actions](gitlab-org/gitlab@5041332a6496c20a8293fb6866e176db0639587c) ([merge request](gitlab-org/gitlab!116047))
+- [Add note that confirmation requires primary email](gitlab-org/gitlab@90b3ed9d2c5d532010ff5831e0c60929279e06ec) ([merge request](gitlab-org/gitlab!116011))
+- [Updating UI text](gitlab-org/gitlab@72c8cc141541d061e3dc3754c1f27bf5d54415d6) by @sselhorn1 ([merge request](gitlab-org/gitlab!116472))
+- [Add root level breadcrumb to "Your work" pages](gitlab-org/gitlab@37b285a0fcc51fa18f73e78e6c469cd864b98d57) ([merge request](gitlab-org/gitlab!116018))
+- [Change the order of vulnerability creation](gitlab-org/gitlab@1524af8ba5f7ba7bac3a8acc6e41459fbfc93a6b) ([merge request](gitlab-org/gitlab!116617)) **GitLab Enterprise Edition**
+- [Update BBM best practices section](gitlab-org/gitlab@22141886a653287bd17c18b47c61f1c2087a18fe) ([merge request](gitlab-org/gitlab!116163))
+- [Add laravel project template](gitlab-org/gitlab@22f74c76b55989a7ae3a63b2f14620186dc16238) ([merge request](gitlab-org/gitlab!108529))
+- [Use YAML.safe_load_file for Bullet exclusions](gitlab-org/gitlab@8834ce05f1e06c532d8d4b35750c2a73a9d7c0d0) ([merge request](gitlab-org/gitlab!116506))
+- [Swap id columns on sent_notifications](gitlab-org/gitlab@1fdb4e76b9a4bcf4988ee804ea6a9ab1f971510c) ([merge request](gitlab-org/gitlab!116048))
+- [Shows container registry image created time](gitlab-org/gitlab@338a96392da002d2dcc4878feb66f5d1abb3191e) ([merge request](gitlab-org/gitlab!116550))
+- [Capitalize participants in sidebar](gitlab-org/gitlab@8baea596e0f3e969de0a5c2102db0f28fc159ce0) ([merge request](gitlab-org/gitlab!116597))
+- [Debian package uniqueness](gitlab-org/gitlab@004a75634540f36ee21e7bfcae69d07b37701789) by @sathieu ([merge request](gitlab-org/gitlab!111027))
+- [Add alert when project missing pipeline file ](gitlab-org/gitlab@1c4946cc42f201c5bc954d9a0ad17a4ef2467d3e) ([merge request](gitlab-org/gitlab!116197)) **GitLab Enterprise Edition**
+- [Remove the `security_reports_mr_widget_prompt` experiment](gitlab-org/gitlab@1631b9fcbf0a1b9c3311586b4d02274b0d87da56) ([merge request](gitlab-org/gitlab!116567)) **GitLab Enterprise Edition**
+- [Remove feature flag](gitlab-org/gitlab@f79af362461b90a13e6c588e26faf836e6fe70c7) ([merge request](gitlab-org/gitlab!114757))
+- [Reschedule migration for links](gitlab-org/gitlab@1fa593004fb59c1aa08bc335a39db6677f64d74c) ([merge request](gitlab-org/gitlab!114601))
+- [Update copy of "Partial import" label](gitlab-org/gitlab@5f5d7e11e4b9f28313349b5c08b7261c34455043) ([merge request](gitlab-org/gitlab!115946))
+- [Splits up articats fields for Usage Quotas](gitlab-org/gitlab@241a4f02db146017dbccf66aadf679c9ce01c587) ([merge request](gitlab-org/gitlab!115580)) **GitLab Enterprise Edition**
+- [Defer loading of other versions tab on package details page](gitlab-org/gitlab@070239e0b6832bb4c8547e88cd16e78417e2d9a7) ([merge request](gitlab-org/gitlab!114298))
+- [Send queries to fetch schema cache to replicas](gitlab-org/gitlab@9467de47d6a3c742edb9d3dba94203ff3ecd86dc) ([merge request](gitlab-org/gitlab!116211))
+- [Update gitlab-mail_room to v0.0.23](gitlab-org/gitlab@dc99dbda5fab8a1288045760ae69457312cf742c) ([merge request](gitlab-org/gitlab!116494))
+- [Cleaned up experiment cross_stage_fdm](gitlab-org/gitlab@3bd2351b831b36d053dbad28be835768f55fc457) ([merge request](gitlab-org/gitlab!115239)) **GitLab Enterprise Edition**
+- [Rename "Deployments > Feature Flags" to "Deployments > Feature flags"](gitlab-org/gitlab@55c9c6d95e06a0bac5025a489a3695c894dc295b) ([merge request](gitlab-org/gitlab!116277))
+- [Cells: Move `appearances` into `clusterwide`](gitlab-org/gitlab@88d3b70852fef5427b234f43ece60043bb04fd97) ([merge request](gitlab-org/gitlab!115337))
+- [Adjust spacing of merge request widgets](gitlab-org/gitlab@4a6a2b9367c89fe5033176d4df1b1c5f50eeff30) ([merge request](gitlab-org/gitlab!116323))
+- [Add hashed_root_namespace_id to commits index mapping](gitlab-org/gitlab@29b257524554daa44161332e95515d1e4213782e) ([merge request](gitlab-org/gitlab!116413)) **GitLab Enterprise Edition**
+- [Refactor api admin mode shared example](gitlab-org/gitlab@48c32959cad9a37300df5cd5634620c30285a8f8) by @TrueKalix ([merge request](gitlab-org/gitlab!116124))
+- [Fixed unnecessary relayout if width is not changed](gitlab-org/gitlab@400eb0dc9c566516cb2a6376822791e75dd7ad7f) ([merge request](gitlab-org/gitlab!115553))
+- [Remove limit-container-width from more pages](gitlab-org/gitlab@2fc376e690799db947f65be7b315250ef975fa48) ([merge request](gitlab-org/gitlab!116234))
+- [Update MR security widget to read from new properties](gitlab-org/gitlab@dad6781faab6bad3755e873770a8b4e7df9c172d) ([merge request](gitlab-org/gitlab!116077)) **GitLab Enterprise Edition**
+- [Approvals widget: improve styling](gitlab-org/gitlab@ef506bf7a9501fb33227cbccf194458816d5f1b3) ([merge request](gitlab-org/gitlab!116387)) **GitLab Enterprise Edition**
+- [Update styling of pending comment](gitlab-org/gitlab@ae1d303abdf3a95b8375b7cd8bf7da8ef4ba2820) ([merge request](gitlab-org/gitlab!113785)) **GitLab Enterprise Edition**
+- [Update Issue's Due Date field real-time](gitlab-org/gitlab@339ff48c8316334b50d80fb7c9379526e85129c7) ([merge request](gitlab-org/gitlab!115848))
+- [Linked resources widget: change help icon](gitlab-org/gitlab@b1eb4a0548d41d061b0fff7b164231d455020b6b) ([merge request](gitlab-org/gitlab!116369))
+- [Diff: toggle file contents with keyboard](gitlab-org/gitlab@4a54fafc204440fe122eef7b2023ef8114dcf407) ([merge request](gitlab-org/gitlab!115959))
+- [Changes the comments help icon](gitlab-org/gitlab@b3fe6293c4bb6add75959173e83199c1248abd03) ([merge request](gitlab-org/gitlab!116260))
+- [Approvals widget: change vertical alignment of approvals icon](gitlab-org/gitlab@349328f1fffa1528e79e526eea56900f373f8233) ([merge request](gitlab-org/gitlab!116261))
+- [Change container registry copy expiration policy to cleanup policies](gitlab-org/gitlab@df8e73970b196f52e90a9ba2a1ec0c4e411ee38d) ([merge request](gitlab-org/gitlab!116105))
+- [Lock writes during gitlab:setup task](gitlab-org/gitlab@7e7dbafd406dc6eaaff5e5b9b9cf6956461b292a) ([merge request](gitlab-org/gitlab!116347))
+- [Add database migration](gitlab-org/gitlab@dc0cb091aff39a3c4de24273a357e6779206bf12) ([merge request](gitlab-org/gitlab!115403))
+- [Prepare to drop unused jira indexes on projects](gitlab-org/gitlab@681637fe18ee1bccb0ec8ef0d60e4a60f8d09bd6) ([merge request](gitlab-org/gitlab!116338))
+- [Right-align note actions dropdown](gitlab-org/gitlab@c0cfa6ed362e0dab9a2edaeccf118cd9fb8714e9) ([merge request](gitlab-org/gitlab!116324))
+- [Add a throttle to sync service db usage](gitlab-org/gitlab@6ecdf3a7694663f8299afff52cea513028f0cdef) **GitLab Enterprise Edition**
+- [Increase vertical spacing on MR header](gitlab-org/gitlab@b1ed2d7acc2a83552762b2e71611b6190764aa6d)
+- [Fix add/edit/delete dismissal comment for pipeline security tab](gitlab-org/gitlab@ac4f452d6286af51a62c95150997c07078c6f065)
+- [Migrate the existing RedisHLL keys to default slot](gitlab-org/gitlab@42d79f27e1b8cf5ab6cc14c9219da56cedd38070) ([merge request](gitlab-org/gitlab!115927))
+- [Add empty state for customizable dashboard panels](gitlab-org/gitlab@956003d5c042f54fdc82d28a7b1fa0a58a80d2a3) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115266)) **GitLab Enterprise Edition**
+- [Add Drawer from CodeQuality Inline-diff findings](gitlab-org/gitlab@190fe3d75922d3647314f7e96639e3cd866d2269) ([merge request](gitlab-org/gitlab!114649)) **GitLab Enterprise Edition**
+- [Merge blocked: change spacing of merge details](gitlab-org/gitlab@a7bb7fcff048143e48ac5c3599f42b2889818fbe) ([merge request](gitlab-org/gitlab!116274))
+- [Reschedule the migration of evidences](gitlab-org/gitlab@38583724aba63ece4f2b153eea9a020b7512d0d9) ([merge request](gitlab-org/gitlab!116266))
+- [Enable branch rules feature flag by default](gitlab-org/gitlab@f0ef9b06d5903c4ed65dc49e204ea793007baf80) ([merge request](gitlab-org/gitlab!116267))
+- [Admin area: change help icons on dashboard](gitlab-org/gitlab@6c7b2535ff1e02ffb5b6c9487b0634c3927d9076) ([merge request](gitlab-org/gitlab!116262))
+- [Add a throttle to sync service db usage](gitlab-org/gitlab@0e92f6eb7f08cc98a5f936901f7ecba8e0e9c97c) ([merge request](gitlab-org/gitlab!115581)) **GitLab Enterprise Edition**
+- [Merge request: unify help icons](gitlab-org/gitlab@39bfc0109b4b184dab2bc05b89233e4e7a6abf12) ([merge request](gitlab-org/gitlab!116251))
+- [Load commit diffs async by default](gitlab-org/gitlab@498a9ae46b3f68354501f8aa0af185cd61ca12c2) ([merge request](gitlab-org/gitlab!116253))
+- [Fix add/edit/delete dismissal comment for pipeline security tab](gitlab-org/gitlab@f63ae93d02389f907e5c33648729afce63d4563b) ([merge request](gitlab-org/gitlab!115795))
+- [Epic tree: item spacing improvement](gitlab-org/gitlab@009de85f7ea3536c0bef7c79c8c5599f25214c48) ([merge request](gitlab-org/gitlab!116242))
+- [Add a expiry date option for deploy tokens](gitlab-org/gitlab@5579a5e9c1768abd8247a235df36f0c00fd25c73) by @ChevronTango ([merge request](gitlab-org/gitlab!114372))
+- [Use state_transitions on pipeline security list](gitlab-org/gitlab@b3d3a43e6608002a9ffe0d2d78c650be0f1e49d0) ([merge request](gitlab-org/gitlab!115611)) **GitLab Enterprise Edition**
+- [Python.gitlab-ci.yml: Suggest using the current version of Python](gitlab-org/gitlab@ec276382c44dc4ddc971b3cf2324ed79f4778912) by @cclauss ([merge request](gitlab-org/gitlab!116025))
+- [Increase vertical spacing on MR header](gitlab-org/gitlab@0c26aec89bdde8e710c406cb52e5d7558fd2195d) ([merge request](gitlab-org/gitlab!116145))
+- [Add GraphQL mutation to create a merge request](gitlab-org/gitlab@1969544b7d73e8bef0aa77b58f752de891ecc6a1) ([merge request](gitlab-org/gitlab!114626)) **GitLab Enterprise Edition**
+- [Improve layout and text of "too many changes" alert](gitlab-org/gitlab@c81829ea86d5443ffd69e6c616117a2e27e7e978) ([merge request](gitlab-org/gitlab!115907))
+- [Google cloud pages: Remove container limited class](gitlab-org/gitlab@bf873b090344ccced05c2e695677ea0ae964c2f1) ([merge request](gitlab-org/gitlab!116118))
+- [Issues list: change status to use badge component](gitlab-org/gitlab@8330dff0ea78c161d96a65d56e28bcf2fbfe336a) ([merge request](gitlab-org/gitlab!115650))
+- [MR widgets: Unify loading icon size](gitlab-org/gitlab@2d813a94e6c0d7f8df832c0b3815217fbecda3f0) ([merge request](gitlab-org/gitlab!116096))
+- [Add new application form: form cleanup](gitlab-org/gitlab@9d2c3105513f3eaf55d0a56e25e00dc1b23dee0d) ([merge request](gitlab-org/gitlab!116107))
+- [Diff: add file permission tooltip](gitlab-org/gitlab@6672d7bee19f41a52ebcbacc37b06eae625fa071) ([merge request](gitlab-org/gitlab!115976))
+- [Ensure visualizations have default values](gitlab-org/gitlab@732155a6d1b653379db5667ce52d9bf7cc42804b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115458)) **GitLab Enterprise Edition**
+- [Migrate checkbox to GlFormCheckbox](gitlab-org/gitlab@4bba3e6f856d7b5c5212644f9446236a30787fbf) ([merge request](gitlab-org/gitlab!115952))
+- [MR list: change alignment of labels](gitlab-org/gitlab@f0569a9d917db96ae67954e7995c3a3e6fa7070f) ([merge request](gitlab-org/gitlab!115956))
+- [Merge request: Rename Email patches to Patches](gitlab-org/gitlab@aa154f0bb9227e368ced7e51950ae4a968f1e5c6) ([merge request](gitlab-org/gitlab!115989))
+- [Disallow NONE and ANY filter values for OR operator](gitlab-org/gitlab@cca3cf0b99b869200e067375acbf134303d0a085) ([merge request](gitlab-org/gitlab!116062))
+- [Add data transfer graphql queries under feature flag](gitlab-org/gitlab@a387c7e239d1849d4ec720d3595e4b728ff8e50b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113392)) **GitLab Enterprise Edition**
+- [Hide upgrade billing for ramped subscriptions](gitlab-org/gitlab@940430a9fe0a169b8015a542efba8dd670c7ecc2) ([merge request](gitlab-org/gitlab!115899)) **GitLab Enterprise Edition**
+- [Update parsing of *_DISABLED variables](gitlab-org/gitlab@c8068c30f0df14cc180027161f05c7a752e7f925) ([merge request](gitlab-org/gitlab!116033))
+- [Fix small UI inconsistencies in MR view](gitlab-org/gitlab@718c306b7d3a2781ad4a43d6b6c5007e671bfdd0) ([merge request](gitlab-org/gitlab!115435))
+- [Update the breadcrumbs and pagetitles](gitlab-org/gitlab@2d75e1c0d5a56df73c28b1b5f55e6b6315b88edc) by @Mughees_ ([merge request](gitlab-org/gitlab!115432))
+- [Update vulnerability state change notes to include dismissal reasons](gitlab-org/gitlab@a063da7bd164a7c35dbcd1e460d5235fb424ff73) ([merge request](gitlab-org/gitlab!113614)) **GitLab Enterprise Edition**
+- [Update validation in order to allow](gitlab-org/gitlab@049575af8cf79552ad8e5d1764c89deed9cdbefc) ([merge request](gitlab-org/gitlab!114741))
+- [Remove real_time_issue_epic_links feature flag](gitlab-org/gitlab@6ad3859d470af00780e335face29ec234a005915) ([merge request](gitlab-org/gitlab!115662))
+- [Search::Index creates an Elasticsearch index on create](gitlab-org/gitlab@117c1d46ed78c4257d88bc004f17c673999bf2d6) ([merge request](gitlab-org/gitlab!115752))
+- [Consolidated product analytics feature flags](gitlab-org/gitlab@3f6797c97da3be77fee8cd4c03e2106aba5bdc24) ([merge request](gitlab-org/gitlab!115177))
+- [Adjust tests to api admin mode](gitlab-org/gitlab@52e639b39096a9c226e1a29b69c2b61a9ba0b8f8) by @TrueKalix ([merge request](gitlab-org/gitlab!113736))
+- [Show "-" when the size of the MR diffs is 0](gitlab-org/gitlab@b2729d14a15258f1e04721e83a0ff40c57d8a02d) ([merge request](gitlab-org/gitlab!114832))
+- [Project: Remove container limited class](gitlab-org/gitlab@1af2bafed0bf05235aed3a57833b096d7f9f849e) ([merge request](gitlab-org/gitlab!115700)) **GitLab Enterprise Edition**
+- [Enhance safe-html usage on SAST configuration](gitlab-org/gitlab@2281648a977eb37c63bfe3e543178df50b64f7cf) ([merge request](gitlab-org/gitlab!115483)) **GitLab Enterprise Edition**
+- [Replace bootstrap dropdown for issuable type](gitlab-org/gitlab@716fccd71994f6366ea64277ca4d7348a0e5c17f) ([merge request](gitlab-org/gitlab!115364))
+- [Remove extra settings content in CI/CD settings](gitlab-org/gitlab@538076d63d541e242f57268d8f816e3dc4c1f6ba) ([merge request](gitlab-org/gitlab!116024))
+- [Extended the syntax highlighting for CODEOWNERS](gitlab-org/gitlab@8b1960de14a3162a8a6e06a348e72a82dd785e4f) ([merge request](gitlab-org/gitlab!115606))
+- [Update user_type value for humans](gitlab-org/gitlab@1de25fa961dcecd5144fb1ff0587a8b6f303c996) ([merge request](gitlab-org/gitlab!113552))
+- [Change SVN migration link](gitlab-org/gitlab@d2a967bed7acc2038c5fb9421d0ba58d4b3e833b) ([merge request](gitlab-org/gitlab!115817))
+- [Update dependency auto-build-image to v1.31.0](gitlab-org/gitlab@54ac0f2cacb67aa4f2f0f16082fda9560544b414) ([merge request](gitlab-org/gitlab!115811))
+- [Left align new branch form](gitlab-org/gitlab@14e87de6c9715d04273a67f87fe5b6bcad6d0bd0) ([merge request](gitlab-org/gitlab!114505))
+- [Renames ml_candidates.iid to eid](gitlab-org/gitlab@39778ea7b04182798e30b27ac08a6b0186565746) ([merge request](gitlab-org/gitlab!115356))
+- [Remove connecting lines between MR widgets](gitlab-org/gitlab@22cb52983108959d556a6e92e7a4a016a003e55e) ([merge request](gitlab-org/gitlab!115745))
+- [Format personal access token name in email](gitlab-org/gitlab@5665f40b888fa9e52e0c08253e51e74a2f39f3d2) ([merge request](gitlab-org/gitlab!114994))
+- [Use state_transitions on pipeline security list](gitlab-org/gitlab@e1eb446b894ab73da5c65411f557dcd77ea37c20) ([merge request](gitlab-org/gitlab!115130)) **GitLab Enterprise Edition**
+- [Application: Remove container limited class](gitlab-org/gitlab@f8f589336c4e0a089e073a943da9b4d538914aef) ([merge request](gitlab-org/gitlab!115717))
+- [Cluster: Remove container limited class](gitlab-org/gitlab@079cf6b9ee4a1a6b1433f691836ed39f0d105e54) ([merge request](gitlab-org/gitlab!115716))
+- [Post-process leaked credentials on all branches](gitlab-org/gitlab@1e53b9a56bc8286207fdbc05038a267ddfeef939) ([merge request](gitlab-org/gitlab!114711)) **GitLab Enterprise Edition**
+- [Improve error message for Security Features with alias usage in ci file](gitlab-org/gitlab@adc6a4969ff9a1b734d0406fa4d3c0bfe14bc526) ([merge request](gitlab-org/gitlab!115675))
+- [Create search index assignments for notes](gitlab-org/gitlab@aab7e99aaf98c63026fb8e3a3fb48e417e5bdf88) ([merge request](gitlab-org/gitlab!113612))
+- [User settings: remove container limited class](gitlab-org/gitlab@46289832f7164f0889b2fdd1512cb3f161a814bb) ([merge request](gitlab-org/gitlab!115661))
+- [Restore breadcrumb border for all pages](gitlab-org/gitlab@9fccf2d4e7636ac9a138b091117beb2c11f8cba7) ([merge request](gitlab-org/gitlab!115466))
+- [Profile page: change border bottom color of personal projects](gitlab-org/gitlab@53f4866a42f0ebb0377d5f1d00c2ff6e7f96f0fa) ([merge request](gitlab-org/gitlab!115655))
+- [Merge request, Issue list: remove darker border from closed items](gitlab-org/gitlab@912c105b1f5de00d70fd6a4976a391def384a584) ([merge request](gitlab-org/gitlab!115646))
+- [Issuable detail page: restore limited-container-width class](gitlab-org/gitlab@a5dda04f3c05e06781d9c54643624b22eb3878b5) ([merge request](gitlab-org/gitlab!115639))
+- [Environment variable UNSTRUCTURED_RAILS_LOG removed from codebase](gitlab-org/gitlab@6c92bdde06a612023d0b3c65adc8eafaa6385ffc) ([merge request](gitlab-org/gitlab!112910))
+- [Update dependency auto-deploy-image to v2.48.0](gitlab-org/gitlab@4aa7beb330b6d8d11f975e8342b00ce3687edb57) ([merge request](gitlab-org/gitlab!115618))
+- [Broadcast Messages: form cleanup](gitlab-org/gitlab@5a19cc54df61f15968ec49cf2a96071410e50e52) ([merge request](gitlab-org/gitlab!115027))
+- [Removes all uploads from usage_quotas storage pages](gitlab-org/gitlab@3737d7c0c40b833fc132aad3af80fd2a78a112cb) ([merge request](gitlab-org/gitlab!115564)) **GitLab Enterprise Edition**
+- [Update parsing of *_DISABLED variables](gitlab-org/gitlab@8b5baffa1efee9475a1e436cce8991944784758a) ([merge request](gitlab-org/gitlab!115576))
+- [Update saved reply form layout](gitlab-org/gitlab@4b4d7af5660783c87da3b34d19793e0b659bbc8c) ([merge request](gitlab-org/gitlab!114923))
+- [Move description templates help text below description title](gitlab-org/gitlab@9b15ff4d55fd60ab15520d5fceb4fac0092d8b71) ([merge request](gitlab-org/gitlab!115248))
+- [Adjust tests to api admin mode](gitlab-org/gitlab@0fb805c56ab7a5967a9b8a91bb18f6d5a089d911) by @TrueKalix ([merge request](gitlab-org/gitlab!114776))
+- [Remove .integration-settings-form CSS](gitlab-org/gitlab@de4bdf9fd1a36b954b08831990c881902420f7c0) ([merge request](gitlab-org/gitlab!115384))
+- [Adds hashed_root_namespace_id to issue index](gitlab-org/gitlab@47d2de2d1b79358bb7f206fc6eac1066b3d29be2) ([merge request](gitlab-org/gitlab!115023)) **GitLab Enterprise Edition**
+- [Pipeline editor improvements](gitlab-org/gitlab@f997a66228fa91bfdcc6761e82bf739a9996b295) ([merge request](gitlab-org/gitlab!115008))
+- [Use YAML.safe_load_file for backup/restore](gitlab-org/gitlab@e6569d1b5a587946a219bcb4e9a5bdc82fe66e2a) ([merge request](gitlab-org/gitlab!115445))
+- [Add keyset pagination to Instance level audit events api](gitlab-org/gitlab@4ffc2b97716a19877a9ee44127b19fb6cfb1c3cd) ([merge request](gitlab-org/gitlab!114535)) **GitLab Enterprise Edition**
+- [Adjust tests to api admin mode](gitlab-org/gitlab@4ec3c6068d19ea7e478903190d70841cacf32245) by @TrueKalix ([merge request](gitlab-org/gitlab!114567))
+- [Adding Package Name to Google Play Integration](gitlab-org/gitlab@05366e6aeb37e76c72bdb772e2e3c4a2c031bdcd) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114929))
+- [Update UI action button when loading empty VSA](gitlab-org/gitlab@851e02c98fc00ab289a291ae23316605cb17d7b4) ([merge request](gitlab-org/gitlab!115152)) **GitLab Enterprise Edition**
+- [Remove elasticsearch_use_traversal_id_optimization flag](gitlab-org/gitlab@7c953a9d6d9d18e9d4737608b02b9f3ffee55c59) ([merge request](gitlab-org/gitlab!113396)) **GitLab Enterprise Edition**
+- [Remove tertiary category from collapse button](gitlab-org/gitlab@afb92c000519be6270a3ed8bd76f553f87bb1285) ([merge request](gitlab-org/gitlab!115414))
+- [Update ipaddr to v1.2.5](gitlab-org/gitlab@1ebccbedd96599805ad9566978d2c87feec8ae44) ([merge request](gitlab-org/gitlab!115405))
+- [Add index for free_user_cap_over_limit_notified_at](gitlab-org/gitlab@72e325ec7ae09d7944d59e0c66da21c3bd4e2448) ([merge request](gitlab-org/gitlab!115221))
+- [Add prefix and custom match options for custom Jira issue matching](gitlab-org/gitlab@1c47c3a799f60551d4c60596ccfd113c55317c8b) by @jackorp ([merge request](gitlab-org/gitlab!112826))
+- [Add workers to clear notified at flags](gitlab-org/gitlab@64f051b5fe0bc7db17f0ee5aa11413c696c77b0a) ([merge request](gitlab-org/gitlab!111312)) **GitLab Enterprise Edition**
+- [Work items: Improve styling of child items](gitlab-org/gitlab@d146c11fb8b37b43495e152c3de1822e589761e8) ([merge request](gitlab-org/gitlab!115050))
+- [Show a loading spinner while searching](gitlab-org/gitlab@c8577ae20fe108c1231164b4aaf4e98068703ade) ([merge request](gitlab-org/gitlab!114643))
+- [Not use the word retry to refer to webhook executions](gitlab-org/gitlab@b936894f62f82a8e4e29205643084600865f34bb) by @alexkalderimis ([merge request](gitlab-org/gitlab!109280))
+- [Includes namespace when searching for projects in autocomplete bar](gitlab-org/gitlab@72d9ca3acf9f9515b7e4de3f3368edaaaf477069) ([merge request](gitlab-org/gitlab!114993))
+- [Limit invitations to trial groups and projects](gitlab-org/gitlab@e8f06e2dc742941a961a7986786d6d9ed277a72c) ([merge request](gitlab-org/gitlab!114887))
+- [Project overview: remove container-limited class](gitlab-org/gitlab@74ee4ffd58bfa1c5848076a1117548ea281fc1be) ([merge request](gitlab-org/gitlab!114864))
+- [Repository: Remove container limited class](gitlab-org/gitlab@129aac9186c6007ade55a92f39e6e8fe0f8cfee1) ([merge request](gitlab-org/gitlab!114861))
+- [Geo settings page cleanup](gitlab-org/gitlab@32b63d80cb26ce7911239cfcb5bd7a561f1dfc4e) ([merge request](gitlab-org/gitlab!115012)) **GitLab Enterprise Edition**
+- [Merge request list: Change status to use badge component styles](gitlab-org/gitlab@86707400604d0574e51c627a5dc706dc05af4499) ([merge request](gitlab-org/gitlab!114745))
+- [Issuable list: change meta font-size](gitlab-org/gitlab@d319fe61dbea571332c0682f56538e20ca654af4) ([merge request](gitlab-org/gitlab!114103))
+- [Improves the styling of Child issues and epcics](gitlab-org/gitlab@813963e4d06b5187b73a148c34f5b47e43b1f39a) ([merge request](gitlab-org/gitlab!114597)) **GitLab Enterprise Edition**
+- [This MR extracts Runner Tags Dropdown](gitlab-org/gitlab@e0cd534b1f8ab1a146567db14bde5e454ea7335f) ([merge request](gitlab-org/gitlab!114480)) **GitLab Enterprise Edition**
+- [Clean up route_hll_to_snowplow_phase4 feature flag](gitlab-org/gitlab@444d44b0f23439473a9a47303771476875c9821b) ([merge request](gitlab-org/gitlab!114358))
+- [Move issue checklist item counts to below description](gitlab-org/gitlab@679664f828fee232d91c3e706612f6d6b55c6c1d) ([merge request](gitlab-org/gitlab!114141))
+- [Update gitlab-experiment gem to v0.8.0](gitlab-org/gitlab@f04cbb158e79450d9a16f6e4f636908640645b11) ([merge request](gitlab-org/gitlab!113990))
+- [Refactor scan_pipeline_service_spec job list fetching](gitlab-org/gitlab@63581b2e8070efd9b30a17ce0847404167b98098) ([merge request](gitlab-org/gitlab!114651))
+- [Cells: Move `broadcast_messages` into `clusterwide`](gitlab-org/gitlab@c8d19426d598498da5c8907d850f3bc99df89a7b) ([merge request](gitlab-org/gitlab!115192))
+- [Remove the new_header_search FF](gitlab-org/gitlab@25f5089dd9d8be3ddd6dfec89c6656c65debdbbc) ([merge request](gitlab-org/gitlab!113859))
+- [Use state_transitions on pipeline security list](gitlab-org/gitlab@8b4fa4839fadaf8a60b48932810000b8f088dd6c) ([merge request](gitlab-org/gitlab!114977)) **GitLab Enterprise Edition**
+- [Use page_level_alert content_for on free user cap alerts](gitlab-org/gitlab@c97e275932bd6b7f447096765ee73cbea06885de) ([merge request](gitlab-org/gitlab!114442)) **GitLab Enterprise Edition**
+- [Default enable linear_group_descendants_finder_upto](gitlab-org/gitlab@91a1a50fb90bcb681135a5d12df06dec41476e91) ([merge request](gitlab-org/gitlab!114982))
+- [Update UI warning when loading VSA](gitlab-org/gitlab@cd54700c365c3fcfb4b28d8dfe62095291f673d8) ([merge request](gitlab-org/gitlab!115126))
+- [Move milestone actions into dropdown](gitlab-org/gitlab@04b4e9fc3b0c180f07d85950b0b2f1ef00adb7ba) ([merge request](gitlab-org/gitlab!114956))
+- [Fixes broken docs link for Apple App Store integration](gitlab-org/gitlab@6c4aa9a9f7cd4095e3245b6c3525927f3fe57905) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115076))
+- [Projects list: style improvements](gitlab-org/gitlab@a604993635873d42c14fd60df746ae367abc05c3) ([merge request](gitlab-org/gitlab!115030))
+- [Removes the old UpdateMaxSeatsUsedForGitlabComSubscriptionsWorker](gitlab-org/gitlab@c022103e243ca52db206080a7d03a80a7a9a03dd) ([merge request](gitlab-org/gitlab!112180)) **GitLab Enterprise Edition**
+- [Revamp of the searchbox events handling](gitlab-org/gitlab@c5736acabd92018db43e875aac34222b6f2d738a) ([merge request](gitlab-org/gitlab!93687))
+- [Clear button events](gitlab-org/gitlab@29c6b612ad28e546134e5ea03df284af0452c0d1) ([merge request](gitlab-org/gitlab!93687))
+- [Pipeline list: style improvements](gitlab-org/gitlab@3709883f6c3bc69d981c6e9f9a5c683d9ca48554) ([merge request](gitlab-org/gitlab!115006))
+- [Added ff and flow to skip Namespace Aggregation Lease](gitlab-org/gitlab@1b919581aed1bc90a69203e4bcbf985de8342aa2) ([merge request](gitlab-org/gitlab!113959))
+- [Remove `caller_id` from Redis metrics](gitlab-org/gitlab@248b3716249d93bd91daaf18cc379baa684685f4) ([merge request](gitlab-org/gitlab!114896))
+- [Right sidebar: change left-border width to match left sidebar](gitlab-org/gitlab@e26865157c27c91a83d14078992d95ef946d10d1) ([merge request](gitlab-org/gitlab!114998))
+- [Admin Area: remove container limited class](gitlab-org/gitlab@ef5dd34e7e2f4574260898d7c243216faf1253cb) ([merge request](gitlab-org/gitlab!114910))
+- [Group: Remove limited container class](gitlab-org/gitlab@342f0435afd04e82be27590fa2d59213b763d7cb) ([merge request](gitlab-org/gitlab!114899))
+- [Group settings: Remove limited container class](gitlab-org/gitlab@840b1971c7b906a59b233323d4831986fd9f7cd8) ([merge request](gitlab-org/gitlab!114901))
+- [Remove `group_owners_to_disable_two_factor` FF](gitlab-org/gitlab@79ac47369e3cfb4c8faf508ffe6cccd30aced9b4) ([merge request](gitlab-org/gitlab!109006))
+- [Add MigrateSharedVulnerabilityIdentifiers background migration](gitlab-org/gitlab@bea23dd124836f1eb459b8b61862bd1574fe61a7) ([merge request](gitlab-org/gitlab!112556)) **GitLab Enterprise Edition**
+- [Project settings: remove limited width class](gitlab-org/gitlab@a72a712a4c746812e03585b3e37609ba42d80471) ([merge request](gitlab-org/gitlab!114888))
+- [Refactor: Card component to Pajamas comliant](gitlab-org/gitlab@07425a37cdbee12ca87c985425ed661d0edf76a1) by @imrishabh18 ([merge request](gitlab-org/gitlab!113968))
+- [Convert admin system info cards to pajamas](gitlab-org/gitlab@4781082fd9fcfd7c4135adb1c1b6d13b73677ed4) ([merge request](gitlab-org/gitlab!114327))
+
+### Deprecated (1 change)
+
+- [Deprecate Project.ci_config_variables `sha` arg; add `ref` arg](gitlab-org/gitlab@9138d9982857ffc6cb461f6f088a24119c21642e) ([merge request](gitlab-org/gitlab!116032))
+
+### Removed (27 changes)
+
+- [Add openSUSE 15.3 removal for GitLab 15.11](gitlab-org/gitlab@d4852abcdda73dc26f3b911785b4664ec418496a) ([merge request](gitlab-org/gitlab!116007))
+- [Remove unnecessary admin mode shared examples](gitlab-org/gitlab@ad589a4c610a77ab72a6e1c2a83fc061012f8f86) by @TrueKalix ([merge request](gitlab-org/gitlab!117625))
+- [Hide some tracing instrumentations behind environment variables](gitlab-org/gitlab@82f7b44b8b0167e0aabe0cfb3958b15151bdd8d7) ([merge request](gitlab-org/gitlab!116257))
+- [Cleanup migration of sent_notifications to bigint](gitlab-org/gitlab@2f6c7f7e3c8330eac8fb74b00b68244bb243592f) ([merge request](gitlab-org/gitlab!117292))
+- [Remove project_export_as_ndjson feature flag](gitlab-org/gitlab@0e7392645d2f121a5758e8dddcd1c366d7a001f0) ([merge request](gitlab-org/gitlab!110729)) **GitLab Enterprise Edition**
+- [Remove require_verification_for_namespace_creation](gitlab-org/gitlab@6c40cc46ffc3dc5151ca985384b53ab02191f70f) ([merge request](gitlab-org/gitlab!117148))
+- [Remove disable_vulnerability_feedback_controller FF](gitlab-org/gitlab@171c8bcfa7aeecf86e89e0eef536edfc17175563) ([merge request](gitlab-org/gitlab!116912)) **GitLab Enterprise Edition**
+- [Async remove 'merge_request_mentions_temp_index' index](gitlab-org/gitlab@eed832a613367673b9c8d32d826c294d58bd6c38) ([merge request](gitlab-org/gitlab!116729))
+- [Async remove 'merge_requests_state_id_temp_index' index](gitlab-org/gitlab@24b96dc8fda979460e72f0ca7faacb00b92d23cb) ([merge request](gitlab-org/gitlab!116726))
+- [Remove ProjectType.ci_config_variables  arg](gitlab-org/gitlab@b003aa84c08f38c9bdda2889c32155dad39456b5) ([merge request](gitlab-org/gitlab!116842))
+- [Delete gitbook.tar.gz template](gitlab-org/gitlab@e00291c5bf3044ca9d4b03e3ef42dabe70742c2d) ([merge request](gitlab-org/gitlab!115022))
+- [Synchronously remove unused Jira indexes](gitlab-org/gitlab@3f760f6305e53411ad8b63f6f7e0942921dadb32) ([merge request](gitlab-org/gitlab!116735))
+- [Remove temporary index on vulnerability_occurrences](gitlab-org/gitlab@ebd332d20789f3eeaef711735d1bb054a7a2200c) ([merge request](gitlab-org/gitlab!116230))
+- [Remove release description in tag page](gitlab-org/gitlab@ba5b8bff38822d9d0c08a70dd4fc3a7a14f6a4c9) ([merge request](gitlab-org/gitlab!115627))
+- [Remove temporary index for licenses cleanup](gitlab-org/gitlab@2bc1794cb31d397c668c9dfe0704ab6494dbffae)
+- [Removed PipelinesController#config_variables endpoint](gitlab-org/gitlab@76c253d3594c6785e298e8c31d41779c26855faf) ([merge request](gitlab-org/gitlab!116044))
+- [Drop runner_machine_id column from ci_builds_metadata](gitlab-org/gitlab@eaae8281a205181d03b33843a06e0950a73bcf3f) ([merge request](gitlab-org/gitlab!113103))
+- [docs: Remove mentions of gitaly-ruby](gitlab-org/gitlab@6a1d59926f386ef6e1931ef8dbaeb5d230341b7b) ([merge request](gitlab-org/gitlab!116121))
+- [Remove temporary index for licenses cleanup](gitlab-org/gitlab@e0007df50c46e405fc5a4685a657c050bde04d3d) ([merge request](gitlab-org/gitlab!116098))
+- [Removing FF refactor_ci_minutes_consumption](gitlab-org/gitlab@47371c6fe8cf25a9d75e4b7396defcf304fbe387) ([merge request](gitlab-org/gitlab!115735))
+- [Perform final removal of the learn gitlab creation worker](gitlab-org/gitlab@e92dc097481a7be1a72848c81cb31cba07a43da0) ([merge request](gitlab-org/gitlab!113899))
+- [Stop writing v1 ActiveSession keys](gitlab-org/gitlab@f9a58dea42e91f16e9bd3e741a9b6d001bcc9862) ([merge request](gitlab-org/gitlab!115940))
+- [Remove unused alert_metrics component](gitlab-org/gitlab@19460cd9facaefca3a86f13c1d2109905e1a3804) ([merge request](gitlab-org/gitlab!115866))
+- [Drop packages_events table](gitlab-org/gitlab@a729d57cde684dd7791854d0b0312ed9868b347f) ([merge request](gitlab-org/gitlab!114947))
+- [Remove collect_package_events feature flag with relevant code](gitlab-org/gitlab@2051f42938dc517036389f154d09f8d0b34a8539) ([merge request](gitlab-org/gitlab!114749))
+- [Remove duplicate metrics for group "editor"](gitlab-org/gitlab@2a1fb150e4abc977dd107ca72ccd3c4fb2b692ce) ([merge request](gitlab-org/gitlab!114997))
+- [Removes create_table_with_constraints](gitlab-org/gitlab@c1fdb9d4fc815f5624fb116030d4a230964d6b22) ([merge request](gitlab-org/gitlab!114895))
+
+### Security (21 changes)
+
+- [Revert 'security-find_tag_before_send_git_archive'](gitlab-org/gitlab@86a92a6b2c6758c0d85ad3f6808cab22c6d119e5)
+- [Fix security report authorization](gitlab-org/gitlab@d48cd5e4d74426e37b3033043e1d7542d0a739ab)
+- [Check access to parent when creating and updating epics](gitlab-org/gitlab@633c6267075767fce6e8ae7d55965f28d5fff21a)
+- [Revert security-383776-track-sha-of-last-approval](gitlab-org/gitlab@24818b7fe89569cb39abdbf38aed9171c9565662)
+- [Normalize some spaces in snapshot spec](gitlab-org/gitlab@39a5505ae434ec193f3f2c0b418552321b1caa78)
+- [Check access to target project before looking for branch](gitlab-org/gitlab@1708cd6cd3d1c1087debea94abbe566ddf5ade7f)
+- [Verify that users have access to the parent of the fork](gitlab-org/gitlab@862a3c7c9b8d114b41d7e921a0d63808788a6789)
+- [Check access to reorder issues in epic tree](gitlab-org/gitlab@f155e762160af234a2adb2ec4378f51e67da0a98)
+- [Redirect to tree from project root on ref collision](gitlab-org/gitlab@f1e2626fe777ccc1878ef7b5352e6277e7eb0c20)
+- [Fixes soft email confirmation alert vulnerability](gitlab-org/gitlab@089886ede8853903e8316943201522cbc53f9172)
+- [Record sha of approval](gitlab-org/gitlab@8fa3917f5d16851b73c1e2ceefbf1b576356d5bb)
+- [Use UntrustedRegexp to limit scan of HTML comments](gitlab-org/gitlab@93fab48793220f2ced4678967314df3ee3dd73bf)
+- [Replace Unicode space chars with spaces](gitlab-org/gitlab@0ff59edf8061be9b1d217abac91e69fdb1d2ac77)
+- [Improve Gitlab::UrlSanitizer regex to match more URIs](gitlab-org/gitlab@2fbafe22604cb8bfcf2191970cdbc3a5b83331da)
+- [Restrict Prometheus API access on public projects](gitlab-org/gitlab@adcdf76803f89f265e7a6db9ca3d146e7f4f0dd3)
+- [Filter namespace environments by feature visibility](gitlab-org/gitlab@1765d693e86a9562da59f910a06a5b79f29bf794)
+- [Fix the potential leak of internal notes](gitlab-org/gitlab@ca5fffb1c2a1ae4f0da19c5e2821e9f630ee11ce)
+- [Update globalid gem to v1.1.0](gitlab-org/gitlab@bc9bfaa75468f8429ca8eb734d722af0a8ff97eb) ([merge request](gitlab-org/gitlab!115749))
+- [Prevent XSS attack in "Maximum page reached" page](gitlab-org/gitlab@220b52d5c53d1364353c77643116320beee65902)
+- [Protect webhook secrets by resetting url_variables](gitlab-org/gitlab@0bce20593cc959322acb2a6a9a9b54bcb5552346)
+- [Check for tag before send_git_archive](gitlab-org/gitlab@3a2e998dfeb3bde1c606fc1bf1cefa63d2ca27f5)
+
+### Performance (13 changes)
+
+- [Add migration for backfilling project permissions in blob documents](gitlab-org/gitlab@58defaf841227c227de2f8fbc637c009837d8fc3) ([merge request](gitlab-org/gitlab!117224)) **GitLab Enterprise Edition**
+- [Remove sync index idx_merge_requests_on_state_id_and_merge_status](gitlab-org/gitlab@095015933c5372630bdab2f07c1b9d3e268b9a56) ([merge request](gitlab-org/gitlab!117481))
+- [Remove index on events.action](gitlab-org/gitlab@4d9d7f479fa484f0f4385458fc4235e53273c012) ([merge request](gitlab-org/gitlab!114829))
+- [Apply patch by @terrichu](gitlab-org/gitlab@b917e6d5e3355f61a0bfeb2feef279b53b7bcd4a) ([merge request](gitlab-org/gitlab!115949))
+- [Contribution analytics: Limit request time range to one week](gitlab-org/gitlab@2cd85d3dd374ce172cbe080662762a78ab4747cc) ([merge request](gitlab-org/gitlab!116862)) **GitLab Enterprise Edition**
+- [Return error when updated_at filtering used without sorting](gitlab-org/gitlab@2eff1b85bef5de93a25798c88e11ddc2bcc93998) ([merge request](gitlab-org/gitlab!116656))
+- [Use optimistic locking when updating Terraform state](gitlab-org/gitlab@781703e38b0b35702ded899b717f719125589eaa) ([merge request](gitlab-org/gitlab!116069))
+- [Improve the performance of the labels queries](gitlab-org/gitlab@0c8f7ebce0ba08eba76628490e9555b9976e2378)
+- [Make Action Cable subscriptions use DB replicas](gitlab-org/gitlab@27c329eac7b050b86351be34d5ab48f81220f2ff) ([merge request](gitlab-org/gitlab!115828))
+- [Improve the performance of the labels queries](gitlab-org/gitlab@51bae9c082afd8fc18294c760b45e1f58bcfcb7f) ([merge request](gitlab-org/gitlab!116100))
+- [Update ComplianceViolationsFinder to use InOperatorOptimization](gitlab-org/gitlab@3d2e12a9fdcb618325a6fd27490caa6a4f649b4e) ([merge request](gitlab-org/gitlab!115404))
+- [Remove index idx_merge_requests_on_state_id_and_merge_status async](gitlab-org/gitlab@394b7b32d7cc7483d9a954d1f6dbccc00945f034) ([merge request](gitlab-org/gitlab!115926))
+- [Add batch_counter to verifiable_replicator counters](gitlab-org/gitlab@f36a223adac4b6470f09dae2d953dd79713a5d56) ([merge request](gitlab-org/gitlab!107514)) **GitLab Enterprise Edition**
+
+### Other (80 changes)
+
+- [Refactoring audit events for projects](gitlab-org/gitlab@2258b1b20c4c53690c41ee8cdd5a3a6b4eb52b21) ([merge request](gitlab-org/gitlab!117546)) **GitLab Enterprise Edition**
+- [Remaining CTRT edits to Service Desk doc](gitlab-org/gitlab@c7ba037296a106fc0b791c6d2add4f44f17edadb) ([merge request](gitlab-org/gitlab!118025))
+- [Make the code suggestions default to be false](gitlab-org/gitlab@df0b502af4d8e404c38774bdf53d7c4c7d3ad647) ([merge request](gitlab-org/gitlab!118073))
+- [Revert the update to code suggestions](gitlab-org/gitlab@a82e125ca7fe07fde0df97f5cf24d34646003434) ([merge request](gitlab-org/gitlab!118070))
+- [Remove refactor_code_quality_inline_findings feature-flag](gitlab-org/gitlab@ee29ff3108019a4c9f86745a5bcd0d99ab71697a) ([merge request](gitlab-org/gitlab!117686))
+- [Remove FF ci_simplify_dag_status_calculation_for_processing](gitlab-org/gitlab@f2d6eeb5be9d99d9d38bad4e07e539a0d79421a4) ([merge request](gitlab-org/gitlab!117835))
+- [Improves documentation for Model Experiments](gitlab-org/gitlab@f29cc816804cc8e0440a28a16dec917d31dc5a30) ([merge request](gitlab-org/gitlab!117409))
+- [Make DesignManagement::Repository a container for GitRepository](gitlab-org/gitlab@1c8e3b475fee0b27d773e55366d13ba59ced9d84) ([merge request](gitlab-org/gitlab!116245))
+- [Delete webauthn feature flag](gitlab-org/gitlab@fe0205b8df9ae73cc687c7faa9d4518effa3c13a) ([merge request](gitlab-org/gitlab!115953))
+- [Introduce User Access Project/Group Authorizations](gitlab-org/gitlab@77acc92150f0e9dcfd2979338a429bee9a032801) ([merge request](gitlab-org/gitlab!116901))
+- [Use a mockApolloClient to test Design comments](gitlab-org/gitlab@08b10d14c4c7e226b2f719303e94ea9c156e77c1) ([merge request](gitlab-org/gitlab!115386))
+- [Remove partition_id default for p_ci_builds_metadata](gitlab-org/gitlab@8d3d82fcce386b2aec5129358c7a19ab5817cd03) ([merge request](gitlab-org/gitlab!116761))
+- [Track roadmap tab on epics detail page](gitlab-org/gitlab@4e959d521a92d595da458df11d956e49b7feab24) ([merge request](gitlab-org/gitlab!117501)) **GitLab Enterprise Edition**
+- [Update compliance framework pipeline docs](gitlab-org/gitlab@3d71a00b9bdd47f29c4c52605cb1b3ef1d646c7a) ([merge request](gitlab-org/gitlab!117272))
+- [Removes grace period for BackgroundMigration/MissingDictionaryFile](gitlab-org/gitlab@6c3162fde12b019188899dd83851335912c8243e) ([merge request](gitlab-org/gitlab!117370))
+- [Blame controller refactoring (step 3)](gitlab-org/gitlab@69a928ed3b6ac7a03c4d21bb4b5c119f296a76d7) ([merge request](gitlab-org/gitlab!116689))
+- [Removes reduce_sub_batch_size_on_timeouts feature flag](gitlab-org/gitlab@a067dce1fe875802aa676b0b7cf03f3f3e62def2) ([merge request](gitlab-org/gitlab!116619))
+- [Add migrations to truncate error_tracking tables on PostgresSQL](gitlab-org/gitlab@99a16129113cec6c6a8da335d5d2897e7c8e5334) ([merge request](gitlab-org/gitlab!115966))
+- [Blame controller refactoring (step 2)](gitlab-org/gitlab@00d47593082ec5b6dad02e2e561b949deb896689) ([merge request](gitlab-org/gitlab!116688))
+- [Validate the projects.creator_id foregin key asynchronously](gitlab-org/gitlab@57f109ae08183bc0f9eb97fc5ec55bd38d159c68) ([merge request](gitlab-org/gitlab!117144))
+- [Add code suggestions to namespace settings](gitlab-org/gitlab@60b7cb2948f34eda6cc16900783e340b496e969b) ([merge request](gitlab-org/gitlab!117065))
+- [Remove FF github_import_gists](gitlab-org/gitlab@95bcdc230144e9fe543a92e27e4bc517e3426791) ([merge request](gitlab-org/gitlab!116321))
+- [Update import workers to set memory resource boundary](gitlab-org/gitlab@9edf1ccf4e950bcf9a18a2b134f7e0125a3b80ca) ([merge request](gitlab-org/gitlab!116661))
+- [Using BBM in TableManagementHelpers#enqueue_partitioning_data_migration](gitlab-org/gitlab@007c827646afc5132a5d916eed6d1034642b63b5) ([merge request](gitlab-org/gitlab!116157))
+- [Simplify isEditing for Policy Editor Component](gitlab-org/gitlab@06375a628a05a8010c26ca102eefd3e31a87fe9f) ([merge request](gitlab-org/gitlab!116548)) **GitLab Enterprise Edition**
+- [Rename variables used for project counts](gitlab-org/gitlab@81bd39b85de8254eb5d985d808706366a14c700f) ([merge request](gitlab-org/gitlab!114737))
+- [Add index to `vulnerability_occurrences` table for override uuids logic](gitlab-org/gitlab@be9db06df423aade4dddbf74665b5c94122f7039) ([merge request](gitlab-org/gitlab!116791))
+- [Remove unused index asynchronously](gitlab-org/gitlab@5d651002519a09e87b6a98be66e8b48fe0683ff1) ([merge request](gitlab-org/gitlab!116639))
+- [Swap note_diff_file.diff_note_id to bigint](gitlab-org/gitlab@bca392f47b8bafee8503ef4fe2cba383031f1267) ([merge request](gitlab-org/gitlab!115460))
+- [Prepare async index for vulnerability_occurrences table](gitlab-org/gitlab@f9913b17cf2359308734000f2409fd59e6966f6e) ([merge request](gitlab-org/gitlab!116694))
+- [Blame controller refactoring](gitlab-org/gitlab@aedd3d72edcc6fe3e5df890681e72e6e23f3aaaf) ([merge request](gitlab-org/gitlab!116684))
+- [Clean up old redirect route](gitlab-org/gitlab@322c3de23bfcd4b66761f03b65b03ce3b1852135) ([merge request](gitlab-org/gitlab!116672)) **GitLab Enterprise Edition**
+- [Update handling of project names in bulk import](gitlab-org/gitlab@f751896c48a07368b53e2f22e8498c2140d7be92) ([merge request](gitlab-org/gitlab!115780))
+- [Reorder primary key columns for ci_runner_machine_builds](gitlab-org/gitlab@557f76ef4cd8d02ad38344fc87ca1c39c277bebc) ([merge request](gitlab-org/gitlab!116095))
+- [Remove unused index synchronously](gitlab-org/gitlab@febe15bf3373019ad4301be54e41b3f88a7acf40) ([merge request](gitlab-org/gitlab!116642))
+- [Remove db_load_balance_audit_event_streaming_worker feature flag](gitlab-org/gitlab@1f812ced761ba01484122c10523a9c6bece9a95e) ([merge request](gitlab-org/gitlab!116637)) **GitLab Enterprise Edition**
+- [Swap epic_user_mentions.note_id to bigint](gitlab-org/gitlab@d8ecc4d24e9f1e61b7bcfb1b896a9bdbbabf771b) ([merge request](gitlab-org/gitlab!116627))
+- [Swap suggestions.note_id to bigint](gitlab-org/gitlab@8498690a79d4c81aba3f3ca4c97a174a3ffb84a4) ([merge request](gitlab-org/gitlab!116622))
+- [Update Admin::GroupsController#reset_runners_minutes feature_category](gitlab-org/gitlab@8c7f5c911af8f41d93e373e75d3461ca7f490c61) ([merge request](gitlab-org/gitlab!116026))
+- [Documenting testing for multiple databases](gitlab-org/gitlab@0707c25a353ac81cb4a140314d8bf63855085305) ([merge request](gitlab-org/gitlab!116384))
+- [Make CI config fetch timeout configurable](gitlab-org/gitlab@4a6405fd060ee5a7ebf298f5eb7f22540a20b484) ([merge request](gitlab-org/gitlab!116383))
+- [Backfill Migrations for ML::Candidate.internal_id](gitlab-org/gitlab@1607f695ca3f979a0693ac9baf3e49525af145b1) ([merge request](gitlab-org/gitlab!115971))
+- [Filter out BEGIN/COMMIT correctly in metrics](gitlab-org/gitlab@cd9dcf783c9d7bdb43f9778db867c89329e83e3c) ([merge request](gitlab-org/gitlab!116218))
+- [Set data_consistency to delayed for AuditEventStreamingWorker](gitlab-org/gitlab@a62cce0c7cfbd872d24ca46dcdbcc267c647035d) ([merge request](gitlab-org/gitlab!115813)) **GitLab Enterprise Edition**
+- [Refactors Ml::Candidate.eid usages to internal_id](gitlab-org/gitlab@9dab7e8c264be036f08bfe68c23a717f63af5f18) ([merge request](gitlab-org/gitlab!116085))
+- [Remove use_traversal_ids_for_root_ancestor FF](gitlab-org/gitlab@b294398ea02f18f61218880e3de33457f0f0c3f6) ([merge request](gitlab-org/gitlab!104019))
+- [Migrate button group to GlDisclosureDropdown](gitlab-org/gitlab@c1409761db54666870d03abf58d77be8fc275bf2) ([merge request](gitlab-org/gitlab!114482)) **GitLab Enterprise Edition**
+- [Update omniauth-auth0 rubygem to 3.1](gitlab-org/gitlab@9a98c22680c56284a93b5d4a89a9f5d309571a7f) by @pravi ([merge request](gitlab-org/gitlab!115200))
+- [Add new CI Variable `CI_API_GRAPHQL_URL`](gitlab-org/gitlab@94b52c439e4758b2d02038332ed07522a105c8bf) by @homersimpsons ([merge request](gitlab-org/gitlab!115804))
+- [Remove partition_id default from ci_builds](gitlab-org/gitlab@fb55be1107d914ecc1b0d2995a655d3291cd7929) ([merge request](gitlab-org/gitlab!115874))
+- [Exposing Finalizing BBMs in Admin portal](gitlab-org/gitlab@385975e0582f9024d74e8ab29545392ca92735b4) ([merge request](gitlab-org/gitlab!115551))
+- [Moves Service Desk custom email credentials to own table](gitlab-org/gitlab@e7cbba57f03466b26799ff1ef1dbad366991879f) ([merge request](gitlab-org/gitlab!114917))
+- [Cleanup BigInt conversion for ci_build_needs](gitlab-org/gitlab@2c31bc847cc0098a94aff888cf9db660fc2ad0dc) ([merge request](gitlab-org/gitlab!115398))
+- [Backfill application_settings product_analytics_data_collector_host](gitlab-org/gitlab@dc50e62b17b1bec9756935df518bb663ce335c66) ([merge request](gitlab-org/gitlab!114514))
+- [Improve error message for application_settings#archive_builds_in_seconds](gitlab-org/gitlab@8fa19b48e31c90544cd5bb34abc10f10f97ee419) ([merge request](gitlab-org/gitlab!115536))
+- [Remove download_code column from member_roles](gitlab-org/gitlab@714308d35de25084e5b0deada9296af2c749cc92) ([merge request](gitlab-org/gitlab!115707))
+- [Single database testing documentation](gitlab-org/gitlab@92a3de033698dc292464970695224e37690b115b) ([merge request](gitlab-org/gitlab!115841))
+- [Fixing specs for single-db-two-connections](gitlab-org/gitlab@81b3633185d7d96b28b58ef2b090950d3f967c83) ([merge request](gitlab-org/gitlab!112731))
+- [Validate direct transfer enabled on source](gitlab-org/gitlab@9a0b72ec97bf795d66d19068b5ff604c111d340c) ([merge request](gitlab-org/gitlab!115685))
+- [Removing 'dropped' from deduplication_type while logging](gitlab-org/gitlab@8b3bc832bf6182e29bd2c910678908e1af214da0) ([merge request](gitlab-org/gitlab!115566))
+- [FileLineBlame feature flag cleanup](gitlab-org/gitlab@d32c2d0c95263080368f0f0da312243a91b8c85c) ([merge request](gitlab-org/gitlab!115355))
+- [Query members via namespaces](gitlab-org/gitlab@27c4dfc1b5f170dfd4e6c052c7788bcf00e21710) ([merge request](gitlab-org/gitlab!115643))
+- [Cleanup extend reactivate trial feature](gitlab-org/gitlab@db30b743a038b1166bfa30655b9af1c28713a09a) ([merge request](gitlab-org/gitlab!115582)) **GitLab Enterprise Edition**
+- [Fix spec violation - spying on methods](gitlab-org/gitlab@80179c7fbe245c7d0fa69704b7a9db95566196d4) ([merge request](gitlab-org/gitlab!115555))
+- [Validate direct transfer enabled on source](gitlab-org/gitlab@cd4d5ec5eba1e6a452b016700e6fba58ed7feaee) ([merge request](gitlab-org/gitlab!114686))
+- [Upgrade to Vue 2.7](gitlab-org/gitlab@de3176f710e4a4db0d7d879b11f267b584cb4601) ([merge request](gitlab-org/gitlab!113042))
+- [Handle invalid filter for compliance filters](gitlab-org/gitlab@6ae0508594ec462a597b017c0ad91e1082811236) ([merge request](gitlab-org/gitlab!115302)) **GitLab Enterprise Edition**
+- [Remove the legacy_open_source_license_worker feature flag](gitlab-org/gitlab@127888d90afc4a164ed064e3f666827449fe13d3) ([merge request](gitlab-org/gitlab!115514))
+- [Swap snippet_user_mentions.note_id to bigint](gitlab-org/gitlab@1bbda663afc67791cc3d3160b280eb3198ad6a5b) ([merge request](gitlab-org/gitlab!115456))
+- [Reorder primary key columns for ci_runner_machine_builds](gitlab-org/gitlab@7ae777fd030cc65721f74e36cc4634d38c245a69) ([merge request](gitlab-org/gitlab!114894))
+- [Remove partition_id default from ci_builds](gitlab-org/gitlab@7e56f40766067a2df9c1350ef5ad50315a235107) ([merge request](gitlab-org/gitlab!115348))
+- [Add partitioning check constraint to ci_builds](gitlab-org/gitlab@224089a72c04ba330f357e2ef1f5de9349231a53) ([merge request](gitlab-org/gitlab!114077))
+- [Consistent naming in for CodeQuality Pipelines](gitlab-org/gitlab@31578d82025f7cd000f352649c3546e2f2965cb4) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113134)) **GitLab Enterprise Edition**
+- [Swap design_user_mentions.note_id to bigint](gitlab-org/gitlab@4adfc2d69000f64c712b1ae18a302104cca20542) ([merge request](gitlab-org/gitlab!115285))
+- [Swap vulnerability_user_mentions.note_id to bigint](gitlab-org/gitlab@ea6c3b924d286277c4349a3d241cc97ad8aa6096) ([merge request](gitlab-org/gitlab!115280))
+- [Swap commit_user_mentions.note_id to bigint](gitlab-org/gitlab@ed1fe59e792691b289fcb9df3d1b36e44974ca3b) ([merge request](gitlab-org/gitlab!115277))
+- [Documenting Docker install method switching to two connections](gitlab-org/gitlab@dcb1f8de3894af2171c1ca6fb92bd5731f89efe0) ([merge request](gitlab-org/gitlab!114625))
+- [Remove full_path_project_search feature flag](gitlab-org/gitlab@18404e701d99fdf9d91dcf0c38496961eb6be89e) ([merge request](gitlab-org/gitlab!114932))
+- [Update header section](gitlab-org/gitlab@cf4ab283267d84fa1c0dc90fefb1b6ddd2617b5c) ([merge request](gitlab-org/gitlab!114102)) **GitLab Enterprise Edition**
+- [Swap merge_request_user_mentions.note_id to bigint](gitlab-org/gitlab@96baed47326db4f0cc9f60b2e74215211effd814) ([merge request](gitlab-org/gitlab!113928))
+
 ## 15.10.3 (2023-04-14)
 
 ### Fixed (3 changes)

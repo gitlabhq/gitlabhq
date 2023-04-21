@@ -15973,7 +15973,7 @@ msgstr ""
 msgid "Email address suffix"
 msgstr ""
 
-msgid "Email address to use for Support Desk"
+msgid "Email address to use for Service Desk"
 msgstr ""
 
 msgid "Email could not be sent"

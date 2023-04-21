@@ -17,7 +17,7 @@ module DesignManagement
     delegate_missing_to :git_repo
 
     def git_repo
-      GitRepository.new(project)
+      project ? GitRepository.new(project) : nil
     end
     strong_memoize_attr :git_repo
   end

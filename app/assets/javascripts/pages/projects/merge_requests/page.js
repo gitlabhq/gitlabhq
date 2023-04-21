@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import StickyHeader from '~/merge_requests/components/sticky_header.vue';
 import { initIssuableHeaderWarnings } from '~/issuable';
 import initMrNotes from '~/mr_notes';
@@ -8,6 +9,8 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import initShow from './init_merge_request_show';
 import getStateQuery from './queries/get_state.query.graphql';
+
+Vue.use(VueApollo);
 
 export function initMrPage() {
   initMrNotes();

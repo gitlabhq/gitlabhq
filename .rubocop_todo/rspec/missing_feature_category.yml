@@ -2779,7 +2779,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/initializers/mailer_retries_spec.rb'
     - 'spec/initializers/microsoft_graph_mailer_spec.rb'
     - 'spec/initializers/net_http_patch_spec.rb'
-    - 'spec/initializers/net_http_response_patch_spec.rb'
     - 'spec/initializers/omniauth_spec.rb'
     - 'spec/initializers/pages_storage_check_spec.rb'
     - 'spec/initializers/rack_VULNDB-255039_patch_spec.rb'

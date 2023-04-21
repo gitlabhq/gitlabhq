@@ -68,7 +68,7 @@ To enable Service Desk in your project:
 1. Select **Save changes**.
 
 Service Desk is now enabled for this project.
-If anyone sends an email to the address available below **Email address to use for Support Desk**,
+If anyone sends an email to the address available below **Email address to use for Service Desk**,
 GitLab creates a confidential issue with the email's content.
 
 ### Improve your project's security

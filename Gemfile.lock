@@ -1151,7 +1151,8 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (0.19.1)
+    prometheus-client-mmap (0.20.3)
+      rb_sys (~> 0.9)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -1231,6 +1232,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rb_sys (0.9.72)
     rbtrace (0.4.14)
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
@@ -1864,7 +1866,7 @@ DEPENDENCIES
   pg_query (~> 2.2, >= 2.2.1)
   png_quantizator (~> 0.2.1)
   premailer-rails (~> 1.10.3)
-  prometheus-client-mmap (~> 0.19)
+  prometheus-client-mmap (~> 0.20)
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.1)

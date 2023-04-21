@@ -155,7 +155,7 @@ export default {
     <div v-if="isEnabled" class="row mt-3">
       <div class="col-md-9 mb-0">
         <gl-form-group
-          :label="__('Email address to use for Support Desk')"
+          :label="__('Email address to use for Service Desk')"
           label-for="incoming-email"
           data-testid="incoming-email-label"
         >
