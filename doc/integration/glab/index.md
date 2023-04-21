@@ -51,7 +51,7 @@ glab mr merge
 - [`glab completion`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/completion)
 - [`glab config`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/config)
 - [`glab incident`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/incident)
-- [`glab issue`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ci)
+- [`glab issue`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/issue)
 - [`glab label`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/label)
 - [`glab mr`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/mr)
 - [`glab release`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/release)

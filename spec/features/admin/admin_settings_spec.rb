@@ -157,7 +157,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(user_internal_regex['placeholder']).to eq 'Regex pattern'
       end
 
-      context 'Dormant users' do
+      context 'Dormant users', feature_category: :user_management do
         context 'when Gitlab.com' do
           let(:dot_com?) { true }
 

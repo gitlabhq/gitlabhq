@@ -260,16 +260,16 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
     }
 
     context 'when project name and ref include masked variables' do
-      let(:project_name) { 'my_project_name' }
+      let_it_be(:project) { create(:project, :repository, path: 'my_project_path') }
+
       let(:branch_name) { 'merge-commit-analyze-after' }
-      let(:project) { create(:project, :repository, name: project_name) }
       let(:namespace_path) { project.namespace.full_path }
       let(:included_project_sha) { project.commit(branch_name).sha }
 
       let(:variables) do
         Gitlab::Ci::Variables::Collection.new(
           [
-            { key: 'VAR1', value: project_name, masked: true },
+            { key: 'VAR1', value: 'my_project_path', masked: true },
             { key: 'VAR2', value: branch_name, masked: true }
           ])
       end

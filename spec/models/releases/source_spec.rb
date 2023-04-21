@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Releases::Source do
-  let_it_be(:project) { create(:project, :repository, name: 'finance-cal') }
+  let_it_be(:project) { create(:project, :repository) }
 
   let(:tag_name) { 'v1.0' }
 
@@ -27,7 +27,7 @@ RSpec.describe Releases::Source do
 
     it 'returns zip archived source url' do
       is_expected
-        .to eq("#{project.web_url}/-/archive/v1.0/finance-cal-v1.0.zip")
+        .to eq("#{project.web_url}/-/archive/v1.0/#{project.path}-v1.0.zip")
     end
 
     context 'when ref is directory structure' do
@@ -35,7 +35,7 @@ RSpec.describe Releases::Source do
 
       it 'converts slash to dash' do
         is_expected
-          .to eq("#{project.web_url}/-/archive/beta/v1.0/finance-cal-beta-v1.0.zip")
+          .to eq("#{project.web_url}/-/archive/beta/v1.0/#{project.path}-beta-v1.0.zip")
       end
     end
   end

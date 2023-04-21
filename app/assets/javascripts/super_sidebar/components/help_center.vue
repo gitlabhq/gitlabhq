@@ -1,5 +1,11 @@
 <script>
-import { GlBadge, GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlIcon,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+} from '@gitlab/ui';
 import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
@@ -15,6 +21,7 @@ export default {
   components: {
     GlBadge,
     GlButton,
+    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GitlabVersionCheckBadge,
@@ -31,6 +38,7 @@ export default {
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
     whatsnew: __("What's new"),
+    tanuki: __('Ask the Tanuki Bot'),
   },
   props: {
     sidebarData: {
@@ -60,6 +68,14 @@ export default {
         },
         helpLinks: {
           items: [
+            this.sidebarData.show_tanuki_bot && {
+              icon: 'tanuki',
+              text: this.$options.i18n.tanuki,
+              action: this.showTanukiBotChat,
+              extraAttrs: {
+                ...this.trackingAttrs('tanuki_bot_help_dropdown'),
+              },
+            },
             {
               text: this.$options.i18n.help,
               href: helpPagePath(),
@@ -109,7 +125,7 @@ export default {
                 ...this.trackingAttrs('submit_feedback'),
               },
             },
-          ],
+          ].filter(Boolean),
         },
         helpActions: {
           items: [
@@ -157,6 +173,11 @@ export default {
 
     showKeyboardShortcuts() {
       this.$refs.dropdown.close();
+    },
+
+    async showTanukiBotChat() {
+      // This will be implemented in the following MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117930
+      return true;
     },
 
     async showWhatsNew() {
@@ -236,7 +257,14 @@ export default {
     <gl-disclosure-dropdown-group
       :group="itemGroups.helpLinks"
       :bordered="sidebarData.show_version_check"
-    />
+    >
+      <template #list-item="{ item }">
+        <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+          {{ item.text }}
+          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-orange-500" />
+        </span>
+      </template>
+    </gl-disclosure-dropdown-group>
 
     <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered>
       <template #list-item="{ item }">

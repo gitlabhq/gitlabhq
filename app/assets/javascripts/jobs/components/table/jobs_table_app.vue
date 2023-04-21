@@ -1,8 +1,9 @@
 <script>
-import { GlAlert, GlSkeletonLoader, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
+import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 import JobsFilteredSearch from '../filtered_search/jobs_filtered_search.vue';
 import { validateQueryString } from '../filtered_search/utils';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
@@ -22,13 +23,13 @@ export default {
     'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-b gl-border-gray-100',
   components: {
     GlAlert,
-    GlSkeletonLoader,
     JobsFilteredSearch,
     JobsTable,
     JobsTableEmptyState,
     JobsTableTabs,
     GlIntersectionObserver,
     GlLoadingIcon,
+    JobsSkeletonLoader,
   },
   inject: {
     fullPath: {
@@ -217,22 +218,7 @@ export default {
       />
     </div>
 
-    <div v-if="showSkeletonLoader" class="gl-mt-5">
-      <gl-skeleton-loader :width="1248" :height="73">
-        <circle cx="748.031" cy="37.7193" r="15.0307" />
-        <circle cx="787.241" cy="37.7193" r="15.0307" />
-        <circle cx="827.759" cy="37.7193" r="15.0307" />
-        <circle cx="866.969" cy="37.7193" r="15.0307" />
-        <circle cx="380" cy="37" r="18" />
-        <rect x="432" y="19" width="126.587" height="15" />
-        <rect x="432" y="41" width="247" height="15" />
-        <rect x="158" y="19" width="86.1" height="15" />
-        <rect x="158" y="41" width="168" height="15" />
-        <rect x="22" y="19" width="96" height="36" />
-        <rect x="924" y="30" width="96" height="15" />
-        <rect x="1057" y="20" width="166" height="35" />
-      </gl-skeleton-loader>
-    </div>
+    <jobs-skeleton-loader v-if="showSkeletonLoader" class="gl-mt-5" />
 
     <jobs-table-empty-state v-else-if="showEmptyState" />
 

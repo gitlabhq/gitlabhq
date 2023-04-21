@@ -1,8 +1,18 @@
-<!-- AI Project Proposal title format: 🤖 [AI Proposal] {`Need/outcome` } + {`Beneficiary`} + {`Job/Small Job`}
+<!--
+HOW TO USE THIS TEMPLATE
+To propose an AI experiment, focus on completing the “Experiment” section first. As you refine the idea and gather feedback on your experiment, use the “Feature release” section to define how it will evolve as a Beta or GA capability. It's important that we link experiment to feature release. Feel free to add sections, but keep the existing ones.
 
-The title should be something that is easily understood that quickly communicates the intent of the project allowing team members to easily understand and recognize the expected work that will be done.
+You can choose how to get started with this template. For example, the proposal can start as an issue, and then be promoted to an epic to house all the work related to the experiment/prototype and feature release. If you prefer to start with an epic, you have to manually apply the proposal template. Regardless, if the experiment is eventually prioritized for development, the template content will need to appear in a top-level epic so it can be tracked alongside other prioritized AI experiments.
 
-A proposal title should combine the beneficiary of the feature/UI, the job it will allow them to accomplish, and their expected outcome when the work is delivered. Well-defined statements are concise without sacrificing the substance of the proposal so that anyone can understand it at a glance. (e.g.🤖 {Reduce the effort} + {for security teams} + {when prioritizing business-critical risks in their assets}) -->
+TITLE FORMAT
+🤖 [AI Proposal] {Need/outcome} {Beneficiary} {Job/Small Job}
+
+The title should be something that is easily understood that quickly communicates the intent of the project allowing team members to easily understand and recognize the expected work that will be done. A proposal title should combine the beneficiary of the feature/UI, the job it will allow them to accomplish (see https://about.gitlab.com/handbook/product/ux/jobs-to-be-done/#how-to-write-a-jtbd), and their expected outcome when the work is delivered. Well-defined statements are concise without sacrificing the substance of the proposal so that anyone can understand it at a glance. (e.g. {Reduce the effort} {for security teams} {when prioritizing business-critical risks in their assets}).
+-->
+
+# Experiment
+
+This section should be completed prior to work on the Experiment beginning.
 
 # [Experiment](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#experiment)
 
@@ -21,19 +31,22 @@ _What assumptions are you making about this problem and the solution?_
 _What [personas](https://about.gitlab.com/handbook/product/personas/#list-of-user-personas) have this problem, who is the intended user?_
 
 ## Proposal
-<!-- Use this section to explain the proposed changes, including details around usage and business drivers. -->
+<!-- Explain the proposed changes, including details around usage and business drivers. -->
 
 ### Success
 _How will you measure whether this experiment is a success?_
 
-# [General Availability](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#generally-available-ga)
 
-## Main Job story
+# Feature release
+<!-- DO NOT REMOVE THIS SECTION
+Although the initial focus is on the “Experiment” section, do not remove this “Feature release” section. It's important that we link experiment to feature release. Fill this section as you progress.
+-->
+### Main Job story
 _What job to be done will this solve?_
 <!-- What is the [Main Job story](https://about.gitlab.com/handbook/product/ux/jobs-to-be-done/#how-to-write-a-jtbd) that this proposal was derived from? (e.g. When I am on triage rotation, I want to address all the business-critical risks in my assets, So I can minimize the likelihood of my organization being compromised by a security breach.) -->
 
-### Proposal updates/additions
-<!-- Use this section to explain any changes or updates to the original proposal, including details around usage, business drivers, and reasonings that drove the updates/additions. -->
+## Proposal updates/additions
+<!-- Explain any changes or updates to the original proposal from the experiment, including details around usage, business drivers, and reasonings that drove the updates/additions. -->
 
 ### Problem validation
 _What validation exists that customers have this problem?_
@@ -59,34 +72,33 @@ _What tasks or actions should the user be capable of performing with this featur
 #### The user needs to be able to:
 - ...
 - ...
-- ...
 
 ## Checklist
 
 ### Experiment
-
-<details>
-<summary> Issue information </summary>
+<details> <summary> Issue information </summary>
 
 - [ ] Add information to the issue body about:
-  - [ ] The user problem being solved
-  - [ ] Your assumptions
-  - [ ] Who it's for, list of personas impacted
-  - [ ] Your proposal
+    - [ ] The user problem being solved
+    - [ ] Your assumptions
+    - [ ] Who it's for, list of personas impacted
+    - [ ] Your proposal
 - [ ] Add relevant designs to the Design Management area of the issue if available
+- [ ] Confirm that an unexpected outage of this feature will not negatively impact the application or other features
+- [ ] Add a feature flag so that this feature can be quickly disabled if/when needed
+- [ ] If this experiment introduces a new service or data store, ensure it is not processing or storing [red data](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-levels) without a security and if needed legal review
+  - *NOTE*: We recommend using one of the already adopted models or data stores. If you need to use something else, be aware that using other models or data stores will require additional review during the feature stage for operational fitness and compliance.
 - [ ] Ensure this issue has the ~wg-ai-integration label to ensure visibility to various teams working on this
 
 </details>
 
-### General Availability
-
-<details>
-<summary>Issue information</summary>
+### Feature release
+<details> <summary> Issue information </summary>
 
 - [ ] Add information to the issue body about:
-  - [ ] Your proposal
-  - [ ]  The Job Statement it's expected to satisfy
-  - [ ] Details about the user problem and provide any research or problem validation
+    - [ ] Your proposal
+    - [ ] The Job Statement it's expected to satisfy
+    - [ ] Details about the user problem and provide any research or problem validation
     - [ ] List the personas impacted by the proposal.
 - [ ] Add all relevant solution validation issues to the Linked items section that shows this proposal will solve the customer problem, or details explaining why it's not possible to provide that validation.
 - [ ] Add relevant designs to the Design Management area of the issue.
@@ -95,30 +107,27 @@ _What tasks or actions should the user be capable of performing with this featur
 
 </details>
 
-<details>
-<summary>Technical needs</summary>
+<details> <summary> Technical needs </summary>
 
-- [ ] [Operational Requirements Review - Checklist - #note_1337519985](https://gitlab.com/gitlab-org/gitlab/-/issues/403859#note_1337519985)
+- [ ] Please consider the operational aspects of the feature you are creating. A list of things to think about is in: https://gitlab.com/gitlab-org/gitlab/-/issues/403859. We will be improving this process in the future: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117637#note_1353253349. 
 
-1. **Work estimate and skills needs to build an ML viable feature:** To build any ML feature depending on the work, there are many personas that contribute including, Data Scientist, NLP engineer, ML Engineer, MLOps Engineer, ML Infra engineers, and Fullstack engineer to integrate the ML Services with Gitlab. Post-prototype we would assess the skills needed to build a production-grade ML feature for the prototype
-2. **Data Limitation:** We would like to upfront validate if we have viable data for the feature including whether we can use the DataOps pipeline of ModelOps or create a custom one. We would want to understand the training data, test data, and feedback data to dial up the accuracy and the limitations of the data.
-3. **Model Limitation:** We would want to understand if we can use an open-source pre-trained model, tune and customize it or start a  model from scratch as well. Further, we would asses based on the ModelOps model evaluation framework which would be the right model to use based on the use case.
-4. **Cost, Scalability, Reliability:** We would want to estimate the cost of hosting, serving, inference of the model, and the full end-to-end infrastructure including monitoring and observability.
-5. **Legal and Ethical Framework:** We would want to align with legal and ethical framework like any other ModelOps features to cover across the nine principles of responsible ML and any legal support needed.
-
-</details>
-
-<details>
-<summary>Dependency needs</summary>
-
-- [ ] [Operational Requirements Review - Checklist - #note_1337519985](https://gitlab.com/gitlab-org/gitlab/-/issues/403859#note_1337519985)
+1. Work estimate and skills needs to build an ML viable feature: To build any ML feature depending on the work, there are many personas that contribute including, Data Scientist, NLP engineer, ML Engineer, MLOps Engineer, ML Infra engineers, and Fullstack engineer to integrate the ML Services with Gitlab. Post-prototype we would assess the skills needed to build a production-grade ML feature for the prototype.
+2. Data Limitation: We would like to upfront validate if we have viable data for the feature including whether we can use the DataOps pipeline of ModelOps or create a custom one. We would want to understand the training data, test data, and feedback data to dial up the accuracy and the limitations of the data.
+3. Model Limitation: We would want to understand if we can use an open-source pre-trained model, tune and customize it or start a model from scratch as well. Further, we would assess based on the ModelOps model evaluation framework which would be the right model to use based on the use case.
+4. Cost, Scalability, Reliability: We would want to estimate the cost of hosting, serving, inference of the model, and the full end-to-end infrastructure including monitoring and observability.
+5. Legal and Ethical Framework: We would want to align with legal and ethical framework like any other ModelOps features to cover across the nine principles of responsible ML and any legal support needed.
 
 </details>
 
-<details>
-<summary>Legal needs</summary>
+<details> <summary> Dependency needs </summary>
 
-- [ ] TBD
+- [ ] Please consider the operational aspects of the service you are creating. A list of things to think about is in: https://gitlab.com/gitlab-org/gitlab/-/issues/403859. We will be improving this process in the future: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117637#note_1353253349. 
+
+</details>
+
+<details> <summary> Legal needs </summary>
+
+- [ ]  TBD
 
 </details>
 
@@ -134,5 +143,3 @@ _What tasks or actions should the user be capable of performing with this featur
 /label ~wg-ai-integration
 /cc @tmccaslin @hbenson @wayne @pedroms @jmandell
 /confidential
-
-[Make change to this template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/AI%20Project%20Proposal.md)

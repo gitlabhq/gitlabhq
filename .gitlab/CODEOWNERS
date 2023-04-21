@@ -115,12 +115,6 @@ Dangerfile @gl-quality/eng-prod
 /ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js @gitlab-org/govern/threat-insights-frontend-team
 
 ^[Secure]
-/ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/parsers/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
-/ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
-/ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/reports/security/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis-be @gitlab-org/secure/static-analysis-be @gitlab-org/secure/fuzzing-be
 /ee/app/services/app_sec/dast/ @gitlab-org/secure/dynamic-analysis-be
 
 ^[Security Policies]
@@ -1371,6 +1365,16 @@ lib/gitlab/checks/** @proglottis @toon
 /lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
 /lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
 /lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+
+# Overrides for Verify. These files below require approval from teams outside Verify.
+/**/ci/reports/**/             @gitlab-org/maintainers/rails-backend
+/**/ci/parsers/**/             @gitlab-org/maintainers/rails-backend
+/ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/parsers/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
+/ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
 
 [Manage::Workspace]
 lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers

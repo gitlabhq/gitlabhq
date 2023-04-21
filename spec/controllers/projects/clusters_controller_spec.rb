@@ -171,7 +171,7 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
       {
         id: cluster.id,
         namespace_id: project.namespace.full_path,
-        project_id: project.name
+        project_id: project.path
       }
     end
   end

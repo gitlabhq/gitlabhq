@@ -9,10 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 WARNING:
 The Jira DVCS connector for Jira Cloud was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/362168) in GitLab 15.1
 and is planned for removal in 16.0. Use the [GitLab for Jira Cloud app](../connect-app.md) instead.
+The Jira DVCS connector was also deprecated for Jira 8.13 and earlier. You can only use the Jira DVCS connector with Jira Server or Jira Data Center in Jira 8.14 and later. Upgrade your Jira instance to Jira 8.14 or later, and reconfigure the Jira integration in your GitLab instance.
 
 Use the Jira DVCS (distributed version control system) connector if you self-host
-your Jira instance and want to sync information between GitLab and Jira.
-If you're using the Jira DVCS connector with Jira Cloud, [migrate to the GitLab for Jira Cloud app](#migrate-to-the-gitlab-for-jira-cloud-app).
+your Jira instance with Jira Server or Jira Data Center and want to sync information between GitLab and Jira.
+If you're on Jira Cloud, [migrate to the GitLab for Jira Cloud app](#migrate-to-the-gitlab-for-jira-cloud-app).
 
 When you configure the Jira DVCS connector, make sure your GitLab and Jira instances
 are accessible.

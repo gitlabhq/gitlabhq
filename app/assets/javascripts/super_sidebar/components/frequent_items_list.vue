@@ -1,19 +1,12 @@
 <script>
-import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
-import { s__ } from '~/locale';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { getTopFrequentItems, formatContextSwitcherItems } from '../utils';
 import ItemsList from './items_list.vue';
 
 export default {
   components: {
-    GlIcon,
-    GlButton,
     ItemsList,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     title: {
@@ -36,15 +29,11 @@ export default {
   data() {
     return {
       cachedFrequentItems: [],
-      isItemsListEditable: false,
     };
   },
   computed: {
     isEmpty() {
       return !this.cachedFrequentItems.length;
-    },
-    allowItemsEditing() {
-      return !this.isEmpty && AccessorUtilities.canUseLocalStorage();
     },
   },
   created() {
@@ -63,9 +52,6 @@ export default {
         Sentry.captureException(e);
       }
     },
-    toggleItemsListEditablity() {
-      this.isItemsListEditable = !this.isItemsListEditable;
-    },
     handleItemRemove(item) {
       try {
         // Remove item from local storage
@@ -82,9 +68,6 @@ export default {
       }
     },
   },
-  i18n: {
-    frequentItemsEditToggle: s__('Navigation|Toggle edit mode'),
-  },
 };
 </script>
 
@@ -96,29 +79,11 @@ export default {
       class="gl-display-flex gl-align-items-center gl-text-transform-uppercase gl-text-secondary gl-font-weight-bold gl-font-xs gl-line-height-12 gl-letter-spacing-06em gl-my-3"
     >
       <span class="gl-flex-grow-1">{{ title }}</span>
-      <gl-button
-        v-if="allowItemsEditing"
-        v-gl-tooltip.left
-        size="small"
-        category="tertiary"
-        :aria-label="$options.i18n.frequentItemsEditToggle"
-        :title="$options.i18n.frequentItemsEditToggle"
-        :class="{ 'gl-bg-gray-100!': isItemsListEditable }"
-        class="gl-p-2!"
-        @click="toggleItemsListEditablity"
-      >
-        <gl-icon name="pencil" :class="{ 'gl-text-gray-900!': isItemsListEditable }" />
-      </gl-button>
     </div>
     <div v-if="isEmpty" data-testid="empty-text" class="gl-text-gray-500 gl-font-sm gl-my-3">
       {{ pristineText }}
     </div>
-    <items-list
-      :aria-label="title"
-      :items="cachedFrequentItems"
-      :editable="isItemsListEditable"
-      @remove-item="handleItemRemove"
-    >
+    <items-list :aria-label="title" :items="cachedFrequentItems" @remove-item="handleItemRemove">
       <template #view-all-items>
         <slot name="view-all-items"></slot>
       </template>

@@ -1,4 +1,5 @@
-- page_title s_('WorkItem|Work Items')
+- page_title "##{request.params['work_items_path']}"
+- add_to_breadcrumbs _("Issues"), project_issues_path(@project)
 - add_page_specific_style 'page_bundles/work_items'
 - @gfm_form = true
 - @noteable_type = 'WorkItem'

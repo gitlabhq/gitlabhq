@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Tracking::Destinations::DatabaseEventsSnowplow, :do_not_s
     before do
       allow(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
-        .with(endpoint: 'localhost:9091',
+        .with(endpoint: endpoint,
           options:
             {
               protocol: 'https',
@@ -47,15 +47,38 @@ RSpec.describe Gitlab::Tracking::Destinations::DatabaseEventsSnowplow, :do_not_s
     end
 
     describe '#event' do
+      let(:endpoint) { 'localhost:9091' }
+      let(:event_params) do
+        {
+          category: 'category',
+          action: 'action',
+          label: 'label',
+          property: 'property',
+          value: 1.5,
+          context: nil,
+          tstamp: (Time.now.to_f * 1000).to_i
+        }
+      end
+
+      context 'when on gitlab.com environment' do
+        let(:endpoint) { 'db-snowplow.trx.gitlab.net' }
+
+        it 'sends event to tracker' do
+          allow(Gitlab).to receive(:com?).and_return(true)
+          allow(tracker).to receive(:track_struct_event).and_call_original
+
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+          expect(tracker).to have_received(:track_struct_event).with(event_params)
+        end
+      end
+
       it 'sends event to tracker' do
         allow(tracker).to receive(:track_struct_event).and_call_original
 
         subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
 
-        expect(tracker)
-          .to have_received(:track_struct_event)
-          .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5, context: nil,
-            tstamp: (Time.now.to_f * 1000).to_i)
+        expect(tracker).to have_received(:track_struct_event).with(event_params)
       end
 
       it 'increase total snowplow events counter' do

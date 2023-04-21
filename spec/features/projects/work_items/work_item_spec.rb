@@ -20,9 +20,15 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       visit work_items_path
     end
 
+    it 'shows project issues link in breadcrumbs' do
+      within('[data-testid="breadcrumb-links"]') do
+        expect(page).to have_link('Issues', href: project_issues_path(project))
+      end
+    end
+
     it 'uses IID path in breadcrumbs' do
       within('[data-testid="breadcrumb-current-link"]') do
-        expect(page).to have_link('Work Items', href: work_items_path)
+        expect(page).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
 

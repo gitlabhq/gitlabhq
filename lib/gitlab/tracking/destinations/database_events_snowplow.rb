@@ -6,7 +6,7 @@ module Gitlab
       class DatabaseEventsSnowplow < Snowplow
         extend ::Gitlab::Utils::Override
 
-        HOSTNAME = 'localhost:9091'
+        HOSTNAME = 'db-snowplow.trx.gitlab.net'
 
         override :enabled?
         # database events are only collected for SaaS instance
@@ -16,7 +16,9 @@ module Gitlab
 
         override :hostname
         def hostname
-          HOSTNAME
+          return HOSTNAME if ::Gitlab.com?
+
+          'localhost:9091'
         end
 
         private

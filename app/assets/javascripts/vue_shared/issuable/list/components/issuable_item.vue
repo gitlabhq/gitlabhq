@@ -203,6 +203,11 @@ export default {
     </gl-form-checkbox>
     <div class="issuable-main-info">
       <div data-testid="issuable-title" class="issue-title title">
+        <work-item-type-icon
+          v-if="showWorkItemTypeIcon"
+          :work-item-type="issuable.type"
+          show-tooltip-on-hover
+        />
         <gl-icon
           v-if="issuable.confidential"
           v-gl-tooltip
@@ -236,11 +241,6 @@ export default {
         </span>
       </div>
       <div class="issuable-info">
-        <work-item-type-icon
-          v-if="showWorkItemTypeIcon"
-          :work-item-type="issuable.type"
-          show-tooltip-on-hover
-        />
         <slot v-if="hasSlotContents('reference')" name="reference"></slot>
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}
@@ -268,7 +268,7 @@ export default {
                   :data-avatar-url="author.avatarUrl"
                   :href="author.webUrl"
                   data-testid="issuable-author"
-                  class="author-link js-user-link gl-font-sm"
+                  class="author-link js-user-link gl-font-sm gl-text-gray-500!"
                 >
                   <span class="author">{{ author.name }}</span>
                 </gl-link>

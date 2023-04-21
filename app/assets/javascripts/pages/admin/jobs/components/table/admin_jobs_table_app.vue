@@ -7,6 +7,7 @@ import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsTableEmptyState from '~/jobs/components/table/jobs_table_empty_state.vue';
 import { DEFAULT_FIELDS_ADMIN } from '../constants';
+import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
 import GetAllJobs from './graphql/queries/get_all_jobs.query.graphql';
 
 export default {
@@ -14,6 +15,7 @@ export default {
     jobsFetchErrorMsg: __('There was an error fetching the jobs.'),
   },
   components: {
+    JobsSkeletonLoader,
     JobsTableEmptyState,
     GlAlert,
     JobsTable,
@@ -85,6 +87,12 @@ export default {
     jobsCount() {
       return this.jobs.count;
     },
+    showLoadingSpinner() {
+      return this.loading && this.infiniteScrollingTriggered;
+    },
+    showSkeletonLoader() {
+      return this.loading && !this.showLoadingSpinner;
+    },
   },
   watch: {
     // this watcher ensures that the count on the all tab
@@ -106,7 +114,9 @@ export default {
 
     <jobs-table-tabs :all-jobs-count="count" :loading="loading" />
 
-    <jobs-table-empty-state v-if="showEmptyState" />
+    <jobs-skeleton-loader v-if="showSkeletonLoader" class="gl-mt-5" />
+
+    <jobs-table-empty-state v-else-if="showEmptyState" />
 
     <jobs-table
       v-else

@@ -15,27 +15,27 @@
           = hidden_merge_request_icon(merge_request)
           = link_to merge_request.title, merge_request_path(merge_request), class: 'js-prefetch-document'
         - if merge_request.tasks?
-          %span.task-status.d-none.d-sm-inline-block
+          %span.task-status.d-none.d-sm-inline-block.gl-font-sm
             &nbsp;
             = merge_request.task_status
 
       .issuable-info
         %span.issuable-reference
           #{issuable_reference(merge_request)}
-        %span.issuable-authored.d-none.d-sm-inline-block
+        %span.issuable-authored.d-none.d-sm-inline-block.gl-text-gray-500!
           &middot;
-          #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(@project, merge_request.author, avatar: false) }}
+          #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(@project, merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
           = render_if_exists 'shared/issuable/gitlab_team_member_badge', author: merge_request.author
         - if merge_request.milestone
           %span.issuable-milestone.d-none.d-sm-inline-block.gl-text-truncate.gl-max-w-26.gl-vertical-align-bottom
             &nbsp;
-            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
-              = sprite_icon('clock', css_class: 'gl-vertical-align-text-bottom')
+            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: 'gl-text-gray-500!', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
+              = sprite_icon('clock', size: 12, css_class: 'gl-vertical-align-text-bottom')
               = merge_request.milestone.title
         - if merge_request.target_project.default_branch != merge_request.target_branch
           %span.project-ref-path.has-tooltip.d-inline-block.gl-text-truncate.gl-max-w-26.gl-vertical-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: merge_request.target_branch} }
             &nbsp;
-            = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name' do
+            = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name gl-text-gray-500!' do
               = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
               = merge_request.target_branch
         - if merge_request.labels.any?

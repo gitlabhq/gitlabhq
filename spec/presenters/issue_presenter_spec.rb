@@ -29,7 +29,7 @@ RSpec.describe IssuePresenter do
 
   describe '#web_url' do
     it 'returns correct path' do
-      expect(presenter.web_url).to eq("http://localhost/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+      expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/issues/#{presented_issue.iid}")
     end
 
     context 'when issue type is task' do
@@ -59,7 +59,7 @@ RSpec.describe IssuePresenter do
 
   describe '#issue_path' do
     it 'returns correct path' do
-      expect(presenter.issue_path).to eq("/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
+      expect(presenter.issue_path).to eq("/#{project.full_path}/-/issues/#{presented_issue.iid}")
     end
 
     context 'when issue type is task' do

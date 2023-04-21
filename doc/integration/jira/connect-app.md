@@ -6,16 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Jira Cloud app **(FREE)**
 
-With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app,
-you can integrate GitLab and Jira Cloud.
+With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app, you can connect GitLab and Jira Cloud and use the Jira development panel.
 
-If you use GitLab.com and Jira Cloud, you can install the GitLab for Jira Cloud app.
-If you do not use both of these environments, use the [Jira DVCS connector](dvcs/index.md) instead
-or [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
-You should use the GitLab for Jira Cloud app because data is synchronized
-in real time. The Jira DVCS connector updates data only once per hour.
+- **For GitLab.com**:
+  - [Install the GitLab for Jira Cloud app](#install-the-gitlab-for-jira-cloud-app).
+- **For self-managed GitLab**, do one of the following:
+  - [Connect the GitLab for Jira Cloud app for self-managed instances](#connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances) (GitLab 15.7 and later).
+  - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-This integration method supports [Smart Commits](dvcs/index.md#smart-commits).
+If you use Jira Server or Jira Data Center, use the [Jira DVCS connector](dvcs/index.md) instead.
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 

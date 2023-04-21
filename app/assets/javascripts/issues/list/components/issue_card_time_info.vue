@@ -77,8 +77,13 @@ export default {
       class="issuable-milestone gl-mr-3 gl-text-truncate gl-max-w-26 gl-display-inline-block gl-vertical-align-bottom"
       data-testid="issuable-milestone"
     >
-      <gl-link v-gl-tooltip :href="milestoneLink" :title="milestoneDate" class="gl-font-sm">
-        <gl-icon name="clock" />
+      <gl-link
+        v-gl-tooltip
+        :href="milestoneLink"
+        :title="milestoneDate"
+        class="gl-font-sm gl-text-gray-500!"
+      >
+        <gl-icon name="clock" :size="12" />
         {{ issue.milestone.title }}
       </gl-link>
     </span>
@@ -90,7 +95,7 @@ export default {
       :title="__('Due date')"
       data-testid="issuable-due-date"
     >
-      <gl-icon name="calendar" />
+      <gl-icon name="calendar" :size="12" />
       {{ dueDate }}
     </span>
     <span
@@ -100,7 +105,7 @@ export default {
       :title="__('Estimate')"
       data-testid="time-estimate"
     >
-      <gl-icon name="timer" />
+      <gl-icon name="timer" :size="12" />
       {{ timeEstimate }}
     </span>
     <slot></slot>

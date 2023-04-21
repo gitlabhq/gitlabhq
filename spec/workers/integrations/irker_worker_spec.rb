@@ -105,7 +105,7 @@ RSpec.describe Integrations::IrkerWorker, '#perform', feature_category: :integra
   end
 
   def wrap_message(text)
-    message = "[#{project.path}] #{push_data['user_name']} #{text}"
+    message = "[#{project.name}] #{push_data['user_name']} #{text}"
     to_send = { to: channels, privmsg: message }
 
     Gitlab::Json.dump(to_send)

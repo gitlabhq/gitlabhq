@@ -195,10 +195,11 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
         end
       end
 
-      it 'successfully changes ref when the ref name matches the project name' do
-        project.repository.create_branch(project.name)
+      # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/330947
+      it 'successfully changes ref when the ref name matches the project path' do
+        project.repository.create_branch(project.path)
 
-        visit_blob('files/js/application.js', ref: project.name)
+        visit_blob('files/js/application.js', ref: project.path)
         switch_ref_to('master')
 
         aggregate_failures do

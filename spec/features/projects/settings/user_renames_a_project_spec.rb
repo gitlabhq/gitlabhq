@@ -67,7 +67,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
   end
 
   context 'when changing project path' do
-    let(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
+    let(:project) { create(:project, :repository, namespace: user.namespace, path: 'gitlabhq') }
 
     before(:context) do
       TestEnv.clean_test_path

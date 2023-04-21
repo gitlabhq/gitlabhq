@@ -22,6 +22,30 @@ export const jobLog = [
     content: [{ text: 'Starting service postgres:9.6.14 ...', style: 'text-green' }],
     section: 'prepare-executor',
   },
+  {
+    offset: 1004,
+    content: [
+      {
+        text: 'Restore cache',
+        style: 'term-fg-l-cyan term-bold',
+      },
+    ],
+    section: 'restore-cache',
+    section_header: true,
+    section_options: {
+      collapsed: 'true',
+    },
+  },
+  {
+    offset: 1005,
+    content: [
+      {
+        text: 'Checking cache for ruby-gems-debian-bullseye-ruby-3.0-16...',
+        style: 'term-fg-l-green term-bold',
+      },
+    ],
+    section: 'restore-cache',
+  },
 ];
 
 export const utilsMockData = [

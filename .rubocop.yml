@@ -103,6 +103,8 @@ InternalAffairs/DeprecateCopHelper:
 
 Layout/LineLength:
   AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
+  Exclude:
+    - 'ee/spec/controllers/concerns/routable_actions_spec.rb'
 
 Lint/LastKeywordArgument:
   Safe: false

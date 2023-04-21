@@ -9,7 +9,7 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
 
       expect(package_row).to have_content(pkg.name)
       expect(package_row).to have_content(pkg.version)
-      expect(package_row).to have_content(pkg.project.name) if check_project_name
+      expect(package_row).to have_content(pkg.project.path) if check_project_name
     end
   end
 

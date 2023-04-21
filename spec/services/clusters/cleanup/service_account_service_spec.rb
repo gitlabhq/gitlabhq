@@ -55,14 +55,16 @@ RSpec.describe Clusters::Cleanup::ServiceAccountService, feature_category: :depl
 
     context 'when there is a Kubeclient::HttpError' do
       ['Unauthorized', 'forbidden', 'Certificate verify Failed'].each do |message|
-        before do
-          allow(kubeclient_instance_double)
-            .to receive(:delete_service_account)
-            .and_raise(Kubeclient::HttpError.new(401, message, nil))
-        end
+        context "with error:#{message}" do
+          before do
+            allow(kubeclient_instance_double)
+              .to receive(:delete_service_account)
+              .and_raise(Kubeclient::HttpError.new(401, message, nil))
+          end
 
-        it 'destroys cluster' do
-          expect { subject }.to change { Clusters::Cluster.where(id: cluster.id).exists? }.from(true).to(false)
+          it 'destroys cluster' do
+            expect { subject }.to change { Clusters::Cluster.where(id: cluster.id).exists? }.from(true).to(false)
+          end
         end
       end
     end

@@ -951,7 +951,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
             expect(json_response.length).to eq(8)
 
             project_names = json_response.map { |proj| proj['name'] }
-            expect(project_names).to contain_exactly(project.name, project2.name, 'second_project', 'public_project', 'Project', 'Test Project', 'Test Public Project', 'Test')
+            expect(project_names).to match_array([project, project2, project3, public_project, project_1, project_2, project_4, project_3].map(&:name))
           end
         end
 

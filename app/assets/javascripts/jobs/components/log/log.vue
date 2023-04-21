@@ -1,5 +1,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
+import { scrollToElement } from '~/lib/utils/common_utils';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import CollapsibleLogSection from './collapsible_section.vue';
 import LogLine from './line.vue';
 
@@ -25,13 +27,25 @@ export default {
   },
   updated() {
     this.$nextTick(() => {
-      this.handleScrollDown();
+      if (!window.location.hash) {
+        this.handleScrollDown();
+      }
     });
   },
   mounted() {
-    this.$nextTick(() => {
-      this.handleScrollDown();
-    });
+    if (window.location.hash) {
+      const lineNumber = getLocationHash();
+
+      this.unwatchJobLog = this.$watch('jobLog', async () => {
+        if (this.jobLog.length) {
+          await this.$nextTick();
+
+          const el = document.getElementById(lineNumber);
+          scrollToElement(el);
+          this.unwatchJobLog();
+        }
+      });
+    }
   },
   methods: {
     ...mapActions(['toggleCollapsibleLine', 'scrollBottom']),

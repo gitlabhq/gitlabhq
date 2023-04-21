@@ -5874,6 +5874,9 @@ msgstr ""
 msgid "Ask someone with write access to resolve it."
 msgstr ""
 
+msgid "Ask the Tanuki Bot"
+msgstr ""
+
 msgid "Ask your group owner to set up a group runner."
 msgstr ""
 
@@ -28888,9 +28891,6 @@ msgstr ""
 msgid "Navigation|There was an error fetching search results."
 msgstr ""
 
-msgid "Navigation|Toggle edit mode"
-msgstr ""
-
 msgid "Navigation|Unpin item"
 msgstr ""
 
@@ -50339,9 +50339,6 @@ msgid "WorkItem|Undo"
 msgstr ""
 
 msgid "WorkItem|View current version"
-msgstr ""
-
-msgid "WorkItem|Work Items"
 msgstr ""
 
 msgid "WorkItem|Work item"

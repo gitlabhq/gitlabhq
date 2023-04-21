@@ -42,45 +42,47 @@ describe('HelpCenter component', () => {
     };
   };
 
+  const DEFAULT_HELP_ITEMS = [
+    { text: HelpCenter.i18n.help, href: helpPagePath(), extraAttrs: trackingAttrs('help') },
+    {
+      text: HelpCenter.i18n.support,
+      href: sidebarData.support_path,
+      extraAttrs: trackingAttrs('support'),
+    },
+    {
+      text: HelpCenter.i18n.docs,
+      href: 'https://docs.gitlab.com',
+      extraAttrs: trackingAttrs('gitlab_documentation'),
+    },
+    {
+      text: HelpCenter.i18n.plans,
+      href: `${PROMO_URL}/pricing`,
+      extraAttrs: trackingAttrs('compare_gitlab_plans'),
+    },
+    {
+      text: HelpCenter.i18n.forum,
+      href: 'https://forum.gitlab.com/',
+      extraAttrs: trackingAttrs('community_forum'),
+    },
+    {
+      text: HelpCenter.i18n.contribute,
+      href: helpPagePath('', { anchor: 'contributing-to-gitlab' }),
+      extraAttrs: trackingAttrs('contribute_to_gitlab'),
+    },
+    {
+      text: HelpCenter.i18n.feedback,
+      href: 'https://about.gitlab.com/submit-feedback',
+      extraAttrs: trackingAttrs('submit_feedback'),
+    },
+  ];
+
   describe('default', () => {
     beforeEach(() => {
       createWrapper(sidebarData);
     });
 
     it('renders menu items', () => {
-      expect(findDropdownGroup(0).props('group').items).toEqual([
-        { text: HelpCenter.i18n.help, href: helpPagePath(), extraAttrs: trackingAttrs('help') },
-        {
-          text: HelpCenter.i18n.support,
-          href: sidebarData.support_path,
-          extraAttrs: trackingAttrs('support'),
-        },
-        {
-          text: HelpCenter.i18n.docs,
-          href: 'https://docs.gitlab.com',
-          extraAttrs: trackingAttrs('gitlab_documentation'),
-        },
-        {
-          text: HelpCenter.i18n.plans,
-          href: `${PROMO_URL}/pricing`,
-          extraAttrs: trackingAttrs('compare_gitlab_plans'),
-        },
-        {
-          text: HelpCenter.i18n.forum,
-          href: 'https://forum.gitlab.com/',
-          extraAttrs: trackingAttrs('community_forum'),
-        },
-        {
-          text: HelpCenter.i18n.contribute,
-          href: helpPagePath('', { anchor: 'contributing-to-gitlab' }),
-          extraAttrs: trackingAttrs('contribute_to_gitlab'),
-        },
-        {
-          text: HelpCenter.i18n.feedback,
-          href: 'https://about.gitlab.com/submit-feedback',
-          extraAttrs: trackingAttrs('submit_feedback'),
-        },
-      ]);
+      expect(findDropdownGroup(0).props('group').items).toEqual(DEFAULT_HELP_ITEMS);
 
       expect(findDropdownGroup(1).props('group').items).toEqual([
         expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
@@ -91,6 +93,23 @@ describe('HelpCenter component', () => {
     it('passes popper options to the dropdown', () => {
       expect(findDropdown().props('popperOptions')).toEqual({
         modifiers: [{ name: 'offset', options: { offset: [-4, 4] } }],
+      });
+    });
+
+    describe('with show_tanuki_bot true', () => {
+      beforeEach(() => {
+        createWrapper({ ...sidebarData, show_tanuki_bot: true });
+      });
+
+      it('shows Ask the Tanuki Bot with the help items', () => {
+        expect(findDropdownGroup(0).props('group').items).toEqual([
+          expect.objectContaining({
+            icon: 'tanuki',
+            text: HelpCenter.i18n.tanuki,
+            extraAttrs: trackingAttrs('tanuki_bot_help_dropdown'),
+          }),
+          ...DEFAULT_HELP_ITEMS,
+        ]);
       });
     });
 

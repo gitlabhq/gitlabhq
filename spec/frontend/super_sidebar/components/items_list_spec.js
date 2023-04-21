@@ -73,7 +73,6 @@ describe('ItemsList component', () => {
       createWrapper({
         props: {
           items: [mockProject],
-          editable: true,
         },
         mountFn: mountExtended,
       });
@@ -84,7 +83,7 @@ describe('ItemsList component', () => {
 
       expect(itemRemoveButton.exists()).toBe(true);
       expect(itemRemoveButton.attributes('title')).toBe('Remove');
-      expect(itemRemoveButton.findComponent(GlIcon).props('name')).toBe('close');
+      expect(itemRemoveButton.findComponent(GlIcon).props('name')).toBe('dash');
     });
 
     it('emits `remove-item` event with item param when remove button is clicked', () => {

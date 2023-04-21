@@ -1,10 +1,4 @@
-import {
-  GlSkeletonLoader,
-  GlAlert,
-  GlEmptyState,
-  GlIntersectionObserver,
-  GlLoadingIcon,
-} from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -19,6 +13,7 @@ import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableApp from '~/jobs/components/table/jobs_table_app.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
+import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import {
   mockJobsResponsePaginated,
@@ -41,7 +36,7 @@ describe('Job table app', () => {
 
   const countSuccessHandler = jest.fn().mockResolvedValue(mockJobsCountResponse);
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findSkeletonLoader = () => wrapper.findComponent(JobsSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findTable = () => wrapper.findComponent(JobsTable);
   const findTabs = () => wrapper.findComponent(JobsTableTabs);

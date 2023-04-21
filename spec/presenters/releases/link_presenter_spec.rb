@@ -15,7 +15,7 @@ RSpec.describe Releases::LinkPresenter do
     context 'when filepath is provided' do
       let(:filepath) { '/bin/bigfile.exe' }
       let(:expected_url) do
-        "http://localhost/#{release.project.namespace.path}/#{release.project.name}" \
+        "http://localhost/#{release.project.full_path}" \
         "/-/releases/#{release.tag}/downloads/bin/bigfile.exe"
       end
 

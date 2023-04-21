@@ -6,7 +6,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
 
-  let!(:project) { create(:project, :repository, name: 'dashboard-project', namespace: namespace) }
+  let_it_be(:project) { create(:project, :repository, namespace: namespace) }
   let(:repository) { project.repository }
   let(:branch) { double(name: branch_name) }
   let(:commit_message) { 'test' }
@@ -120,7 +120,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
       end
 
       context 'project without repository feature' do
-        let!(:project) { create(:project, name: 'dashboard-project', namespace: namespace) }
+        let_it_be(:project) { create(:project, namespace: namespace) }
 
         it 'responds with :not_found status code' do
           post :create, params: params
@@ -246,7 +246,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
       end
 
       context 'project without repository feature' do
-        let!(:project) { create(:project, name: 'dashboard-project', namespace: namespace) }
+        let_it_be(:project) { create(:project, namespace: namespace) }
 
         it 'responds with :not_found status code' do
           put :update, params: params

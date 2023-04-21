@@ -72,7 +72,7 @@ RSpec.describe AnalyticsIssueEntity do
   end
 
   context 'without subgroup' do
-    let_it_be(:project) { create(:project, name: 'my project') }
+    let_it_be(:project) { create(:project) }
 
     subject { entity.as_json }
 
@@ -80,14 +80,14 @@ RSpec.describe AnalyticsIssueEntity do
   end
 
   context 'with subgroup' do
-    let_it_be(:project) { create(:project, :in_subgroup, name: 'my project') }
+    let_it_be(:project) { create(:project, :in_subgroup) }
 
     subject { entity.as_json }
 
     it_behaves_like 'generic entity'
 
     it 'has URL containing subgroup' do
-      expect(subject[:url]).to include("#{project.group.parent.name}/#{project.group.name}/my_project/")
+      expect(subject[:url]).to include("#{project.group.parent.name}/#{project.group.name}/#{project.path}/")
     end
   end
 end

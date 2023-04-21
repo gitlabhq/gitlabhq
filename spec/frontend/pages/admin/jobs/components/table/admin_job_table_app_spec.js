@@ -1,4 +1,4 @@
-import { GlSkeletonLoader, GlLoadingIcon, GlEmptyState, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlAlert } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -7,6 +7,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import getJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs.query.graphql';
 import AdminJobsTableApp from '~/pages/admin/jobs/components/table/admin_jobs_table_app.vue';
+import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
+import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 
 import {
   mockAllJobsResponsePaginated,
@@ -23,11 +25,12 @@ describe('Job table app', () => {
   const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findSkeletonLoader = () => wrapper.findComponent(JobsSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findTable = () => wrapper.findComponent(JobsTable);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findTabs = () => wrapper.findComponent(JobsTableTabs);
 
   const createMockApolloProvider = (handler) => {
     const requestHandlers = [[getJobsQuery, handler]];
@@ -52,6 +55,25 @@ describe('Job table app', () => {
       apolloProvider: createMockApolloProvider(handler),
     });
   };
+
+  describe('loading state', () => {
+    it('should display skeleton loader when loading', () => {
+      createComponent();
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findTable().exists()).toBe(false);
+      expect(findLoadingSpinner().exists()).toBe(false);
+    });
+
+    it('when switching tabs only the skeleton loader should show', () => {
+      createComponent();
+
+      findTabs().vm.$emit('fetchJobsByStatus', null);
+
+      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findLoadingSpinner().exists()).toBe(false);
+    });
+  });
 
   describe('loaded state', () => {
     beforeEach(async () => {

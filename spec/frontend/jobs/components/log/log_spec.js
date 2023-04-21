@@ -1,10 +1,17 @@
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import waitForPromises from 'helpers/wait_for_promises';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import Log from '~/jobs/components/log/log.vue';
 import LogLineHeader from '~/jobs/components/log/line_header.vue';
 import { logLinesParser } from '~/jobs/store/utils';
 import { jobLog } from './mock_data';
+
+jest.mock('~/lib/utils/common_utils', () => ({
+  ...jest.requireActual('~/lib/utils/common_utils'),
+  scrollToElement: jest.fn(),
+}));
 
 describe('Job Log', () => {
   let wrapper;
@@ -36,13 +43,15 @@ describe('Job Log', () => {
       actions,
       state,
     });
-
-    createComponent();
   });
 
   const findCollapsibleLine = () => wrapper.findComponent(LogLineHeader);
 
   describe('line numbers', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders a line number for each open line', () => {
       expect(wrapper.find('#L1').text()).toBe('1');
       expect(wrapper.find('#L2').text()).toBe('2');
@@ -55,6 +64,10 @@ describe('Job Log', () => {
   });
 
   describe('collapsible sections', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders a clickable header section', () => {
       expect(findCollapsibleLine().attributes('role')).toBe('button');
     });
@@ -70,6 +83,51 @@ describe('Job Log', () => {
         findCollapsibleLine().trigger('click');
 
         expect(toggleCollapsibleLineMock).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('anchor scrolling', () => {
+    afterEach(() => {
+      window.location.hash = '';
+    });
+
+    describe('when hash is not present', () => {
+      it('does not scroll to line number', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        expect(wrapper.find('#L6').exists()).toBe(false);
+        expect(scrollToElement).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when hash is present', () => {
+      beforeEach(() => {
+        window.location.hash = '#L6';
+      });
+
+      it('scrolls to line number', async () => {
+        createComponent();
+
+        state.jobLog = logLinesParser(jobLog, [], '#L6');
+        await waitForPromises();
+
+        expect(scrollToElement).toHaveBeenCalledTimes(1);
+
+        state.jobLog = logLinesParser(jobLog, [], '#L7');
+        await waitForPromises();
+
+        expect(scrollToElement).toHaveBeenCalledTimes(1);
+      });
+
+      it('line number within collapsed section is visible', () => {
+        state.jobLog = logLinesParser(jobLog, [], '#L6');
+
+        createComponent();
+
+        expect(wrapper.find('#L6').exists()).toBe(true);
       });
     });
   });

@@ -552,7 +552,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
     end
 
     let_it_be(:group) { create(:group, path: 'build') }
-    let_it_be(:project) { create(:project, name: 'cng', namespace: group) }
+    let_it_be(:project) { create(:project, path: 'cng', namespace: group) }
     let_it_be(:container_repository) { create(:container_repository, project: project, name: "docker-alpine") }
 
     shared_examples 'fetching the project from container repository and path' do

@@ -23,7 +23,7 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
     let(:params) do
       {
         namespace_id: project.namespace.full_path,
-        project_id: project.name,
+        project_id: project.path,
         proxy_path: 'api/v1/query_range',
         datasource_id: '1',
         query: 'rate(relevant_metric)',

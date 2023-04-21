@@ -12,6 +12,8 @@
     - if display_whats_new?
       #whats-new-app{ data: { version_digest: whats_new_version_digest } }
 
+    = render_if_exists "layouts/tanuki_bot_chat"
+
   - elsif defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
   .content-wrapper{ class: "#{@content_wrapper_class}" }

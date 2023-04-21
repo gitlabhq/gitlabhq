@@ -6,7 +6,7 @@ RSpec.describe ContainerRegistry::Event do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group) { create(:group, name: 'group') }
-  let_it_be(:project) { create(:project, name: 'test', namespace: group) }
+  let_it_be(:project) { create(:project, path: 'test', namespace: group) }
 
   describe '#supported?' do
     let(:raw_event) { { 'action' => action } }

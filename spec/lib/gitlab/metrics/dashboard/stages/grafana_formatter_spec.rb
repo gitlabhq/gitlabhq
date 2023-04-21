@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Dashboard::Stages::GrafanaFormatter do
   include GrafanaApiHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'foo') }
-  let_it_be(:project) { create(:project, namespace: namespace, name: 'bar') }
+  let_it_be(:namespace) { create(:namespace, path: 'foo') }
+  let_it_be(:project) { create(:project, namespace: namespace, path: 'bar') }
 
   describe '#transform!' do
     let(:grafana_dashboard) { Gitlab::Json.parse(fixture_file('grafana/simplified_dashboard_response.json'), symbolize_names: true) }
