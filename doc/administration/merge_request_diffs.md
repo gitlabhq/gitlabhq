@@ -121,7 +121,7 @@ then `object_store:`. On Omnibus installations, they are prefixed by
 
 #### S3 compatible connection settings
 
-See [the available connection settings for different providers](object_storage.md#connection-settings).
+See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
 
 **In Omnibus installations:**
 

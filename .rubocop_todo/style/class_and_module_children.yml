@@ -90,7 +90,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/import/gitlab_projects_controller.rb'
     - 'app/controllers/import/history_controller.rb'
     - 'app/controllers/import/manifest_controller.rb'
-    - 'app/controllers/import/phabricator_controller.rb'
     - 'app/controllers/import/url_controller.rb'
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'
     - 'app/controllers/jira_connect/application_controller.rb'

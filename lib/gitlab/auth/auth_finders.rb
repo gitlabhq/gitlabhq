@@ -225,6 +225,12 @@ module Gitlab
 
       def access_token
         strong_memoize(:access_token) do
+          # Kubernetes API OAuth header is not OauthAccessToken or PersonalAccessToken
+          # and should be ignored by this method. When the kubernetes API uses a different
+          # header, we can remove this guard
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/406582
+          next if current_request.path.starts_with? "/api/v4/internal/kubernetes/"
+
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
           else

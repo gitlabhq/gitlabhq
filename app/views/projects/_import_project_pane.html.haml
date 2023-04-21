@@ -63,11 +63,6 @@
           = render Pajamas::ButtonComponent.new(href: new_import_manifest_path(namespace_id: namespace_id), icon: 'doc-text', button_options: { class: 'import_manifest js-import-project-btn', data: { platform: 'manifest_file', **tracking_attrs_data(track_label, 'click_button', 'manifest_file') } }) do
             = _('Manifest file')
 
-      - if phabricator_import_enabled?
-        %div
-          = render Pajamas::ButtonComponent.new(href: new_import_phabricator_path(namespace_id: namespace_id), icon: 'issues', button_options: { class: 'import_phabricator js-import-project-btn', data: { platform: 'phabricator', track_label: "#{track_label}", track_action: "click_button", track_property: "phabricator" } }) do
-            = _('Phabricator tasks')
-
       = render_if_exists "projects/gitee_import_button", namespace_id: namespace_id, track_label: track_label
 
 

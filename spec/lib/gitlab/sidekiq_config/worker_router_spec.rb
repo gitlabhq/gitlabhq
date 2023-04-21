@@ -21,7 +21,6 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       create_worker('PostReceive', :git) | 'git:post_receive'
       create_worker('PipelineHooksWorker', :pipeline_hooks) | 'pipeline_hooks:pipeline_hooks'
       create_worker('Gitlab::JiraImport::AdvanceStageWorker') | 'jira_import_advance_stage'
-      create_worker('Gitlab::PhabricatorImport::ImportTasksWorker', :importer) | 'importer:phabricator_import_import_tasks'
     end
 
     with_them do

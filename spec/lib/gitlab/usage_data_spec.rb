@@ -263,7 +263,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       for_defined_days_back do
         user = create(:user)
 
-        %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest fogbugz phabricator).each do |type|
+        %w(gitlab_project gitlab github bitbucket bitbucket_server gitea git manifest fogbugz).each do |type|
           create(:project, import_type: type, creator_id: user.id)
         end
 
@@ -301,7 +301,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           issue_imports: {
             jira: 2,
             fogbugz: 2,
-            phabricator: 2,
             csv: 2
           },
           group_imports: {
@@ -330,7 +329,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
           issue_imports: {
             jira: 1,
             fogbugz: 1,
-            phabricator: 1,
             csv: 1
           },
           group_imports: {

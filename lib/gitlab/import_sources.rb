@@ -19,8 +19,7 @@ module Gitlab
       ImportSource.new('git',              'Repository by URL', nil),
       ImportSource.new('gitlab_project',   'GitLab export',     Gitlab::ImportExport::Importer),
       ImportSource.new('gitea',            'Gitea',             Gitlab::LegacyGithubImport::Importer),
-      ImportSource.new('manifest',         'Manifest file',     nil),
-      ImportSource.new('phabricator',      'Phabricator',       Gitlab::PhabricatorImport::Importer)
+      ImportSource.new('manifest',         'Manifest file',     nil)
     ].freeze
 
     class << self

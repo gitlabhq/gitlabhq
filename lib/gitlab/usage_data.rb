@@ -694,7 +694,6 @@ module Gitlab
         {
           jira: count(::JiraImportState.where(time_period)), # rubocop: disable CodeReuse/ActiveRecord
           fogbugz: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'fogbugz' }),
-          phabricator: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'phabricator' }),
           csv: count(::Issues::CsvImport.where(time_period)) # rubocop: disable CodeReuse/ActiveRecord
         }
       end

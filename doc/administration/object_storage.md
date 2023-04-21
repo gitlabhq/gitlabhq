@@ -92,36 +92,11 @@ common set of parameters.
 |-------------------|-----------------------------------|
 | `enabled`         | Enable or disable object storage. |
 | `proxy_download`  | Set to `true` to [enable proxying all files served](#proxy-download). Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
-| `connection`      | Various [connection options](#connection-settings) described below. |
+| `connection`      | Various [connection options](#configure-the-connection-settings) described below. |
 | `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). Introduced in GitLab 13.3. |
 | `objects`         | [Object-specific configuration](#configure-the-parameters-of-each-object). |
 
-The following YAML is from the source
-installation, to help you see the inheritance:
-
-```yaml
-    object_store:
-      enabled: true
-      proxy_download: true
-      connection:
-        provider: AWS
-        aws_access_key_id: <AWS_ACCESS_KEY_ID>
-        aws_secret_access_key: <AWS_SECRET_ACCESS_KEY>
-      objects:
-        ...
-```
-
-The Omnibus configuration maps directly to this:
-
-```ruby
-gitlab_rails['object_store']['enabled'] = true
-gitlab_rails['object_store']['proxy_download'] = true
-gitlab_rails['object_store']['connection'] = {
-  'provider' => 'AWS',
-  'aws_access_key_id' => '<AWS_ACCESS_KEY_ID',
-  'aws_secret_access_key' => '<AWS_SECRET_ACCESS_KEY>'
-}
-```
+For an example, see how to [use the consolidated form and Amazon S3](#full-example-using-the-consolidated-form-and-amazon-s3).
 
 ### Configure the parameters of each object
 
@@ -148,50 +123,7 @@ Within each object type, three parameters can be defined:
 | `enabled`        | **{dotted-circle}** No | Overrides the [common parameter](#configure-the-common-parameters).     |
 | `proxy_download` | **{dotted-circle}** No | Overrides the [common parameter](#configure-the-common-parameters).     |
 
-The following YAML shows how the `object_store` section defines
-object-specific configuration block and how the `enabled` and
-`proxy_download` flags can be overridden. The `bucket` is the only
-required parameter within each type:
-
-```yaml
-  object_store:
-      connection:
-        ...
-      objects:
-        artifacts:
-          bucket: artifacts
-          proxy_download: false
-        external_diffs:
-          bucket: external-diffs
-        lfs:
-          bucket: lfs-objects
-        uploads:
-          bucket: uploads
-        packages:
-          bucket: packages
-        dependency_proxy:
-          enabled: false
-          bucket: dependency_proxy
-        terraform_state:
-          bucket: terraform
-        pages:
-          bucket: pages
-```
-
-This maps to this Omnibus GitLab configuration:
-
-```ruby
-gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'artifacts'
-gitlab_rails['object_store']['objects']['artifacts']['proxy_download'] = false
-gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'external-diffs'
-gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'lfs-objects'
-gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'uploads'
-gitlab_rails['object_store']['objects']['packages']['bucket'] = 'packages'
-gitlab_rails['object_store']['objects']['dependency_proxy']['enabled'] = false
-gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'dependency-proxy'
-gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'terraform-state'
-gitlab_rails['object_store']['objects']['pages']['bucket'] = 'pages'
-```
+For an example, see how to [use the consolidated form and Amazon S3](#full-example-using-the-consolidated-form-and-amazon-s3).
 
 #### Disable object storage for specific features
 
@@ -242,7 +174,7 @@ supported by consolidated form, refer to the following guides:
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
 | [Pages content](pages/index.md#using-object-storage) | **{check-circle}** Yes |
 
-## Connection settings
+## Configure the connection settings
 
 Both consolidated and storage-specific form must configure a connection. The following sections describe parameters that can be used
 in the `connection` setting.
@@ -263,7 +195,86 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
 | `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false`. |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
-| `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) when using temporary credentials in IAM. | `15` |
+| `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
+
+#### Use Amazon instance profiles
+
+Instead of supplying AWS access and secret keys in object storage
+configuration, you can configure GitLab to use Amazon Identity Access and Management (IAM) roles to set up an
+[Amazon instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html).
+When this is used, GitLab fetches temporary credentials each time an
+S3 bucket is accessed, so no hard-coded values are needed in the
+configuration.
+
+Prerequisites:
+
+- GitLab must be able to connect to the
+  [instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html).
+- If GitLab is [configured to use an internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP
+  address must be added to the `no_proxy` list.
+
+To set up an instance profile:
+
+1. Create an IAM role with the necessary permissions. The
+   following example is a role for an S3 bucket named `test-bucket`:
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "VisualEditor0",
+               "Effect": "Allow",
+               "Action": [
+                   "s3:PutObject",
+                   "s3:GetObject",
+                   "s3:DeleteObject"
+               ],
+               "Resource": "arn:aws:s3:::test-bucket/*"
+           }
+       ]
+   }
+   ```
+
+1. [Attach this role](https://aws.amazon.com/premiumsupport/knowledge-center/attach-replace-ec2-instance-profile/)
+   to the EC2 instance hosting your GitLab instance.
+1. Set the `use_iam_profile` GitLab configuration option to `true`.
+
+#### Encrypted S3 buckets
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) in GitLab 13.1 for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) in GitLab 13.2 for static credentials when the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form) and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html) is used.
+
+When configured either with an instance profile or with the consolidated
+form, GitLab Workhorse properly uploads files to S3
+buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
+AWS KMS keys and SSE-C encryption are
+[not supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
+
+#### Server-side encryption headers
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
+
+Setting a default encryption on an S3 bucket is the easiest way to
+enable encryption, but you may want to
+[set a bucket policy to ensure only encrypted objects are uploaded](https://repost.aws/knowledge-center/s3-bucket-store-kms-encrypted-objects).
+To do this, you must configure GitLab to send the proper encryption headers
+in the `storage_options` configuration section:
+
+| Setting                             | Description                              |
+|-------------------------------------|------------------------------------------|
+| `server_side_encryption`            | Encryption mode (`AES256` or `aws:kms`). |
+| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html). |
+
+As with the case for default encryption, these options only work when
+the Workhorse S3 client is enabled. One of the following two conditions
+must be fulfilled:
+
+- `use_iam_profile` is `true` in the connection settings.
+- Consolidated form is in use.
+
+[ETag mismatch errors](#etag-mismatch) occur if server side
+encryption headers are used without enabling the Workhorse S3 client.
 
 ### Oracle Cloud S3
 
@@ -753,85 +764,6 @@ The consolidated form is used _only_ if all lines from
 the original form is omitted. To move to the consolidated form, remove the
 original configuration (for example, `artifacts_object_store_enabled`, or
 `uploads_object_store_connection`)
-
-## Use Amazon instance profiles
-
-Instead of supplying AWS access and secret keys in object storage
-configuration, GitLab can be configured to use IAM roles to set up an
-[Amazon instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html).
-When this is used, GitLab fetches temporary credentials each time an
-S3 bucket is accessed, so no hard-coded values are needed in the
-configuration.
-
-To use an Amazon instance profile, GitLab must be able to connect to the
-[instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html).
-If GitLab is [configured to use an Internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP
-address must be added to the `no_proxy` list.
-
-### Encrypted S3 buckets
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-workhorse/-/merge_requests/466) in GitLab 13.1 for instance profiles only and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html).
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34460) in GitLab 13.2 for static credentials when the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form) and [S3 default encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html) is used.
-
-When configured either with an instance profile or with the consolidated
-form, GitLab Workhorse properly uploads files to S3
-buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
-Customer master keys (CMKs) and SSE-C encryption are
-[not supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
-
-#### Server-side encryption headers
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
-
-Setting a default encryption on an S3 bucket is the easiest way to
-enable encryption, but you may want to
-[set a bucket policy to ensure only encrypted objects are uploaded](https://repost.aws/knowledge-center/s3-bucket-store-kms-encrypted-objects).
-To do this, you must configure GitLab to send the proper encryption headers
-in the `storage_options` configuration section:
-
-| Setting                             | Description                              |
-|-------------------------------------|------------------------------------------|
-| `server_side_encryption`            | Encryption mode (`AES256` or `aws:kms`). |
-| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html). |
-
-As with the case for default encryption, these options only work when
-the Workhorse S3 client is enabled. One of the following two conditions
-must be fulfilled:
-
-- `use_iam_profile` is `true` in the connection settings.
-- Consolidated form is in use.
-
-[ETag mismatch errors](#etag-mismatch) occur if server side
-encryption headers are used without enabling the Workhorse S3 client.
-
-#### IAM Permissions
-
-To set up an instance profile:
-
-1. Create an Amazon Identity Access and Management (IAM) role with the necessary permissions. The
-   following example is a role for an S3 bucket named `test-bucket`:
-
-   ```json
-   {
-       "Version": "2012-10-17",
-       "Statement": [
-           {
-               "Sid": "VisualEditor0",
-               "Effect": "Allow",
-               "Action": [
-                   "s3:PutObject",
-                   "s3:GetObject",
-                   "s3:DeleteObject"
-               ],
-               "Resource": "arn:aws:s3:::test-bucket/*"
-           }
-       ]
-   }
-   ```
-
-1. [Attach this role](https://aws.amazon.com/premiumsupport/knowledge-center/attach-replace-ec2-instance-profile/)
-   to the EC2 instance hosting your GitLab instance.
-1. Configure GitLab to use it via the `use_iam_profile` configuration option.
 
 ## Migrate objects to a different object storage provider
 

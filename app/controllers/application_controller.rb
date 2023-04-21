@@ -64,8 +64,7 @@ class ApplicationController < ActionController::Base
     :bitbucket_import_enabled?, :bitbucket_import_configured?,
     :bitbucket_server_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
-    :manifest_import_enabled?, :phabricator_import_enabled?,
-    :masked_page_url
+    :manifest_import_enabled?, :masked_page_url
 
   def self.endpoint_id_for_action(action_name)
     "#{name}##{action_name}"
@@ -474,10 +473,6 @@ class ApplicationController < ActionController::Base
 
   def manifest_import_enabled?
     Gitlab::CurrentSettings.import_sources.include?('manifest')
-  end
-
-  def phabricator_import_enabled?
-    Gitlab::PhabricatorImport.available?
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

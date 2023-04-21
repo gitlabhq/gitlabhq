@@ -2392,6 +2392,33 @@
       changes: *feature-flag-development-config-patterns
 
 # This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
+# in additionally that there are changes in dependency-patterns
+# Unfortunately, we can't say it has changes in
+#     feature-flag-development-config-patterns
+# And in
+#     dependency-patterns
+# At the same time. Note that this can't be using OR so using a union pattern
+# doesn't work either. Given that we cannot specify this, there's a gap can
+# happen when:
+#     * The merge request does not have ~"pipeline:run-as-if-jh"
+#     * The merge request changes a feature flag
+#     * The merge request also changes dependencies
+# In this case, we expect that we do run `sync-as-if-jh-branch` but it won't,
+# meaning that dependencies in the JH validation pipeline will be outdated.
+# To work around this issue, apply ~"pipeline:run-as-if-jh" to the merge
+# request so we can force it to run `sync-as-if-jh-branch` when there are
+# dependencies changes.
+.as-if-jh:rules:sync-as-if-jh:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - !reference [".as-if-jh-default-exclusion-rules", rules]
+    - <<: *if-merge-request-labels-as-if-jh
+      changes: *dependency-patterns
+    # Ideally, we should be able to do this:
+    # - <<: *if-dot-com-gitlab-org-merge-request
+    #   changes: *feature-flag-development-config-patterns && *dependency-patterns
+
+# This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
 # Because the jobs using this need jobs using the preparation rules
 .as-if-jh:rules:start-as-if-jh:
   rules:

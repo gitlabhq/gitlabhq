@@ -1,5 +1,5 @@
 import { isDataframe, convertHtmlTableToJson } from '~/notebook/cells/output/dataframe_util';
-import { outputWithDataframeContent } from '../../mock_data';
+import { outputWithDataframeContent, outputWithMultiIndexDataFrame } from '../../mock_data';
 import sanitizeTests from './html_sanitize_fixtures';
 
 describe('notebook/cells/output/dataframe_utils', () => {
@@ -43,13 +43,33 @@ describe('notebook/cells/output/dataframe_utils', () => {
 
       const output = {
         fields: [
-          { key: 'index', label: '', sortable: true },
-          { key: 'column_1', label: 'column_1', sortable: true },
-          { key: 'column_2', label: 'column_2', sortable: true },
+          { key: 'index0', label: '', sortable: true, class: 'gl-font-weight-bold' },
+          { key: 'column0', label: 'column_1', sortable: true, class: '' },
+          { key: 'column1', label: 'column_2', sortable: true, class: '' },
         ],
         items: [
-          { index: 0, column_1: 'abc de f', column_2: 'a' },
-          { index: 1, column_1: 'True', column_2: '0.1' },
+          { index0: '0', column0: 'abc de f', column1: 'a' },
+          { index0: '1', column0: 'True', column1: '0.1' },
+        ],
+      };
+
+      expect(convertHtmlTableToJson(input)).toEqual(output);
+    });
+
+    it('converts multi-index table correctly', () => {
+      const input = outputWithMultiIndexDataFrame;
+
+      const output = {
+        fields: [
+          { key: 'index0', label: 'first', sortable: true, class: 'gl-font-weight-bold' },
+          { key: 'index1', label: 'second', sortable: true, class: 'gl-font-weight-bold' },
+          { key: 'column0', label: '0', sortable: true, class: '' },
+        ],
+        items: [
+          { index0: 'bar', index1: 'one', column0: '1' },
+          { index0: 'bar', index1: 'two', column0: '2' },
+          { index0: 'baz', index1: 'one', column0: '3' },
+          { index0: 'baz', index1: 'two', column0: '4' },
         ],
       };
 
@@ -96,7 +116,7 @@ describe('notebook/cells/output/dataframe_utils', () => {
         ['svg', 3],
       ])('sanitizes output for: %p', (tag, index) => {
         const inputHtml = makeDataframeWithHtml(sanitizeTests[index][1].input);
-        const convertedHtml = convertHtmlTableToJson(inputHtml).items[0].column_1;
+        const convertedHtml = convertHtmlTableToJson(inputHtml).items[0].column0;
 
         expect(convertedHtml).not.toContain(tag);
       });

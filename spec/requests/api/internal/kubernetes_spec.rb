@@ -59,12 +59,29 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
+  shared_examples 'error handling' do
+    let!(:agent_token) { create(:cluster_agent_token) }
+
+    # this test verifies fix for an issue where AgentToken passed in Authorization
+    # header broke error handling in the api_helpers.rb. It can be removed after
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/406582 is done
+    it 'returns correct error for the endpoint' do
+      allow(Gitlab::Kas).to receive(:verify_api_request).and_raise(StandardError.new('Unexpected Error'))
+
+      send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(response.body).to include("Unexpected Error")
+    end
+  end
+
   describe 'POST /internal/kubernetes/usage_metrics', :clean_gitlab_redis_shared_state do
     def send_request(headers: {}, params: {})
       post api('/internal/kubernetes/usage_metrics'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
     end
 
     include_examples 'authorization'
+    include_examples 'error handling'
 
     context 'is authenticated for an agent' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -160,6 +177,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     include_examples 'authorization'
+    include_examples 'error handling'
 
     context 'agent exists' do
       it 'configures the agent and returns a 204' do
@@ -189,6 +207,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     include_examples 'authorization'
     include_examples 'agent authentication'
+    include_examples 'error handling'
 
     context 'an agent is found' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -233,6 +252,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     include_examples 'authorization'
     include_examples 'agent authentication'
+    include_examples 'error handling'
 
     context 'an agent is found' do
       let_it_be(:agent_token) { create(:cluster_agent_token) }

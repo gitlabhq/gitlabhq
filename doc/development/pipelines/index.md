@@ -346,6 +346,9 @@ from the main mirror, rather than the validation project.
 
 The whole process looks like this:
 
+NOTE:
+We only run `sync-as-if-jh-branch` when there are dependencies changes.
+
 ```mermaid
 flowchart TD
   subgraph "JiHuLab.com"
@@ -354,7 +357,6 @@ flowchart TD
 
   subgraph "GitLab.com"
     Mirror["gitlab-org/gitlab-jh-mirrors/gitlab"]
-    Validation["gitlab-org-sandbox/gitlab-jh-validation"]
 
     subgraph MR["gitlab-org/gitlab merge request"]
       Add["add-jh-files job"]
@@ -362,10 +364,17 @@ flowchart TD
       Add --"download artifacts"--> Prepare
     end
 
-    Mirror --"pull mirror with master and main-jh"--> Validation
+    subgraph "gitlab-org-sandbox/gitlab-jh-validation"
+      Sync["(*optional) sync-as-if-jh-branch job on branch as-if-jh-code-sync"]
+      Start["start-as-if-jh job on as-if-jh/* branch"]
+      AsIfJH["as-if-jh pipeline"]
+    end
+
+    Mirror --"pull mirror with master and main-jh"--> gitlab-org-sandbox/gitlab-jh-validation
     Mirror --"download JiHu files with ADD_JH_FILES_TOKEN"--> Add
-    Prepare --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Validation
-    Validation --> Pipeline["as-if-jh pipeline"]
+    Prepare --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Sync
+    Sync --"push as-if-jh branches with AS_IF_JH_TOKEN"--> Start
+    Start --> AsIfJH
   end
 
   JH --"pull mirror with corresponding JH branches"--> Mirror
@@ -386,10 +395,20 @@ job will create a new branch from the merge request branch, commit the
 changes, and finally push the branch to the
 [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation).
 
+Optionally, if the merge requests have changes to the dependencies, we have an
+additional step to run `sync-as-if-jh-branch` job to trigger a downstream
+pipeline on [`as-if-jh-code-sync` branch](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation/-/blob/as-if-jh-code-sync/jh/.gitlab-ci.yml)
+in the validation project. This job will perform the same process as
+[JiHu code-sync](https://jihulab.com/gitlab-cn/code-sync/-/blob/main-jh/.gitlab-ci.yml), making sure the dependencies changes can be brought to the
+as-if-jh branch prior to run the validation pipeline.
+
+If there are no dependencies changes, we don't run this process.
+
 ##### How we trigger and run the as-if-JH pipeline
 
-After having the `as-if-jh/*` branch, `start-as-if-jh` job will trigger a pipeline
-in the [validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
+After having the `as-if-jh/*` branch prepared and optionally synchronized,
+`start-as-if-jh` job will trigger a pipeline in the
+[validation project](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation)
 to run the cross-project downstream pipeline.
 
 ##### How the GitLab JH mirror project is set up
@@ -429,6 +448,18 @@ running every day, updating cache.
 
 The default CI/CD configuration file is also set at `jh/.gitlab-ci.yml` so it
 runs exactly like [GitLab JH](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml).
+
+Additionally, a special branch
+[`as-if-jh-code-sync`](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation/-/blob/as-if-jh-code-sync/jh/.gitlab-ci.yml)
+is set and protected. Maintainers can push and developers can merge for this
+branch. We need to set it so developers can merge because we need to let
+developers to trigger pipelines for this branch. This is a compromise
+before we resolve [Developer-level users no longer able to run pipelines on protected branches](https://gitlab.com/gitlab-org/gitlab/-/issues/230939).
+
+It's used to run `sync-as-if-jh-branch` to synchronize the dependencies
+when the merge requests changed the dependencies. See
+[How we generate the as-if-JH branch](#how-we-generate-the-as-if-jh-branch)
+for how it works.
 
 ### `rspec:undercoverage` job
 

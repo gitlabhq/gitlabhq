@@ -49,8 +49,10 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
   end
 
   describe '::HamlParser' do
-    it 'overwrites libraries in order to prefer hamlit' do
-      expect(described_class::HamlParser.libraries).to match_array(['hamlit'])
+    # Testing with a non-externalized string, as the functionality
+    # is properly tested later on
+    it '#parse_source' do
+      expect(described_class::HamlParser.new(files[:haml_file]).parse_source('%h1= "Test"')).to match_array([])
     end
   end
 
@@ -188,7 +190,8 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
             'All2' => nil,
             'Context|A' => nil,
             'RB' => nil, 'Apple' => 'Apples'
-          }
+          },
+          parser: GetText::RubyParser
         },
         'with haml file' => {
           invalid_syntax: "  %a\n- content = _('HAML')",
@@ -199,7 +202,8 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
             'Context|C' => nil,
             'HAML' => nil,
             'Cabbage' => 'Cabbages'
-          }
+          },
+          parser: described_class::HamlParser
         },
         'with erb file' => {
           invalid_syntax: "<% x = {id: _('ERB') %>",
@@ -210,7 +214,8 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
             'Context|B' => nil,
             'ERB' => nil,
             'Pear' => 'Pears'
-          }
+          },
+          parser: GetText::ErbParser
         }
       }
     end
@@ -219,9 +224,14 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
       let(:curr_file) { files[file] }
 
       context 'when file has valid syntax' do
+        before do
+          allow(parser).to receive(:new).and_call_original
+        end
+
         it 'parses file and returns extracted strings as POEntries' do
           expect(subject.map(&:class).uniq).to match_array([GetText::POEntry])
           expect(subject.to_h { |entry| [entry.msgid, entry.msgid_plural] }).to eq(result)
+          expect(parser).to have_received(:new)
         end
       end
 
@@ -237,13 +247,25 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
           expect { subject }.not_to raise_error
         end
       end
+
+      context 'when file does not contain "_("' do
+        before do
+          allow(parser).to receive(:new).and_call_original
+          File.write(curr_file, '"abcdef"')
+        end
+
+        it 'never parses the file and returns empty array' do
+          expect(subject).to match_array([])
+          expect(parser).not_to have_received(:new)
+        end
+      end
     end
 
-    context 'with unsupported file' do
+    context 'with unsupported file containing "_("' do
       let(:curr_file) { File.join(base_dir, 'foo.unsupported') }
 
       before do
-        File.write(curr_file, '')
+        File.write(curr_file, '_("Test")')
       end
 
       it 'raises error' do

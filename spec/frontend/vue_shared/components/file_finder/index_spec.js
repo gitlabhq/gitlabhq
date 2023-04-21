@@ -1,244 +1,215 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
-import Vue, { nextTick } from 'vue';
-import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { nextTick } from 'vue';
+import VirtualList from 'vue-virtual-scroll-list';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from 'jest/ide/helpers';
-import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
 import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
+import FileFinderItem from '~/vue_shared/components/file_finder/item.vue';
+import { setHTMLFixture } from 'helpers/fixtures';
 
 describe('File finder item spec', () => {
-  const Component = Vue.extend(FindFileComponent);
-  let vm;
+  let wrapper;
+
+  const TEST_FILES = [
+    {
+      ...file('index.js'),
+      path: 'index.js',
+      type: 'blob',
+      url: '/index.jsurl',
+    },
+    {
+      ...file('component.js'),
+      path: 'component.js',
+      type: 'blob',
+    },
+  ];
 
   function createComponent(props) {
-    vm = new Component({
+    wrapper = mountExtended(FindFileComponent, {
+      attachTo: document.body,
       propsData: {
-        files: [],
+        files: TEST_FILES,
         visible: true,
         loading: false,
         ...props,
       },
     });
-
-    vm.$mount('#app');
   }
 
-  beforeEach(() => {
-    setHTMLFixture('<div id="app"></div>');
-  });
-
-  afterEach(() => {
-    resetHTMLFixture();
-  });
-
-  afterEach(() => {
-    vm.$destroy();
-  });
+  const findAllFileFinderItems = () => wrapper.findAllComponents(FileFinderItem);
+  const findSearchInput = () => wrapper.findByTestId('search-input');
+  const enterSearchText = (text) => findSearchInput().setValue(text);
+  const clearSearch = () => wrapper.findByTestId('clear-search-input').vm.$emit('click');
 
   describe('with entries', () => {
     beforeEach(() => {
       createComponent({
-        files: [
-          {
-            ...file('index.js'),
-            path: 'index.js',
-            type: 'blob',
-            url: '/index.jsurl',
-          },
-          {
-            ...file('component.js'),
-            path: 'component.js',
-            type: 'blob',
-          },
-        ],
+        files: TEST_FILES,
       });
 
       return nextTick();
     });
 
     it('renders list of blobs', () => {
-      expect(vm.$el.textContent).toContain('index.js');
-      expect(vm.$el.textContent).toContain('component.js');
-      expect(vm.$el.textContent).not.toContain('folder');
+      expect(wrapper.text()).toContain('index.js');
+      expect(wrapper.text()).toContain('component.js');
+      expect(wrapper.text()).not.toContain('folder');
     });
 
     it('filters entries', async () => {
-      vm.searchText = 'index';
+      await enterSearchText('index');
 
-      await nextTick();
-
-      expect(vm.$el.textContent).toContain('index.js');
-      expect(vm.$el.textContent).not.toContain('component.js');
+      expect(wrapper.text()).toContain('index.js');
+      expect(wrapper.text()).not.toContain('component.js');
     });
 
     it('shows clear button when searchText is not empty', async () => {
-      vm.searchText = 'index';
+      await enterSearchText('index');
 
-      await nextTick();
-
-      expect(vm.$el.querySelector('.dropdown-input').classList).toContain('has-value');
-      expect(vm.$el.querySelector('.dropdown-input-search').classList).toContain('hidden');
+      expect(wrapper.find('.dropdown-input').classes()).toContain('has-value');
+      expect(wrapper.find('.dropdown-input-search').classes()).toContain('hidden');
     });
 
-    it('clear button resets searchText', () => {
-      vm.searchText = 'index';
+    it('clear button resets searchText', async () => {
+      await enterSearchText('index');
+      expect(findSearchInput().element.value).toBe('index');
 
-      vm.clearSearchInput();
+      await clearSearch();
 
-      expect(vm.searchText).toBe('');
+      expect(findSearchInput().element.value).toBe('');
     });
 
     it('clear button focuses search input', async () => {
-      jest.spyOn(vm.$refs.searchInput, 'focus').mockImplementation(() => {});
-      vm.searchText = 'index';
+      expect(findSearchInput().element).not.toBe(document.activeElement);
 
-      vm.clearSearchInput();
+      await enterSearchText('index');
+      await clearSearch();
 
-      await nextTick();
-
-      expect(vm.$refs.searchInput.focus).toHaveBeenCalled();
+      expect(findSearchInput().element).toBe(document.activeElement);
     });
 
     describe('listShowCount', () => {
-      it('returns 1 when no filtered entries exist', () => {
-        vm.searchText = 'testing 123';
+      it('returns 1 when no filtered entries exist', async () => {
+        await enterSearchText('testing 123');
 
-        expect(vm.listShowCount).toBe(1);
+        expect(wrapper.findComponent(VirtualList).props('remain')).toBe(1);
       });
 
       it('returns entries length when not filtered', () => {
-        expect(vm.listShowCount).toBe(2);
+        expect(wrapper.findComponent(VirtualList).props('remain')).toBe(2);
       });
     });
 
-    describe('filteredBlobsLength', () => {
-      it('returns length of filtered blobs', () => {
-        vm.searchText = 'index';
+    describe('filtering', () => {
+      it('renders only items that match the filter', async () => {
+        await enterSearchText('index');
 
-        expect(vm.filteredBlobsLength).toBe(1);
+        expect(findAllFileFinderItems()).toHaveLength(1);
       });
     });
 
     describe('DOM Performance', () => {
       it('renders less DOM nodes if not visible by utilizing v-if', async () => {
-        vm.visible = false;
+        createComponent({ visible: false });
 
         await nextTick();
 
-        expect(vm.$el).toBeInstanceOf(Comment);
+        expect(wrapper.findByTestId('overlay').exists()).toBe(false);
       });
     });
 
     describe('watches', () => {
       describe('searchText', () => {
         it('resets focusedIndex when updated', async () => {
-          vm.focusedIndex = 1;
-          vm.searchText = 'test';
-
+          await enterSearchText('index');
           await nextTick();
 
-          expect(vm.focusedIndex).toBe(0);
+          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
         });
       });
 
       describe('visible', () => {
         it('resets searchText when changed to false', async () => {
-          vm.searchText = 'test';
-          vm.visible = false;
+          await enterSearchText('test');
+          await wrapper.setProps({ visible: false });
+          // need to set it back to true, so the component's content renders
+          await wrapper.setProps({ visible: true });
 
-          await nextTick();
-
-          expect(vm.searchText).toBe('');
+          expect(findSearchInput().element.value).toBe('');
         });
       });
     });
 
     describe('openFile', () => {
-      beforeEach(() => {
-        jest.spyOn(vm, '$emit').mockImplementation(() => {});
-      });
-
       it('closes file finder', () => {
-        vm.openFile(vm.files[0]);
+        expect(wrapper.emitted('toggle')).toBeUndefined();
 
-        expect(vm.$emit).toHaveBeenCalledWith('toggle', false);
+        findSearchInput().trigger('keyup.enter');
+
+        expect(wrapper.emitted('toggle')).toHaveLength(1);
       });
 
       it('pushes to router', () => {
-        vm.openFile(vm.files[0]);
+        expect(wrapper.emitted('click')).toBeUndefined();
 
-        expect(vm.$emit).toHaveBeenCalledWith('click', vm.files[0]);
+        findSearchInput().trigger('keyup.enter');
+
+        expect(wrapper.emitted('click')).toHaveLength(1);
       });
     });
 
     describe('onKeyup', () => {
       it('opens file on enter key', async () => {
-        const event = new CustomEvent('keyup');
-        event.keyCode = ENTER_KEY_CODE;
+        expect(wrapper.emitted('click')).toBeUndefined();
 
-        jest.spyOn(vm, 'openFile').mockImplementation(() => {});
+        await findSearchInput().trigger('keyup.enter');
 
-        vm.$refs.searchInput.dispatchEvent(event);
-
-        await nextTick();
-
-        expect(vm.openFile).toHaveBeenCalledWith(vm.files[0]);
+        expect(wrapper.emitted('click')[0][0]).toBe(TEST_FILES[0]);
       });
 
       it('closes file finder on esc key', async () => {
-        const event = new CustomEvent('keyup');
-        event.keyCode = ESC_KEY_CODE;
+        expect(wrapper.emitted('toggle')).toBeUndefined();
 
-        jest.spyOn(vm, '$emit').mockImplementation(() => {});
+        await findSearchInput().trigger('keyup.esc');
 
-        vm.$refs.searchInput.dispatchEvent(event);
-
-        await nextTick();
-
-        expect(vm.$emit).toHaveBeenCalledWith('toggle', false);
+        expect(wrapper.emitted('toggle')[0][0]).toBe(false);
       });
     });
 
     describe('onKeyDown', () => {
-      let el;
-
-      beforeEach(() => {
-        el = vm.$refs.searchInput;
-      });
-
       describe('up key', () => {
-        const event = new CustomEvent('keydown');
-        event.keyCode = UP_KEY_CODE;
+        it('resets to last index when at top', async () => {
+          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
 
-        it('resets to last index when at top', () => {
-          el.dispatchEvent(event);
+          await findSearchInput().trigger('keydown.up');
 
-          expect(vm.focusedIndex).toBe(1);
+          expect(findAllFileFinderItems().at(-1).props('focused')).toBe(true);
         });
 
-        it('minus 1 from focusedIndex', () => {
-          vm.focusedIndex = 1;
+        it('minus 1 from focusedIndex', async () => {
+          await findSearchInput().trigger('keydown.up');
+          await findSearchInput().trigger('keydown.up');
 
-          el.dispatchEvent(event);
-
-          expect(vm.focusedIndex).toBe(0);
+          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
         });
       });
 
       describe('down key', () => {
-        const event = new CustomEvent('keydown');
-        event.keyCode = DOWN_KEY_CODE;
+        it('resets to first index when at bottom', async () => {
+          await findSearchInput().trigger('keydown.down');
+          expect(findAllFileFinderItems().at(-1).props('focused')).toBe(true);
 
-        it('resets to first index when at bottom', () => {
-          vm.focusedIndex = 1;
-          el.dispatchEvent(event);
-
-          expect(vm.focusedIndex).toBe(0);
+          await findSearchInput().trigger('keydown.down');
+          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
         });
 
-        it('adds 1 to focusedIndex', () => {
-          el.dispatchEvent(event);
+        it('adds 1 to focusedIndex', async () => {
+          expect(findAllFileFinderItems().at(0).props('focused')).toBe(true);
 
-          expect(vm.focusedIndex).toBe(1);
+          await findSearchInput().trigger('keydown.down');
+
+          expect(findAllFileFinderItems().at(1).props('focused')).toBe(true);
         });
       });
     });
@@ -246,46 +217,45 @@ describe('File finder item spec', () => {
 
   describe('without entries', () => {
     it('renders loading text when loading', () => {
-      createComponent({ loading: true });
+      createComponent({ loading: true, files: [] });
 
-      expect(vm.$el.querySelector('.gl-spinner')).not.toBe(null);
+      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
 
     it('renders no files text', () => {
-      createComponent();
+      createComponent({ files: [] });
 
-      expect(vm.$el.textContent).toContain('No files found.');
+      expect(wrapper.text()).toContain('No files found.');
     });
   });
 
   describe('keyboard shortcuts', () => {
     beforeEach(async () => {
       createComponent();
-
-      jest.spyOn(vm, 'toggle').mockImplementation(() => {});
-
       await nextTick();
     });
 
-    it('calls toggle on `t` key press', async () => {
+    it('calls toggle on `t` key press', () => {
+      expect(wrapper.emitted('toggle')).toBeUndefined();
+
       Mousetrap.trigger('t');
 
-      await nextTick();
-      expect(vm.toggle).toHaveBeenCalled();
+      expect(wrapper.emitted('toggle')).not.toBeUndefined();
     });
 
-    it('calls toggle on `mod+p` key press', async () => {
+    it('calls toggle on `mod+p` key press', () => {
+      expect(wrapper.emitted('toggle')).toBeUndefined();
+
       Mousetrap.trigger('mod+p');
 
-      await nextTick();
-      expect(vm.toggle).toHaveBeenCalled();
+      expect(wrapper.emitted('toggle')).not.toBeUndefined();
     });
 
     it('always allows `mod+p` to trigger toggle', () => {
       expect(
         Mousetrap.prototype.stopCallback(
           null,
-          vm.$el.querySelector('.dropdown-input-field'),
+          wrapper.find('.dropdown-input-field').element,
           'mod+p',
         ),
       ).toBe(false);
@@ -293,7 +263,7 @@ describe('File finder item spec', () => {
 
     it('onlys handles `t` when focused in input-field', () => {
       expect(
-        Mousetrap.prototype.stopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 't'),
+        Mousetrap.prototype.stopCallback(null, wrapper.find('.dropdown-input-field').element, 't'),
       ).toBe(true);
     });
 

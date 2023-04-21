@@ -738,6 +738,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name
+  before_validation :remove_old_import_sources
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
@@ -779,6 +780,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     end
 
     users_count >= INSTANCE_REVIEW_MIN_USERS
+  end
+
+  def remove_old_import_sources
+    self.import_sources -= ['phabricator'] if self.import_sources
   end
 
   Recursion = Class.new(RuntimeError)

@@ -86,6 +86,4 @@ namespace :import do
     get :realtime_changes
     post :upload
   end
-
-  resource :phabricator, only: [:create, :new], controller: :phabricator
 end

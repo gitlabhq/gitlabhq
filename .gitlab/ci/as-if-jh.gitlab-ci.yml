@@ -1,9 +1,13 @@
-.shared-as-if-jh:
+.as-if-jh-sandbox-variables:
   variables:
-    SANDBOX_PROJECT: "gitlab-org-sandbox/gitlab-jh-validation"
-    SANDBOX_REPOSITORY: "https://dummy:${AS_IF_JH_TOKEN}@gitlab.com/${SANDBOX_PROJECT}.git"
-    GITLAB_JH_MIRROR_PROJECT: "33019816"
     AS_IF_JH_BRANCH: "as-if-jh/${CI_COMMIT_REF_NAME}"
+    SANDBOX_REPOSITORY: "https://dummy:${AS_IF_JH_TOKEN}@gitlab.com/gitlab-org-sandbox/gitlab-jh-validation.git"
+
+.shared-as-if-jh:
+  extends:
+    - .as-if-jh-sandbox-variables
+  variables:
+    GITLAB_JH_MIRROR_PROJECT: "33019816"
     JH_FILES_TO_COMMIT: "jh package.json yarn.lock"
 
 add-jh-files:
@@ -42,30 +46,61 @@ prepare-as-if-jh-branch:
     # so instead we tell runner to not clone anything, and we set up the
     # repository by ourselves.
     GIT_STRATEGY: "none"
-  script:
-    - git clone --filter=tree:0 "$CI_REPOSITORY_URL" gitlab
+  before_script:
+    - git clone --filter=tree:0 "${CI_REPOSITORY_URL}" gitlab
     # We should checkout before moving/changing files
     - cd gitlab
     - git checkout -b "${AS_IF_JH_BRANCH}" "${CI_COMMIT_SHA}"
     - cd ..
-    - mv $JH_FILES_TO_COMMIT gitlab/
+    - mv ${JH_FILES_TO_COMMIT} gitlab/
+  script:
     - cd gitlab
     - git add ${JH_FILES_TO_COMMIT}
     - git commit -m 'Add JH files'  # TODO: Mark which SHA we add
     - git push -f "${SANDBOX_REPOSITORY}" "${AS_IF_JH_BRANCH}"
 
-start-as-if-jh:
+sync-as-if-jh-branch:
   extends:
-    - .shared-as-if-jh
-    - .as-if-jh:rules:start-as-if-jh
+    - .as-if-jh-sandbox-variables
+    - .as-if-jh:rules:sync-as-if-jh
   stage: prepare
   needs: ["prepare-as-if-jh-branch"]
   inherit:
+    variables:
+      # From .gitlab-ci.yml for the default Docker image and cache
+      - DEFAULT_CI_IMAGE
+      - REGISTRY_HOST
+      - REGISTRY_GROUP
+      - DEBIAN_VERSION
+      - RUBY_VERSION
+      - GO_VERSION
+      - RUST_VERSION
+      - PG_VERSION
+      - RUBYGEMS_VERSION
+      - CHROME_VERSION
+      - NODE_ENV
+  variables:
+    MERGE_FROM: "${CI_COMMIT_SHA}"  # This is used in https://jihulab.com/gitlab-cn/gitlab/-/blob/e98bcb37aea4cfe1e78e1daef1b58b5f732cf289/jh/bin/build_packagejson where we run in https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation
+  trigger:
+    # What this runs can be found at:
+    # https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation/-/blob/as-if-jh-code-sync/jh/.gitlab-ci.yml
+    project: gitlab-org-sandbox/gitlab-jh-validation
+    branch: as-if-jh-code-sync
+    strategy: depend
+
+start-as-if-jh:
+  extends:
+    - .as-if-jh:rules:start-as-if-jh
+  stage: prepare
+  needs:
+    - job: "prepare-as-if-jh-branch"
+    - job: "sync-as-if-jh-branch"
+      optional: true
+  inherit:
     variables: false
   variables:
-    AS_IF_EDITION: "jh"
     FORCE_GITLAB_CI: "true"  # TODO: Trigger a merge request pipeline
   trigger:
-    project: gitlab-org-sandbox/gitlab-jh-validation  # ${SANDBOX_PROJECT} does not work here
-    branch: as-if-jh/${CI_COMMIT_REF_NAME}  # ${AS_IF_JH_BRANCH} does not work here
+    project: gitlab-org-sandbox/gitlab-jh-validation
+    branch: as-if-jh/${CI_COMMIT_REF_NAME}
     strategy: depend

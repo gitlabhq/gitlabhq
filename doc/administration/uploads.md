@@ -79,7 +79,7 @@ For source installations the following settings are nested under `uploads:` and 
 
 #### Connection settings
 
-See [the available connection settings for different providers](object_storage.md#connection-settings).
+See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
 
 **In Omnibus installations:**
 
@@ -119,7 +119,7 @@ _The uploads are stored by default in
 `/home/git/gitlab/public/uploads`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
-   lines, making sure to use the [appropriate ones for your provider](object_storage.md#connection-settings):
+   lines, making sure to use the [appropriate ones for your provider](object_storage.md#configure-the-connection-settings):
 
    ```yaml
    uploads:

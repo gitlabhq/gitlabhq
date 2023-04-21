@@ -287,6 +287,7 @@ gem 'kubeclient', '~> 4.11.0'
 
 # AI
 gem 'ruby-openai', '~> 3.7'
+gem 'circuitbox', '2.0.0.pre5'
 
 # Sanitize user input
 gem 'sanitize', '~> 6.0'

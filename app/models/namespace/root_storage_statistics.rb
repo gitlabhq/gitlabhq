@@ -45,7 +45,8 @@ class Namespace::RootStorageStatistics < ApplicationRecord
     attributes_from_project_statistics.merge!(
       attributes_from_personal_snippets,
       attributes_from_namespace_statistics,
-      attributes_for_container_registry_size
+      attributes_for_container_registry_size,
+      attributes_for_forks_statistics
     ) { |key, v1, v2| v1 + v2 }
   end
 
@@ -56,6 +57,32 @@ class Namespace::RootStorageStatistics < ApplicationRecord
       storage_size: container_registry_size,
       container_registry_size: container_registry_size
     }.with_indifferent_access
+  end
+
+  def attributes_for_forks_statistics
+    return {} unless ::Feature.enabled?(:root_storage_statistics_calculate_forks, namespace)
+
+    visibility_levels_to_storage_size_columns = {
+      Gitlab::VisibilityLevel::PRIVATE => :private_forks_storage_size,
+      Gitlab::VisibilityLevel::INTERNAL => :internal_forks_storage_size,
+      Gitlab::VisibilityLevel::PUBLIC => :public_forks_storage_size
+    }
+
+    defaults = {
+      private_forks_storage_size: 0,
+      internal_forks_storage_size: 0,
+      public_forks_storage_size: 0
+    }
+
+    defaults.merge(for_forks_statistics.transform_keys { |k| visibility_levels_to_storage_size_columns[k] })
+  end
+
+  def for_forks_statistics
+    all_projects
+      .joins([:statistics, :fork_network])
+      .where('fork_networks.root_project_id != projects.id')
+      .group('projects.visibility_level')
+      .sum('project_statistics.storage_size')
   end
 
   def attributes_from_project_statistics

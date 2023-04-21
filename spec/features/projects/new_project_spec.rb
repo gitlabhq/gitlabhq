@@ -126,8 +126,7 @@ RSpec.describe 'New project', :js, feature_category: :projects do
             'gitlab.com': :status_import_gitlab_path,
             'fogbugz': :new_import_fogbugz_path,
             'gitea': :new_import_gitea_path,
-            'manifest': :new_import_manifest_path,
-            'phabricator': :new_import_phabricator_path
+            'manifest': :new_import_manifest_path
           }
         end
 

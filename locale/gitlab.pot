@@ -1881,9 +1881,6 @@ msgstr ""
 msgid "API Help"
 msgstr ""
 
-msgid "API Token"
-msgstr ""
-
 msgid "API key"
 msgstr ""
 
@@ -9137,6 +9134,9 @@ msgstr ""
 msgid "CiCatalog|Learn more"
 msgstr ""
 
+msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
+msgstr ""
+
 msgid "CiCatalog|Released %{timeAgo} by %{author}"
 msgstr ""
 
@@ -16354,9 +16354,6 @@ msgstr ""
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
-msgid "Enter in your Phabricator Server URL and personal access token below"
-msgstr ""
-
 msgid "Enter license key"
 msgstr ""
 
@@ -18701,6 +18698,9 @@ msgid_plural "Free groups are limited to %{free_user_limit} members and the rema
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Free trial will expire in %{days}"
+msgstr ""
+
 msgid "FreeUserCap|Alternatively you can upgrade to GitLab Premium or GitLab Ultimate:"
 msgstr ""
 
@@ -18840,6 +18840,9 @@ msgid "Geo"
 msgstr ""
 
 msgid "Geo Replication"
+msgstr ""
+
+msgid "Geo Replication - %{node_name}"
 msgstr ""
 
 msgid "Geo Settings"
@@ -22221,12 +22224,6 @@ msgstr ""
 msgid "Import started by: %{importInitiator}"
 msgstr ""
 
-msgid "Import tasks"
-msgstr ""
-
-msgid "Import tasks from Phabricator into issues"
-msgstr ""
-
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
@@ -23750,9 +23747,6 @@ msgid "Invalid format selected"
 msgstr ""
 
 msgid "Invalid hash"
-msgstr ""
-
-msgid "Invalid import params"
 msgstr ""
 
 msgid "Invalid input, please avoid emojis"
@@ -31925,15 +31919,6 @@ msgstr ""
 msgid "PersonalProject|Your project %{projectName} is not in a group"
 msgstr ""
 
-msgid "Phabricator Server Import"
-msgstr ""
-
-msgid "Phabricator Server URL"
-msgstr ""
-
-msgid "Phabricator tasks"
-msgstr ""
-
 msgid "Phone"
 msgstr ""
 
@@ -35454,6 +35439,9 @@ msgid "PrometheusService|The contents of the credentials.json file of your servi
 msgstr ""
 
 msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
+msgstr ""
+
+msgid "PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries."
 msgstr ""
 
 msgid "PrometheusService|To use a Prometheus installed on a cluster, deactivate the manual configuration."
@@ -51206,6 +51194,9 @@ msgid "Your %{group} membership will now expire in %{days}."
 msgstr ""
 
 msgid "Your %{plan_name} subscription will expire on %{expires_on}"
+msgstr ""
+
+msgid "Your %{plan} plan will be applied to your group."
 msgstr ""
 
 msgid "Your %{spammable_entity_type} has been recognized as spam and has been discarded."

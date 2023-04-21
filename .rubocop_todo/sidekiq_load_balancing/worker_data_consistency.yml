@@ -135,7 +135,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/gitlab/jira_import/advance_stage_worker.rb'
     - 'app/workers/gitlab/jira_import/import_issue_worker.rb'
     - 'app/workers/gitlab/jira_import/stage/start_import_worker.rb'
-    - 'app/workers/gitlab/phabricator_import/import_tasks_worker.rb'
     - 'app/workers/gitlab_performance_bar_stats_worker.rb'
     - 'app/workers/gitlab_service_ping_worker.rb'
     - 'app/workers/gitlab_shell_worker.rb'

@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
 import * as Sentry from '@sentry/browser';
+import { fetchPolicies } from '~/lib/graphql';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -149,7 +150,13 @@ export default {
       error() {
         this.setEmptyState();
       },
-      result() {
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
+      notifyOnNetworkStatusChange: true,
+      result(res) {
+        // need to handle this when the res is loading: true, netWorkStatus: 1, partial: true
+        if (!res.data) {
+          return;
+        }
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
@@ -211,7 +218,7 @@ export default {
   },
   computed: {
     workItemLoading() {
-      return this.$apollo.queries.workItem.loading;
+      return isEmpty(this.workItem) && this.$apollo.queries.workItem.loading;
     },
     workItemType() {
       return this.workItem.workItemType?.name;
@@ -544,7 +551,11 @@ export default {
               {{ workItemBreadcrumbReference }}
             </li>
           </ul>
-          <div v-else-if="!error" class="gl-mr-auto" data-testid="work-item-type">
+          <div
+            v-else-if="!error && !workItemLoading"
+            class="gl-mr-auto"
+            data-testid="work-item-type"
+          >
             <work-item-type-icon
               :work-item-icon-name="workItemIconName"
               :work-item-type="workItemType && workItemType.toUpperCase()"

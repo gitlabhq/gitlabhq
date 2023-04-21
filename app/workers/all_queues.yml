@@ -3081,15 +3081,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: phabricator_import_import_tasks
-  :worker_name: Gitlab::PhabricatorImport::ImportTasksWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: post_receive
   :worker_name: PostReceive
   :feature_category: :source_code_management

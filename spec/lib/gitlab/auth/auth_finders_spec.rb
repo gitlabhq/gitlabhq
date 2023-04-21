@@ -409,6 +409,17 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       expect(find_user_from_access_token).to be_nil
     end
 
+    context 'when run for kubernetes internal API endpoint' do
+      before do
+        set_bearer_token('AgentToken')
+        set_header('SCRIPT_NAME', '/api/v4/internal/kubernetes/modules/starboard_vulnerability/policies_configuration')
+      end
+
+      it 'returns nil' do
+        expect(find_user_from_access_token).to be_nil
+      end
+    end
+
     context 'when validate_access_token! returns valid' do
       it 'returns user' do
         set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)

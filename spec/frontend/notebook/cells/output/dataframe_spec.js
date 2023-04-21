@@ -35,16 +35,16 @@ describe('~/notebook/cells/output/DataframeOutput', () => {
 
     it('sets the correct fields', () => {
       expect(findTable().props().fields).toEqual([
-        { key: 'index', label: '', sortable: true },
-        { key: 'column_1', label: 'column_1', sortable: true },
-        { key: 'column_2', label: 'column_2', sortable: true },
+        { key: 'index0', label: '', sortable: true, class: 'gl-font-weight-bold' },
+        { key: 'column0', label: 'column_1', sortable: true, class: '' },
+        { key: 'column1', label: 'column_2', sortable: true, class: '' },
       ]);
     });
 
     it('sets the correct items', () => {
       expect(findTable().props().items).toEqual([
-        { index: 0, column_1: 'abc de f', column_2: 'a' },
-        { index: 1, column_1: 'True', column_2: '0.1' },
+        { index0: '0', column0: 'abc de f', column1: 'a' },
+        { index0: '1', column0: 'True', column1: '0.1' },
       ]);
     });
   });

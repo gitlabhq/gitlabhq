@@ -181,7 +181,6 @@ Rails/Pluck:
     - 'spec/lib/gitlab/language_detection_spec.rb'
     - 'spec/lib/gitlab/lograge/custom_options_spec.rb'
     - 'spec/lib/gitlab/metrics/dashboard/processor_spec.rb'
-    - 'spec/lib/gitlab/phabricator_import/conduit/tasks_response_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/item_context_spec.rb'
     - 'spec/lib/gitlab/search/query_spec.rb'
     - 'spec/lib/gitlab/sidekiq_config/worker_matcher_spec.rb'

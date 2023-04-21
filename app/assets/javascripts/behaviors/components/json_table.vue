@@ -42,6 +42,7 @@ export default {
           key: field.key,
           label: field.label,
           sortable: field.sortable || false,
+          class: field.class || [],
         };
       });
     },

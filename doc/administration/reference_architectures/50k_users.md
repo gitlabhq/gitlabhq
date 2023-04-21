@@ -2218,7 +2218,7 @@ There are two ways of specifying object storage configuration in GitLab:
 - [Consolidated form](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form): A single credential is
   shared by all supported object types.
 - [Storage-specific form](../object_storage.md#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form): Every object defines its
-  own object storage [connection and configuration](../object_storage.md#connection-settings).
+  own object storage [connection and configuration](../object_storage.md#configure-the-connection-settings).
 
 The consolidated form is used in the following examples when available.
 

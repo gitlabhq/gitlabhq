@@ -395,8 +395,6 @@
   - 1
 - - personal_access_tokens
   - 1
-- - phabricator_import_import_tasks
-  - 1
 - - pipeline_background
   - 1
 - - pipeline_creation

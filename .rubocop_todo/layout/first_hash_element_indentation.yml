@@ -217,7 +217,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/lib/gitlab/import_export/members_mapper_spec.rb'
     - 'spec/lib/gitlab/instrumentation_helper_spec.rb'
     - 'spec/lib/gitlab/metrics/subscribers/action_cable_spec.rb'
-    - 'spec/lib/gitlab/phabricator_import/conduit/user_spec.rb'
     - 'spec/lib/gitlab/sidekiq_migrate_jobs_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/mattermost/team_spec.rb'

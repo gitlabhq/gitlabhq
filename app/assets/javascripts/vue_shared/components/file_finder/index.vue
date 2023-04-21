@@ -221,7 +221,12 @@ export default {
 </script>
 
 <template>
-  <div v-if="visible" class="file-finder-overlay" @mousedown.self="toggle(false)">
+  <div
+    v-if="visible"
+    data-testid="overlay"
+    class="file-finder-overlay"
+    @mousedown.self="toggle(false)"
+  >
     <div class="dropdown-menu diff-file-changes file-finder show">
       <div :class="{ 'has-value': showClearInputButton }" class="dropdown-input">
         <input
@@ -231,6 +236,7 @@ export default {
           type="search"
           class="dropdown-input-field"
           autocomplete="off"
+          data-testid="search-input"
           @keydown="onKeydown($event)"
           @keyup="onKeyup($event)"
         />
@@ -241,6 +247,7 @@ export default {
         />
         <gl-icon
           name="close"
+          data-testid="clear-search-input"
           class="dropdown-input-clear"
           role="button"
           :aria-label="__('Clear search input')"
