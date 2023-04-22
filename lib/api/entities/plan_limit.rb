@@ -5,7 +5,6 @@ module API
     class PlanLimit < Grape::Entity
       expose :ci_pipeline_size, documentation: { type: 'integer', example: 0 }
       expose :ci_active_jobs, documentation: { type: 'integer', example: 0 }
-      expose :ci_active_pipelines, documentation: { type: 'integer', example: 0 }
       expose :ci_project_subscriptions, documentation: { type: 'integer', example: 2 }
       expose :ci_pipeline_schedules, documentation: { type: 'integer', example: 10 }
       expose :ci_needs_size_limit, documentation: { type: 'integer', example: 50 }

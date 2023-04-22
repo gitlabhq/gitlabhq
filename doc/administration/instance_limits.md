@@ -430,38 +430,6 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 
 Set the limit to `0` to disable it.
 
-### Number of pipelines running concurrently
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32823) in GitLab 12.5.
-
-The total number of pipelines running concurrently can be limited per project.
-When enabled, the limit is checked each time a new pipeline is created.
-Without a concurrent pipelines limit, a sudden flood of triggered pipelines could
-overwhelm the instance resources.
-
-If a new pipeline would cause the total number of pipelines to exceed the limit,
-the pipeline fails with a `The pipeline activity limit was exceeded.` error.
-
-On [GitLab Premium](https://about.gitlab.com/pricing/) self-managed or
-higher installations, this limit is defined under a `default` plan that affects all
-projects. This limit is disabled (`0`) by default. GitLab SaaS subscribers have different
-limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd), and they affect
-all projects under that plan.
-
-To set this limit for a self-managed installation, enable the **Maximum number of active pipelines per project**
-[setting in the Admin Area](../user/admin_area/settings/continuous_integration.md#set-cicd-limits).
-
-Alternatively, you can run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
-
-```ruby
-# If limits don't exist for the default plan, you can create one with:
-# Plan.default.create_limits!
-
-Plan.default.actual_limits.update!(ci_active_pipelines: 100)
-```
-
-Set the limit to `0` to disable it.
-
 ### Maximum time jobs can run
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16777) in GitLab 12.3.

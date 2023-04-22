@@ -27,10 +27,6 @@
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_active_jobs])
         %tr
-          %td= plan_limit_setting_description(:ci_active_pipelines)
-          - ci_cd_limits.each_value do |limits|
-            %td= instance_configuration_disabled_cell_html(limits[:ci_active_pipelines])
-        %tr
           %td= plan_limit_setting_description(:ci_project_subscriptions)
           - ci_cd_limits.each_value do |limits|
             %td= instance_configuration_disabled_cell_html(limits[:ci_project_subscriptions])

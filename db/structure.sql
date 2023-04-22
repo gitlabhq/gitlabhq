@@ -32232,8 +32232,6 @@ CREATE INDEX index_security_scans_on_length_of_errors ON security_scans USING bt
 
 CREATE INDEX index_security_scans_on_length_of_warnings ON security_scans USING btree (pipeline_id, jsonb_array_length(COALESCE((info -> 'warnings'::text), '[]'::jsonb)));
 
-CREATE INDEX index_security_scans_on_pipeline_id ON security_scans USING btree (pipeline_id);
-
 CREATE INDEX index_security_scans_on_pipeline_id_and_scan_type ON security_scans USING btree (pipeline_id, scan_type);
 
 CREATE INDEX index_security_scans_on_project_id ON security_scans USING btree (project_id);

@@ -7,8 +7,6 @@ module PlanLimitsHelper
       s_('AdminSettings|Maximum number of jobs in a single pipeline')
     when :ci_active_jobs
       s_('AdminSettings|Total number of jobs in currently active pipelines')
-    when :ci_active_pipelines
-      s_('AdminSettings|Maximum number of active pipelines per project')
     when :ci_project_subscriptions
       s_('AdminSettings|Maximum number of pipeline subscriptions to and from a project')
     when :ci_pipeline_schedules

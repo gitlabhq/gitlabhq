@@ -8,7 +8,6 @@ RSpec.describe PlanLimitsHelper, feature_category: :continuous_integration do
       [
         :ci_pipeline_size,
         :ci_active_jobs,
-        :ci_active_pipelines,
         :ci_project_subscriptions,
         :ci_pipeline_schedules,
         :ci_needs_size_limit,

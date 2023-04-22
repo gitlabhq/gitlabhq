@@ -33,7 +33,6 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups,
                 Gitlab::Ci::Pipeline::Chain::Create,
                 Gitlab::Ci::Pipeline::Chain::CreateCrossDatabaseAssociations,
-                Gitlab::Ci::Pipeline::Chain::Limit::Activity,
                 Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
                 Gitlab::Ci::Pipeline::Chain::Metrics,
                 Gitlab::Ci::Pipeline::Chain::TemplateUsage,

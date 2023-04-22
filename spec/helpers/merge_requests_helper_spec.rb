@@ -3,8 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
+  include Users::CalloutsHelper
+  include ApplicationHelper
+  include PageLayoutHelper
+  include ProjectsHelper
   include ProjectForksHelper
   include IconsHelper
+
+  let_it_be(:current_user) { create(:user) }
 
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
@@ -25,6 +31,66 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       let(:target_title) { "#{project.full_path}:#{merge_request.target_branch}" }
 
       it { is_expected.to eq([source_title, target_title]) }
+    end
+  end
+
+  describe '#diffs_tab_pane_data' do
+    subject { diffs_tab_pane_data(project, merge_request, {}) }
+
+    context 'for endpoint_diff_for_path' do
+      context 'when default project namespace' do
+        let_it_be(:project) { create(:project) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+        it 'returns expected values' do
+          namespace = "namespace1/#{project.name}"
+          expect(
+            subject[:endpoint_diff_for_path]
+          ).to include("/#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+        end
+      end
+
+      context 'when group project namespace' do
+        let_it_be(:group) { create(:group, :public) }
+        let_it_be(:project) { create(:project, :private, group: group) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+        it 'returns expected values' do
+          namespace = "#{group.name}/#{project.name}"
+          expect(
+            subject[:endpoint_diff_for_path]
+          ).to include("/#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+        end
+      end
+
+      context 'when sub-group project namespace' do
+        let_it_be(:group) { create(:group, :public) }
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be(:project) { create(:project, :private, group: subgroup) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+        it 'returns expected values' do
+          namespace = "#{group.name}/#{subgroup.name}/#{project.name}"
+          expect(
+            subject[:endpoint_diff_for_path]
+          ).to include("#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+        end
+      end
+
+      context 'when sub-sub-group project namespace' do
+        let_it_be(:group) { create(:group, :public) }
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+        let_it_be(:subsubgroup) { create(:group, :private, parent: subgroup) }
+        let_it_be(:project) { create(:project, :private, group: subsubgroup) }
+        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+        it 'returns expected values' do
+          namespace = "#{group.name}/#{subgroup.name}/#{subsubgroup.name}/#{project.name}"
+          expect(
+            subject[:endpoint_diff_for_path]
+          ).to include("#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+        end
+      end
     end
   end
 

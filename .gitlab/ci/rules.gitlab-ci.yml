@@ -874,6 +874,7 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-auto-deploy-branches
+    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
     - <<: *if-default-refs
       changes: *ci-build-images-patterns
     - <<: *if-default-refs

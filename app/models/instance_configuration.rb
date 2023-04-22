@@ -138,7 +138,6 @@ class InstanceConfiguration
     plan.actual_limits.slice(
       :ci_pipeline_size,
       :ci_active_jobs,
-      :ci_active_pipelines,
       :ci_project_subscriptions,
       :ci_pipeline_schedules,
       :ci_needs_size_limit,

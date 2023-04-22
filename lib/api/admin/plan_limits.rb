@@ -53,7 +53,6 @@ module API
 
         optional :ci_pipeline_size, type: Integer, desc: 'Maximum number of jobs in a single pipeline'
         optional :ci_active_jobs, type: Integer, desc: 'Total number of jobs in currently active pipelines'
-        optional :ci_active_pipelines, type: Integer, desc: 'Maximum number of active pipelines per project'
         optional :ci_project_subscriptions, type: Integer,
                                             desc: 'Maximum number of pipeline subscriptions to and from a project'
         optional :ci_pipeline_schedules, type: Integer, desc: 'Maximum number of pipeline schedules'

@@ -34,11 +34,11 @@ The verification code expires after 60 minutes.
 To unlock your account, sign in and enter the verification code. You can also
 [reset your password](https://gitlab.com/users/password/new).
 
-## Accounts with 2FA
+## Accounts with 2FA or OAuth
 
 An account is locked when there are five or more failed sign-in attempts in 10 minutes.
 
-Accounts with 2FA are automatically unlocked after 10 minutes. To unlock an account manually,
+Accounts with 2FA or OAuth are automatically unlocked after 10 minutes. To unlock an account manually,
 reset your password.
 
 ## Related topics

@@ -197,10 +197,10 @@ module MergeRequestsHelper
       show_suggest_popover: show_suggest_popover?.to_s,
       show_whitespace_default: @show_whitespace_default.to_s,
       file_by_file_default: @file_by_file_default.to_s,
-      default_suggestion_commit_message: default_suggestion_commit_message,
-      source_project_default_url: @merge_request.source_project && default_url_to_repo(@merge_request.source_project),
-      source_project_full_path: @merge_request.source_project&.full_path,
-      is_forked: @project.forked?.to_s,
+      default_suggestion_commit_message: default_suggestion_commit_message(project),
+      source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
+      source_project_full_path: merge_request.source_project&.full_path,
+      is_forked: project.forked?.to_s,
       new_comment_template_path: profile_comment_templates_path
     }
   end
@@ -228,8 +228,8 @@ module MergeRequestsHelper
     current_user.review_requested_open_merge_requests_count
   end
 
-  def default_suggestion_commit_message
-    @project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
+  def default_suggestion_commit_message(project)
+    project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
   end
 
   def merge_request_source_branch(merge_request)
