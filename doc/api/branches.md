@@ -231,3 +231,9 @@ Example request:
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/merged_branches"
 ```
+
+## Related topics
+
+- [Branches](../user/project/repository/branches/index.md)
+- [Protected branches](../user/project/protected_branches.md)
+- [Protected branches API](protected_branches.md)

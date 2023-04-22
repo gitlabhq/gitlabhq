@@ -529,3 +529,9 @@ Example response:
    "push_access_levels": []
 }
 ```
+
+## Related topics
+
+- [Protected branches](../user/project/protected_branches.md)
+- [Branches](../user/project/repository/branches/index.md)
+- [Branches API](branches.md)

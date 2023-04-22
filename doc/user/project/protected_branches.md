@@ -326,6 +326,12 @@ Protected branches can only be deleted by using GitLab either from the UI or API
 This prevents accidentally deleting a branch through local Git commands or
 third-party Git clients.
 
+## Related topics
+
+- [Protected branches API](../../api/protected_branches.md)
+- [Branches](repository/branches/index.md)
+- [Branches API](../../api/branches.md)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

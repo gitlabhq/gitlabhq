@@ -50,8 +50,6 @@ Search/NamespacedClass:
     - 'ee/app/services/elastic/indexing_control_service.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/app/services/elastic/process_initial_bookkeeping_service.rb'
-    - 'ee/app/services/integrations/slack_options/label_search_handler.rb'
-    - 'ee/app/services/integrations/slack_options/user_search_handler.rb'
     - 'ee/app/services/protected_environments/search_service.rb'
     - 'ee/app/workers/concerns/elastic/bulk_cron_worker.rb'
     - 'ee/app/workers/concerns/elastic/indexing_control.rb'
