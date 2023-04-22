@@ -119,12 +119,13 @@ Whenever an approval rule cannot be satisfied, the rule is displayed as `(!) Aut
 
 - The only eligible approver is the author of the merge request.
 - No eligible approvers (either groups or users) have been assigned to the approval rule.
+- The number of required approvals is more than the number of eligible approvers.
 
-These rules will be automatically approved (fail-open state) to unblock their respective merge requests,
+These rules are automatically approved to unblock their respective merge requests,
 unless they were created through a security policy.
 
 Invalid approval rules created through a security policy are presented with `(!) Action Required`
-and are not automatically approved (fail-closed state), blocking their respective merge requests.
+and are not automatically approved, blocking their respective merge requests.
 
 ## Related topics
 
