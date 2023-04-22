@@ -4,266 +4,257 @@
 
 * @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gl-quality/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @nolith @jacobvosmaer-gitlab @gitlab-org/tw-leadership
 
-CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
-docs/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
 ## Allows release tooling to update the Gitaly Version
 GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
-## Files that are excluded from required approval
-/.gitlab/issue_templates/*.md
-/.gitlab/merge_request_templates/*.md
-/doc/*.md
-/doc/**/*.md
-/doc/**/*.jpg
-/doc/**/*.png
-/data/deprecations/*.yml
-/data/removals/**/*.yml
-
-## Technical writing files that do need approval
-/data/deprecations/templates/ @marcel.amirault @gitlab-org/tw-leadership @sarahgerman
-/data/removals/templates/ @marcel.amirault @gitlab-org/tw-leadership @sarahgerman
-.markdownlint.yml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
-/doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
-/doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
-/lib/tasks/gitlab/tw/codeowners.rake @aqualls @gitlab-org/tw-leadership
+[Technical Writing] @gitlab-org/tw-leadership
+/data/deprecations/templates/ @marcel.amirault @sarahgerman
+/data/removals/templates/ @marcel.amirault @sarahgerman
+.markdownlint.yml @marcel.amirault @eread @aqualls
+/doc/.markdownlint/ @marcel.amirault @eread @aqualls
+/doc/.vale/ @marcel.amirault @eread @aqualls
+/lib/tasks/gitlab/tw/codeowners.rake @aqualls
 
 ^[Source code editing]
 .solargraph.yml.example @igor.drozdov
 
-^[Backend]
-*.rb @gitlab-org/maintainers/rails-backend
-*.rake @gitlab-org/maintainers/rails-backend
+^[Backend] @gitlab-org/maintainers/rails-backend
+*.rb
+*.rake
 
-^[Frontend]
-*.scss @gitlab-org/maintainers/frontend
-*.js @gitlab-org/maintainers/frontend
-/app/assets/ @gitlab-org/maintainers/frontend
-/ee/app/assets/ @gitlab-org/maintainers/frontend
-/spec/frontend/ @gitlab-org/maintainers/frontend
-/ee/spec/frontend/ @gitlab-org/maintainers/frontend
-/spec/frontend_integration/ @gitlab-org/maintainers/frontend
-/ee/spec/frontend_integration/ @gitlab-org/maintainers/frontend
+^[Frontend] @gitlab-org/maintainers/frontend
+*.scss
+*.js
+/app/assets/
+/ee/app/assets/
+/spec/frontend/
+/ee/spec/frontend/
+/spec/frontend_integration/
+/ee/spec/frontend_integration/
 
-^[Database]
-/db/ @gitlab-org/maintainers/database
-/ee/db/ @gitlab-org/maintainers/database
-/lib/gitlab/background_migration/ @gitlab-org/maintainers/database
-/ee/lib/ee/gitlab/background_migration/ @gitlab-org/maintainers/database
-/lib/gitlab/database/ @gitlab-org/maintainers/database
-/lib/gitlab/sql/ @gitlab-org/maintainers/database
-/app/finders/ @gitlab-org/maintainers/database
-/ee/app/finders/ @gitlab-org/maintainers/database
-/rubocop/rubocop-migrations.yml @gitlab-org/maintainers/database
+^[Database] @gitlab-org/maintainers/database
+/db/
+/ee/db/
+/lib/gitlab/background_migration/
+/ee/lib/ee/gitlab/background_migration/
+/lib/gitlab/database/
+/lib/gitlab/sql/
+/app/finders/
+/ee/app/finders/
+/rubocop/rubocop-migrations.yml
 
-[Engineering Productivity]
-/.gitlab-ci.yml @gl-quality/eng-prod
-/.gitlab/ci/ @gl-quality/eng-prod
-/.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
-/.gitlab/ci/package-and-test/ @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
-/.gitlab/ci/reports.gitlab-ci.yml @gitlab-com/gl-security/appsec @gl-quality/eng-prod
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
-/.gitlab/ci/test-on-gdk/ @gl-quality/eng-prod @gl-quality/qe-maintainers
-Dangerfile @gl-quality/eng-prod
-/danger/ @gl-quality/eng-prod
-/tooling/danger/ @gl-quality/eng-prod
-/scripts/ @gl-quality/eng-prod
-/scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
-/scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1 @gl-quality/eng-prod
-.editorconfig @gl-quality/eng-prod
+[Engineering Productivity] @gl-quality/eng-prod
+/.gitlab-ci.yml
+/.gitlab/ci/
+/.gitlab/ci/docs.gitlab-ci.yml @gl-docsteam
+/.gitlab/ci/package-and-test/ @gl-quality/qe-maintainers
+/.gitlab/ci/qa.gitlab-ci.yml @gl-quality/qe-maintainers
+/.gitlab/ci/releases.gitlab-ci.yml @gitlab-org/delivery
+/.gitlab/ci/reports.gitlab-ci.yml @gitlab-com/gl-security/appsec
+/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/qe-maintainers
+/.gitlab/ci/test-on-gdk/ @gl-quality/qe-maintainers
+Dangerfile
+/danger/
+/tooling/danger/
+/scripts/
+/scripts/frontend/ @gitlab-org/maintainers/frontend
+/scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1
+.editorconfig
 
-^[Backend Static Code Analysis]
-.rubocop*.yml @dstull @splattael @gl-quality/eng-prod
-.rubocop_todo.yml @dstull @splattael @gl-quality/eng-prod
-.rubocop_todo/ @dstull @splattael @gl-quality/eng-prod
-/rubocop/ @dstull @splattael @gl-quality/eng-prod
-/spec/rubocop/ @dstull @splattael @gl-quality/eng-prod
+^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull @splattael
+.rubocop*.yml
+.rubocop_todo/
+/rubocop/
+/spec/rubocop/
 
-^[End-to-end]
-/qa/ @gl-quality
+^[End-to-end] @gl-quality
+/qa/
 
-^[LDAP]
-/ee/lib/ee/gitlab/auth/ldap/ @dblessing @mkozono
-/lib/gitlab/auth/ldap/ @dblessing @mkozono
+^[LDAP] @dblessing @mkozono
+/ee/lib/ee/gitlab/auth/ldap/
+/lib/gitlab/auth/ldap/
 
-^[Project Alias]
-/ee/app/models/project_alias.rb @patrickbajao
-/ee/lib/api/project_aliases.rb @patrickbajao
+^[Project Alias] @patrickbajao
+/ee/app/models/project_alias.rb
+/ee/lib/api/project_aliases.rb
 
-^[Distribution]
-/lib/support/ @gitlab-org/distribution
+^[Distribution] @gitlab-org/distribution
+/lib/support/
 
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
-^[Threat Insights]
-/app/finders/security/ @gitlab-org/govern/threat-insights-backend-team
-/app/models/vulnerability.rb @gitlab-org/govern/threat-insights-backend-team
-/app/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
-/spec/presenters/projects/security/ @gitlab-org/govern/threat-insights-backend-team
-/ee/app/finders/security/ @gitlab-org/govern/threat-insights-backend-team
-/ee/app/models/security/ @gitlab-org/govern/threat-insights-backend-team
-/ee/app/models/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
-/ee/app/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
-/ee/app/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
-/ee/lib/api/vulnerabilit*.rb @gitlab-org/govern/threat-insights-backend-team
-/ee/spec/policies/vulnerabilities/ @gitlab-org/govern/threat-insights-backend-team
-/ee/spec/policies/vulnerability*.rb @gitlab-org/govern/threat-insights-backend-team
-/ee/app/assets/javascripts/license_compliance/components/detected_licenses_table.vue @gitlab-org/govern/threat-insights-frontend-team
-/ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js @gitlab-org/govern/threat-insights-frontend-team
+^[Threat Insights backend] @gitlab-org/govern/threat-insights-backend-team
+/app/finders/security/
+/app/models/vulnerability.rb
+/app/presenters/projects/security/
+/spec/presenters/projects/security/
+/ee/app/finders/security/
+/ee/app/models/security/
+/ee/app/models/vulnerabilities/
+/ee/app/policies/vulnerabilities/
+/ee/app/policies/vulnerability*.rb
+/ee/lib/api/vulnerabilit*.rb
+/ee/spec/policies/vulnerabilities/
+/ee/spec/policies/vulnerability*.rb
 
-^[Secure]
-/ee/app/services/app_sec/dast/ @gitlab-org/secure/dynamic-analysis-be
+^[Threat Insights frontend] @gitlab-org/govern/threat-insights-frontend-team
+/ee/app/assets/javascripts/license_compliance/components/detected_licenses_table.vue
+/ee/spec/frontend/license_compliance/components/detected_licenses_table_spec.js
 
-^[Security Policies]
-/ee/app/assets/javascripts/approvals/components/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/approvals/stores/modules/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/pages/projects/licenses/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/pages/projects/pipelines/licenses/** @gitlab-org/govern/security-policies-frontend
+^[Secure] @gitlab-org/secure/dynamic-analysis-be
+/ee/app/services/app_sec/dast/
+
+^[Security Policies frontend] @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/approvals/components/license_compliance/**
+/ee/app/assets/javascripts/approvals/stores/modules/license_compliance/**
+/ee/app/assets/javascripts/license_compliance/**
+/ee/app/assets/javascripts/pages/projects/licenses/**
+/ee/app/assets/javascripts/pages/projects/pipelines/licenses/**
 /ee/app/assets/javascripts/pages/projects/pipelines/show/license_report.js
-/ee/app/assets/javascripts/vue_merge_request_widget/extensions/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/vue_shared/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/app/views/projects/licenses/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/approvals/components/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/approvals/stores/modules/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/vue_merge_request_widget/extensions/license_compliance/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/vue_shared/license_compliance/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/vue_merge_request_widget/extensions/license_compliance/**
+/ee/app/assets/javascripts/vue_shared/license_compliance/**
+/ee/app/views/projects/licenses/**
+/ee/spec/frontend/approvals/components/license_compliance/**
+/ee/spec/frontend/approvals/stores/modules/license_compliance/**
+/ee/spec/frontend/license_compliance/**
+/ee/spec/frontend/vue_merge_request_widget/extensions/license_compliance/**
+/ee/spec/frontend/vue_shared/license_compliance/**
 
-/ee/app/assets/javascripts/approvals/components/security_orchestration/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/approvals/stores/modules/security_orchestration/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/pages/groups/security/policies/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/pages/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
-/ee/app/assets/javascripts/security_orchestration/** @gitlab-org/govern/security-policies-frontend
-/ee/app/views/groups/security/policies @gitlab-org/govern/security-policies-frontend
-/ee/app/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/approvals/components/security_orchestration/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/approvals/stores/modules/security_orchestration/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/frontend/security_orchestration/** @gitlab-org/govern/security-policies-frontend
-/ee/spec/views/projects/security/policies/** @gitlab-org/govern/security-policies-frontend
+/ee/app/assets/javascripts/approvals/components/security_orchestration/**
+/ee/app/assets/javascripts/approvals/stores/modules/security_orchestration/**
+/ee/app/assets/javascripts/pages/groups/security/policies/**
+/ee/app/assets/javascripts/pages/projects/security/policies/**
+/ee/app/assets/javascripts/security_orchestration/**
+/ee/app/views/groups/security/policies
+/ee/app/views/projects/security/policies/**
+/ee/spec/frontend/approvals/components/security_orchestration/**
+/ee/spec/frontend/approvals/stores/modules/security_orchestration/**
+/ee/spec/frontend/security_orchestration/**
+/ee/spec/views/projects/security/policies/**
 
-/app/models/clusters/applications/cilium.rb @gitlab-org/govern/security-policies-backend
-/ee/app/controllers/groups/security/policies_controller.rb @gitlab-org/govern/security-policies-backend
-/ee/app/controllers/projects/security/policies_controller.rb @gitlab-org/govern/security-policies-backend
-/ee/app/graphql/mutations/concerns/mutations/finds_project_or_group_for_security_policies.rb @gitlab-org/govern/security-policies-backend
-/ee/app/graphql/mutations/security_policy/** @gitlab-org/govern/security-policies-backend
-/ee/app/graphql/resolvers/concerns/resolves_orchestration_policy.rb @gitlab-org/govern/security-policies-backend
-/ee/app/graphql/resolvers/security_orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/app/graphql/types/security_orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/app/helpers/ee/security_orchestration_helper.rb @gitlab-org/govern/security-policies-backend
-/ee/app/models/security/orchestration_policy_configuration.rb @gitlab-org/govern/security-policies-backend
-/ee/app/models/security/orchestration_policy_rule_schedule.rb @gitlab-org/govern/security-policies-backend
-/ee/app/services/security/orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/app/services/security/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
-/ee/app/validators/json_schemas/security_orchestration_policy.json @gitlab-org/govern/security-policies-backend
-/ee/app/workers/concerns/update_orchestration_policy_configuration.rb @gitlab-org/govern/security-policies-backend
-/ee/app/workers/security/create_orchestration_policy_worker.rb @gitlab-org/govern/security-policies-backend
-/ee/app/workers/security/orchestration_policy_rule_schedule_namespace_worker.rb @gitlab-org/govern/security-policies-backend
-/ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb @gitlab-org/govern/security-policies-backend
-/ee/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb @gitlab-org/govern/security-policies-backend
-/ee/lib/gitlab/ci/config/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
-/ee/lib/gitlab/graphql/aggregations/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
-/ee/spec/controllers/groups/security/policies_controller_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/factories/security_orchestration_policy_configurations.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/factories/security_orchestration_policy_rule_schedules.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/factories/security/policies.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/graphql/mutations/security_policy/** @gitlab-org/govern/security-policies-backend
-/ee/spec/graphql/resolvers/security_orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/spec/graphql/types/security_orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/spec/helpers/ee/security_orchestration_helper_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/lib/gitlab/ci/config/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
-/ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
-/ee/spec/models/security/orchestration_policy_configuration_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/requests/api/graphql/mutations/security_policy/** @gitlab-org/govern/security-policies-backend
-/ee/spec/requests/api/graphql/project/security_orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/spec/requests/projects/security/policies_controller_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/services/security/orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/spec/services/security/security_orchestration_policies/** @gitlab-org/govern/security-policies-backend
-/ee/spec/support/shared_contexts/graphql/resolvers/security_orchestration/** @gitlab-org/govern/security-policies-backend
-/ee/spec/views/projects/security/policies/index.html.haml_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/workers/security/create_orchestration_policy_worker_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/workers/security/orchestration_policy_rule_schedule_namespace_worker_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb @gitlab-org/govern/security-policies-backend
-/lib/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb @gitlab-org/govern/security-policies-backend
-/spec/models/clusters/applications/cilium_spec.rb @gitlab-org/govern/security-policies-backend
+^[Security Policies backend] @gitlab-org/govern/security-policies-backend
+/app/models/clusters/applications/cilium.rb
+/ee/app/controllers/groups/security/policies_controller.rb
+/ee/app/controllers/projects/security/policies_controller.rb
+/ee/app/graphql/mutations/concerns/mutations/finds_project_or_group_for_security_policies.rb
+/ee/app/graphql/mutations/security_policy/**
+/ee/app/graphql/resolvers/concerns/resolves_orchestration_policy.rb
+/ee/app/graphql/resolvers/security_orchestration/**
+/ee/app/graphql/types/security_orchestration/**
+/ee/app/helpers/ee/security_orchestration_helper.rb
+/ee/app/models/security/orchestration_policy_configuration.rb
+/ee/app/models/security/orchestration_policy_rule_schedule.rb
+/ee/app/services/security/orchestration/**
+/ee/app/services/security/security_orchestration_policies/**
+/ee/app/validators/json_schemas/security_orchestration_policy.json
+/ee/app/workers/concerns/update_orchestration_policy_configuration.rb
+/ee/app/workers/security/create_orchestration_policy_worker.rb
+/ee/app/workers/security/orchestration_policy_rule_schedule_namespace_worker.rb
+/ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb
+/ee/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb
+/ee/lib/gitlab/ci/config/security_orchestration_policies/**
+/ee/lib/gitlab/graphql/aggregations/security_orchestration_policies/**
+/ee/spec/controllers/groups/security/policies_controller_spec.rb
+/ee/spec/factories/security_orchestration_policy_configurations.rb
+/ee/spec/factories/security_orchestration_policy_rule_schedules.rb
+/ee/spec/factories/security/policies.rb
+/ee/spec/graphql/mutations/security_policy/**
+/ee/spec/graphql/resolvers/security_orchestration/**
+/ee/spec/graphql/types/security_orchestration/**
+/ee/spec/helpers/ee/security_orchestration_helper_spec.rb
+/ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy_spec.rb
+/ee/spec/lib/gitlab/ci/config/security_orchestration_policies/**
+/ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/**
+/ee/spec/models/security/orchestration_policy_configuration_spec.rb
+/ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb
+/ee/spec/requests/api/graphql/mutations/security_policy/**
+/ee/spec/requests/api/graphql/project/security_orchestration/**
+/ee/spec/requests/projects/security/policies_controller_spec.rb
+/ee/spec/services/security/orchestration/**
+/ee/spec/services/security/security_orchestration_policies/**
+/ee/spec/support/shared_contexts/graphql/resolvers/security_orchestration/**
+/ee/spec/views/projects/security/policies/index.html.haml_spec.rb
+/ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb
+/ee/spec/workers/security/create_orchestration_policy_worker_spec.rb
+/ee/spec/workers/security/orchestration_policy_rule_schedule_namespace_worker_spec.rb
+/ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb
+/lib/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb
+/spec/models/clusters/applications/cilium_spec.rb
 
-/app/finders/security/license_compliance_jobs_finder.rb @gitlab-org/govern/security-policies-backend
-/ee/app/controllers/projects/licenses_controller.rb @gitlab-org/govern/security-policies-backend
-/ee/app/finders/software_license_policies_finder.rb @gitlab-org/govern/security-policies-backend
-/ee/app/models/sca/license_compliance.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
-/ee/app/models/sca/license_policy.rb @gitlab-org/govern/security-policies-backend
-/ee/app/models/software_license_policy.rb @gitlab-org/govern/security-policies-backend
-/ee/app/models/software_license.rb @gitlab-org/govern/security-policies-backend
-/ee/app/serializers/license_compliance/** @gitlab-org/govern/security-policies-backend
-/ee/app/serializers/license_entity.rb @gitlab-org/govern/security-policies-backend
-/ee/app/serializers/licenses_list_entity.rb @gitlab-org/govern/security-policies-backend
-/ee/app/serializers/licenses_list_serializer.rb @gitlab-org/govern/security-policies-backend
-/ee/app/serializers/security/license_policy_entity.rb @gitlab-org/govern/security-policies-backend
-/ee/app/services/ci/compare_license_scanning_reports_collapsed_service.rb @gitlab-org/govern/security-policies-backend
-/ee/app/services/ci/compare_license_scanning_reports_service.rb @gitlab-org/govern/security-policies-backend
-/ee/app/services/software_license_policies/** @gitlab-org/govern/security-policies-backend
-/ee/app/services/software_license_policies/update_service.rb @gitlab-org/govern/security-policies-backend
-/ee/app/workers/refresh_license_compliance_checks_worker.rb @gitlab-org/govern/security-policies-backend
-/ee/lib/api/managed_licenses.rb @gitlab-org/govern/security-policies-backend
-/ee/lib/ee/api/entities/managed_license.rb @gitlab-org/govern/security-policies-backend
-/ee/lib/gitlab/spdx/license.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/factories/software_license_policy.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/factories/software_license.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/factories/spdx_license.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/finders/software_license_policies_finder_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/lib/gitlab/ci/parsers/license_compliance/** @gitlab-org/govern/security-policies-backend
-/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
-/ee/spec/models/sca/license_policy_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/models/software_license_policy_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/models/software_license_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/requests/api/managed_licenses_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/serializers/license_compliance/** @gitlab-org/govern/security-policies-backend
-/ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb @gitlab-org/govern/security-policies-backend
-/ee/spec/services/software_license_policies/** @gitlab-org/govern/security-policies-backend
-/spec/finders/security/license_compliance_jobs_finder_spec.rb @gitlab-org/govern/security-policies-backend
+/app/finders/security/license_compliance_jobs_finder.rb
+/ee/app/controllers/projects/licenses_controller.rb
+/ee/app/finders/software_license_policies_finder.rb
+/ee/app/models/sca/license_compliance.rb @gitlab-org/secure/composition-analysis-be
+/ee/app/models/sca/license_policy.rb
+/ee/app/models/software_license_policy.rb
+/ee/app/models/software_license.rb
+/ee/app/serializers/license_compliance/**
+/ee/app/serializers/license_entity.rb
+/ee/app/serializers/licenses_list_entity.rb
+/ee/app/serializers/licenses_list_serializer.rb
+/ee/app/serializers/security/license_policy_entity.rb
+/ee/app/services/ci/compare_license_scanning_reports_collapsed_service.rb
+/ee/app/services/ci/compare_license_scanning_reports_service.rb
+/ee/app/services/software_license_policies/**
+/ee/app/services/software_license_policies/update_service.rb
+/ee/app/workers/refresh_license_compliance_checks_worker.rb
+/ee/lib/api/managed_licenses.rb
+/ee/lib/ee/api/entities/managed_license.rb
+/ee/lib/gitlab/spdx/license.rb
+/ee/spec/factories/software_license_policy.rb
+/ee/spec/factories/software_license.rb
+/ee/spec/factories/spdx_license.rb
+/ee/spec/finders/software_license_policies_finder_spec.rb
+/ee/spec/lib/gitlab/ci/parsers/license_compliance/**
+/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/secure/composition-analysis-be
+/ee/spec/models/sca/license_policy_spec.rb
+/ee/spec/models/software_license_policy_spec.rb
+/ee/spec/models/software_license_spec.rb
+/ee/spec/requests/api/managed_licenses_spec.rb
+/ee/spec/serializers/license_compliance/**
+/ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb
+/ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb
+/ee/spec/services/software_license_policies/**
+/spec/finders/security/license_compliance_jobs_finder_spec.rb
 
-^[Code Owners]
-/ee/lib/gitlab/code_owners.rb @reprazent @kerrizor @garyh
-/ee/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
-/ee/spec/lib/gitlab/code_owners/ @reprazent @kerrizor @garyh
-/doc/user/project/code_owners.md @reprazent @kerrizor @garyh
+^[Code Owners] @reprazent @kerrizor @garyh
+/ee/lib/gitlab/code_owners.rb
+/ee/lib/gitlab/code_owners/
+/ee/spec/lib/gitlab/code_owners/
+/doc/user/project/code_owners.md
 
-^[Merge Requests]
-/app/controllers/projects/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor
-/app/models/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/app/services/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/app/workers/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/app/workers/merge_request_mergeability_check_worker.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/lib/gitlab/diff/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/lib/gitlab/discussions_diff/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/lib/gitlab/quick_actions/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+^[Merge Requests backend] @garyh @patrickbajao @marc_shaw @kerrizor
+/app/controllers/projects/merge_requests/
+/app/models/merge_request.rb @dskim_gitlab
+/app/services/merge_requests/ @dskim_gitlab
+/app/workers/merge_requests/ @dskim_gitlab
+/app/workers/merge_request_mergeability_check_worker.rb @dskim_gitlab
+/lib/gitlab/diff/ @dskim_gitlab
+/lib/gitlab/discussions_diff/ @dskim_gitlab
+/lib/gitlab/quick_actions/ @dskim_gitlab
 
-/ee/app/models/ee/merge_request.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/ee/app/services/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/ee/app/workers/merge_requests/ @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
-/ee/app/workers/merge_request_reset_approvals_worker.rb @dskim_gitlab @garyh @patrickbajao @marc_shaw @kerrizor
+/ee/app/models/ee/merge_request.rb @dskim_gitlab
+/ee/app/services/merge_requests/ @dskim_gitlab
+/ee/app/workers/merge_requests/ @dskim_gitlab
+/ee/app/workers/merge_request_reset_approvals_worker.rb @dskim_gitlab
 
-/app/assets/javascripts/diffs @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/notes @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/merge_conflicts @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/mr_notes @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/issuable/popover @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/vue_merge_request_widget @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/merge_request.js @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/javascripts/merge_request_tabs.js @viktomas @jboyson @iamphill @thomasrandolph
-/app/assets/stylesheets/framework/diffs.scss @viktomas @jboyson @iamphill @thomasrandolph
-/ee/app/assets/javascripts/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
-/ee/app/assets/javascripts/vue_merge_request_widget @viktomas @jboyson @iamphill @thomasrandolph
-/spec/frontend/diffs/ @viktomas @jboyson @iamphill @thomasrandolph
-/spec/frontend/batch_comments/ @viktomas @jboyson @iamphill @thomasrandolph
+^[Merge Requests frontend] @viktomas @jboyson @iamphill @thomasrandolph
+/app/assets/javascripts/diffs
+/app/assets/javascripts/batch_comments/
+/app/assets/javascripts/notes
+/app/assets/javascripts/merge_conflicts
+/app/assets/javascripts/mr_notes
+/app/assets/javascripts/issuable/popover
+/app/assets/javascripts/vue_merge_request_widget
+/app/assets/javascripts/merge_request.js
+/app/assets/javascripts/merge_request_tabs.js
+/app/assets/stylesheets/framework/diffs.scss
+/ee/app/assets/javascripts/diffs/
+/ee/app/assets/javascripts/vue_merge_request_widget
+/spec/frontend/diffs/
+/spec/frontend/batch_comments/
 
 ^[Product Analytics] @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard.vue
@@ -273,118 +264,118 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
 /ee/app/assets/javascripts/product_analytics/
 
-^[Product Intelligence]
-/ee/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/lib/ee/gitlab/usage_data.rb  @gitlab-org/analytics-section/product-intelligence/engineers
-/lib/gitlab/usage_data.rb  @gitlab-org/analytics-section/product-intelligence/engineers
-/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
-/lib/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/lib/ee/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/lib/ee/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
-/config/metrics/ @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/config/metrics/ @gitlab-org/analytics-section/product-intelligence/engineers
-/app/workers/gitlab_service_ping_worker.rb @gitlab-org/analytics-section/product-intelligence/engineers
-/spec/workers/gitlab_service_ping_worker_spec.rb @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/spec/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/spec/lib/ee/gitlab/usage_data_spec.rb  @gitlab-org/analytics-section/product-intelligence/engineers
-/spec/lib/gitlab/usage_data_spec.rb  @gitlab-org/analytics-section/product-intelligence/engineers
-/spec/lib/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
-/spec/lib/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/spec/lib/ee/gitlab/usage_data_counters/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/spec/lib/ee/gitlab/usage/  @gitlab-org/analytics-section/product-intelligence/engineers
-/ee/spec/config/metrics/ @gitlab-org/analytics-section/product-intelligence/engineers
+^[Product Intelligence] @gitlab-org/analytics-section/product-intelligence/engineers
+/ee/lib/gitlab/usage_data_counters/
+/ee/lib/ee/gitlab/usage_data.rb
+/lib/gitlab/usage_data.rb
+/lib/gitlab/usage_data_counters/
+/lib/gitlab/usage/
+/ee/lib/ee/gitlab/usage_data_counters/
+/ee/lib/ee/gitlab/usage/
+/config/metrics/
+/ee/config/metrics/
+/app/workers/gitlab_service_ping_worker.rb
+/spec/workers/gitlab_service_ping_worker_spec.rb
+/ee/spec/lib/gitlab/usage_data_counters/
+/ee/spec/lib/ee/gitlab/usage_data_spec.rb
+/spec/lib/gitlab/usage_data_spec.rb
+/spec/lib/gitlab/usage_data_counters/
+/spec/lib/gitlab/usage/
+/ee/spec/lib/ee/gitlab/usage_data_counters/
+/ee/spec/lib/ee/gitlab/usage/
+/ee/spec/config/metrics/
 
-^[Growth Experiments]
-/app/experiments/ @gitlab-org/growth/experiment-devs
-/spec/experiments/ @gitlab-org/growth/experiment-devs
-/config/initializers/gitlab_experiment.rb @gitlab-org/growth/experiment-devs
-/config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
-/ee/config/feature_flags/experiment/ @gitlab-org/growth/experiment-devs
-/ee/lib/api/experiments.rb @gitlab-org/growth/experiment-devs
-/ee/spec/requests/api/experiments_spec.rb @gitlab-org/growth/experiment-devs
-/ee/lib/ee/api/entities/experiment.rb @gitlab-org/growth/experiment-devs
-/ee/spec/lib/ee/api/entities/experiment_spec.rb @gitlab-org/growth/experiment-devs
+^[Growth Experiments] @gitlab-org/growth/experiment-devs
+/app/experiments/
+/spec/experiments/
+/config/initializers/gitlab_experiment.rb
+/config/feature_flags/experiment/
+/ee/config/feature_flags/experiment/
+/ee/lib/api/experiments.rb
+/ee/spec/requests/api/experiments_spec.rb
+/ee/lib/ee/api/entities/experiment.rb
+/ee/spec/lib/ee/api/entities/experiment_spec.rb
 
-^[Growth]
-/ee/app/workers/onboarding/ @gitlab-org/growth/engineers
-/ee/spec/workers/onboarding/ @gitlab-org/growth/engineers
-/app/models/onboarding/ @gitlab-org/growth/engineers
-/spec/models/onboarding/ @gitlab-org/growth/engineers
-/app/services/onboarding/ @gitlab-org/growth/engineers
-/spec/services/onboarding/ @gitlab-org/growth/engineers
-/ee/app/components/namespaces/free_user_cap/ @gitlab-org/growth/engineers
-/ee/spec/components/namespaces/free_user_cap/ @gitlab-org/growth/engineers
-/ee/app/models/namespaces/free_user_cap/ @gitlab-org/growth/engineers
-/ee/spec/models/namespaces/free_user_cap/ @gitlab-org/growth/engineers
-/app/controllers/registrations_controller.rb @gitlab-org/growth/engineers
-/spec/controllers/registrations_controller_spec.rb @gitlab-org/growth/engineers
-/app/controllers/registrations/ @gitlab-org/growth/engineers
-/spec/controllers/registrations/ @gitlab-org/growth/engineers
-/app/controllers/confirmations_controller.rb @gitlab-org/growth/engineers
-/spec/controllers/confirmations_controller_spec.rb @gitlab-org/growth/engineers
-/ee/app/controllers/trial_registrations_controller.rb @gitlab-org/growth/engineers
-/ee/spec/controllers/trial_registrations_controller_spec.rb @gitlab-org/growth/engineers
-/ee/spec/requests/trial_registrations_controller_spec.rb @gitlab-org/growth/engineers
-/ee/app/controllers/registrations/ @gitlab-org/growth/engineers
-/ee/spec/controllers/registrations/ @gitlab-org/growth/engineers
-/ee/spec/requests/registrations/ @gitlab-org/growth/engineers
-/ee/app/controllers/ee/registrations_controller.rb @gitlab-org/growth/engineers
-/ee/spec/controllers/ee/registrations_controller_spec.rb @gitlab-org/growth/engineers
-/ee/app/controllers/ee/registrations/ @gitlab-org/growth/engineers
-/ee/app/controllers/ee/confirmations_controller.rb @gitlab-org/growth/engineers
-/ee/app/controllers/subscriptions_controller.rb @gitlab-org/growth/engineers
-/ee/spec/controllers/subscriptions_controller_spec.rb @gitlab-org/growth/engineers
-/ee/app/controllers/subscriptions/ @gitlab-org/growth/engineers
-/ee/spec/controllers/subscriptions/ @gitlab-org/growth/engineers
-/app/services/users/in_product_marketing_email_records.rb @gitlab-org/growth/engineers
-/spec/services/users/in_product_marketing_email_records_spec.rb @gitlab-org/growth/engineers
-/app/workers/namespaces/in_product_marketing_emails_worker.rb @gitlab-org/growth/engineers
-/spec/workers/namespaces/in_product_marketing_emails_worker_spec.rb @gitlab-org/growth/engineers
-/ee/app/workers/ee/namespaces/in_product_marketing_emails_worker.rb @gitlab-org/growth/engineers
-/ee/spec/workers/ee/namespaces/in_product_marketing_emails_worker_spec.rb @gitlab-org/growth/engineers
-/app/models/users/in_product_marketing_email.rb @gitlab-org/growth/engineers
-/spec/models/users/in_product_marketing_email_spec.rb @gitlab-org/growth/engineers
-/app/services/namespaces/in_product_marketing_emails_service.rb @gitlab-org/growth/engineers
-/spec/services/namespaces/in_product_marketing_emails_service_spec.rb @gitlab-org/growth/engineers
-/ee/app/services/ee/namespaces/in_product_marketing_emails_service.rb @gitlab-org/growth/engineers
-/ee/spec/services/namespaces/in_product_marketing_emails_service_spec.rb @gitlab-org/growth/engineers
-/app/workers/projects/record_target_platforms_worker.rb @gitlab-org/growth/engineers
-/spec/workers/projects/record_target_platforms_worker_spec.rb @gitlab-org/growth/engineers
+^[Growth] @gitlab-org/growth/engineers
+/ee/app/workers/onboarding/
+/ee/spec/workers/onboarding/
+/app/models/onboarding/
+/spec/models/onboarding/
+/app/services/onboarding/
+/spec/services/onboarding/
+/ee/app/components/namespaces/free_user_cap/
+/ee/spec/components/namespaces/free_user_cap/
+/ee/app/models/namespaces/free_user_cap/
+/ee/spec/models/namespaces/free_user_cap/
+/app/controllers/registrations_controller.rb
+/spec/controllers/registrations_controller_spec.rb
+/app/controllers/registrations/
+/spec/controllers/registrations/
+/app/controllers/confirmations_controller.rb
+/spec/controllers/confirmations_controller_spec.rb
+/ee/app/controllers/trial_registrations_controller.rb
+/ee/spec/controllers/trial_registrations_controller_spec.rb
+/ee/spec/requests/trial_registrations_controller_spec.rb
+/ee/app/controllers/registrations/
+/ee/spec/controllers/registrations/
+/ee/spec/requests/registrations/
+/ee/app/controllers/ee/registrations_controller.rb
+/ee/spec/controllers/ee/registrations_controller_spec.rb
+/ee/app/controllers/ee/registrations/
+/ee/app/controllers/ee/confirmations_controller.rb
+/ee/app/controllers/subscriptions_controller.rb
+/ee/spec/controllers/subscriptions_controller_spec.rb
+/ee/app/controllers/subscriptions/
+/ee/spec/controllers/subscriptions/
+/app/services/users/in_product_marketing_email_records.rb
+/spec/services/users/in_product_marketing_email_records_spec.rb
+/app/workers/namespaces/in_product_marketing_emails_worker.rb
+/spec/workers/namespaces/in_product_marketing_emails_worker_spec.rb
+/ee/app/workers/ee/namespaces/in_product_marketing_emails_worker.rb
+/ee/spec/workers/ee/namespaces/in_product_marketing_emails_worker_spec.rb
+/app/models/users/in_product_marketing_email.rb
+/spec/models/users/in_product_marketing_email_spec.rb
+/app/services/namespaces/in_product_marketing_emails_service.rb
+/spec/services/namespaces/in_product_marketing_emails_service_spec.rb
+/ee/app/services/ee/namespaces/in_product_marketing_emails_service.rb
+/ee/spec/services/namespaces/in_product_marketing_emails_service_spec.rb
+/app/workers/projects/record_target_platforms_worker.rb
+/spec/workers/projects/record_target_platforms_worker_spec.rb
 
-^[Legal]
-/config/dependency_decisions.yml @gitlab-org/legal-reviewers
+^[Legal] @gitlab-org/legal-reviewers
+/config/dependency_decisions.yml
 
-^[Workhorse]
-/workhorse/ @jacobvosmaer-gitlab @nolith @patrickbajao @igor.drozdov
+^[Workhorse] @jacobvosmaer-gitlab @nolith @patrickbajao @igor.drozdov
+/workhorse/
 
-[Application Security]
-/app/assets/javascripts/lib/dompurify.js @gitlab-com/gl-security/appsec
-/app/assets/javascripts/gfm_auto_complete.js @gitlab-com/gl-security/appsec
-/ee/app/assets/javascripts/gfm_auto_complete.js @gitlab-com/gl-security/appsec
-/app/validators/addressable_url_validator.rb  @gitlab-com/gl-security/appsec
-/app/validators/public_url_validator.rb  @gitlab-com/gl-security/appsec
-/config/initializers/content_security_policy.rb @gitlab-com/gl-security/appsec
-/lib/gitlab/content_security_policy/ @gitlab-com/gl-security/appsec
-/lib/gitlab/http.rb @gitlab-com/gl-security/appsec
-/lib/gitlab/http_connection_adapter.rb @gitlab-com/gl-security/appsec
-/lib/gitlab/sanitizers @gitlab-com/gl-security/appsec
-/lib/gitlab/untrusted_regexp.rb @gitlab-com/gl-security/appsec
-/lib/gitlab/url_blocker.rb @gitlab-com/gl-security/appsec
-/lib/gitlab/url_blockers/ @gitlab-com/gl-security/appsec
-/lib/gitlab/utils.rb @gitlab-com/gl-security/appsec
+[Application Security] @gitlab-com/gl-security/appsec
+/app/assets/javascripts/lib/dompurify.js
+/app/assets/javascripts/gfm_auto_complete.js
+/ee/app/assets/javascripts/gfm_auto_complete.js
+/app/validators/addressable_url_validator.rb
+/app/validators/public_url_validator.rb
+/config/initializers/content_security_policy.rb
+/lib/gitlab/content_security_policy/
+/lib/gitlab/http.rb
+/lib/gitlab/http_connection_adapter.rb
+/lib/gitlab/sanitizers
+/lib/gitlab/untrusted_regexp.rb
+/lib/gitlab/url_blocker.rb
+/lib/gitlab/url_blockers/
+/lib/gitlab/utils.rb
 
-^[Gitaly]
-lib/gitlab/git_access.rb @proglottis @toon
-lib/gitlab/git_access_*.rb @proglottis @toon
-ee/lib/ee/gitlab/git_access.rb @proglottis @toon
-ee/lib/ee/gitlab/git_access_*.rb @proglottis @toon
-ee/lib/ee/gitlab/checks/** @proglottis @toon
-lib/gitlab/checks/** @proglottis @toon
+^[Gitaly] @proglottis @toon
+lib/gitlab/git_access.rb
+lib/gitlab/git_access_*.rb
+ee/lib/ee/gitlab/git_access.rb
+ee/lib/ee/gitlab/git_access_*.rb
+ee/lib/ee/gitlab/checks/**
+lib/gitlab/checks/**
 
-^[Documentation Directories]
-/doc/ @gl-docsteam
-/data/deprecations/ @gl-docsteam
-/data/removals/ @gl-docsteam
+^[Documentation Directories] @gl-docsteam
+/doc/
+/data/deprecations/
+/data/removals/
 
 ^[Documentation Pages]
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
@@ -978,253 +969,252 @@ lib/gitlab/checks/** @proglottis @toon
 /doc/user/workspace/quick_start/ @ashrafkhamis
 # End rake-managed-docs-block
 
-[Authentication and Authorization]
-/app/assets/javascripts/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/authentication/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/ide/components/shared/tokened_input.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/groups/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/ldap/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/omniauth_callbacks/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/profiles/password_prompt/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/profiles/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/profiles/two_factor_auths/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/projects/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/pages/sessions/new/oauth_remember_me.js @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/projects/settings/topics/components/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/related_issues/components/issue_token.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/stylesheets/page_bundles/profile_two_factor_auth.scss @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/admin/impersonation_tokens_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/access_tokens_actions.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/authenticates_with_two_factor.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/authenticates_with_two_factor_for_admin_mode.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/enforces_admin_authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/enforces_two_factor_authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/oauth_applications.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/project_unauthorized.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/concerns/require_email_verification.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/sessionless_authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/snippet_authorizations.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/verifies_with_email.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/concerns/workhorse_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/groups/settings/access_tokens_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/ldap/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/omniauth_callbacks_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/passwords_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/profiles/passwords_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/profiles/personal_access_tokens_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/profiles/two_factor_auths_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/profiles/webauthn_registrations_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/projects/settings/access_tokens_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/controllers/sessions_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/finders/groups/projects_requiring_authorizations_refresh/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/finders/personal_access_tokens_finder.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/helpers/access_tokens_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/helpers/auth_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/authentication_event.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/concerns/admin_changed_password_notifier.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/concerns/mirror_authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/concerns/select_for_project_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/concerns/token_authenticatable.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/concerns/token_authenticatable_strategies/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/oauth_access_grant.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/oauth_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/personal_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/project_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/token_with_iv.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/models/webauthn_registration.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/policies/personal_access_token_policy.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/access_token_entity_base.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/group_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/group_access_token_serializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/impersonation_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/impersonation_access_token_serializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/personal_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/personal_access_token_serializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/project_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/serializers/project_access_token_serializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/access_token_validation_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/authorized_project_update/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/chat_names/authorize_user_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/projects/move_project_authorizations_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/resource_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/todos/destroy/unauthorized_features_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/users/authorized_build_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/users/authorized_create_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/users/email_verification/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/users/refresh_authorized_projects_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/services/webauthn/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/validators/json_schemas/cluster_agent_authorization_configuration.json @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/admin/application_settings/_external_authorization_service_form.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/authentication/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/dashboard/projects/_zero_authorized_projects.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/mailer/password_change.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/mailer/password_change.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/mailer/password_change_by_admin.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/mailer/password_change_by_admin.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/mailer/reset_password_instructions.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/mailer/reset_password_instructions.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/**/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/doorkeeper/authorizations/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/doorkeeper/authorized_applications/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/errors/omniauth_error.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/groups/settings/_resource_access_token_creation.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/groups/settings/_two_factor_auth.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/groups/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/layouts/oauth_error.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_about_to_expire_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_about_to_expire_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_created_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_created_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_expired_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_expired_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_revoked_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/notify/access_token_revoked_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/profiles/passwords/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/profiles/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/profiles/two_factor_auths/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/projects/mirrors/_authentication_method.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/projects/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/shared/_no_password.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/shared/_two_factor_auth_recovery_settings_check.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/shared/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/shared/members/_two_factor_auth_badge.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/shared/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/workers/authorized_keys_worker.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/workers/authorized_project_update/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/workers/authorized_projects_worker.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/app/workers/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/01_secret_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/devise_dynamic_password_length_validation.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/devise_password_length.rb.example @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/gitlab_shell_secret_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/omniauth.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/rails_host_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/rails_host_authorization_gitpod.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers/webauthn.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers_before_autoloader/100_patch_omniauth_oauth2.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/initializers_before_autoloader/100_patch_omniauth_saml.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/config/weak_password_digests.yml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/audit_events/components/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/audit_events/token_utils.js @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/batch_comments/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/groups/settings/components/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/pages/admin/application_settings/general/components/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/pages/groups/omniauth_callbacks/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/pages/passwords/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/pages/profiles/passwords/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/password/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/requirements/components/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/saml_providers/scim_token_service.js @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/saml_sso/components/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/assets/javascripts/vue_merge_request_widget/components/approvals/approvals_auth.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/concerns/ee/authenticates_with_two_factor.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/concerns/ee/enforces_two_factor_authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/concerns/saml_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/ee/ldap/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/ee/omniauth_callbacks_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/ee/passwords_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/ee/sessions_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/groups/omniauth_callbacks_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/groups/scim_oauth_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/omniauth_kerberos_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/controllers/users/identity_verification_controller.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/finders/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/helpers/ee/access_tokens_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/helpers/ee/auth_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/helpers/ee/personal_access_tokens_helper.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/models/concerns/identity_verifiable.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/models/concerns/password_complexity.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/models/ee/personal_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/models/ee/project_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/models/scim_oauth_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/serializers/scim_oauth_access_token_entity.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/arkose/token_verification_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/ee/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/ee/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/ee/resource_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/ee/users/authorized_build_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/security/token_revocation_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/services/users/email_verification/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/validators/password/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/admin/application_settings/_personal_access_token_expiration_policy.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.text.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/app/views/devise/**/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/groups/_personal_access_token_expiration_policy.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/groups/sso/_authorize_pane.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/notify/policy_revoked_personal_access_tokens_email.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/notify/policy_revoked_personal_access_tokens_email.text.erb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/shared/_password_requirements_list.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/shared/credentials_inventory/_personal_access_tokens.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/views/shared/credentials_inventory/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/workers/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/app/workers/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/config/routes/oauth.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/ee/gitlab/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/ee/gitlab/omniauth_initializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/gitlab/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/gitlab/authority_analyzer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/gitlab/geo/oauth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/gitlab/kerberos/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/omni_auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/system_check/geo/authorized_keys_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/ee/lib/system_check/geo/authorized_keys_flag_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/impersonation_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/impersonation_token_with_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/personal_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/personal_access_token_with_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/resource_access_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/entities/resource_access_token_with_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/helpers/authentication.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/helpers/packages/basic_auth_helpers.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/helpers/personal_access_tokens_helpers.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/personal_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/resource_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/api/support/token_with_expiration.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/api_authentication/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/auth.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/auth_logger.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/authorized_keys.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/background_migration/encrypt_static_object_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/background_migration/expire_o_auth_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/background_migration/migrate_u2f_webauthn.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/background_migration/update_users_where_two_factor_auth_required_from_group.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/chat_name_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/cleanup/personal_access_tokens.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/external_authorization/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/external_authorization.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/grape_logging/loggers/token_logger.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/graphql/authorize/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/jwt_authenticatable.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/jwt_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/lfs_token.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/mail_room/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/omniauth_initializer.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/gitlab/project_authorizations.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/json_web_token/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/omni_auth/ @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/security/weak_passwords.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/system_check/app/authorized_keys_permission_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/system_check/incoming_email/imap_authentication_check.rb @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/tasks/gitlab/password.rake @gitlab-org/manage/authentication-and-authorization/approvers
-/lib/tasks/tokens.rake @gitlab-org/manage/authentication-and-authorization/approvers
+[Authentication and Authorization] @gitlab-org/manage/authentication-and-authorization/approvers
+/app/assets/javascripts/access_tokens/
+/app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql
+/app/assets/javascripts/authentication/
+/app/assets/javascripts/ide/components/shared/tokened_input.vue
+/app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/
+/app/assets/javascripts/pages/admin/impersonation_tokens/
+/app/assets/javascripts/pages/groups/settings/access_tokens/
+/app/assets/javascripts/pages/ldap/
+/app/assets/javascripts/pages/oauth/
+/app/assets/javascripts/pages/omniauth_callbacks/
+/app/assets/javascripts/pages/profiles/password_prompt/
+/app/assets/javascripts/pages/profiles/personal_access_tokens/
+/app/assets/javascripts/pages/profiles/two_factor_auths/
+/app/assets/javascripts/pages/projects/settings/access_tokens/
+/app/assets/javascripts/pages/sessions/new/oauth_remember_me.js
+/app/assets/javascripts/projects/settings/topics/components/
+/app/assets/javascripts/related_issues/components/issue_token.vue
+/app/assets/stylesheets/page_bundles/profile_two_factor_auth.scss
+/app/controllers/admin/impersonation_tokens_controller.rb
+/app/controllers/concerns/access_tokens_actions.rb
+/app/controllers/concerns/authenticates_with_two_factor.rb
+/app/controllers/concerns/authenticates_with_two_factor_for_admin_mode.rb
+/app/controllers/concerns/enforces_admin_authentication.rb
+/app/controllers/concerns/enforces_two_factor_authentication.rb
+/app/controllers/concerns/oauth_applications.rb
+/app/controllers/concerns/project_unauthorized.rb
+/app/models/concerns/require_email_verification.rb
+/app/controllers/concerns/sessionless_authentication.rb
+/app/controllers/concerns/snippet_authorizations.rb
+/app/controllers/concerns/verifies_with_email.rb
+/app/controllers/concerns/workhorse_authorization.rb
+/app/controllers/groups/settings/access_tokens_controller.rb
+/app/controllers/ldap/
+/app/controllers/oauth/
+/app/controllers/omniauth_callbacks_controller.rb
+/app/controllers/passwords_controller.rb
+/app/controllers/profiles/passwords_controller.rb
+/app/controllers/profiles/personal_access_tokens_controller.rb
+/app/controllers/profiles/two_factor_auths_controller.rb
+/app/controllers/profiles/webauthn_registrations_controller.rb
+/app/controllers/projects/settings/access_tokens_controller.rb
+/app/controllers/sessions_controller.rb
+/app/finders/groups/projects_requiring_authorizations_refresh/
+/app/finders/personal_access_tokens_finder.rb
+/app/helpers/access_tokens_helper.rb
+/app/helpers/auth_helper.rb
+/app/models/authentication_event.rb
+/app/models/concerns/admin_changed_password_notifier.rb
+/app/models/concerns/mirror_authentication.rb
+/app/models/concerns/select_for_project_authorization.rb
+/app/models/concerns/token_authenticatable.rb
+/app/models/concerns/token_authenticatable_strategies/
+/app/models/oauth_access_grant.rb
+/app/models/oauth_access_token.rb
+/app/models/personal_access_token.rb
+/app/models/project_authorization.rb
+/app/models/token_with_iv.rb
+/app/models/webauthn_registration.rb
+/app/policies/personal_access_token_policy.rb
+/app/serializers/access_token_entity_base.rb
+/app/serializers/group_access_token_entity.rb
+/app/serializers/group_access_token_serializer.rb
+/app/serializers/impersonation_access_token_entity.rb
+/app/serializers/impersonation_access_token_serializer.rb
+/app/serializers/personal_access_token_entity.rb
+/app/serializers/personal_access_token_serializer.rb
+/app/serializers/project_access_token_entity.rb
+/app/serializers/project_access_token_serializer.rb
+/app/services/access_token_validation_service.rb
+/app/services/auth/
+/app/services/authorized_project_update/
+/app/services/chat_names/authorize_user_service.rb
+/app/services/personal_access_tokens/
+/app/services/projects/move_project_authorizations_service.rb
+/app/services/resource_access_tokens/
+/app/services/todos/destroy/unauthorized_features_service.rb
+/app/services/users/authorized_build_service.rb
+/app/services/users/authorized_create_service.rb
+/app/services/users/email_verification/
+/app/services/users/refresh_authorized_projects_service.rb
+/app/services/webauthn/
+/app/validators/json_schemas/cluster_agent_authorization_configuration.json
+/app/views/admin/application_settings/_external_authorization_service_form.html.haml
+/app/views/admin/impersonation_tokens/
+/app/views/authentication/
+/app/views/dashboard/projects/_zero_authorized_projects.html.haml
+/app/views/devise/mailer/password_change.html.haml
+/app/views/devise/mailer/password_change.text.erb
+/app/views/devise/mailer/password_change_by_admin.html.haml
+/app/views/devise/mailer/password_change_by_admin.text.erb
+/app/views/devise/mailer/reset_password_instructions.html.haml
+/app/views/devise/mailer/reset_password_instructions.text.erb
+/app/views/devise/**/
+/app/views/doorkeeper/authorizations/
+/app/views/doorkeeper/authorized_applications/
+/app/views/errors/omniauth_error.html.haml
+/app/views/groups/settings/_resource_access_token_creation.html.haml
+/app/views/groups/settings/_two_factor_auth.html.haml
+/app/views/groups/settings/access_tokens/
+/app/views/layouts/oauth_error.html.haml
+/app/views/notify/access_token_about_to_expire_email.html.haml
+/app/views/notify/access_token_about_to_expire_email.text.erb
+/app/views/notify/access_token_created_email.html.haml
+/app/views/notify/access_token_created_email.text.erb
+/app/views/notify/access_token_expired_email.html.haml
+/app/views/notify/access_token_expired_email.text.erb
+/app/views/notify/access_token_revoked_email.html.haml
+/app/views/notify/access_token_revoked_email.text.erb
+/app/views/profiles/passwords/
+/app/views/profiles/personal_access_tokens/
+/app/views/profiles/two_factor_auths/
+/app/views/projects/mirrors/_authentication_method.html.haml
+/app/views/projects/settings/access_tokens/
+/app/views/shared/_no_password.html.haml
+/app/views/shared/_two_factor_auth_recovery_settings_check.html.haml
+/app/views/shared/access_tokens/
+/app/views/shared/members/_two_factor_auth_badge.html.haml
+/app/views/shared/tokens/
+/app/workers/authorized_keys_worker.rb
+/app/workers/authorized_project_update/
+/app/workers/authorized_projects_worker.rb
+/app/workers/personal_access_tokens/
+/config/initializers/01_secret_token.rb
+/config/initializers/devise_dynamic_password_length_validation.rb
+/config/initializers/devise_password_length.rb.example
+/config/initializers/gitlab_shell_secret_token.rb
+/config/initializers/omniauth.rb
+/config/initializers/rails_host_authorization.rb
+/config/initializers/rails_host_authorization_gitpod.rb
+/config/initializers/webauthn.rb
+/config/initializers_before_autoloader/100_patch_omniauth_oauth2.rb
+/config/initializers_before_autoloader/100_patch_omniauth_saml.rb
+/config/weak_password_digests.yml
+/ee/app/assets/javascripts/access_tokens/
+/ee/app/assets/javascripts/audit_events/components/tokens/
+/ee/app/assets/javascripts/audit_events/token_utils.js
+/ee/app/assets/javascripts/batch_comments/
+/ee/app/assets/javascripts/groups/settings/components/
+/ee/app/assets/javascripts/pages/admin/application_settings/general/components/
+/ee/app/assets/javascripts/pages/groups/omniauth_callbacks/
+/ee/app/assets/javascripts/pages/passwords/
+/ee/app/assets/javascripts/pages/profiles/passwords/
+/ee/app/assets/javascripts/password/
+/ee/app/assets/javascripts/requirements/components/tokens/
+/ee/app/assets/javascripts/saml_providers/scim_token_service.js
+/ee/app/assets/javascripts/saml_sso/components/
+/ee/app/assets/javascripts/vue_merge_request_widget/components/approvals/approvals_auth.vue
+/ee/app/controllers/concerns/ee/authenticates_with_two_factor.rb
+/ee/app/controllers/concerns/ee/enforces_two_factor_authentication.rb
+/ee/app/controllers/concerns/saml_authorization.rb
+/ee/app/controllers/ee/ldap/
+/ee/app/controllers/ee/omniauth_callbacks_controller.rb
+/ee/app/controllers/ee/passwords_controller.rb
+/ee/app/controllers/ee/sessions_controller.rb
+/ee/app/controllers/groups/omniauth_callbacks_controller.rb
+/ee/app/controllers/groups/scim_oauth_controller.rb
+/ee/app/controllers/oauth/
+/ee/app/controllers/omniauth_kerberos_controller.rb
+/ee/app/controllers/users/identity_verification_controller.rb
+/ee/app/finders/auth/
+/ee/app/helpers/ee/access_tokens_helper.rb
+/ee/app/helpers/ee/auth_helper.rb
+/ee/app/helpers/ee/personal_access_tokens_helper.rb
+/ee/app/models/concerns/identity_verifiable.rb
+/ee/app/models/concerns/password_complexity.rb
+/ee/app/models/ee/personal_access_token.rb
+/ee/app/models/ee/project_authorization.rb
+/ee/app/models/scim_oauth_access_token.rb
+/ee/app/serializers/scim_oauth_access_token_entity.rb
+/ee/app/services/arkose/token_verification_service.rb
+/ee/app/services/ee/auth/
+/ee/app/services/ee/personal_access_tokens/
+/ee/app/services/ee/resource_access_tokens/
+/ee/app/services/ee/users/authorized_build_service.rb
+/ee/app/services/personal_access_tokens/
+/ee/app/services/security/token_revocation_service.rb
+/ee/app/services/users/email_verification/
+/ee/app/validators/password/
+/ee/app/views/admin/application_settings/_personal_access_token_expiration_policy.html.haml
+/ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.html.haml
+/ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.text.haml
+/app/views/devise/**/
+/ee/app/views/groups/_personal_access_token_expiration_policy.html.haml
+/ee/app/views/groups/sso/_authorize_pane.html.haml
+/ee/app/views/notify/policy_revoked_personal_access_tokens_email.html.haml
+/ee/app/views/notify/policy_revoked_personal_access_tokens_email.text.erb
+/ee/app/views/oauth/
+/ee/app/views/shared/_password_requirements_list.html.haml
+/ee/app/views/shared/credentials_inventory/_personal_access_tokens.html.haml
+/ee/app/views/shared/credentials_inventory/personal_access_tokens/
+/ee/app/workers/auth/
+/ee/app/workers/personal_access_tokens/
+/ee/config/routes/oauth.rb
+/ee/lib/ee/gitlab/auth/
+/ee/lib/ee/gitlab/omniauth_initializer.rb
+/ee/lib/gitlab/auth/
+/ee/lib/gitlab/authority_analyzer.rb
+/ee/lib/gitlab/geo/oauth/
+/ee/lib/gitlab/kerberos/
+/ee/lib/omni_auth/
+/ee/lib/system_check/geo/authorized_keys_check.rb
+/ee/lib/system_check/geo/authorized_keys_flag_check.rb
+/lib/api/entities/impersonation_token.rb
+/lib/api/entities/impersonation_token_with_token.rb
+/lib/api/entities/personal_access_token.rb
+/lib/api/entities/personal_access_token_with_token.rb
+/lib/api/entities/resource_access_token.rb
+/lib/api/entities/resource_access_token_with_token.rb
+/lib/api/helpers/authentication.rb
+/lib/api/helpers/packages/basic_auth_helpers.rb
+/lib/api/helpers/personal_access_tokens_helpers.rb
+/lib/api/personal_access_tokens/
+/lib/api/personal_access_tokens.rb
+/lib/api/resource_access_tokens.rb
+/lib/api/support/token_with_expiration.rb
+/lib/gitlab/api_authentication/
+/lib/gitlab/auth/
+/lib/gitlab/auth.rb
+/lib/gitlab/auth_logger.rb
+/lib/gitlab/authorized_keys.rb
+/lib/gitlab/background_migration/encrypt_static_object_token.rb
+/lib/gitlab/background_migration/expire_o_auth_tokens.rb
+/lib/gitlab/background_migration/migrate_u2f_webauthn.rb
+/lib/gitlab/background_migration/update_users_where_two_factor_auth_required_from_group.rb
+/lib/gitlab/chat_name_token.rb
+/lib/gitlab/cleanup/personal_access_tokens.rb
+/lib/gitlab/external_authorization/
+/lib/gitlab/external_authorization.rb
+/lib/gitlab/grape_logging/loggers/token_logger.rb
+/lib/gitlab/graphql/authorize/
+/lib/gitlab/jwt_authenticatable.rb
+/lib/gitlab/jwt_token.rb
+/lib/gitlab/lfs_token.rb
+/lib/gitlab/mail_room/
+/lib/gitlab/omniauth_initializer.rb
+/lib/gitlab/project_authorizations.rb
+/lib/json_web_token/
+/lib/omni_auth/
+/lib/security/weak_passwords.rb
+/lib/system_check/app/authorized_keys_permission_check.rb
+/lib/system_check/incoming_email/imap_authentication_check.rb
+/lib/tasks/gitlab/password.rake
+/lib/tasks/tokens.rake
 
-[Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan 
-# Verify Backend
+[Verify backend] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan
 /**/app/**/ci/
 /**/lib/**/ci/
 /**/spec/**/ci/
@@ -1336,17 +1326,26 @@ lib/gitlab/checks/** @proglottis @toon
 /ee/spec/controllers/projects/subscriptions_controller_spec.rb
 /ee/spec/helpers/ee/projects/pipeline_helper_spec.rb
 /ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb
+# Overrides for Verify. These files below require approval from teams outside Verify.
+/**/ci/reports/**/ @gitlab-org/maintainers/rails-backend
+/**/ci/parsers/**/ @gitlab-org/maintainers/rails-backend
+/ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/parsers/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
+/ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
+/ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
 
-# Verify Frontend
-/**/spec/frontend/**/ci/       @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/ci/            @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/pipelines/     @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/jobs/          @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/token_access/  @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/admin/application_settings/runner_token_expiration/  @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
+[Verify frontend] @gitlab-org/ci-cd/verify/frontend
+/**/spec/frontend/**/ci/
+/**/javascripts/ci/
+/**/javascripts/pipelines/
+/**/javascripts/jobs/
+/**/javascripts/token_access/
+/**/javascripts/admin/application_settings/runner_token_expiration/
+/**/javascripts/usage_quotas/pipelines/ @sheldonled @aalakkad @kpalchyk
 
-# CI/CD templates
+[CI/CD templates]
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
@@ -1366,93 +1365,83 @@ lib/gitlab/checks/** @proglottis @toon
 /lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
 /lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
-# Overrides for Verify. These files below require approval from teams outside Verify.
-/**/ci/reports/**/             @gitlab-org/maintainers/rails-backend
-/**/ci/parsers/**/             @gitlab-org/maintainers/rails-backend
-/ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/parsers/security/ @gitlab-org/govern/threat-insights-backend-team
-/ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
-/ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
+[Manage::Workspace] @gitlab-org/manage/manage-workspace/backend-approvers
+lib/api/entities/basic_project_details.rb
+lib/api/entities/project_with_access.rb
+lib/api/entities/project_identity.rb
+lib/api/entities/project.rb
+ee/lib/ee/api/entities/project.rb
 
-[Manage::Workspace]
-lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers
-lib/api/entities/project_with_access.rb @gitlab-org/manage/manage-workspace/backend-approvers
-lib/api/entities/project_identity.rb @gitlab-org/manage/manage-workspace/backend-approvers
-lib/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-approvers
-ee/lib/ee/api/entities/project.rb @gitlab-org/manage/manage-workspace/backend-approvers
+[Compliance] @gitlab-org/govern/compliance
+/app/services/audit_events/build_service.rb
+/ee/spec/services/audit_events/custom_audit_event_service_spec.rb
+/app/models/audit_event.rb
+/app/services/audit_event_service.rb
+/app/services/concerns/audit_event_save_type.rb
+/app/views/profiles/audit_log.html.haml
+/ee/app/assets/javascripts/audit_events/components/audit_events_app.vue
+/ee/app/assets/javascripts/audit_events/components/audit_events_export_button.vue
+/ee/app/assets/javascripts/audit_events/components/audit_events_filter.vue
+/ee/app/assets/javascripts/audit_events/components/audit_events_log.vue
+/ee/app/assets/javascripts/audit_events/components/audit_events_stream.vue
+/ee/app/assets/javascripts/audit_events/components/audit_events_table.vue
+/ee/app/assets/javascripts/audit_events/components/tokens/shared/
+/ee/app/assets/javascripts/audit_events/init_audit_events.js
+/ee/app/controllers/admin/audit_log_reports_controller.rb
+/ee/app/controllers/admin/audit_logs_controller.rb
+/ee/app/controllers/concerns/audit_events/audit_events_params.rb
+/ee/app/controllers/groups/audit_events_controller.rb
+/ee/app/controllers/projects/audit_events_controller.rb
+/ee/app/finders/audit_event_finder.rb
+/ee/app/graphql/types/audit_events/external_audit_event_destination_type.rb
+/ee/app/helpers/audit_events_helper.rb
+/ee/app/helpers/auditor_user_helper.rb
+/ee/app/models/audit_events/external_audit_event_destination.rb
+/ee/app/models/concerns/auditable.rb
+/ee/app/models/ee/audit_event.rb
+/ee/app/policies/audit_events/external_audit_event_destination_policy.rb
+/ee/app/presenters/audit_event_presenter.rb
+/ee/app/serializers/audit_event_entity.rb
+/ee/app/serializers/audit_event_serializer.rb
+/ee/app/services/ci/audit_variable_change_service.rb
+/ee/app/services/ee/audit_event_service.rb
+/ee/app/views/admin/users/_auditor_access_level_radio.html.haml
+/ee/app/views/admin/users/_auditor_user_badge.html.haml
+/ee/app/views/shared/icons/_icon_audit_events_purple.svg
+/ee/app/views/shared/promotions/_promote_audit_events.html.haml
+/ee/app/workers/audit_events/audit_event_streaming_worker.rb
+/ee/config/events/1652263097_groups__audit_events__index_click_streams_tab.yml
+/ee/config/events/202108302307_admin_audit_logs_index_click_date_range_button.yml
+/ee/config/events/202108302307_groups__audit_events_controller_search_audit_event.yml
+/ee/config/events/202108302307_profiles_controller_search_audit_event.yml
+/ee/config/events/202108302307_projects__audit_events_controller_search_audit_event.yml
+/ee/config/events/202111041910_admin__audit_logs_controller_search_audit_event.yml
+/ee/config/metrics/counts_28d/20210216183930_g_compliance_audit_events_monthly.yml
+/ee/config/metrics/counts_28d/20210216183934_i_compliance_audit_events_monthly.yml
+/ee/config/metrics/counts_28d/20210216183942_a_compliance_audit_events_api_monthly.yml
+/ee/config/metrics/counts_28d/20211130085433_g_manage_compliance_audit_event_destinations.yml
+/ee/config/metrics/counts_7d/20210216183906_g_compliance_audit_events.yml
+/ee/config/metrics/counts_7d/20210216183908_i_compliance_audit_events.yml
+/ee/config/metrics/counts_7d/20210216183912_a_compliance_audit_events_api.yml
+/ee/config/metrics/counts_7d/20210216183928_g_compliance_audit_events_weekly.yml
+/ee/config/metrics/counts_7d/20210216183932_i_compliance_audit_events_weekly.yml
+/ee/config/metrics/counts_7d/20210216183940_a_compliance_audit_events_api_weekly.yml
+/ee/config/metrics/counts_all/20211130085433_g_manage_compliance_audit_event_destinations.yml
+/ee/lib/api/audit_events.rb
+/ee/lib/audit/
+/ee/lib/ee/api/entities/audit_event.rb
+/ee/lib/ee/gitlab/audit/
+/lib/gitlab/audit/auditor.rb
+/lib/gitlab/audit_json_logger.rb
 
-[Compliance]
-/app/services/audit_events/build_service.rb @gitlab-org/govern/compliance
-/ee/spec/services/audit_events/custom_audit_event_service_spec.rb @gitlab-org/govern/compliance
-/app/models/audit_event.rb @gitlab-org/govern/compliance
-/app/services/audit_event_service.rb @gitlab-org/govern/compliance
-/app/services/concerns/audit_event_save_type.rb @gitlab-org/govern/compliance
-/app/views/profiles/audit_log.html.haml @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/audit_events_app.vue @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/audit_events_export_button.vue @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/audit_events_filter.vue @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/audit_events_log.vue @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/audit_events_stream.vue @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/audit_events_table.vue @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/components/tokens/shared/ @gitlab-org/govern/compliance
-/ee/app/assets/javascripts/audit_events/init_audit_events.js @gitlab-org/govern/compliance
-/ee/app/controllers/admin/audit_log_reports_controller.rb @gitlab-org/govern/compliance
-/ee/app/controllers/admin/audit_logs_controller.rb @gitlab-org/govern/compliance
-/ee/app/controllers/concerns/audit_events/audit_events_params.rb @gitlab-org/govern/compliance
-/ee/app/controllers/groups/audit_events_controller.rb @gitlab-org/govern/compliance
-/ee/app/controllers/projects/audit_events_controller.rb @gitlab-org/govern/compliance
-/ee/app/finders/audit_event_finder.rb @gitlab-org/govern/compliance
-/ee/app/graphql/types/audit_events/external_audit_event_destination_type.rb @gitlab-org/govern/compliance
-/ee/app/helpers/audit_events_helper.rb @gitlab-org/govern/compliance
-/ee/app/helpers/auditor_user_helper.rb @gitlab-org/govern/compliance
-/ee/app/models/audit_events/external_audit_event_destination.rb @gitlab-org/govern/compliance
-/ee/app/models/concerns/auditable.rb @gitlab-org/govern/compliance
-/ee/app/models/ee/audit_event.rb @gitlab-org/govern/compliance
-/ee/app/policies/audit_events/external_audit_event_destination_policy.rb @gitlab-org/govern/compliance
-/ee/app/presenters/audit_event_presenter.rb @gitlab-org/govern/compliance
-/ee/app/serializers/audit_event_entity.rb @gitlab-org/govern/compliance
-/ee/app/serializers/audit_event_serializer.rb @gitlab-org/govern/compliance
-/ee/app/services/ci/audit_variable_change_service.rb @gitlab-org/govern/compliance
-/ee/app/services/ee/audit_event_service.rb @gitlab-org/govern/compliance
-/ee/app/views/admin/users/_auditor_access_level_radio.html.haml @gitlab-org/govern/compliance
-/ee/app/views/admin/users/_auditor_user_badge.html.haml @gitlab-org/govern/compliance
-/ee/app/views/shared/icons/_icon_audit_events_purple.svg @gitlab-org/govern/compliance
-/ee/app/views/shared/promotions/_promote_audit_events.html.haml @gitlab-org/govern/compliance
-/ee/app/workers/audit_events/audit_event_streaming_worker.rb @gitlab-org/govern/compliance
-/ee/config/events/1652263097_groups__audit_events__index_click_streams_tab.yml @gitlab-org/govern/compliance
-/ee/config/events/202108302307_admin_audit_logs_index_click_date_range_button.yml @gitlab-org/govern/compliance
-/ee/config/events/202108302307_groups__audit_events_controller_search_audit_event.yml @gitlab-org/govern/compliance
-/ee/config/events/202108302307_profiles_controller_search_audit_event.yml @gitlab-org/govern/compliance
-/ee/config/events/202108302307_projects__audit_events_controller_search_audit_event.yml @gitlab-org/govern/compliance
-/ee/config/events/202111041910_admin__audit_logs_controller_search_audit_event.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_28d/20210216183930_g_compliance_audit_events_monthly.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_28d/20210216183934_i_compliance_audit_events_monthly.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_28d/20210216183942_a_compliance_audit_events_api_monthly.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_28d/20211130085433_g_manage_compliance_audit_event_destinations.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_7d/20210216183906_g_compliance_audit_events.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_7d/20210216183908_i_compliance_audit_events.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_7d/20210216183912_a_compliance_audit_events_api.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_7d/20210216183928_g_compliance_audit_events_weekly.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_7d/20210216183932_i_compliance_audit_events_weekly.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_7d/20210216183940_a_compliance_audit_events_api_weekly.yml @gitlab-org/govern/compliance
-/ee/config/metrics/counts_all/20211130085433_g_manage_compliance_audit_event_destinations.yml @gitlab-org/govern/compliance
-/ee/lib/api/audit_events.rb @gitlab-org/govern/compliance
-/ee/lib/audit/ @gitlab-org/govern/compliance
-/ee/lib/ee/api/entities/audit_event.rb @gitlab-org/govern/compliance
-/ee/lib/ee/gitlab/audit/ @gitlab-org/govern/compliance
-/lib/gitlab/audit/auditor.rb @gitlab-org/govern/compliance
-/lib/gitlab/audit_json_logger.rb @gitlab-org/govern/compliance
+[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
+/ee/app/assets/javascripts/usage_quotas/components/
+/ee/app/assets/javascripts/usage_quotas/seats/
+/ee/app/assets/javascripts/usage_quotas/storage/
 
-[Fulfillment::Utilization]
-/ee/app/assets/javascripts/usage_quotas/components/ @sheldonled @aalakkad @kpalchyk
-/ee/app/assets/javascripts/usage_quotas/seats/ @sheldonled @aalakkad @kpalchyk
-/ee/app/assets/javascripts/usage_quotas/storage/ @sheldonled @aalakkad @kpalchyk
-
-[Manage::Foundations]
-/lib/sidebars/ @gitlab-org/manage/foundations/engineering
-/ee/lib/sidebars/ @gitlab-org/manage/foundations/engineering
+[Manage::Foundations] @gitlab-org/manage/foundations/engineering
+/lib/sidebars/
+/ee/lib/sidebars/
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
