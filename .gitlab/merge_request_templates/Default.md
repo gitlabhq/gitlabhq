@@ -8,6 +8,8 @@ that reviewers can understand your intent. Keeping the description updated is
 especially important if they didn't participate in the discussion.
 -->
 
+%{first_multiline_commit}
+
 ## Screenshots or screen recordings
 
 _Screenshots are required for UI changes, and strongly recommended for all other merge requests._

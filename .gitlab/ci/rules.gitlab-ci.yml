@@ -879,7 +879,7 @@
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
       changes: *code-qa-patterns
-    # Rules to support .qa:rules:package-and-test-mrs
+    # Rules to support .qa:rules:package-and-test-ee
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
@@ -1385,21 +1385,6 @@
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
       allow_failure: true
-
-.qa:rules:package-and-test-mrs:
-  rules:
-    - !reference [".qa:rules:package-and-test-common", rules]
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
-
-.qa:rules:package-and-test-ee:
-  rules:
-    - !reference [".qa:rules:package-and-test-mrs", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
@@ -1409,6 +1394,17 @@
         UPDATE_QA_CACHE: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
+    - <<: *if-force-ci
+      when: manual
+      allow_failure: true
+
+.qa:rules:package-and-test-ee:
+  rules:
+    - !reference [".qa:rules:package-and-test-common", rules]
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
 
 .qa:rules:package-and-test-ce:
   rules:
@@ -1435,13 +1431,10 @@
     - <<: *if-merge-request
       changes: *code-patterns
       allow_failure: true
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
 
 .qa:rules:package-and-test-sidebar:
   rules:
-    - !reference [".qa:rules:package-and-test-mrs", rules]
+    - !reference [".qa:rules:package-and-test-common", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
