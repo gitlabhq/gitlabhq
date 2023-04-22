@@ -55,6 +55,12 @@ module WikiActions
 
       render 'shared/wikis/git_error'
     end
+
+    rescue_from Gitlab::Git::Repository::NoRepository do
+      @error = _('Could not access the Wiki Repository at this time.')
+
+      render 'shared/wikis/empty'
+    end
   end
 
   def new

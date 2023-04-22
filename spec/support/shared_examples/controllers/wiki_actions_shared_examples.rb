@@ -15,18 +15,31 @@ RSpec.shared_examples 'wiki controller actions' do
     sign_in(user)
   end
 
-  shared_examples 'recovers from git timeout' do
+  shared_examples 'recovers from git errors' do
     let(:method_name) { :page }
 
-    context 'when we encounter git command errors' do
+    context 'when we encounter CommandTimedOut error' do
       it 'renders the appropriate template', :aggregate_failures do
-        expect(controller).to receive(method_name) do
-          raise ::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded'
-        end
+        expect(controller)
+          .to receive(method_name)
+          .and_raise(::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded')
 
         request
 
         expect(response).to render_template('shared/wikis/git_error')
+      end
+    end
+
+    context 'when we encounter a NoRepository error' do
+      it 'renders the appropriate template', :aggregate_failures do
+        expect(controller)
+          .to receive(method_name)
+          .and_raise(Gitlab::Git::Repository::NoRepository)
+
+        request
+
+        expect(response).to render_template('shared/wikis/empty')
+        expect(assigns(:error)).to eq('Could not access the Wiki Repository at this time.')
       end
     end
   end
@@ -65,7 +78,7 @@ RSpec.shared_examples 'wiki controller actions' do
       get :pages, params: routing_params.merge(id: wiki_title)
     end
 
-    it_behaves_like 'recovers from git timeout' do
+    it_behaves_like 'recovers from git errors' do
       subject(:request) { get :pages, params: routing_params.merge(id: wiki_title) }
 
       let(:method_name) { :wiki_pages }
@@ -122,7 +135,7 @@ RSpec.shared_examples 'wiki controller actions' do
       end
     end
 
-    it_behaves_like 'recovers from git timeout' do
+    it_behaves_like 'recovers from git errors' do
       subject(:request) { get :history, params: routing_params.merge(id: wiki_title) }
 
       let(:allow_read_wiki)   { true }
@@ -170,7 +183,7 @@ RSpec.shared_examples 'wiki controller actions' do
       end
     end
 
-    it_behaves_like 'recovers from git timeout' do
+    it_behaves_like 'recovers from git errors' do
       subject(:request) { get :diff, params: routing_params.merge(id: wiki_title, version_id: wiki.repository.commit.id) }
     end
   end
@@ -185,7 +198,7 @@ RSpec.shared_examples 'wiki controller actions' do
     context 'when page exists' do
       let(:id) { wiki_title }
 
-      it_behaves_like 'recovers from git timeout'
+      it_behaves_like 'recovers from git errors'
 
       it 'renders the page' do
         request
@@ -366,7 +379,7 @@ RSpec.shared_examples 'wiki controller actions' do
     subject(:request) { get(:edit, params: routing_params.merge(id: id_param)) }
 
     it_behaves_like 'edit action'
-    it_behaves_like 'recovers from git timeout'
+    it_behaves_like 'recovers from git errors'
 
     context 'when page content encoding is valid' do
       render_views

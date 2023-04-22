@@ -12038,6 +12038,9 @@ msgstr ""
 msgid "CorpusManagement|Total Size: %{totalSize}"
 msgstr ""
 
+msgid "Could not access the Wiki Repository at this time."
+msgstr ""
+
 msgid "Could not add admins as members"
 msgstr ""
 

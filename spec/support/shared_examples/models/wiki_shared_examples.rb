@@ -94,6 +94,40 @@ RSpec.shared_examples 'wiki model' do
     end
   end
 
+  describe '#has_home_page?' do
+    context 'when home page exists' do
+      before do
+        wiki.repository.create_file(
+          user,
+          'home.md',
+          'home file',
+          branch_name: wiki.default_branch,
+          message: "created home page",
+          author_email: user.email,
+          author_name: user.name
+        )
+      end
+
+      it 'returns true' do
+        expect(wiki.has_home_page?).to eq(true)
+      end
+
+      it 'returns false when #find_page raise an error' do
+        allow(wiki)
+          .to receive(:find_page)
+          .and_raise(StandardError)
+
+        expect(wiki.has_home_page?).to eq(false)
+      end
+    end
+
+    context 'when home page does not exist' do
+      it 'returns false' do
+        expect(wiki.has_home_page?).to eq(false)
+      end
+    end
+  end
+
   describe '#to_global_id' do
     it 'returns a global ID' do
       expect(wiki.to_global_id.to_s).to eq("gid://gitlab/#{wiki.class.name}/#{wiki.id}")

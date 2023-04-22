@@ -6,6 +6,7 @@ class Wiki
   include Repositories::CanHousekeepRepository
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
+  include Gitlab::Git::WrapsGitalyErrors
 
   extend ActiveModel::Naming
 
@@ -185,6 +186,8 @@ class Wiki
 
   def has_home_page?
     !!find_page(HOMEPAGE)
+  rescue StandardError
+    false
   end
 
   def empty?
@@ -413,7 +416,7 @@ class Wiki
   end
 
   def capture_git_error(action, &block)
-    yield block
+    wrapped_gitaly_errors(&block)
   rescue Gitlab::Git::Index::IndexError,
     Gitlab::Git::CommitError,
     Gitlab::Git::PreReceiveError,
@@ -491,7 +494,9 @@ class Wiki
     escaped_path = RE2::Regexp.escape(sluggified_title(title))
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
-    matched_files = repository.search_files_by_regexp(path_regexp, version, limit: 1)
+    matched_files = capture_git_error(:find) do
+      repository.search_files_by_regexp(path_regexp, version, limit: 1)
+    end
     return if matched_files.blank?
 
     Gitlab::EncodingHelper.encode_utf8_no_detect(matched_files.first)
