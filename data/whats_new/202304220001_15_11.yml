@@ -1,0 +1,58 @@
+- name: Code Suggestions for Ultimate & Premium Users
+  description: |
+    Every day millions of developers use GitLab to contribute code. In February, we launched a closed Beta of this feature, and since then, we’ve been working hard to make [Code Suggestions](https://about.gitlab.com/direction/modelops/ai_assisted/code_suggestions/) available to more developers. During Beta, Code Suggestions is free for all Ultimate and Premium customers. Group admins can enable this setting with a new [group-level control](https://docs.gitlab.com/ee/user/project/repository/code_suggestions.html#group-level-setting). Depending on the prompt, the extension either provides entire code snippets like generating functions or completes the current line. Simply pressing the tab key allows you to accept the suggestions.
+
+    GitLab Code Suggestions can improve developer productivity, focus, and innovation without context switching and within a single DevSecOps platform. Please note that this is a high-demand [Beta feature](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#beta) and may have unscheduled downtime. During beta, it may also produce low-quality or incomplete suggestions. Read about [known limitations](https://docs.gitlab.com/ee/user/project/repository/code_suggestions.html#known-limitations). We are continuously iterating to improve Code Suggestions and make it better. Give it a try, and [share your feedback with us](https://gitlab.com/gitlab-org/gitlab/-/issues/405152).
+  stage: modelops
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/project/repository/code_suggestions.html#code-suggestions-beta'
+  image_url: 'https://about.gitlab.com/images/15_11/DemoFastApi-lg.gif'
+  published_at: 2023-04-22
+  release: 15.11
+- name: Manage project compliance frameworks report at group level
+  description: |
+    Prior to GitLab 15.11, if you wanted to add or remove a compliance framework from a project, you needed to go to each project individually to manage which framework was associated with the project. When managing more than a few projects, this process was tedious and inefficient.
+
+    Now, you can manage which compliance frameworks are applied to your projects at the group level, significantly reducing the amount of time needed to make sure your projects are adhering to the regulations and standards you are measured against.
+
+    In GitLab 15.10, you could view all the projects in your group and see which ones had compliance frameworks applied to them. In GitLab 15.11, you can add or remove compliance frameworks directly from the compliance frameworks report.
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/user/compliance/compliance_report/#compliance-frameworks-report'
+  image_url: 'https://about.gitlab.com/images/15_11/govern-compliance-frameworks-report-management.png'
+  published_at: 2023-04-22
+  release: 15.11
+- name: Rerun downstream pipeline trigger jobs
+  description: |
+    Previously, if you needed to trigger a rerun of an entire downstream pipeline, you had to rerun the full upstream pipeline. This could be a time-consuming and inefficient process, especially if the upstream pipeline has many jobs or other downstream pipelines.
+
+    In this release, we've added the ability to rerun just the downstream pipeline, without having to re-run the entire parent pipeline, by selecting **Run again** on the trigger job. The newly triggered downstream pipeline replaces the original downstream pipeline in the pipeline graph. This will save you time and resources when you want just the downstream pipeline to run again.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ee/ci/pipelines/downstream_pipelines.html#recreate-a-downstream-pipeline'
+  image_url: 'https://www.youtube-nocookie.com/embed/xCqGWWRx-1E'
+  published_at: 2023-04-22
+  release: 15.11
+- name: Vulnerability dismissal reasons
+  description: |
+    In previous releases, you had to manually add a comment to specify why a vulnerability was dismissed.
+
+    In GitLab 15.11, you can add a reason for dismissing a vulnerability to the Vulnerability Report.
+
+    Now you can quickly and consistently track why vulnerabilities were dismissed.
+
+    This feature is only available on GitLab.com. Support for self-managed instances is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/epics/4942).
+  stage: govern
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-dismissal-reasons'
+  image_url: 'https://about.gitlab.com//images/15_11/vulnerability_dismissal_types__reasons.png'
+  published_at: 2023-04-22
+  release: 15.11
