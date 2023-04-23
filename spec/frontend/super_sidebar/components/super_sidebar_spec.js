@@ -21,6 +21,13 @@ import { sidebarData } from '../mock_data';
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
 const focusInputMock = jest.fn();
 
+const trialStatusWidgetStubTestId = 'trial-status-widget';
+const TrialStatusWidgetStub = { template: `<div data-testid="${trialStatusWidgetStubTestId}" />` };
+const trialStatusPopoverStubTestId = 'trial-status-popover';
+const TrialStatusPopoverStub = {
+  template: `<div data-testid="${trialStatusPopoverStubTestId}" />`,
+};
+
 describe('SuperSidebar component', () => {
   let wrapper;
 
@@ -29,24 +36,30 @@ describe('SuperSidebar component', () => {
   const findUserBar = () => wrapper.findComponent(UserBar);
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
+  const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
+  const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
 
-  const createWrapper = ({ props = {}, provide = {}, sidebarState = {} } = {}) => {
+  const createWrapper = ({ provide = {}, sidebarState = {} } = {}) => {
     wrapper = shallowMountExtended(SuperSidebar, {
       data() {
         return {
           ...sidebarState,
         };
       },
+      provide: {
+        showTrialStatusWidget: false,
+        ...provide,
+      },
       propsData: {
         sidebarData,
-        ...props,
       },
       stubs: {
         ContextSwitcher: stubComponent(ContextSwitcher, {
           methods: { focusInput: focusInputMock },
         }),
+        TrialStatusWidget: TrialStatusWidgetStub,
+        TrialStatusPopover: TrialStatusPopoverStub,
       },
-      provide,
     });
   };
 
@@ -112,6 +125,13 @@ describe('SuperSidebar component', () => {
       wrapper.destroy();
 
       expect(Mousetrap.unbind).toHaveBeenCalledWith(['mod+\\']);
+    });
+
+    it('does not render trial status widget', () => {
+      createWrapper();
+
+      expect(findTrialStatusWidget().exists()).toBe(false);
+      expect(findTrialStatusPopover().exists()).toBe(false);
     });
   });
 
@@ -211,6 +231,17 @@ describe('SuperSidebar component', () => {
 
     it("calls the context switcher's focusInput method", () => {
       expect(focusInputMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when a trial is active', () => {
+    beforeEach(() => {
+      createWrapper({ provide: { showTrialStatusWidget: true } });
+    });
+
+    it('renders trial status widget', () => {
+      expect(findTrialStatusWidget().exists()).toBe(true);
+      expect(findTrialStatusPopover().exists()).toBe(true);
     });
   });
 });

@@ -18,6 +18,48 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
+const getTrialStatusWidgetData = (sidebarData) => {
+  if (sidebarData.trial_status_widget_data_attrs && sidebarData.trial_status_popover_data_attrs) {
+    const {
+      containerId,
+      trialDaysUsed,
+      trialDuration,
+      navIconImagePath,
+      percentageComplete,
+      planName,
+      plansHref,
+    } = convertObjectPropsToCamelCase(sidebarData.trial_status_widget_data_attrs);
+
+    const {
+      daysRemaining,
+      targetId,
+      trialEndDate,
+      namespaceId,
+      userName,
+      firstName,
+      lastName,
+      companyName,
+      glmContent,
+    } = convertObjectPropsToCamelCase(sidebarData.trial_status_popover_data_attrs);
+
+    return {
+      showTrialStatusWidget: true,
+      containerId,
+      trialDaysUsed: Number(trialDaysUsed),
+      trialDuration: Number(trialDuration),
+      navIconImagePath,
+      percentageComplete: Number(percentageComplete),
+      planName,
+      plansHref,
+      daysRemaining,
+      targetId,
+      trialEndDate: new Date(trialEndDate),
+      user: { namespaceId, userName, firstName, lastName, companyName, glmContent },
+    };
+  }
+  return { showTrialStatusWidget: false };
+};
+
 export const initSuperSidebar = () => {
   const el = document.querySelector('.js-super-sidebar');
 
@@ -41,6 +83,7 @@ export const initSuperSidebar = () => {
       rootPath,
       toggleNewNavEndpoint,
       isImpersonating,
+      ...getTrialStatusWidgetData(sidebarData),
     },
     store: createStore({
       searchPath,

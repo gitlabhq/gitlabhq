@@ -166,6 +166,11 @@
       opacity: 1;
     }
   }
+
+  #trial-status-sidebar-widget:hover {
+    text-decoration: none;
+    @include gl-text-contrast-light;
+  }
 }
 
 .super-sidebar-skip-to {

@@ -27,11 +27,16 @@ export default {
     HelpCenter,
     SidebarMenu,
     SidebarPortalTarget,
+    TrialStatusWidget: () =>
+      import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
+    TrialStatusPopover: () =>
+      import('ee_component/contextual_sidebar/components/trial_status_popover.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
   },
+  inject: ['showTrialStatusWidget'],
   props: {
     sidebarData: {
       type: Object,
@@ -122,6 +127,12 @@ export default {
         {{ $options.i18n.skipToMainContent }}
       </gl-button>
       <user-bar :has-collapse-button="!isPeek" :sidebar-data="sidebarData" />
+      <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
+        <trial-status-widget
+          class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! nav-item-link gl-py-3"
+        />
+        <trial-status-popover />
+      </div>
       <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
         <context-switcher-toggle
           :context="sidebarData.current_context_header"
