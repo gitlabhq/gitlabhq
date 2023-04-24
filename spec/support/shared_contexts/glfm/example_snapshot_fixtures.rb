@@ -8,7 +8,7 @@ RSpec.shared_context 'with GLFM example snapshot fixtures' do
     # NOTE: We hardcode the IDs on all fixtures to prevent variability in the
     #       rendered HTML/Prosemirror JSON, and to minimize the need for normalization:
     #       https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#normalization
-    create(:project, :repository, creator: user, group: group, name: 'glfm_project', id: 77777)
+    create(:project, :repository, creator: user, group: group, path: 'glfm_project', id: 77777)
   end
 
   let_it_be(:project_snippet) { create(:project_snippet, title: 'glfm_project_snippet', id: 88888, project: project) }

@@ -150,12 +150,11 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
 
       context 'project already exists' do
         it "fails due to validation, not transaction failure" do
-          @existing_project = create(:project, :repository, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
+          @existing_project = create(:project, :repository, creator_id: @to_user.id, path: @from_project.path, namespace: @to_namespace)
           @to_project = fork_project(@from_project, @to_user, namespace: @to_namespace, using_service: true)
           expect(@existing_project).to be_persisted
 
           expect(@to_project).not_to be_persisted
-          expect(@to_project.errors[:name]).to eq(['has already been taken'])
           expect(@to_project.errors[:path]).to eq(['has already been taken'])
         end
       end
@@ -301,10 +300,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
 
       context 'project already exists in group' do
         it 'fails due to validation, not transaction failure' do
-          existing_project = create(:project, :repository, name: @project.name, namespace: @group)
+          existing_project = create(:project, :repository, path: @project.path, namespace: @group)
           to_project = fork_project(@project, @group_owner, @opts)
           expect(existing_project.persisted?).to be_truthy
-          expect(to_project.errors[:name]).to eq(['has already been taken'])
           expect(to_project.errors[:path]).to eq(['has already been taken'])
         end
       end

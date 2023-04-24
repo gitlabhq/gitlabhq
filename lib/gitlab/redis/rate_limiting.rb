@@ -15,15 +15,6 @@ module Gitlab
         def cache_store
           @cache_store ||= RateLimitingStore.new(redis: pool, namespace: Cache::CACHE_NAMESPACE)
         end
-
-        private
-
-        def redis
-          primary_store = ::Redis.new(::Gitlab::Redis::ClusterRateLimiting.params)
-          secondary_store = ::Redis.new(params)
-
-          MultiStore.new(primary_store, secondary_store, name.demodulize)
-        end
       end
     end
   end

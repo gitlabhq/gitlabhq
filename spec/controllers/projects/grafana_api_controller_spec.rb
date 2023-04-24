@@ -180,7 +180,7 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
         embedded: true,
         grafana_url: 'https://grafana.example.com',
         namespace_id: project.namespace.full_path,
-        project_id: project.name
+        project_id: project.path
       }
     end
 

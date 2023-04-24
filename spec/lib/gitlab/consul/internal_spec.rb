@@ -77,9 +77,11 @@ RSpec.describe Gitlab::Consul::Internal do
 
   shared_examples 'returns nil given blank value of' do |input_symbol|
     [nil, ''].each do |value|
-      let(input_symbol) { value }
+      context "with #{value}" do
+        let(input_symbol) { value }
 
-      it { is_expected.to be_nil }
+        it { is_expected.to be_nil }
+      end
     end
   end
 

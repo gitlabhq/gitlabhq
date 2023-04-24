@@ -37,8 +37,8 @@ RSpec.describe Operations::FeatureFlag do
   end
 
   describe '#to_reference' do
-    let(:namespace) { build(:namespace, path: 'sample-namespace') }
-    let(:project) { build(:project, name: 'sample-project', namespace: namespace) }
+    let(:namespace) { build(:namespace) }
+    let(:project) { build(:project, namespace: namespace) }
     let(:feature_flag) { build(:operations_feature_flag, iid: 1, project: project) }
 
     it 'returns feature flag id' do
@@ -46,7 +46,7 @@ RSpec.describe Operations::FeatureFlag do
     end
 
     it 'returns complete path to the feature flag with full: true' do
-      expect(feature_flag.to_reference(full: true)).to eq '[feature_flag:sample-namespace/sample-project/1]'
+      expect(feature_flag.to_reference(full: true)).to eq "[feature_flag:#{project.full_path}/1]"
     end
   end
 

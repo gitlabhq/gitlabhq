@@ -590,8 +590,8 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#to_reference' do
-    let_it_be(:namespace) { create(:namespace, path: 'sample-namespace') }
-    let_it_be(:project)   { create(:project, name: 'sample-project', namespace: namespace) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project)   { create(:project, namespace: namespace) }
     let_it_be(:issue)     { create(:issue, project: project) }
 
     context 'when nil argument' do
@@ -617,17 +617,17 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       context 'when cross-project in same namespace' do
         let(:another_project) do
-          create(:project, name: 'another-project', namespace: project.namespace)
+          create(:project, namespace: project.namespace)
         end
 
         it 'returns a cross-project reference' do
-          expect(issue.to_reference(another_project)).to eq "sample-project##{issue.iid}"
+          expect(issue.to_reference(another_project)).to eq "#{project.path}##{issue.iid}"
         end
       end
 
       context 'when cross-project in different namespace' do
         let(:another_namespace) { build(:namespace, id: non_existing_record_id, path: 'another-namespace') }
-        let(:another_namespace_project) { build(:project, path: 'another-project', namespace: another_namespace) }
+        let(:another_namespace_project) { build(:project, namespace: another_namespace) }
 
         it 'returns complete path to the issue' do
           expect(issue.to_reference(another_namespace_project)).to eq "#{project.full_path}##{issue.iid}"
@@ -638,7 +638,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when argument is a namespace' do
       context 'when same as issue' do
         it 'returns path to the issue with the project name' do
-          expect(issue.to_reference(namespace)).to eq "sample-project##{issue.iid}"
+          expect(issue.to_reference(namespace)).to eq "#{project.path}##{issue.iid}"
         end
 
         it 'returns full reference with full: true' do

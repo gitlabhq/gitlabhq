@@ -28,6 +28,8 @@ To invite a group to a project, you must be at least one of the following:
 
 In addition:
 
+- You must be a member of the group or the subgroup being invited.
+
 - The [visibility level](../../public_access.md#project-and-group-visibility) of the group you're inviting
 must be at least as restrictive as that of the project. For example, you can invite:
   - A _private_ group to a _private_ project
@@ -37,10 +39,10 @@ must be at least as restrictive as that of the project. For example, you can inv
   - An _internal_ group to a _public_ project.
   - A _public_ group to a _public_ project.
 
-- The group or subgroup must be in the project's [namespace](../../namespace/index.md).
+- If the project's root ancestor group [does not allow the project to be shared outside the hierarchy](../../group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy), the invited group or subgroup must be in the project's [namespace](../../namespace/index.md).
   For example, a project in the namespace `group/subgroup01/project`:
   - Can be shared with `group/subgroup02` or `group/subgroup01/subgroup03`.
-  - Cannot be shared with `group`.
+  - Cannot be shared with `group_abc`.
 
 ## Share a project with a group
 

@@ -18,7 +18,7 @@ RSpec.describe Projects::Environments::PrometheusApiController do
         {
           id: proxyable.id.to_s,
           namespace_id: project.namespace.full_path,
-          project_id: project.name
+          project_id: project.path
         }
       end
 

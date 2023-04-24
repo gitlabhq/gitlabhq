@@ -59,7 +59,7 @@ end
 RSpec.shared_examples 'an email with X-GitLab headers containing project details' do
   it 'has X-GitLab-Project headers' do
     aggregate_failures do
-      full_path_as_domain = "#{project.name}.#{project.namespace.path}"
+      full_path_as_domain = "#{project.path}.#{project.namespace.path}"
       is_expected.to have_header('X-GitLab-Project', /#{project.name}/)
       is_expected.to have_header('X-GitLab-Project-Id', /#{project.id}/)
       is_expected.to have_header('X-GitLab-Project-Path', /#{project.full_path}/)

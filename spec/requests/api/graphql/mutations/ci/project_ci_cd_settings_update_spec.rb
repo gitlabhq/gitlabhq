@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integration do
   include GraphqlHelpers
 
+  before do
+    stub_feature_flags(frozen_outbound_job_token_scopes_override: false)
+  end
+
   let_it_be(:project) do
     create(:project,
       keep_latest_artifact: true,
@@ -61,13 +65,58 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       expect(project.keep_latest_artifact).to eq(false)
     end
 
-    it 'updates job_token_scope_enabled' do
+    it 'allows setting job_token_scope_enabled to false' do
       post_graphql_mutation(mutation, current_user: user)
 
       project.reload
 
       expect(response).to have_gitlab_http_status(:success)
       expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
+    end
+
+    context 'when job_token_scope_enabled: true' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          keep_latest_artifact: false,
+          job_token_scope_enabled: true,
+          inbound_job_token_scope_enabled: false,
+          opt_in_jwt: true
+        }
+      end
+
+      it 'prevents the update', :aggregate_failures do
+        project.update!(ci_outbound_job_token_scope_enabled: false)
+        post_graphql_mutation(mutation, current_user: user)
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(graphql_errors).to(
+          include(
+            hash_including(
+              'message' => 'job_token_scope_enabled can only be set to false'
+            )
+          )
+        )
+        expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
+      end
+    end
+
+    context 'when FF frozen_outbound_job_token_scopes is disabled' do
+      before do
+        stub_feature_flags(frozen_outbound_job_token_scopes: false)
+      end
+
+      it 'allows setting job_token_scope_enabled to true' do
+        project.update!(ci_outbound_job_token_scope_enabled: true)
+        post_graphql_mutation(mutation, current_user: user)
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
+      end
     end
 
     it 'does not update job_token_scope_enabled if not specified' do

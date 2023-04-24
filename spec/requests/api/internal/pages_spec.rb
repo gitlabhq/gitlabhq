@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Internal::Pages, feature_category: :pages do
-  let_it_be(:group) { create(:group, name: 'mygroup') }
-  let_it_be_with_reload(:project) { create(:project, name: 'myproject', group: group) }
+  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
 
   let(:auth_header) do
     {
@@ -228,7 +228,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
           end
 
           it 'responds with 204 No Content' do
-            get api('/internal/pages'), headers: auth_header, params: { host: 'mygroup.gitlab-pages.io' }
+            get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" }
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('internal/pages/virtual_domain')
@@ -243,7 +243,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
           context 'with a regular project' do
             it 'responds with the correct domain configuration' do
-              get api('/internal/pages'), headers: auth_header, params: { host: 'mygroup.gitlab-pages.io' }
+              get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" }
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')
@@ -255,7 +255,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     'project_id' => project.id,
                     'access_control' => false,
                     'https_only' => false,
-                    'prefix' => '/myproject/',
+                    'prefix' => "/#{project.path}/",
                     'source' => {
                       'type' => 'zip',
                       'path' => deployment.file.url(expire_at: 1.day.from_now),
@@ -274,7 +274,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
           it 'avoids N+1 queries' do
             control = ActiveRecord::QueryRecorder.new do
-              get api('/internal/pages'), headers: auth_header, params: { host: 'mygroup.gitlab-pages.io' }
+              get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" }
             end
 
             3.times do
@@ -282,17 +282,17 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
               project.mark_pages_as_deployed
             end
 
-            expect { get api('/internal/pages'), headers: auth_header, params: { host: 'mygroup.gitlab-pages.io' } }
+            expect { get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" } }
               .not_to exceed_query_limit(control)
           end
 
           context 'with a group root project' do
             before do
-              project.update!(path: 'mygroup.gitlab-pages.io')
+              project.update!(path: "#{group.path}.gitlab-pages.io")
             end
 
             it 'responds with the correct domain configuration' do
-              get api('/internal/pages'), headers: auth_header, params: { host: 'mygroup.gitlab-pages.io' }
+              get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" }
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to match_response_schema('internal/pages/virtual_domain')

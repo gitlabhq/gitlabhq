@@ -82,8 +82,8 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     # group1/test/one and group1/test-one will both have 'group-test-one' slug
     let_it_be(:group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group, name: 'test') }
-    let_it_be(:project1) { create(:project, name: 'test-one', group: group) }
-    let_it_be(:project2) { create(:project, name: 'one', group: subgroup) }
+    let_it_be(:project1) { create(:project, path: 'test-one', group: group) }
+    let_it_be(:project2) { create(:project, path: 'one', group: subgroup) }
     let_it_be(:project_key) { 'key' }
     let!(:setting) do
       create(:service_desk_setting, project: project1, project_key: project_key)

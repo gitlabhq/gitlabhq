@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This tutorial shows you how to:
 
 - Create a development environment outside of GitLab.
-- Connect a remote machine to the [Web IDE](../web_ide_beta/index.md).
+- Connect a remote machine to the [Web IDE](../web_ide/index.md).
 
 To connect a remote machine to the Web IDE, you must:
 
@@ -48,6 +48,8 @@ To generate Let's Encrypt certificates:
      --manual \
      --preferred-challenges dns certonly
    ```
+
+Now that you've generated the certificates, it's time to create and connect a development environment.
 
 ## Connect a development environment to the Web IDE
 

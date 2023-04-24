@@ -22,7 +22,7 @@ as you type. Depending on the cursor position, the extension either:
 
 To accept a suggestion, press <kbd>Tab</kbd>.
 
-Code Suggestions are supported in Visual Studio Code with the GitLab Workflow extension. GitLab plans to support the [new GitLab WebIDE in an upcoming release](../web_ide_beta/index.md) in the future.
+Code Suggestions are supported in Visual Studio Code with the GitLab Workflow extension.
 
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). Beta users should read about the [known limitations](#known-limitations). The best results from Code Suggestions are expected for these six languages:
 

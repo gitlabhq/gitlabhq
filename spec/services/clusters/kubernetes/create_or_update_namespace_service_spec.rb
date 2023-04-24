@@ -11,7 +11,7 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute',
   let(:project) { cluster.project }
   let(:environment) { create(:environment, project: project) }
   let(:cluster_project) { cluster.cluster_project }
-  let(:namespace) { "#{project.name}-#{project.id}-#{environment.slug}" }
+  let(:namespace) { "#{project.path}-#{project.id}-#{environment.slug}" }
 
   subject do
     described_class.new(

@@ -53,14 +53,29 @@ RSpec.describe 'CiJobTokenScopeAddProject', feature_category: :continuous_integr
 
     before do
       target_project.add_developer(current_user)
+      stub_feature_flags(frozen_outbound_job_token_scopes_override: false)
     end
 
-    it 'adds the target project to the job token scope' do
+    it 'adds the target project to the inbound job token scope' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response.dig('ciJobTokenScope', 'projects', 'nodes')).not_to be_empty
-      end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+      end.to change { Ci::JobToken::ProjectScopeLink.inbound.count }.by(1)
+    end
+
+    context 'when FF frozen_outbound_job_token_scopes is disabled' do
+      before do
+        stub_feature_flags(frozen_outbound_job_token_scopes: false)
+      end
+
+      it 'adds the target project to the outbound job token scope' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response.dig('ciJobTokenScope', 'projects', 'nodes')).not_to be_empty
+        end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+      end
     end
 
     context 'when invalid target project is provided' do

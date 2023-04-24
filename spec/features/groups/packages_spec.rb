@@ -53,7 +53,7 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
         find('[data-testid="root-link"]', text: project.path).click
 
         expect(page).to have_current_path(project_path(project))
-        expect(page).to have_content(project.path)
+        expect(page).to have_content(project.name)
       end
 
       context 'sorting' do

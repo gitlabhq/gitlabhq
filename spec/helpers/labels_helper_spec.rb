@@ -62,19 +62,19 @@ RSpec.describe LabelsHelper do
     end
 
     context 'with a project as subject' do
-      let(:namespace) { build(:namespace, name: 'foo3') }
-      let(:subject) { build(:project, namespace: namespace, name: 'bar3') }
+      let(:namespace) { build(:namespace) }
+      let(:subject) { build(:project, namespace: namespace) }
 
       it 'links to project issues page' do
-        expect(link_to_label(label_presenter)).to match %r{<a.*href="/foo3/bar3/-/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
+        expect(link_to_label(label_presenter)).to match %r{<a.*href="/#{subject.full_path}/-/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
       end
     end
 
     context 'with a group as subject' do
-      let(:subject) { build(:group, name: 'bar') }
+      let(:subject) { build(:group) }
 
       it 'links to group issues page' do
-        expect(link_to_label(label_presenter)).to match %r{<a.*href="/groups/bar/-/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
+        expect(link_to_label(label_presenter)).to match %r{<a.*href="/groups/#{subject.path}/-/issues\?label_name%5B%5D=#{label.name}".*>.*</a>}m
       end
     end
 

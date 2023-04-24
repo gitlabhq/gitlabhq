@@ -11,8 +11,7 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
 
-  let(:project) { create(:project, :repository, name: "Shop") }
-  let(:project2) { create(:project, :repository, name: "Another Project", path: "another-project") }
+  let_it_be(:project) { create(:project, :repository) }
   let(:tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:user) { project.first_owner }
 
@@ -142,7 +141,9 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
         expect(page).to have_current_path(project_blob_path(project, "markdown/doc/raketasks/maintenance.md"), ignore_query: true)
         expect(page).to have_content("bundle exec rake gitlab:env:info RAILS_ENV=production")
 
-        click_link("shop")
+        page.within(".tree-ref-container") do
+          click_link(project.path)
+        end
 
         page.within(".tree-table") do
           click_link("README.md")

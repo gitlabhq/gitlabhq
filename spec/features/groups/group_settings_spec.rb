@@ -74,7 +74,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         visit new_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
 
       it 'the old project path redirects to the new path' do
@@ -82,7 +82,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         visit old_project_full_path
 
         expect(page).to have_current_path(new_project_full_path, ignore_query: true)
-        expect(find('.breadcrumbs')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
     end
   end
@@ -265,7 +265,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
     end
 
     context 'with gitlab-profile project and no README.md' do
-      let_it_be(:project) { create(:project, name: 'gitlab-profile', namespace: group) }
+      let_it_be(:project) { create(:project, path: 'gitlab-profile', namespace: group) }
 
       it 'renders Add README button and allows user to create a README via the IDE' do
         visit edit_group_path(group)

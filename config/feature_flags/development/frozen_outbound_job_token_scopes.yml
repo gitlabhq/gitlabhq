@@ -1,0 +1,8 @@
+---
+name: frozen_outbound_job_token_scopes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118254
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407401
+milestone: '16.0'
+type: development
+group: group::pipeline execution
+default_enabled: false

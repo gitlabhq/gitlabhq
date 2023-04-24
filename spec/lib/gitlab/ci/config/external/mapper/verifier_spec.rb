@@ -380,55 +380,5 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
         end
       end
     end
-
-    context 'when FF ci_fix_max_includes is disabled' do
-      before do
-        stub_feature_flags(ci_fix_max_includes: false)
-      end
-
-      context 'when total file count exceeds max_includes' do
-        context 'when files are nested' do
-          let(:files) do
-            [
-              Gitlab::Ci::Config::External::File::Local.new({ local: 'nested_configs.yml' }, context)
-            ]
-          end
-
-          it 'raises Processor::IncludeError' do
-            allow(context).to receive(:max_includes).and_return(1)
-            expect { process }.to raise_error(Gitlab::Ci::Config::External::Processor::IncludeError)
-          end
-        end
-
-        context 'when files are not nested' do
-          let(:files) do
-            [
-              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
-              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file2.yml' }, context)
-            ]
-          end
-
-          it 'raises Mapper::TooManyIncludesError' do
-            allow(context).to receive(:max_includes).and_return(1)
-            expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
-          end
-        end
-
-        context 'when files are duplicates' do
-          let(:files) do
-            [
-              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
-              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context),
-              Gitlab::Ci::Config::External::File::Local.new({ local: 'myfolder/file1.yml' }, context)
-            ]
-          end
-
-          it 'raises error' do
-            allow(context).to receive(:max_includes).and_return(2)
-            expect { process }.to raise_error(Gitlab::Ci::Config::External::Mapper::TooManyIncludesError)
-          end
-        end
-      end
-    end
   end
 end

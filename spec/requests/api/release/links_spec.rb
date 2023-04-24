@@ -174,7 +174,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
         specify do
           get api("/projects/#{project.id}/releases/v0.1/assets/links/#{link.id}", maintainer)
 
-          expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.namespace.path}/#{project.name}/-/releases/#{release.tag}/downloads/bin/bigfile.exe")
+          expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.full_path}/-/releases/#{release.tag}/downloads/bin/bigfile.exe")
         end
       end
 
@@ -391,7 +391,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
         put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
             params: params.merge(direct_asset_path: '/binaries/awesome-app.msi')
 
-        expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.namespace.path}/#{project.name}/-/releases/#{release.tag}/downloads/binaries/awesome-app.msi")
+        expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.full_path}/-/releases/#{release.tag}/downloads/binaries/awesome-app.msi")
       end
     end
 

@@ -788,7 +788,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
       let(:new_project) do
         build(:project,
-              name: project_pending_deletion.name,
+              path: project_pending_deletion.path,
               namespace: project_pending_deletion.namespace)
       end
 
@@ -1692,7 +1692,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     context 'with namespace' do
       before do
         @group = create(:group, name: 'gitlab')
-        @project = create(:project, name: 'gitlabhq', namespace: @group)
+        @project = create(:project, path: 'gitlabhq', namespace: @group)
       end
 
       it { expect(@project.to_param).to eq('gitlabhq') }
@@ -7995,7 +7995,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
     describe '#activity_path' do
       it 'returns the project activity_path' do
-        expected_path = "/#{project.namespace.path}/#{project.name}/activity"
+        expected_path = "/#{project.full_path}/activity"
 
         expect(project.activity_path).to eq(expected_path)
       end

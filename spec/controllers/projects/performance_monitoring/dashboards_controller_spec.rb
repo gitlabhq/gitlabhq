@@ -64,7 +64,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
                 post :create, params: params
 
                 expect(response).to have_gitlab_http_status :created
-                expect(controller).to set_flash[:notice].to eq("Your dashboard has been copied. You can <a href=\"/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
+                expect(controller).to set_flash[:notice].to eq("Your dashboard has been copied. You can <a href=\"/-/ide/project/#{project.full_path}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
                 expect(json_response).to eq('status' => 'success', 'dashboard' => { 'path' => ".gitlab/dashboards/#{file_name}" })
               end
 
@@ -203,7 +203,7 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
                 put :update, params: params
 
                 expect(response).to have_gitlab_http_status :created
-                expect(controller).to set_flash[:notice].to eq("Your dashboard has been updated. You can <a href=\"/-/ide/project/#{namespace.path}/#{project.name}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
+                expect(controller).to set_flash[:notice].to eq("Your dashboard has been updated. You can <a href=\"/-/ide/project/#{project.full_path}/edit/#{branch_name}/-/.gitlab/dashboards/#{file_name}\">edit it here</a>.")
                 expect(json_response).to eq('status' => 'success', 'dashboard' => { 'default' => false, 'display_name' => "custom_dashboard.yml", 'path' => ".gitlab/dashboards/#{file_name}", 'system_dashboard' => false })
               end
 

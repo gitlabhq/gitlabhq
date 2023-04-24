@@ -7,7 +7,7 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage do
 
   let_it_be(:user) { create(:user, name: 'John Smith', username: 'smith') }
   let_it_be(:namespace) { create(:namespace, name: 'myspace') }
-  let_it_be(:project) { create(:project, :repository, namespace: namespace, name: 'myproject') }
+  let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'myproject') }
   let_it_be(:commit) { project.commit('HEAD') }
   let_it_be(:ci_build) { create(:ci_build, project: project) }
   let_it_be(:environment) { create(:environment, name: 'myenvironment', project: project) }

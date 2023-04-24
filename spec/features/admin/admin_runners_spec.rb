@@ -634,7 +634,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           assigned_project = page.find('[data-testid="assigned-projects"]')
 
           expect(page).to have_content('Runner assigned to project.')
-          expect(assigned_project).to have_content(project2.path)
+          expect(assigned_project).to have_content(project2.name)
         end
       end
 
@@ -674,7 +674,7 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         new_runner_project = page.find('[data-testid="unassigned-projects"]')
 
         expect(page).to have_content('Runner unassigned from project.')
-        expect(new_runner_project).to have_content(project1.path)
+        expect(new_runner_project).to have_content(project1.name)
       end
     end
   end

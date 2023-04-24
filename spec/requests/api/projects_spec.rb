@@ -63,8 +63,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     create(:project,
     :private,
     :repository,
-    name: 'second_project',
-    path: 'second_project',
     creator_id: user.id,
     namespace: user.namespace,
     merge_requests_enabled: false,
@@ -82,8 +80,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
 
   let_it_be(:project4, reload: true) do
     create(:project,
-    name: 'third_project',
-    path: 'third_project',
     creator_id: user4.id,
     namespace: user4.namespace)
   end
@@ -190,7 +186,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
 
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
-        let(:filter) { { search: project.name } }
+        let(:filter) { { search: project.path } }
         let(:current_user) { user }
         let(:projects) { [project] }
       end
@@ -545,7 +541,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
 
       context 'and using search' do
         it_behaves_like 'projects response' do
-          let(:filter) { { search: project.name } }
+          let(:filter) { { search: project.path } }
           let(:current_user) { user }
           let(:projects) { [project] }
         end
@@ -966,7 +962,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
             expect(json_response.length).to eq(1)
 
             project_names = json_response.map { |proj| proj['name'] }
-            expect(project_names).to contain_exactly('Test Public Project')
+            expect(project_names).to contain_exactly(project_4.name)
           end
         end
       end
@@ -1470,11 +1466,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     end
 
     it 'creates a new project initialized with a README.md' do
-      project = attributes_for(:project, initialize_with_readme: 1, name: 'somewhere')
+      project = attributes_for(:project, initialize_with_readme: 1)
 
       post api(path, user), params: project
 
-      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/-/blob/master/README.md")
+      expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/#{json_response['path']}/-/blob/master/README.md")
     end
 
     it 'sets tag list to a project (deprecated)' do
@@ -1660,7 +1656,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
   end
 
   describe 'GET /users/:user_id/projects/' do
-    let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
+    let_it_be(:public_project) { create(:project, :public, creator_id: user4.id, namespace: user4.namespace) }
 
     it 'returns error when user not found' do
       get api("/users/#{non_existing_record_id}/projects/")
@@ -1697,7 +1693,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     end
 
     context 'and using id_after' do
-      let!(:another_public_project) { create(:project, :public, name: 'another_public_project', creator_id: user4.id, namespace: user4.namespace) }
+      let_it_be(:another_public_project) { create(:project, :public, creator_id: user4.id, namespace: user4.namespace) }
 
       it 'only returns projects with id_after filter given' do
         get api("/users/#{user4.id}/projects?id_after=#{public_project.id}", user)
@@ -1719,7 +1715,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     end
 
     context 'and using id_before' do
-      let!(:another_public_project) { create(:project, :public, name: 'another_public_project', creator_id: user4.id, namespace: user4.namespace) }
+      let_it_be(:another_public_project) { create(:project, :public, creator_id: user4.id, namespace: user4.namespace) }
 
       it 'only returns projects with id_before filter given' do
         get api("/users/#{user4.id}/projects?id_before=#{another_public_project.id}", user)
@@ -1741,7 +1737,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
     end
 
     context 'and using both id_before and id_after' do
-      let!(:more_projects) { create_list(:project, 5, :public, creator_id: user4.id, namespace: user4.namespace) }
+      let_it_be(:more_projects) { create_list(:project, 5, :public, creator_id: user4.id, namespace: user4.namespace) }
 
       it 'only returns projects with id matching the range' do
         get api("/users/#{user4.id}/projects?id_after=#{more_projects.first.id}&id_before=#{more_projects.last.id}", user)

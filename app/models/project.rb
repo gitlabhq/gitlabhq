@@ -3168,6 +3168,11 @@ class Project < ApplicationRecord
     group.crm_enabled?
   end
 
+  def frozen_outbound_job_token_scopes?
+    Feature.enabled?(:frozen_outbound_job_token_scopes, self) && Feature.disabled?(:frozen_outbound_job_token_scopes_override, self)
+  end
+  strong_memoize_attr :frozen_outbound_job_token_scopes?
+
   private
 
   def pages_unique_domain_enabled?

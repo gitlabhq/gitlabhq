@@ -1,8 +1,0 @@
----
-name: ci_fix_max_includes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112963
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390909
-milestone: '15.10'
-type: development
-group: group::pipeline authoring
-default_enabled: true

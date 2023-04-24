@@ -458,7 +458,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
         it 'updates projects path' do
           new_parent_path = new_parent_group.path
           group.projects.each do |project|
-            expect(project.full_path).to eq("#{new_parent_path}/#{group.path}/#{project.name}")
+            expect(project.full_path).to eq("#{new_parent_path}/#{group.path}/#{project.path}")
           end
         end
 
@@ -525,7 +525,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
         it 'updates projects path' do
           new_parent_path = new_parent_group.path
           group.projects.each do |project|
-            expect(project.full_path).to eq("#{new_parent_path}/#{group.path}/#{project.name}")
+            expect(project.full_path).to eq("#{new_parent_path}/#{group.path}/#{project.path}")
           end
         end
 
@@ -576,7 +576,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
           it 'updates projects path' do
             new_parent_path = "#{new_parent_group.path}/#{group.path}"
             subgroup1.projects.each do |project|
-              project_full_path = "#{new_parent_path}/#{project.namespace.path}/#{project.name}"
+              project_full_path = "#{new_parent_path}/#{project.namespace.path}/#{project.path}"
               expect(project.full_path).to eq(project_full_path)
             end
           end

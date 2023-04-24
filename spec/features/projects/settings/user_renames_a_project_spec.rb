@@ -37,7 +37,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
     it 'shows errors for invalid project path' do
       change_path(project, 'foo&bar')
 
-      expect(page).to have_field 'Path', with: 'gitlab'
+      expect(page).to have_field 'Path', with: project.path
       expect(page).to have_content "Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'"
     end
   end

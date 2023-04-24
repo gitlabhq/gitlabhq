@@ -266,6 +266,7 @@ module API
         mount ::API::ProjectExport
         mount ::API::ProjectHooks
         mount ::API::ProjectImport
+        mount ::API::ProjectJobTokenScope
         mount ::API::ProjectPackages
         mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnippets

@@ -37,8 +37,8 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
 
           it_behaves_like 'adds project'
 
-          it 'creates an outbound link by default' do
-            expect(resulting_direction).to eq('outbound')
+          it 'creates an inbound link by default' do
+            expect(resulting_direction).to eq('inbound')
           end
 
           context 'when direction is specified' do

@@ -451,7 +451,7 @@ RSpec.describe ApplicationHelper do
             find_file: nil,
             group: nil,
             project_id: project.id,
-            project: project.name,
+            project: project.path,
             namespace_id: project.namespace.id
           }
         )
@@ -469,7 +469,7 @@ RSpec.describe ApplicationHelper do
               find_file: nil,
               group: project.group.name,
               project_id: project.id,
-              project: project.name,
+              project: project.path,
               namespace_id: project.namespace.id
             }
           )
@@ -495,7 +495,7 @@ RSpec.describe ApplicationHelper do
                 find_file: nil,
                 group: nil,
                 project_id: issue.project.id,
-                project: issue.project.name,
+                project: issue.project.path,
                 namespace_id: issue.project.namespace.id
               }
             )

@@ -19,7 +19,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Tsegaselassie Tadesse - [GitLab](https://gitlab.com/tsega), [Crowdin](https://crowdin.com/profile/tsegaselassi)
 - Arabic
   - Proofreaders needed.
-- Belarusian 
+- Belarusian
   - Anton Katsuba - [GitLab](https://gitlab.com/coinvariant), [Crowdin](https://crowdin.com/profile/aerialfiddle)
 - Bosnian
   - Haris Delalić - [GitLab](https://gitlab.com/haris.delalic), [Crowdin](https://crowdin.com/profile/haris.delalic)

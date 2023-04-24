@@ -26,7 +26,7 @@ sole discretion of GitLab Inc.
 
 ## Web IDE as a frontend
 
-You can use the [Web IDE](../web_ide_beta/index.md) to make, commit, and push changes to a project directly from your web browser.
+You can use the [Web IDE](../web_ide/index.md) to make, commit, and push changes to a project directly from your web browser.
 This way, you can update any project without having to install any dependencies or clone any repositories locally.
 
 The Web IDE, however, lacks a native runtime environment where you could compile code, run tests, or generate real-time feedback.
@@ -48,7 +48,7 @@ A workspace is a virtual sandbox environment for your code that includes:
 
 You can create a workspace from scratch or from a template that you can also customize.
 
-When you configure and connect a workspace to the [Web IDE](../web_ide_beta/index.md), you can:
+When you configure and connect a workspace to the [Web IDE](../web_ide/index.md), you can:
 
 - Edit files directly from the Web IDE and commit and push changes to GitLab.
 - Use the Web IDE to run tests, debug code, and view real-time feedback.

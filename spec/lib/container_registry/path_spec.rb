@@ -143,8 +143,8 @@ RSpec.describe ContainerRegistry::Path do
       let(:path) { 'some_group/some_project' }
 
       before do
-        create(:project, group: group, name: 'some_project')
-        create(:project, name: 'some_project')
+        create(:project, group: group, path: 'some_project')
+        create(:project, path: 'some_project')
       end
 
       it 'returns a correct project' do
@@ -162,7 +162,7 @@ RSpec.describe ContainerRegistry::Path do
 
     context 'when matching multi-level path' do
       let(:project) do
-        create(:project, group: group, name: 'some_project')
+        create(:project, group: group, path: 'some_project')
       end
 
       context 'when using the zero-level path' do
@@ -212,7 +212,7 @@ RSpec.describe ContainerRegistry::Path do
       let(:group) { create(:group, path: 'Some_Group') }
 
       before do
-        create(:project, group: group, name: 'some_project')
+        create(:project, group: group, path: 'some_project')
       end
 
       context 'when project path equal repository path' do
@@ -255,7 +255,7 @@ RSpec.describe ContainerRegistry::Path do
       let(:group) { create(:group, path: 'SomeGroup') }
 
       before do
-        create(:project, group: group, name: 'MyProject')
+        create(:project, group: group, path: 'MyProject')
       end
 
       it 'returns downcased project path' do

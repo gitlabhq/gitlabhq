@@ -514,9 +514,9 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
 
   describe '#to_reference' do
     let(:filename)  { 'homescreen.jpg' }
-    let(:namespace) { build(:namespace, id: non_existing_record_id, path: 'sample-namespace') }
-    let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
-    let(:group)     { build(:group, name: 'Group', path: 'sample-group') }
+    let(:namespace) { build(:namespace, id: non_existing_record_id) }
+    let(:project)   { build(:project, namespace: namespace) }
+    let(:group)     { build(:group) }
     let(:issue)     { build(:issue, iid: 1, project: project) }
     let(:design)    { build(:design, filename: filename, issue: issue, project: project) }
 
@@ -536,7 +536,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
           design.to_reference(group, full: true)
         ]
 
-        expect(refs).to all(eq 'sample-namespace/sample-project#1/designs[homescreen.jpg]')
+        expect(refs).to all(eq "#{project.full_path}#1/designs[homescreen.jpg]")
       end
     end
 
@@ -547,7 +547,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
           design.to_reference(group, full: false)
         ]
 
-        expect(refs).to all(eq 'sample-namespace/sample-project#1[homescreen.jpg]')
+        expect(refs).to all(eq "#{project.full_path}#1[homescreen.jpg]")
       end
     end
 
@@ -596,7 +596,7 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
           'url_filename' => filename,
           'issue' => issue.iid.to_s,
           'namespace' => design.project.namespace.to_param,
-          'project' => design.project.name
+          'project' => design.project.to_param
         )
       end
 

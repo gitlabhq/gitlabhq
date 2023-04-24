@@ -18,4 +18,3 @@ When implementing new features, please refer to these existing features to avoid
 - [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-helm-chart-values): `.gitlab/auto-deploy-values.yaml`.
 - [Insights](../user/project/insights/index.md#configure-project-insights): `.gitlab/insights.yml`.
 - [Service Desk Templates](../user/project/service_desk.md#create-customized-email-templates): `.gitlab/service_desk_templates/`.
-- [Web IDE](../user/project/web_ide/index.md#web-ide-configuration-file): `.gitlab/.gitlab-webide.yml`.

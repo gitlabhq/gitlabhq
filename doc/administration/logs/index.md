@@ -96,6 +96,7 @@ except those captured by `runit`.
 | [LogRotate logs](#logrotate-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes  | **{check-circle}** Yes  |
 | [NGINX](#nginx-logs)                            | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [PgBouncer logs](#pgbouncer-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [PostgreSQL logs](#postgresql-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Praefect logs](#praefect-logs)                 | **{dotted-circle}** Yes | **{check-circle}** Yes  |
 | [Prometheus logs](#prometheus-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
@@ -1092,6 +1093,10 @@ For Omnibus GitLab installations, Mattermost logs are in these locations:
 ## Workhorse logs
 
 For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
+
+## PgBouncer logs
+
+For Omnibus GitLab installations, PgBouncer logs are in `/var/log/gitlab/pgbouncer/current`.
 
 ## PostgreSQL logs
 

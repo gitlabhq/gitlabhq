@@ -19,6 +19,10 @@ module Mutations
 
       argument :job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,
+        deprecated: {
+          reason: 'Outbound job token scope is being removed. This field can now only be set to false',
+          milestone: '16.0'
+        },
         description: 'Indicates CI/CD job tokens generated in this project ' \
           'have restricted access to other projects.'
 
@@ -38,6 +42,10 @@ module Mutations
 
       def resolve(full_path:, **args)
         project = authorized_find!(full_path)
+
+        if args[:job_token_scope_enabled] && project.frozen_outbound_job_token_scopes?
+          raise Gitlab::Graphql::Errors::ArgumentError, 'job_token_scope_enabled can only be set to false'
+        end
 
         settings = project.ci_cd_settings
         settings.update(args)

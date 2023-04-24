@@ -38,30 +38,6 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     subject { diffs_tab_pane_data(project, merge_request, {}) }
 
     context 'for endpoint_diff_for_path' do
-      context 'when default project namespace' do
-        let_it_be(:project) { create(:project) }
-        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
-        it 'returns expected values' do
-          expect(
-            subject[:endpoint_diff_for_path]
-          ).to eq("/#{project.full_path}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
-        end
-      end
-
-      context 'when group project namespace' do
-        let_it_be(:group) { create(:group, :public) }
-        let_it_be(:project) { create(:project, :private, group: group) }
-        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
-        it 'returns expected values' do
-          namespace = "#{group.name}/#{project.name}"
-          expect(
-            subject[:endpoint_diff_for_path]
-          ).to include("/#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
-        end
-      end
-
       context 'when sub-group project namespace' do
         let_it_be(:group) { create(:group, :public) }
         let_it_be(:subgroup) { create(:group, :private, parent: group) }
@@ -69,32 +45,21 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
         it 'returns expected values' do
-          namespace = "#{group.name}/#{subgroup.name}/#{project.name}"
           expect(
             subject[:endpoint_diff_for_path]
-          ).to include("#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
-        end
-      end
-
-      context 'when sub-sub-group project namespace' do
-        let_it_be(:group) { create(:group, :public) }
-        let_it_be(:subgroup) { create(:group, :private, parent: group) }
-        let_it_be(:subsubgroup) { create(:group, :private, parent: subgroup) }
-        let_it_be(:project) { create(:project, :private, group: subsubgroup) }
-        let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
-        it 'returns expected values' do
-          namespace = "#{group.name}/#{subgroup.name}/#{subsubgroup.name}/#{project.name}"
-          expect(
-            subject[:endpoint_diff_for_path]
-          ).to include("#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+          ).to include("#{project.full_path}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
         end
       end
     end
   end
 
   describe '#merge_path_description' do
-    let_it_be(:project) { create(:project) }
+    # Using let_it_be(:project) raises the following error, so we use need to use let(:project):
+    #  ActiveRecord::InvalidForeignKey:
+    #    PG::ForeignKeyViolation: ERROR:  insert or update on table "fork_network_members" violates foreign key
+    #      constraint "fk_rails_a40860a1ca"
+    #    DETAIL:  Key (fork_network_id)=(8) is not present in table "fork_networks".
+    let(:project) { create(:project) }
     let(:forked_project) { fork_project(project) }
     let(:merge_request_forked) { create(:merge_request, source_project: forked_project, target_project: project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }

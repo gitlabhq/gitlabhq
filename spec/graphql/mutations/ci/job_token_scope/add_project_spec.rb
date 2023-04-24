@@ -20,6 +20,10 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :cont
       mutation.resolve(**mutation_args)
     end
 
+    before do
+      stub_feature_flags(frozen_outbound_job_token_scopes_override: false)
+    end
+
     context 'when user is not logged in' do
       let(:current_user) { nil }
 
@@ -43,10 +47,10 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :cont
           target_project.add_guest(current_user)
         end
 
-        it 'adds target project to the outbound job token scope by default' do
+        it 'adds target project to the inbound job token scope by default' do
           expect do
             expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
-          end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+          end.to change { Ci::JobToken::ProjectScopeLink.inbound.count }.by(1)
         end
 
         context 'when mutation uses the direction argument' do
@@ -55,10 +59,8 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :cont
           context 'when targeting the outbound allowlist' do
             let(:direction) { :outbound }
 
-            it 'adds the target project' do
-              expect do
-                expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
-              end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+            it 'raises an error' do
+              expect { subject }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
             end
           end
 
@@ -73,6 +75,42 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :cont
           end
         end
 
+        context 'when FF frozen_outbound_job_token_scopes is disabled' do
+          before do
+            stub_feature_flags(frozen_outbound_job_token_scopes: false)
+          end
+
+          it 'adds target project to the outbound job token scope by default' do
+            expect do
+              expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
+            end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+          end
+
+          context 'when mutation uses the direction argument' do
+            let(:mutation_args) { super().merge!(direction: direction) }
+
+            context 'when targeting the outbound allowlist' do
+              let(:direction) { :outbound }
+
+              it 'adds the target project' do
+                expect do
+                  expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
+                end.to change { Ci::JobToken::ProjectScopeLink.outbound.count }.by(1)
+              end
+            end
+
+            context 'when targeting the inbound allowlist' do
+              let(:direction) { :inbound }
+
+              it 'adds the target project' do
+                expect do
+                  expect(subject).to include(ci_job_token_scope: be_present, errors: be_empty)
+                end.to change { Ci::JobToken::ProjectScopeLink.inbound.count }.by(1)
+              end
+            end
+          end
+        end
+
         context 'when the service returns an error' do
           let(:service) { double(:service) }
 
@@ -81,7 +119,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddProject, feature_category: :cont
               project,
               current_user
             ).and_return(service)
-            expect(service).to receive(:execute).with(target_project, direction: :outbound).and_return(ServiceResponse.error(message: 'The error message'))
+            expect(service).to receive(:execute).with(target_project, direction: :inbound).and_return(ServiceResponse.error(message: 'The error message'))
 
             expect(subject.fetch(:ci_job_token_scope)).to be_nil
             expect(subject.fetch(:errors)).to include("The error message")

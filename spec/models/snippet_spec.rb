@@ -145,7 +145,7 @@ RSpec.describe Snippet do
 
   describe '#to_reference' do
     context 'when snippet belongs to a project' do
-      let(:project) { build(:project, name: 'sample-project') }
+      let(:project) { build(:project) }
       let(:snippet) { build(:snippet, id: 1, project: project) }
 
       it 'returns a String reference to the object' do
@@ -153,8 +153,8 @@ RSpec.describe Snippet do
       end
 
       it 'supports a cross-project reference' do
-        another_project = build(:project, name: 'another-project', namespace: project.namespace)
-        expect(snippet.to_reference(another_project)).to eq "sample-project$1"
+        another_project = build(:project, namespace: project.namespace)
+        expect(snippet.to_reference(another_project)).to eq "#{project.path}$1"
       end
     end
 
@@ -166,7 +166,7 @@ RSpec.describe Snippet do
       end
 
       it 'still returns shortest reference when project arg present' do
-        another_project = build(:project, name: 'another-project')
+        another_project = build(:project)
         expect(snippet.to_reference(another_project)).to eq "$1"
       end
     end

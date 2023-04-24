@@ -1049,7 +1049,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#to_reference' do
-    let(:project) { build(:project, name: 'sample-project') }
+    let(:project) { build(:project) }
     let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
 
     it 'returns a String reference to the object' do
@@ -1057,12 +1057,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
-      expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
+      another_project = build(:project, namespace: project.namespace)
+      expect(merge_request.to_reference(another_project)).to eq "#{project.path}!1"
     end
 
     it 'returns a String reference with the full path' do
-      expect(merge_request.to_reference(full: true)).to eq(project.full_path + '!1')
+      expect(merge_request.to_reference(full: true)).to eq("#{project.full_path}!1")
     end
   end
 
