@@ -15,40 +15,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   `secret_detection_default_branch` and `secret_detection` were consolidated into one job,
 >   `secret_detection`.
 
-People may accidentally commit secrets (such as keys, passwords, and API tokens) to remote Git repositories.
+People sometimes accidentally commit secrets like keys or API tokens to Git repositories.
+After a sensitive value is pushed to a remote repository, anyone with access to the repository can impersonate the authorized user of the secret for malicious purposes.
+Most organizations require exposed secrets to be revoked and replaced to address this risk.
 
-Anyone with access to the repository could use the secrets for malicious purposes. Exposed secrets
-must be considered compromised and be replaced, which can be costly.
+Secret Detection scans your repository to help prevent your secrets from being exposed.
+Secret Detection scanning works on all text files, regardless of the language or framework used.
 
-To help prevent secrets from being committed to a Git repository, you can use Secret Detection to
-scan your repository for secrets. Scanning is language and framework agnostic, but does not support
-scanning binary files.
+After you [enable Secret Detection](#enable-secret-detection), scans run in a CI/CD job named `secret_detection`.
+You can run scans and view [Secret Detection JSON report artifacts](../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection) in any GitLab tier.
 
-Secret Detection uses an analyzer containing the [Gitleaks](https://github.com/zricethezav/gitleaks)
-tool to scan the repository for secrets. Detection occurs in the `secret-detection` job. The results
-are saved as a
-[Secret Detection report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection)
-that you can later download and analyze. Due to implementation limitations, we always take the
-latest Secret Detection artifact available.
+With GitLab Ultimate, Secret Detection results are also processed so you can:
 
-GitLab SaaS supports post-processing hooks, so you can take action when a secret is found. For
-more information, see [Post-processing and revocation](post_processing.md).
-
-All identified secrets are reported in the:
-
-- [Merge request widget](../index.md#view-security-scan-information-in-merge-requests)
-- [Pipeline security report](../vulnerability_report/pipeline.md)
-- [Vulnerability Report](../vulnerability_report/index.md)
-
-![Secret Detection in merge request widget](img/secret_detection_v13_2.png)
+- See them in the [merge request widget](../index.md#view-security-scan-information-in-merge-requests), [pipeline security report](../vulnerability_report/pipeline.md), and [Vulnerability Report](../vulnerability_report/index.md).
+- Use them in approval workflows.
+- Review them in the security dashboard.
+- [Automatically respond](post_processing.md) to leaks in public repositories.
 
 ## Detected secrets
 
-Secret Detection uses a [default ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml)
-containing more than 90 secret detection patterns. You can also customize the secret detection
-patterns using [custom rulesets](#custom-rulesets). If you want to contribute rulesets for
-"well-identifiable" secrets, follow the steps detailed in the
-[community contributions guidelines](https://gitlab.com/gitlab-org/gitlab/-/issues/345453).
+GitLab maintains the detection rules used in Secret Detection.
+The [default ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml)
+contains more than 100 patterns.
+
+Most Secret Detection patterns search for specific types of secrets.
+Many services add prefixes or other structural details to their secrets so they can be identified if they're leaked.
+For example, GitLab [adds a `glpat-` prefix](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and project access tokens by default.
+
+To provide more reliable, high-confidence results, Secret Detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
+
+### Adding new patterns
+
+To search for other types of secrets in your repositories, you can configure a [custom ruleset](#custom-rulesets).
+
+To propose a new detection rule for all users of Secret Detection, create a merge request against the [file containing the default rules](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml).
+
+If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about our [partner program for leaked credential notifications](post_processing.md#partner-program-for-leaked-credential-notifications).
 
 ## Features per tier
 

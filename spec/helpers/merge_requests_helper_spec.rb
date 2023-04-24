@@ -43,10 +43,9 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
         it 'returns expected values' do
-          namespace = "namespace1/#{project.name}"
           expect(
             subject[:endpoint_diff_for_path]
-          ).to include("/#{namespace}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
+          ).to eq("/#{project.full_path}/-/merge_requests/#{merge_request.iid}/diff_for_path.json")
         end
       end
 
