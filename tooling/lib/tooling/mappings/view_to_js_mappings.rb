@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
-require_relative 'base'
+require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
 # Returns JS files that are related to the Rails views files that were changed in the MR.
 module Tooling
   module Mappings
-    class ViewToJsMappings < Base
+    class ViewToJsMappings
+      include Helpers::PredictiveTestsHelper
+
       # The HTML attribute value pattern we're looking for to match an HTML file to a JS file.
       HTML_ATTRIBUTE_VALUE_REGEXP = /js-[-\w]+/.freeze
 

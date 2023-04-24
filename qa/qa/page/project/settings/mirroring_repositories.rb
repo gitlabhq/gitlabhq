@@ -120,7 +120,8 @@ module QA
               all_elements(:mirror_repository_url_content, minimum: 1).index do |url|
                 # The url might be a sanitized url but the target_url won't be so
                 # we compare just the paths instead of the full url
-                URI.parse(url.text).path == target_url.path
+                # We also must remove any badges from the url (e.g. All Branches)
+                URI.parse(url.text.split("\n").first).path == target_url.path
               end
             end
           end

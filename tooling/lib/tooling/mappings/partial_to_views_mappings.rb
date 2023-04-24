@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
-require_relative 'base'
+require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
 # Returns view files that include the potential rails partials from the changed files passed as input.
 module Tooling
   module Mappings
-    class PartialToViewsMappings < Base
+    class PartialToViewsMappings
+      include Helpers::PredictiveTestsHelper
+
       def initialize(changed_files_pathname, views_with_partials_pathname, view_base_folder: 'app/views')
         @views_with_partials_pathname = views_with_partials_pathname
         @changed_files             = read_array_from_file(changed_files_pathname)

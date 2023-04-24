@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
-require_relative 'base'
+require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
 # Returns system specs files that are related to the Rails views files that were changed in the MR.
 module Tooling
   module Mappings
-    class ViewToSystemSpecsMappings < Base
+    class ViewToSystemSpecsMappings
+      include Helpers::PredictiveTestsHelper
+
       def initialize(changed_files_pathname, predictive_tests_pathname, view_base_folder: 'app/views')
         @predictive_tests_pathname = predictive_tests_pathname
         @changed_files             = read_array_from_file(changed_files_pathname)

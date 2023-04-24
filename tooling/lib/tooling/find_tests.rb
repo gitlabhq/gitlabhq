@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'test_file_finder'
-require_relative 'helpers/file_handler'
+require_relative 'helpers/predictive_tests_helper'
 
 module Tooling
   class FindTests
-    include Helpers::FileHandler
+    include Helpers::PredictiveTestsHelper
 
     def initialize(changed_files_pathname, predictive_tests_pathname)
       @predictive_tests_pathname = predictive_tests_pathname

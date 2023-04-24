@@ -4,7 +4,8 @@ classes:
 - HistoricalData
 feature_categories:
 - sm_provisioning
-description: TODO
+- seat_cost_management
+description: Stores seat usage data as active_user_count. Used in service ping analytics, cloud licensing, user limits, and renewal workflows.
 introduced_by_url: https://dev.gitlab.org/gitlab/gitlab-ee/-/merge_requests/390
 milestone: '7.11'
 gitlab_schema: gitlab_main

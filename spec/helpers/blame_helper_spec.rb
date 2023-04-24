@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BlameHelper do
+RSpec.describe BlameHelper, feature_category: :source_code_management do
   describe '#get_age_map_start_date' do
     let(:dates) do
       [Time.zone.local(2014, 3, 17, 0, 0, 0),
@@ -65,6 +65,27 @@ RSpec.describe BlameHelper do
       it 'returns blame-commit-age-0 class' do
         expect(helper.age_map_class(duration[:now], same_day_duration)).to eq 'blame-commit-age-0'
       end
+    end
+  end
+
+  describe '#entire_blame_path' do
+    subject { helper.entire_blame_path(id, project, blame_mode) }
+
+    let_it_be(:project) { build_stubbed(:project) }
+
+    let(:id) { 'main/README.md' }
+    let(:blame_mode) { instance_double('Gitlab::Git::BlameMode', 'streaming_supported?' => streaming_enabled) }
+
+    context 'when streaming is supported' do
+      let(:streaming_enabled) { true }
+
+      it { is_expected.to eq "/#{project.full_path}/-/blame/#{id}/streaming" }
+    end
+
+    context 'when streaming is not supported' do
+      let(:streaming_enabled) { false }
+
+      it { is_expected.to eq "/#{project.full_path}/-/blame/#{id}?no_pagination=true" }
     end
   end
 end

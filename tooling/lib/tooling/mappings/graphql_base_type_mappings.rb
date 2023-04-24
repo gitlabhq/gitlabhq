@@ -2,13 +2,15 @@
 
 require 'active_support/inflector'
 
-require_relative 'base'
+require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
 # If a GraphQL type class changed, we try to identify the other GraphQL types that potentially include this type.
 module Tooling
   module Mappings
-    class GraphqlBaseTypeMappings < Base
+    class GraphqlBaseTypeMappings
+      include Helpers::PredictiveTestsHelper
+
       # Checks for the implements keyword, and graphql_base_types the class name
       GRAPHQL_IMPLEMENTS_REGEXP = /implements[( ]([\w:]+)[)]?$/
 

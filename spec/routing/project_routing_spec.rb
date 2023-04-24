@@ -491,6 +491,14 @@ RSpec.describe 'project routing' do
                       namespace_id: 'gitlab', project_id: 'gitlabhq',
                       id: "master/#{newline_file}" })
     end
+
+    it 'to #streaming' do
+      expect(get('/gitlab/gitlabhq/-/blame/master/app/models/project.rb/streaming')).to route_to('projects/blame#streaming', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb', streaming: true)
+    end
+
+    it 'to #page' do
+      expect(get('/gitlab/gitlabhq/-/blame_page/master/app/models/project.rb')).to route_to('projects/blame#page', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+    end
   end
 
   # project_blob GET    /:project_id/-/blob/:id(.:format) blob#show {id: /[^\0]+/, project_id: /[^\/]+/}

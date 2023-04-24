@@ -13,24 +13,16 @@ module Namespaces
     idempotent!
 
     def perform(namespace_id)
+      return unless aggregation_schedules_table_exists?
+
       namespace = Namespace.find(namespace_id)
       root_ancestor = namespace.root_ancestor
-
-      if Feature.enabled?(:remove_aggregation_schedule_lease, root_ancestor)
-        Namespaces::RootStatisticsWorker.perform_async(root_ancestor.id)
-      else
-        schedule_through_aggregation_schedules_table(root_ancestor)
-      end
-    rescue ActiveRecord::RecordNotFound => ex
-      Gitlab::ErrorTracking.track_exception(ex, namespace_id: namespace_id)
-    end
-
-    def schedule_through_aggregation_schedules_table(root_ancestor)
-      return unless aggregation_schedules_table_exists?
 
       return if root_ancestor.aggregation_scheduled?
 
       Namespace::AggregationSchedule.safe_find_or_create_by!(namespace_id: root_ancestor.id)
+    rescue ActiveRecord::RecordNotFound => ex
+      Gitlab::ErrorTracking.track_exception(ex, namespace_id: namespace_id)
     end
 
     private

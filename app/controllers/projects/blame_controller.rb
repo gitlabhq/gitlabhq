@@ -18,6 +18,11 @@ class Projects::BlameController < Projects::ApplicationController
     load_blame
   end
 
+  def streaming
+    show
+    render action: 'show'
+  end
+
   def page
     load_environment
     load_blame

@@ -4,7 +4,8 @@ classes:
 - Ci::Minutes::AdditionalPack
 feature_categories:
 - purchase
-description: TODO
+- consumables_cost_management
+description: Stores CI minutes purchases for a given namespace with fields for synchronizing and expiring available minutes between Customers Portal and GitLab.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62393
 milestone: '14.0'
 gitlab_schema: gitlab_ci

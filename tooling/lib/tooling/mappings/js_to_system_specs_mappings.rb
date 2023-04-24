@@ -2,13 +2,15 @@
 
 require 'active_support/inflector'
 
-require_relative 'base'
+require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
 # Returns system specs files that are related to the JS files that were changed in the MR.
 module Tooling
   module Mappings
-    class JsToSystemSpecsMappings < Base
+    class JsToSystemSpecsMappings
+      include Helpers::PredictiveTestsHelper
+
       def initialize(
         changed_files_pathname, predictive_tests_pathname,
         js_base_folder: 'app/assets/javascripts', system_specs_base_folder: 'spec/features')

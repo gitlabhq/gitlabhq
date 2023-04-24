@@ -2,6 +2,7 @@
 
 require_relative 'find_changes'
 require_relative 'find_tests'
+require_relative 'find_files_using_feature_flags'
 require_relative 'mappings/graphql_base_type_mappings'
 require_relative 'mappings/js_to_system_specs_mappings'
 require_relative 'mappings/partial_to_views_mappings'
@@ -36,6 +37,7 @@ module Tooling
         from: :api,
         changed_files_pathname: rspec_changed_files_path
       ).execute
+      Tooling::FindFilesUsingFeatureFlags.new(changed_files_pathname: rspec_changed_files_path).execute
       Tooling::FindTests.new(rspec_changed_files_path, rspec_matching_tests_path).execute
       Tooling::Mappings::PartialToViewsMappings.new(
         rspec_changed_files_path, rspec_views_including_partials_path).execute

@@ -54,4 +54,14 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
 
     it_behaves_like 'blame_response'
   end
+
+  describe 'GET streaming' do
+    render_views
+
+    before do
+      get :streaming, params: { namespace_id: project.namespace, project_id: project, id: id }
+    end
+
+    it_behaves_like 'blame_response'
+  end
 end

@@ -2,11 +2,11 @@
 # frozen_string_literal: true
 
 require 'gitlab'
-require_relative 'helpers/file_handler'
+require_relative 'helpers/predictive_tests_helper'
 
 module Tooling
   class FindChanges
-    include Helpers::FileHandler
+    include Helpers::PredictiveTestsHelper
 
     def initialize(
       from:,

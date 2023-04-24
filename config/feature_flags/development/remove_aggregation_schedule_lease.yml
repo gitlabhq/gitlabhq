@@ -1,8 +1,0 @@
----
-name: remove_aggregation_schedule_lease
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113959
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395018
-milestone: '15.10'
-type: development
-group: group::utilization
-default_enabled: false
