@@ -11,6 +11,7 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
   before do
     project.add_role(user, role) if role
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   shared_examples 'shows Monitor menu based on the access level' do

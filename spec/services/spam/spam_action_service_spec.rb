@@ -53,6 +53,16 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
     end
   end
 
+  shared_examples 'allows user' do
+    it 'does not perform spam check' do
+      expect(Spam::SpamVerdictService).not_to receive(:new)
+
+      response = subject
+
+      expect(response.message).to match(/user was allowlisted/)
+    end
+  end
+
   shared_examples 'creates a spam log' do |target_type|
     it do
       expect { subject }
@@ -73,7 +83,6 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
   shared_examples 'execute spam action service' do |target_type|
     let(:fake_captcha_verification_service) { double(:captcha_verification_service) }
     let(:fake_verdict_service) { double(:spam_verdict_service) }
-    let(:allowlisted) { false }
 
     let(:verdict_service_opts) do
       {
@@ -101,7 +110,6 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
     subject do
       described_service = described_class.new(spammable: target, spam_params: spam_params, extra_features:
                                               extra_features, user: user, action: :create)
-      allow(described_service).to receive(:allowlisted?).and_return(allowlisted)
       described_service.execute
     end
 
@@ -158,16 +166,20 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
           target.description = 'Lovely Spam! Wonderful Spam!'
         end
 
-        context 'when allowlisted' do
-          let(:allowlisted) { true }
-
-          it 'does not perform spam check' do
-            expect(Spam::SpamVerdictService).not_to receive(:new)
-
-            response = subject
-
-            expect(response.message).to match(/user was allowlisted/)
+        context 'when user is a gitlab bot' do
+          before do
+            allow(user).to receive(:gitlab_bot?).and_return(true)
           end
+
+          it_behaves_like 'allows user'
+        end
+
+        context 'when user is a gitlab service user' do
+          before do
+            allow(user).to receive(:gitlab_service_user?).and_return(true)
+          end
+
+          it_behaves_like 'allows user'
         end
 
         context 'when disallowed by the spam verdict service' do

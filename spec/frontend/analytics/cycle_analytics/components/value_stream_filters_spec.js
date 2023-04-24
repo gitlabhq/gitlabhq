@@ -8,7 +8,7 @@ import {
   createdBefore as endDate,
   currentGroup,
   selectedProjects,
-} from './mock_data';
+} from '../mock_data';
 
 const { path } = currentGroup;
 const groupPath = `groups/${path}`;

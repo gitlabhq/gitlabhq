@@ -50,6 +50,8 @@ module Sidebars
         end
 
         def metrics_dashboard_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :metrics) if Feature.enabled?(:remove_monitor_metrics)
+
           unless can?(context.current_user, :metrics_dashboard, context.project)
             return ::Sidebars::NilMenuItem.new(item_id: :metrics)
           end

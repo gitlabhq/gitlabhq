@@ -1,9 +1,9 @@
 ---
-redirect_to: '../../tutorials/make_your_first_git_commit.md'
+redirect_to: '../../tutorials/make_first_git_commit/index.md'
 remove_date: '2023-04-23'
 ---
 
-This document was moved to [another location](../../tutorials/make_your_first_git_commit.md).
+This document was moved to [another location](../../tutorials/make_first_git_commit/index.md).
 
 <!-- This redirect file can be deleted after <2023-04-23>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

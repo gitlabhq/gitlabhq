@@ -16,7 +16,7 @@ RSpec.describe Resolvers::Ci::RunnerProjectsResolver, feature_category: :runner_
 
   describe '#resolve' do
     context 'with authorized user', :enable_admin_mode do
-      let(:current_user) { create(:user, :admin) }
+      let_it_be(:current_user) { create(:user, :admin) }
 
       context 'with search argument' do
         let(:args) { { search: 'Project1.' } }
@@ -69,15 +69,15 @@ RSpec.describe Resolvers::Ci::RunnerProjectsResolver, feature_category: :runner_
       end
 
       context 'without arguments' do
-        it 'returns a lazy value with all projects sorted by :id_asc' do
+        it 'returns a lazy value with all projects sorted by :id_desc' do
           expect(subject).to be_a(GraphQL::Execution::Lazy)
-          expect(subject.value.items).to eq([project1, project2, project3])
+          expect(subject.value.items).to eq([project3, project2, project1])
         end
       end
     end
 
     context 'with unauthorized user' do
-      let(:current_user) { create(:user) }
+      let_it_be(:current_user) { create(:user) }
 
       it { is_expected.to be_nil }
     end

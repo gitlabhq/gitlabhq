@@ -33,6 +33,6 @@
       .flash-container
         .flash-notice
           .flash-text
-            = s_("PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries." % { variable: "<code>$CI_ENVIRONMENT_SLUG</code>" }).html_safe
+            = html_escape(s_("PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries.")) % { variable: "<code>$CI_ENVIRONMENT_SLUG</code>".html_safe }
             = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/dashboards/variables.md', anchor: 'query-variables')
       %ul.list-unstyled.metrics-list.js-missing-var-metrics-list

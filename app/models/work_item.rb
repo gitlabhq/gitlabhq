@@ -51,7 +51,7 @@ class WorkItem < Issue
         )
       ])
 
-      includes(:child_links).order(keyset_order)
+      includes(:parent_link).order(keyset_order)
     end
   end
 

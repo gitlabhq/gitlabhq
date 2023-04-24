@@ -92,6 +92,11 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
     it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_all_jobs.query.graphql' do
       let(:user) { create(:admin) }
     end
+
+    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_cancelable_jobs_count.query.graphql' do
+      let(:variables) { { statuses: %w[PENDING RUNNING] } }
+      let(:user) { create(:admin) }
+    end
   end
 
   describe 'get_jobs_count.query.graphql', type: :request do

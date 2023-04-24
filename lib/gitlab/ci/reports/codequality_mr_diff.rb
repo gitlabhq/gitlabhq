@@ -30,8 +30,19 @@ module Gitlab
           codequality_files[degradation.dig(:location, :path)] << {
             line: degradation.dig(:location, :lines, :begin) || degradation.dig(:location, :positions, :begin, :line),
             description: degradation[:description],
-            severity: degradation[:severity]
+            severity: degradation[:severity],
+            engine_name: degradation[:engine_name],
+            categories: degradation[:categories],
+            content: convert_body(degradation[:content]),
+            location: degradation[:location],
+            other_locations: degradation[:other_locations],
+            type: degradation[:type]
           }
+        end
+
+        def convert_body(content)
+          content["body"] = ::MarkupHelper.markdown(content["body"])
+          content
         end
       end
     end

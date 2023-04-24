@@ -382,6 +382,10 @@ RSpec.describe 'layouts/nav/sidebar/_project', feature_category: :navigation do
   end
 
   describe 'Monitor' do
+    before do
+      stub_feature_flags(remove_monitor_metrics: false)
+    end
+
     it 'top level navigation link is visible for user with permissions' do
       render
 

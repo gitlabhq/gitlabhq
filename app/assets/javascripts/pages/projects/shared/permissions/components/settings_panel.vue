@@ -930,7 +930,10 @@ export default {
           name="project[project_feature_attributes][monitor_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
+      <div
+        v-if="!glFeatures.removeMonitorMetrics"
+        class="project-feature-setting-group gl-pl-7 gl-sm-pl-5"
+      >
         <project-setting-row
           ref="metrics-visibility-settings"
           :label="__('Metrics Dashboard')"

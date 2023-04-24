@@ -5,19 +5,22 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, feature_category: :application_performance do
   let(:subscriber) { described_class.new }
   let(:counter) { double(:counter) }
-  let(:data) { { 'result' => { 'data' => { 'event' => 'updated' } } } }
+  let(:histogram) { double(:histogram) }
   let(:channel_class) { 'IssuesChannel' }
-  let(:event) do
-    double(
-      :event,
-      name: name,
-      payload: payload
-    )
+  let(:event) { double(:event, name: name, payload: payload) }
+
+  before do
+    allow(::Gitlab::Metrics).to receive(:counter).with(
+      :action_cable_single_client_transmissions_total, /transmit/
+    ).and_return(counter)
+    allow(::Gitlab::Metrics).to receive(:histogram).with(
+      :action_cable_transmitted_bytes, /transmit/
+    ).and_return(histogram)
   end
 
   describe '#transmit' do
     let(:name) { 'transmit.action_cable' }
-    let(:via) { 'streamed from issues:Z2lkOi8vZs2l0bGFiL0lzc3VlLzQ0Ng' }
+    let(:via) { nil }
     let(:payload) do
       {
         channel_class: channel_class,
@@ -26,25 +29,71 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
       }
     end
 
-    it 'tracks the transmit event' do
-      allow(::Gitlab::Metrics).to receive(:counter).with(
-        :action_cable_single_client_transmissions_total, /transmit/
-      ).and_return(counter)
+    let(:message_size) { ::Gitlab::Json.generate(data).bytesize }
 
-      expect(counter).to receive(:increment)
+    context 'for transmissions initiated by Channel instance' do
+      let(:data) { {} }
+      let(:expected_labels) do
+        {
+          channel: channel_class,
+          broadcasting: nil,
+          caller: 'channel'
+        }
+      end
 
-      subscriber.transmit(event)
+      it 'tracks the event with "caller" set to "channel"' do
+        expect(counter).to receive(:increment).with(expected_labels)
+        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+
+        subscriber.transmit(event)
+      end
     end
 
-    it 'tracks size of payload as JSON' do
-      allow(::Gitlab::Metrics).to receive(:histogram).with(
-        :action_cable_transmitted_bytes, /transmit/
-      ).and_return(counter)
-      message_size = ::Gitlab::Json.generate(data).bytesize
+    context 'for transmissions initiated by GraphQL event subscriber' do
+      let(:via) { 'streamed from graphql-subscription:09ae595a-45c4-4ae0-b765-4e503203211d' }
+      let(:data) { { result: { 'data' => { 'issuableEpicUpdated' => '<GQL query result>' } } } }
+      let(:expected_labels) do
+        {
+          channel: channel_class,
+          broadcasting: 'graphql-event:issuableEpicUpdated',
+          caller: 'graphql-subscription'
+        }
+      end
 
-      expect(counter).to receive(:observe).with({ channel: channel_class, operation: 'event' }, message_size)
+      it 'tracks the event with correct "caller" and "broadcasting"' do
+        expect(counter).to receive(:increment).with(expected_labels)
+        expect(histogram).to receive(:observe).with(expected_labels, message_size)
 
-      subscriber.transmit(event)
+        subscriber.transmit(event)
+      end
+
+      it 'is indifferent to keys being symbols or strings in result payload' do
+        expect(counter).to receive(:increment).with(expected_labels)
+        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+
+        event.payload[:data].deep_stringify_keys!
+
+        subscriber.transmit(event)
+      end
+    end
+
+    context 'when transmission is coming from unknown source' do
+      let(:via) { 'streamed from something else' }
+      let(:data) { {} }
+      let(:expected_labels) do
+        {
+          channel: channel_class,
+          broadcasting: nil,
+          caller: 'unknown'
+        }
+      end
+
+      it 'tracks the event with "caller" set to "unknown"' do
+        expect(counter).to receive(:increment).with(expected_labels)
+        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+
+        subscriber.transmit(event)
+      end
     end
   end
 
@@ -92,8 +141,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
     context 'when broadcast is something else' do
       let(:broadcasting) { 'unknown-topic' }
 
-      it 'tracks the event as "other"' do
-        expect(counter).to receive(:increment).with({ broadcasting: 'other' })
+      it 'tracks the event as "unknown"' do
+        expect(counter).to receive(:increment).with({ broadcasting: 'unknown' })
 
         subscriber.broadcast(event)
       end

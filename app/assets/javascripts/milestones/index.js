@@ -4,6 +4,7 @@ import initDatePicker from '~/behaviors/date_picker';
 import GLForm from '~/gl_form';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Milestone from '~/milestones/milestone';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import Sidebar from '~/right_sidebar';
 import MountMilestoneSidebar from '~/sidebar/mount_milestone_sidebar';
 import Translate from '~/vue_shared/translate';
@@ -11,6 +12,9 @@ import ZenMode from '~/zen_mode';
 import DeleteMilestoneModal from './components/delete_milestone_modal.vue';
 import PromoteMilestoneModal from './components/promote_milestone_modal.vue';
 import eventHub from './event_hub';
+
+// See app/views/shared/milestones/_description.html.haml
+export const MILESTONE_DESCRIPTION_ELEMENT = '.milestone-detail .description';
 
 export function initForm(initGFM = true) {
   new ZenMode(); // eslint-disable-line no-new
@@ -34,6 +38,8 @@ export function initShow() {
   new Milestone(); // eslint-disable-line no-new
   new Sidebar(); // eslint-disable-line no-new
   new MountMilestoneSidebar(); // eslint-disable-line no-new
+
+  renderGFM(document.querySelector(MILESTONE_DESCRIPTION_ELEMENT));
 }
 
 export function initPromoteMilestoneModal() {

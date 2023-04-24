@@ -26,7 +26,7 @@ The following resources can help you get started with Git:
 
 - [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4),
   a video introduction to Git.
-- [Make your first Git commit](../../tutorials/make_your_first_git_commit.md)
+- [Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
 - [Git Basics](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
 - [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 - [How to install Git](how_to_install_git/index.md)

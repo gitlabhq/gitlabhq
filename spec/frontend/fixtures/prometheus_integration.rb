@@ -14,6 +14,7 @@ RSpec.describe Projects::Settings::IntegrationsController, '(JavaScript fixtures
 
   before do
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   after do

@@ -5,7 +5,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
 import { PAGINATION_SORT_FIELD_DURATION } from '~/analytics/cycle_analytics/constants';
-import { issueEvents, issueStage, reviewStage, reviewEvents } from './mock_data';
+import { issueEvents, issueStage, reviewStage, reviewEvents } from '../mock_data';
 
 let wrapper = null;
 let trackingSpy = null;

@@ -137,6 +137,9 @@ function debug_rspec_variables() {
   echoinfo "SKIPPED_FLAKY_TESTS_REPORT_PATH: ${SKIPPED_FLAKY_TESTS_REPORT_PATH}"
 
   echoinfo "CRYSTALBALL: ${CRYSTALBALL:-}"
+
+  echoinfo "RSPEC_TESTS_MAPPING_ENABLED: ${RSPEC_TESTS_MAPPING_ENABLED:-}"
+  echoinfo "RSPEC_TESTS_FILTER_FILE: ${RSPEC_TESTS_FILTER_FILE:-}"
 }
 
 function handle_retry_rspec_in_new_process() {
@@ -194,12 +197,7 @@ function rspec_paralellized_job() {
 
   cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
-  export KNAPSACK_TEST_FILE_PATTERN="spec/{,**/}*_spec.rb"
-
-  if [[ "${test_level}" != "foss-impact" ]]; then
-    export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
-  fi
-
+  export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
   export SKIPPED_FLAKY_TESTS_REPORT_PATH="${rspec_flaky_folder_path}skipped_flaky_tests_${report_name}_report.txt"

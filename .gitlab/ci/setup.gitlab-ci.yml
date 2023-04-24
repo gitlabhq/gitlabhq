@@ -90,7 +90,7 @@ generate-frontend-fixtures-mapping:
   before_script:
     - !reference [.default-before_script, before_script]
     - source ./scripts/rspec_helpers.sh
-    - run_timed_command "scripts/gitaly-test-spawn"
+    - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
   script:
     - generate_frontend_fixtures_mapping
   artifacts:

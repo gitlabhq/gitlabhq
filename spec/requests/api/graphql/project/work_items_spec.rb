@@ -120,22 +120,53 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   end
 
   context 'when querying WorkItemWidgetHierarchy' do
-    let_it_be(:children) { create_list(:work_item, 3, :task, project: project) }
+    let_it_be(:children) { create_list(:work_item, 4, :task, project: project) }
     let_it_be(:child_link1) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }
+    let_it_be(:child_link2) { create(:parent_link, work_item_parent: item1, work_item: children[1]) }
 
     let(:fields) do
       <<~GRAPHQL
-          nodes {
-            widgets {
-              type
-              ... on WorkItemWidgetHierarchy {
-                hasChildren
-                parent { id }
-                children { nodes { id } }
-              }
+        nodes {
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetHierarchy {
+              hasChildren
+              parent { id }
+              children { nodes { id } }
             }
           }
+        }
       GRAPHQL
+    end
+
+    context 'with ordered children' do
+      let(:items_data) { graphql_data['project']['workItems']['nodes'] }
+      let(:work_item_data) { items_data.find { |item| item['id'] == item1.to_gid.to_s } }
+      let(:work_item_widget) { work_item_data["widgets"].find { |widget| widget.key?("children") } }
+      let(:children_ids) { work_item_widget.dig("children", "nodes").pluck("id") }
+
+      let(:first_child) { children[0].to_gid.to_s }
+      let(:second_child) { children[1].to_gid.to_s }
+
+      it 'returns children ordered by created_at by default' do
+        post_graphql(query, current_user: current_user)
+
+        expect(children_ids).to eq([first_child, second_child])
+      end
+
+      context 'when ordered by relative position' do
+        before do
+          child_link1.update!(relative_position: 20)
+          child_link2.update!(relative_position: 10)
+        end
+
+        it 'returns children in correct order' do
+          post_graphql(query, current_user: current_user)
+
+          expect(children_ids).to eq([second_child, first_child])
+        end
+      end
     end
 
     it 'executes limited number of N+1 queries' do
@@ -146,13 +177,11 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       end
 
       parent_work_items = create_list(:work_item, 2, project: project)
-      create(:parent_link, work_item_parent: parent_work_items[0], work_item: children[1])
-      create(:parent_link, work_item_parent: parent_work_items[1], work_item: children[2])
+      create(:parent_link, work_item_parent: parent_work_items[0], work_item: children[2])
+      create(:parent_link, work_item_parent: parent_work_items[1], work_item: children[3])
 
-      # There are 2 extra queries for fetching the children field
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/363569
       expect { post_graphql(query, current_user: current_user) }
-        .not_to exceed_query_limit(control).with_threshold(2)
+        .not_to exceed_query_limit(control)
     end
 
     it 'avoids N+1 queries when children are added to a work item' do
@@ -162,8 +191,8 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         post_graphql(query, current_user: current_user)
       end
 
-      create(:parent_link, work_item_parent: item1, work_item: children[1])
       create(:parent_link, work_item_parent: item1, work_item: children[2])
+      create(:parent_link, work_item_parent: item1, work_item: children[3])
 
       expect { post_graphql(query, current_user: current_user) }
         .not_to exceed_query_limit(control)

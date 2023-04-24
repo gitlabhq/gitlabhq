@@ -2,7 +2,7 @@
 - page_title "##{runner.id} (#{runner.short_sha})"
 
 %h1.page-title.gl-font-size-h-display
-  = s_('Runners|Runner #%{runner_id}' % { runner_id: runner.id })
+  = s_('Runners|Runner #%{runner_id}') % { runner_id: runner.id }
   = render 'shared/runners/runner_type_badge', runner: runner
 
 .table-holder

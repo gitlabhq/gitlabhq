@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SendFileUpload do
+RSpec.describe SendFileUpload, feature_category: :user_profile do
   let(:uploader_class) do
     Class.new(GitlabUploader) do
       include ObjectStorage::Concern
@@ -77,26 +77,6 @@ RSpec.describe SendFileUpload do
         allow(uploader).to receive(:model).and_return(image_owner)
       end
 
-      it_behaves_like 'handles image resize requests allowed by FF'
-
-      context 'when FF is disabled' do
-        before do
-          stub_feature_flags(dynamic_image_resizing: false)
-        end
-
-        it_behaves_like 'bypasses image resize requests not allowed by FF'
-      end
-    end
-
-    shared_examples 'bypasses image resize requests not allowed by FF' do
-      it 'does not write workhorse command header' do
-        expect(headers).not_to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-scaled-img:/)
-
-        subject
-      end
-    end
-
-    shared_examples 'handles image resize requests allowed by FF' do
       context 'with valid width parameter' do
         it 'renders OK with workhorse command header' do
           expect(controller).not_to receive(:send_file)

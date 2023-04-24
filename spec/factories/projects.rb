@@ -8,8 +8,8 @@ FactoryBot.define do
   # Project does not have bare repository.
   # Use this factory if you don't need repository in tests
   factory :project, class: 'Project' do
-    sequence(:name) { |n| "project#{n}" }
-    path { name.downcase.gsub(/\s/, '_') }
+    sequence(:path) { |n| "project-#{n}" }
+    name { "#{path.humanize} Name" }
 
     # Behaves differently to nil due to cache_has_external_* methods.
     has_external_issue_tracker { false }
@@ -539,7 +539,7 @@ FactoryBot.define do
   trait :readme do
     custom_repo
 
-    name { 'gitlab-profile' }
+    path { 'gitlab-profile' }
     files { { 'README.md' => 'Hello World' } }
   end
 end

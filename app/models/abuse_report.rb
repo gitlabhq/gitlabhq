@@ -27,20 +27,20 @@ class AbuseReport < ApplicationRecord
     }
 
   validates :reported_from_url,
-            allow_blank: true,
-            length: { maximum: MAX_CHAR_LIMIT_URL },
-            addressable_url: {
-              dns_rebind_protection: true,
-              blocked_message: 'is an invalid URL. You can try reporting the abuse again, ' \
-                               'or contact a GitLab administrator for help.'
-            }
+    allow_blank: true,
+    length: { maximum: MAX_CHAR_LIMIT_URL },
+    addressable_url: {
+      dns_rebind_protection: true,
+      blocked_message: 'is an invalid URL. You can try reporting the abuse again, ' \
+                       'or contact a GitLab administrator for help.'
+    }
 
   validates :links_to_spam,
-            allow_blank: true,
-            length: {
-              maximum: 20,
-              message: N_("exceeds the limit of %{count} links")
-            }
+    allow_blank: true,
+    length: {
+      maximum: 20,
+      message: N_("exceeds the limit of %{count} links")
+    }
 
   before_validation :filter_empty_strings_from_links_to_spam
   validate :links_to_spam_contains_valid_urls
@@ -119,9 +119,9 @@ class AbuseReport < ApplicationRecord
     links_to_spam.each do |link|
       Gitlab::UrlBlocker.validate!(
         link,
-          schemes: %w[http https],
-          allow_localhost: true,
-          dns_rebind_protection: true
+        schemes: %w[http https],
+        allow_localhost: true,
+        dns_rebind_protection: true
       )
 
       next unless link.length > MAX_CHAR_LIMIT_URL

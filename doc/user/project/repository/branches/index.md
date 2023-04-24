@@ -200,6 +200,15 @@ issue number. GitLab uses the issue number to import data into the merge request
 > - Repository filter search box [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52967) in GitLab 13.10.
 > - Revision swapping [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60491) in GitLab 13.12.
 
+The default compare mode uses the `git diff from...to` method, instead of the
+`git diff from to` method, to compare branches. The `git diff from...to` method
+provides a more human-readable diff, because it does not include unrelated changes
+made to the target branch after the source branch was created.
+
+NOTE:
+The `git diff from...to` method shows all changes from a cherry-picked commit as
+new changes. It uses the merge base, not the actual commit content, to compare branches.
+
 To compare branches in a repository:
 
 1. On the top bar, select **Main menu > Projects** and find your project.

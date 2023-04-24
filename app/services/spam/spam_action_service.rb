@@ -53,7 +53,7 @@ module Spam
     end
 
     def allowlisted?(user)
-      user.try(:gitlab_employee?) || user.try(:gitlab_bot?) || user.try(:gitlab_service_user?)
+      user.try(:gitlab_bot?) || user.try(:gitlab_service_user?)
     end
 
     ##

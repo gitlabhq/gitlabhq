@@ -138,7 +138,6 @@ retrieve-frontend-fixtures:
     # More information in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003.
     WEBPACK_VENDOR_DLL: "true"
   script:
-    - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
     - |
       if [[ -d "tmp/tests/frontend" ]]; then
@@ -153,7 +152,7 @@ retrieve-frontend-fixtures:
         echo "No frontend fixtures directory, generating frontend fixtures."
       fi
     - run_timed_command "gem install knapsack --no-document"
-    - run_timed_command "scripts/gitaly-test-spawn"
+    - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
     - source ./scripts/rspec_helpers.sh
     - rspec_paralellized_job
   artifacts:

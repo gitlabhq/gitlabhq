@@ -11,7 +11,7 @@ GitLab can check your application for security vulnerabilities and that it meets
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Set up dependency scanning](https://about.gitlab.com/blog/2021/01/14/try-dependency-scanning/) | Try out dependency scanning, which checks for known vulnerabilities in dependencies. | **{star}** |
-| [Create a compliance pipeline](create_compliance_pipeline.md) | Learn how to create compliance pipelines for your groups. | **{star}** |
-| [Set up a scan result policy](scan_result_policy.md) | Learn how to configure a scan result policy that takes action based on scan results. | **{star}** |
+| [Create a compliance pipeline](compliance_pipeline/index.md) | Learn how to create compliance pipelines for your groups. | **{star}** |
+| [Set up a scan result policy](scan_result_policy/index.md) | Learn how to configure a scan result policy that takes action based on scan results. | **{star}** |
 | [Get started with GitLab application security](../user/application_security/get-started-security.md) | Follow recommended steps to set up security tools. | |
 | [GitLab Security Essentials](https://levelup.gitlab.com/courses/security-essentials) | Learn about the essential security capabilities of GitLab in this self-paced course. | |

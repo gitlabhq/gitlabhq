@@ -26,8 +26,8 @@ class ActiveSession
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
   attr_accessor :ip_address, :browser, :os,
-                :device_name, :device_type,
-                :is_impersonated, :session_id, :session_private_id
+    :device_name, :device_type,
+    :is_impersonated, :session_id, :session_private_id
 
   attr_reader :created_at, :updated_at
 

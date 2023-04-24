@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import Component from '~/analytics/cycle_analytics/components/path_navigation.vue';
-import { transformedProjectStagePathData, selectedStage } from './mock_data';
+import { transformedProjectStagePathData, selectedStage } from '../mock_data';
 
 describe('Project PathNavigation', () => {
   let wrapper = null;

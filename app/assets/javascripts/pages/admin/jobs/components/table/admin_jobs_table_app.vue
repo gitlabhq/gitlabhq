@@ -9,6 +9,7 @@ import JobsTableEmptyState from '~/jobs/components/table/jobs_table_empty_state.
 import { DEFAULT_FIELDS_ADMIN } from '../constants';
 import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
 import GetAllJobs from './graphql/queries/get_all_jobs.query.graphql';
+import CancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
 
 export default {
   i18n: {
@@ -24,12 +25,15 @@ export default {
   inject: {
     jobStatuses: {
       default: null,
+      required: false,
     },
     url: {
       default: '',
+      required: false,
     },
     emptyStateSvgPath: {
       default: '',
+      required: false,
     },
   },
   apollo: {
@@ -50,6 +54,12 @@ export default {
         this.error = this.$options.i18n.jobsFetchErrorMsg;
       },
     },
+    cancelable: {
+      query: CancelableJobs,
+      update(data) {
+        this.isCancelable = data.cancelable.count !== 0;
+      },
+    },
   },
   data() {
     return {
@@ -62,6 +72,7 @@ export default {
       infiniteScrollingTriggered: false,
       filterSearchTriggered: false,
       DEFAULT_FIELDS_ADMIN,
+      isCancelable: false,
     };
   },
   computed: {
@@ -124,6 +135,7 @@ export default {
     <jobs-table-tabs
       :all-jobs-count="count"
       :loading="loading"
+      :show-cancel-all-jobs-button="isCancelable"
       @fetchJobsByStatus="fetchJobsByStatus"
     />
 

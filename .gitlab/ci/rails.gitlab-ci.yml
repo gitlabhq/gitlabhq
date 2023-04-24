@@ -15,11 +15,9 @@ setup-test-env:
     - echo $CI_MERGE_REQUEST_APPROVED
     - source scripts/gitlab_component_helpers.sh
     - run_timed_command "download_and_extract_gitlab_workhorse_package" || true
-    - run_timed_command "scripts/setup-test-env"
-    - run_timed_command "select_gitlab_workhorse_essentials"
-    - echo -e "\e[0Ksection_start:`date +%s`:gitaly-test-build[collapsed=true]\r\e[0KCompiling Gitaly binaries"
-    - run_timed_command "scripts/gitaly-test-build"  # Do not use 'bundle exec' here
-    - echo -e "\e[0Ksection_end:`date +%s`:gitaly-test-build\r\e[0K"
+    - section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
+    - select_gitlab_workhorse_essentials
+    - section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:

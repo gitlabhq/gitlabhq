@@ -4,7 +4,7 @@
 - add_to_breadcrumbs "#{@runner.short_sha}", project_runner_path(@project, @runner)
 
 %h1.page-title.gl-font-size-h-display
-  = s_('Runners|Runner #%{runner_id}' % { runner_id: @runner.id })
+  = s_('Runners|Runner #%{runner_id}') % { runner_id: @runner.id }
   = render 'shared/runners/runner_type_badge', runner: @runner
 
 = render 'shared/runners/runner_type_alert', runner: @runner

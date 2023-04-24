@@ -53,4 +53,28 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :team_plann
       end
     end
   end
+
+  context 'in a project milestone' do
+    let(:milestone) { create(:project_milestone, project: project, description: description) }
+
+    it 'includes mermaid frame correctly' do
+      visit(project_milestone_path(project, milestone))
+
+      wait_for_requests
+
+      expect(page.html).to include(expected)
+    end
+  end
+
+  context 'in a group milestone' do
+    let(:group_milestone) { create(:group_milestone, description: description) }
+
+    it 'includes mermaid frame correctly' do
+      visit(group_milestone_path(group_milestone.group, group_milestone))
+
+      wait_for_requests
+
+      expect(page.html).to include(expected)
+    end
+  end
 end

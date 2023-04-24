@@ -39,7 +39,7 @@ To add a new file from the command line:
 1. Use the "change directory" (`cd`) command to go to your GitLab project's folder.
    Run the `cd DESTINATION` command, changing `DESTINATION` to the location of your folder.
 1. Choose a Git branch to work in. You can either:
-   - [Create a new branch](../tutorials/make_your_first_git_commit.md#create-a-branch-and-make-changes)
+   - [Create a new branch](../tutorials/make_first_git_commit/index.md#create-a-branch-and-make-changes)
      to add your file into. Don't submit changes directly to the default branch of your
      repository unless your project is very small and you're the only person working on it.
    - [Switch to an existing branch](start-using-git.md#switch-to-a-branch).

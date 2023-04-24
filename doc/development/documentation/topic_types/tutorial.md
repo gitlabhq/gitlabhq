@@ -25,6 +25,11 @@ In general, you might consider using a tutorial when:
   ideal to duplicate content that is available elsewhere, it's worse to force the reader to
   leave the page to find what they need.
 
+## Tutorial file name and location
+
+For tutorial Markdown files, create a subfolder under `doc/tutorials`.
+The tutorial file should be `index.md`.
+
 ## Tutorial format
 
 Tutorials should be in this format:
@@ -67,7 +72,7 @@ To do step 2:
 ```
 
 An example of a tutorial that follows this format is
-[Tutorial: Make your first Git commit](../../../tutorials/make_your_first_git_commit.md).
+[Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/index.md).
 
 ## Tutorial page title
 

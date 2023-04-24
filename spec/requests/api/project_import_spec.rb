@@ -247,7 +247,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         subject
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']).to eq('Project namespace name has already been taken')
+        expect(json_response['message']).to eq('Path has already been taken')
       end
 
       context 'when param overwrite is true' do

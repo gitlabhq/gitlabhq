@@ -11,6 +11,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
   before do
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   describe 'Sidebar > Monitor' do

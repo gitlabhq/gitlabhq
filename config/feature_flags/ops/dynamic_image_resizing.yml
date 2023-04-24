@@ -1,8 +1,0 @@
----
-name: dynamic_image_resizing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45050
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/266986
-milestone: '13.6'
-type: ops
-group: group::tenant scale
-default_enabled: true

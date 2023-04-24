@@ -1,32 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
-  let_it_be(:distribution_with_suite, freeze: can_freeze) { create(factory, :with_suite) }
-  let_it_be(:distribution_with_same_container, freeze: can_freeze) { create(factory, container: distribution_with_suite.container ) }
-  let_it_be(:distribution_with_same_codename, freeze: can_freeze) { create(factory, codename: distribution_with_suite.codename ) }
-  let_it_be(:distribution_with_same_suite, freeze: can_freeze) { create(factory, suite: distribution_with_suite.suite ) }
-  let_it_be(:distribution_with_codename_and_suite_flipped, freeze: can_freeze) { create(factory, codename: distribution_with_suite.suite, suite: distribution_with_suite.codename) }
-
-  let_it_be_with_refind(:distribution) { create(factory, container: distribution_with_suite.container ) }
-
+RSpec.shared_examples 'Debian Distribution for common behavior' do
   subject { distribution }
 
   describe 'relationships' do
-    it { is_expected.to belong_to(container) }
     it { is_expected.to belong_to(:creator).class_name('User') }
-
-    it { is_expected.to have_one(:key).class_name("Packages::Debian::#{container.capitalize}DistributionKey").with_foreign_key(:distribution_id).inverse_of(:distribution) }
-    it { is_expected.to have_many(:components).class_name("Packages::Debian::#{container.capitalize}Component").inverse_of(:distribution) }
-    it { is_expected.to have_many(:architectures).class_name("Packages::Debian::#{container.capitalize}Architecture").inverse_of(:distribution) }
   end
 
   describe 'validations' do
-    describe "##{container}" do
-      it { is_expected.to validate_presence_of(container) }
-    end
-
     describe "#creator" do
       it { is_expected.not_to validate_presence_of(:creator) }
     end
@@ -45,57 +26,6 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
       it { is_expected.to allow_value(nil).for(:suite) }
       it { is_expected.to allow_value('testing').for(:suite) }
       it { is_expected.not_to allow_value('hé').for(:suite) }
-    end
-
-    describe '#unique_debian_suite_and_codename' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:with_existing_suite, :suite, :codename, :errors) do
-        false | nil           | :keep             | nil
-        false | 'testing'     | :keep             | nil
-        false | nil           | :codename         | ["Codename has already been taken"]
-        false | :codename     | :keep             | ["Suite has already been taken as Codename"]
-        false | :codename     | :codename         | ["Codename has already been taken", "Suite has already been taken as Codename"]
-        true  | nil           | :keep             | nil
-        true  | 'testing'     | :keep             | nil
-        true  | nil           | :codename         | ["Codename has already been taken"]
-        true  | :codename     | :keep             | ["Suite has already been taken as Codename"]
-        true  | :codename     | :codename         | ["Codename has already been taken", "Suite has already been taken as Codename"]
-        true  | nil           | :suite            | ["Codename has already been taken as Suite"]
-        true  | :suite        | :keep             | ["Suite has already been taken"]
-        true  | :suite        | :suite            | ["Suite has already been taken", "Codename has already been taken as Suite"]
-      end
-
-      with_them do
-        context factory do
-          let(:new_distribution) { build(factory, container: distribution.container) }
-
-          before do
-            distribution.update_column(:suite, 'suite-' + distribution.codename) if with_existing_suite
-
-            if suite.is_a?(Symbol)
-              new_distribution.suite = distribution.send suite unless suite == :keep
-            else
-              new_distribution.suite = suite
-            end
-
-            if codename.is_a?(Symbol)
-              new_distribution.codename = distribution.send codename unless codename == :keep
-            else
-              new_distribution.codename = codename
-            end
-          end
-
-          it do
-            if errors
-              expect(new_distribution).not_to be_valid
-              expect(new_distribution.errors.to_a).to eq(errors)
-            else
-              expect(new_distribution).to be_valid
-            end
-          end
-        end
-      end
     end
 
     describe '#origin' do
@@ -179,7 +109,11 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
         subject { described_class.with_codename_or_suite(distribution_with_suite.codename) }
 
         it 'does not return other distributions' do
-          expect(subject.to_a).to contain_exactly(distribution_with_suite, distribution_with_same_codename, distribution_with_codename_and_suite_flipped)
+          expect(subject.to_a)
+            .to contain_exactly(
+              distribution_with_suite,
+              distribution_with_same_codename,
+              distribution_with_codename_and_suite_flipped)
         end
       end
 
@@ -187,54 +121,169 @@ RSpec.shared_examples 'Debian Distribution' do |factory, container, can_freeze|
         subject { described_class.with_codename_or_suite(distribution_with_suite.suite) }
 
         it 'does not return other distributions' do
-          expect(subject.to_a).to contain_exactly(distribution_with_suite, distribution_with_same_suite, distribution_with_codename_and_suite_flipped)
+          expect(subject.to_a)
+            .to contain_exactly(
+              distribution_with_suite,
+              distribution_with_same_suite,
+              distribution_with_codename_and_suite_flipped)
         end
       end
     end
   end
+end
 
-  if container == :project
-    describe 'project distribution specifics' do
-      describe 'relationships' do
-        it { is_expected.to have_many(:publications).class_name('Packages::Debian::Publication').inverse_of(:distribution).with_foreign_key(:distribution_id) }
-        it { is_expected.to have_many(:packages).class_name('Packages::Package').through(:publications) }
+RSpec.shared_examples 'Debian Distribution for specific behavior' do |factory|
+  describe '#unique_debian_suite_and_codename' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:with_existing_suite, :suite, :codename, :errors) do
+      false | nil           | :keep             | nil
+      false | 'testing'     | :keep             | nil
+      false | nil           | :codename         | ["Codename has already been taken"]
+      false | :codename     | :keep             | ["Suite has already been taken as Codename"]
+      false | :codename     | :codename         | ["Codename has already been taken", "Suite has already been taken as Codename"]
+      true  | nil           | :keep             | nil
+      true  | 'testing'     | :keep             | nil
+      true  | nil           | :codename         | ["Codename has already been taken"]
+      true  | :codename     | :keep             | ["Suite has already been taken as Codename"]
+      true  | :codename     | :codename         | ["Codename has already been taken", "Suite has already been taken as Codename"]
+      true  | nil           | :suite            | ["Codename has already been taken as Suite"]
+      true  | :suite        | :keep             | ["Suite has already been taken"]
+      true  | :suite        | :suite            | ["Suite has already been taken", "Codename has already been taken as Suite"]
+    end
+
+    with_them do
+      context factory do
+        let(:new_distribution) { build(factory, container: distribution.container) }
+
+        before do
+          distribution.update_column(:suite, "suite-#{distribution.codename}") if with_existing_suite
+
+          if suite.is_a?(Symbol)
+            new_distribution.suite = distribution.send suite unless suite == :keep
+          else
+            new_distribution.suite = suite
+          end
+
+          if codename.is_a?(Symbol)
+            new_distribution.codename = distribution.send codename unless codename == :keep
+          else
+            new_distribution.codename = codename
+          end
+        end
+
+        it do
+          if errors
+            expect(new_distribution).not_to be_valid
+            expect(new_distribution.errors.to_a).to eq(errors)
+          else
+            expect(new_distribution).to be_valid
+          end
+        end
       end
     end
-  else
-    describe 'group distribution specifics' do
-      let_it_be(:public_project) { create(:project, :public, group: distribution_with_suite.container) }
-      let_it_be(:public_distribution_with_same_codename) { create(:debian_project_distribution, container: public_project, codename: distribution_with_suite.codename) }
-      let_it_be(:public_package_with_same_codename) { create(:debian_package, project: public_project, published_in: public_distribution_with_same_codename) }
-      let_it_be(:public_distribution_with_same_suite) { create(:debian_project_distribution, container: public_project, suite: distribution_with_suite.suite) }
-      let_it_be(:public_package_with_same_suite) { create(:debian_package, project: public_project, published_in: public_distribution_with_same_suite) }
+  end
+end
 
-      let_it_be(:private_project) { create(:project, :private, group: distribution_with_suite.container) }
-      let_it_be(:private_distribution_with_same_codename) { create(:debian_project_distribution, container: private_project, codename: distribution_with_suite.codename) }
-      let_it_be(:private_package_with_same_codename) { create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename) }
-      let_it_be(:private_distribution_with_same_suite) { create(:debian_project_distribution, container: private_project, suite: distribution_with_suite.suite) }
-      let_it_be(:private_package_with_same_suite) { create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename) }
+RSpec.shared_examples 'Debian Distribution with project container' do
+  it_behaves_like 'Debian Distribution for specific behavior', :debian_project_distribution
 
-      describe '#packages' do
-        subject { distribution_with_suite.packages }
+  describe 'relationships' do
+    it { is_expected.to belong_to(:project) }
 
-        it 'returns only public packages with same codename' do
-          expect(subject.to_a).to contain_exactly(public_package_with_same_codename)
-        end
+    it { is_expected.to have_one(:key).class_name("Packages::Debian::ProjectDistributionKey").with_foreign_key(:distribution_id).inverse_of(:distribution) }
+    it { is_expected.to have_many(:components).class_name("Packages::Debian::ProjectComponent").inverse_of(:distribution) }
+    it { is_expected.to have_many(:architectures).class_name("Packages::Debian::ProjectArchitecture").inverse_of(:distribution) }
+  end
+
+  describe "#project" do
+    it { is_expected.to validate_presence_of(:project) }
+  end
+
+  describe 'project distribution specifics' do
+    describe 'relationships' do
+      it do
+        is_expected.to have_many(:publications).class_name('Packages::Debian::Publication').inverse_of(:distribution)
+          .with_foreign_key(:distribution_id)
       end
 
-      describe '#package_files' do
-        subject { distribution_with_suite.package_files }
+      it { is_expected.to have_many(:packages).class_name('Packages::Package').through(:publications) }
+    end
+  end
+end
 
-        it 'returns only files from public packages with same codename' do
-          expect(subject.to_a).to contain_exactly(*public_package_with_same_codename.package_files)
+RSpec.shared_examples 'Debian Distribution with group container' do
+  it_behaves_like 'Debian Distribution for specific behavior', :debian_group_distribution
+
+  describe 'relationships' do
+    it { is_expected.to belong_to(:group) }
+
+    it { is_expected.to have_one(:key).class_name("Packages::Debian::GroupDistributionKey").with_foreign_key(:distribution_id).inverse_of(:distribution) }
+    it { is_expected.to have_many(:components).class_name("Packages::Debian::GroupComponent").inverse_of(:distribution) }
+    it { is_expected.to have_many(:architectures).class_name("Packages::Debian::GroupArchitecture").inverse_of(:distribution) }
+  end
+
+  describe "#group" do
+    it { is_expected.to validate_presence_of(:group) }
+  end
+
+  describe 'group distribution specifics' do
+    let_it_be(:public_project) { create(:project, :public, group: distribution_with_suite.container) }
+    let_it_be(:public_distribution_with_same_codename) do
+      create(:debian_project_distribution, container: public_project, codename: distribution_with_suite.codename)
+    end
+
+    let_it_be(:public_package_with_same_codename) do
+      create(:debian_package, project: public_project, published_in: public_distribution_with_same_codename)
+    end
+
+    let_it_be(:public_distribution_with_same_suite) do
+      create(:debian_project_distribution, container: public_project, suite: distribution_with_suite.suite)
+    end
+
+    let_it_be(:public_package_with_same_suite) do
+      create(:debian_package, project: public_project, published_in: public_distribution_with_same_suite)
+    end
+
+    let_it_be(:private_project) { create(:project, :private, group: distribution_with_suite.container) }
+    let_it_be(:private_distribution_with_same_codename) do
+      create(:debian_project_distribution, container: private_project, codename: distribution_with_suite.codename)
+    end
+
+    let_it_be(:private_package_with_same_codename) do
+      create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename)
+    end
+
+    let_it_be(:private_distribution_with_same_suite) do
+      create(:debian_project_distribution, container: private_project, suite: distribution_with_suite.suite)
+    end
+
+    let_it_be(:private_package_with_same_suite) do
+      create(:debian_package, project: private_project, published_in: private_distribution_with_same_codename)
+    end
+
+    describe '#packages' do
+      subject { distribution_with_suite.packages }
+
+      it 'returns only public packages with same codename' do
+        expect(subject.to_a).to contain_exactly(public_package_with_same_codename)
+      end
+    end
+
+    describe '#package_files' do
+      subject { distribution_with_suite.package_files }
+
+      it 'returns only files from public packages with same codename' do
+        expect(subject.to_a).to contain_exactly(*public_package_with_same_codename.package_files)
+      end
+
+      context 'with pending destruction package files' do
+        let_it_be(:package_file_pending_destruction) do
+          create(:package_file, :pending_destruction, package: public_package_with_same_codename)
         end
 
-        context 'with pending destruction package files' do
-          let_it_be(:package_file_pending_destruction) { create(:package_file, :pending_destruction, package: public_package_with_same_codename) }
-
-          it 'does not return them' do
-            expect(subject.to_a).not_to include(package_file_pending_destruction)
-          end
+        it 'does not return them' do
+          expect(subject.to_a).not_to include(package_file_pending_destruction)
         end
       end
     end

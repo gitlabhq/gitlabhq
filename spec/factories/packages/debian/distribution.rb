@@ -4,14 +4,14 @@ FactoryBot.define do
   factory :debian_project_distribution, class: 'Packages::Debian::ProjectDistribution' do
     container { association(:project) }
 
-    sequence(:codename) { |n| "#{FFaker::Lorem.word}#{n}" }
+    sequence(:codename) { |n| "codename-#{n}" }
 
     factory :debian_group_distribution, class: 'Packages::Debian::GroupDistribution' do
       container { association(:group) }
     end
 
     trait(:with_suite) do
-      sequence(:suite) { |n| "#{FFaker::Lorem.word}#{n}" }
+      sequence(:suite) { |n| "suite-#{n}" }
     end
 
     trait(:with_file) do
@@ -24,7 +24,7 @@ FactoryBot.define do
         FILESIGNATURE
       end
 
-      after(:build) do |distribution, evaluator|
+      after(:build) do |distribution, _evaluator|
         distribution.file = fixture_file_upload('spec/fixtures/packages/debian/distribution/Release')
         distribution.signed_file = fixture_file_upload('spec/fixtures/packages/debian/distribution/InRelease')
       end

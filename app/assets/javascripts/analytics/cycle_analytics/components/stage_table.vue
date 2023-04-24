@@ -102,9 +102,7 @@ export default {
   },
   data() {
     if (this.pagination) {
-      const {
-        pagination: { sort, direction },
-      } = this;
+      const { sort, direction } = this.pagination;
       return {
         sort,
         direction,

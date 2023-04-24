@@ -3,21 +3,78 @@
     "files": {
       "file_a.rb": [
         {
+          "categories": [
+            "Complexity"
+          ],
           "line": 10,
           "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-          "severity": "major"
+          "severity": "major",
+          "location": {
+            "path": "file_a.rb",
+            "lines": {
+              "begin": 10,
+              "end": 10
+            }
+          },
+          "other_locations": [
+
+          ],
+          "content": {
+            "body": ""
+          },
+          "type": "issue",
+          "engine_name": "structure"
         },
         {
+          "categories": [
+            "Complexity"
+          ],
           "line": 10,
           "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-          "severity": "minor"
+          "severity": "minor",
+          "location": {
+            "path": "file_a.rb",
+            "lines": {
+              "begin": 10,
+              "end": 10
+            }
+          },
+          "other_locations": [
+
+          ],
+          "content": {
+            "body": ""
+          },
+          "type": "issue",
+          "engine_name": "structure"
         }
       ],
       "file_b.rb": [
         {
+          "categories": [
+            "Complexity"
+          ],
           "line": 10,
           "description": "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count.",
-          "severity": "minor"
+          "severity": "minor",
+          "location": {
+            "path": "file_b.rb",
+            "positions": {
+              "begin": {
+                "column": 14,
+                "line": 10
+              },
+              "end": {
+                "column": 39,
+                "line": 10
+              }
+            }
+          },
+          "content": {
+            "body": ""
+          },
+          "type": "Issue",
+          "engine_name": "rubocop"
         }
       ]
     }

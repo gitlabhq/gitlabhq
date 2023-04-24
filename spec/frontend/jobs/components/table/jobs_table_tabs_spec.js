@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
+import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
 
 describe('Jobs Table Tabs', () => {
   let wrapper;
@@ -10,6 +11,11 @@ describe('Jobs Table Tabs', () => {
   const defaultProps = {
     allJobsCount: 286,
     loading: false,
+  };
+
+  const adminProps = {
+    ...defaultProps,
+    showCancelAllJobsButton: true,
   };
 
   const statuses = {
@@ -20,6 +26,7 @@ describe('Jobs Table Tabs', () => {
 
   const findAllTab = () => wrapper.findByTestId('jobs-all-tab');
   const findFinishedTab = () => wrapper.findByTestId('jobs-finished-tab');
+  const findCancelJobsButton = () => wrapper.findAllComponents(CancelJobs);
 
   const triggerTabChange = (index) => wrapper.findAllComponents(GlTab).at(index).vm.$emit('click');
 
@@ -58,5 +65,17 @@ describe('Jobs Table Tabs', () => {
     triggerTabChange(tabIndex);
 
     expect(wrapper.emitted()).toEqual({ fetchJobsByStatus: [[expectedScope]] });
+  });
+
+  it('does not displays cancel all jobs button', () => {
+    expect(findCancelJobsButton().exists()).toBe(false);
+  });
+
+  describe('admin mode', () => {
+    it('displays cancel all jobs button', () => {
+      createComponent(adminProps);
+
+      expect(findCancelJobsButton().exists()).toBe(true);
+    });
   });
 });

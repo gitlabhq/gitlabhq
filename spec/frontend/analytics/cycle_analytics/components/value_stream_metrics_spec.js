@@ -10,7 +10,7 @@ import { prepareTimeMetricsData } from '~/analytics/shared/utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import ValueStreamsDashboardLink from '~/analytics/shared/components/value_streams_dashboard_link.vue';
 import { createAlert } from '~/alert';
-import { group } from './mock_data';
+import { group } from '../mock_data';
 
 jest.mock('~/alert');
 

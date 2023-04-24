@@ -8,10 +8,6 @@ module QA
           module Monitor
             extend QA::Page::PageConcern
 
-            def go_to_monitor_metrics
-              open_monitor_submenu('Metrics')
-            end
-
             def go_to_monitor_error_tracking
               open_monitor_submenu('Error tracking')
             end

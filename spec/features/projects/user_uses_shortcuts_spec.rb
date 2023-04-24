@@ -9,6 +9,7 @@ RSpec.describe 'User uses shortcuts', :js, feature_category: :projects do
 
   before do
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
 
     visit(project_path(project))
 

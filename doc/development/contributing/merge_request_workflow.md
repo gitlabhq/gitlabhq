@@ -242,6 +242,15 @@ requirements.
    There isn't a way to know anything about our customers' data on their
    [self-managed instances](../../subscriptions/self_managed/index.md), so keep
    that in mind for any data implications with your merge request.
+1. Consider self-managed functionality and upgrade paths. The change should consider both:
+
+   - If additional work needs to be done for self-managed availability, and
+   - If the change requires a [required stop](../database/required_stops.md) when upgrading GitLab versions.
+
+   Upgrade stops are sometimes requested when a GitLab code change is dependent
+   upon a background migration being already complete. Ideally, changes causing required
+   upgrade stops should be held for the next major release, or
+   [at least a 3 milestones notice in advance if unavoidable](../../update/index.md#upgrade-paths).
 
 ### Testing
 

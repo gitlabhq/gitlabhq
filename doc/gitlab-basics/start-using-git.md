@@ -15,7 +15,7 @@ You can do many Git operations directly in GitLab. However, the command line is 
 like fixing complex merge conflicts or rolling back commits.
 
 If you're new to Git and want to learn by working in your own project,
-[learn how to make your first commit](../tutorials/make_your_first_git_commit.md).
+[learn how to make your first commit](../tutorials/make_first_git_commit/index.md).
 
 For a quick reference of Git commands, download a [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 

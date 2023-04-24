@@ -91,11 +91,7 @@ export default {
     },
     selectedStageCount() {
       if (this.selectedStage) {
-        const {
-          stageCounts,
-          selectedStage: { id },
-        } = this;
-        return stageCounts[id];
+        return this.stageCounts[this.selectedStage.id];
       }
       return 0;
     },
@@ -113,12 +109,9 @@ export default {
       );
     },
     dashboardsPath() {
-      const {
-        namespace: { fullPath },
-        groupPath,
-      } = this;
+      const { fullPath } = this.namespace;
       return this.showLinkToDashboard
-        ? generateValueStreamsDashboardLink(groupPath, [fullPath])
+        ? generateValueStreamsDashboardLink(this.groupPath, [fullPath])
         : null;
     },
     query() {

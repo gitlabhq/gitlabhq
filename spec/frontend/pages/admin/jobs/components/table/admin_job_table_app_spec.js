@@ -4,15 +4,18 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
-import getJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs.query.graphql';
-import AdminJobsTableApp from '~/pages/admin/jobs/components/table/admin_jobs_table_app.vue';
 import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
+import getAllJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs.query.graphql';
+import getCancelableJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_cancelable_jobs_count.query.graphql';
+import AdminJobsTableApp from '~/pages/admin/jobs/components/table/admin_jobs_table_app.vue';
+import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
+import JobsTable from '~/jobs/components/table/jobs_table.vue';
 
 import {
   mockAllJobsResponsePaginated,
   mockJobsResponseEmpty,
+  mockCancelableJobsCountResponse,
   statuses,
 } from '../../../../../jobs/mock_data';
 
@@ -24,6 +27,7 @@ describe('Job table app', () => {
   const successHandler = jest.fn().mockResolvedValue(mockAllJobsResponsePaginated);
   const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const cancelHandler = jest.fn().mockResolvedValue(mockCancelableJobsCountResponse);
 
   const findSkeletonLoader = () => wrapper.findComponent(JobsSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
@@ -31,15 +35,20 @@ describe('Job table app', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTabs = () => wrapper.findComponent(JobsTableTabs);
+  const findCancelJobsButton = () => wrapper.findComponent(CancelJobs);
 
-  const createMockApolloProvider = (handler) => {
-    const requestHandlers = [[getJobsQuery, handler]];
+  const createMockApolloProvider = (handler, cancelableHandler) => {
+    const requestHandlers = [
+      [getAllJobsQuery, handler],
+      [getCancelableJobsQuery, cancelableHandler],
+    ];
 
     return createMockApollo(requestHandlers);
   };
 
   const createComponent = ({
     handler = successHandler,
+    cancelableHandler = cancelHandler,
     mountFn = shallowMount,
     data = {},
   } = {}) => {
@@ -52,7 +61,7 @@ describe('Job table app', () => {
       provide: {
         jobStatuses: statuses,
       },
-      apolloProvider: createMockApolloProvider(handler),
+      apolloProvider: createMockApolloProvider(handler, cancelableHandler),
     });
   };
 
@@ -127,6 +136,24 @@ describe('Job table app', () => {
 
       expect(findAlert().text()).toBe('There was an error fetching the jobs.');
       expect(findTable().exists()).toBe(false);
+    });
+  });
+
+  describe('cancel jobs button', () => {
+    it('should display cancel all jobs button', async () => {
+      createComponent({ cancelableHandler: cancelHandler, mountFn: mount });
+
+      await waitForPromises();
+
+      expect(findCancelJobsButton().exists()).toBe(true);
+    });
+
+    it('should not display cancel all jobs button', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findCancelJobsButton().exists()).toBe(false);
     });
   });
 });

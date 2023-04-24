@@ -55,6 +55,11 @@ export default {
       required: false,
       default: '',
     },
+    imgCssWrapperClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
     imgSize: {
       type: [Number, Object],
       required: true,
@@ -89,6 +94,7 @@ export default {
 <template>
   <gl-avatar-link :href="linkHref" class="user-avatar-link">
     <user-avatar-image
+      :class="imgCssWrapperClasses"
       :img-src="imgSrc"
       :img-alt="imgAlt"
       :css-classes="imgCssClasses"

@@ -63,8 +63,7 @@ module SendFileUpload
   private
 
   def image_scaling_request?(file_upload)
-    (avatar_safe_for_scaling?(file_upload) || pwa_icon_safe_for_scaling?(file_upload)) &&
-      scaling_allowed_by_feature_flags?(file_upload)
+    avatar_safe_for_scaling?(file_upload) || pwa_icon_safe_for_scaling?(file_upload)
   end
 
   def pwa_icon_safe_for_scaling?(file_upload)
@@ -89,9 +88,5 @@ module SendFileUpload
 
   def valid_image_scaling_width?(allowed_scalar_widths)
     allowed_scalar_widths.include?(params[:width]&.to_i)
-  end
-
-  def scaling_allowed_by_feature_flags?(file_upload)
-    Feature.enabled?(:dynamic_image_resizing, type: :ops)
   end
 end

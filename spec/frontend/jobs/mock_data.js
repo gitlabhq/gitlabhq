@@ -5,6 +5,7 @@ import mockAllJobsPaginated from 'test_fixtures/graphql/jobs/get_all_jobs.query.
 import mockJobs from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.json';
 import mockAllJobs from 'test_fixtures/graphql/jobs/get_all_jobs.query.graphql.json';
 import mockJobsAsGuest from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.as_guest.json';
+import mockCancelableJobsCount from 'test_fixtures/graphql/jobs/get_cancelable_jobs_count.query.graphql.json';
 import { TEST_HOST } from 'spec/test_constants';
 import { TOKEN_TYPE_STATUS } from '~/vue_shared/components/filtered_search_bar/constants';
 
@@ -19,6 +20,7 @@ export const mockJobsNodes = mockJobs.data.project.jobs.nodes;
 export const mockAllJobsNodes = mockAllJobs.data.jobs.nodes;
 export const mockJobsNodesAsGuest = mockJobsAsGuest.data.project.jobs.nodes;
 export const mockJobsCountResponse = mockJobsCount;
+export const mockCancelableJobsCountResponse = mockCancelableJobsCount;
 
 export const stages = [
   {

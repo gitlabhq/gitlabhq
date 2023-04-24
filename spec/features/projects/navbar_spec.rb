@@ -20,6 +20,7 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :projects do
     stub_config(registry: { enabled: false })
     stub_feature_flags(harbor_registry_integration: false)
     stub_feature_flags(ml_experiment_tracking: false)
+    stub_feature_flags(remove_monitor_metrics: false)
     insert_package_nav(_('Deployments'))
     insert_infrastructure_registry_nav
     insert_infrastructure_google_cloud_nav

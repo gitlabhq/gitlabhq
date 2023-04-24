@@ -6,9 +6,10 @@ module Gitlab
       class ActionCable < ActiveSupport::Subscriber
         include Gitlab::Utils::StrongMemoize
 
-        BROADCASTING_GRAPHQL_EVENT = 'graphql-event'
-        BROADCASTING_GRAPHQL_SUBSCRIPTION = 'graphql-subscription'
-        BROADCASTING_OTHER = 'other'
+        SOURCE_DIRECT = 'channel'
+        SOURCE_GRAPHQL_EVENT = 'graphql-event'
+        SOURCE_GRAPHQL_SUBSCRIPTION = 'graphql-subscription'
+        SOURCE_OTHER = 'unknown'
 
         attach_to :action_cable
 
@@ -27,42 +28,57 @@ module Gitlab
         end
 
         def transmit(event)
-          transmit_counter.increment
+          payload = event.payload
 
-          if event.payload.present?
-            channel = event.payload[:channel_class]
-            operation = operation_name_from(event.payload)
-            data_size = Gitlab::Json.generate(event.payload[:data]).bytesize
+          labels = {
+            channel: payload[:channel_class],
+            caller: normalize_source(payload[:via])
+          }
+          labels[:broadcasting] = graphql_event_broadcasting_from(payload[:data])
 
-            transmitted_bytes_histogram.observe({ channel: channel, operation: operation }, data_size)
-          end
+          transmit_counter.increment(labels)
+          data_size = Gitlab::Json.generate(payload[:data]).bytesize
+          transmitted_bytes_histogram.observe(labels, data_size)
         end
 
         def broadcast(event)
-          broadcast_counter.increment({ broadcasting: broadcasting_from(event.payload) })
+          broadcast_counter.increment({ broadcasting: normalize_source(event.payload[:broadcasting]) })
         end
 
         private
 
-        # Since broadcastings can have high dimensionality when they carry IDs, we need to
+        # Since transmission sources can have high dimensionality when they carry IDs, we need to
         # collapse them. If it's not a well-know broadcast, we report it as "other".
-        def broadcasting_from(payload)
-          broadcasting = payload[:broadcasting]
-          if broadcasting.start_with?(BROADCASTING_GRAPHQL_EVENT)
+        def normalize_source(source)
+          return SOURCE_DIRECT if source.blank?
+
+          normalized_source = source.gsub('streamed from ', '')
+
+          if normalized_source.start_with?(SOURCE_GRAPHQL_EVENT)
             # Take at most two levels of topic namespacing.
-            broadcasting.split(':').reject(&:empty?).take(2).join(':') # rubocop: disable CodeReuse/ActiveRecord
-          elsif broadcasting.start_with?(BROADCASTING_GRAPHQL_SUBSCRIPTION)
-            BROADCASTING_GRAPHQL_SUBSCRIPTION
+            normalized_source.split(':').reject(&:empty?).take(2).join(':') # rubocop: disable CodeReuse/ActiveRecord
+          elsif normalized_source.start_with?(SOURCE_GRAPHQL_SUBSCRIPTION)
+            SOURCE_GRAPHQL_SUBSCRIPTION
           else
-            BROADCASTING_OTHER
+            SOURCE_OTHER
           end
         end
 
-        # When possible tries to query operation name
-        def operation_name_from(payload)
-          data = payload.dig(:data, 'result', 'data') || {}
+        # When possible tries to query operation name. This will only return data
+        # for GraphQL subscription broadcasts.
+        def graphql_event_broadcasting_from(payload_data)
+          # Depending on whether the query result was passed in-process from a direct
+          # execution (e.g. in response to a subcription request) or cross-process by
+          # going through PubSub, we might encounter either string or symbol keys.
+          # We do not use deep_transform_keys here because the payload can be large
+          # and performance would be affected.
+          query_result = payload_data[:result] || payload_data['result'] || {}
+          query_result_data = query_result['data'] || {}
+          gql_operation = query_result_data.each_key.first
 
-          data.each_key.first
+          return unless gql_operation
+
+          "#{SOURCE_GRAPHQL_EVENT}:#{gql_operation}"
         end
 
         def transmit_counter

@@ -424,3 +424,4 @@ than 1000. The cached value is rounded to thousands (or millions) and updated ev
 ## Related topics
 
 - [Merge methods](../methods/index.md)
+- [Draft Notes API](../../../../api/draft_notes.md)

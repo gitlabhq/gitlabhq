@@ -13,9 +13,9 @@ module Achievements
     strip_attributes! :name, :description
 
     validates :name,
-              presence: true,
-              length: { maximum: 255 },
-              uniqueness: { case_sensitive: false, scope: [:namespace_id] }
+      presence: true,
+      length: { maximum: 255 },
+      uniqueness: { case_sensitive: false, scope: [:namespace_id] }
     validates :description, length: { maximum: 1024 }
   end
 end

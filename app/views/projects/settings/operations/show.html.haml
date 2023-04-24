@@ -1,9 +1,14 @@
 - page_title _('Monitor Settings')
 - breadcrumb_title _('Monitor Settings')
 
-= render 'projects/settings/operations/metrics_dashboard'
+- if Feature.disabled?(:remove_monitor_metrics)
+  = render 'projects/settings/operations/metrics_dashboard'
+
 = render 'projects/settings/operations/error_tracking'
 = render 'projects/settings/operations/alert_management'
 = render 'projects/settings/operations/incidents'
-= render 'projects/settings/operations/grafana_integration'
+
+- if Feature.disabled?(:remove_monitor_metrics)
+  = render 'projects/settings/operations/grafana_integration'
+
 = render_if_exists 'projects/settings/operations/status_page'

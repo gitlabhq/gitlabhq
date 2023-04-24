@@ -19,7 +19,7 @@ import {
   currentGroup,
   stageCounts,
   initialPaginationState as pagination,
-} from './mock_data';
+} from '../mock_data';
 
 const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
