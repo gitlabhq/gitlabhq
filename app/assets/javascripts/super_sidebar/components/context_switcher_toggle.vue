@@ -1,14 +1,11 @@
 <script>
-import { GlTruncate, GlAvatar, GlCollapseToggleDirective, GlIcon } from '@gitlab/ui';
+import { GlTruncate, GlAvatar, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
     GlTruncate,
     GlAvatar,
     GlIcon,
-  },
-  directives: {
-    CollapseToggle: GlCollapseToggleDirective,
   },
   props: {
     /*
@@ -36,7 +33,6 @@ export default {
 
 <template>
   <button
-    v-collapse-toggle.context-switcher
     type="button"
     class="context-switcher-toggle gl-p-0 gl-bg-transparent gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-border-0 border-top border-bottom gl-border-gray-a-08 gl-box-shadow-none gl-display-flex gl-align-items-center gl-font-weight-bold gl-w-full gl-h-8 gl-flex-shrink-0"
   >

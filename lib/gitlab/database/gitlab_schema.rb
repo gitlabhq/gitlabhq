@@ -23,6 +23,7 @@ module Gitlab
         tables.map { |table| table_schema(table, undefined: undefined) }.to_set
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity
       def self.table_schema(name, undefined: true)
         schema_name, table_name = name.split('.', 2) # Strip schema name like: `public.`
 
@@ -57,6 +58,8 @@ module Gitlab
 
         return :gitlab_ci if table_name.start_with?('_test_gitlab_ci_')
 
+        return :gitlab_embedding if table_name.start_with?('_test_gitlab_embedding_')
+
         return :gitlab_geo if table_name.start_with?('_test_gitlab_geo_')
 
         # All tables that start with `_test_` without a following schema are shared and ignored
@@ -68,6 +71,7 @@ module Gitlab
         # When undefined it's best to return a unique name so that we don't incorrectly assume that 2 undefined schemas belong on the same database
         undefined ? :"undefined_#{table_name}" : nil
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       def self.dictionary_path_globs
         [Rails.root.join(DICTIONARY_PATH, '*.yml')]

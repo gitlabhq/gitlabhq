@@ -80,7 +80,7 @@ To enable DAST to run automatically, either:
 
 - Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast) (provided
   by [Auto DevOps](../../../topics/autodevops/index.md)).
-- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually).
+- [Edit the `.gitlab-ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually).
 - [Configure DAST using the UI](#configure-dast-using-the-ui).
 
 #### Edit the `.gitlab-ci.yml` file manually

@@ -98,6 +98,14 @@
     }
   }
 
+  .context-switcher .gl-new-dropdown-custom-toggle {
+    width: 100%;
+  }
+
+  .context-switcher .gl-new-dropdown-panel {
+    overflow-y: auto;
+  }
+
   .context-switcher-search-box input {
     @include gl-font-sm;
   }

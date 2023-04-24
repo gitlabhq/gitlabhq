@@ -566,6 +566,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
 
       if Gitlab.ee?
+        allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::EMBEDDING_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
         allow(File).to receive(:open).with(Rails.root.join(Gitlab::Database::GEO_DATABASE_DIR, 'structure.sql').to_s, any_args).and_yield(output)
       end
     end

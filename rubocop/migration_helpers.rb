@@ -42,11 +42,11 @@ module RuboCop
     end
 
     def in_deployment_migration?(node)
-      dirname(node).end_with?('db/migrate', 'db/geo/migrate')
+      dirname(node).end_with?('db/migrate', 'db/embedding/migrate', 'db/geo/migrate')
     end
 
     def in_post_deployment_migration?(node)
-      dirname(node).end_with?('db/post_migrate', 'db/geo/post_migrate')
+      dirname(node).end_with?('db/post_migrate', 'db/embedding/post_migrate', 'db/geo/post_migrate')
     end
 
     # Returns true if we've defined an 'EnforcedSince' variable in rubocop.yml and the migration version

@@ -3,5 +3,5 @@
 return unless Gitlab.ee?
 
 ActiveSupport.on_load(:active_record) do
-  Gitlab::Patch::GeoDatabaseTasks.patch!
+  Gitlab::Patch::AdditionalDatabaseTasks.patch!
 end

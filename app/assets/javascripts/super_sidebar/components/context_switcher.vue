@@ -1,13 +1,15 @@
 <script>
 import * as Sentry from '@sentry/browser';
-import { GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import searchUserProjectsAndGroups from '../graphql/queries/search_user_groups_and_projects.query.graphql';
 import { trackContextAccess, formatContextSwitcherItems } from '../utils';
+import { maxSize, applyMaxSize } from '../popper_max_size_modifier';
 import NavItem from './nav_item.vue';
 import ProjectsList from './projects_list.vue';
 import GroupsList from './groups_list.vue';
+import ContextSwitcherToggle from './context_switcher_toggle.vue';
 
 export default {
   i18n: {
@@ -54,6 +56,8 @@ export default {
     },
   },
   components: {
+    GlDisclosureDropdown,
+    ContextSwitcherToggle,
     GlSearchBoxByType,
     GlLoadingIcon,
     GlAlert,
@@ -83,6 +87,10 @@ export default {
       required: false,
       default: () => ({}),
     },
+    contextHeader: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -90,6 +98,7 @@ export default {
       projects: [],
       groups: [],
       hasError: false,
+      isOpen: false,
     };
   },
   computed: {
@@ -100,16 +109,24 @@ export default {
       return this.$apollo.queries.groupsAndProjects.loading;
     },
   },
+  watch: {
+    isOpen(isOpen) {
+      this.$emit('toggle', isOpen);
+
+      if (isOpen) {
+        this.focusInput();
+      }
+    },
+  },
   created() {
     if (this.currentContext.namespace) {
       trackContextAccess(this.username, this.currentContext);
     }
   },
   methods: {
-    /**
-     * This needs to be exposed publicly so that we can auto-focus the search input when the parent
-     * GlCollapse is shown.
-     */
+    close() {
+      this.$refs['disclosure-dropdown'].close();
+    },
     focusInput() {
       this.$refs['search-box'].focusInput();
     },
@@ -117,13 +134,32 @@ export default {
       Sentry.captureException(e);
       this.hasError = true;
     },
+    onDisclosureDropdownShown() {
+      this.isOpen = true;
+    },
+    onDisclosureDropdownHidden() {
+      this.isOpen = false;
+    },
   },
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+  popperOptions: {
+    modifiers: [maxSize, applyMaxSize],
+  },
 };
 </script>
 
 <template>
-  <div>
+  <gl-disclosure-dropdown
+    ref="disclosure-dropdown"
+    class="context-switcher gl-w-full"
+    placement="center"
+    :popper-options="$options.popperOptions"
+    @shown="onDisclosureDropdownShown"
+    @hidden="onDisclosureDropdownHidden"
+  >
+    <template #toggle>
+      <context-switcher-toggle :context="contextHeader" :expanded="isOpen" />
+    </template>
     <div class="gl-p-1 gl-border-b gl-border-gray-50 gl-bg-white">
       <gl-search-box-by-type
         ref="search-box"
@@ -144,7 +180,7 @@ export default {
       {{ $options.i18n.searchError }}
     </gl-alert>
     <nav v-else :aria-label="$options.i18n.contextNavigation">
-      <ul class="gl-p-0 gl-list-style-none">
+      <ul class="gl-p-0 gl-m-0 gl-list-style-none">
         <li v-if="!isSearch">
           <div aria-hidden="true" class="gl-font-weight-bold gl-px-3 gl-py-3">
             {{ $options.i18n.switchTo }}
@@ -172,5 +208,5 @@ export default {
         />
       </ul>
     </nav>
-  </div>
+  </gl-disclosure-dropdown>
 </template>

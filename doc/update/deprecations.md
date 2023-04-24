@@ -1376,19 +1376,6 @@ and `config/redis.shared_state.yml` files.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Null value for `private_profile` attribute in User API is deprecated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-When creating and updating users through the API, `null` was a valid value for the `private_profile` attribute, which would internally be converted to the default value. Starting with 16.0, `null` will no longer be a valid value for this parameter, and the response will be a 400 if used. Now the only valid values are `true` and `false`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Old versions of JSON web tokens are deprecated
 
 <div class="deprecation-notes">

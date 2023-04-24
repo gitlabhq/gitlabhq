@@ -12,7 +12,8 @@ locate the feature categories responsible for specific database tables.
 ## Location
 
 Database dictionary metadata files are stored in the `gitlab` project under `db/docs/` for the `main` and `ci` databases.
-For the `geo` database, the dictionary files are stored under `ee/db/docs/`.
+For the `embedding` database, the dictionary files are stored under `ee/db/embedding/docs/`.
+For the `geo` database, the dictionary files are stored under `ee/db/geo/docs/`.
 
 ## Example dictionary file
 
@@ -51,7 +52,8 @@ When adding a table, you should:
    - `gitlab_main` table: `db/docs/`
    - `gitlab_ci` table: `db/docs/`
    - `gitlab_shared` table: `db/docs/`
-   - `gitlab_geo` table: `ee/db/docs/`
+   - `gitlab_embedding` table: `ee/db/embedding/docs/`
+   - `gitlab_geo` table: `ee/db/geo/docs/`
 1. Name the file `<table_name>.yml`, and include as much information as you know about the table.
 1. Include this file in the commit with the migration that creates the table.
 
@@ -79,7 +81,8 @@ When dropping a table, you should:
    - `gitlab_main` table: `db/docs/deleted_tables/`
    - `gitlab_ci` table: `db/docs/deleted_tables/`
    - `gitlab_shared` table: `db/docs/deleted_tables/`
-   - `gitlab_geo` table: `ee/db/docs/deleted_tables/`
+   - `gitlab_embedding` table: `ee/db/embedding/docs/deleted_tables/`
+   - `gitlab_geo` table: `ee/db/geo/docs/deleted_tables/`
 1. Add the fields `removed_by_url` and `removed_in_milestone` to the dictionary file.
 1. Include this change in the commit with the migration that drops the table.
 
@@ -105,7 +108,8 @@ When adding a new view, you should:
    - `gitlab_main` view: `db/docs/views/`
    - `gitlab_ci` view: `db/docs/views/`
    - `gitlab_shared` view: `db/docs/views/`
-   - `gitlab_geo` view: `ee/db/docs/views/`
+   - `gitlab_embedding` view: `ee/db/embedding/docs/views/`
+   - `gitlab_geo` view: `ee/db/geo/docs/views/`
 1. Name the file `<view_name>.yml`, and include as much information as you know about the view.
 1. Include this file in the commit with the migration that creates the view.
 
@@ -133,6 +137,7 @@ When dropping a view, you should:
    - `gitlab_main` view: `db/docs/deleted_views/`
    - `gitlab_ci` view: `db/docs/deleted_views/`
    - `gitlab_shared` view: `db/docs/deleted_views/`
-   - `gitlab_geo` view: `ee/db/docs/deleted_views/`
+   - `gitlab_embedding` view: `ee/db/embedding/docs/deleted_views/`
+   - `gitlab_geo` view: `ee/db/geo/docs/deleted_views/`
 1. Add the fields `removed_by_url` and `removed_in_milestone` to the dictionary file.
 1. Include this change in the commit with the migration that drops the view.

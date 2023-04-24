@@ -82,7 +82,7 @@ export default {
       <gl-icon :name="collapseIcon" :size="16" />
     </button>
     <gl-collapse :id="collapseId" v-model="expanded">
-      <div v-if="isEmpty" data-testid="empty-text" class="gl-text-gray-500 gl-font-sm gl-my-3">
+      <div v-if="isEmpty" data-testid="empty-text" class="gl-text-gray-500 gl-font-sm gl-mb-3">
         {{ noResultsText }}
       </div>
       <items-list :aria-label="title" :items="searchResults">

@@ -154,7 +154,6 @@ export default {
             v-for="(label, index) in visibleLabels"
             :key="label.id"
             :is-checked="isLabelSelected(label)"
-            is-check-centered
             is-check-item
             :active="shouldHighlightFirstItem && index === 0"
             active-class="is-focused"

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCollapse } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import Mousetrap from 'mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __ } from '~/locale';
@@ -12,7 +12,6 @@ import {
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
-import ContextSwitcherToggle from './context_switcher_toggle.vue';
 import ContextSwitcher from './context_switcher.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
@@ -20,9 +19,7 @@ import SidebarMenu from './sidebar_menu.vue';
 export default {
   components: {
     GlButton,
-    GlCollapse,
     UserBar,
-    ContextSwitcherToggle,
     ContextSwitcher,
     HelpCenter,
     SidebarMenu,
@@ -51,6 +48,13 @@ export default {
       return this.sidebarData.current_menu_items || [];
     },
   },
+  watch: {
+    isCollapsed() {
+      if (this.isCollapsed) {
+        this.$refs['context-switcher'].close();
+      }
+    },
+  },
   mounted() {
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
   },
@@ -63,9 +67,6 @@ export default {
     },
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
-    },
-    onContextSwitcherShown() {
-      this.$refs['context-switcher'].focusInput();
     },
     onHoverAreaMouseEnter() {
       this.openPeekTimer = setTimeout(this.openPeek, SUPER_SIDEBAR_PEEK_OPEN_DELAY);
@@ -94,6 +95,9 @@ export default {
       // This is cancelled if the user moves the cursor into the sidebar.
       this.onSidebarMouseEnter();
       this.onSidebarMouseLeave();
+    },
+    onContextSwitcherToggled(open) {
+      this.contextSwitcherOpen = open;
     },
   },
 };
@@ -134,36 +138,28 @@ export default {
         <trial-status-popover />
       </div>
       <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
-        <context-switcher-toggle
-          :context="sidebarData.current_context_header"
-          :expanded="contextSwitcherOpen"
-          data-qa-selector="context_switcher"
-        />
-        <div class="gl-flex-grow-1 gl-overflow-auto">
-          <gl-collapse
-            id="context-switcher"
-            v-model="contextSwitcherOpen"
-            data-qa-selector="context_section"
-            @shown="onContextSwitcherShown"
-          >
-            <context-switcher
-              ref="context-switcher"
-              :persistent-links="sidebarData.context_switcher_links"
-              :username="sidebarData.username"
-              :projects-path="sidebarData.projects_path"
-              :groups-path="sidebarData.groups_path"
-              :current-context="sidebarData.current_context"
-            />
-          </gl-collapse>
-          <gl-collapse :visible="!contextSwitcherOpen">
-            <sidebar-menu
-              :items="menuItems"
-              :panel-type="sidebarData.panel_type"
-              :pinned-item-ids="sidebarData.pinned_items"
-              :update-pins-url="sidebarData.update_pins_url"
-            />
-            <sidebar-portal-target />
-          </gl-collapse>
+        <div
+          class="gl-flex-grow-1"
+          :class="{ 'gl-overflow-auto': !contextSwitcherOpen }"
+          data-testid="nav-container"
+        >
+          <context-switcher
+            ref="context-switcher"
+            :persistent-links="sidebarData.context_switcher_links"
+            :username="sidebarData.username"
+            :projects-path="sidebarData.projects_path"
+            :groups-path="sidebarData.groups_path"
+            :current-context="sidebarData.current_context"
+            :context-header="sidebarData.current_context_header"
+            @toggle="onContextSwitcherToggled"
+          />
+          <sidebar-menu
+            :items="menuItems"
+            :panel-type="sidebarData.panel_type"
+            :pinned-item-ids="sidebarData.pinned_items"
+            :update-pins-url="sidebarData.update_pins_url"
+          />
+          <sidebar-portal-target />
         </div>
         <div class="gl-p-3">
           <help-center :sidebar-data="sidebarData" />

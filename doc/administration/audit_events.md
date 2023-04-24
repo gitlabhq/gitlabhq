@@ -159,11 +159,35 @@ You can view different events depending on the version of GitLab you have.
 
 The following actions on groups generate group audit events:
 
+#### Group management
+
 - Group name or path changed.
 - Group repository size limit changed.
 - Group created or deleted.
 - Group changed visibility.
 - User was added to group and with which [permissions](../user/permissions.md).
+- Removed user from group.
+- Project repository imported into group.
+- [Project shared with group](../user/project/members/share_project_with_groups.md) and with which
+  [permissions](../user/permissions.md).
+- Removal of a previously shared group with a project.
+- LFS enabled or disabled.
+- Membership lock enabled or disabled.
+- Request access enabled or disabled.
+- Roles allowed to create project changed.
+- Group deploy token was successfully created, revoked, or deleted.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
+- Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452)
+  in GitLab 14.9.
+- [IP restrictions](../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) changed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
+- Group had a security policy project linked, changed, or unlinked.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
+- An environment is protected or unprotected.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
+
+#### Authentication and authorization
+
 - User sign-in using [Group SAML](../user/group/saml_sso/index.md).
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8071) in GitLab 14.5, changes to the following
   [group SAML](../user/group/saml_sso/index.md) configuration:
@@ -177,32 +201,28 @@ The following actions on groups generate group audit events:
   - Default membership role.
   - SSO-SAML group sync configuration.
 - Permissions changes of a user assigned to a group.
-- Removed user from group.
-- Project repository imported into group.
-- [Project shared with group](../user/project/members/share_project_with_groups.md) and with which
-  [permissions](../user/permissions.md).
-- Removal of a previously shared group with a project.
-- LFS enabled or disabled.
-- Shared runners minutes limit changed.
-- Membership lock enabled or disabled.
-- Request access enabled or disabled.
 - 2FA enforcement or grace period changed.
-- Roles allowed to create project changed.
-- Group CI/CD variable added, removed, or protected status changed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
+
+#### Compliance and security
+
 - Compliance framework created, updated, or deleted.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) in GitLab 14.5.
 - Event streaming destination created, updated, or deleted.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) in GitLab 14.6.
+- Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
+- Changes to streaming audit destination custom HTTP headers.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
 - Instance administrator started or stopped impersonation of a group member.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
-- Group deploy token was successfully created, revoked, or deleted.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
-- Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452)
-  in GitLab 14.9.
-- [IP restrictions](../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) changed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
-- Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
+
+#### CI/CD
+
+- Shared runners minutes limit changed.
+- Group CI/CD variable added, removed, or protected status changed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.3.
+
+#### Code collaboration
+
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356152) in GitLab 15.1, changes to the following merge
   request approvals settings:
   - Prevent approval by author.
@@ -210,12 +230,6 @@ The following actions on groups generate group audit events:
   - Prevent editing approval rules in projects and merge requests.
   - Require user password to approve.
   - Remove all approvals when commits are added to the source branch.
-- Changes to streaming audit destination custom HTTP headers.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
-- Group had a security policy project linked, changed, or unlinked.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
-- An environment is protected or unprotected.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
 - Changes to Code Suggestions.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405295) in GitLab 15.11.
 

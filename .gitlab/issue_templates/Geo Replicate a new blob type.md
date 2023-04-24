@@ -100,7 +100,7 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
 
 - [ ] If deviating from the above example, then be sure to order columns according to [our guidelines](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ordering_table_columns.md).
 
-- [ ] Add the new table to the [database dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/database_dictionary.md) defined in [`ee/db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/docs):
+- [ ] Add the new table to the [database dictionary](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/database/database_dictionary.md) defined in [`ee/db/geo/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/db/geo/docs):
 
   ```yaml
   table_name: cool_widget_registry

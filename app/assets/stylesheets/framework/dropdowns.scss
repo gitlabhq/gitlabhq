@@ -718,11 +718,13 @@
 }
 
 .dropdown-label-box {
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: $gl-spacing-scale-2;
+  margin-right: $gl-spacing-scale-3;
+  margin-top: $gl-spacing-scale-2;
+  display: inline-block;
+  width: $gl-spacing-scale-5;
+  height: $gl-spacing-scale-3;
   border-radius: $border-radius-base;
+  border: 1px solid var(--white, $white);
 }
 
 .git-revision-dropdown {

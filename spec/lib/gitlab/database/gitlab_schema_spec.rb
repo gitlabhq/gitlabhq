@@ -51,8 +51,10 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       context "for #{db_config_name} using #{db_class}" do
         let(:db_data_sources) { db_class.connection.data_sources }
 
-        # The Geo database does not share the same structure as all decomposed databases
-        subject { described_class.views_and_tables_to_schema.select { |_, v| v != :gitlab_geo } }
+        # The embedding and Geo databases do not share the same structure as all decomposed databases
+        subject do
+          described_class.views_and_tables_to_schema.reject { |_, v| v == :gitlab_embedding || v == :gitlab_geo }
+        end
 
         it 'new data sources are added' do
           missing_data_sources = db_data_sources.to_set - subject.keys

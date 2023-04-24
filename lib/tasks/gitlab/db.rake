@@ -4,6 +4,7 @@ databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
 def each_database(databases, include_geo: false)
   ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |database|
+    next if database == 'embedding'
     next if !include_geo && database == 'geo'
 
     yield database
@@ -472,15 +473,19 @@ namespace :gitlab do
     end
 
     namespace :dictionary do
-      DB_DOCS_PATH = File.join(Rails.root, 'db', 'docs')
-      EE_DICTIONARY_PATH = File.join(Rails.root, 'ee', 'db', 'docs')
+      DB_DOCS_PATH = Rails.root.join('db', 'docs')
 
       desc 'Generate database docs yaml'
       task generate: :environment do
         next if Gitlab.jh?
 
         FileUtils.mkdir_p(DB_DOCS_PATH)
-        FileUtils.mkdir_p(EE_DICTIONARY_PATH) if Gitlab.ee?
+
+        if Gitlab.ee?
+          Gitlab::Database::EE_DATABASES_NAME_TO_DIR.each do |_, ee_db_dir|
+            FileUtils.mkdir_p(Rails.root.join(ee_db_dir, 'docs'))
+          end
+        end
 
         Rails.application.eager_load!
 
@@ -558,7 +563,11 @@ namespace :gitlab do
       def dictionary_file_path(source_name, views, database)
         sub_directory = views.include?(source_name) ? 'views' : ''
 
-        path = database == 'geo' ? EE_DICTIONARY_PATH : DB_DOCS_PATH
+        path = if Gitlab.ee? && Gitlab::Database::EE_DATABASES_NAME_TO_DIR.key?(database.to_s)
+                 Rails.root.join(Gitlab::Database::EE_DATABASES_NAME_TO_DIR[database.to_s], 'docs')
+               else
+                 DB_DOCS_PATH
+               end
 
         File.join(path, sub_directory, "#{source_name}.yml")
       end

@@ -31,7 +31,7 @@ export default {
     const { label, highlight, isLabelSet, isLabelIndeterminate } = props;
 
     const labelColorBox = h('span', {
-      class: 'dropdown-label-box gl-flex-shrink-0 gl-top-0 gl-absolute',
+      class: 'dropdown-label-box gl-mr-2',
       style: {
         backgroundColor: label.color,
       },

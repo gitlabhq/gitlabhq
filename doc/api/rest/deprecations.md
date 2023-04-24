@@ -31,6 +31,12 @@ has been deprecated in favor of the `detailed_merge_status` field which more cor
 all of the potential statuses that a merge request can be in. API users are encouraged to use the
 new `detailed_merge_status` field instead. The `merge_status` field will be removed in v5 of the GitLab REST API.
 
+### Null value for `private_profile` attribute in User API
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387005).
+
+When creating and updating users through the API, `null` was a valid value for the `private_profile` attribute, which would internally be converted to the default value. In v5 of the GitLab REST API, `null` will no longer be a valid value for this parameter, and the response will be a 400 if used. After this change, the only valid values will be `true` and `false`.
+
 ## Single merge request changes API endpoint
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/322117).

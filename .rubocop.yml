@@ -112,6 +112,7 @@ Lint/LastKeywordArgument:
 Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'
+    - 'ee/db/embedding/seeds.rb'
     - 'ee/db/geo/seeds.rb'
 
 # This cop checks whether some constant value isn't a

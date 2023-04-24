@@ -104,7 +104,7 @@ It's not possible to create branches from Jira for self-managed instances. For m
 
 ### Set up your instance
 
-See [prerequisites](#prerequisites).
+[Prerequisites](#prerequisites)
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
@@ -116,7 +116,7 @@ To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab
 
 ### Link your instance
 
-See [prerequisites](#prerequisites).
+[Prerequisites](#prerequisites)
 
 To link your self-managed instance to the GitLab for Jira Cloud app:
 
@@ -145,7 +145,7 @@ self-managed GitLab instances with Jira Cloud, you can do one of the following:
 
 ### Install the application in development mode
 
-See [prerequisites](#prerequisites-1).
+[Prerequisites](#prerequisites-1)
 
 To configure your Atlassian Cloud instance so you can install applications
 from outside the Marketplace:
@@ -173,11 +173,11 @@ then reinstall the application.
 
 ### Create a Marketplace listing
 
+[Prerequisites](#prerequisites-1)
+
 If you don't want to use development mode on your Jira instance, you can create
 your own Marketplace listing. This way, your application
 can be installed from the Atlassian Marketplace.
-
-See [prerequisites](#prerequisites-1).
 
 To create a Marketplace listing:
 

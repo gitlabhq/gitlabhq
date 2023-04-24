@@ -1,10 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlSearchBoxByType, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
+import ContextSwitcherToggle from '~/super_sidebar/components/context_switcher_toggle.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import ProjectsList from '~/super_sidebar/components/projects_list.vue';
 import GroupsList from '~/super_sidebar/components/groups_list.vue';
@@ -31,6 +32,7 @@ const persistentLinks = [
 const username = 'root';
 const projectsPath = 'projectsPath';
 const groupsPath = 'groupsPath';
+const contextHeader = { avatar_shape: 'circle' };
 
 Vue.use(VueApollo);
 
@@ -38,6 +40,8 @@ describe('ContextSwitcher component', () => {
   let wrapper;
   let mockApollo;
 
+  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findContextSwitcherToggle = () => wrapper.findComponent(ContextSwitcherToggle);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
@@ -72,9 +76,18 @@ describe('ContextSwitcher component', () => {
         username,
         projectsPath,
         groupsPath,
+        contextHeader,
         ...props,
       },
       stubs: {
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          template: `
+            <div>
+              <slot name="toggle" />
+              <slot />
+            </div>
+          `,
+        }),
         GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
           props: ['placeholder'],
           methods: { focusInput: focusInputMock },
@@ -111,7 +124,7 @@ describe('ContextSwitcher component', () => {
       );
     });
 
-    it('passes the correct props the frequent projects list', () => {
+    it('passes the correct props to the frequent projects list', () => {
       expect(findProjectsList().props()).toEqual({
         username,
         viewAllLink: projectsPath,
@@ -120,19 +133,13 @@ describe('ContextSwitcher component', () => {
       });
     });
 
-    it('passes the correct props the frequent groups list', () => {
+    it('passes the correct props to the frequent groups list', () => {
       expect(findGroupsList().props()).toEqual({
         username,
         viewAllLink: groupsPath,
         isSearch: false,
         searchResults: [],
       });
-    });
-
-    it('focuses the search input when focusInput is called', () => {
-      wrapper.vm.focusInput();
-
-      expect(focusInputMock).toHaveBeenCalledTimes(1);
     });
 
     it('does not trigger the search query on mount', () => {
@@ -144,6 +151,45 @@ describe('ContextSwitcher component', () => {
       await nextTick();
 
       expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it('passes the correct props to the toggle', () => {
+      expect(findContextSwitcherToggle().props('context')).toEqual(contextHeader);
+      expect(findContextSwitcherToggle().props('expanded')).toEqual(false);
+    });
+
+    it("passes Popper.js' options to the disclosure dropdown", () => {
+      expect(findDisclosureDropdown().props('popperOptions')).toMatchObject({
+        modifiers: expect.any(Array),
+      });
+    });
+
+    it('does not emit the `toggle` event initially', () => {
+      expect(wrapper.emitted('toggle')).toBe(undefined);
+    });
+  });
+
+  describe('visibility changes', () => {
+    beforeEach(() => {
+      createWrapper();
+      findDisclosureDropdown().vm.$emit('shown');
+    });
+
+    it('emits the `toggle` event, focuses the search input and puts the toggle in the expanded state when opened', () => {
+      expect(wrapper.emitted('toggle')).toHaveLength(1);
+      expect(wrapper.emitted('toggle')[0]).toEqual([true]);
+      expect(focusInputMock).toHaveBeenCalledTimes(1);
+      expect(findContextSwitcherToggle().props('expanded')).toBe(true);
+    });
+
+    it("emits the `toggle` event, does not attempt to focus the input, and resets the toggle's `expanded` props to `false` when closed", async () => {
+      findDisclosureDropdown().vm.$emit('hidden');
+      await nextTick();
+
+      expect(wrapper.emitted('toggle')).toHaveLength(2);
+      expect(wrapper.emitted('toggle')[1]).toEqual([false]);
+      expect(focusInputMock).toHaveBeenCalledTimes(1);
+      expect(findContextSwitcherToggle().props('expanded')).toBe(false);
     });
   });
 

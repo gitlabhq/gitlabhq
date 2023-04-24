@@ -15,6 +15,11 @@ operating systems supported by GitLab are listed in the
 
 The following lists the currently supported OSs and their possible EOL dates.
 
+NOTE:
+`amd64` and `x86_64` refer to the same 64-bit architecture.
+The names `arm64` and `aarch64` are also interchangeable and refer to the same
+architecture.
+
 | OS Version                                                   | First supported GitLab version | Arch            |                         Install Documentation                | OS EOL     | Details                                                      |
 | ------------------------------------------------------------ | ------------------------------ | --------------- | :----------------------------------------------------------: | ---------- | ------------------------------------------------------------ |
 | AlmaLinux 8                                                  | GitLab CE / GitLab EE 14.5.0   | x86_64, aarch64 | [AlmaLinux Install Documentation](https://about.gitlab.com/install/#almalinux-8) | 2029       | <https://almalinux.org/>                                     |

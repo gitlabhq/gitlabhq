@@ -10,8 +10,4 @@ link: https://docs.gitlab.com/ee/development/documentation/versions.html
 level: error
 scope: raw
 raw:
-  - '(`gitlab-ci.yml`|'
-  - '`gitlabci.yml`|'
-  - '`gitlab.ci.yml`|'
-  - '`.gitlab.ci-yml`|'
-  - '`.gitlab-ci.yaml`)'
+  - '(?!`\.gitlab-ci\.yml`)`.?gitlab.?ci.?ya?ml`'
