@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { flatten } from 'lodash';
-import Mousetrap from 'mousetrap';
 import Vue from 'vue';
+import { Mousetrap, addStopCallback } from '~/lib/mousetrap';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 
 import findAndFollowLink from '~/lib/utils/navigation_utility';
@@ -28,20 +28,11 @@ import {
 } from './keybindings';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
-const defaultStopCallback = Mousetrap.prototype.stopCallback;
-Mousetrap.prototype.stopCallback = function customStopCallback(e, element, combo) {
-  if (keysFor(TOGGLE_MARKDOWN_PREVIEW).indexOf(combo) !== -1) {
-    return false;
-  }
-
-  return defaultStopCallback.call(this, e, element, combo);
-};
-
 /**
  * The key used to save and fetch the local Mousetrap instance
  * attached to a `<textarea>` element using `jQuery.data`
  */
-const LOCAL_MOUSETRAP_DATA_KEY = 'local-mousetrap-instance';
+export const LOCAL_MOUSETRAP_DATA_KEY = 'local-mousetrap-instance';
 
 /**
  * Gets a mapping of toolbar button => keyboard shortcuts
@@ -76,53 +67,37 @@ export default class Shortcuts {
     this.helpModalElement = null;
     this.helpModalVueInstance = null;
 
-    Mousetrap.bind(keysFor(TOGGLE_KEYBOARD_SHORTCUTS_DIALOG), this.onToggleHelp);
-    Mousetrap.bind(keysFor(START_SEARCH), Shortcuts.focusSearch);
-    Mousetrap.bind(keysFor(FOCUS_FILTER_BAR), this.focusFilter.bind(this));
-    Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), Shortcuts.onTogglePerfBar);
-    Mousetrap.bind(keysFor(HIDE_APPEARING_CONTENT), Shortcuts.hideAppearingContent);
-    Mousetrap.bind(keysFor(TOGGLE_CANARY), Shortcuts.onToggleCanary);
+    this.bindCommands([
+      [TOGGLE_KEYBOARD_SHORTCUTS_DIALOG, this.onToggleHelp],
+      [START_SEARCH, Shortcuts.focusSearch],
+      [FOCUS_FILTER_BAR, this.focusFilter.bind(this)],
+      [TOGGLE_PERFORMANCE_BAR, Shortcuts.onTogglePerfBar],
+      [HIDE_APPEARING_CONTENT, Shortcuts.hideAppearingContent],
+      [TOGGLE_CANARY, Shortcuts.onToggleCanary],
+
+      [GO_TO_YOUR_TODO_LIST, () => findAndFollowLink('.shortcuts-todos')],
+      [GO_TO_ACTIVITY_FEED, () => findAndFollowLink('.dashboard-shortcuts-activity')],
+      [GO_TO_YOUR_ISSUES, () => findAndFollowLink('.dashboard-shortcuts-issues')],
+      [GO_TO_YOUR_MERGE_REQUESTS, () => findAndFollowLink('.dashboard-shortcuts-merge_requests')],
+      [GO_TO_YOUR_REVIEW_REQUESTS, () => findAndFollowLink('.dashboard-shortcuts-review_requests')],
+      [GO_TO_YOUR_PROJECTS, () => findAndFollowLink('.dashboard-shortcuts-projects')],
+      [GO_TO_YOUR_GROUPS, () => findAndFollowLink('.dashboard-shortcuts-groups')],
+      [GO_TO_MILESTONE_LIST, () => findAndFollowLink('.dashboard-shortcuts-milestones')],
+      [GO_TO_YOUR_SNIPPETS, () => findAndFollowLink('.dashboard-shortcuts-snippets')],
+
+      [TOGGLE_MARKDOWN_PREVIEW, Shortcuts.toggleMarkdownPreview],
+    ]);
+
+    addStopCallback((e, element, combo) =>
+      keysFor(TOGGLE_MARKDOWN_PREVIEW).includes(combo) ? false : undefined,
+    );
 
     const findFileURL = document.body.dataset.findFile;
-
-    Mousetrap.bind(keysFor(GO_TO_YOUR_TODO_LIST), () => findAndFollowLink('.shortcuts-todos'));
-    Mousetrap.bind(keysFor(GO_TO_ACTIVITY_FEED), () =>
-      findAndFollowLink('.dashboard-shortcuts-activity'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_YOUR_ISSUES), () =>
-      findAndFollowLink('.dashboard-shortcuts-issues'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_YOUR_MERGE_REQUESTS), () =>
-      findAndFollowLink('.dashboard-shortcuts-merge_requests'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_YOUR_REVIEW_REQUESTS), () =>
-      findAndFollowLink('.dashboard-shortcuts-review_requests'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_YOUR_PROJECTS), () =>
-      findAndFollowLink('.dashboard-shortcuts-projects'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_YOUR_GROUPS), () =>
-      findAndFollowLink('.dashboard-shortcuts-groups'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_MILESTONE_LIST), () =>
-      findAndFollowLink('.dashboard-shortcuts-milestones'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_YOUR_SNIPPETS), () =>
-      findAndFollowLink('.dashboard-shortcuts-snippets'),
-    );
-
-    Mousetrap.bind(keysFor(TOGGLE_MARKDOWN_PREVIEW), Shortcuts.toggleMarkdownPreview);
-
     if (typeof findFileURL !== 'undefined' && findFileURL !== null) {
-      Mousetrap.bind(keysFor(GO_TO_PROJECT_FIND_FILE), () => {
+      this.bindCommand(GO_TO_PROJECT_FIND_FILE, () => {
         visitUrl(findFileURL);
       });
     }
-
-    $(document).on('click.more_help', '.js-more-help-button', function clickMoreHelp(e) {
-      $(this).remove();
-      e.preventDefault();
-    });
 
     const shortcutsModalTriggerEvent = 'click.shortcutsModalTrigger';
     // eslint-disable-next-line @gitlab/no-global-event-off
@@ -133,6 +108,32 @@ export default class Shortcuts {
     if (shouldDisableShortcuts()) {
       disableShortcuts();
     }
+  }
+
+  /**
+   * Bind the keyboard shortcut(s) defined by the given command to the given
+   * callback.
+   *
+   * @param {Object} command A command object.
+   * @param {Function} callback The callback to call when the command's key
+   *     combo has been pressed.
+   * @returns {void}
+   */
+  // eslint-disable-next-line class-methods-use-this
+  bindCommand(command, callback) {
+    Mousetrap.bind(keysFor(command), callback);
+  }
+
+  /**
+   * Bind the keyboard shortcut(s) defined by the given commands to the given
+   * callbacks.
+   *
+   * @param {Array<[Object, Function]>} commandsAndCallbacks An array of
+   *     command/callback pairs.
+   * @returns {void}
+   */
+  bindCommands(commandsAndCallbacks) {
+    commandsAndCallbacks.forEach((commandAndCallback) => this.bindCommand(...commandAndCallback));
   }
 
   onToggleHelp(e) {

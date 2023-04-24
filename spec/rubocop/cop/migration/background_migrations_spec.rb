@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/background_migrations'
 
 RSpec.describe RuboCop::Cop::Migration::BackgroundMigrations do
-  let(:cop) { described_class.new }
-
   context 'when queue_background_migration_jobs_by_range_at_intervals is used' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

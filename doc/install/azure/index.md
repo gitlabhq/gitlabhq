@@ -191,7 +191,7 @@ To set up the GitLab external URL:
 1. Find `external_url` and replace it with your own domain name. For the sake
    of this example, use the default domain name Azure sets up.
    Using `https` in the URL
-   [automatically enables](https://docs.gitlab.com/omnibus/settings/ssl.html#lets-encrypt-integration),
+   [automatically enables](https://docs.gitlab.com/omnibus/settings/ssl/index.html#lets-encrypt-integration),
    Let's Encrypt, and sets HTTPS by default:
 
    ```ruby

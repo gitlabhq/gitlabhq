@@ -7,8 +7,6 @@ require_relative '../../../../rubocop/cop/gitlab/keys_first_and_values_first'
 RSpec.describe RuboCop::Cop::Gitlab::KeysFirstAndValuesFirst do
   let(:msg) { described_class::MSG }
 
-  subject(:cop) { described_class.new }
-
   shared_examples 'inspect use of keys or values first' do |method, autocorrect|
     describe ".#{method}.first" do
       it 'flags and autocorrects' do

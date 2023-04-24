@@ -242,7 +242,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       end
 
       let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
-      let(:params) { { local: location, with: { website: 'gitlab.com' } } }
+      let(:params) { { local: location, inputs: { website: 'gitlab.com' } } }
 
       before do
         allow_any_instance_of(described_class)

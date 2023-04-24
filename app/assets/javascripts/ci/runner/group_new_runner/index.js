@@ -12,7 +12,7 @@ export const initGroupNewRunner = (selector = '#js-group-new-runner') => {
     return null;
   }
 
-  const { legacyRegistrationToken, groupId } = el.dataset;
+  const { groupId } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -25,7 +25,6 @@ export const initGroupNewRunner = (selector = '#js-group-new-runner') => {
       return h(GroupNewRunnerApp, {
         props: {
           groupId,
-          legacyRegistrationToken,
         },
       });
     },

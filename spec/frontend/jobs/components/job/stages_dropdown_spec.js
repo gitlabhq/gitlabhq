@@ -1,6 +1,6 @@
 import { GlDropdown, GlDropdownItem, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StagesDropdown from '~/jobs/components/job/sidebar/stages_dropdown.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';

@@ -99,7 +99,6 @@ module BroadcastMessagesHelper
   private
 
   def current_user_access_level_for_project_or_group
-    return if Feature.disabled?(:role_targeted_broadcast_messages)
     return unless current_user.present?
 
     strong_memoize(:current_user_access_level_for_project_or_group) do

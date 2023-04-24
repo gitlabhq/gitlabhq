@@ -155,7 +155,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
       end
 
       let(:params) do
-        { template: template, with: { env: 'production' } }
+        { template: template, inputs: { env: 'production' } }
       end
 
       it 'correctly interpolates the content' do

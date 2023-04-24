@@ -45,7 +45,7 @@ Have a look at some of our most popular topics:
 | [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                  | Integrate Elasticsearch with GitLab to enable advanced search. |
 | [Omnibus GitLab database settings](https://docs.gitlab.com/omnibus/settings/database.html) | Database settings for Omnibus GitLab self-managed instances. |
 | [Omnibus GitLab NGINX settings](https://docs.gitlab.com/omnibus/settings/nginx.html)       | NGINX settings for Omnibus GitLab self-managed instances. |
-| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl.html)      | SSL settings for Omnibus GitLab self-managed instances. |
+| [Omnibus GitLab SSL configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html)      | SSL settings for Omnibus GitLab self-managed instances. |
 | [GitLab.com settings](user/gitlab_com/index.md)                                            | Settings used for GitLab.com. |
 
 ## The entire DevOps lifecycle

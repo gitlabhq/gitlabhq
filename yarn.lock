@@ -1005,10 +1005,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.1.tgz#b6b8d81780b9a9f6459f4bfe9226ac6aefaefe87"
   integrity sha512-aG20vknL4/YjQF9BSV7ts4EWm/yrjagAN7OWBNmlbEOUiu0llj4OGrFoOKK3g2vey4/p2omKCoHrWtPxSwV3HA==
 
-"@cubejs-client/core@^0.32.17":
-  version "0.32.17"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.32.17.tgz#08189daca4976f87177f72607ed3db595446b268"
-  integrity sha512-uK2QM01nvJJVKQzHFfIjImuiveFa2S4Dvt5/hm6DerE6mDbkGasOQWBv5c+WZ3JVCZ1xxThSrDV2NY4EUcwk9w==
+"@cubejs-client/core@^0.32.22":
+  version "0.32.22"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.32.22.tgz#fe3bc9382e7858cb1b9c7dd726e3327acc3e9508"
+  integrity sha512-JYA8lgr0Pjus/Y+GA5gbP6iY/X2+7wO+DXg4fjAWJjn2MEU8X478OU+uLENzgIqLyZRSjvEZoI6Vt8BicJboEQ==
   dependencies:
     "@babel/runtime" "^7.1.2"
     core-js "^3.6.5"
@@ -1018,12 +1018,12 @@
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
 
-"@cubejs-client/vue@^0.32.17":
-  version "0.32.17"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.32.17.tgz#f33a853afead1b5aa3c82d0e92a8f168f4078d79"
-  integrity sha512-hfuEWkYQvSJzCZb4YyT3MyRPVOpV2rLLORwXN2Mn7gPmJuWE/JazrxU8cegxArNAN60BvGM3z2SsODQdwCxP4g==
+"@cubejs-client/vue@^0.32.22":
+  version "0.32.22"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.32.22.tgz#2a16a0e2b9f1c084fc11d1416f2cd52ed30fdbbb"
+  integrity sha512-FuApIKcLmM1JaR4wOjLDPONsJE8PeRw6QAo+nBOZJNFBjXPmDhd7EH73xvlT3PY0hhBwD1ts6sUWuvjV2uPQGA==
   dependencies:
-    "@cubejs-client/core" "^0.32.17"
+    "@cubejs-client/core" "^0.32.22"
     core-js "^3.6.5"
     ramda "^0.27.2"
 
@@ -1115,10 +1115,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.40.0.tgz#f1ebb2fcdbb1181550d53f0db827eca1f5060af0"
   integrity sha512-9CVkIbV0VnIFfVBjWcW8+nHzpMhHhC73C9mGPEktEPfpEbaaRws2UywgDEH+C2B8Ba1QdBo/aFr68RDu2VwvfA==
 
-"@gitlab/ui@60.2.0":
-  version "60.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-60.2.0.tgz#d3c8c6f6cb9f8209ad4ca1f4e530810e04440285"
-  integrity sha512-AvVYA49B1InCtq+on3Zgu7+I2GX5iA320qjrrK5h7bUcq1Gywxrq28+GZrkIV7eicC05slReWRGqebwpsqrrOg==
+"@gitlab/ui@61.1.1":
+  version "61.1.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-61.1.1.tgz#fcd0f66e307456aacfb072d026bf9096bef43658"
+  integrity sha512-dd9LqCV/6Ju7pMId0g8vbTyHYa1MavVbvB2WsJpnr+VsCPCLsl8hp9XB238kijhvfQqcExUsqwm0Plsu/nE1xQ==
   dependencies:
     "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.23.1"
@@ -6626,10 +6626,10 @@ graphql@^15.7.2:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.7.2.tgz#85ab0eeb83722977151b3feb4d631b5f2ab287ef"
   integrity sha512-AnnKk7hFQFmU/2I9YSQf3xw44ctnSFCfp3zE0N6W174gqe9fWG/2rKaKxROK7CcI3XtERpjEKFqts8o319Kf7A==
 
-gridstack@^7.1.2:
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-7.1.2.tgz#288ccccf786e0440094a48d5f8d654064fb18566"
-  integrity sha512-vc0sHheyOCKe2VE9JgNlNjHroaYJAbOsl/R4sF6TY5WqKTa6owJz4pj3D+W3QQZ43zS18yttLw6m+R9UNuoC3A==
+gridstack@^7.3.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-7.3.0.tgz#7b32395edcd885bc39b84068ac86f2831f7a2451"
+  integrity sha512-JKZgsHzm1ljkn1NnBZpf8j4NDOBCXTuw0m1ZC0sr6NKUh0BFWzXAONIxtX1hWGUVeKLj5l1VcmnTwCXw5ypDNw==
 
 gzip-size@^6.0.0:
   version "6.0.0"

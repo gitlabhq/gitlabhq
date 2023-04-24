@@ -314,7 +314,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
       end
 
       let(:params) do
-        { file: 'template-file.yml', ref: 'master', project: project.full_path, with: { name: 'abc' } }
+        { file: 'template-file.yml', ref: 'master', project: project.full_path, inputs: { name: 'abc' } }
       end
 
       it 'correctly interpolates the content' do

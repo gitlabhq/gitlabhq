@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/background_migration/feature_category'
 
 RSpec.describe RuboCop::Cop::BackgroundMigration::FeatureCategory, feature_category: :database do
-  let(:cop) { described_class.new }
-
   context 'for non background migrations' do
     before do
       allow(cop).to receive(:in_background_migration?).and_return(false)

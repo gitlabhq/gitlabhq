@@ -81,9 +81,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
     it_behaves_like 'assigns build to package file'
 
     context 'with existing package' do
-      before do
-        create(:package_file, package: package, file_name: file_name)
-      end
+      let_it_be(:duplicate_file) { create(:package_file, package: package, file_name: file_name) }
 
       it { expect { execute_service }.to change { project.package_files.count }.by(1) }
 
@@ -95,6 +93,16 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
         it 'does not allow duplicates' do
           expect { execute_service }.to raise_error(::Packages::DuplicatePackageError)
             .and change { project.package_files.count }.by(0)
+        end
+
+        context 'when the file is pending destruction' do
+          before do
+            duplicate_file.update_column(:status, :pending_destruction)
+          end
+
+          it 'allows creating the file' do
+            expect { execute_service }.to change { project.package_files.count }.by(1)
+          end
         end
 
         context 'when the package name matches the exception regex' do

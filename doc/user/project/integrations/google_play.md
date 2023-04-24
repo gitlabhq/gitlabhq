@@ -17,7 +17,7 @@ The Google Play integration works out of the box with [fastlane](https://fastlan
 
 Prerequisites:
 
-- You must have a [Google Play Console](https://play.google.com/console/signup) developer account.
+- You must have a [Google Play Console](https://play.google.com/console/developers) developer account.
 - You must [generate a new service account key for your project](https://developers.google.com/android-publisher/getting_started) from the Google Cloud console.
 
 To enable the Google Play integration in GitLab:

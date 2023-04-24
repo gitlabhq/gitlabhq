@@ -1,7 +1,6 @@
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import Mousetrap from 'mousetrap';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -19,6 +18,7 @@ import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { Mousetrap } from '~/lib/mousetrap';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import createDiffsStore from '../create_diffs_store';

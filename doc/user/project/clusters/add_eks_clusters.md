@@ -178,7 +178,7 @@ When you create a new cluster, you have the following settings:
 | Key pair name           | The [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) that you can use to connect to your worker nodes. |
 | VPC                     | The [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) to use for your EKS Cluster resources. |
 | Subnets                 | The [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html) in your VPC where your worker nodes run. Two are required. |
-| Security group          | The [security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets. |
+| Security group          | The [security group](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets. |
 | Instance type           | The [instance type](https://aws.amazon.com/ec2/instance-types/) of your worker nodes. |
 | Node count              | The number of worker nodes. |
 | GitLab-managed cluster  | Check if you want GitLab to manage namespaces and service accounts for this cluster. |

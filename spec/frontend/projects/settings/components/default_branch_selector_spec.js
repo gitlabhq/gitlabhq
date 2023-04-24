@@ -28,7 +28,6 @@ describe('projects/settings/components/default_branch_selector', () => {
       value: persistedDefaultBranch,
       enabledRefTypes: [REF_TYPE_BRANCHES],
       projectId,
-      refType: null,
       state: true,
       toggleButtonClass: null,
       translations: {

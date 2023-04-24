@@ -3,7 +3,6 @@
 Layout/FirstArrayElementIndentation:
   Details: grace period
   Exclude:
-    - 'app/controllers/admin/broadcast_messages_controller.rb'
     - 'app/controllers/admin/plan_limits_controller.rb'
     - 'app/finders/user_groups_counter.rb'
     - 'app/helpers/search_helper.rb'

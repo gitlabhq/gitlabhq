@@ -1,7 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { isNull } from 'lodash';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';

@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';

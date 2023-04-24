@@ -3,18 +3,12 @@ require 'spamcheck'
 
 module Gitlab
   module Spamcheck
+    Error = Class.new(StandardError)
+
     class Client
       include ::Spam::SpamConstants
 
       DEFAULT_TIMEOUT_SECS = 2
-
-      VERDICT_MAPPING = {
-        ::Spamcheck::SpamVerdict::Verdict::ALLOW => ALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW => CONDITIONAL_ALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::DISALLOW => DISALLOW,
-        ::Spamcheck::SpamVerdict::Verdict::BLOCK => BLOCK_USER,
-        ::Spamcheck::SpamVerdict::Verdict::NOOP => NOOP
-      }.freeze
 
       ACTION_MAPPING = {
         create: ::Spamcheck::Action::CREATE,
@@ -40,8 +34,9 @@ module Gitlab
         pb, grpc_method = build_protobuf(**protobuf_args)
         response = grpc_method.call(pb, metadata: metadata)
 
-        verdict = convert_verdict_to_gitlab_constant(response.verdict)
-        [verdict, response.extra_attributes.to_h, response.error]
+        raise Error, response.error unless response.error.blank?
+
+        Result.new(response)
       end
 
       private
@@ -55,10 +50,6 @@ module Gitlab
         else
           raise ArgumentError, "Not a spammable type: #{spammable.class.name}"
         end
-      end
-
-      def convert_verdict_to_gitlab_constant(verdict)
-        VERDICT_MAPPING.fetch(::Spamcheck::SpamVerdict::Verdict.resolve(verdict), verdict)
       end
 
       def build_protobuf(spammable:, user:, context:, extra_features:)

@@ -14,7 +14,7 @@ RSpec.describe User, feature_category: :system_access do
   end
 
   describe 'scopes & predicates' do
-    User::USER_TYPES.keys.each do |type|
+    User::USER_TYPES.keys.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition
       let_it_be(type) { create(:user, username: type, user_type: type) }
     end
     let(:bots) { User::BOT_USER_TYPES.map { |type| public_send(type) } }

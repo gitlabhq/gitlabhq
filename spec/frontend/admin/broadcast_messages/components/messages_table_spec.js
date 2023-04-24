@@ -9,11 +9,8 @@ describe('MessagesTable', () => {
   const findTargetRoles = () => wrapper.find('[data-testid="target-roles-th"]');
   const findDeleteButton = (id) => wrapper.find(`[data-testid="delete-message-${id}"]`);
 
-  function createComponent(props = {}, glFeatures = {}) {
+  function createComponent(props = {}) {
     wrapper = mount(MessagesTable, {
-      provide: {
-        glFeatures,
-      },
       propsData: {
         messages: MOCK_MESSAGES,
         ...props,
@@ -27,14 +24,10 @@ describe('MessagesTable', () => {
     expect(findRows()).toHaveLength(MOCK_MESSAGES.length);
   });
 
-  it('renders the "Target Roles" column when roleTargetedBroadcastMessages is enabled', () => {
-    createComponent({}, { roleTargetedBroadcastMessages: true });
-    expect(findTargetRoles().exists()).toBe(true);
-  });
-
-  it('does not render the "Target Roles" column when roleTargetedBroadcastMessages is disabled', () => {
+  it('renders the "Target Roles" column', () => {
     createComponent();
-    expect(findTargetRoles().exists()).toBe(false);
+
+    expect(findTargetRoles().exists()).toBe(true);
   });
 
   it('emits a delete-message event when a delete button is clicked', () => {

@@ -64,18 +64,20 @@ RSpec.describe Metrics::Dashboard::PanelPreviewService, feature_category: :metri
         Gitlab::Config::Loader::Yaml::DataTooLargeError,
         Gitlab::Config::Loader::FormatError
       ].each do |error_class|
-        before do
-          allow_next_instance_of(::Gitlab::Metrics::Dashboard::Processor) do |processor|
-            allow(processor).to receive(:process).and_raise(error_class.new('error'))
+        context "with #{error_class}" do
+          before do
+            allow_next_instance_of(::Gitlab::Metrics::Dashboard::Processor) do |processor|
+              allow(processor).to receive(:process).and_raise(error_class.new('error'))
+            end
           end
-        end
 
-        it 'returns error service response' do
-          expect(service_response.error?).to be_truthy
-        end
+          it 'returns error service response' do
+            expect(service_response.error?).to be_truthy
+          end
 
-        it 'returns error message' do
-          expect(service_response.message).to eq('error')
+          it 'returns error message' do
+            expect(service_response.message).to eq('error')
+          end
         end
       end
     end

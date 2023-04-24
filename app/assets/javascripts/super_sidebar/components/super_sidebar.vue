@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

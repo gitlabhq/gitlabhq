@@ -71,6 +71,5 @@ Here's a few links to get you started with the migration:
 
 - [Migrate using the `cvs-fast-export` tool](https://gitlab.com/esr/cvs-fast-export)
 - [Stack Overflow post on importing the CVS repository](https://stackoverflow.com/a/11490134/974710)
-- [Convert a CVS repository to Git](https://www.techrepublic.com/article/convert-cvs-repositories-to-git/)
 - [Man page of the `git-cvsimport` tool](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-cvsimport.html)
 - [Migrate using `reposurgeon`](http://www.catb.org/~esr/reposurgeon/repository-editing.html#conversion)

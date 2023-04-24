@@ -36,10 +36,9 @@ describe('MessageForm', () => {
   const findSubmitButton = () => wrapper.findComponent('[data-testid=submit-button]');
   const findForm = () => wrapper.findComponent(GlForm);
 
-  function createComponent({ broadcastMessage = {}, glFeatures = {} }) {
+  function createComponent({ broadcastMessage = {} } = {}) {
     wrapper = mount(MessageForm, {
       provide: {
-        glFeatures,
         targetAccessLevelOptions: MOCK_TARGET_ACCESS_LEVELS,
         messagesPath,
         previewPath: '_preview_path_',
@@ -100,14 +99,9 @@ describe('MessageForm', () => {
   });
 
   describe('target roles checkboxes', () => {
-    it('renders when roleTargetedBroadcastMessages feature is enabled', () => {
-      createComponent({ glFeatures: { roleTargetedBroadcastMessages: true } });
+    it('renders target roles', () => {
+      createComponent();
       expect(findTargetRoles().exists()).toBe(true);
-    });
-
-    it('does not render when roleTargetedBroadcastMessages feature is disabled', () => {
-      createComponent({ glFeatures: { roleTargetedBroadcastMessages: false } });
-      expect(findTargetRoles().exists()).toBe(false);
     });
   });
 

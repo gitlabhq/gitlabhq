@@ -35,7 +35,7 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
 - The [Jira integration](../index.md) requires
   GitLab to connect to Jira. Any TLS issues that arise from a private certificate
   authority or self-signed certificate are resolved
-  [on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates),
+  [on the GitLab server](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates),
   as GitLab is the TLS client.
 - The Jira development panel requires Jira to connect to GitLab, which
   causes Jira to be the TLS client. If your GitLab server's certificate is not

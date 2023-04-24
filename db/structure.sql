@@ -31504,6 +31504,8 @@ CREATE INDEX index_on_namespaces_lower_name ON namespaces USING btree (lower((na
 
 CREATE INDEX index_on_namespaces_lower_path ON namespaces USING btree (lower((path)::text));
 
+CREATE INDEX index_on_namespaces_namespaces_by_top_level_namespace ON namespaces USING btree ((traversal_ids[1]), type, id);
+
 CREATE INDEX index_on_oncall_schedule_escalation_rule ON incident_management_escalation_rules USING btree (oncall_schedule_id);
 
 CREATE INDEX index_on_pages_metadata_not_migrated ON project_pages_metadata USING btree (project_id) WHERE ((deployed = true) AND (pages_deployment_id IS NULL));

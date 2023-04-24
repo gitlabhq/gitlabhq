@@ -112,7 +112,6 @@ Style/IfUnlessModifier:
     - 'app/models/ability.rb'
     - 'app/models/appearance.rb'
     - 'app/models/application_setting_implementation.rb'
-    - 'app/models/broadcast_message.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/ci/application_record.rb'
     - 'app/models/ci/build.rb'

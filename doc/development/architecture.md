@@ -413,7 +413,7 @@ GitLab can be considered to have two layers from a process perspective:
   - [Omnibus](https://github.com/certbot/certbot/blob/master/README.rst)
   - [Charts](https://github.com/jetstack/cert-manager/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl.html)
+  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/installation.md#using-https)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/https.md)

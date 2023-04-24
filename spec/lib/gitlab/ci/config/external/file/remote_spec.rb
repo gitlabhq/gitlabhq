@@ -285,7 +285,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         YAML
       end
 
-      let(:params) { { remote: location, with: { include: 'some-file.yml' } } }
+      let(:params) { { remote: location, inputs: { include: 'some-file.yml' } } }
 
       let(:context_params) do
         { sha: '12345', variables: variables, project: project }

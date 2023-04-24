@@ -1,8 +1,0 @@
----
-name: role_targeted_broadcast_messages
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81232
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351736
-milestone: '14.9'
-type: development
-group: group::activation
-default_enabled: false

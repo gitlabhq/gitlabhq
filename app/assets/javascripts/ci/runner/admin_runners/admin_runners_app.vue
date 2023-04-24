@@ -193,16 +193,17 @@ export default {
         nav-class="gl-border-none!"
       />
 
-      <gl-button v-if="shouldShowCreateRunnerWorkflow" :href="newRunnerPath" variant="confirm">
-        {{ s__('Runners|New instance runner') }}
-      </gl-button>
-      <registration-dropdown
-        v-else
-        class="gl-w-full gl-sm-w-auto gl-mr-auto"
-        :registration-token="registrationToken"
-        :type="$options.INSTANCE_TYPE"
-        right
-      />
+      <div class="gl-w-full gl-md-w-auto gl-display-flex">
+        <gl-button v-if="shouldShowCreateRunnerWorkflow" :href="newRunnerPath" variant="confirm">
+          {{ s__('Runners|New instance runner') }}
+        </gl-button>
+        <registration-dropdown
+          class="gl-ml-3"
+          :registration-token="registrationToken"
+          :type="$options.INSTANCE_TYPE"
+          right
+        />
+      </div>
     </div>
 
     <runner-filtered-search-bar

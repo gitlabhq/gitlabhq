@@ -71,7 +71,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 ## Enabling SSL
 
 Follow these steps to enable SSL for your fresh instance. These steps reflect those for
-[manually configuring SSL in Omnibus's NGINX configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-https-manually):
+[manually configuring SSL in Omnibus's NGINX configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-https-manually):
 
 1. Make the following changes to `/etc/gitlab/gitlab.rb`:
 

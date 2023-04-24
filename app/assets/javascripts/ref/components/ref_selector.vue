@@ -47,11 +47,6 @@ export default {
       required: false,
       default: () => {},
     },
-    refType: {
-      type: String,
-      required: false,
-      default: null,
-    },
     projectId: {
       type: String,
       required: true,

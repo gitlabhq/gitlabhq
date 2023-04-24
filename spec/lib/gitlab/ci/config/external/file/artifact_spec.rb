@@ -253,7 +253,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
         YAML
       end
 
-      let(:params) { { artifact: 'generated.yml', job: 'generator', with: { env: 'production' } } }
+      let(:params) { { artifact: 'generated.yml', job: 'generator', inputs: { env: 'production' } } }
 
       it 'correctly interpolates content' do
         expect(external_file.to_hash).to eq({ deploy: { script: 'deploy production' } })

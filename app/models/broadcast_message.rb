@@ -88,10 +88,8 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
 
     private
 
-    def fetch_messages(cache_key, current_path, user_access_level)
-      messages = cache.fetch(cache_key, as: BroadcastMessage, expires_in: cache_expires_in) do
-        yield
-      end
+    def fetch_messages(cache_key, current_path, user_access_level, &block)
+      messages = cache.fetch(cache_key, as: BroadcastMessage, expires_in: cache_expires_in, &block)
 
       now_or_future = messages.select(&:now_or_future?)
 
@@ -134,7 +132,6 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
   end
 
   def matches_current_user_access_level?(user_access_level)
-    return false if target_access_levels.present? && Feature.disabled?(:role_targeted_broadcast_messages)
     return true unless target_access_levels.present?
 
     target_access_levels.include? user_access_level
@@ -148,9 +145,7 @@ class BroadcastMessage < MainClusterwide::ApplicationRecord
     # This fixes a mismatch between requests in the GUI and CLI
     #
     # This has to be reassigned due to frozen strings being provided.
-    unless current_path.start_with?("/")
-      current_path = "/#{current_path}"
-    end
+    current_path = "/#{current_path}" unless current_path.start_with?("/")
 
     escaped = Regexp.escape(target_path).gsub('\\*', '.*')
     regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE

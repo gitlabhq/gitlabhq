@@ -514,7 +514,7 @@ and subject to change without notice.
 ### Define input parameters with `spec:inputs`
 
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
-to a pipeline with `include`. Use [`include:with`](#set-input-parameter-values-with-includewith)
+to a pipeline with `include`. Use [`include:inputs`](#set-input-parameter-values-with-includeinputs)
 to define the values to use when the pipeline runs.
 
 The specs must be declared at the top of the configuration file, in a header section.
@@ -564,9 +564,11 @@ In this example:
 - `user` is optional. If not defined, the value is `test-user`.
 - `flags` is optional. If not defined, it has no value.
 
-### Set input parameter values with `include:with`
+### Set input parameter values with `include:inputs`
 
-Use `include:with` to set the values for the parameters when the included configuration
+> `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
+
+Use `include:inputs` to set the values for the parameters when the included configuration
 is added to the pipeline.
 
 For example, to include a `custom_configuration.yml` that has the same specs
@@ -575,7 +577,7 @@ as the [example above](#define-input-parameters-with-specinputs):
 ```yaml
 include:
   - local: 'custom_configuration.yml'
-    with:
+    inputs:
       website: "My website"
 ```
 

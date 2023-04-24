@@ -1,9 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import {
@@ -89,26 +85,6 @@ export default {
         )
         .some((hierarchy) => hierarchy.hasChildren);
     },
-    childUrlParams() {
-      const params = {};
-      if (this.fetchByIid) {
-        const iid = getParameterByName('work_item_iid');
-        if (iid) {
-          params.iid = iid;
-        }
-      } else {
-        const workItemId = getParameterByName('work_item_id');
-        if (workItemId) {
-          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
-        }
-      }
-      return params;
-    },
-  },
-  mounted() {
-    if (!isEmpty(this.childUrlParams)) {
-      this.addWorkItemQuery(this.childUrlParams);
-    }
   },
   methods: {
     showAddForm(formType, childType) {
@@ -122,6 +98,19 @@ export default {
     },
     hideAddForm() {
       this.isShownAddForm = false;
+    },
+    prefetchWorkItem({ id, iid }) {
+      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
+        this.prefetch = setTimeout(
+          () => this.addWorkItemQuery({ id, iid }),
+          DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+        );
+      }
+    },
+    clearPrefetching() {
+      if (this.prefetch) {
+        clearTimeout(this.prefetch);
+      }
     },
     addWorkItemQuery({ id, iid }) {
       const variables = this.fetchByIid
@@ -144,19 +133,6 @@ export default {
           isSingleRequest: true,
         },
       });
-    },
-    prefetchWorkItem({ id, iid }) {
-      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
-        this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ id, iid }),
-          DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-        );
-      }
-    },
-    clearPrefetching() {
-      if (this.prefetch) {
-        clearTimeout(this.prefetch);
-      }
     },
   },
 };

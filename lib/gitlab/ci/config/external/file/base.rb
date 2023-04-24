@@ -116,7 +116,9 @@ module Gitlab
             strong_memoize_attr :content_result
 
             def content_inputs
-              params.to_h[:with]
+              # TODO: remove support for `with` syntax in 16.1, see https://gitlab.com/gitlab-org/gitlab/-/issues/408369
+              # In the interim prefer `inputs` over `with` while allow either syntax.
+              params.to_h.slice(:inputs, :with).each_value.first
             end
             strong_memoize_attr :content_inputs
 

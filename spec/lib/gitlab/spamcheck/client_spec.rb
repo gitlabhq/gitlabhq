@@ -2,19 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Spamcheck::Client do
+RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency do
   include_context 'includes Spam constants'
 
   let(:endpoint) { 'grpc://grpc.test.url' }
   let_it_be(:user) { create(:user, organization: 'GitLab') }
   let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
-  let(:error_value) { "" }
-
-  let(:attribs_value) do
-    extra_attributes = Google::Protobuf::Map.new(:string, :string)
-    extra_attributes["monitorMode"] = "false"
-    extra_attributes
-  end
+  let(:verdict_score) { 0.01 }
+  let(:verdict_evaluated) { true }
 
   let_it_be(:issue) { create(:issue, description: 'Test issue description') }
   let_it_be(:snippet) { create(:personal_snippet, :public, description: 'Test issue description') }
@@ -22,8 +17,8 @@ RSpec.describe Gitlab::Spamcheck::Client do
   let(:response) do
     verdict = ::Spamcheck::SpamVerdict.new
     verdict.verdict = verdict_value
-    verdict.error = error_value
-    verdict.extra_attributes = attribs_value
+    verdict.evaluated = verdict_evaluated
+    verdict.score = verdict_score
     verdict
   end
 
@@ -67,19 +62,19 @@ RSpec.describe Gitlab::Spamcheck::Client do
 
     using RSpec::Parameterized::TableSyntax
 
-    where(:verdict, :expected) do
-      ::Spamcheck::SpamVerdict::Verdict::ALLOW                | Spam::SpamConstants::ALLOW
-      ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW    | Spam::SpamConstants::CONDITIONAL_ALLOW
-      ::Spamcheck::SpamVerdict::Verdict::DISALLOW             | Spam::SpamConstants::DISALLOW
-      ::Spamcheck::SpamVerdict::Verdict::BLOCK                | Spam::SpamConstants::BLOCK_USER
-      ::Spamcheck::SpamVerdict::Verdict::NOOP                 | Spam::SpamConstants::NOOP
+    where(:verdict_value, :expected, :verdict_evaluated, :verdict_score) do
+      ::Spamcheck::SpamVerdict::Verdict::ALLOW              | Spam::SpamConstants::ALLOW              | true  | 0.01
+      ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW  | Spam::SpamConstants::CONDITIONAL_ALLOW  | true  | 0.50
+      ::Spamcheck::SpamVerdict::Verdict::DISALLOW           | Spam::SpamConstants::DISALLOW           | true  | 0.75
+      ::Spamcheck::SpamVerdict::Verdict::BLOCK              | Spam::SpamConstants::BLOCK_USER         | true  | 0.99
+      ::Spamcheck::SpamVerdict::Verdict::NOOP               | Spam::SpamConstants::NOOP               | false | 0.0
     end
 
     with_them do
-      let(:verdict_value) { verdict }
-
-      it "returns expected spam constant" do
-        expect(subject).to eq([expected, { "monitorMode" => "false" }, ""])
+      it "returns expected spam result", :aggregate_failures do
+        expect(subject.verdict).to eq(expected)
+        expect(subject.evaluated?).to eq(verdict_evaluated)
+        expect(subject.score).to be_within(0.000001).of(verdict_score)
       end
     end
 

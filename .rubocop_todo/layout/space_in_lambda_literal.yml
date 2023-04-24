@@ -392,7 +392,6 @@ Layout/SpaceInLambdaLiteral:
     - 'spec/lib/gitlab/sidekiq_signals_spec.rb'
     - 'spec/lib/gitlab/utils/sanitize_node_link_spec.rb'
     - 'spec/models/ability_spec.rb'
-    - 'spec/models/broadcast_message_spec.rb'
     - 'spec/models/concerns/participable_spec.rb'
     - 'spec/models/merge_request_spec.rb'
     - 'spec/support/shared_examples/lib/cache_helpers_shared_examples.rb'

@@ -360,6 +360,9 @@
             },
             "rules": {
               "$ref": "#/definitions/rules"
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
             }
           },
           "required": [
@@ -395,6 +398,9 @@
                   }
                 }
               ]
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
             }
           },
           "required": [
@@ -411,6 +417,9 @@
               "type": "string",
               "format": "uri-reference",
               "pattern": "\\.ya?ml$"
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
             }
           },
           "required": [
@@ -425,6 +434,9 @@
               "description": "Local path to component directory or full path to external component directory.",
               "type": "string",
               "format": "uri-reference"
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
             }
           },
           "required": [
@@ -440,6 +452,9 @@
               "type": "string",
               "format": "uri-reference",
               "pattern": "^https?://.+\\.ya?ml$"
+            },
+            "inputs": {
+              "$ref": "#/definitions/inputs"
             }
           },
           "required": [
@@ -1251,6 +1266,10 @@
       "type": "boolean",
       "markdownDescription": "Interruptible is used to indicate that a job should be canceled if made redundant by a newer pipeline run. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#interruptible).",
       "default": false
+    },
+    "inputs": {
+      "markdownDescription": "Used to pass input values to included templates or components. [Learn More](https://docs.gitlab.com/ee/ci/yaml/includes.html#set-input-parameter-values-with-includeinputs).",
+      "type": "object"
     },
     "job": {
       "allOf": [

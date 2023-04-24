@@ -22,7 +22,6 @@ export default () => {
 
   // eslint-disable-next-line no-new
   new ShortcutsBlob({
-    skipResetBindings: true,
     fileBlobPermalinkUrl,
     fileBlobPermalinkUrlElement,
   });

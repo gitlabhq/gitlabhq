@@ -101,7 +101,6 @@ export default {
         fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
       // eslint-disable-next-line no-new
       new ShortcutsBlob({
-        skipResetBindings: true,
         fileBlobPermalinkUrl,
         fileBlobPermalinkUrlElement,
       });

@@ -210,7 +210,7 @@ export default {
 
 In the code example, `this` refers to the instance. By referring to the instance,
 we can access the complete underlying
-[Monaco editor API](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneCodeEditor.html),
+[Monaco editor API](https://microsoft.github.io/monaco-editor/api/),
 which includes functions like `getValue()`.
 
 Now let's use our extension:

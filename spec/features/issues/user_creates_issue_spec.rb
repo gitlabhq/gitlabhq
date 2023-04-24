@@ -13,7 +13,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       sign_out(:user)
     end
 
-    it "redirects to signin then back to new issue after signin", :js do
+    it "redirects to signin then back to new issue after signin", :js, quarantine: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1486' do
       create(:issue, project: project)
 
       visit project_issues_path(project)

@@ -1,4 +1,4 @@
-import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm } from '@gitlab/ui';
+import { GlModal, GlDropdown, GlDropdownItem, GlDropdownForm, GlIcon } from '@gitlab/ui';
 import { createWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -29,7 +29,7 @@ describe('RegistrationDropdown', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-
+  const findDropdownBtn = () => findDropdown().find('button');
   const findRegistrationInstructionsDropdownItem = () => wrapper.findComponent(GlDropdownItem);
   const findTokenDropdownItem = () => wrapper.findComponent(GlDropdownForm);
   const findRegistrationToken = () => wrapper.findComponent(RegistrationToken);
@@ -90,10 +90,23 @@ describe('RegistrationDropdown', () => {
     expect(wrapper.text()).toContain('Register an instance runner');
   });
 
-  it('Passes attributes to the dropdown component', () => {
+  it('Passes attributes to dropdown', () => {
     createComponent({ attrs: { right: true } });
 
     expect(findDropdown().attributes()).toMatchObject({ right: 'true' });
+  });
+
+  it('Passes default props and attributes to dropdown', () => {
+    createComponent();
+
+    expect(findDropdown().props()).toMatchObject({
+      category: 'primary',
+      variant: 'confirm',
+    });
+
+    expect(findDropdown().attributes()).toMatchObject({
+      toggleclass: '',
+    });
   });
 
   describe('Instructions dropdown item', () => {
@@ -194,6 +207,53 @@ describe('RegistrationDropdown', () => {
       await resetToken();
 
       expect(findModalContent()).toContain(newToken);
+    });
+  });
+
+  describe.each([
+    { createRunnerWorkflowForAdmin: true },
+    { createRunnerWorkflowForNamespace: true },
+  ])('When showing a "deprecated" warning', (glFeatures) => {
+    it('Passes deprecated variant props and attributes to dropdown', () => {
+      createComponent({
+        provide: { glFeatures },
+      });
+
+      expect(findDropdown().props()).toMatchObject({
+        category: 'tertiary',
+        variant: 'default',
+        text: '',
+      });
+
+      expect(findDropdown().attributes()).toMatchObject({
+        toggleclass: 'gl-px-3!',
+      });
+    });
+
+    it('shows warning text', () => {
+      createComponent(
+        {
+          provide: { glFeatures },
+        },
+        mountExtended,
+      );
+
+      const text = wrapper.findByText(s__('Runners|Support for registration tokens is deprecated'));
+
+      expect(text.exists()).toBe(true);
+    });
+
+    it('button shows only ellipsis icon', () => {
+      createComponent(
+        {
+          provide: { glFeatures },
+        },
+        mountExtended,
+      );
+
+      expect(findDropdownBtn().text()).toBe('');
+      expect(findDropdownBtn().findComponent(GlIcon).props('name')).toBe('ellipsis_v');
+      expect(findDropdownBtn().findAllComponents(GlIcon)).toHaveLength(1);
     });
   });
 });

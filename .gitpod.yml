@@ -126,3 +126,4 @@ vscode:
     - dbaeumer.vscode-eslint@2.2.6
     - GitLab.gitlab-workflow@3.56.0
     - DavidAnson.vscode-markdownlint@0.47.0
+    - esbenp.prettier-vscode

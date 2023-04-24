@@ -68,7 +68,7 @@ To write and test your code, you will use the GitLab Development Kit.
      From a project's repository, select the caret (angle-down) next to **Web IDE**,
      and select **Gitpod** from the list.
 1. If you want to contribute to the [website](https://about.gitlab.com/) or the [handbook](https://about.gitlab.com/handbook/),
-   go to the footer of any page and select **Edit in Web IDE** to open the [Web IDE](../../user/project/web_ide/index.md).  
+   go to the footer of any page and select **Edit in Web IDE** to open the [Web IDE](../../user/project/web_ide/index.md).
 
 ### Open a merge request
 
@@ -163,7 +163,7 @@ If you need any help while contributing to GitLab:
   - Find reviewers and maintainers of GitLab projects in our
     [handbook](https://about.gitlab.com/handbook/engineering/projects/) and
     [mention](../../user/group/subgroups/index.md#mention-subgroups) them in a comment.
-- Join the community on the [GitLab Community Discord](https://discord.gg/gitlab) and find other
-  contributors in the `#contribute` channel or [initiate a mentor session](https://about.gitlab.com//community/contribute/mentor-sessions/).
+- Join the community on the [GitLab Community Discord](https://discord.com/invite/gitlab) and find other
+  contributors in the `#contribute` channel or [initiate a mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/).
 - For any other questions or feedback, email `contributors@gitlab.com`.
 - Did you run out of compute credits for your GitLab merge requests? Join the [GitLab community forks](https://gitlab.com/gitlab-community/meta) project.

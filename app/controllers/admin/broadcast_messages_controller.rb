@@ -6,7 +6,6 @@ module Admin
 
     before_action :find_broadcast_message, only: [:edit, :update, :destroy]
     before_action :find_broadcast_messages, only: [:index, :create]
-    before_action :push_features, only: [:index, :edit]
 
     feature_category :onboarding
     urgency :low
@@ -15,8 +14,7 @@ module Admin
       @broadcast_message = BroadcastMessage.new
     end
 
-    def edit
-    end
+    def edit; end
 
     def create
       @broadcast_message = BroadcastMessage.new(broadcast_message_params)
@@ -88,18 +86,14 @@ module Admin
     def broadcast_message_params
       params.require(:broadcast_message)
         .permit(%i[
-                  theme
-                  ends_at
-                  message
-                  starts_at
-                  target_path
-                  broadcast_type
-                  dismissable
-                ], target_access_levels: []).reverse_merge!(target_access_levels: [])
-    end
-
-    def push_features
-      push_frontend_feature_flag(:role_targeted_broadcast_messages, current_user)
+          theme
+          ends_at
+          message
+          starts_at
+          target_path
+          broadcast_type
+          dismissable
+        ], target_access_levels: []).reverse_merge!(target_access_levels: [])
     end
   end
 end

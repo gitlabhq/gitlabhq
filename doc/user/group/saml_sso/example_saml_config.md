@@ -58,7 +58,7 @@ Attribute mapping:
 NOTE:
 Using the **Group ID** source attribute requires users to enter the group ID or object ID when configuring SAML group links. If available, use the **sAMAccountName** source attribute for the friendly group name instead.
 
-[Azure AD limits the number of groups that can be sent in a SAML response to 150](https://support.esri.com/en/technical-article/000022190). If a user is a member of more than 150 groups, Azure does not include that user's group claim in the SAML response.
+[Azure AD limits the number of groups that can be sent in a SAML response to 150](https://support.esri.com/en-us/knowledge-base/000022190'). If a user is a member of more than 150 groups, Azure does not include that user's group claim in the SAML response.
 
 ## Google Workspace
 

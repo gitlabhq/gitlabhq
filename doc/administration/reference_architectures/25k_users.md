@@ -322,7 +322,7 @@ Configure your load balancer to pass connections on port 443 as `TCP` rather
 than `HTTP(S)` protocol. This will pass the connection to the application node's
 NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
 
-See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
 for details on managing SSL certificates and configuring NGINX.
 
 #### Load balancer terminates SSL without backend SSL
@@ -333,7 +333,7 @@ terminating SSL.
 
 Since communication between the load balancer and GitLab will not be secure,
 there is some additional configuration needed. See the
-[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 #### Load balancer terminates SSL with backend SSL
@@ -346,7 +346,7 @@ Traffic will also be secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html)
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
@@ -1700,7 +1700,7 @@ for secure connections, you must:
 
 Additionally the certificate, or its certificate authority, must be installed on all Gitaly servers
 and on all Praefect clients that communicate with it following the procedure described in
-[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) (and repeated below).
+[GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) (and repeated below).
 
 Note the following:
 
@@ -2107,7 +2107,7 @@ On each node perform the following:
 When you specify `https` in the `external_url`, as in the previous example,
 GitLab expects that the SSL certificates are in `/etc/gitlab/ssl/`. If the
 certificates aren't present, NGINX will fail to start. For more information, see
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl.html).
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 ### GitLab Rails post-configuration
 

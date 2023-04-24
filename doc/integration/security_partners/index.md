@@ -15,7 +15,7 @@ each security partner:
 - [Anchore](https://docs.anchore.com/current/docs/configuration/integration/ci_cd/gitlab/)
 - [Bridgecrew](https://docs.bridgecrew.io/docs/integrate-with-gitlab-self-managed)
 - [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
-- [Deepfactor](https://www.deepfactor.io/docs/gitlab/)
+- [Deepfactor](https://www.deepfactor.io/docs/integrate-deepfactor-scanner-in-your-ci-cd-pipelines/#gitlab)
 - [GrammaTech](https://www.grammatech.com/codesonar-gitlab-integration)
 - [Indeni](https://docs.cloudrail.app/#/integrations/gitlab)
 - [JScrambler](https://docs.jscrambler.com/code-integrity/documentation/gitlab-ci-integration)

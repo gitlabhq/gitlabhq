@@ -44,7 +44,7 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
 
     with_them do
       if params[:has_dependencies]
-        ::Packages::DependencyLink.dependency_types.each_key do |dependency_type|
+        ::Packages::DependencyLink.dependency_types.each_key do |dependency_type| # rubocop:disable RSpec/UselessDynamicDefinition
           let_it_be("package_dependency_link_for_#{dependency_type}") do
             create(:packages_dependency_link, package: package1, dependency_type: dependency_type)
           end

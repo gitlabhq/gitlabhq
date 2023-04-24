@@ -1,5 +1,4 @@
-import Mousetrap from 'mousetrap';
-import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
+import { PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import {
   getLocationHash,
   updateHistory,
@@ -11,7 +10,6 @@ import { updateRefPortionOfTitle } from '~/repository/utils/title';
 import Shortcuts from './shortcuts';
 
 const defaults = {
-  skipResetBindings: false,
   fileBlobPermalinkUrl: null,
   fileBlobPermalinkUrlElement: null,
 };
@@ -24,12 +22,12 @@ function eventHasModifierKeys(event) {
 export default class ShortcutsBlob extends Shortcuts {
   constructor(opts) {
     const options = { ...defaults, ...opts };
-    super(options.skipResetBindings);
+    super();
     this.options = options;
 
     this.shortcircuitPermalinkButton();
 
-    Mousetrap.bind(keysFor(PROJECT_FILES_GO_TO_PERMALINK), this.moveToFilePermalink.bind(this));
+    this.bindCommand(PROJECT_FILES_GO_TO_PERMALINK, this.moveToFilePermalink.bind(this));
   }
 
   moveToFilePermalink() {

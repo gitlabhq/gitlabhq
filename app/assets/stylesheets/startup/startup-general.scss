@@ -336,6 +336,7 @@ kbd kbd {
   border: 0;
 }
 .gl-avatar {
+  display: inline-flex;
   border-width: 1px;
   border-style: solid;
   border-color: rgba(31, 30, 36, 0.08);

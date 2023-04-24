@@ -161,7 +161,7 @@ RSpec.describe ProjectsFinder do
             end
           end
 
-          context 'when updated_after equals updated_before' do
+          context 'when updated_after equals updated_before', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
             let(:params) { { updated_after: internal_project.updated_at, updated_before: internal_project.updated_at } }
 
             it 'allows an exact match' do

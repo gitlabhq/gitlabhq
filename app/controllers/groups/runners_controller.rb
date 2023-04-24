@@ -36,8 +36,6 @@ class Groups::RunnersController < Groups::ApplicationController
 
   def new
     render_404 unless create_runner_workflow_for_namespace_enabled?
-
-    @group_runner_registration_token = @group.runners_token
   end
 
   def register

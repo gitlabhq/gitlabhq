@@ -13,13 +13,14 @@ describe('RegistrationToken', () => {
 
   const findInputCopyToggleVisibility = () => wrapper.findComponent(InputCopyToggleVisibility);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(RegistrationToken, {
       propsData: {
         value: mockRegistrationToken,
         inputId: 'token-value',
         ...props,
       },
+      ...options,
     });
 
     showToast = wrapper.vm.$toast ? jest.spyOn(wrapper.vm.$toast, 'show') : null;
@@ -59,6 +60,25 @@ describe('RegistrationToken', () => {
 
       expect(showToast).toHaveBeenCalledTimes(1);
       expect(showToast).toHaveBeenCalledWith('Registration token copied!');
+    });
+  });
+
+  describe('When slots are used', () => {
+    const slotName = 'label-description';
+    const slotContent = 'Label Description';
+
+    beforeEach(() => {
+      createComponent({
+        slots: {
+          [slotName]: slotContent,
+        },
+      });
+    });
+
+    it('passes slots to the input component', () => {
+      const slot = findInputCopyToggleVisibility().vm.$scopedSlots[slotName];
+
+      expect(slot()[0].text).toBe(slotContent);
     });
   });
 });

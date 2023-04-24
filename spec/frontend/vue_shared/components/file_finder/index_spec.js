@@ -1,7 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import Mousetrap from 'mousetrap';
 import { nextTick } from 'vue';
 import VirtualList from 'vue-virtual-scroll-list';
+import { Mousetrap } from '~/lib/mousetrap';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from 'jest/ide/helpers';
 import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';

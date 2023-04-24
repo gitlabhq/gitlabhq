@@ -38126,19 +38126,19 @@ msgstr ""
 msgid "Runners|Create a group runner"
 msgstr ""
 
-msgid "Runners|Create a group runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}"
+msgid "Runners|Create a group runner to generate a command that registers the runner with all its configurations."
 msgstr ""
 
 msgid "Runners|Create a project runner"
 msgstr ""
 
-msgid "Runners|Create a project runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}"
+msgid "Runners|Create a project runner to generate a command that registers the runner with all its configurations."
 msgstr ""
 
 msgid "Runners|Create an instance runner"
 msgstr ""
 
-msgid "Runners|Create an instance runner to generate a command that registers the runner with all its configurations. %{linkStart}Prefer to use a registration token to create a runner?%{linkEnd}"
+msgid "Runners|Create an instance runner to generate a command that registers the runner with all its configurations."
 msgstr ""
 
 msgid "Runners|Created %{timeAgo}"
@@ -38595,6 +38595,9 @@ msgstr ""
 msgid "Runners|Stop the runner from accepting new jobs."
 msgstr ""
 
+msgid "Runners|Support for registration tokens is deprecated"
+msgstr ""
+
 msgid "Runners|Tags"
 msgstr ""
 
@@ -38625,6 +38628,12 @@ msgid "Runners|This group currently has no stale runners."
 msgstr ""
 
 msgid "Runners|This may not be needed if you manage your runner as a %{linkStart}system or user service%{linkEnd}."
+msgstr ""
+
+msgid "Runners|This registration process is not supported in GitLab Runner 15.9 or earlier and only available as an experimental feature in GitLab Runner 15.10 and 15.11. You should upgrade to %{linkStart}GitLab Runner 16.0%{linkEnd} or later to use a stable version of this registration process."
+msgstr ""
+
+msgid "Runners|This registration process is only supported in GitLab Runner 15.10 or later"
 msgstr ""
 
 msgid "Runners|This runner has not run any jobs."

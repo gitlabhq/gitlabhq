@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/create_table_with_foreign_keys'
 
 RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
-  let(:cop) { described_class.new }
-
   context 'outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)

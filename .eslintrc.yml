@@ -117,6 +117,11 @@ rules:
       message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
     - selector: ImportSpecifier[imported.name='GlSafeHtmlDirective']
       message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.'
+  no-restricted-imports:
+    - error
+    - paths:
+      - name: mousetrap
+        message: "Import { Mousetrap } from ~/lib/mousetrap instead."
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:

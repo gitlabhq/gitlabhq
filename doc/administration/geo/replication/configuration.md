@@ -258,12 +258,12 @@ You can safely skip this step if:
 
 #### Custom or self-signed certificate for inbound connections
 
-If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates), this certificate can either be single-domain certificate or multi-domain.
+If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates), this can be either a single-domain or multi-domain certificate.
 
 Install the correct certificate based on your certificate type:
 
 - **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
-- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` per [these instructions](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
+- **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
 
 #### Connecting to external services that use custom certificates
 

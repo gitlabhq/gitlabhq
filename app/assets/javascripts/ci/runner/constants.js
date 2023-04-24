@@ -248,5 +248,6 @@ export const INSTALL_HELP_URL = 'https://docs.gitlab.com/runner/install';
 export const EXECUTORS_HELP_URL = 'https://docs.gitlab.com/runner/executors/';
 export const SERVICE_COMMANDS_HELP_URL =
   'https://docs.gitlab.com/runner/commands/#service-related-commands';
+export const CHANGELOG_URL = 'https://gitlab.com/gitlab-org/gitlab-runner/blob/main/CHANGELOG.md';
 export const DOCKER_HELP_URL = 'https://docs.gitlab.com/runner/install/docker.html';
 export const KUBERNETES_HELP_URL = 'https://docs.gitlab.com/runner/install/kubernetes.html';

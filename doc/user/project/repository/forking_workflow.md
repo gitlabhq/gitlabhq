@@ -159,7 +159,7 @@ to share objects with another repository:
 ## Related topics
 
 - GitLab blog post: [Keep your fork up to date with its origin](https://about.gitlab.com/blog/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/)
-- GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/)
+- GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/32469)
 
 ## Troubleshooting
 

@@ -1,8 +1,6 @@
-import Mousetrap from 'mousetrap';
 import { visitUrl, constructWebIDEPath } from '~/lib/utils/url_utility';
 import findAndFollowLink from '~/lib/utils/navigation_utility';
 import {
-  keysFor,
   GO_TO_PROJECT_OVERVIEW,
   GO_TO_PROJECT_ACTIVITY_FEED,
   GO_TO_PROJECT_RELEASES,
@@ -28,40 +26,26 @@ export default class ShortcutsNavigation extends Shortcuts {
   constructor() {
     super();
 
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_OVERVIEW), () => findAndFollowLink('.shortcuts-project'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_ACTIVITY_FEED), () =>
-      findAndFollowLink('.shortcuts-project-activity'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_RELEASES), () =>
-      findAndFollowLink('.shortcuts-deployments-releases'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_FILES), () => findAndFollowLink('.shortcuts-tree'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_COMMITS), () => findAndFollowLink('.shortcuts-commits'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_JOBS), () => findAndFollowLink('.shortcuts-builds'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_REPO_GRAPH), () =>
-      findAndFollowLink('.shortcuts-network'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_REPO_CHARTS), () =>
-      findAndFollowLink('.shortcuts-repository-charts'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_ISSUES), () => findAndFollowLink('.shortcuts-issues'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_ISSUE_BOARDS), () =>
-      findAndFollowLink('.shortcuts-issue-boards'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_MERGE_REQUESTS), () =>
-      findAndFollowLink('.shortcuts-merge_requests'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_WIKI), () => findAndFollowLink('.shortcuts-wiki'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_SNIPPETS), () => findAndFollowLink('.shortcuts-snippets'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_KUBERNETES), () =>
-      findAndFollowLink('.shortcuts-kubernetes'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_ENVIRONMENTS), () =>
-      findAndFollowLink('.shortcuts-environments'),
-    );
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_METRICS), () => findAndFollowLink('.shortcuts-metrics'));
-    Mousetrap.bind(keysFor(GO_TO_PROJECT_WEBIDE), ShortcutsNavigation.navigateToWebIDE);
-    Mousetrap.bind(keysFor(NEW_ISSUE), () => findAndFollowLink('.shortcuts-new-issue'));
+    this.bindCommands([
+      [GO_TO_PROJECT_OVERVIEW, () => findAndFollowLink('.shortcuts-project')],
+      [GO_TO_PROJECT_ACTIVITY_FEED, () => findAndFollowLink('.shortcuts-project-activity')],
+      [GO_TO_PROJECT_RELEASES, () => findAndFollowLink('.shortcuts-deployments-releases')],
+      [GO_TO_PROJECT_FILES, () => findAndFollowLink('.shortcuts-tree')],
+      [GO_TO_PROJECT_COMMITS, () => findAndFollowLink('.shortcuts-commits')],
+      [GO_TO_PROJECT_JOBS, () => findAndFollowLink('.shortcuts-builds')],
+      [GO_TO_PROJECT_REPO_GRAPH, () => findAndFollowLink('.shortcuts-network')],
+      [GO_TO_PROJECT_REPO_CHARTS, () => findAndFollowLink('.shortcuts-repository-charts')],
+      [GO_TO_PROJECT_ISSUES, () => findAndFollowLink('.shortcuts-issues')],
+      [GO_TO_PROJECT_ISSUE_BOARDS, () => findAndFollowLink('.shortcuts-issue-boards')],
+      [GO_TO_PROJECT_MERGE_REQUESTS, () => findAndFollowLink('.shortcuts-merge_requests')],
+      [GO_TO_PROJECT_WIKI, () => findAndFollowLink('.shortcuts-wiki')],
+      [GO_TO_PROJECT_SNIPPETS, () => findAndFollowLink('.shortcuts-snippets')],
+      [GO_TO_PROJECT_KUBERNETES, () => findAndFollowLink('.shortcuts-kubernetes')],
+      [GO_TO_PROJECT_ENVIRONMENTS, () => findAndFollowLink('.shortcuts-environments')],
+      [GO_TO_PROJECT_METRICS, () => findAndFollowLink('.shortcuts-metrics')],
+      [GO_TO_PROJECT_WEBIDE, ShortcutsNavigation.navigateToWebIDE],
+      [NEW_ISSUE, () => findAndFollowLink('.shortcuts-new-issue')],
+    ]);
   }
 
   static navigateToWebIDE() {

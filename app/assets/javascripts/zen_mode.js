@@ -6,7 +6,7 @@
 import autosize from 'autosize';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import { scrollToElement } from '~/lib/utils/common_utils';
 

@@ -53,7 +53,7 @@ submit back from Git to Perforce.
 Here's a few links to get you started:
 
 - [`git-p4` manual page](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-p4.html)
-- [`git-p4` example usage](https://git.wiki.kernel.org/index.php/Git-p4_Usage)
+- [`git-p4` example usage](https://archive.kernel.org/oldwiki/git.wiki.kernel.org/index.php/Git-p4_Usage.html)
 - [Git book migration guide](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Migrating-to-Git#_perforce_import)
 
 `git p4` and `git filter-branch` are not very good at

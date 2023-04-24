@@ -4,7 +4,6 @@ Style/EmptyMethod:
   Exclude:
     - 'app/controllers/admin/application_settings/appearances_controller.rb'
     - 'app/controllers/admin/applications_controller.rb'
-    - 'app/controllers/admin/broadcast_messages_controller.rb'
     - 'app/controllers/admin/deploy_keys_controller.rb'
     - 'app/controllers/admin/identities_controller.rb'
     - 'app/controllers/admin/labels_controller.rb'

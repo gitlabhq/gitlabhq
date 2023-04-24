@@ -22,8 +22,6 @@ import {
   REF_TYPE_BRANCHES,
   REF_TYPE_TAGS,
   REF_TYPE_COMMITS,
-  BRANCH_REF_TYPE,
-  TAG_REF_TYPE,
 } from '~/ref/constants';
 import createStore from '~/ref/stores/';
 
@@ -323,7 +321,7 @@ describe('Ref selector component', () => {
     describe('branches', () => {
       describe('when the branches search returns results', () => {
         beforeEach(() => {
-          createComponent({}, { refType: BRANCH_REF_TYPE, useSymbolicRefNames: true });
+          createComponent({}, { useSymbolicRefNames: true });
 
           return waitForRequests();
         });
@@ -386,7 +384,7 @@ describe('Ref selector component', () => {
     describe('tags', () => {
       describe('when the tags search returns results', () => {
         beforeEach(() => {
-          createComponent({}, { refType: TAG_REF_TYPE, useSymbolicRefNames: true });
+          createComponent({}, { useSymbolicRefNames: true });
 
           return waitForRequests();
         });

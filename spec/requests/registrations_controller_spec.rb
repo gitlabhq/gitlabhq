@@ -12,7 +12,6 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
       before do
         stub_application_setting_enum('email_confirmation_setting', 'hard')
         stub_application_setting(require_admin_approval_after_user_signup: false)
-        stub_feature_flags(soft_email_confirmation: false)
       end
 
       it 'redirects to the `users_almost_there_path`', unless: Gitlab.ee? do

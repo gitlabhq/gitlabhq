@@ -2,7 +2,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
-import Mousetrap from 'mousetrap';
+import { Mousetrap } from '~/lib/mousetrap';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GLForm from '~/gl_form';
 import * as utils from '~/lib/utils/common_utils';

@@ -134,7 +134,7 @@ Eventually, we want to make CI Catalog Components predictable. Including a
 component by its path, using a fixed `@` version, should always return the same
 configuration, regardless of a context from which it is getting included from.
 The resulting configuration should be the same for a given component version
-and the set of inputs passed using `with:` keyword, hence it should be
+and the set of inputs passed using `include:inputs` keyword, therefore it should be
 [deterministic](https://en.wikipedia.org/wiki/Deterministic_algorithm).
 
 A component should not produce side effects by being included and should be
@@ -351,13 +351,13 @@ When using the component we pass the input parameters as follows:
 ```yaml
 include:
   - component: gitlab.com/org/my-component@1.0
-    with:
+    inputs:
       website: ${MY_WEBSITE} # variables expansion
       test_run: system
       environment: $[[ inputs.environment ]] # interpolation of upstream inputs
 ```
 
-Variables expansion must be supported for `with:` syntax as well as interpolation of
+Variables expansion must be supported for `include:inputs` syntax as well as interpolation of
 possible [inputs provided upstream](#input-parameters-for-pipelines).
 
 Input parameters are validated as soon as possible:
@@ -387,8 +387,8 @@ With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the c
 
 ### CI configuration interpolation perspectives and limitations
 
-With `spec:` users will be able to define input arguments for CI configuration.
-With `with:` keywords, they will pass these arguments to CI components.
+With `spec:inputs` users will be able to define input arguments for CI configuration.
+With `include:inputs`, they will pass these arguments to CI components.
 
 `inputs` in `$[[ inputs.something ]]` is going to be an initial "object" or
 "container" that we will provide, to allow users to access their arguments in
@@ -431,25 +431,25 @@ enforce contracts.
 ### Input parameters for existing `include:` syntax
 
 Because we are adding input parameters to components used via `include:component` we have an opportunity to
-extend it to other `include:` types support inputs via `with:` syntax:
+extend it to other `include:` types support inputs through `inputs:` syntax:
 
 ```yaml
 include:
   - component: gitlab.com/org/my-component@1.0
-    with:
+    inputs:
       foo: bar
   - local: path/to/file.yml
-    with:
+    inputs:
       foo: bar
   - project: org/another
     file: .gitlab-ci.yml
-    with:
+    inputs:
       foo: bar
   - remote: http://example.com/ci/config
-    with:
+    inputs:
       foo: bar
   - template: Auto-DevOps.gitlab-ci.yml
-    with:
+    inputs:
       foo: bar
 ```
 
@@ -463,15 +463,15 @@ spec:
 # rest of the configuration
 ```
 
-If a YAML includes content using `with:` but the including YAML doesn't define `inputs:` in the specifications,
+If a YAML includes content using `include:inputs` but the including YAML doesn't define `spec:inputs` in the specifications,
 an error should be raised.
 
-|`with:`| `inputs:` | result |
-| --- | --- | --- |
-| specified | |  raise error  |
-| specified | specified | validate inputs |
-| | specified | use defaults |
-| | | legacy `include:` without input passing |
+| `include:inputs` | `spec:inputs` | result                                  |
+|------------------|---------------|-----------------------------------------|
+| specified        |               | raise error                             |
+| specified        | specified     | validate inputs                         |
+|                  | specified     | use defaults                            |
+|                  |               | legacy `include:` without input passing |
 
 ### Input parameters for pipelines
 
@@ -491,7 +491,7 @@ Today we have different use cases where using explicit input parameters would be
 deploy-app:
   trigger:
     project: org/deployer
-    with:
+    inputs:
       provider: aws
       deploy_environment: staging
 ```

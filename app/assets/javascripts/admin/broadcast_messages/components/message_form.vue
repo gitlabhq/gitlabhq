@@ -15,7 +15,6 @@ import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { THEMES, TYPES, TYPE_BANNER } from '../constants';
@@ -42,7 +41,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     targetAccessLevelOptions: {
       default: [[]],
@@ -226,11 +224,7 @@ export default {
       </gl-form-group>
     </template>
 
-    <gl-form-group
-      v-if="glFeatures.roleTargetedBroadcastMessages"
-      :label="$options.i18n.targetRoles"
-      data-testid="target-roles-checkboxes"
-    >
+    <gl-form-group :label="$options.i18n.targetRoles" data-testid="target-roles-checkboxes">
       <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
       <gl-form-text>
         {{ $options.i18n.targetRolesDescription }}

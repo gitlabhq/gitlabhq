@@ -87,7 +87,7 @@ As a workaround, you can do one of the following:
   - [Adding trusted root certificates to the server](https://manuals.gfi.com/en/kerio/connect/content/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html)
   - [How do you add a certificate authority (CA) to Ubuntu?](https://superuser.com/questions/437330/how-do-you-add-a-certificate-authority-ca-to-ubuntu)
 - In Omnibus GitLab, add the certificate to the Omnibus trusted chain:
-  1. [Install the self-signed certificate](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+  1. [Install the self-signed certificate](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
   1. Concatenate the self-signed certificate with the GitLab trusted certificate.
      The self-signed certificate might be overwritten during upgrades.
 

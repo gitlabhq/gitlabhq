@@ -522,7 +522,7 @@ This usually results in this error:
 For installation from source, this can be fixed by installing the custom Certificate
 Authority (CA) in the system certificate store.
 
-For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+For Omnibus, this is fixed by [installing a custom CA in Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
 
 ### ZIP serving and cache configuration
 

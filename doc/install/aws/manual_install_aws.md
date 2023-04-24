@@ -483,7 +483,7 @@ Connect to your GitLab instance via **Bastion Host A** using [SSH Agent Forwardi
 
 #### Disable Let's Encrypt
 
-Because we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl.html#enable-the-lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we must explicitly disable it:
+Because we're adding our SSL certificate at the load balancer, we do not need the GitLab built-in support for Let's Encrypt. Let's Encrypt [is enabled by default](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration) when using an `https` domain in GitLab 10.7 and later, so we must explicitly disable it:
 
 1. Open `/etc/gitlab/gitlab.rb` and disable it:
 
@@ -605,7 +605,7 @@ Now that we have our EC2 instance ready, follow the [documentation to install Gi
 
 #### Add Support for Proxied SSL
 
-As we are terminating SSL at our [load balancer](#load-balancer), follow the steps at [Supporting proxied SSL](https://docs.gitlab.com/omnibus/settings/ssl.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination) to configure this in `/etc/gitlab/gitlab.rb`.
+As we are terminating SSL at our [load balancer](#load-balancer), follow the steps at [Supporting proxied SSL](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination) to configure this in `/etc/gitlab/gitlab.rb`.
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 

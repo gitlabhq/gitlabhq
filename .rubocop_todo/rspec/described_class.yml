@@ -106,7 +106,6 @@ RSpec/DescribedClass:
     - 'spec/models/alert_management/alert_spec.rb'
     - 'spec/models/application_record_spec.rb'
     - 'spec/models/application_setting_spec.rb'
-    - 'spec/models/broadcast_message_spec.rb'
     - 'spec/models/chat_name_spec.rb'
     - 'spec/models/ci/build_runner_session_spec.rb'
     - 'spec/models/ci/build_spec.rb'

@@ -110,7 +110,6 @@ RSpec/ReturnFromStub:
     - 'spec/graphql/mutations/environments/canary_ingress/update_spec.rb'
     - 'spec/graphql/types/project_type_spec.rb'
     - 'spec/helpers/auth_helper_spec.rb'
-    - 'spec/helpers/broadcast_messages_helper_spec.rb'
     - 'spec/helpers/dashboard_helper_spec.rb'
     - 'spec/helpers/diff_helper_spec.rb'
     - 'spec/helpers/explore_helper_spec.rb'

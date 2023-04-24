@@ -1,12 +1,11 @@
 <script>
-/* global Mousetrap */
-import 'mousetrap';
 import { throttle } from 'lodash';
 import {
   keysFor,
   MR_NEXT_UNRESOLVED_DISCUSSION,
   MR_PREVIOUS_UNRESOLVED_DISCUSSION,
 } from '~/behaviors/shortcuts/keybindings';
+import { Mousetrap } from '~/lib/mousetrap';
 import eventHub from '~/notes/event_hub';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
 

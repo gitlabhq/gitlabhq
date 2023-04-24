@@ -217,7 +217,9 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center">
+    <div
+      class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
+    >
       <runner-type-tabs
         ref="runner-type-tabs"
         v-model="search"
@@ -229,20 +231,23 @@ export default {
         nav-class="gl-border-none!"
       />
 
-      <template v-if="shouldShowCreateRunnerWorkflow">
-        <gl-button v-if="newRunnerPath" :href="newRunnerPath" variant="confirm">
+      <div class="gl-w-full gl-md-w-auto gl-display-flex">
+        <gl-button
+          v-if="shouldShowCreateRunnerWorkflow && newRunnerPath"
+          :href="newRunnerPath"
+          variant="confirm"
+        >
           {{ s__('Runners|New group runner') }}
         </gl-button>
-      </template>
-      <registration-dropdown
-        v-else-if="registrationToken"
-        class="gl-ml-auto"
-        :registration-token="registrationToken"
-        :type="$options.GROUP_TYPE"
-        right
-      />
+        <registration-dropdown
+          v-if="registrationToken"
+          class="gl-ml-3"
+          :registration-token="registrationToken"
+          :type="$options.GROUP_TYPE"
+          right
+        />
+      </div>
     </div>
-
     <div
       class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3"
       :class="$options.FILTER_CSS_CLASSES"

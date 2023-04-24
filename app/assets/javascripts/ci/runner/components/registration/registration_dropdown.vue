@@ -1,6 +1,7 @@
 <script>
-import { GlDropdown, GlDropdownForm, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
+import { GlDropdown, GlDropdownForm, GlDropdownItem, GlDropdownDivider, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '../../constants';
 import RegistrationToken from './registration_token.vue';
@@ -17,10 +18,12 @@ export default {
     GlDropdownForm,
     GlDropdownItem,
     GlDropdownDivider,
+    GlIcon,
     RegistrationToken,
     RunnerInstructionsModal,
     RegistrationTokenResetDropdownItem,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     registrationToken: {
       type: String,
@@ -40,7 +43,18 @@ export default {
     };
   },
   computed: {
+    isDeprecated() {
+      // Show a compact version when used as secondary option
+      // create_runner_workflow_for_admin or create_runner_workflow_for_namespace
+      return (
+        this.glFeatures?.createRunnerWorkflowForAdmin ||
+        this.glFeatures?.createRunnerWorkflowForNamespace
+      );
+    },
     dropdownText() {
+      if (this.isDeprecated) {
+        return '';
+      }
       switch (this.type) {
         case INSTANCE_TYPE:
           return s__('Runners|Register an instance runner');
@@ -51,6 +65,24 @@ export default {
         default:
           return s__('Runners|Register a runner');
       }
+    },
+    dropdownToggleClass() {
+      if (this.isDeprecated) {
+        return ['gl-px-3!'];
+      }
+      return [];
+    },
+    dropdownCategory() {
+      if (this.isDeprecated) {
+        return 'tertiary';
+      }
+      return 'primary';
+    },
+    dropdownVariant() {
+      if (this.isDeprecated) {
+        return 'default';
+      }
+      return 'confirm';
     },
   },
   methods: {
@@ -71,9 +103,25 @@ export default {
     ref="runnerRegistrationDropdown"
     menu-class="gl-w-auto!"
     :text="dropdownText"
-    variant="confirm"
+    :toggle-class="dropdownToggleClass"
+    :variant="dropdownVariant"
+    :category="dropdownCategory"
     v-bind="$attrs"
   >
+    <template v-if="isDeprecated" #button-content>
+      <gl-icon name="ellipsis_v" />
+    </template>
+    <gl-dropdown-form class="gl-p-4!">
+      <registration-token input-id="token-value" :value="currentRegistrationToken">
+        <template v-if="isDeprecated" #label-description>
+          <gl-icon name="warning" class="gl-text-orange-500" />
+          <span class="gl-text-secondary">
+            {{ s__('Runners|Support for registration tokens is deprecated') }}
+          </span>
+        </template>
+      </registration-token>
+    </gl-dropdown-form>
+    <gl-dropdown-divider />
     <gl-dropdown-item @click.capture.native.stop="onShowInstructionsClick">
       {{ $options.i18n.showInstallationInstructions }}
       <runner-instructions-modal
@@ -82,10 +130,6 @@ export default {
         data-testid="runner-instructions-modal"
       />
     </gl-dropdown-item>
-    <gl-dropdown-divider />
-    <gl-dropdown-form class="gl-p-4!">
-      <registration-token input-id="token-value" :value="currentRegistrationToken" />
-    </gl-dropdown-form>
     <gl-dropdown-divider />
     <registration-token-reset-dropdown-item :type="type" @tokenReset="onTokenReset" />
   </gl-dropdown>

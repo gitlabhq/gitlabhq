@@ -4,8 +4,6 @@ require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_concurrent_foreign_key'
 
 RSpec.describe RuboCop::Cop::Migration::AddConcurrentForeignKey do
-  let(:cop) { described_class.new }
-
   context 'when outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses('def up; add_foreign_key(:projects, :users, column: :user_id); end')

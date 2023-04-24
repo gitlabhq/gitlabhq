@@ -3,7 +3,6 @@ import { GlButton, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const DEFAULT_TD_CLASSES = 'gl-vertical-align-middle!';
 
@@ -16,7 +15,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   i18n: {
     edit: __('Edit'),
     delete: __('Delete'),
@@ -27,13 +25,7 @@ export default {
       required: true,
     },
   },
-  computed: {
-    fields() {
-      if (this.glFeatures.roleTargetedBroadcastMessages) return this.$options.allFields;
-      return this.$options.allFields.filter((f) => f.key !== 'target_roles');
-    },
-  },
-  allFields: [
+  fields: [
     {
       key: 'status',
       label: __('Status'),
@@ -89,7 +81,7 @@ export default {
 <template>
   <gl-table-lite
     :items="messages"
-    :fields="fields"
+    :fields="$options.fields"
     :tbody-tr-attr="{ 'data-testid': 'message-row' }"
     stacked="md"
   >

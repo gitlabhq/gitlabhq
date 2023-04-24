@@ -1,12 +1,11 @@
 <script>
-/* global Mousetrap */
-import 'mousetrap';
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import {
   keysFor,
   ISSUE_PREVIOUS_DESIGN,
   ISSUE_NEXT_DESIGN,
 } from '~/behaviors/shortcuts/keybindings';
+import { Mousetrap } from '~/lib/mousetrap';
 import { s__, sprintf } from '~/locale';
 import allDesignsMixin from '../../mixins/all_designs';
 import { DESIGN_ROUTE_NAME } from '../../router/constants';

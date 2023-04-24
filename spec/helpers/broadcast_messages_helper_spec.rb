@@ -12,11 +12,8 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
   end
 
   shared_examples 'returns role-targeted broadcast message when in project, group, or sub-group URL' do
-    let(:feature_flag_state) { true }
-
     before do
-      stub_feature_flags(role_targeted_broadcast_messages: feature_flag_state)
-      allow(helper).to receive(:cookies) { {} }
+      allow(helper).to receive(:cookies).and_return({})
     end
 
     context 'when in a project page' do
@@ -30,12 +27,6 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
       end
 
       it { is_expected.to eq message }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag_state) { false }
-
-        it { is_expected.to be_nil }
-      end
     end
 
     context 'when in a group page' do
@@ -49,22 +40,10 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
       end
 
       it { is_expected.to eq message }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag_state) { false }
-
-        it { is_expected.to be_nil }
-      end
     end
 
     context 'when not in a project, group, or sub-group page' do
       it { is_expected.to be_nil }
-
-      context 'when feature flag is disabled' do
-        let(:feature_flag_state) { false }
-
-        it { is_expected.to be_nil }
-      end
     end
   end
 
@@ -72,7 +51,10 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     subject { helper.current_broadcast_notification_message }
 
     context 'with available broadcast notification messages' do
-      let!(:broadcast_message_1) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now - 1.day) }
+      let!(:broadcast_message_1) do
+        create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now - 1.day)
+      end
+
       let!(:broadcast_message_2) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now) }
 
       it { is_expected.to eq broadcast_message_2 }
@@ -91,7 +73,13 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     end
 
     describe 'user access level targeted messages' do
-      let_it_be(:message) { create(:broadcast_message, broadcast_type: 'notification', starts_at: Time.now, target_access_levels: [Gitlab::Access::DEVELOPER]) }
+      let_it_be(:message) do
+        create(:broadcast_message,
+          broadcast_type: 'notification',
+          starts_at: Time.now,
+          target_access_levels: [Gitlab::Access::DEVELOPER]
+        )
+      end
 
       include_examples 'returns role-targeted broadcast message when in project, group, or sub-group URL'
     end
@@ -99,7 +87,13 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
 
   describe '#current_broadcast_banner_messages' do
     describe 'user access level targeted messages' do
-      let_it_be(:message) { create(:broadcast_message, broadcast_type: 'banner', starts_at: Time.now, target_access_levels: [Gitlab::Access::DEVELOPER]) }
+      let_it_be(:message) do
+        create(:broadcast_message,
+          broadcast_type: 'banner',
+          starts_at: Time.now,
+          target_access_levels: [Gitlab::Access::DEVELOPER]
+        )
+      end
 
       subject { helper.current_broadcast_banner_messages.first }
 

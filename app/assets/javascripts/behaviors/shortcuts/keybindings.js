@@ -698,8 +698,8 @@ export const keybindingGroups = [
 /**
  * Gets keyboard shortcuts associated with a command
  *
- * @param {string} command The command object. All command
- * objects are available as imports from this file.
+ * @param {Object} command The command object. All command objects are
+ *     available as imports from this file.
  *
  * @returns {string[]} An array of keyboard shortcut strings bound to the command
  *

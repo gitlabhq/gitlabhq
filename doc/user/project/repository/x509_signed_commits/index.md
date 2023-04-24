@@ -32,7 +32,7 @@ For a commit or tag to be *verified* by GitLab:
   from the certificate in the signature to a trusted certificate in the GitLab certificate store.
   This chain may include intermediate certificates supplied in the signature. You may
   need to add certificates, such as Certificate Authority root certificates,
-  [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+  [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
 - The signing time must be in the time range of the
   [certificate validity](https://www.rfc-editor.org/rfc/rfc5280.html#section-4.1.2.5),
   which is usually up to three years.
@@ -342,7 +342,7 @@ step of the previous [main verification checks](#main-verification-checks).
    ```
 
    1. If this fails, add the missing certificates required to establish trust
-      [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+      [to the GitLab certificate store](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
 
    1. After adding more certificates, (if these troubleshooting steps then pass)
       run the Rake task to [re-verify commits](#re-verify-commits).

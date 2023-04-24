@@ -13,7 +13,6 @@ import {
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
 import * as Sentry from '@sentry/browser';
-import { fetchPolicies } from '~/lib/graphql';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -149,8 +148,6 @@ export default {
       error() {
         this.setEmptyState();
       },
-      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
-      notifyOnNetworkStatusChange: true,
       result(res) {
         // need to handle this when the res is loading: true, netWorkStatus: 1, partial: true
         if (!res.data) {
@@ -331,7 +328,7 @@ export default {
       const widgetHierarchy = this.workItem.widgets.find(
         (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
       );
-      return widgetHierarchy.children.nodes;
+      return widgetHierarchy.children?.nodes;
     },
     workItemBodyClass() {
       return {

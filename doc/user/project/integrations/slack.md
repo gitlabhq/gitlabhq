@@ -127,7 +127,7 @@ To view which of these problems is the cause of the issue:
    ```
 
 If GitLab does not trust HTTPS connections to itself,
-[add your certificate to the GitLab trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+[add your certificate to the GitLab trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
 
 If GitLab does not trust connections to Slack,
 the GitLab OpenSSL trust store is incorrect. Typical causes are:

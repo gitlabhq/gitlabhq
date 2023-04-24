@@ -2,12 +2,10 @@ import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import GroupRunnerRunnerApp from '~/ci/runner/group_new_runner/group_new_runner_app.vue';
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
-import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import {
   PARAM_KEY_PLATFORM,
@@ -17,7 +15,7 @@ import {
 } from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
-import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
+import { runnerCreateResult } from '../mock_data';
 
 const mockGroupId = 'gid://gitlab/Group/72';
 
@@ -33,8 +31,6 @@ const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 describe('GroupRunnerRunnerApp', () => {
   let wrapper;
 
-  const findLegacyInstructionsLink = () => wrapper.findByTestId('legacy-instructions-link');
-  const findRunnerInstructionsModal = () => wrapper.findComponent(RunnerInstructionsModal);
   const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
 
@@ -42,10 +38,6 @@ describe('GroupRunnerRunnerApp', () => {
     wrapper = shallowMountExtended(GroupRunnerRunnerApp, {
       propsData: {
         groupId: mockGroupId,
-        legacyRegistrationToken: mockRegistrationToken,
-      },
-      directives: {
-        GlModal: createMockDirective('gl-modal'),
       },
       stubs: {
         GlSprintf,
@@ -55,20 +47,6 @@ describe('GroupRunnerRunnerApp', () => {
 
   beforeEach(() => {
     createComponent();
-  });
-
-  describe('Shows legacy modal', () => {
-    it('passes legacy registration to modal', () => {
-      expect(findRunnerInstructionsModal().props('registrationToken')).toEqual(
-        mockRegistrationToken,
-      );
-    });
-
-    it('opens a modal with the legacy instructions', () => {
-      const modalId = getBinding(findLegacyInstructionsLink().element, 'gl-modal').value;
-
-      expect(findRunnerInstructionsModal().props('modalId')).toBe(modalId);
-    });
   });
 
   describe('Platform', () => {

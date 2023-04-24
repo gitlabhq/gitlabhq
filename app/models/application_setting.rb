@@ -864,33 +864,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     false
   end
 
-  # Overriding the enum check for `email_confirmation_setting` as the feature flag is being removed and is taking a
-  # release M, M.N+1 strategy as noted in:
-  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302#note_1286005956
-  def email_confirmation_setting_off?
-    if Feature.enabled?(:soft_email_confirmation)
-      false
-    else
-      super
-    end
-  end
-
-  def email_confirmation_setting_soft?
-    if Feature.enabled?(:soft_email_confirmation)
-      true
-    else
-      super
-    end
-  end
-
-  def email_confirmation_setting_hard?
-    if Feature.enabled?(:soft_email_confirmation)
-      false
-    else
-      super
-    end
-  end
-
   private
 
   def self.human_attribute_name(attribute, *options)

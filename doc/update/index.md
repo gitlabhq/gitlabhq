@@ -1631,6 +1631,7 @@ gitaly['configuration'] = {
   },
   # Storage could previously be configured through either gitaly['storage'] or 'git_data_dirs'. Migrate
   # the relevant configuration according to the instructions below.
+  # For 'git_data_dirs', migrate only the 'path' to the gitaly['configuration'] and leave the rest of it untouched.
   storage: [
     {
       # gitaly['storage'][<index>]['name']

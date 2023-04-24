@@ -18,6 +18,7 @@ import {
   removeIfPresent,
 } from '../utils';
 import Token from './token.vue';
+import DateOption from './date_option.vue';
 
 export default {
   components: {
@@ -73,6 +74,7 @@ export default {
           operators: OPERATORS_IS,
           token: Token,
           unique: true,
+          optionComponent: DateOption,
         },
         {
           formattedKey: __('Committed-after'),
@@ -86,6 +88,7 @@ export default {
           operators: OPERATORS_IS,
           token: Token,
           unique: true,
+          optionComponent: DateOption,
         },
       ],
     };
@@ -317,16 +320,7 @@ export default {
             :available-tokens="availableTokens"
             @clear="handleSearchCommits"
             @submit="handleSearchCommits"
-          >
-            <template #title="{ value }">
-              <div>
-                {{ value }}
-                <span v-if="shouldShowInputDateFormat(value)" class="title-hint-text">
-                  &lt;{{ __('yyyy-mm-dd') }}&gt;
-                </span>
-              </div>
-            </template>
-          </gl-filtered-search>
+          />
 
           <review-tab-container
             :is-loading="isLoadingCommits"

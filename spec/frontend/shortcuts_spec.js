@@ -1,16 +1,8 @@
 import $ from 'jquery';
 import { flatten } from 'lodash';
+import { Mousetrap } from '~/lib/mousetrap';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import Shortcuts from '~/behaviors/shortcuts/shortcuts';
-
-const mockMousetrap = {
-  bind: jest.fn(),
-  unbind: jest.fn(),
-};
-
-jest.mock('mousetrap', () => {
-  return jest.fn().mockImplementation(() => mockMousetrap);
-});
+import Shortcuts, { LOCAL_MOUSETRAP_DATA_KEY } from '~/behaviors/shortcuts/shortcuts';
 
 jest.mock('mousetrap/plugins/pause/mousetrap-pause', () => {});
 
@@ -20,6 +12,11 @@ describe('Shortcuts', () => {
     $.Event(type, {
       target,
     });
+  let shortcuts;
+
+  beforeAll(() => {
+    shortcuts = new Shortcuts();
+  });
 
   beforeEach(() => {
     loadHTMLFixture(fixtureName);
@@ -28,7 +25,9 @@ describe('Shortcuts', () => {
     jest.spyOn(document.querySelector('.edit-note .js-md-preview-button'), 'focus');
     jest.spyOn(document.querySelector('#search'), 'focus');
 
-    new Shortcuts(); // eslint-disable-line no-new
+    jest.spyOn(Mousetrap.prototype, 'stopCallback');
+    jest.spyOn(Mousetrap.prototype, 'bind').mockImplementation();
+    jest.spyOn(Mousetrap.prototype, 'unbind').mockImplementation();
   });
 
   afterEach(() => {
@@ -61,7 +60,7 @@ describe('Shortcuts', () => {
   });
 
   describe('markdown shortcuts', () => {
-    let shortcuts;
+    let shortcutElements;
 
     beforeEach(() => {
       // Get all shortcuts specified with md-shortcuts attributes in the fixture.
@@ -71,7 +70,7 @@ describe('Shortcuts', () => {
       //   [ 'mod+i' ],
       //   [ 'mod+k' ]
       // ]
-      shortcuts = $('.edit-note .js-md')
+      shortcutElements = $('.edit-note .js-md')
         .map(function getShortcutsFromToolbarBtn() {
           const mdShortcuts = $(this).data('md-shortcuts');
 
@@ -83,19 +82,26 @@ describe('Shortcuts', () => {
     });
 
     describe('initMarkdownEditorShortcuts', () => {
+      let $textarea;
+      let localMousetrapInstance;
+
       beforeEach(() => {
-        Shortcuts.initMarkdownEditorShortcuts($('.edit-note textarea'));
+        $textarea = $('.edit-note textarea');
+        Shortcuts.initMarkdownEditorShortcuts($textarea);
+        localMousetrapInstance = $textarea.data(LOCAL_MOUSETRAP_DATA_KEY);
       });
 
       it('attaches a Mousetrap handler for every markdown shortcut specified with md-shortcuts', () => {
-        const expectedCalls = shortcuts.map((s) => [s, expect.any(Function)]);
+        const expectedCalls = shortcutElements.map((s) => [s, expect.any(Function)]);
 
-        expect(mockMousetrap.bind.mock.calls).toEqual(expectedCalls);
+        expect(Mousetrap.prototype.bind.mock.calls).toEqual(expectedCalls);
       });
 
       it('attaches a stopCallback that allows each markdown shortcut specified with md-shortcuts', () => {
-        flatten(shortcuts).forEach((s) => {
-          expect(mockMousetrap.stopCallback(null, null, s)).toBe(false);
+        flatten(shortcutElements).forEach((s) => {
+          expect(
+            localMousetrapInstance.stopCallback.call(localMousetrapInstance, null, null, s),
+          ).toBe(false);
         });
       });
     });
@@ -104,16 +110,16 @@ describe('Shortcuts', () => {
       it('does nothing if initMarkdownEditorShortcuts was not previous called', () => {
         Shortcuts.removeMarkdownEditorShortcuts($('.edit-note textarea'));
 
-        expect(mockMousetrap.unbind.mock.calls).toEqual([]);
+        expect(Mousetrap.prototype.unbind.mock.calls).toEqual([]);
       });
 
       it('removes Mousetrap handlers for every markdown shortcut specified with md-shortcuts', () => {
         Shortcuts.initMarkdownEditorShortcuts($('.edit-note textarea'));
         Shortcuts.removeMarkdownEditorShortcuts($('.edit-note textarea'));
 
-        const expectedCalls = shortcuts.map((s) => [s]);
+        const expectedCalls = shortcutElements.map((s) => [s]);
 
-        expect(mockMousetrap.unbind.mock.calls).toEqual(expectedCalls);
+        expect(Mousetrap.prototype.unbind.mock.calls).toEqual(expectedCalls);
       });
     });
   });
@@ -133,6 +139,37 @@ describe('Shortcuts', () => {
       it('focuses the search bar', () => {
         Shortcuts.focusSearch(createEvent('KeyboardEvent'));
         expect(document.querySelector('#search').focus).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('bindCommand(s)', () => {
+    it('bindCommand calls Mousetrap.bind correctly', () => {
+      const mockCommand = { defaultKeys: ['m'] };
+      const mockCallback = () => {};
+
+      shortcuts.bindCommand(mockCommand, mockCallback);
+
+      expect(Mousetrap.prototype.bind).toHaveBeenCalledTimes(1);
+      const [callArguments] = Mousetrap.prototype.bind.mock.calls;
+      expect(callArguments[0]).toEqual(mockCommand.defaultKeys);
+      expect(callArguments[1]).toBe(mockCallback);
+    });
+
+    it('bindCommands calls Mousetrap.bind correctly', () => {
+      const mockCommandsAndCallbacks = [
+        [{ defaultKeys: ['1'] }, () => {}],
+        [{ defaultKeys: ['2'] }, () => {}],
+      ];
+
+      shortcuts.bindCommands(mockCommandsAndCallbacks);
+
+      expect(Mousetrap.prototype.bind).toHaveBeenCalledTimes(mockCommandsAndCallbacks.length);
+      const { calls } = Mousetrap.prototype.bind.mock;
+
+      mockCommandsAndCallbacks.forEach(([mockCommand, mockCallback], i) => {
+        expect(calls[i][0]).toEqual(mockCommand.defaultKeys);
+        expect(calls[i][1]).toBe(mockCallback);
       });
     });
   });

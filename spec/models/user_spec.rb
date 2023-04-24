@@ -7156,7 +7156,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when email confirmation setting is set to `off`' do
       before do
-        stub_feature_flags(soft_email_confirmation: false)
+        stub_application_setting_enum('email_confirmation_setting', 'off')
       end
 
       it { is_expected.to be(true) }
@@ -7186,7 +7186,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when email confirmation setting is set to `hard`' do
       before do
-        stub_feature_flags(soft_email_confirmation: false)
         stub_application_setting_enum('email_confirmation_setting', 'hard')
       end
 

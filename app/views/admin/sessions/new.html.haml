@@ -4,7 +4,7 @@
 .row.justify-content-center
   .col-md-5.new-session-forms-container
     .login-page
-      #signin-container
+      #signin-container{ class: "#{'borderless' if Feature.enabled?(:restyle_login_page, @project)}" }
         - if any_form_based_providers_enabled?
           = render 'devise/shared/tabs_ldap', show_password_form: allow_admin_mode_password_authentication_for_web?, render_signup_link: false
         - else

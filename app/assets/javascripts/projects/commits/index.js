@@ -48,7 +48,6 @@ export const initCommitsRefSwitcher = () => {
           projectId,
           value: useSymbolicRefNames ? `refs/${refType}/${ref}` : ref,
           useSymbolicRefNames,
-          refType,
         },
         on: {
           input(selected) {

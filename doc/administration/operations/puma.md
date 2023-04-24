@@ -182,7 +182,7 @@ steps below:
 
    NOTE:
    If using a self-signed certificate from a custom Certificate Authority (CA),
-   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+   follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates)
    to make them trusted by other GitLab components.
 
 1. Edit `/etc/gitlab/gitlab.rb`:

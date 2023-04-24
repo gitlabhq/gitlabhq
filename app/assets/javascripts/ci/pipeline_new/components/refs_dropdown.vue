@@ -1,11 +1,10 @@
 <script>
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import { BRANCH_REF_TYPE, REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import { formatToShortName } from '../utils/format_refs';
 
 export default {
-  BRANCH_REF_TYPE,
   ENABLED_TYPE_REFS: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
   i18n: {
     /**
@@ -49,7 +48,6 @@ export default {
   <ref-selector
     :value="refShortName"
     :enabled-ref-types="$options.ENABLED_TYPE_REFS"
-    :ref-type="$options.BRANCH_REF_TYPE"
     :project-id="projectId"
     :translations="$options.i18n"
     :use-symbolic-ref-names="true"

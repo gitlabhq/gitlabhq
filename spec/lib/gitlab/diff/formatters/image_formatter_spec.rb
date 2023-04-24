@@ -26,11 +26,13 @@ RSpec.describe Gitlab::Diff::Formatters::ImageFormatter do
     it { is_expected.to eq(subject) }
 
     [:width, :height, :x, :y].each do |attr|
-      let(:other_formatter) do
-        described_class.new(attrs.merge(attr => 9))
-      end
+      context "with attribute:#{attr}" do
+        let(:other_formatter) do
+          described_class.new(attrs.merge(attr => 9))
+        end
 
-      it { is_expected.not_to eq(other_formatter) }
+        it { is_expected.not_to eq(other_formatter) }
+      end
     end
   end
 end

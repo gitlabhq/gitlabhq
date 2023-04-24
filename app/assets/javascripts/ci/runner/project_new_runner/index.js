@@ -12,7 +12,7 @@ export const initProjectNewRunner = (selector = '#js-project-new-runner') => {
     return null;
   }
 
-  const { legacyRegistrationToken, projectId } = el.dataset;
+  const { projectId } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -25,7 +25,6 @@ export const initProjectNewRunner = (selector = '#js-project-new-runner') => {
       return h(ProjectNewRunnerApp, {
         props: {
           projectId,
-          legacyRegistrationToken,
         },
       });
     },

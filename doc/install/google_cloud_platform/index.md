@@ -118,7 +118,7 @@ here's how you configure GitLab to be aware of the change:
 ### Configuring HTTPS with the domain name
 
 Although not needed, it's strongly recommended to secure GitLab with a
-[TLS certificate](https://docs.gitlab.com/omnibus/settings/ssl.html).
+[TLS certificate](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
 
 ### Configuring the email SMTP settings
 

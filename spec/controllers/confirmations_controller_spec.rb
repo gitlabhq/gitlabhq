@@ -205,10 +205,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
     end
 
     context "when `email_confirmation_setting` is not set to `soft`" do
-      before do
-        stub_feature_flags(soft_email_confirmation: false)
-      end
-
       it 'redirects to the users_almost_there path' do
         perform_request
 

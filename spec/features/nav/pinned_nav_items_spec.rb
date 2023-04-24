@@ -173,7 +173,11 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
   def drag_item(item, to:)
     item.hover
     drag_handle = item.find('[data-testid="grip-icon"]')
-    drag_handle.drag_to(to)
+
+    # Reduce delay to make it less likely for draggables to
+    # change position during drag operation, which reduces
+    # flakiness.
+    drag_handle.drag_to(to, delay: 0.01)
     wait_for_requests
   end
 end

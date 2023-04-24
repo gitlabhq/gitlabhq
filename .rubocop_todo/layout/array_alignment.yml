@@ -4,7 +4,6 @@ Layout/ArrayAlignment:
   Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
-    - 'app/controllers/admin/broadcast_messages_controller.rb'
     - 'app/controllers/admin/plan_limits_controller.rb'
     - 'app/controllers/concerns/observability/content_security_policy.rb'
     - 'app/controllers/profiles_controller.rb'
