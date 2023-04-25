@@ -39062,6 +39062,9 @@ msgstr ""
 msgid "ScanResultPolicy|Pre-existing"
 msgstr ""
 
+msgid "ScanResultPolicy|Select a scan type before adding criteria"
+msgstr ""
+
 msgid "ScanResultPolicy|Severity is:"
 msgstr ""
 
@@ -39069,6 +39072,9 @@ msgid "ScanResultPolicy|Status is:"
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} find any license %{matchType} %{licenseType} in an open merge request targeting the %{branches} and the licences match all of the following criteria"
+msgstr ""
+
+msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} and match %{boldDescription} of the following criteria"
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} runs against the %{branches} and find(s) more than %{vulnerabilitiesAllowed} %{boldDescription} of the following criteria:"
@@ -50410,9 +50416,6 @@ msgstr ""
 msgid "Workspaces"
 msgstr ""
 
-msgid "Workspaces|A devfile is a configuration file for your workspace. Without a devfile, a default workspace is created for this project. You can change that workspace at any time."
-msgstr ""
-
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab. You can create a workspace on its own or as part of a project."
 msgstr ""
 
@@ -50446,10 +50449,10 @@ msgstr ""
 msgid "Workspaces|Select project"
 msgstr ""
 
-msgid "Workspaces|This project doesn't have a devfile"
+msgid "Workspaces|To create a workspace for this project, an administrator must configure an agent for the project's group."
 msgstr ""
 
-msgid "Workspaces|To create a workspace for this project, an administrator must configure an agent for the project's group."
+msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
 msgstr ""
 
 msgid "Workspaces|Workspaces"
@@ -51692,6 +51695,9 @@ msgid "ago"
 msgstr ""
 
 msgid "alert"
+msgstr ""
+
+msgid "all"
 msgstr ""
 
 msgid "allowed to fail"

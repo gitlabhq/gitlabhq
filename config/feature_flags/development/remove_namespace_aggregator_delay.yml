@@ -1,8 +1,0 @@
----
-name: remove_namespace_aggregator_delay
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99226
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375722
-milestone: '15.5'
-type: development
-group: group::utilization
-default_enabled: false

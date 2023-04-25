@@ -25,6 +25,7 @@
 - Ci::DailyBuildGroupReportResultsFinder
 - ClusterAncestorsFinder
 - Clusters::Agents::Authorizations::CiAccess::Finder
+- Clusters::Agents::Authorizations::UserAccess::Finder
 - Clusters::KubernetesNamespaceFinder
 - ComplianceManagement::MergeRequests::ComplianceViolationsFinder
 - ContainerRepositoriesFinder

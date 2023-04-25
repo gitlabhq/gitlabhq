@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlCreateItemDropdown from 'test_fixtures_static/create_item_dropdown.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import CreateItemDropdown from '~/create_item_dropdown';
 
 const DROPDOWN_ITEM_DATA = [
@@ -42,7 +43,7 @@ describe('CreateItemDropdown', () => {
   }
 
   beforeEach(() => {
-    loadHTMLFixture('static/create_item_dropdown.html');
+    setHTMLFixture(htmlCreateItemDropdown);
     $wrapperEl = $('.js-create-item-dropdown-fixture-root');
   });
 

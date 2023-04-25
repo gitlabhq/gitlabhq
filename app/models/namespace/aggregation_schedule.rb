@@ -13,10 +13,10 @@ class Namespace::AggregationSchedule < ApplicationRecord
   after_create :schedule_root_storage_statistics
 
   def self.default_lease_timeout
-    if Feature.enabled?(:remove_namespace_aggregator_delay)
-      30.minutes.to_i
+    if Feature.enabled?(:reduce_aggregation_schedule_lease)
+      2.minutes.to_i
     else
-      1.hour.to_i
+      30.minutes.to_i
     end
   end
 
