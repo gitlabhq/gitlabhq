@@ -2,18 +2,29 @@
 
 module QA
   module Resource
-    #
     # Included in Resource::Project and Resource::Group to allow changes to
     # project/group membership
-    #
     module Members
+      # Add single user to group or project
+      #
+      # @param [Resource::User] user
+      # @param [Integer] access_level
       def add_member(user, access_level = AccessLevel::DEVELOPER)
         Support::Retrier.retry_until do
           QA::Runtime::Logger.info(%(Adding user #{user.username} to #{full_path} #{self.class.name}))
           response = post Runtime::API::Request.new(api_client, api_members_path).url,
-{ user_id: user.id, access_level: access_level }
+            { user_id: user.id, access_level: access_level }
           break true if response.code == QA::Support::API::HTTP_STATUS_CREATED
           break true if response.body.include?('Member already exists')
+        end
+      end
+
+      # Add multiple users to group or project with default access level
+      #
+      # @param [Array<Resource::User>] users
+      def add_members(*users)
+        users.each do |user|
+          add_member(user)
         end
       end
 
@@ -40,7 +51,7 @@ module QA
           QA::Runtime::Logger.info(%(Sharing #{self.class.name} with #{group.name}))
 
           response = post Runtime::API::Request.new(api_client, api_share_path).url,
-{ group_id: group.id, group_access: access_level }
+            { group_id: group.id, group_access: access_level }
           response.code == QA::Support::API::HTTP_STATUS_CREATED
         end
       end

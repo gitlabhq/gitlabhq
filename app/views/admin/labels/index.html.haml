@@ -7,9 +7,8 @@
     = _('New label')
   %h1.page-title.gl-font-size-h-display
     = _('Labels')
-%hr
 - if @labels.present?
-  .labels.labels-container.admin-labels.js-admin-labels-container.gl-bg-gray-10.gl-border-solid.gl-border-1.gl-border-gray-100
+  .labels.labels-container.admin-labels.js-admin-labels-container
     %ul.manage-labels-list
       = render @labels
 

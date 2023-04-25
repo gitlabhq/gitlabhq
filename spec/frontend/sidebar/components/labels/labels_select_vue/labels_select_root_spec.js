@@ -3,15 +3,18 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import { isInViewport } from '~/lib/utils/common_utils';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_vue/constants';
 import DropdownButton from '~/sidebar/components/labels/labels_select_vue/dropdown_button.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_vue/dropdown_contents.vue';
 import DropdownTitle from '~/sidebar/components/labels/labels_select_vue/dropdown_title.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_vue/dropdown_value.vue';
 import DropdownValueCollapsed from '~/sidebar/components/labels/labels_select_vue/dropdown_value_collapsed.vue';
 import LabelsSelectRoot from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
-
 import labelsSelectModule from '~/sidebar/components/labels/labels_select_vue/store';
+import {
+  VARIANT_EMBEDDED,
+  VARIANT_SIDEBAR,
+  VARIANT_STANDALONE,
+} from '~/sidebar/components/labels/labels_select_widget/constants';
 
 import { mockConfig } from './mock_data';
 
@@ -169,7 +172,7 @@ describe('LabelsSelectRoot', () => {
     });
 
     describe('sets content direction based on viewport', () => {
-      describe.each(Object.values(DropdownVariant))(
+      describe.each(Object.values([VARIANT_EMBEDDED, VARIANT_SIDEBAR, VARIANT_STANDALONE]))(
         'when labels variant is "%s"',
         ({ variant }) => {
           beforeEach(() => {

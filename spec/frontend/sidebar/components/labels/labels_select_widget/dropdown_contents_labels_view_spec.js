@@ -11,7 +11,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import { VARIANT_SIDEBAR } from '~/sidebar/components/labels/labels_select_widget/constants';
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import LabelItem from '~/sidebar/components/labels/labels_select_widget/label_item.vue';
@@ -48,7 +48,7 @@ describe('DropdownContentsLabelsView', () => {
     wrapper = shallowMount(DropdownContentsLabelsView, {
       apolloProvider: mockApollo,
       provide: {
-        variant: DropdownVariant.Sidebar,
+        variant: VARIANT_SIDEBAR,
         ...injected,
       },
       propsData: {

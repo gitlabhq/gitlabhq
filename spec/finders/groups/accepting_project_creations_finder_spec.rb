@@ -100,20 +100,5 @@ RSpec.describe Groups::AcceptingProjectCreationsFinder, feature_category: :subgr
         shared_with_group_where_direct_owner_as_developer
       ])
     end
-
-    context 'when `include_groups_from_group_shares_in_project_creation_locations` flag is disabled' do
-      before do
-        stub_feature_flags(include_groups_from_group_shares_in_project_creation_locations: false)
-      end
-
-      it 'returns only groups accessible via direct membership where user has access to create projects' do
-        expect(result).to match_array([
-          group_where_direct_owner,
-          subgroup_of_group_where_direct_owner,
-          group_where_direct_maintainer,
-          group_where_direct_developer
-        ])
-      end
-    end
   end
 end

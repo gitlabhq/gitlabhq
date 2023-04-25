@@ -3,8 +3,8 @@ import Vue from 'vue';
 import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
+import { VARIANT_SIDEBAR } from '~/sidebar/components/labels/labels_select_widget/constants';
 
-import { DropdownVariant } from './constants';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownTitle from './dropdown_title.vue';
@@ -60,7 +60,7 @@ export default {
     variant: {
       type: String,
       required: false,
-      default: DropdownVariant.Sidebar,
+      default: VARIANT_SIDEBAR,
     },
     selectedLabels: {
       type: Array,

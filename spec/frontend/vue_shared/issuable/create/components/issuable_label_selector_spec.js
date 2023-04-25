@@ -6,7 +6,7 @@ import {
 } from 'jest/sidebar/components/labels/labels_select_widget/mock_data';
 import IssuableLabelSelector from '~/vue_shared/issuable/create/components/issuable_label_selector.vue';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import { __ } from '~/locale';
 
@@ -18,7 +18,7 @@ const labelsFilterBasePath = '/labels-filter-base-path';
 const initialLabels = [];
 const issuableType = 'issue';
 const labelType = WORKSPACE_PROJECT;
-const variant = DropdownVariant.Embedded;
+const variant = VARIANT_EMBEDDED;
 const workspaceType = WORKSPACE_PROJECT;
 
 describe('IssuableLabelSelector', () => {

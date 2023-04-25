@@ -1,8 +1,0 @@
----
-name: include_groups_from_group_shares_in_project_creation_locations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116089
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/403019
-milestone: '15.11'
-type: development
-group: group::tenant scale
-default_enabled: false

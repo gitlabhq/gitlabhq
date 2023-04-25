@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "protected branches > access control > CE" do
-  ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
+  ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to" do
       visit project_protected_branches_path(project)
 
@@ -67,7 +67,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     end
   end
 
-  ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
+  ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can merge to" do
       visit project_protected_branches_path(project)
 

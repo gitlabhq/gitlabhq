@@ -124,3 +124,10 @@ test: &test
     username: postgres
     password:
     host: localhost
+  embedding:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_embedding_test
+    username: postgres
+    password:
+    host: localhost

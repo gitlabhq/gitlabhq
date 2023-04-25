@@ -40,8 +40,6 @@
   .settings-content
     = render 'performance_bar'
 
-.js-self-monitoring-settings{ data: self_monitoring_project_data }
-
 %section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'usage_statistics_settings_content' } }
   .settings-header#usage-statistics
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only

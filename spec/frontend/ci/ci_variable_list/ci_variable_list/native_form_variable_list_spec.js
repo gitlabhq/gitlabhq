@@ -1,12 +1,13 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlPipelineSchedulesEdit from 'test_fixtures/pipeline_schedules/edit.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import setupNativeFormVariableList from '~/ci/ci_variable_list/native_form_variable_list';
 
 describe('NativeFormVariableList', () => {
   let $wrapper;
 
   beforeEach(() => {
-    loadHTMLFixture('pipeline_schedules/edit.html');
+    setHTMLFixture(htmlPipelineSchedulesEdit);
     $wrapper = $('.js-ci-variable-list-section');
 
     setupNativeFormVariableList({

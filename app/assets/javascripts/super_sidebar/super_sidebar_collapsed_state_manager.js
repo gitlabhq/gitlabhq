@@ -42,5 +42,19 @@ export const initSuperSidebarCollapsedState = () => {
 };
 
 export const bindSuperSidebarCollapsedEvents = () => {
-  window.addEventListener('resize', debounce(initSuperSidebarCollapsedState, 100));
+  let previousWindowWidth = window.innerWidth;
+
+  const callback = debounce(() => {
+    const newWindowWidth = window.innerWidth;
+    const widthChanged = previousWindowWidth !== newWindowWidth;
+
+    if (widthChanged) {
+      initSuperSidebarCollapsedState();
+    }
+    previousWindowWidth = newWindowWidth;
+  }, 100);
+
+  window.addEventListener('resize', callback);
+
+  return () => window.removeEventListener('resize', callback);
 };

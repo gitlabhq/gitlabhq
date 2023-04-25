@@ -985,6 +985,8 @@ GEM
     mustermann-grape (1.0.1)
       mustermann (>= 1.0.0)
     nap (1.1.0)
+    neighbor (0.2.3)
+      activerecord (>= 5.2)
     nenv (0.3.0)
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)
@@ -1827,6 +1829,7 @@ DEPENDENCIES
   mini_magick (~> 4.10.1)
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
+  neighbor (~> 0.2.3)
   net-ldap (~> 0.17.1)
   net-ntp
   net-protocol (~> 0.1.3)

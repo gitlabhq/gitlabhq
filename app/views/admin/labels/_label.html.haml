@@ -1,4 +1,4 @@
-%li.label-list-item{ id: dom_id(label) }
+%li.label-list-item.gl-border-b.gl-py-3{ id: dom_id(label) }
   = render "shared/label_row", label: label.present(issuable_subject: nil)
   .label-actions-list
     = link_to edit_admin_label_path(label), class: 'btn btn-default gl-button btn-default-tertiary label-action has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria: { label: _('Edit') } do

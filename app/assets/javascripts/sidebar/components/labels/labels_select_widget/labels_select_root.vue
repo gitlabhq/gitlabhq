@@ -9,7 +9,7 @@ import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/iss
 import { __ } from '~/locale';
 import { issuableLabelsQueries } from '../../../constants';
 import SidebarEditableItem from '../../sidebar_editable_item.vue';
-import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
+import { DEBOUNCE_DROPDOWN_DELAY, VARIANT_SIDEBAR } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
 import EmbeddedLabelsList from './embedded_labels_list.vue';
@@ -60,7 +60,7 @@ export default {
     variant: {
       type: String,
       required: false,
-      default: DropdownVariant.Sidebar,
+      default: VARIANT_SIDEBAR,
     },
     labelsFilterBasePath: {
       type: String,

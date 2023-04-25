@@ -24,7 +24,6 @@ import SidebarConfidentialityWidget from './components/confidential/sidebar_conf
 import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
 import SidebarDueDateWidget from './components/date/sidebar_date_widget.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
-import { DropdownVariant } from './components/labels/labels_select_vue/constants';
 import LabelsSelectWidget from './components/labels/labels_select_widget/labels_select_root.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import MilestoneDropdown from './components/milestone/milestone_dropdown.vue';
@@ -351,7 +350,6 @@ export function mountSidebarLabelsWidget() {
           footerManageLabelTitle: __('Manage project labels'),
           labelsCreateTitle: __('Create project label'),
           labelsFilterBasePath: el.dataset.projectIssuesPath,
-          variant: DropdownVariant.Sidebar,
           issuableType:
             isInIssuePage() || isInIncidentPage() || isInDesignPage()
               ? TYPE_ISSUE

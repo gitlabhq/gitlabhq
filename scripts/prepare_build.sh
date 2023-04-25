@@ -32,6 +32,15 @@ else
   sed -i '/geo:/,/^$/d' config/database.yml
 fi
 
+# Set up Embedding database if the job name matches `rspec-ee`
+# Since Embedding is an EE feature, we shouldn't set it up for non-EE tests.
+if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]]; then
+  echoinfo "Embedding DB will be set up."
+else
+  echoinfo "Embedding DB won't be set up."
+  sed -i '/embedding:/,/^$/d' config/database.yml
+fi
+
 # Set user to a non-superuser to ensure we test permissions
 sed -i 's/username: root/username: gitlab/g' config/database.yml
 

@@ -373,6 +373,7 @@
 {"name":"mustermann","version":"1.1.1","platform":"ruby","checksum":"0a21cfe505869cce9ce17998db5260344e78df81ae857c07a62143fd30299531"},
 {"name":"mustermann-grape","version":"1.0.1","platform":"ruby","checksum":"00ce12b3df66be33ec4304aa9108fb9e1a0689f2a136c96b51c104684f5c5436"},
 {"name":"nap","version":"1.1.0","platform":"ruby","checksum":"949691660f9d041d75be611bb2a8d2fd559c467537deac241f4097d9b5eea576"},
+{"name":"neighbor","version":"0.2.3","platform":"ruby","checksum":"70887ac2110d0c7ab243ee988f64359b8bb94a63a0c78542bbeef4f33b1933e5"},
 {"name":"nenv","version":"0.3.0","platform":"ruby","checksum":"d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765"},
 {"name":"net-http-persistent","version":"4.0.1","platform":"ruby","checksum":"2752f4cce05fd1c45e0537c6f3a98fa5a4899efd5f88e63c104ed5f05cbddef9"},
 {"name":"net-imap","version":"0.3.4","platform":"ruby","checksum":"a82a59e2a429433dc54cae5a8b2979ffe49da8c66085740811bfa337dc3729b5"},

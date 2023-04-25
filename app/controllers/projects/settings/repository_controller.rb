@@ -131,7 +131,7 @@ module Projects
       end
 
       def levels_for_dropdown
-        roles = ProtectedRefAccess::HUMAN_ACCESS_LEVELS.map do |id, text|
+        roles = ProtectedRef::AccessLevel.human_access_levels.map do |id, text|
           { id: id, text: text, before_divider: true }
         end
         { roles: roles }

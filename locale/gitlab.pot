@@ -14084,9 +14084,6 @@ msgstr ""
 msgid "Delete selected"
 msgstr ""
 
-msgid "Delete self-monitoring project"
-msgstr ""
-
 msgid "Delete snippet"
 msgstr ""
 
@@ -37202,9 +37199,6 @@ msgstr ""
 msgid "Reports|Actions"
 msgstr ""
 
-msgid "Reports|Activity"
-msgstr ""
-
 msgid "Reports|An error occurred while loading %{name} results"
 msgstr ""
 
@@ -39774,9 +39768,6 @@ msgstr ""
 msgid "SecurityOrchestration|Failed to load images."
 msgstr ""
 
-msgid "SecurityOrchestration|Failed to load vulnerability scanners."
-msgstr ""
-
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
@@ -40281,9 +40272,6 @@ msgstr ""
 msgid "SecurityReports|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch."
 msgstr ""
 
-msgid "SecurityReports|No activity"
-msgstr ""
-
 msgid "SecurityReports|No longer detected"
 msgstr ""
 
@@ -40291,9 +40279,6 @@ msgid "SecurityReports|No vulnerabilities found"
 msgstr ""
 
 msgid "SecurityReports|No vulnerabilities found for this pipeline"
-msgstr ""
-
-msgid "SecurityReports|Not available"
 msgstr ""
 
 msgid "SecurityReports|Oops, something doesn't seem right."
@@ -40453,9 +40438,6 @@ msgid "SecurityReports|Warning parsing security reports"
 msgstr ""
 
 msgid "SecurityReports|While it's rare to have no vulnerabilities for your pipeline, it can happen. In any event, we ask that you double check your settings to make sure all security scanning jobs have passed successfully."
-msgstr ""
-
-msgid "SecurityReports|With issues"
 msgstr ""
 
 msgid "SecurityReports|You do not have sufficient permissions to access this report"
@@ -40704,9 +40686,6 @@ msgstr ""
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
-msgid "Self-monitoring"
-msgstr ""
-
 msgid "Self-monitoring project does not exist"
 msgstr ""
 
@@ -40720,36 +40699,6 @@ msgid "Self-monitoring project was not deleted. Please check logs for any error 
 msgstr ""
 
 msgid "Self-monitoring was %{deprecation}deprecated%{link_end} in GitLab 14.9, and is %{removal}scheduled for removal%{link_end} in GitLab 16.0. For information on a possible replacement, %{opstrace}learn more about Opstrace%{link_end}."
-msgstr ""
-
-msgid "SelfMonitoring|Activate or deactivate instance self-monitoring."
-msgstr ""
-
-msgid "SelfMonitoring|Activate self-monitoring to create a project to use to monitor the health of your instance."
-msgstr ""
-
-msgid "SelfMonitoring|Deactivate self-monitoring?"
-msgstr ""
-
-msgid "SelfMonitoring|Deactivating self-monitoring deletes the self-monitoring project. Are you sure you want to deactivate self-monitoring and delete the project?"
-msgstr ""
-
-msgid "SelfMonitoring|Deprecation notice"
-msgstr ""
-
-msgid "SelfMonitoring|Self-monitoring"
-msgstr ""
-
-msgid "SelfMonitoring|Self-monitoring is active. Use the %{projectLinkStart}self-monitoring project%{projectLinkEnd} to monitor the health of your instance."
-msgstr ""
-
-msgid "SelfMonitoring|Self-monitoring project successfully created."
-msgstr ""
-
-msgid "SelfMonitoring|Self-monitoring project successfully deleted."
-msgstr ""
-
-msgid "SelfMonitoring|Self-monitoring was %{deprecation}deprecated%{link_end} in GitLab 14.9, and is %{removal}scheduled for removal%{link_end} in GitLab 16.0. For information on a possible replacement, %{opstrace}learn more about Opstrace%{link_end}."
 msgstr ""
 
 msgid "Send"
@@ -48702,9 +48651,6 @@ msgstr ""
 msgid "View performance dashboard."
 msgstr ""
 
-msgid "View project"
-msgstr ""
-
 msgid "View project in admin area"
 msgstr ""
 
@@ -49038,9 +48984,6 @@ msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr ""
 
 msgid "VulnerabilityManagement|invalid issue link or ID"
-msgstr ""
-
-msgid "VulnerabilityStatusTypes|All statuses"
 msgstr ""
 
 msgid "VulnerabilityStatusTypes|Confirmed"
@@ -51930,18 +51873,6 @@ msgid "ciReport|API Fuzzing"
 msgstr ""
 
 msgid "ciReport|API fuzzing"
-msgstr ""
-
-msgid "ciReport|All clusters"
-msgstr ""
-
-msgid "ciReport|All images"
-msgstr ""
-
-msgid "ciReport|All projects"
-msgstr ""
-
-msgid "ciReport|All severities"
 msgstr ""
 
 msgid "ciReport|All tools"

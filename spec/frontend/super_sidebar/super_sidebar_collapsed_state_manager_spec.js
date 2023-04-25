@@ -9,6 +9,7 @@ import {
   toggleSuperSidebarCollapsed,
   initSuperSidebarCollapsedState,
   findPage,
+  bindSuperSidebarCollapsedEvents,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 
 const { xl, sm } = breakpoints;
@@ -90,5 +91,39 @@ describe('Super Sidebar Collapsed State Manager', () => {
         expect(setCookie).not.toHaveBeenCalled();
       },
     );
+  });
+
+  describe('bindSuperSidebarCollapsedEvents', () => {
+    describe('handles width change', () => {
+      let removeEventListener;
+
+      afterEach(() => {
+        removeEventListener();
+      });
+
+      it.each`
+        initialWindowWidth | updatedWindowWidth | hasClassBeforeResize | hasClassAfterResize
+        ${xl}              | ${sm}              | ${false}             | ${true}
+        ${sm}              | ${xl}              | ${true}              | ${false}
+        ${xl}              | ${xl}              | ${false}             | ${false}
+        ${sm}              | ${sm}              | ${true}              | ${true}
+      `(
+        'when changing width from $initialWindowWidth to $updatedWindowWidth expect the page to be initialized to be done $timesInitalised times',
+        ({ initialWindowWidth, updatedWindowWidth, hasClassBeforeResize, hasClassAfterResize }) => {
+          getCookie.mockReturnValue(undefined);
+          window.innerWidth = initialWindowWidth;
+          initSuperSidebarCollapsedState();
+
+          pageHasCollapsedClass(hasClassBeforeResize);
+
+          removeEventListener = bindSuperSidebarCollapsedEvents();
+
+          window.innerWidth = updatedWindowWidth;
+          window.dispatchEvent(new Event('resize'));
+
+          pageHasCollapsedClass(hasClassAfterResize);
+        },
+      );
+    });
   });
 });

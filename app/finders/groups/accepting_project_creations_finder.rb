@@ -7,10 +7,6 @@ module Groups
     end
 
     def execute
-      if Feature.disabled?(:include_groups_from_group_shares_in_project_creation_locations)
-        return current_user.manageable_groups(include_groups_with_developer_maintainer_access: true)
-      end
-
       groups_accepting_project_creations =
         [
           current_user

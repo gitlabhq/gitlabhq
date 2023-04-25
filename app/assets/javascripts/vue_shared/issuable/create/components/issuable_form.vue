@@ -1,11 +1,11 @@
 <script>
 import { GlForm, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_vue/constants';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
+import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
 
 export default {
-  LabelSelectVariant: DropdownVariant,
+  VARIANT_EMBEDDED,
   components: {
     GlForm,
     GlFormInput,
@@ -105,7 +105,7 @@ export default {
             :labels-list-title="__('Select label')"
             :footer-create-label-title="__('Create project label')"
             :footer-manage-label-title="__('Manage project labels')"
-            :variant="$options.LabelSelectVariant.Embedded"
+            :variant="$options.VARIANT_EMBEDDED"
             @updateSelectedLabels="handleUpdateSelectedLabels"
           />
         </div>

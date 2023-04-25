@@ -2,19 +2,26 @@
 
 module ProtectedRefAccess
   extend ActiveSupport::Concern
-  HUMAN_ACCESS_LEVELS = {
-    Gitlab::Access::MAINTAINER => "Maintainers",
-    Gitlab::Access::DEVELOPER => "Developers + Maintainers",
-    Gitlab::Access::NO_ACCESS => "No one"
-  }.freeze
 
   class_methods do
+    def human_access_levels
+      {
+        Gitlab::Access::DEVELOPER => "Developers + Maintainers",
+        Gitlab::Access::MAINTAINER => "Maintainers",
+        Gitlab::Access::NO_ACCESS => "No one"
+      }
+    end
+
     def allowed_access_levels
       [
         Gitlab::Access::MAINTAINER,
         Gitlab::Access::DEVELOPER,
         Gitlab::Access::NO_ACCESS
       ]
+    end
+
+    def humanize(access_level)
+      human_access_levels[access_level]
     end
   end
 
@@ -31,7 +38,7 @@ module ProtectedRefAccess
   end
 
   def humanize
-    HUMAN_ACCESS_LEVELS[access_level]
+    self.class.humanize(access_level)
   end
 
   def type

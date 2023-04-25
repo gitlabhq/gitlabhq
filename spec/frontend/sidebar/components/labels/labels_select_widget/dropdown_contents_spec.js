@@ -1,6 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import {
+  VARIANT_EMBEDDED,
+  VARIANT_STANDALONE,
+} from '~/sidebar/components/labels/labels_select_widget/constants';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
@@ -89,7 +92,7 @@ describe('DropdownContent', () => {
   });
 
   it('emits `setLabels` event on dropdown hide if labels changed on non-sidebar widget', async () => {
-    createComponent({ props: { variant: DropdownVariant.Standalone } });
+    createComponent({ props: { variant: VARIANT_STANDALONE } });
     const updatedLabel = {
       id: 28,
       title: 'Bug',
@@ -105,7 +108,7 @@ describe('DropdownContent', () => {
   });
 
   it('emits `setLabels` event on visibility change if labels changed on sidebar widget', async () => {
-    createComponent({ props: { variant: DropdownVariant.Standalone, isVisible: true } });
+    createComponent({ props: { variant: VARIANT_STANDALONE, isVisible: true } });
     const updatedLabel = {
       id: 28,
       title: 'Bug',
@@ -204,13 +207,13 @@ describe('DropdownContent', () => {
     });
 
     it('does not render footer on standalone dropdown', () => {
-      createComponent({ props: { variant: DropdownVariant.Standalone } });
+      createComponent({ props: { variant: VARIANT_STANDALONE } });
 
       expect(findDropdownFooter().exists()).toBe(false);
     });
 
     it('renders footer on embedded dropdown', () => {
-      createComponent({ props: { variant: DropdownVariant.Embedded } });
+      createComponent({ props: { variant: VARIANT_EMBEDDED } });
 
       expect(findDropdownFooter().exists()).toBe(true);
     });
