@@ -198,10 +198,12 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     subject { kubernetes.kubeclient }
 
     before do
-      create(:cluster_kubernetes_namespace,
-             cluster: kubernetes.cluster,
-             cluster_project: kubernetes.cluster.cluster_project,
-             project: kubernetes.cluster.cluster_project.project)
+      create(
+        :cluster_kubernetes_namespace,
+        cluster: kubernetes.cluster,
+        cluster_project: kubernetes.cluster.cluster_project,
+        project: kubernetes.cluster.cluster_project.project
+      )
     end
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::KubeClient) }
@@ -209,11 +211,13 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     context 'ca_pem is a single certificate' do
       let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/root_certificate.pem')) }
       let(:kubernetes) do
-        build(:cluster_platform_kubernetes,
-              :configured,
-              namespace: 'a-namespace',
-              cluster: cluster,
-              ca_pem: ca_pem)
+        build(
+          :cluster_platform_kubernetes,
+          :configured,
+          namespace: 'a-namespace',
+          cluster: cluster,
+          ca_pem: ca_pem
+        )
       end
 
       it 'adds it to cert_store' do
@@ -227,11 +231,13 @@ RSpec.describe Clusters::Platforms::Kubernetes do
     context 'ca_pem is a chain' do
       let(:cert_chain) { File.read(Rails.root.join('spec/fixtures/clusters/chain_certificates.pem')) }
       let(:kubernetes) do
-        build(:cluster_platform_kubernetes,
-              :configured,
-              namespace: 'a-namespace',
-              cluster: cluster,
-              ca_pem: cert_chain)
+        build(
+          :cluster_platform_kubernetes,
+          :configured,
+          namespace: 'a-namespace',
+          cluster: cluster,
+          ca_pem: cert_chain
+        )
       end
 
       where(:fixture_path) do

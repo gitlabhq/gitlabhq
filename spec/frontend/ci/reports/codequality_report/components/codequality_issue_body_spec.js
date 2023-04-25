@@ -34,13 +34,13 @@ describe('code quality issue body issue body', () => {
     it.each`
       severity      | iconClass               | iconName
       ${'INFO'}     | ${'gl-text-blue-400'}   | ${'severity-info'}
-      ${'MINOR'}    | ${'gl-text-orange-200'} | ${'severity-low'}
+      ${'MINOR'}    | ${'gl-text-orange-300'} | ${'severity-low'}
       ${'CRITICAL'} | ${'gl-text-red-600'}    | ${'severity-high'}
       ${'BLOCKER'}  | ${'gl-text-red-800'}    | ${'severity-critical'}
       ${'UNKNOWN'}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
       ${'INVALID'}  | ${'gl-text-gray-400'}   | ${'severity-unknown'}
       ${'info'}     | ${'gl-text-blue-400'}   | ${'severity-info'}
-      ${'minor'}    | ${'gl-text-orange-200'} | ${'severity-low'}
+      ${'minor'}    | ${'gl-text-orange-300'} | ${'severity-low'}
       ${'major'}    | ${'gl-text-orange-400'} | ${'severity-medium'}
       ${'critical'} | ${'gl-text-red-600'}    | ${'severity-high'}
       ${'blocker'}  | ${'gl-text-red-800'}    | ${'severity-critical'}

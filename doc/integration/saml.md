@@ -509,9 +509,9 @@ To set up multiple SAML IdPs:
        omniauth:
          providers:
            - secret: gitlab-saml
-           - key: saml
+             key: saml
            - secret: gitlab-saml
-           - key: saml_2
+             key: saml_2
    ```
 
    To allow your users to use SAML to sign up without having to manually create an

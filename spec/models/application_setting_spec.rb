@@ -1551,7 +1551,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:inactive_projects_min_size_mb).is_greater_than_or_equal_to(0) }
 
     it "deletes the redis key used for tracking inactive projects deletion warning emails when setting is updated",
-       :clean_gitlab_redis_shared_state do
+      :clean_gitlab_redis_shared_state do
       Gitlab::Redis::SharedState.with do |redis|
         redis.hset("inactive_projects_deletion_warning_email_notified", "project:1", "2020-01-01")
       end

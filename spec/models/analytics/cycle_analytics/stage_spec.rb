@@ -32,24 +32,24 @@ RSpec.describe Analytics::CycleAnalytics::Stage, feature_category: :value_stream
     before do
       # event identifiers are the same
       create(:cycle_analytics_stage, name: 'Stage A1', namespace: group,
-             start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+        start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
       create(:cycle_analytics_stage, name: 'Stage A2', namespace: sub_group,
-             start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+        start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
       create(:cycle_analytics_stage, name: 'Stage A3', namespace: sub_group,
-             start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+        start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
       create(:cycle_analytics_stage, name: 'Stage A4', project: project,
-             start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
+        start_event_identifier: :merge_request_created, end_event_identifier: :merge_request_merged)
 
       create(:cycle_analytics_stage,
-             name: 'Stage B1',
-             namespace: group,
-             start_event_identifier: :merge_request_last_build_started,
-             end_event_identifier: :merge_request_last_build_finished)
+        name: 'Stage B1',
+        namespace: group,
+        start_event_identifier: :merge_request_last_build_started,
+        end_event_identifier: :merge_request_last_build_finished)
 
       create(:cycle_analytics_stage, name: 'Stage C1', project: project,
-             start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production)
+        start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production)
       create(:cycle_analytics_stage, name: 'Stage C2', project: project,
-             start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production)
+        start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production)
     end
 
     it 'returns distinct stages by the event identifiers' do

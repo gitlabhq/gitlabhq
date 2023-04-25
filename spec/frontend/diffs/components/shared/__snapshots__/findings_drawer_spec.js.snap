@@ -30,7 +30,7 @@ exports[`FindingsDrawer matches the snapshot 1`] = `
       </span>
        
       <gl-icon-stub
-        class="codequality-severity-icon gl-text-orange-200"
+        class="codequality-severity-icon gl-text-orange-300"
         data-testid="findings-drawer-severity-icon"
         name="severity-low"
         size="12"

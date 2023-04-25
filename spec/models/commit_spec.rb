@@ -92,9 +92,11 @@ RSpec.describe Commit do
     end
 
     it 'parses date strings into Time instances' do
-      commit = described_class.build_from_sidekiq_hash(project,
-                                   id: '123',
-                                   authored_date: Time.current.to_s)
+      commit = described_class.build_from_sidekiq_hash(
+        project,
+        id: '123',
+        authored_date: Time.current.to_s
+      )
 
       expect(commit.authored_date).to be_a_kind_of(Time)
     end
@@ -551,18 +553,22 @@ eos
       let(:repository) { project.repository }
 
       let(:merge_request) do
-        create(:merge_request,
-               source_branch: 'video',
-               target_branch: 'master',
-               source_project: project,
-               author: user)
+        create(
+          :merge_request,
+          source_branch: 'video',
+          target_branch: 'master',
+          source_project: project,
+          author: user
+        )
       end
 
       let(:merge_commit) do
-        merge_commit_id = repository.merge(user,
-                                           merge_request.diff_head_sha,
-                                           merge_request,
-                                           'Test message')
+        merge_commit_id = repository.merge(
+          user,
+          merge_request.diff_head_sha,
+          merge_request,
+          'Test message'
+        )
 
         repository.commit(merge_commit_id)
       end
@@ -640,17 +646,21 @@ eos
     let(:user2) { build(:user) }
 
     let!(:note1) do
-      create(:note_on_commit,
-             commit_id: commit.id,
-             project: project,
-             note: 'foo')
+      create(
+        :note_on_commit,
+        commit_id: commit.id,
+        project: project,
+        note: 'foo'
+      )
     end
 
     let!(:note2) do
-      create(:note_on_commit,
-             commit_id: commit.id,
-             project: project,
-             note: 'bar')
+      create(
+        :note_on_commit,
+        commit_id: commit.id,
+        project: project,
+        note: 'bar'
+      )
     end
 
     before do
@@ -854,11 +864,13 @@ eos
     let(:issue) { create(:issue, author: user, project: project) }
 
     it 'returns true if the commit has been reverted' do
-      create(:note_on_issue,
-             noteable: issue,
-             system: true,
-             note: commit.revert_description(user),
-             project: issue.project)
+      create(
+        :note_on_issue,
+        noteable: issue,
+        system: true,
+        note: commit.revert_description(user),
+        project: issue.project
+      )
 
       expect_next_instance_of(Commit) do |revert_commit|
         expect(revert_commit).to receive(:reverts_commit?)

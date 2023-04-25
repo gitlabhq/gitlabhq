@@ -1288,7 +1288,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
         merge_method: 'ff',
         squash_option: 'always'
       }).tap do |attrs|
-        attrs[:operations_access_level] = 'disabled'
         attrs[:analytics_access_level] = 'disabled'
         attrs[:container_registry_access_level] = 'private'
         attrs[:security_and_compliance_access_level] = 'private'
@@ -1323,7 +1322,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
       expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
-      expect(project.operations_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
       expect(project.project_feature.security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
@@ -2593,7 +2591,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
-        expect(json_response['operations_access_level']).to be_present
         expect(json_response['security_and_compliance_access_level']).to be_present
         expect(json_response['releases_access_level']).to be_present
         expect(json_response['environments_access_level']).to be_present
@@ -2667,7 +2664,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
         expect(json_response['analytics_access_level']).to be_present
         expect(json_response['wiki_access_level']).to be_present
         expect(json_response['builds_access_level']).to be_present
-        expect(json_response['operations_access_level']).to be_present
         expect(json_response['security_and_compliance_access_level']).to be_present
         expect(json_response['releases_access_level']).to be_present
         expect(json_response['environments_access_level']).to be_present
@@ -3026,6 +3022,44 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
           expect(user_data['web_url']).to eq("http://localhost/#{user.username}")
           expect(user_data['avatar_url']).to eq(user.avatar_url)
         end
+      end
+    end
+
+    context 'when authenticated as a developer' do
+      before do
+        project
+        project_member
+      end
+
+      it 'hides sensitive admin attributes' do
+        get api(path, user3)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(project.id)
+        expect(json_response['description']).to eq(project.description)
+        expect(json_response['default_branch']).to eq(project.default_branch)
+        expect(json_response['ci_config_path']).to eq(project.ci_config_path)
+        expect(json_response['forked_from_project']).to eq(project.forked_from_project)
+        expect(json_response['service_desk_address']).to eq(project.service_desk_address)
+        expect(json_response).not_to include(
+          'ci_default_git_depth',
+          'ci_forward_deployment_enabled',
+          'ci_job_token_scope_enabled',
+          'ci_separated_caches',
+          'ci_opt_in_jwt',
+          'ci_allow_fork_pipelines_to_run_in_parent_project',
+          'build_git_strategy',
+          'keep_latest_artifact',
+          'restrict_user_defined_variables',
+          'runners_token',
+          'runner_token_expiration_interval',
+          'group_runners_enabled',
+          'auto_cancel_pending_pipelines',
+          'build_timeout',
+          'auto_devops_enabled',
+          'auto_devops_deploy_strategy',
+          'import_error'
+        )
       end
     end
 
@@ -3689,14 +3723,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['security_and_compliance_access_level']).to eq('private')
       expect(Project.find_by(path: project[:path]).security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
-    end
-
-    it 'sets operations_access_level' do
-      put api(path, user), params: { operations_access_level: 'private' }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['operations_access_level']).to eq('private')
-      expect(Project.find_by(path: project[:path]).operations_access_level).to eq(ProjectFeature::PRIVATE)
     end
 
     it 'sets analytics_access_level' do

@@ -34,6 +34,23 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 16.0
+
+### Project REST API field `operations_access_level` removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In project REST API endpoints, the `operations_access_level` field
+is removed in favor of more specialized fields like:
+
+- `releases_access_level`
+- `environments_access_level`
+- `feature_flags_access_level`
+- `infrastructure_access_level`
+- `monitor_access_level`
+
 ## Removed in 15.11
 
 ### Exporting and importing projects in JSON format not supported

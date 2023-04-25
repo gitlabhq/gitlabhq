@@ -383,8 +383,14 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       let_it_be(:commits) { project.repository.commits('master', limit: 2) }
 
       let!(:deployment) do
-        create(:deployment, :success, project: project, environment: environment,
-                                      finished_at: 1.year.ago, sha: commits[0].sha)
+        create(
+          :deployment,
+          :success,
+          project: project,
+          environment: environment,
+          finished_at: 1.year.ago,
+          sha: commits[0].sha
+        )
       end
 
       let!(:last_deployment) do
@@ -1355,10 +1361,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     subject { deployment.tags }
 
     it 'will return tags related to this deployment' do
-      expect(project.repository).to receive(:refs_by_oid).with(oid: deployment.sha,
-                                                               limit: 100,
-                                                               ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])
-                                                         .and_return(["#{Gitlab::Git::TAG_REF_PREFIX}test"])
+      expect(project.repository).to receive(:refs_by_oid).with(
+        oid: deployment.sha, limit: 100, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]
+      ).and_return(["#{Gitlab::Git::TAG_REF_PREFIX}test"])
 
       is_expected.to match_array(['refs/tags/test'])
     end

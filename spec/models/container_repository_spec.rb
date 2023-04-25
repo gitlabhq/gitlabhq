@@ -13,9 +13,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   before do
-    stub_container_registry_config(enabled: true,
-                                   api_url: 'http://registry.gitlab',
-                                   host_port: 'registry.gitlab')
+    stub_container_registry_config(
+      enabled: true, api_url: 'http://registry.gitlab', host_port: 'registry.gitlab'
+    )
 
     stub_request(:get, "http://registry.gitlab/v2/group/test/my_image/tags/list?n=#{::ContainerRegistry::Client::DEFAULT_TAGS_PAGE_SIZE}")
       .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
@@ -699,9 +699,12 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
   describe '#delete_tags!' do
     let(:repository) do
-      create(:container_repository, name: 'my_image',
-                                    tags: { latest: '123', rc1: '234' },
-                                    project: project)
+      create(
+        :container_repository,
+        name: 'my_image',
+        tags: { latest: '123', rc1: '234' },
+        project: project
+      )
     end
 
     context 'when action succeeds' do
@@ -729,9 +732,12 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
   describe '#delete_tag_by_name' do
     let(:repository) do
-      create(:container_repository, name: 'my_image',
-                                    tags: { latest: '123', rc1: '234' },
-                                    project: project)
+      create(
+        :container_repository,
+        name: 'my_image',
+        tags: { latest: '123', rc1: '234' },
+        project: project
+      )
     end
 
     context 'when action succeeds' do
@@ -760,9 +766,11 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#location' do
     context 'when registry is running on a custom port' do
       before do
-        stub_container_registry_config(enabled: true,
-                                       api_url: 'http://registry.gitlab:5000',
-                                       host_port: 'registry.gitlab:5000')
+        stub_container_registry_config(
+          enabled: true,
+          api_url: 'http://registry.gitlab:5000',
+          host_port: 'registry.gitlab:5000'
+        )
       end
 
       it 'returns a full location of the repository' do

@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Groups API **(FREE)**
 
+Interact with [groups](../user/group/index.md) by using the REST API.
+
+The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
+
 ## List groups
 
 Get a list of visible groups for the authenticated user. When accessed without
