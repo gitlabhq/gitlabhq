@@ -53,6 +53,19 @@ RSpec.describe BulkImports::LfsObjectsExportService, feature_category: :importer
       )
     end
 
+    context 'when export is batched' do
+      it 'exports only specified lfs objects' do
+        new_lfs_object = create(:lfs_object, :with_file)
+
+        project.lfs_objects << new_lfs_object
+
+        service.execute(batch_ids: [new_lfs_object.id])
+
+        expect(File).to exist(File.join(export_path, new_lfs_object.oid))
+        expect(File).not_to exist(File.join(export_path, lfs_object.oid))
+      end
+    end
+
     context 'when lfs object has file on disk missing' do
       it 'does not attempt to copy non-existent file' do
         FileUtils.rm(lfs_object.file.path)
@@ -77,6 +90,16 @@ RSpec.describe BulkImports::LfsObjectsExportService, feature_category: :importer
 
         service.execute
       end
+    end
+  end
+
+  describe '#exported_objects_count' do
+    it 'return the number of exported lfs objects' do
+      project.lfs_objects << create(:lfs_object, :with_file)
+
+      service.execute
+
+      expect(service.exported_objects_count).to eq(2)
     end
   end
 end

@@ -11,32 +11,6 @@ RSpec.describe Feature, stub_feature_flags: false, feature_category: :shared do
     skip_feature_flags_yaml_validation
   end
 
-  describe '.feature_flags_available?' do
-    it 'returns false on connection error' do
-      expect(ActiveRecord::Base.connection).to receive(:active?).and_raise(PG::ConnectionBad) # rubocop:disable Database/MultipleDatabases
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-
-    it 'returns false when connection is not active' do
-      expect(ActiveRecord::Base.connection).to receive(:active?).and_return(false) # rubocop:disable Database/MultipleDatabases
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-
-    it 'returns false when the flipper table does not exist' do
-      expect(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-
-    it 'returns false on NoDatabaseError' do
-      expect(Feature::FlipperFeature).to receive(:table_exists?).and_raise(ActiveRecord::NoDatabaseError)
-
-      expect(described_class.feature_flags_available?).to eq(false)
-    end
-  end
-
   describe '.get' do
     let(:feature) { double(:feature) }
     let(:key) { 'my_feature' }

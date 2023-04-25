@@ -9,6 +9,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 import {
   FORM_TYPES,
@@ -37,12 +38,13 @@ export default {
     WorkItemLinkChild,
     WorkItemLinksForm,
     WorkItemDetailModal,
+    AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['projectPath'],
+  inject: ['projectPath', 'reportAbusePath'],
   props: {
     workItemId: {
       type: String,
@@ -105,6 +107,9 @@ export default {
       parentIssue: null,
       formType: null,
       workItem: null,
+      isReportDrawerOpen: false,
+      reportedUserId: 0,
+      reportedUrl: '',
     };
   },
   computed: {
@@ -277,6 +282,14 @@ export default {
     clearPrefetching() {
       clearTimeout(this.prefetch);
     },
+    toggleReportAbuseDrawer(isOpen, reply = {}) {
+      this.isReportDrawerOpen = isOpen;
+      this.reportedUrl = reply.url;
+      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
+    },
+    openReportAbuseDrawer(reply) {
+      this.toggleReportAbuseDrawer(true, reply);
+    },
   },
   i18n: {
     title: s__('WorkItem|Tasks'),
@@ -374,6 +387,14 @@ export default {
           :work-item-iid="activeChild.iid"
           @close="closeModal"
           @workItemDeleted="handleWorkItemDeleted(activeChild)"
+          @openReportAbuse="openReportAbuseDrawer"
+        />
+        <abuse-category-selector
+          v-if="isReportDrawerOpen && reportAbusePath"
+          :reported-user-id="reportedUserId"
+          :reported-from-url="reportedUrl"
+          :show-drawer="isReportDrawerOpen"
+          @close-drawer="toggleReportAbuseDrawer(false)"
         />
       </template>
     </template>

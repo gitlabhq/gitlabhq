@@ -4,12 +4,13 @@ import { GlIcon, GlLink, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import relatedIssuableMixin from '../mixins/related_issuable_mixin';
 import IssueAssignees from './issue_assignees.vue';
 import IssueMilestone from './issue_milestone.vue';
@@ -26,12 +27,18 @@ export default {
     IssueDueDate,
     GlButton,
     WorkItemDetailModal,
+    AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
   mixins: [relatedIssuableMixin],
+  inject: {
+    reportAbusePath: {
+      default: '',
+    },
+  },
   props: {
     canReorder: {
       type: Boolean,
@@ -53,6 +60,13 @@ export default {
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      isReportDrawerOpen: false,
+      reportedUserId: 0,
+      reportedUrl: '',
+    };
   },
   computed: {
     stateTitle() {
@@ -91,6 +105,14 @@ export default {
         url: setUrlParams({ work_item_id: workItemId }),
         replace: true,
       });
+    },
+    toggleReportAbuseDrawer(isOpen, reply = {}) {
+      this.isReportDrawerOpen = isOpen;
+      this.reportedUrl = reply.url;
+      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
+    },
+    openReportAbuseDrawer(reply) {
+      this.toggleReportAbuseDrawer(true, reply);
     },
   },
 };
@@ -233,6 +255,14 @@ export default {
       :work-item-id="workItemId"
       @close="updateWorkItemIdUrlQuery"
       @workItemDeleted="handleWorkItemDeleted"
+      @openReportAbuse="openReportAbuseDrawer"
+    />
+    <abuse-category-selector
+      v-if="isReportDrawerOpen && reportAbusePath"
+      :reported-user-id="reportedUserId"
+      :reported-from-url="reportedUrl"
+      :show-drawer="isReportDrawerOpen"
+      @close-drawer="toggleReportAbuseDrawer(false)"
     />
   </div>
 </template>

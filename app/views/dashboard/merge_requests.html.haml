@@ -17,7 +17,7 @@
 = render 'shared/issuable/search_bar', type: :merge_requests, disable_target_branch: true
 
 - if current_user && @no_filters_set
-  = render 'shared/dashboard/no_filter_selected'
+  = render 'no_filter_selected'
 - elsif @search_timeout_occurred
   = render 'shared/dashboard/search_timeout_occurred'
 - else

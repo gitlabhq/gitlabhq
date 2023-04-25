@@ -14,7 +14,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, 
     sign_in(user)
   end
 
-  it 'reflects dashboard issues count' do
+  it 'reflects dashboard issues count', :js do
     visit issues_path
 
     expect_counters('issues', '1', n_("%d assigned issue", "%d assigned issues", 1) % 1)

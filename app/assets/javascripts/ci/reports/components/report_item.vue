@@ -53,7 +53,7 @@ export default {
 };
 </script>
 <template>
-  <li class="report-block-list-issue align-items-center" data-qa-selector="report_item_row">
+  <li class="report-block-list-issue gl-p-3!" data-qa-selector="report_item_row">
     <component
       :is="iconComponent"
       v-if="showReportSectionStatusIcon"

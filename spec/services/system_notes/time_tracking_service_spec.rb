@@ -37,7 +37,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         end
 
         it 'sets the correct note message' do
-          expect(note.note).to eq('removed start date and removed due date')
+          expect(note.note).to eq("removed start date #{start_date.to_s(:long)} and removed due date #{due_date.to_s(:long)}")
         end
       end
 
@@ -52,7 +52,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
           let(:changed_dates) { { 'due_date' => [nil, due_date], 'start_date' => [start_date, nil] } }
 
           it 'sets the correct note message' do
-            expect(note.note).to eq("removed start date and changed due date to #{due_date.to_s(:long)}")
+            expect(note.note).to eq("removed start date #{start_date.to_s(:long)} and changed due date to #{due_date.to_s(:long)}")
           end
         end
       end
@@ -80,7 +80,7 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
           let(:changed_dates) { { 'due_date' => [due_date, nil], 'start_date' => [nil, start_date] } }
 
           it 'sets the correct note message' do
-            expect(note.note).to eq("changed start date to #{start_date.to_s(:long)} and removed due date")
+            expect(note.note).to eq("changed start date to #{start_date.to_s(:long)} and removed due date #{due_date.to_s(:long)}")
           end
         end
       end

@@ -97,7 +97,7 @@ export default {
       :no-results-text="__('No matches found')"
       :searchable="true"
       :searching="loading"
-      toggle-class="gl-flex-direction-column gl-align-items-stretch!"
+      toggle-class="gl-flex-direction-column gl-align-items-stretch! gl-rounded-top-left-none! gl-rounded-bottom-left-none! gl-w-full!"
       :toggle-text="dropdownText"
       @search="searchNamespaces"
       @select="setNamespace"

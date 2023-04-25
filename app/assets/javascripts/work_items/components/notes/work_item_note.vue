@@ -152,6 +152,12 @@ export default {
     isAuthorAnAssignee() {
       return Boolean(this.assignees.filter((assignee) => assignee.id === this.author.id).length);
     },
+    currentUserId() {
+      return window.gon.current_user_id;
+    },
+    canReportAbuse() {
+      return getIdFromGraphQLId(this.author.id) !== this.currentUserId;
+    },
   },
   apollo: {
     workItem: {
@@ -322,12 +328,14 @@ export default {
               :note-id="note.id"
               :is-author-an-assignee="isAuthorAnAssignee"
               :show-assign-unassign="canSetWorkItemMetadata"
+              :can-report-abuse="canReportAbuse"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
               @error="($event) => $emit('error', $event)"
               @notifyCopyDone="notifyCopyDone"
               @deleteNote="$emit('deleteNote')"
               @assignUser="assignUserAction"
+              @reportAbuse="$emit('reportAbuse')"
             />
           </div>
         </div>

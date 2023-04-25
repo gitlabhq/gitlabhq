@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::FileTransfer::ProjectConfig do
+RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :importers do
   let_it_be(:exportable) { create(:project) }
   let_it_be(:hex) { '123' }
 
@@ -107,6 +107,33 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig do
   describe '#file_relations' do
     it 'returns project file relations' do
       expect(subject.file_relations).to contain_exactly('uploads', 'lfs_objects', 'repository', 'design')
+    end
+  end
+
+  describe '#batchable_relation?' do
+    context 'when relation is batchable' do
+      it 'returns true' do
+        expect(subject.batchable_relation?('issues')).to eq(true)
+      end
+    end
+
+    context 'when relation is not batchable' do
+      it 'returns false' do
+        expect(subject.batchable_relation?('project_feature')).to eq(false)
+      end
+    end
+
+    context 'when relation is not listed as portable' do
+      it 'returns false' do
+        expect(subject.batchable_relation?('foo')).to eq(false)
+      end
+    end
+  end
+
+  describe '#batchable_relations' do
+    it 'returns a list of collection associations for a project' do
+      expect(subject.batchable_relations).to include('issues', 'merge_requests', 'milestones')
+      expect(subject.batchable_relations).not_to include('project_feature', 'ci_cd_settings')
     end
   end
 end

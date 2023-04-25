@@ -97,6 +97,7 @@ describe('WorkItemNotes component', () => {
     workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
+    isModal = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
@@ -116,6 +117,8 @@ describe('WorkItemNotes component', () => {
         fullPath: 'test-path',
         fetchByIid,
         workItemType: 'task',
+        reportAbusePath: '/report/abuse/path',
+        isModal,
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),

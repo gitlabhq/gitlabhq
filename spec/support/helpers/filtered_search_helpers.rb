@@ -69,12 +69,6 @@ module FilteredSearchHelpers
     filtered_search.send_keys(:enter)
   end
 
-  def init_label_search
-    filtered_search.set('label:=')
-    # This ensures the dropdown is shown
-    expect(find('#js-dropdown-label')).not_to have_css('.filter-dropdown-loading')
-  end
-
   def expect_filtered_search_input_empty
     expect(find('.filtered-search').value).to eq('')
   end

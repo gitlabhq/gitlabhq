@@ -401,7 +401,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         it 'returns public links and admin area link' do
           expect(subject[:context_switcher_links]).to eq([
             *public_link,
-            { title: s_('Navigation|Admin'), link: '/admin', icon: 'admin' }
+            { title: s_('Navigation|Admin Area'), link: '/admin', icon: 'admin' }
           ])
         end
       end

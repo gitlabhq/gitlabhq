@@ -24,7 +24,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-geo-migrate-hashed-storage-callout',
   '.js-unlimited-members-during-trial-alert',
   '.js-branch-rules-info-callout',
-  '.js-license-check-deprecation-alert',
 ];
 
 const initCallouts = () => {

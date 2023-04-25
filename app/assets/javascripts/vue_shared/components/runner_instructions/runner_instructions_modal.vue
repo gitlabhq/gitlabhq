@@ -7,14 +7,22 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlIcon,
+  GlLink,
   GlLoadingIcon,
+  GlSprintf,
   GlSkeletonLoader,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { __, s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
-import { PLATFORM_DOCKER, PLATFORM_KUBERNETES, PLATFORM_AWS } from './constants';
+import {
+  PLATFORM_DOCKER,
+  PLATFORM_KUBERNETES,
+  PLATFORM_AWS,
+  LEGACY_REGISTER_HELP_URL,
+} from './constants';
 
 import RunnerCliInstructions from './instructions/runner_cli_instructions.vue';
 import RunnerDockerInstructions from './instructions/runner_docker_instructions.vue';
@@ -30,13 +38,16 @@ export default {
     GlDropdownItem,
     GlModal,
     GlIcon,
+    GlLink,
     GlLoadingIcon,
+    GlSprintf,
     GlSkeletonLoader,
     RunnerDockerInstructions,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     modalId: {
       type: String,
@@ -91,7 +102,7 @@ export default {
       shown: false,
       platforms: [],
       selectedPlatform: null,
-      showAlert: false,
+      showErrorAlert: false,
       platformsButtonGroupVertical: false,
     };
   },
@@ -110,6 +121,14 @@ export default {
         default:
           return null;
       }
+    },
+    showDeprecationAlert() {
+      return (
+        // create_runner_workflow_for_admin
+        this.glFeatures.createRunnerWorkflowForAdmin ||
+        // create_runner_workflow_for_namespace
+        this.glFeatures.createRunnerWorkflowForNamespace
+      );
     },
   },
   updated() {
@@ -145,7 +164,7 @@ export default {
       return this.selectedPlatform.name === platform.name;
     },
     toggleAlert(state) {
-      this.showAlert = state;
+      this.showErrorAlert = state;
     },
     onPlatformsButtonResize() {
       if (bp.getBreakpointSize() === 'xs') {
@@ -161,7 +180,12 @@ export default {
     downloadInstallBinary: s__('Runners|Download and install binary'),
     downloadLatestBinary: s__('Runners|Download latest binary'),
     fetchError: s__('Runners|An error has occurred fetching instructions'),
+    deprecationAlertTitle: s__('Runners|Support for registration tokens is deprecated'),
+    deprecationAlertContent: s__(
+      "Runners|In GitLab Runner 15.6, the use of registration tokens and runner parameters in the 'register' command was deprecated. They have been replaced by authentication tokens. %{linkStart}How does this impact my current registration workflow?%{linkEnd}",
+    ),
   },
+  LEGACY_REGISTER_HELP_URL,
 };
 </script>
 <template>
@@ -174,7 +198,22 @@ export default {
     v-on="$listeners"
     @shown="onShown"
   >
-    <gl-alert v-if="showAlert" variant="danger" @dismiss="toggleAlert(false)">
+    <gl-alert
+      v-if="showDeprecationAlert"
+      :title="$options.i18n.deprecationAlertTitle"
+      variant="warning"
+      :dismissible="false"
+    >
+      <gl-sprintf :message="$options.i18n.deprecationAlertContent">
+        <template #link="{ content }">
+          <gl-link target="_blank" :href="$options.LEGACY_REGISTER_HELP_URL"
+            >{{ content }} <gl-icon name="external-link"
+          /></gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
+
+    <gl-alert v-if="showErrorAlert" variant="danger" @dismiss="toggleAlert(false)">
       {{ $options.i18n.fetchError }}
     </gl-alert>
 

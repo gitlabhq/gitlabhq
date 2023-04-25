@@ -81,7 +81,11 @@
   - 1
 - - bulk_imports_export_request
   - 1
+- - bulk_imports_finish_batched_relation_export
+  - 1
 - - bulk_imports_pipeline
+  - 1
+- - bulk_imports_relation_batch_export
   - 1
 - - bulk_imports_relation_export
   - 1

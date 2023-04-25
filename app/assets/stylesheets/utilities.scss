@@ -65,6 +65,10 @@
   min-width: 0;
 }
 
+.gl-min-h-100vh {
+  min-height: 100vh;
+}
+
 // .gl-font-size-inherit will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1466
 .gl-font-size-inherit,
 .font-size-inherit { font-size: inherit; }

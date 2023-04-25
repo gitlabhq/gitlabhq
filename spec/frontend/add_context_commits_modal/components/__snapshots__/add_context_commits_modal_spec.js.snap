@@ -35,6 +35,7 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
           placeholder="Search or filter commits"
           searchbuttonattributes="[object Object]"
           searchinputattributes="[object Object]"
+          searchtextoptionlabel="Search for this text"
           value=""
         />
          

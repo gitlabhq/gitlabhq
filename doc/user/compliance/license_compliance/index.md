@@ -25,8 +25,8 @@ For the job to activate, License Finder needs to find a compatible package defin
 GitLab checks the License Compliance report, compares the
 licenses between the source and target branches, and shows the information right on the merge
 request. Denied licenses are indicated by a `x` red icon next to them as well as new licenses that
-need a decision from you. In addition, you can [manually allow or deny](../license_check_rules.md) licenses in your
-project's license compliance policy section. If a denied license is detected in a new commit,
+need a decision from you. In addition, you can [manually allow or deny](../license_approval_policies.md) licenses in your
+project's security policies section. If a denied license is detected in a new commit,
 GitLab blocks any merge requests containing that commit and instructs the developer to remove the
 license.
 
@@ -85,7 +85,7 @@ dependencies to find their licenses.
 
 GitLab has limited support for [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).
 License compliance can read multiple licenses, but always considers them combined using the `AND` operator. For example,
-if a dependency has two licenses, and one of them is allowed and the other is denied by the project [policy](../license_check_rules.md),
+if a dependency has two licenses, and one of them is allowed and the other is denied by the project [license approval policy](../license_approval_policies.md),
 GitLab evaluates the composite license as _denied_, as this is the safer option.
 The ability to support other license expression operators (like `OR`, `WITH`) is tracked
 in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6571).
@@ -693,8 +693,8 @@ Additional configuration may be needed for connecting to private registries for:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212388) in GitLab 13.3.
 
-Prior to GitLab 13.3, offline environments required an exact name match for [project policies](../license_check_rules.md).
-In GitLab 13.3 and later, GitLab matches the name of [project policies](../license_check_rules.md)
+Prior to GitLab 13.3, offline environments required an exact name match for [project policies](../license_approval_policies.md).
+In GitLab 13.3 and later, GitLab matches the name of [project policies](../license_approval_policies.md)
 with identifiers from the [SPDX license list](https://spdx.org/licenses/).
 A local copy of the SPDX license list is distributed with the GitLab instance. If needed, the GitLab
 instance's administrator can manually update it with a [Rake task](../../../raketasks/spdx.md).

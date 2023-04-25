@@ -13,17 +13,36 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
   subject { described_class.new(portable: group, user: user) }
 
   describe '#execute' do
-    it 'schedules RelationExportWorker for each top level relation' do
-      expect(subject).to receive(:execute).and_return(ServiceResponse.success).and_call_original
-      top_level_relations = BulkImports::FileTransfer.config_for(group).portable_relations
+    let_it_be(:top_level_relations) { BulkImports::FileTransfer.config_for(group).portable_relations }
 
-      top_level_relations.each do |relation|
-        expect(BulkImports::RelationExportWorker)
-          .to receive(:perform_async)
-          .with(user.id, group.id, group.class.name, relation)
+    before do
+      allow(subject).to receive(:execute).and_return(ServiceResponse.success).and_call_original
+    end
+
+    context 'when export is not batched' do
+      it 'schedules RelationExportWorker for each top level relation' do
+        top_level_relations.each do |relation|
+          expect(BulkImports::RelationExportWorker)
+            .to receive(:perform_async)
+            .with(user.id, group.id, group.class.name, relation, false)
+        end
+
+        subject.execute
       end
+    end
 
-      subject.execute
+    context 'when export is batched' do
+      subject { described_class.new(portable: group, user: user, batched: true) }
+
+      it 'schedules RelationExportWorker with a `batched: true` flag' do
+        top_level_relations.each do |relation|
+          expect(BulkImports::RelationExportWorker)
+            .to receive(:perform_async)
+            .with(user.id, group.id, group.class.name, relation, true)
+        end
+
+        subject.execute
+      end
     end
 
     context 'when exception occurs' do
@@ -37,6 +56,20 @@ RSpec.describe BulkImports::ExportService, feature_category: :importers do
         expect(BulkImports::RelationExportWorker).not_to receive(:perform_async)
 
         service.execute
+      end
+
+      context 'when user is not allowed to perform export' do
+        let(:another_user) { create(:user) }
+
+        it 'does not schedule RelationExportWorker' do
+          another_user = create(:user)
+          service = described_class.new(portable: group, user: another_user)
+          response = service.execute
+
+          expect(response.status).to eq(:error)
+          expect(response.message).to eq(Gitlab::ImportExport::Error)
+          expect(response.http_status).to eq(:unprocessable_entity)
+        end
       end
     end
   end

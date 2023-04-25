@@ -6,16 +6,26 @@ module BulkImports
 
     BATCH_SIZE = 100
 
+    attr_reader :exported_objects_count
+
     def initialize(portable, export_path)
       @portable = portable
       @export_path = export_path
       @lfs_json = {}
+      @exported_objects_count = 0
     end
 
-    def execute
-      portable.lfs_objects.find_in_batches(batch_size: BATCH_SIZE) do |batch| # rubocop: disable CodeReuse/ActiveRecord
+    def execute(options = {})
+      relation = portable.lfs_objects
+
+      if options[:batch_ids]
+        relation = relation.where(relation.model.primary_key => options[:batch_ids]) # rubocop:disable CodeReuse/ActiveRecord
+      end
+
+      relation.find_in_batches(batch_size: BATCH_SIZE) do |batch| # rubocop: disable CodeReuse/ActiveRecord
         batch.each do |lfs_object|
           save_lfs_object(lfs_object)
+          @exported_objects_count += 1
         end
 
         append_lfs_json_for_batch(batch)

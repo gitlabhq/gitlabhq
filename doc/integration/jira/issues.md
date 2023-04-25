@@ -71,7 +71,7 @@ You can configure custom rules for how GitLab matches Jira issue keys by definin
 - [A regex pattern](#use-regular-expression)
 - [A prefix](#use-a-prefix)
 
-When you don't configure custom rules, the [default behavior](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/regex.rb#L509) is used. For more information, see the [RE2 wiki](https://github.com/google/re2/wiki/Syntax).
+When you don't configure custom rules, the [default behavior](https://gitlab.com/gitlab-org/gitlab/-/blob/710d83af298d8896f2b940faf48a46d2feb4cbaf/lib/gitlab/regex.rb#L552) is used. For more information, see the [RE2 wiki](https://github.com/google/re2/wiki/Syntax).
 
 ### Use regular expression
 

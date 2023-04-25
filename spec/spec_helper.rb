@@ -311,10 +311,6 @@ RSpec.configure do |config|
       # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
       stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
 
-      # Disable the `vue_issues_dashboard` feature flag in specs as we migrate the issues
-      # dashboard page to Vue. https://gitlab.com/gitlab-org/gitlab/-/issues/379025
-      stub_feature_flags(vue_issues_dashboard: false)
-
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

@@ -53,4 +53,14 @@ RSpec.describe BulkImports::TreeExportService, feature_category: :importers do
       end
     end
   end
+
+  describe '#export_batch' do
+    it 'serializes relation with specified ids' do
+      expect_next_instance_of(Gitlab::ImportExport::Json::StreamingSerializer) do |serializer|
+        expect(serializer).to receive(:serialize_relation).with(anything, batch_ids: [1, 2, 3])
+      end
+
+      subject.export_batch([1, 2, 3])
+    end
+  end
 end

@@ -19,6 +19,7 @@ export const initWorkItemsRoot = () => {
     hasOkrsFeature,
     hasIssuableHealthStatusFeature,
     newCommentTemplatePath,
+    reportAbusePath,
   } = el.dataset;
 
   return new Vue({
@@ -37,6 +38,7 @@ export const initWorkItemsRoot = () => {
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       newCommentTemplatePath,
+      reportAbusePath,
     },
     render(createElement) {
       return createElement(App);

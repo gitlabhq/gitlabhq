@@ -19,6 +19,7 @@ export function initRelatedIssues(issueType = TYPE_ISSUE) {
       fullPath: el.dataset.fullPath,
       hasIssueWeightsFeature: parseBoolean(el.dataset.hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(el.dataset.hasIterationsFeature),
+      reportAbusePath: el.dataset.reportAbusePath,
     },
     render: (createElement) =>
       createElement(RelatedIssuesRoot, {

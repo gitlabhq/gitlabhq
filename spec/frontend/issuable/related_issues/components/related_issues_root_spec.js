@@ -42,6 +42,9 @@ describe('RelatedIssuesRoot', () => {
         ...defaultProps,
         ...props,
       },
+      provide: {
+        reportAbusePath: '/report/abuse/path',
+      },
       data() {
         return data;
       },

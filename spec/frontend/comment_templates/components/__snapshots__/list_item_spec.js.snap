@@ -21,7 +21,7 @@ exports[`Comment templates list item component renders list item 1`] = `
         class="gl-new-dropdown gl-disclosure-dropdown"
       >
         <button
-          aria-controls="base-dropdown-5"
+          aria-controls="base-dropdown-7"
           aria-labelledby="actions-toggle-3"
           class="btn btn-default btn-md gl-button btn-default-tertiary gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
           data-testid="base-dropdown-toggle"
@@ -60,7 +60,7 @@ exports[`Comment templates list item component renders list item 1`] = `
         <div
           class="gl-new-dropdown-panel"
           data-testid="base-dropdown-menu"
-          id="base-dropdown-5"
+          id="base-dropdown-7"
         >
           <div
             class="gl-new-dropdown-inner"

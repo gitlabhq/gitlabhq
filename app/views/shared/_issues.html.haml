@@ -1,8 +1,0 @@
-= render 'shared/alerts/positioning_disabled' if @sort == 'relative_position'
-
-- if @issues.to_a.any?
-  %ul.content-list.issues-list.issuable-list{ class: issue_manual_ordering_class }
-    = render partial: 'projects/issues/issue', collection: @issues
-  = paginate @issues, theme: "gitlab"
-- else
-  = render 'shared/empty_states/issues'

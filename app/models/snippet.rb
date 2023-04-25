@@ -19,6 +19,7 @@ class Snippet < ApplicationRecord
   include AfterCommitQueue
   extend ::Gitlab::Utils::Override
   include CreatedAtFilterable
+  include EachBatch
 
   MAX_FILE_COUNT = 10
 

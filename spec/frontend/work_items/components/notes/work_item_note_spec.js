@@ -300,5 +300,23 @@ describe('Work Item Note', () => {
         });
       });
     });
+
+    describe('report abuse props', () => {
+      it.each`
+        currentUserId | canReportAbuse | sameAsAuthor
+        ${1}          | ${false}       | ${'same as'}
+        ${4}          | ${true}        | ${'not same as'}
+      `(
+        'should be $canReportAbuse when the author is $sameAsAuthor as the author of the note',
+        ({ currentUserId, canReportAbuse }) => {
+          window.gon = {
+            current_user_id: currentUserId,
+          };
+          createComponent();
+
+          expect(findNoteActions().props('canReportAbuse')).toBe(canReportAbuse);
+        },
+      );
+    });
   });
 });

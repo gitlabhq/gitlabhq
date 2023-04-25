@@ -7,24 +7,11 @@
 
 = render_dashboard_ultimate_trial(current_user)
 
-.page-title-holder.d-flex.align-items-center
+.page-title-holder.gl-display-flex.gl-align-items-center
   %h1.page-title.gl-font-size-h-display= _('Issues')
 
   - if current_user
     .page-title-controls
       = render 'shared/new_project_item_vue_select'
 
-- if ::Feature.enabled?(:vue_issues_dashboard)
-  .js-issues-dashboard{ data: dashboard_issues_list_data(current_user) }
-- else
-  .top-area
-    = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
-    .nav-controls
-      = render 'shared/issuable/feed_buttons'
-
-  = render 'shared/issuable/search_bar', type: :issues
-
-  - if current_user && @no_filters_set
-    = render 'shared/dashboard/no_filter_selected'
-  - else
-    = render 'shared/issues'
+.js-issues-dashboard{ data: dashboard_issues_list_data(current_user) }

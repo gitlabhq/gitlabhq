@@ -33,6 +33,7 @@ module BulkImports
 
       event :finish do
         transition started: :finished
+        transition finished: :finished
         transition failed: :failed
       end
 

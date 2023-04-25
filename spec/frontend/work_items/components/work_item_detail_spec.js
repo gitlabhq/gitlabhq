@@ -26,6 +26,7 @@ import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { i18n } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
@@ -43,6 +44,7 @@ import {
   workItemAssigneesSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
   objectiveType,
+  mockWorkItemCommentNote,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -88,6 +90,7 @@ describe('WorkItemDetail component', () => {
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
+  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 
   const createComponent = ({
     isModal = false,
@@ -128,6 +131,7 @@ describe('WorkItemDetail component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
+        reportAbusePath: '/report/abuse/path',
       },
       stubs: {
         WorkItemWeight: true,
@@ -724,5 +728,31 @@ describe('WorkItemDetail component', () => {
     await waitForPromises();
 
     expect(findCreatedUpdated().exists()).toBe(true);
+  });
+
+  describe('abuse category selector', () => {
+    beforeEach(async () => {
+      setWindowLocation('?work_item_id=2');
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('should not be visible by default', () => {
+      expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
+
+    it('should be visible when the work item modal emits `openReportAbuse` event', async () => {
+      findModal().vm.$emit('openReportAbuse', mockWorkItemCommentNote);
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().exists()).toBe(true);
+
+      findAbuseCategorySelector().vm.$emit('close-drawer');
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
   });
 });

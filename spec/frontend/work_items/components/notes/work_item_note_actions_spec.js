@@ -22,6 +22,7 @@ describe('Work Item Note Actions', () => {
   const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-action"]');
   const findCopyLinkButton = () => wrapper.find('[data-testid="copy-link-action"]');
   const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
+  const findReportAbuseToAdminButton = () => wrapper.find('[data-testid="abuse-note-action"]');
 
   const addEmojiMutationResolver = jest.fn().mockResolvedValue({
     data: {
@@ -39,6 +40,7 @@ describe('Work Item Note Actions', () => {
     showEdit = true,
     showAwardEmoji = true,
     showAssignUnassign = false,
+    canReportAbuse = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNoteActions, {
       propsData: {
@@ -47,6 +49,7 @@ describe('Work Item Note Actions', () => {
         noteId,
         showAwardEmoji,
         showAssignUnassign,
+        canReportAbuse,
       },
       provide: {
         glFeatures: {
@@ -193,6 +196,32 @@ describe('Work Item Note Actions', () => {
       findAssignUnassignButton().vm.$emit('click');
 
       expect(wrapper.emitted('assignUser')).toEqual([[]]);
+    });
+  });
+
+  describe('report abuse to admin', () => {
+    it('should not report abuse to admin by default', () => {
+      createComponent();
+
+      expect(findReportAbuseToAdminButton().exists()).toBe(false);
+    });
+
+    it('should display assign/unassign when the props is true', () => {
+      createComponent({
+        canReportAbuse: true,
+      });
+
+      expect(findReportAbuseToAdminButton().exists()).toBe(true);
+    });
+
+    it('should emit `reportAbuse` event when report abuse action is clicked', () => {
+      createComponent({
+        canReportAbuse: true,
+      });
+
+      findReportAbuseToAdminButton().vm.$emit('click');
+
+      expect(wrapper.emitted('reportAbuse')).toEqual([[]]);
     });
   });
 });

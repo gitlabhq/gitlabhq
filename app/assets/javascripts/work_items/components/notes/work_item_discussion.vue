@@ -171,6 +171,7 @@ export default {
     :fetch-by-iid="fetchByIid"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
+    @reportAbuse="$emit('reportAbuse', note)"
     @error="$emit('error', $event)"
   />
   <timeline-entry-item
@@ -203,6 +204,7 @@ export default {
                   :fetch-by-iid="fetchByIid"
                   @startReplying="showReplyForm"
                   @deleteNote="$emit('deleteNote', note)"
+                  @reportAbuse="$emit('reportAbuse', note)"
                   @error="$emit('error', $event)"
                 />
                 <discussion-notes-replies-wrapper>
@@ -230,6 +232,7 @@ export default {
                         :fetch-by-iid="fetchByIid"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
+                        @reportAbuse="$emit('reportAbuse', reply)"
                         @error="$emit('error', $event)"
                       />
                     </template>

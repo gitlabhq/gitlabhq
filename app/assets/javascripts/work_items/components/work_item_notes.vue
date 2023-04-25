@@ -89,6 +89,10 @@ export default {
       required: false,
       default: false,
     },
+    reportAbusePath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -284,6 +288,9 @@ export default {
     updateKey() {
       this.addNoteKey = uniqueId(`work-item-add-note-${this.workItemId}`);
     },
+    reportAbuse(isOpen, reply = {}) {
+      this.$emit('openReportAbuse', reply);
+    },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
       // copied from discussions batch logic - every fetchMore call has a higher
@@ -399,6 +406,7 @@ export default {
                 :assignees="assignees"
                 :can-set-work-item-metadata="canSetWorkItemMetadata"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
+                @reportAbuse="reportAbuse(true, $event)"
                 @error="$emit('error', $event)"
               />
             </template>

@@ -205,7 +205,7 @@ gem 'diffy', '~> 3.4'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.2.6', '>= 2.2.6.4'
+gem 'rack', '~> 2.2.7'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 

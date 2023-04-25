@@ -12,6 +12,7 @@ import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -25,6 +26,7 @@ import {
   changeWorkItemParentMutationResponse,
   workItemQueryResponse,
   projectWorkItemResponse,
+  mockWorkItemCommentNote,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -76,6 +78,7 @@ describe('WorkItemLinks', () => {
       provide: {
         projectPath: 'project/path',
         hasIterationsFeature,
+        reportAbusePath: '/report/abuse/path',
       },
       propsData: { issuableId: 1 },
       apolloProvider: mockApollo,
@@ -105,6 +108,8 @@ describe('WorkItemLinks', () => {
   const findFirstWorkItemLinkChild = () => findWorkItemLinkChildItems().at(0);
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
   const findChildrenCount = () => wrapper.findByTestId('children-count');
+  const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
+  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
 
   afterEach(() => {
     mockApollo = null;
@@ -328,7 +333,7 @@ describe('WorkItemLinks', () => {
     await createComponent();
 
     expect(showModal).not.toHaveBeenCalled();
-    expect(wrapper.findComponent(WorkItemDetailModal).props('workItemIid')).toBe(null);
+    expect(findWorkItemDetailModal().props('workItemIid')).toBe(null);
   });
 
   it('opens the modal if work item iid URL parameter is found in child items', async () => {
@@ -336,6 +341,31 @@ describe('WorkItemLinks', () => {
     await createComponent();
 
     expect(showModal).toHaveBeenCalled();
-    expect(wrapper.findComponent(WorkItemDetailModal).props('workItemIid')).toBe('2');
+    expect(findWorkItemDetailModal().props('workItemIid')).toBe('2');
+  });
+
+  describe('abuse category selector', () => {
+    beforeEach(async () => {
+      setWindowLocation('?work_item_id=2');
+      await createComponent();
+    });
+
+    it('should not be visible by default', () => {
+      expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
+
+    it('should be visible when the work item modal emits `openReportAbuse` event', async () => {
+      findWorkItemDetailModal().vm.$emit('openReportAbuse', mockWorkItemCommentNote);
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().exists()).toBe(true);
+
+      findAbuseCategorySelector().vm.$emit('close-drawer');
+
+      await nextTick();
+
+      expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
   });
 });

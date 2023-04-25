@@ -853,9 +853,6 @@ msgstr ""
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
 msgstr ""
 
-msgid "%{license_check_docs_link_start}License-Check%{link_end} is enabled for this project. This feature has been %{deprecation_docs_link_url}deprecated%{link_end} in GitLab 15.9 and is planned for %{removal_docs_link_url}removal%{link_end} in 16.0. You can create a %{scan_result_policy_link_start}scan result policy%{link_end} to continue enforcing your license approval requirements."
-msgstr ""
-
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
@@ -5552,9 +5549,6 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-msgid "Approved MRs"
-msgstr ""
-
 msgid "Approved members will use an additional seat in your subscription, which may override your user cap."
 msgid_plural "Approved members will use an additional %d seats in your subscription, which may override your user cap."
 msgstr[0] ""
@@ -5896,9 +5890,6 @@ msgid "AsanaService|Comma-separated list of branches to be automatically inspect
 msgstr ""
 
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
-msgstr ""
-
-msgid "Ascending"
 msgstr ""
 
 msgid "Ask again later"
@@ -9565,9 +9556,6 @@ msgstr ""
 msgid "Closed (moved)"
 msgstr ""
 
-msgid "Closed MRs"
-msgstr ""
-
 msgid "Closed date"
 msgstr ""
 
@@ -11030,6 +11018,9 @@ msgstr ""
 msgid "ComplianceFramework|No pipeline configuration found"
 msgstr ""
 
+msgid "ComplianceReport|Add framework"
+msgstr ""
+
 msgid "ComplianceReport|Apply framework to selected projects"
 msgstr ""
 
@@ -11058,9 +11049,6 @@ msgid "ComplianceReport|Framework successfully removed"
 msgstr ""
 
 msgid "ComplianceReport|Less than 2 approvers"
-msgstr ""
-
-msgid "ComplianceReport|No framework"
 msgstr ""
 
 msgid "ComplianceReport|No projects found"
@@ -11783,16 +11771,7 @@ msgstr ""
 msgid "ContributionAnalytics|%{createdCount} created, %{mergedCount} merged, %{closedCount} closed."
 msgstr ""
 
-msgid "ContributionAnalytics|%{created} created, %{closed} closed."
-msgstr ""
-
-msgid "ContributionAnalytics|%{created} created, %{merged} merged, %{closed} closed."
-msgstr ""
-
 msgid "ContributionAnalytics|%{pushCount} by %{authorCount}."
-msgstr ""
-
-msgid "ContributionAnalytics|%{pushes}, more than %{commits} by %{contributors}."
 msgstr ""
 
 msgid "ContributionAnalytics|Approved MRs"
@@ -11868,9 +11847,6 @@ msgid "ContributionAnalytics|Total Contributions"
 msgstr ""
 
 msgid "Contributions for %{calendar_date}"
-msgstr ""
-
-msgid "Contributions per group member"
 msgstr ""
 
 msgid "Contributor"
@@ -14872,9 +14848,6 @@ msgid "Deprecations|The metrics feature was deprecated in GitLab 14.7."
 msgstr ""
 
 msgid "Deprioritize label"
-msgstr ""
-
-msgid "Descending"
 msgstr ""
 
 msgid "Describe the goal of the changes and what reviewers should be aware of."
@@ -25969,9 +25942,6 @@ msgstr ""
 msgid "License overview"
 msgstr ""
 
-msgid "License-Check has been %{deprecation_docs_link_url}deprecated%{link_end} in GitLab 15.9 and is planned for %{removal_docs_link_url}removal%{link_end} in 16.0. You can create a %{scan_result_policy_link_start}scan result policy%{link_end} to continue enforcing your license approval requirements."
-msgstr ""
-
 msgid "LicenseCompliance|%{docLinkStart}License Approvals%{docLinkEnd} are active"
 msgstr ""
 
@@ -26341,9 +26311,6 @@ msgid "Loading"
 msgstr ""
 
 msgid "Loading %{name}"
-msgstr ""
-
-msgid "Loading contribution stats for group members"
 msgstr ""
 
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
@@ -27649,9 +27616,6 @@ msgstr ""
 msgid "Merged"
 msgstr ""
 
-msgid "Merged MRs"
-msgstr ""
-
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
 msgstr ""
 
@@ -28864,7 +28828,7 @@ msgstr ""
 msgid "NavigationTheme|Red"
 msgstr ""
 
-msgid "Navigation|Admin"
+msgid "Navigation|Admin Area"
 msgstr ""
 
 msgid "Navigation|Analyze"
@@ -30861,12 +30825,6 @@ msgid "OpenSearch's region."
 msgstr ""
 
 msgid "Opened"
-msgstr ""
-
-msgid "Opened MRs"
-msgstr ""
-
-msgid "Opened issues"
 msgstr ""
 
 msgid "OpenedNDaysAgo|Created"
@@ -36267,9 +36225,6 @@ msgstr ""
 msgid "PushRule|Reject unverified users"
 msgstr ""
 
-msgid "Pushed"
-msgstr ""
-
 msgid "Pushes"
 msgstr ""
 
@@ -38278,6 +38233,9 @@ msgstr ""
 msgid "Runners|If both settings are disabled, new runners cannot be registered."
 msgstr ""
 
+msgid "Runners|In GitLab Runner 15.6, the use of registration tokens and runner parameters in the 'register' command was deprecated. They have been replaced by authentication tokens. %{linkStart}How does this impact my current registration workflow?%{linkEnd}"
+msgstr ""
+
 msgid "Runners|Install GitLab Runner"
 msgstr ""
 
@@ -39513,22 +39471,10 @@ msgstr ""
 msgid "SecurityApprovals|A merge request approval is required when test coverage declines."
 msgstr ""
 
-msgid "SecurityApprovals|A merge request approval is required when the license compliance report contains a denied license."
-msgstr ""
-
 msgid "SecurityApprovals|Coverage-Check"
 msgstr ""
 
 msgid "SecurityApprovals|Learn more about Coverage-Check"
-msgstr ""
-
-msgid "SecurityApprovals|Learn more about License-Check"
-msgstr ""
-
-msgid "SecurityApprovals|License-Check"
-msgstr ""
-
-msgid "SecurityApprovals|Requires approval for Denied licenses. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more.%{linkEnd}"
@@ -39862,9 +39808,6 @@ msgid "SecurityOrchestration|License Scan"
 msgstr ""
 
 msgid "SecurityOrchestration|License scanner finds any license %{matching} %{licenses}%{detection} in an open merge request targeting %{branches}."
-msgstr ""
-
-msgid "SecurityOrchestration|License-Check has been deprecated"
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"
@@ -42014,9 +41957,6 @@ msgid "Something went wrong while fetching description changes. Please try again
 msgstr ""
 
 msgid "Something went wrong while fetching details"
-msgstr ""
-
-msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
 msgid "Something went wrong while fetching latest comments."
@@ -46607,9 +46547,6 @@ msgid "Topics could not be merged!"
 msgstr ""
 
 msgid "Total"
-msgstr ""
-
-msgid "Total Contributions"
 msgstr ""
 
 msgid "Total Score"

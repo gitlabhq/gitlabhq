@@ -9,6 +9,7 @@ class Milestone < ApplicationRecord
   include Importable
   include IidRoutes
   include UpdatedAtFilterable
+  include EachBatch
 
   prepend_mod_with('Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 

@@ -22,6 +22,41 @@ describe('RelatedIssuesBlock', () => {
   const findRelatedIssuesBody = () => wrapper.findByTestId('related-issues-body');
   const findIssueCountBadgeAddButton = () => wrapper.findByTestId('related-issues-plus-button');
 
+  const createComponent = ({
+    mountFn = mountExtended,
+    pathIdSeparator = PathIdSeparator.Issue,
+    issuableType = TYPE_ISSUE,
+    canAdmin = false,
+    helpPath = '',
+    isFetching = false,
+    isFormVisible = false,
+    relatedIssues = [],
+    showCategorizedIssues = false,
+    autoCompleteEpics = true,
+    slots = '',
+  } = {}) => {
+    wrapper = mountFn(RelatedIssuesBlock, {
+      propsData: {
+        pathIdSeparator,
+        issuableType,
+        canAdmin,
+        helpPath,
+        isFetching,
+        isFormVisible,
+        relatedIssues,
+        showCategorizedIssues,
+        autoCompleteEpics,
+      },
+      provide: {
+        reportAbusePath: '/report/abuse/path',
+      },
+      stubs: {
+        GlCard,
+      },
+      slots,
+    });
+  };
+
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
@@ -31,12 +66,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with defaults', () => {
     beforeEach(() => {
-      wrapper = mountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: TYPE_ISSUE,
-        },
-      });
+      createComponent();
     });
 
     it.each`
@@ -46,13 +76,11 @@ describe('RelatedIssuesBlock', () => {
     `(
       'displays "$titleText" in the header and "$addButtonText" aria-label for add button when issuableType is set to "$issuableType"',
       ({ issuableType, pathIdSeparator, titleText, addButtonText }) => {
-        wrapper = mountExtended(RelatedIssuesBlock, {
-          propsData: {
-            pathIdSeparator,
-            issuableType,
-            canAdmin: true,
-            helpPath: '/help/user/project/issues/related_issues',
-          },
+        createComponent({
+          pathIdSeparator,
+          issuableType,
+          canAdmin: true,
+          helpPath: '/help/user/project/issues/related_issues',
         });
 
         expect(wrapper.find('.card-title').text()).toContain(titleText);
@@ -73,14 +101,8 @@ describe('RelatedIssuesBlock', () => {
     it('displays header text slot data', () => {
       const headerText = '<div>custom header text</div>';
 
-      wrapper = shallowMountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'issue',
-        },
-        stubs: {
-          GlCard,
-        },
+      createComponent({
+        mountFn: shallowMountExtended,
         slots: { 'header-text': headerText },
       });
 
@@ -92,14 +114,8 @@ describe('RelatedIssuesBlock', () => {
     it('displays header actions slot data', () => {
       const headerActions = '<button data-testid="custom-button">custom button</button>';
 
-      wrapper = shallowMountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'issue',
-        },
-        stubs: {
-          GlCard,
-        },
+      createComponent({
+        mountFn: shallowMountExtended,
         slots: { 'header-actions': headerActions },
       });
 
@@ -109,12 +125,8 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with isFetching=true', () => {
     beforeEach(() => {
-      wrapper = mountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          isFetching: true,
-          issuableType: 'issue',
-        },
+      createComponent({
+        isFetching: true,
       });
     });
 
@@ -125,13 +137,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with canAddRelatedIssues=true', () => {
     beforeEach(() => {
-      wrapper = mountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          canAdmin: true,
-          issuableType: 'issue',
-        },
-      });
+      createComponent({ canAdmin: true });
     });
 
     it('can add new related issues', () => {
@@ -141,14 +147,7 @@ describe('RelatedIssuesBlock', () => {
 
   describe('with isFormVisible=true', () => {
     beforeEach(() => {
-      wrapper = mountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          isFormVisible: true,
-          issuableType: 'issue',
-          autoCompleteEpics: false,
-        },
-      });
+      createComponent({ isFormVisible: true, autoCompleteEpics: false });
     });
 
     it('shows add related issues form', () => {
@@ -164,19 +163,14 @@ describe('RelatedIssuesBlock', () => {
     const issueList = () => wrapper.findAll('.js-related-issues-token-list-item');
     const categorizedHeadings = () => wrapper.findAll('h4');
     const headingTextAt = (index) => categorizedHeadings().at(index).text();
-    const mountComponent = (showCategorizedIssues) => {
-      wrapper = mountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          relatedIssues: [issuable1, issuable2, issuable3],
-          issuableType: 'issue',
-          showCategorizedIssues,
-        },
-      });
-    };
 
     describe('when showCategorizedIssues=true', () => {
-      beforeEach(() => mountComponent(true));
+      beforeEach(() =>
+        createComponent({
+          showCategorizedIssues: true,
+          relatedIssues: [issuable1, issuable2, issuable3],
+        }),
+      );
 
       it('should render issue tokens items', () => {
         expect(issueList()).toHaveLength(3);
@@ -203,8 +197,10 @@ describe('RelatedIssuesBlock', () => {
 
     describe('when showCategorizedIssues=false', () => {
       it('should render issues as a flat list with no header', () => {
-        mountComponent(false);
-
+        createComponent({
+          showCategorizedIssues: false,
+          relatedIssues: [issuable1, issuable2, issuable3],
+        });
         expect(issueList()).toHaveLength(3);
         expect(categorizedHeadings()).toHaveLength(0);
       });
@@ -223,14 +219,8 @@ describe('RelatedIssuesBlock', () => {
       },
     ].forEach(({ issuableType, icon }) => {
       it(`issuableType=${issuableType} is passed`, () => {
-        wrapper = shallowMountExtended(RelatedIssuesBlock, {
-          propsData: {
-            pathIdSeparator: PathIdSeparator.Issue,
-            issuableType,
-          },
-          stubs: {
-            GlCard,
-          },
+        createComponent({
+          issuableType,
         });
 
         const iconComponent = wrapper.findComponent(GlIcon);
@@ -242,15 +232,8 @@ describe('RelatedIssuesBlock', () => {
 
   describe('toggle', () => {
     beforeEach(() => {
-      wrapper = shallowMountExtended(RelatedIssuesBlock, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          relatedIssues: [issuable1, issuable2, issuable3],
-          issuableType: TYPE_ISSUE,
-        },
-        stubs: {
-          GlCard,
-        },
+      createComponent({
+        relatedIssues: [issuable1, issuable2, issuable3],
       });
     });
 
@@ -280,14 +263,12 @@ describe('RelatedIssuesBlock', () => {
     `(
       'displays "$emptyText" in the body and "$helpLinkText" aria-label for help link',
       ({ issuableType, pathIdSeparator, showCategorizedIssues, emptyText, helpLinkText }) => {
-        wrapper = mountExtended(RelatedIssuesBlock, {
-          propsData: {
-            pathIdSeparator,
-            issuableType,
-            canAdmin: true,
-            helpPath: '/help/user/project/issues/related_issues',
-            showCategorizedIssues,
-          },
+        createComponent({
+          pathIdSeparator,
+          issuableType,
+          canAdmin: true,
+          helpPath: '/help/user/project/issues/related_issues',
+          showCategorizedIssues,
         });
 
         expect(wrapper.findByTestId('related-issues-body').text()).toContain(emptyText);

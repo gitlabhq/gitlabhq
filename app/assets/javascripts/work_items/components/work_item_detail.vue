@@ -20,6 +20,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import {
   sprintfWorkItem,
   i18n,
@@ -91,9 +92,10 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemDetailModal,
+    AbuseCategorySelector,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'reportAbusePath'],
   props: {
     isModal: {
       type: Boolean,
@@ -128,6 +130,9 @@ export default {
         ? convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId)
         : null,
       modalWorkItemIid: getParameterByName('work_item_iid'),
+      isReportDrawerOpen: false,
+      reportedUrl: '',
+      reportedUserId: 0,
     };
   },
   apollo: {
@@ -498,7 +503,20 @@ export default {
       this.modalWorkItemIid = modalWorkItem.iid;
       this.$refs.modal.show();
     },
+    openReportAbuseDrawer(reply) {
+      if (this.isModal) {
+        this.$emit('openReportAbuse', reply);
+      } else {
+        this.toggleReportAbuseDrawer(true, reply);
+      }
+    },
+    toggleReportAbuseDrawer(isOpen, reply = {}) {
+      this.isReportDrawerOpen = isOpen;
+      this.reportedUrl = reply.url || {};
+      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
+    },
   },
+
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 };
 </script>
@@ -731,9 +749,11 @@ export default {
           :is-modal="isModal"
           :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
           :can-set-work-item-metadata="canAssignUnassignUser"
+          :report-abuse-path="reportAbusePath"
           class="gl-pt-5"
           @error="updateError = $event"
           @has-notes="updateHasNotes"
+          @openReportAbuse="openReportAbuseDrawer"
         />
         <gl-empty-state
           v-if="error"
@@ -749,6 +769,14 @@ export default {
         :work-item-iid="modalWorkItemIid"
         :show="true"
         @close="updateUrl"
+        @openReportAbuse="toggleReportAbuseDrawer(true, $event)"
+      />
+      <abuse-category-selector
+        v-if="isReportDrawerOpen"
+        :reported-user-id="reportedUserId"
+        :reported-from-url="reportedUrl"
+        :show-drawer="true"
+        @close-drawer="toggleReportAbuseDrawer(false)"
       />
     </section>
   </section>

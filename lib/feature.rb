@@ -40,19 +40,6 @@ module Feature
   class << self
     delegate :group, to: :flipper
 
-    def feature_flags_available?
-      # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
-      active_db_connection = begin
-        ActiveRecord::Base.connection.active? # rubocop:disable Database/MultipleDatabases
-      rescue StandardError
-        false
-      end
-
-      active_db_connection && Feature::FlipperFeature.table_exists?
-    rescue ActiveRecord::NoDatabaseError
-      false
-    end
-
     def all
       flipper.features.to_a
     end

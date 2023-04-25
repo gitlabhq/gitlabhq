@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Board < ApplicationRecord
+  include EachBatch
+
   RECENT_BOARDS_SIZE = 4
 
   belongs_to :group

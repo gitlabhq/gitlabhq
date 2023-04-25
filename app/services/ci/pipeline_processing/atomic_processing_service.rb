@@ -19,9 +19,10 @@ module Ci
       def execute
         return unless pipeline.needs_processing?
 
+        # Run the process only if we can obtain an exclusive lease; returns nil if lease is unavailable
         success = try_obtain_lease { process! }
 
-        # re-schedule if we need further processing
+        # Re-schedule if we need further processing
         if success && pipeline.needs_processing?
           PipelineProcessWorker.perform_async(pipeline.id)
         end

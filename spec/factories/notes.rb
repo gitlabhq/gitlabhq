@@ -55,28 +55,34 @@ FactoryBot.define do
       end
 
       position do
-        association(:text_diff_position,
-              file: "files/ruby/popen.rb",
-              old_line: nil,
-              new_line: line_number,
-              diff_refs: diff_refs)
+        association(
+          :text_diff_position,
+          file: "files/ruby/popen.rb",
+          old_line: nil,
+          new_line: line_number,
+          diff_refs: diff_refs
+        )
       end
 
       trait :folded_position do
         position do
-          association(:text_diff_position,
-                file: "files/ruby/popen.rb",
-                old_line: 1,
-                new_line: 1,
-                diff_refs: diff_refs)
+          association(
+            :text_diff_position,
+            file: "files/ruby/popen.rb",
+            old_line: 1,
+            new_line: 1,
+            diff_refs: diff_refs
+          )
         end
       end
 
       factory :image_diff_note_on_merge_request do
         position do
-          association(:image_diff_position,
-                file: "files/images/any_image.png",
-                diff_refs: diff_refs)
+          association(
+            :image_diff_position,
+            file: "files/images/any_image.png",
+            diff_refs: diff_refs
+          )
         end
       end
     end
@@ -101,9 +107,11 @@ FactoryBot.define do
 
     factory :diff_note_on_design, parent: :note, traits: [:on_design], class: 'DiffNote' do
       position do
-        association(:image_diff_position,
-              file: noteable.full_path,
-              diff_refs: noteable.diff_refs)
+        association(
+          :image_diff_position,
+          file: noteable.full_path,
+          diff_refs: noteable.diff_refs
+        )
       end
     end
 

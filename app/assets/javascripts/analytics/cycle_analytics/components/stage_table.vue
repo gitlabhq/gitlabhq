@@ -11,6 +11,7 @@ import {
 import FormattedStageCount from '~/analytics/cycle_analytics/components/formatted_stage_count.vue';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import {
   NOT_ENOUGH_DATA_ERROR,
   FIELD_KEY_TITLE,
@@ -171,6 +172,7 @@ export default {
       const { sort, direction } = this.pagination;
       this.track('click_button', { label: 'pagination' });
       this.$emit('handleUpdatePagination', { sort, direction, page });
+      this.scrollToTop();
     },
     onSort({ sortBy, sortDesc }) {
       const direction = sortDesc ? PAGINATION_SORT_DIRECTION_DESC : PAGINATION_SORT_DIRECTION_ASC;
@@ -179,11 +181,14 @@ export default {
       this.$emit('handleUpdatePagination', { sort: sortBy, direction });
       this.track('click_button', { label: `sort_${sortBy}_${direction}` });
     },
+    scrollToTop() {
+      scrollToElement(this.$el);
+    },
   },
 };
 </script>
 <template>
-  <div data-testid="vsa-stage-table">
+  <div data-testid="vsa-stage-table" :class="{ 'gl-min-h-100vh': isLoading || !isEmptyStage }">
     <gl-loading-icon v-if="isLoading" class="gl-mt-4" size="lg" />
     <gl-empty-state
       v-else-if="isEmptyStage"

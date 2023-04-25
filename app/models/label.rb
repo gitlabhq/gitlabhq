@@ -9,6 +9,7 @@ class Label < ApplicationRecord
   include Sortable
   include FromUnion
   include Presentable
+  include EachBatch
 
   cache_markdown_field :description, pipeline: :single_line
 

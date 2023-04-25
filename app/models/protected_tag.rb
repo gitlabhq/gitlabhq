@@ -2,6 +2,7 @@
 
 class ProtectedTag < ApplicationRecord
   include ProtectedRef
+  include EachBatch
 
   validates :name, uniqueness: { scope: :project_id }
   validates :project, presence: true

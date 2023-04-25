@@ -167,7 +167,7 @@ module Gitlab
       # @return [Boolean, String, Array, Hash, Object]
       # @raise [JSON::ParserError]
       def handle_legacy_mode!(data)
-        return data unless Feature.feature_flags_available?
+        return data unless Feature::FlipperFeature.table_exists?
         return data unless Feature.enabled?(:json_wrapper_legacy_mode)
 
         raise parser_error if INVALID_LEGACY_TYPES.any? { |type| data.is_a?(type) }

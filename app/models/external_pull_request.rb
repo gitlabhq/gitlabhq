@@ -14,6 +14,7 @@
 class ExternalPullRequest < Ci::ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include ShaAttribute
+  include EachBatch
 
   belongs_to :project
 

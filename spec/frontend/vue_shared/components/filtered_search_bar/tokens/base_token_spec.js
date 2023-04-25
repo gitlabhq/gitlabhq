@@ -99,6 +99,7 @@ function createComponent({
       portalName: 'fake target',
       alignSuggestions: jest.fn(),
       suggestionsListClass: () => 'custom-class',
+      termsAsTokens: () => false,
       filteredSearchSuggestionListInstance: {
         register: jest.fn(),
         unregister: jest.fn(),

@@ -20,7 +20,7 @@ SSH uses two keys, a public key and a private key.
 - The public key can be distributed.
 - The private key should be protected.
 
-You cannot expose data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.  
+It is not possible to reveal confidential data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.  
 
 You can use your private key to [sign commits](project/repository/ssh_signed_commits/index.md),
 which makes your use of GitLab and your data even more secure.

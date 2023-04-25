@@ -7,6 +7,7 @@ FactoryBot.define do
     upload { association(:bulk_import_export_upload) }
 
     status { 0 }
+    batch_number { 1 }
 
     trait :started do
       status { 0 }

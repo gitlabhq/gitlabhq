@@ -274,13 +274,12 @@ By default, the vulnerability report does not show vulnerabilities of `dismissed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) the License-Check feature in GitLab 16.0.
 
 You can enforce an additional approval for merge requests that would introduce one of the following
 security issues:
 
 - A security vulnerability. For more details, read [Scan result policies](policies/scan-result-policies.md).
-- A software license compliance violation. For more details, read
-  [Enabling license approvals within a project](../compliance/license_check_rules.md#enabling-license-approvals-within-a-project).
 
 ## Using private Maven repositories
 

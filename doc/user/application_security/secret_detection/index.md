@@ -40,7 +40,7 @@ contains more than 100 patterns.
 
 Most Secret Detection patterns search for specific types of secrets.
 Many services add prefixes or other structural details to their secrets so they can be identified if they're leaked.
-For example, GitLab [adds a `glpat-` prefix](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and project access tokens by default.
+For example, GitLab [adds a `glpat-` prefix](../../admin_area/settings/account_and_limit_settings.md#personal-access-token-prefix) to project, group, and personal access tokens by default.
 
 To provide more reliable, high-confidence results, Secret Detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
 

@@ -2316,6 +2316,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: bulk_imports_finish_batched_relation_export
+  :worker_name: BulkImports::FinishBatchedRelationExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bulk_imports_pipeline
   :worker_name: BulkImports::PipelineWorker
   :feature_category: :importers
@@ -2324,6 +2333,15 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: bulk_imports_relation_batch_export
+  :worker_name: BulkImports::RelationBatchExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: bulk_imports_relation_export
   :worker_name: BulkImports::RelationExportWorker

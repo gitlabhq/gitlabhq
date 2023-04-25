@@ -74,6 +74,7 @@ describe('Work items router', () => {
         hasIterationsFeature: false,
         hasOkrsFeature: false,
         hasIssuableHealthStatusFeature: false,
+        reportAbusePath: '/report/abuse/path',
       },
       stubs: {
         WorkItemWeight: true,

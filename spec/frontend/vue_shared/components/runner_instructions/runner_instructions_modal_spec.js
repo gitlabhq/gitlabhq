@@ -1,6 +1,6 @@
 import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -41,7 +41,12 @@ describe('RunnerInstructionsModal component', () => {
   let runnerPlatformsHandler;
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAlert = (variant = 'danger') => {
+    const { wrappers } = wrapper
+      .findAllComponents(GlAlert)
+      .filter((w) => w.props('variant') === variant);
+    return wrappers[0] || new ErrorWrapper();
+  };
   const findModal = () => wrapper.findComponent(GlModal);
   const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
@@ -84,6 +89,10 @@ describe('RunnerInstructionsModal component', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
+    it('should not show deprecation alert', () => {
+      expect(findAlert('warning').exists()).toBe(false);
+    });
+
     it('should contain a number of platforms buttons', () => {
       expect(runnerPlatformsHandler).toHaveBeenCalledWith({});
 
@@ -98,6 +107,21 @@ describe('RunnerInstructionsModal component', () => {
       expect(architectures).toEqual(
         mockRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes,
       );
+    });
+
+    describe.each`
+      glFeatures                                    | deprecationAlertExists
+      ${{}}                                         | ${false}
+      ${{ createRunnerWorkflowForAdmin: true }}     | ${true}
+      ${{ createRunnerWorkflowForNamespace: true }} | ${true}
+    `('with features $glFeatures', ({ glFeatures, deprecationAlertExists }) => {
+      beforeEach(() => {
+        createComponent({ provide: { glFeatures } });
+      });
+
+      it(`alert is ${deprecationAlertExists ? 'shown' : 'not shown'}`, () => {
+        expect(findAlert('warning').exists()).toBe(deprecationAlertExists);
+      });
     });
 
     describe('when the modal resizes', () => {

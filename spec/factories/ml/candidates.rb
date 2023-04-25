@@ -21,10 +21,12 @@ FactoryBot.define do
 
     trait :with_artifact do
       after(:create) do |candidate|
-        candidate.package = FactoryBot.create(:generic_package,
-                              name: candidate.package_name,
-                              version: candidate.package_version,
-                              project: candidate.project)
+        candidate.package = FactoryBot.create(
+          :generic_package,
+          name: candidate.package_name,
+          version: candidate.package_version,
+          project: candidate.project
+        )
       end
     end
   end

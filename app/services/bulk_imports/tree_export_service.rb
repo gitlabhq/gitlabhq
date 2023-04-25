@@ -2,6 +2,10 @@
 
 module BulkImports
   class TreeExportService
+    include Gitlab::Utils::StrongMemoize
+
+    delegate :exported_objects_count, to: :serializer
+
     def initialize(portable, export_path, relation, user)
       @portable = portable
       @export_path = export_path
@@ -11,43 +15,52 @@ module BulkImports
     end
 
     def execute
-      return serializer.serialize_root(config.class::SELF_RELATION) if self_relation?
+      if self_relation?(relation)
+        serializer.serialize_root(config.class::SELF_RELATION)
+      else
+        serializer.serialize_relation(relation_definition)
+      end
+    end
 
-      relation_definition = config.tree_relation_definition_for(relation)
-
-      raise BulkImports::Error, 'Unsupported relation export type' unless relation_definition
-
-      serializer.serialize_relation(relation_definition)
+    def export_batch(ids)
+      serializer.serialize_relation(relation_definition, batch_ids: Array.wrap(ids))
     end
 
     def exported_filename
-      return "#{relation}.json" if self_relation?
-
-      "#{relation}.ndjson"
+      "#{relation}.#{extension}"
     end
 
     private
+
+    delegate :self_relation?, to: :config
 
     attr_reader :export_path, :portable, :relation, :config, :user
 
     # rubocop: disable CodeReuse/Serializer
     def serializer
-      ::Gitlab::ImportExport::Json::StreamingSerializer.new(
+      @serializer ||= ::Gitlab::ImportExport::Json::StreamingSerializer.new(
         portable,
         config.portable_tree,
-        json_writer,
+        ::Gitlab::ImportExport::Json::NdjsonWriter.new(export_path),
         exportable_path: '',
         current_user: user
       )
     end
     # rubocop: enable CodeReuse/Serializer
 
-    def json_writer
-      ::Gitlab::ImportExport::Json::NdjsonWriter.new(export_path)
+    def extension
+      return 'json' if self_relation?(relation)
+
+      'ndjson'
     end
 
-    def self_relation?
-      relation == config.class::SELF_RELATION
+    def relation_definition
+      definition = config.tree_relation_definition_for(relation)
+
+      raise BulkImports::Error, 'Unsupported relation export type' unless definition
+
+      definition
     end
+    strong_memoize_attr :relation_definition
   end
 end

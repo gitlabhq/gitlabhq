@@ -13,6 +13,30 @@ import { PathIdSeparator } from '~/related_issues/constants';
 describe('RelatedIssuesList', () => {
   let wrapper;
 
+  const createComponent = ({
+    mountFn = shallowMount,
+    pathIdSeparator = PathIdSeparator.Issue,
+    issuableType = 'issue',
+    listLinkType = 'relates_to',
+    heading = '',
+    isFetching = false,
+    relatedIssues = [],
+  } = {}) => {
+    wrapper = mountFn(RelatedIssuesList, {
+      propsData: {
+        pathIdSeparator,
+        issuableType,
+        listLinkType,
+        heading,
+        isFetching,
+        relatedIssues,
+      },
+      provide: {
+        reportAbusePath: '/report/abuse/path',
+      },
+    });
+  };
+
   afterEach(() => {
     if (wrapper) {
       wrapper.destroy();
@@ -24,14 +48,7 @@ describe('RelatedIssuesList', () => {
     const heading = 'Related to';
 
     beforeEach(() => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'issue',
-          listLinkType: 'relates_to',
-          heading,
-        },
-      });
+      createComponent({ heading });
     });
 
     it('assigns value of listLinkType prop to data attribute', () => {
@@ -49,13 +66,7 @@ describe('RelatedIssuesList', () => {
 
   describe('with isFetching=true', () => {
     beforeEach(() => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          isFetching: true,
-          issuableType: 'issue',
-        },
-      });
+      createComponent({ isFetching: true });
     });
 
     it('should show loading icon', () => {
@@ -65,13 +76,7 @@ describe('RelatedIssuesList', () => {
 
   describe('methods', () => {
     beforeEach(() => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          relatedIssues: [issuable1, issuable2, issuable3, issuable4, issuable5],
-          issuableType: 'issue',
-        },
-      });
+      createComponent({ relatedIssues: [issuable1, issuable2, issuable3, issuable4, issuable5] });
     });
 
     it('updates the order correctly when an item is moved to the top', () => {
@@ -112,23 +117,17 @@ describe('RelatedIssuesList', () => {
   });
 
   describe('issuableOrderingId returns correct issuable order id when', () => {
-    it('issuableType is epic', () => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'issue',
-        },
+    it('issuableType is issue', () => {
+      createComponent({
+        issuableType: 'issue',
       });
 
       expect(wrapper.vm.issuableOrderingId(issuable1)).toBe(issuable1.epicIssueId);
     });
 
-    it('issuableType is issue', () => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'epic',
-        },
+    it('issuableType is epic', () => {
+      createComponent({
+        issuableType: 'epic',
       });
 
       expect(wrapper.vm.issuableOrderingId(issuable1)).toBe(issuable1.id);
@@ -143,12 +142,9 @@ describe('RelatedIssuesList', () => {
     });
 
     it('issuableType is epic', () => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'epic',
-          relatedIssues,
-        },
+      createComponent({
+        issuableType: 'epic',
+        relatedIssues,
       });
 
       const listItems = wrapper.vm.$el.querySelectorAll('.list-item');
@@ -159,12 +155,9 @@ describe('RelatedIssuesList', () => {
     });
 
     it('issuableType is issue', () => {
-      wrapper = shallowMount(RelatedIssuesList, {
-        propsData: {
-          pathIdSeparator: PathIdSeparator.Issue,
-          issuableType: 'issue',
-          relatedIssues,
-        },
+      createComponent({
+        issuableType: 'issue',
+        relatedIssues,
       });
 
       const listItems = wrapper.vm.$el.querySelectorAll('.list-item');
@@ -177,13 +170,7 @@ describe('RelatedIssuesList', () => {
 
   describe('related item contents', () => {
     beforeAll(() => {
-      wrapper = mount(RelatedIssuesList, {
-        propsData: {
-          issuableType: 'issue',
-          pathIdSeparator: PathIdSeparator.Issue,
-          relatedIssues: [issuable1],
-        },
-      });
+      createComponent({ mountFn: mount, relatedIssues: [issuable1] });
     });
 
     it('shows due date', () => {

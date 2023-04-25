@@ -15,6 +15,7 @@ export default {
     copyLinkText: __('Copy link'),
     assignUserText: __('Assign to commenting user'),
     unassignUserText: __('Unassign from commenting user'),
+    reportAbuseText: __('Report abuse to administrator'),
   },
   components: {
     GlButton,
@@ -57,6 +58,11 @@ export default {
       default: false,
     },
     showAssignUnassign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canReportAbuse: {
       type: Boolean,
       required: false,
       default: false,
@@ -140,6 +146,13 @@ export default {
       category="tertiary"
       no-caret
     >
+      <gl-dropdown-item
+        v-if="canReportAbuse"
+        data-testid="abuse-note-action"
+        @click="$emit('reportAbuse')"
+      >
+        {{ $options.i18n.reportAbuseText }}
+      </gl-dropdown-item>
       <gl-dropdown-item
         data-testid="copy-link-action"
         :data-clipboard-text="noteUrl"

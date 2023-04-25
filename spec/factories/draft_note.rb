@@ -28,9 +28,7 @@ FactoryBot.define do
         end
 
         position do
-          association(:image_diff_position,
-                file: path,
-                diff_refs: diff_refs)
+          association(:image_diff_position, file: path, diff_refs: diff_refs)
         end
       end
     end

@@ -150,7 +150,7 @@ Create lists to order issues by topic and quickly change them between topics or 
 such as between **UX**, **Frontend**, and **Backend**. The changes are reflected across boards,
 as changing lists updates the labels on each issue accordingly.
 
-#### Advanced team handover
+#### Issue board workflow between teams
 
 For example, suppose we have a UX team with an issue board that contains:
 
@@ -166,6 +166,9 @@ When finished with something, they move the card to **Frontend**. The Frontend t
 
 Cards finished by the UX team automatically appear in the **Frontend** column when they are ready
 for them.
+
+For a tutorial how to set up your boards in a similar way with [scoped labels](labels.md#scoped-labels), see
+[Tutorial: Set up issue boards for team hand-off](../../tutorials/boards_for_teams/index.md).
 
 NOTE:
 For a broader use case, see the blog post

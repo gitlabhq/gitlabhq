@@ -1,8 +1,0 @@
----
-name: vue_issues_dashboard
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102197
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/379025
-milestone: '15.6'
-type: development
-group: group::project management
-default_enabled: true

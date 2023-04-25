@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::UploadsExportService, feature_category: :importers do
-  let_it_be(:export_path) { Dir.mktmpdir }
-  let_it_be(:project) { create(:project, avatar: fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png')) }
-
+  let(:export_path) { Dir.mktmpdir }
+  let(:project) { create(:project, avatar: fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png')) }
   let!(:upload) { create(:upload, :with_file, :issuable_upload, uploader: FileUploader, model: project) }
   let(:exported_filepath) { File.join(export_path, upload.secret, upload.retrieve_uploader.filename) }
 
@@ -21,6 +20,16 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
 
       expect(File).to exist(File.join(export_path, 'avatar', 'rails_sample.png'))
       expect(File).to exist(exported_filepath)
+    end
+
+    context 'when export is batched' do
+      it 'exports only specified uploads' do
+        service.execute(batch_ids: [upload.id])
+
+        expect(service.exported_objects_count).to eq(1)
+        expect(File).not_to exist(File.join(export_path, 'avatar', 'rails_sample.png'))
+        expect(File).to exist(exported_filepath)
+      end
     end
 
     context 'when upload has underlying file missing' do
@@ -53,6 +62,16 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
                 }
               )
 
+            expect(Gitlab::ErrorTracking)
+              .to receive(:log_exception)
+              .with(
+                instance_of(exception), {
+                  portable_id: project.id,
+                  portable_class: 'Project',
+                  upload_id: project.avatar.upload.id
+                }
+              )
+
             service.execute
 
             expect(File).not_to exist(exported_filepath)
@@ -71,6 +90,14 @@ RSpec.describe BulkImports::UploadsExportService, feature_category: :importers d
           include_examples 'export with invalid upload'
         end
       end
+    end
+  end
+
+  describe '#exported_objects_count' do
+    it 'return the number of exported uploads' do
+      service.execute
+
+      expect(service.exported_objects_count).to eq(2)
     end
   end
 end
