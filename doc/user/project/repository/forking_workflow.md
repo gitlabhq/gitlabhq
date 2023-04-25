@@ -38,10 +38,51 @@ GitLab creates your fork, and redirects you to the new fork's page.
 
 ## Update your fork
 
-To copy the latest changes from the upstream repository into your fork, update it
-from the command line. GitLab Premium and higher tiers can also
-[configure forks as pull mirrors](#with-repository-mirroring)
-of the upstream repository.
+A fork can fall out of sync with its upstream repository, and require an update:
+
+- **Ahead**: Your fork contains new commits not present in the upstream repository.
+  To sync your fork, create a merge request to push your changes to the upstream repository.
+- **Behind**: The upstream repository contains new commits not present in your fork.
+  To sync your fork, pull the new commits into your fork.
+- **Ahead and behind**: Both the upstream repository and your fork contain new commits
+  not present in the other. To fully sync your fork, create a merge request to push
+  your changes up, and pull the upstream repository's new changes into your fork.
+
+To sync your fork with its upstream repository, update it from the GitLab UI
+or the command line. GitLab Premium and higher tiers can also automate updates by
+[configuring forks as pull mirrors](#with-repository-mirroring) of the upstream repository.
+
+### From the UI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `synchronize_fork`.
+On GitLab.com, this feature is available for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces.
+
+To update your fork from the GitLab UI:
+
+1. On the top bar, select **Main menu > Projects > View all projects**.
+1. On the secondary menu, select **Personal**.
+1. Select the fork you want to update.
+1. Below the dropdown list for branch name, find the **Forked from** (**{fork}**)
+   information box to determine if your fork is ahead, behind, or both. In this example,
+   the fork is behind the upstream repository:
+
+   ![Information box for a fork 23552 commits behind the upstream repository](img/update-fork_v15_11.png)
+
+1. If your fork is **ahead** of the upstream repository, select
+   **Create merge request** to propose adding your fork's changes to the upstream repository.
+1. If your fork is **behind** the upstream repository, select **Update fork**
+   to pull changes from the upstream repository.
+1. If your fork is **ahead and behind** the upstream repository, you can update from the UI
+   available only if no merge conflicts are detected:
+   - If your fork contains no merge conflicts, you can select **Create merge request**
+     to propose pushing your changes to the upstream repository, **Update fork**
+     to pull changes down to your fork, or both. The type of changes in your fork
+     determine which actions are appropriate.
+   - If your fork contains merge conflicts, update your fork from the command line.
 
 ### From the command line
 

@@ -5,7 +5,7 @@ require Rails.root.join('config', 'object_store_settings.rb')
 
 RSpec.describe ObjectStoreSettings, feature_category: :shared do
   describe '#parse!' do
-    let(:settings) { Settingslogic.new(config) }
+    let(:settings) { GitlabSettings::Options.build(config) }
 
     subject { described_class.new(settings).parse! }
 
@@ -68,7 +68,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
         expect(settings.artifacts['enabled']).to be true
         expect(settings.artifacts['object_store']['enabled']).to be true
-        expect(settings.artifacts['object_store']['connection']).to eq(connection)
+        expect(settings.artifacts['object_store']['connection'].to_hash).to eq(connection)
         expect(settings.artifacts['object_store']['direct_upload']).to be true
         expect(settings.artifacts['object_store']['proxy_download']).to be false
         expect(settings.artifacts['object_store']['remote_directory']).to eq('artifacts')
@@ -78,7 +78,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
         expect(settings.lfs['enabled']).to be true
         expect(settings.lfs['object_store']['enabled']).to be true
-        expect(settings.lfs['object_store']['connection']).to eq(connection)
+        expect(settings.lfs['object_store']['connection'].to_hash).to eq(connection)
         expect(settings.lfs['object_store']['direct_upload']).to be true
         expect(settings.lfs['object_store']['proxy_download']).to be true
         expect(settings.lfs['object_store']['remote_directory']).to eq('lfs-objects')
@@ -88,7 +88,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
 
         expect(settings.pages['enabled']).to be true
         expect(settings.pages['object_store']['enabled']).to be true
-        expect(settings.pages['object_store']['connection']).to eq(connection)
+        expect(settings.pages['object_store']['connection'].to_hash).to eq(connection)
         expect(settings.pages['object_store']['remote_directory']).to eq('pages')
         expect(settings.pages['object_store']['bucket_prefix']).to eq(nil)
         expect(settings.pages['object_store']['consolidated_settings']).to be true
@@ -128,7 +128,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         it 'populates artifacts CDN config' do
           subject
 
-          expect(settings.artifacts['object_store']['cdn']).to eq(cdn_config)
+          expect(settings.artifacts['object_store']['cdn'].to_hash).to eq(cdn_config)
         end
       end
 
@@ -163,7 +163,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         it 'allows pages to define its own connection' do
           expect { subject }.not_to raise_error
 
-          expect(settings.pages['object_store']['connection']).to eq(pages_connection)
+          expect(settings.pages['object_store']['connection'].to_hash).to eq(pages_connection)
           expect(settings.pages['object_store']['consolidated_settings']).to be_falsey
         end
       end
@@ -230,7 +230,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
     end
 
     it 'respects original values' do
-      original_settings = Settingslogic.new({
+      original_settings = GitlabSettings::Options.build({
         'enabled' => true,
         'remote_directory' => 'artifacts'
       })
@@ -244,7 +244,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
     end
 
     it 'supports bucket prefixes' do
-      original_settings = Settingslogic.new({
+      original_settings = GitlabSettings::Options.build({
         'enabled' => true,
         'remote_directory' => 'gitlab/artifacts'
       })

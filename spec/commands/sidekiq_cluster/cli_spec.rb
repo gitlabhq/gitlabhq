@@ -18,17 +18,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
   let(:sidekiq_exporter_enabled) { false }
   let(:sidekiq_exporter_port) { '3807' }
 
-  let(:config_file) { Tempfile.new('gitlab.yml') }
   let(:config) do
     {
-      'test' => {
-        'monitoring' => {
-          'sidekiq_exporter' => {
-            'address' => 'localhost',
-            'enabled' => sidekiq_exporter_enabled,
-            'port' => sidekiq_exporter_port
-          }
-        }
+      'sidekiq_exporter' => {
+        'address' => 'localhost',
+        'enabled' => sidekiq_exporter_enabled,
+        'port' => sidekiq_exporter_port
       }
     }
   end
@@ -37,14 +32,6 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
   let(:metrics_cleanup_service) { instance_double(Prometheus::CleanupMultiprocDirService, execute: nil) }
 
   before do
-    stub_env('RAILS_ENV', 'test')
-
-    config_file.write(YAML.dump(config))
-    config_file.close
-
-    allow(::Settings).to receive(:source).and_return(config_file.path)
-    ::Settings.reload!
-
     allow(Gitlab::ProcessManagement).to receive(:write_pid)
     allow(Gitlab::SidekiqCluster::SidekiqProcessSupervisor).to receive(:instance).and_return(supervisor)
     allow(supervisor).to receive(:supervise)
@@ -52,8 +39,13 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
     allow(Prometheus::CleanupMultiprocDirService).to receive(:new).and_return(metrics_cleanup_service)
   end
 
-  after do
-    config_file.unlink
+  around do |example|
+    original = Settings['monitoring']
+    Settings['monitoring'] = config
+
+    example.run
+
+    Settings['monitoring'] = original
   end
 
   describe '#run' do
@@ -318,13 +310,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
 
           context 'when sidekiq_exporter is not set up' do
             let(:config) do
-              {
-                'test' => {
-                  'monitoring' => {
-                    'sidekiq_exporter' => {}
-                  }
-                }
-              }
+              { 'sidekiq_exporter' => {} }
             end
 
             it 'does not start a sidekiq metrics server' do
@@ -336,13 +322,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
 
           context 'with missing sidekiq_exporter setting' do
             let(:config) do
-              {
-                'test' => {
-                  'monitoring' => {
-                    'sidekiq_exporter' => nil
-                  }
-                }
-              }
+              { 'sidekiq_exporter' => nil }
             end
 
             it 'does not start a sidekiq metrics server' do

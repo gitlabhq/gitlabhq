@@ -68,6 +68,8 @@ module QA
         end
 
         def go_to_applications
+          return click_element(:nav_item_link, submenu_item: 'Applications') if Runtime::Env.super_sidebar_enabled?
+
           click_element(:sidebar_menu_link, menu_item: 'Applications')
         end
 

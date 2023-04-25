@@ -12282,11 +12282,11 @@ CREATE TABLE award_emoji (
     id integer NOT NULL,
     name character varying,
     user_id integer,
-    awardable_id integer,
+    awardable_id_convert_to_bigint integer,
     awardable_type character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    awardable_id_convert_to_bigint bigint
+    awardable_id bigint
 );
 
 CREATE SEQUENCE award_emoji_id_seq

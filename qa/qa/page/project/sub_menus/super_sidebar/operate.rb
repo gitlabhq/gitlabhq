@@ -8,8 +8,12 @@ module QA
           module Operate
             extend QA::Page::PageConcern
 
-            def go_to_package_registry
-              open_operate_submenu('Package Registry')
+            def self.included(base)
+              super
+
+              base.class_eval do
+                include QA::Page::SubMenus::SuperSidebar::Operate
+              end
             end
 
             def go_to_infrastructure_registry

@@ -9,12 +9,7 @@ RSpec.describe Settings do
       expect(Gitlab.config.ldap.servers.main.label).to eq('ldap')
     end
 
-    # Specifically trying to cause this error discovered in EE when removing the
-    # reassignment of each server element with Settingslogic.
-    #
-    #   `undefined method `label' for #<Hash:0x007fbd18b59c08>`
-    #
-    it 'can be accessed in a very specific way that breaks without reassigning each element with Settingslogic' do
+    it 'can be accessed in a very specific way that breaks without reassigning each element' do
       server_settings = Gitlab.config.ldap.servers['main']
       expect(server_settings.label).to eq('ldap')
     end

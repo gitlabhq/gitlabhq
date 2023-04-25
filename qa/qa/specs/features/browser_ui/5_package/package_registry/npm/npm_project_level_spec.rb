@@ -126,7 +126,7 @@ module QA
             end
 
             project.visit!
-            Page::Project::Menu.perform(&:click_packages_link)
+            Page::Project::Menu.perform(&:go_to_package_registry)
 
             Page::Project::Packages::Index.perform do |index|
               expect(index).to have_package(package.name)

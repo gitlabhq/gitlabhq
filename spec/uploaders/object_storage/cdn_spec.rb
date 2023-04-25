@@ -41,7 +41,7 @@ RSpec.describe ObjectStorage::CDN, feature_category: :build_artifacts do
 
     before do
       stub_artifacts_object_storage(enabled: true)
-      options = Settingslogic.new(Gitlab.config.uploads.deep_merge(cdn_options))
+      options = Gitlab.config.uploads.deep_merge(cdn_options)
       allow(uploader_class).to receive(:options).and_return(options)
     end
 

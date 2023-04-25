@@ -73,7 +73,7 @@ RSpec.describe InstanceConfiguration do
         it 'returns Settings.pages' do
           gitlab_pages.delete(:ip_address)
 
-          expect(gitlab_pages).to eq(Settings.pages.symbolize_keys)
+          expect(gitlab_pages).to eq(Settings.pages.to_hash.deep_symbolize_keys)
         end
 
         it 'returns the GitLab\'s pages host ip address' do

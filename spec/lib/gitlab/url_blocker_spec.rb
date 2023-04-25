@@ -166,8 +166,8 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           let(:lfs_config) do
             {
               'enabled' => lfs_enabled,
-              # This nesting of Settingslogic is necessary to trigger the bug
-              'object_store' => Settingslogic.new({ 'enabled' => true })
+              # This nesting of settings is necessary to trigger the bug
+              'object_store' => GitlabSettings::Options.build({ 'enabled' => true })
             }
           end
 
@@ -175,16 +175,15 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
             {
               'gitlab' => Gitlab.config.gitlab,
               'repositories' => { 'storages' => { 'default' => 'test' } },
-              'lfs' => Settingslogic.new(lfs_config)
+              'lfs' => GitlabSettings::Options.build(lfs_config)
             }
           end
 
           let(:host) { 'http://127.0.0.1:9000' }
-          let(:settings) { Settingslogic.new(config) }
+          let(:settings) { GitlabSettings::Options.build(config) }
 
           before do
             allow(Gitlab).to receive(:config).and_return(settings)
-            # Triggers Settingslogic bug: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
             settings.repositories.storages.default
           end
 

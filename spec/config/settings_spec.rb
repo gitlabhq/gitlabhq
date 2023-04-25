@@ -31,7 +31,7 @@ RSpec.describe Settings, feature_category: :system_access do
     with_them do
       before do
         allow(Gitlab.config).to receive(:gitlab).and_return(
-          Settingslogic.new({
+          GitlabSettings::Options.build({
             'host' => host,
             'https' => true,
             'port' => port,

@@ -239,9 +239,6 @@ gem 'rainbow', '~> 3.0'
 # Progress bar
 gem 'ruby-progressbar', '~> 1.10'
 
-# GitLab settings
-gem 'settingslogic', '~> 2.0.9'
-
 # Linear-time regex library for untrusted regular expressions
 gem 're2', '~> 1.6.0'
 

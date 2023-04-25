@@ -260,7 +260,7 @@ module ObjectStorage
     end
 
     def connection
-      @connection ||= ::Fog::Storage.new(credentials)
+      @connection ||= ::Fog::Storage.new(credentials.to_hash)
     end
   end
 end

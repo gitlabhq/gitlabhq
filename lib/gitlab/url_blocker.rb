@@ -344,8 +344,7 @@ module Gitlab
 
           next unless section_setting && section_setting['enabled']
 
-          # Use #to_h to avoid Settingslogic bug: https://gitlab.com/gitlab-org/gitlab/-/issues/286873
-          object_store_setting = section_setting['object_store']&.to_h
+          object_store_setting = section_setting['object_store']
 
           next unless object_store_setting && object_store_setting['enabled']
 

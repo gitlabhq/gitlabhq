@@ -59,7 +59,7 @@ module Gitlab
 
       def snowplow_micro_enabled?
         Rails.env.development? && Gitlab.config.snowplow_micro.enabled
-      rescue Settingslogic::MissingSetting
+      rescue GitlabSettings::MissingSetting
         false
       end
 

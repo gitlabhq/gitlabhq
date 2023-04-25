@@ -27,7 +27,7 @@ module Gitlab
 
       def self.server_address
         Gitlab.config.prometheus.server_address.to_s if Gitlab.config.prometheus
-      rescue Settingslogic::MissingSetting
+      rescue GitlabSettings::MissingSetting
         Gitlab::AppLogger.error('Prometheus server_address is not present in config/gitlab.yml')
 
         nil
@@ -35,7 +35,7 @@ module Gitlab
 
       def self.prometheus_enabled?
         Gitlab.config.prometheus.enabled if Gitlab.config.prometheus
-      rescue Settingslogic::MissingSetting
+      rescue GitlabSettings::MissingSetting
         Gitlab::AppLogger.error('prometheus.enabled is not present in config/gitlab.yml')
 
         false

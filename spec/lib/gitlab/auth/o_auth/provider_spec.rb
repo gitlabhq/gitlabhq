@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
     context 'for an LDAP provider' do
       context 'when the provider exists' do
         it 'returns the config' do
-          expect(described_class.config_for('ldapmain')).to be_a(Hash)
+          expect(described_class.config_for('ldapmain')).to be_a(GitlabSettings::Options)
         end
       end
 

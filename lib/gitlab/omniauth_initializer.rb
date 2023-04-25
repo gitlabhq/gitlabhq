@@ -74,7 +74,7 @@ module Gitlab
         # An Array from the configuration will be expanded
         provider_arguments.concat arguments
         provider_arguments << defaults unless defaults.empty?
-      when Hash
+      when Hash, GitlabSettings::Options
         hash_arguments = arguments.deep_symbolize_keys.deep_merge(defaults)
         normalized = normalize_hash_arguments(hash_arguments)
 

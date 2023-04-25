@@ -17,7 +17,7 @@ module StubObjectStorage
         direct_upload: false,
         cdn: {}
   )
-    old_config = Settingslogic.new(config.to_h.deep_stringify_keys)
+    old_config = ::GitlabSettings::Options.build(config.to_h.deep_stringify_keys)
     new_config = config.to_h.deep_symbolize_keys.merge({
       enabled: enabled,
       proxy_download: proxy_download,
@@ -32,7 +32,7 @@ module StubObjectStorage
     allow(config).to receive(:proxy_download) { proxy_download }
     allow(config).to receive(:direct_upload) { direct_upload }
 
-    uploader_config = Settingslogic.new(new_config.to_h.deep_stringify_keys)
+    uploader_config = ::GitlabSettings::Options.build(new_config.to_h.deep_stringify_keys)
     allow(uploader).to receive(:object_store_options).and_return(uploader_config)
     allow(uploader.options).to receive(:object_store).and_return(uploader_config)
 

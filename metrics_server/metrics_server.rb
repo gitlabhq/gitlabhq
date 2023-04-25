@@ -162,7 +162,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       when 'puma'
         Gitlab::Metrics::Exporter::WebExporter.instance(**default_opts)
       when 'sidekiq'
-        settings = Settings.new(Settings.monitoring.sidekiq_exporter)
+        settings = GitlabSettings::Options.build(Settings.monitoring.sidekiq_exporter)
         Gitlab::Metrics::Exporter::SidekiqExporter.instance(settings, **default_opts)
       end
 

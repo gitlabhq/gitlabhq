@@ -446,7 +446,7 @@ RSpec.describe ObjectStorage do
   end
 
   describe '#fog_credentials' do
-    let(:connection) { Settingslogic.new("provider" => "AWS") }
+    let(:connection) { GitlabSettings::Options.build("provider" => "AWS") }
 
     before do
       allow(uploader_class).to receive(:options) do
@@ -479,7 +479,7 @@ RSpec.describe ObjectStorage do
         }
       end
 
-      let(:options) { Settingslogic.new(raw_options) }
+      let(:options) { GitlabSettings::Options.build(raw_options) }
 
       before do
         allow(uploader_class).to receive(:options) do

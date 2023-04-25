@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   let_it_be(:user) { create(:user) }
 
   let(:path) { described_class.new(address: address, content_filename: 'template.yml') }
-  let(:settings) { Settingslogic.new({ 'component_fqdn' => current_host }) }
+  let(:settings) { GitlabSettings::Options.build({ 'component_fqdn' => current_host }) }
   let(:current_host) { 'acme.com/' }
 
   before do

@@ -12,6 +12,7 @@ module QA
           prepend Page::SubMenus::SuperSidebar::Settings
           prepend SubMenus::SuperSidebar::Main
           prepend SubMenus::SuperSidebar::Build
+          prepend SubMenus::SuperSidebar::Operate
         end
 
         def click_group_members_item
@@ -73,6 +74,8 @@ module QA
         end
 
         def go_to_group_packages
+          return go_to_package_registry if Runtime::Env.super_sidebar_enabled?
+
           hover_group_packages do
             within_submenu do
               click_element(:sidebar_menu_item_link, menu_item: 'Package Registry')

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro do
 
     context 'when snowplow_micro config is not set' do
       before do
-        allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Settingslogic::MissingSetting)
+        allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
       end
 
       it 'returns localhost hostname' do

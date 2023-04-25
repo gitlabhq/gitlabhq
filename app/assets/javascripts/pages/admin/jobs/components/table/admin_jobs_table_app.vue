@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { validateQueryString } from '~/jobs/components/filtered_search/utils';
@@ -14,6 +14,7 @@ import CancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.gr
 export default {
   i18n: {
     jobsFetchErrorMsg: __('There was an error fetching the jobs.'),
+    loadingAriaLabel: __('Loading'),
   },
   components: {
     JobsSkeletonLoader,
@@ -21,6 +22,8 @@ export default {
     GlAlert,
     JobsTable,
     JobsTableTabs,
+    GlIntersectionObserver,
+    GlLoadingIcon,
   },
   inject: {
     jobStatuses: {
@@ -87,6 +90,9 @@ export default {
         this.jobs.list.length === 0 && !this.scope && !this.loading && !this.filterSearchTriggered
       );
     },
+    hasNextPage() {
+      return this.jobs?.pageInfo?.hasNextPage;
+    },
     variables() {
       return { ...this.validatedQueryString };
     },
@@ -122,6 +128,18 @@ export default {
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });
     },
+    fetchMoreJobs() {
+      if (!this.loading) {
+        this.infiniteScrollingTriggered = true;
+
+        const parameters = this.variables;
+        parameters.after = this.jobs?.pageInfo?.endCursor;
+
+        this.$apollo.queries.jobs.fetchMore({
+          variables: parameters,
+        });
+      }
+    },
   },
 };
 </script>
@@ -149,5 +167,13 @@ export default {
       :table-fields="DEFAULT_FIELDS_ADMIN"
       class="gl-table-no-top-border"
     />
+
+    <gl-intersection-observer v-if="hasNextPage" @appear="fetchMoreJobs">
+      <gl-loading-icon
+        v-if="showLoadingSpinner"
+        size="lg"
+        :aria-label="$options.i18n.loadingAriaLabel"
+      />
+    </gl-intersection-observer>
   </div>
 </template>

@@ -71,7 +71,7 @@ RSpec.describe 'GitLab metrics server', :aggregate_failures do
         if use_golang_server
           stub_env('GITLAB_GOLANG_METRICS_SERVER', '1')
           allow(Settings).to receive(:monitoring).and_return(
-            Settingslogic.new(config.dig('test', 'monitoring')))
+            GitlabSettings::Options.build(config.dig('test', 'monitoring')))
         else
           config_file.write(YAML.dump(config))
           config_file.close

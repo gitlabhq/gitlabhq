@@ -73,7 +73,7 @@ module QA
             expect(job).to be_successful(timeout: 800)
           end
 
-          Page::Project::Menu.perform(&:click_packages_link)
+          Page::Project::Menu.perform(&:go_to_package_registry)
 
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package_name)

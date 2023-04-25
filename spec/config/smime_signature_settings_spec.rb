@@ -19,7 +19,7 @@ RSpec.describe SmimeSignatureSettings, feature_category: :shared do
 
     context 'when providing custom values' do
       it 'sets correct default values to disabled' do
-        custom_settings = Settingslogic.new({})
+        custom_settings = GitlabSettings::Options.build({})
 
         parsed_settings = described_class.parse(custom_settings)
 
@@ -30,7 +30,7 @@ RSpec.describe SmimeSignatureSettings, feature_category: :shared do
       end
 
       it 'enables smime with default key and cert' do
-        custom_settings = Settingslogic.new({
+        custom_settings = GitlabSettings::Options.build({
           'enabled' => true
         })
 
@@ -46,7 +46,7 @@ RSpec.describe SmimeSignatureSettings, feature_category: :shared do
         custom_key = '/custom/key'
         custom_cert = '/custom/cert'
         custom_ca_certs = '/custom/ca_certs'
-        custom_settings = Settingslogic.new({
+        custom_settings = GitlabSettings::Options.build({
           'enabled' => true,
           'key_file' => custom_key,
           'cert_file' => custom_cert,

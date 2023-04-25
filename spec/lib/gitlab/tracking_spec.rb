@@ -312,7 +312,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
     end
 
     it 'returns false when snowplow_micro is not configured' do
-      allow(Gitlab.config).to receive(:snowplow_micro).and_raise(Settingslogic::MissingSetting)
+      allow(Gitlab.config).to receive(:snowplow_micro).and_raise(GitlabSettings::MissingSetting)
 
       expect(described_class).not_to be_snowplow_micro_enabled
     end

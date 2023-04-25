@@ -57,7 +57,7 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :team_plann
   context 'in a project milestone' do
     let(:milestone) { create(:project_milestone, project: project, description: description) }
 
-    it 'includes mermaid frame correctly' do
+    it 'includes mermaid frame correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408560' do
       visit(project_milestone_path(project, milestone))
 
       wait_for_requests

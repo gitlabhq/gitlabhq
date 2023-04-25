@@ -1,6 +1,6 @@
-import { GlLoadingIcon, GlEmptyState, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlAlert, GlIntersectionObserver } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,8 +14,8 @@ import JobsTable from '~/jobs/components/table/jobs_table.vue';
 
 import {
   mockAllJobsResponsePaginated,
-  mockJobsResponseEmpty,
   mockCancelableJobsCountResponse,
+  mockAllJobsResponseEmpty,
   statuses,
 } from '../../../../../jobs/mock_data';
 
@@ -25,9 +25,9 @@ describe('Job table app', () => {
   let wrapper;
 
   const successHandler = jest.fn().mockResolvedValue(mockAllJobsResponsePaginated);
-  const emptyHandler = jest.fn().mockResolvedValue(mockJobsResponseEmpty);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const cancelHandler = jest.fn().mockResolvedValue(mockCancelableJobsCountResponse);
+  const emptyHandler = jest.fn().mockResolvedValue(mockAllJobsResponseEmpty);
 
   const findSkeletonLoader = () => wrapper.findComponent(JobsSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
@@ -36,6 +36,9 @@ describe('Job table app', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTabs = () => wrapper.findComponent(JobsTableTabs);
   const findCancelJobsButton = () => wrapper.findComponent(CancelJobs);
+
+  const triggerInfiniteScroll = () =>
+    wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
   const createMockApolloProvider = (handler, cancelableHandler) => {
     const requestHandlers = [
@@ -105,6 +108,33 @@ describe('Job table app', () => {
       await findTabs().vm.$emit('fetchJobsByStatus');
 
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when infinite scrolling is triggered', () => {
+      it('does not display a skeleton loader', () => {
+        triggerInfiniteScroll();
+
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
+
+      it('handles infinite scrolling by calling fetch more', async () => {
+        triggerInfiniteScroll();
+
+        await nextTick();
+
+        const pageSize = 50;
+
+        expect(findLoadingSpinner().exists()).toBe(true);
+
+        await waitForPromises();
+
+        expect(findLoadingSpinner().exists()).toBe(false);
+
+        expect(successHandler).toHaveBeenLastCalledWith({
+          first: pageSize,
+          after: mockAllJobsResponsePaginated.data.jobs.pageInfo.endCursor,
+        });
+      });
     });
   });
 
