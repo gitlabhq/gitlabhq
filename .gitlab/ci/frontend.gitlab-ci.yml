@@ -140,13 +140,7 @@ retrieve-frontend-fixtures:
   script:
     - source scripts/gitlab_component_helpers.sh
     - |
-      if [[ -d "tmp/tests/frontend" ]]; then
-        # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
-        # jobs don't download the exact same artifact multiple times.
-        if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
-          echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}.";
-          rm -rf "tmp/tests/frontend";
-        fi
+      if check_fixtures_reuse; then
         exit 0
       else
         echo "No frontend fixtures directory, generating frontend fixtures."

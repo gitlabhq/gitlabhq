@@ -12,15 +12,15 @@
     - if current_user.can?(:create_resource_access_tokens, @group)
       = _('Generate group access tokens scoped to this group for your applications that need access to the GitLab API.')
       %p
-        = _('You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+        = html_escape(_('You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}')) % { link_start: link_start, link_end: '</a>'.html_safe }
     - else
-      = _('Group access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+      = html_escape(_('Group access token creation is disabled in this group. You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: link_start, link_end: '</a>'.html_safe }
       %p
       - root_group = @group.root_ancestor
       - if current_user.can?(:admin_group, root_group)
         - group_settings_link = edit_group_path(root_group)
         - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_settings_link }
-        = _('You can enable group access token creation in %{link_start}group settings%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+        = html_escape(_('You can enable group access token creation in %{link_start}group settings%{link_end}.')) % { link_start: link_start, link_end: '</a>'.html_safe }
 
   .col-lg-8
     #js-new-access-token-app{ data: { access_token_type: type } }

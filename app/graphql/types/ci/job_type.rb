@@ -7,6 +7,8 @@ module Types
     class JobType < BaseObject
       graphql_name 'CiJob'
 
+      present_using ::Ci::BuildPresenter
+
       connection_type_class(Types::LimitedCountableConnectionType)
 
       expose_permissions Types::PermissionTypes::Ci::Job
@@ -91,7 +93,7 @@ module Types
                                                description: 'Path to the ref.'
       field :retried, GraphQL::Types::Boolean, null: true,
                                                description: 'Indicates that the job has been retried.'
-      field :retryable, GraphQL::Types::Boolean, null: false, method: :retryable?,
+      field :retryable, GraphQL::Types::Boolean, null: false,
                                                  description: 'Indicates the job can be retried.'
       field :scheduled, GraphQL::Types::Boolean, null: false, method: :scheduled?,
                                               description: 'Indicates the job is scheduled.'
@@ -114,14 +116,21 @@ module Types
             null: false, resolver_method: :can_play_job?,
             description: 'Indicates whether the current user can play the job.'
 
+      field :failure_message, GraphQL::Types::String, null: true,
+                                                     description: 'Message on why the job failed.'
+
       def can_play_job?
         object.playable? && Ability.allowed?(current_user, :play_job, object)
       end
 
       def kind
-        return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.class)
+        return ::Ci::Build unless [::Ci::Build, ::Ci::Bridge].include?(object.build.class)
 
-        object.class
+        object.build.class
+      end
+
+      def retryable
+        object.build.retryable?
       end
 
       def pipeline

@@ -90,4 +90,16 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
       subject { post authorize_import_gitlab_project_path, headers: workhorse_headers }
     end
   end
+
+  describe 'GET new' do
+    context 'when the user is not allowed to import projects' do
+      let!(:group) { create(:group).tap { |group| group.add_developer(user) } }
+
+      it 'returns 404' do
+        get new_import_gitlab_project_path, params: { namespace_id: group.id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

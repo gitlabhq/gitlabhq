@@ -17,7 +17,8 @@
     root_path: root_path,
     parent_group_url: @project.parent && group_url(@project.parent),
     parent_group_name: @project.parent&.name,
-    projects_url: dashboard_projects_url } }
+    projects_url: dashboard_projects_url,
+    can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true' } }
 
   .row{ 'v-cloak': true }
     #blank-project-pane.tab-pane.active

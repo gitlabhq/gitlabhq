@@ -61,17 +61,90 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
-    context 'with a too large metadata structure' do
-      before do
-        params[:versions][version][:test] = 'test' * 10000
+    context 'when the npm metadatum creation results in a size error' do
+      shared_examples 'a package json structure size too large error' do
+        it 'does not create the package' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(ActiveRecord::RecordInvalid),
+            field_sizes: expected_field_sizes
+          )
+
+          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package json structure is too large')
+            .and not_change { Packages::Package.count }
+            .and not_change { Packages::Package.npm.count }
+            .and not_change { Packages::Tag.count }
+            .and not_change { Packages::Npm::Metadatum.count }
+        end
       end
 
-      it 'does not create the package' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package json structure is too large')
-        .and not_change { Packages::Package.count }
-        .and not_change { Packages::Package.npm.count }
-        .and not_change { Packages::Tag.count }
-        .and not_change { Packages::Npm::Metadatum.count }
+      context 'when some of the field sizes are above the error tracking size' do
+        let(:package_json) do
+          params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
+        end
+
+        # Only the fields that exceed the field size limit should be passed to error tracking
+        let(:expected_field_sizes) do
+          {
+            'test' => ('test' * 10000).size,
+            'field2' => ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)).size
+          }
+        end
+
+        before do
+          params[:versions][version][:test] = 'test' * 10000
+          params[:versions][version][:field1] =
+            'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+          params[:versions][version][:field2] =
+            'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING + 1)
+        end
+
+        it_behaves_like 'a package json structure size too large error'
+      end
+
+      context 'when all of the field sizes are below the error tracking size' do
+        let(:package_json) do
+          params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
+        end
+
+        let(:expected_size) { ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)).size }
+        # Only the five largest fields should be passed to error tracking
+        let(:expected_field_sizes) do
+          {
+            'field1' => expected_size,
+            'field2' => expected_size,
+            'field3' => expected_size,
+            'field4' => expected_size,
+            'field5' => expected_size
+          }
+        end
+
+        before do
+          5.times do |i|
+            params[:versions][version]["field#{i + 1}"] =
+              'a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)
+          end
+        end
+
+        it_behaves_like 'a package json structure size too large error'
+      end
+    end
+
+    context 'when the npm metadatum creation results in a different error' do
+      it 'does not track the error' do
+        error_message = 'boom'
+        invalid_npm_metadatum_error = ActiveRecord::RecordInvalid.new(
+          build(:npm_metadatum).tap do |metadatum|
+            metadatum.errors.add(:base, error_message)
+          end
+        )
+
+        allow_next_instance_of(::Packages::Package) do |package|
+          allow(package).to receive(:create_npm_metadatum!).and_raise(invalid_npm_metadatum_error)
+        end
+
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /#{error_message}/)
       end
     end
 

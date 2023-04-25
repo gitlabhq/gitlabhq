@@ -103,7 +103,7 @@ module Import
       elsif target_namespace.nil?
         error(_('Namespace or group to import repository into does not exist.'), :unprocessable_entity)
       elsif !authorized?
-        error(_('This namespace has already been taken. Choose a different one.'), :unprocessable_entity)
+        error(_('You are not allowed to import projects in this namespace.'), :unprocessable_entity)
       elsif oversized?
         error(oversize_error_message, :unprocessable_entity)
       end

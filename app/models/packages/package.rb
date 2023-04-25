@@ -180,6 +180,7 @@ class Packages::Package < ApplicationRecord
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
+  scope :with_npm_scope, ->(scope) { npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%") }
 
   scope :order_project_path, -> do
     keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)

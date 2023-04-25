@@ -1,13 +1,15 @@
 <script>
 import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { queryToObject } from '~/lib/utils/url_utility';
+import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import { validateQueryString } from '~/jobs/components/filtered_search/utils';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
+import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import JobsTableEmptyState from '~/jobs/components/table/jobs_table_empty_state.vue';
-import { DEFAULT_FIELDS_ADMIN } from '../constants';
+import { createAlert } from '~/alert';
 import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
+import { DEFAULT_FIELDS_ADMIN, RAW_TEXT_WARNING_ADMIN } from '../constants';
 import GetAllJobs from './graphql/queries/get_all_jobs.query.graphql';
 import CancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
 
@@ -16,10 +18,13 @@ export default {
     jobsFetchErrorMsg: __('There was an error fetching the jobs.'),
     loadingAriaLabel: __('Loading'),
   },
+  filterSearchBoxStyles:
+    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-b gl-border-gray-100',
   components: {
     JobsSkeletonLoader,
     JobsTableEmptyState,
     GlAlert,
+    JobsFilteredSearch,
     JobsTable,
     JobsTableTabs,
     GlIntersectionObserver,
@@ -101,6 +106,9 @@ export default {
 
       return validateQueryString(queryStringObject);
     },
+    showFilteredSearch() {
+      return !this.scope;
+    },
     jobsCount() {
       return this.jobs.count;
     },
@@ -140,6 +148,44 @@ export default {
         });
       }
     },
+    filterJobsBySearch(filters) {
+      this.infiniteScrollingTriggered = false;
+      this.filterSearchTriggered = true;
+
+      // all filters have been cleared reset query param
+      // and refetch jobs/count with defaults
+      if (!filters.length) {
+        updateHistory({
+          url: setUrlParams({ statuses: null }, window.location.href, true),
+        });
+
+        this.$apollo.queries.jobs.refetch({ statuses: null });
+
+        return;
+      }
+
+      // Eventually there will be more tokens available
+      // this code is written to scale for those tokens
+      filters.forEach((filter) => {
+        // Raw text input in filtered search does not have a type
+        // when a user enters raw text we alert them that it is
+        // not supported and we do not make an additional API call
+        if (!filter.type) {
+          createAlert({
+            message: RAW_TEXT_WARNING_ADMIN,
+            type: 'warning',
+          });
+        }
+
+        if (filter.type === 'status') {
+          updateHistory({
+            url: setUrlParams({ statuses: filter.value.data }, window.location.href, true),
+          });
+
+          this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
+        }
+      });
+    },
   },
 };
 </script>
@@ -156,6 +202,13 @@ export default {
       :show-cancel-all-jobs-button="isCancelable"
       @fetchJobsByStatus="fetchJobsByStatus"
     />
+
+    <div v-if="showFilteredSearch" :class="$options.filterSearchBoxStyles">
+      <jobs-filtered-search
+        :query-string="validatedQueryString"
+        @filterJobsBySearch="filterJobsBySearch"
+      />
+    </div>
 
     <jobs-skeleton-loader v-if="showSkeletonLoader" class="gl-mt-5" />
 

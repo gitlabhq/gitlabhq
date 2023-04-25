@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GiteaController do
+RSpec.describe Import::GiteaController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:provider) { :gitea }

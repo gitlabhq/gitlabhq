@@ -13,8 +13,8 @@ module Import
 
       unless authorized?
         return log_and_return_error(
-          "You don't have permissions to create this project",
-          _("You don't have permissions to create this project"),
+          "You don't have permissions to import this project",
+          _("You don't have permissions to import this project"),
           :unauthorized
         )
       end

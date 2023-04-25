@@ -33134,6 +33134,9 @@ msgstr ""
 msgid "Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
+msgid "Please wait for the current action to complete"
+msgstr ""
+
 msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
@@ -45497,9 +45500,6 @@ msgstr ""
 msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
-msgid "This namespace has already been taken. Choose a different one."
-msgstr ""
-
 msgid "This only applies to repository indexing operations."
 msgstr ""
 
@@ -46609,7 +46609,7 @@ msgstr ""
 msgid "TransferGroup|Group contains contacts/organizations and you don't have enough permissions to move them to the new root group."
 msgstr ""
 
-msgid "TransferGroup|Group contains projects with NPM packages."
+msgid "TransferGroup|Group contains projects with NPM packages scoped to the current root level group."
 msgstr ""
 
 msgid "TransferGroup|Group is already a root group."
@@ -46645,7 +46645,7 @@ msgstr ""
 msgid "TransferProject|Project with same name or path in target namespace already exists"
 msgstr ""
 
-msgid "TransferProject|Root namespace can't be updated if project has NPM packages"
+msgid "TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace."
 msgstr ""
 
 msgid "TransferProject|You don't have permission to transfer projects into that namespace."
@@ -50553,6 +50553,9 @@ msgstr ""
 msgid "You are not allowed to download code from this project."
 msgstr ""
 
+msgid "You are not allowed to import projects in this namespace."
+msgstr ""
+
 msgid "You are not allowed to log in using password"
 msgstr ""
 
@@ -50868,7 +50871,7 @@ msgstr ""
 msgid "You don't have permission to view this epic"
 msgstr ""
 
-msgid "You don't have permissions to create this project"
+msgid "You don't have permissions to import this project"
 msgstr ""
 
 msgid "You don't have sufficient permission to perform this action."

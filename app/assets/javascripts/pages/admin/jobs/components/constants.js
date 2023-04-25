@@ -1,5 +1,5 @@
 import { s__, __ } from '~/locale';
-import { DEFAULT_FIELDS } from '~/jobs/components/table/constants';
+import { DEFAULT_FIELDS, RAW_TEXT_WARNING } from '~/jobs/components/table/constants';
 
 export const CANCEL_JOBS_MODAL_ID = 'cancel-jobs-modal';
 export const CANCEL_JOBS_MODAL_TITLE = s__('AdminArea|Are you sure?');
@@ -19,3 +19,5 @@ export const DEFAULT_FIELDS_ADMIN = [
   { key: 'runner', label: __('Runner'), columnClass: 'gl-w-15p' },
   ...DEFAULT_FIELDS.slice(2),
 ];
+
+export const RAW_TEXT_WARNING_ADMIN = RAW_TEXT_WARNING;

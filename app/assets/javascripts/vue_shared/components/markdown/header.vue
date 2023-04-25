@@ -15,6 +15,7 @@ import { getModifierKey } from '~/constants';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import { updateText } from '~/lib/utils/text_markdown';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
 import CommentTemplatesDropdown from './comment_templates_dropdown.vue';
@@ -39,7 +40,7 @@ export default {
     newCommentTemplatePath: {
       default: null,
     },
-    resourceGlobalId: { default: null },
+    editorAiActions: { default: () => [] },
   },
   props: {
     previewMarkdown: {
@@ -121,9 +122,6 @@ export default {
       const expandText = s__('MarkdownEditor|Click to expand');
       return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
     },
-    showAiActions() {
-      return this.resourceGlobalId && this.glFeatures.summarizeComments;
-    },
   },
   watch: {
     showSuggestPopover() {
@@ -194,6 +192,18 @@ export default {
 
       $gfmForm.find('.div-dropzone').click();
       $gfmTextarea.focus();
+    },
+    insertIntoTextarea(text) {
+      const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
+      if (textArea) {
+        const generatedByText = `${text}\n***\n_${__('This comment was generated using OpenAI')}_`;
+        updateText({
+          textArea,
+          tag: generatedByText,
+          cursorOffset: 0,
+          wrap: false,
+        });
+      }
     },
   },
   shortcuts: {
@@ -275,7 +285,11 @@ export default {
               </gl-button>
             </gl-popover>
           </template>
-          <ai-actions-dropdown v-if="showAiActions" :resource-global-id="resourceGlobalId" />
+          <ai-actions-dropdown
+            v-if="editorAiActions.length"
+            :actions="editorAiActions"
+            @input="insertIntoTextarea"
+          />
           <toolbar-button
             tag="**"
             :button-title="

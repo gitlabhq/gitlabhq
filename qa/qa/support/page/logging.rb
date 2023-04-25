@@ -36,9 +36,7 @@ module QA
 
         def find_element(name, **kwargs)
           log("finding :#{name} with args #{kwargs}")
-
-          element = super
-
+          element = log_slow_code(name, **kwargs) { super }
           log("found :#{name}")
 
           element
@@ -46,9 +44,7 @@ module QA
 
         def all_elements(name, **kwargs)
           log("finding all :#{name} with args #{kwargs}")
-
-          elements = super
-
+          elements = log_slow_code(name, **kwargs) { super }
           log("found #{elements.size} :#{name}") if elements
 
           elements
@@ -88,8 +84,7 @@ module QA
 
           log(msg.join(' '), :info)
           log("with args #{kwargs}")
-
-          super
+          log_slow_code(name, **kwargs) { super }
         end
 
         def act_via_capybara(method, locator, **kwargs)
@@ -113,32 +108,28 @@ module QA
         end
 
         def has_element?(name, **kwargs)
-          found = super
-
+          found = log_slow_code(name, **kwargs) { super }
           log_has_element_or_not('has_element?', name, found, **kwargs)
 
           found
         end
 
         def has_no_element?(name, **kwargs)
-          found = super
-
+          found = log_slow_code(name, **kwargs) { super }
           log_has_element_or_not('has_no_element?', name, found, **kwargs)
 
           found
         end
 
         def has_text?(text, **kwargs)
-          found = super
-
+          found = log_slow_code(text, **kwargs) { super }
           log(%(has_text?('#{text}', wait: #{kwargs[:wait] || Capybara.default_max_wait_time}) returned #{found}))
 
           found
         end
 
         def has_no_text?(text, **kwargs)
-          found = super
-
+          found = log_slow_code(text, **kwargs) { super }
           log(%(has_no_text?('#{text}', wait: #{kwargs[:wait] || Capybara.default_max_wait_time}) returned #{found}))
 
           found
@@ -146,13 +137,11 @@ module QA
 
         def finished_loading?(wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           log('waiting for loading to complete...')
-          now = Time.now
+          log_slow_code { super }
+        end
 
-          loaded = super
-
-          log("loading complete after #{Time.now - now} seconds")
-
-          loaded
+        def wait_for_requests(skip_finished_loading_check: false, skip_resp_code_check: false)
+          log_slow_code { super }
         end
 
         def wait_for_animated_element(name)
@@ -208,6 +197,21 @@ module QA
           msg << "returned: #{found}"
 
           log(msg.compact.join(' '))
+        end
+
+        # Prints warning log if code duration is slower than threshold
+        # @param [String (frozen)] paramInfo is info relating to the slow element
+        def log_slow_code(param_info = '', **kwargs)
+          starting = kwargs.fetch(:starting_time, Time.now)
+          result = yield
+          ending = kwargs.fetch(:ending_time, Time.now)
+          duration = (ending - starting).round(3)
+          if duration > kwargs.fetch(:log_slow_threshold, 0.5)
+            caller_method_name = caller_locations(1, 1).first.label
+            QA::Runtime::Logger.warn("Potentially Slow Code '#{caller_method_name} #{param_info}' took #{duration}s")
+          end
+
+          result
         end
       end
     end

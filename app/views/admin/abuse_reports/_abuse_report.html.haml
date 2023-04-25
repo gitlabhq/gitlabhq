@@ -7,7 +7,7 @@
     - if user
       = link_to user.name, user
       .light.small
-        = _('Joined %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(user.created_at) }
+        = html_escape(_('Joined %{time_ago}')) % { time_ago: time_ago_with_tooltip(user.created_at).html_safe }
     - else
       = _('(removed)')
   %td

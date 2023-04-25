@@ -20,12 +20,32 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
 
     subject(:transfer_service) { described_class.new(project, user) }
 
-    let!(:package) { create(:npm_package, project: project) }
+    let!(:package) { create(:npm_package, project: project, name: "@testscope/test") }
 
     context 'with a root namespace change' do
+      it 'allow the transfer' do
+        expect(transfer_service.execute(group)).to be true
+        expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+
+    context 'with pending destruction package' do
+      before do
+        package.pending_destruction!
+      end
+
+      it 'allow the transfer' do
+        expect(transfer_service.execute(group)).to be true
+        expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+
+    context 'with namespaced packages present' do
+      let!(:package) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
+
       it 'does not allow the transfer' do
         expect(transfer_service.execute(group)).to be false
-        expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if project has NPM packages")
+        expect(project.errors[:new_namespace]).to include("Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
       end
     end
 
@@ -39,7 +59,7 @@ RSpec.describe Projects::TransferService, feature_category: :projects do
         other_group.add_owner(user)
       end
 
-      it 'does allow the transfer' do
+      it 'allow the transfer' do
         expect(transfer_service.execute(other_group)).to be true
         expect(project.errors[:new_namespace]).to be_empty
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ImportsController do
+RSpec.describe Projects::ImportsController, feature_category: :importers do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -149,17 +149,7 @@ RSpec.describe Projects::ImportsController do
           import_state.update!(status: :started)
         end
 
-        context 'when group allows developers to create projects' do
-          let(:group) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
-
-          it 'renders template' do
-            get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
-
-            expect(response).to render_template :show
-          end
-        end
-
-        context 'when group prohibits developers to create projects' do
+        context 'when group prohibits developers to import projects' do
           let(:group) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
 
           it 'returns 404 response' do

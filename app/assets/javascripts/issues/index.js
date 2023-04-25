@@ -47,7 +47,7 @@ export function initForm() {
   mountMilestoneDropdown();
 }
 
-export function initShow() {
+export function initShow({ notesParams } = {}) {
   const el = document.getElementById('js-issuable-app');
 
   if (!el) {
@@ -71,7 +71,7 @@ export function initShow() {
   new ZenMode(); // eslint-disable-line no-new
   initIssuableHeaderWarnings(store);
   initIssuableSidebar();
-  initNotesApp();
+  initNotesApp(notesParams);
   initRelatedMergeRequests();
   initSentryErrorStackTrace();
 

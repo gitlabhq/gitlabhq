@@ -180,6 +180,32 @@ function check_fixtures_download() {
   fi
 }
 
+function check_fixtures_reuse() {
+  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED:-}" != "true" ]]; then
+    rm -rf "tmp/tests/frontend";
+    return 1
+  fi
+
+  # Note: Currently, reusing frontend fixtures is only supported in EE.
+  # Other projects will be supported through this issue in the future: https://gitlab.com/gitlab-org/gitlab/-/issues/393615.
+  if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
+    rm -rf "tmp/tests/frontend";
+    return 1
+  fi
+
+  if [[ -d "tmp/tests/frontend" ]]; then
+    # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
+    # jobs don't download the exact same artifact multiple times.
+    if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
+      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}.";
+      rm -rf "tmp/tests/frontend";
+    fi
+    return 0
+  else
+    return 1
+  fi
+}
+
 function create_fixtures_package() {
   create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
 }

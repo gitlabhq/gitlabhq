@@ -2,11 +2,7 @@
 import { GlTableLite, GlEmptyState, GlLink } from '@gitlab/ui';
 import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
-import {
-  FEATURE_NAME,
-  FEATURE_FEEDBACK_ISSUE,
-  EMPTY_STATE_SVG,
-} from '~/ml/experiment_tracking/constants';
+import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import * as constants from '~/ml/experiment_tracking/routes/experiments/index/constants';
 import * as translations from '~/ml/experiment_tracking/routes/experiments/index/translations';
 
@@ -28,6 +24,10 @@ export default {
       type: Object,
       required: true,
     },
+    emptyStateSvgPath: {
+      type: String,
+      required: true,
+    },
   },
   tableFields: constants.EXPERIMENTS_TABLE_FIELDS,
   i18n: translations,
@@ -45,7 +45,6 @@ export default {
   constants: {
     FEATURE_NAME,
     FEATURE_FEEDBACK_ISSUE,
-    EMPTY_STATE_SVG,
     ...constants,
   },
 };
@@ -78,7 +77,7 @@ export default {
     :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
     :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
     :primary-button-link="$options.constants.CREATE_EXPERIMENT_HELP_PATH"
-    :svg-path="$options.constants.EMPTY_STATE_SVG"
+    :svg-path="emptyStateSvgPath"
     :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
     class="gl-py-8"
   />

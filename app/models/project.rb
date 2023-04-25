@@ -1177,10 +1177,6 @@ class Project < ApplicationRecord
     auto_devops_config[:scope] != :project && !auto_devops_config[:status]
   end
 
-  def has_packages?(package_type)
-    packages.where(package_type: package_type).exists?
-  end
-
   def packages_cleanup_policy
     super || build_packages_cleanup_policy
   end
@@ -2955,6 +2951,12 @@ class Project < ApplicationRecord
           .id_not_in(id)
           .select(:id)
       ).exists?
+  end
+
+  def has_namespaced_npm_packages?
+    packages.with_npm_scope(root_namespace.path)
+            .not_pending_destruction
+            .exists?
   end
 
   def default_branch_or_main

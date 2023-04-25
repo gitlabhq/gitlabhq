@@ -8,9 +8,11 @@ const initIndexMlExperiments = () => {
     return undefined;
   }
 
+  const { experiments, pageInfo, emptyStateSvgPath } = element.dataset;
   const props = {
-    experiments: JSON.parse(element.dataset.experiments),
-    pageInfo: convertObjectPropsToCamelCase(JSON.parse(element.dataset.pageInfo)),
+    experiments: JSON.parse(experiments),
+    pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+    emptyStateSvgPath,
   };
 
   return new Vue({

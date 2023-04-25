@@ -8,12 +8,15 @@ const initShowExperiment = () => {
     return undefined;
   }
 
+  const { experiment, candidates, metrics, params, pageInfo, emptyStateSvgPath } = element.dataset;
+
   const props = {
-    experiment: JSON.parse(element.dataset.experiment),
-    candidates: JSON.parse(element.dataset.candidates),
-    metricNames: JSON.parse(element.dataset.metrics),
-    paramNames: JSON.parse(element.dataset.params),
-    pageInfo: convertObjectPropsToCamelCase(JSON.parse(element.dataset.pageInfo)),
+    experiment: JSON.parse(experiment),
+    candidates: JSON.parse(candidates),
+    metricNames: JSON.parse(metrics),
+    paramNames: JSON.parse(params),
+    pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+    emptyStateSvgPath,
   };
 
   return new Vue({

@@ -882,46 +882,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe '#has_packages?' do
-    let_it_be(:project) { create(:project, :public) }
-
-    subject { project.has_packages?(package_type) }
-
-    shared_examples 'returning true examples' do
-      let!(:package) { create("#{package_type}_package", project: project) }
-
-      it { is_expected.to be true }
-    end
-
-    shared_examples 'returning false examples' do
-      it { is_expected.to be false }
-    end
-
-    context 'with maven packages' do
-      it_behaves_like 'returning true examples' do
-        let(:package_type) { :maven }
-      end
-    end
-
-    context 'with npm packages' do
-      it_behaves_like 'returning true examples' do
-        let(:package_type) { :npm }
-      end
-    end
-
-    context 'with conan packages' do
-      it_behaves_like 'returning true examples' do
-        let(:package_type) { :conan }
-      end
-    end
-
-    context 'with no package type' do
-      it_behaves_like 'returning false examples' do
-        let(:package_type) { nil }
-      end
-    end
-  end
-
   describe '#ci_pipelines' do
     let_it_be(:project) { create(:project) }
 
@@ -7660,48 +7620,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe '#has_packages?' do
-    let(:project) { create(:project, :public) }
-
-    subject { project.has_packages?(package_type) }
-
-    shared_examples 'has_package' do
-      context 'package of package_type exists' do
-        let!(:package) { create("#{package_type}_package", project: project) }
-
-        it { is_expected.to be true }
-      end
-
-      context 'package of package_type does not exist' do
-        it { is_expected.to be false }
-      end
-    end
-
-    context 'with maven packages' do
-      it_behaves_like 'has_package' do
-        let(:package_type) { :maven }
-      end
-    end
-
-    context 'with npm packages' do
-      it_behaves_like 'has_package' do
-        let(:package_type) { :npm }
-      end
-    end
-
-    context 'with conan packages' do
-      it_behaves_like 'has_package' do
-        let(:package_type) { :conan }
-      end
-    end
-
-    context 'calling has_package? with nil' do
-      let(:package_type) { nil }
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe 'with Debian Distributions' do
     subject { create(:project) }
 
@@ -7819,6 +7737,29 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       it 'includes self, ancestors and linked groups' do
         expect(project.related_group_ids).to contain_exactly(group.id, sub_group.id, linked_group.id)
       end
+    end
+  end
+
+  describe '#has_namespaced_npm_packages?' do
+    let_it_be(:namespace) { create(:namespace, path: 'test') }
+    let_it_be(:project) { create(:project, :public, namespace: namespace) }
+
+    subject { project.has_namespaced_npm_packages? }
+
+    context 'with scope of the namespace path' do
+      let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
+
+      it { is_expected.to be true }
+    end
+
+    context 'without scope of the namespace path' do
+      let_it_be(:package) { create(:npm_package, project: project, name: "@someotherscope/foo") }
+
+      it { is_expected.to be false }
+    end
+
+    context 'without packages' do
+      it { is_expected.to be false }
     end
   end
 

@@ -3,11 +3,7 @@ import { GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import {
-  FEATURE_NAME,
-  FEATURE_FEEDBACK_ISSUE,
-  EMPTY_STATE_SVG,
-} from '~/ml/experiment_tracking/constants';
+import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
@@ -52,6 +48,10 @@ export default {
     },
     pageInfo: {
       type: Object,
+      required: true,
+    },
+    emptyStateSvgPath: {
+      type: String,
       required: true,
     },
   },
@@ -159,7 +159,6 @@ export default {
     FEATURE_NAME,
     FEATURE_FEEDBACK_ISSUE,
     CREATE_CANDIDATE_HELP_PATH,
-    EMPTY_STATE_SVG,
   },
 };
 </script>
@@ -227,7 +226,7 @@ export default {
       :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
       :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
       :primary-button-link="$options.constants.CREATE_CANDIDATE_HELP_PATH"
-      :svg-path="$options.constants.EMPTY_STATE_SVG"
+      :svg-path="emptyStateSvgPath"
       :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
       class="gl-py-8"
     />

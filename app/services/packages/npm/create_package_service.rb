@@ -35,9 +35,19 @@ module Packages
         ::Packages::CreateDependencyService.new(package, package_dependencies).execute
         ::Packages::Npm::CreateTagService.new(package, dist_tag).execute
 
-        package.create_npm_metadatum!(package_json: package_json)
+        create_npm_metadatum!(package)
 
         package
+      end
+
+      def create_npm_metadatum!(package)
+        package.create_npm_metadatum!(package_json: package_json)
+      rescue ActiveRecord::RecordInvalid => e
+        if package.npm_metadatum && package.npm_metadatum.errors.added?(:package_json, 'structure is too large')
+          Gitlab::ErrorTracking.track_exception(e, field_sizes: field_sizes_for_error_tracking)
+        end
+
+        raise
       end
 
       def current_package_exists?
@@ -124,6 +134,35 @@ module Packages
       # used by ExclusiveLeaseGuard
       def lease_timeout
         DEFAULT_LEASE_TIMEOUT
+      end
+
+      def field_sizes
+        strong_memoize(:field_sizes) do
+          package_json.transform_values do |value|
+            value.to_s.size
+          end
+        end
+      end
+
+      def filtered_field_sizes
+        strong_memoize(:filtered_field_sizes) do
+          field_sizes.select do |_, size|
+            size >= ::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING
+          end
+        end
+      end
+
+      def largest_fields
+        strong_memoize(:largest_fields) do
+          field_sizes
+            .sort_by { |a| a[1] }
+            .reverse[0..::Packages::Npm::Metadatum::NUM_FIELDS_FOR_ERROR_TRACKING - 1]
+            .to_h
+        end
+      end
+
+      def field_sizes_for_error_tracking
+        filtered_field_sizes.empty? ? largest_fields : filtered_field_sizes
       end
     end
   end

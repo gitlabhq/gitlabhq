@@ -174,6 +174,22 @@ RSpec.describe Ci::BuildPresenter do
     end
   end
 
+  describe '#failure_message' do
+    let_it_be(:build) { create(:ci_build, :failed, failure_reason: 2) }
+
+    it 'returns a verbose failure message' do
+      expect(subject.failure_message).to eq('There has been an API failure, please try again')
+    end
+
+    context 'when the build has not failed' do
+      let_it_be(:build) { create(:ci_build, :success, failure_reason: 2) }
+
+      it 'does not return any failure message' do
+        expect(subject.failure_message).to be_nil
+      end
+    end
+  end
+
   describe '#callout_failure_message' do
     let(:build) { create(:ci_build, :failed, :api_failure) }
 

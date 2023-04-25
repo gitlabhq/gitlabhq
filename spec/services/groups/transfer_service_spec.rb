@@ -35,10 +35,10 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
   end
 
   context 'handling packages' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be(:new_group) { create(:group, :public) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:new_group) { create(:group) }
 
-    let(:project) { create(:project, :public, namespace: group) }
+    let_it_be(:project) { create(:project, namespace: group) }
 
     before do
       group.add_owner(user)
@@ -46,46 +46,63 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
     end
 
     context 'with an npm package' do
-      before do
-        create(:npm_package, project: project)
-      end
+      let_it_be(:npm_package) { create(:npm_package, project: project, name: "@testscope/test") }
 
-      shared_examples 'transfer not allowed' do
-        it 'does not allow transfer when there is a root namespace change' do
+      shared_examples 'transfer allowed' do
+        it 'allows transfer' do
           transfer_service.execute(new_group)
 
-          expect(transfer_service.error).to eq('Transfer failed: Group contains projects with NPM packages.')
-          expect(group.parent).not_to eq(new_group)
+          expect(transfer_service.error).to be nil
+          expect(group.parent).to eq(new_group)
         end
       end
 
-      it_behaves_like 'transfer not allowed'
+      it_behaves_like 'transfer allowed'
 
       context 'with a project within subgroup' do
         let_it_be(:root_group) { create(:group) }
         let_it_be(:group) { create(:group, parent: root_group) }
+        let_it_be(:project) { create(:project, namespace: group) }
 
         before do
           root_group.add_owner(user)
         end
 
-        it_behaves_like 'transfer not allowed'
+        it_behaves_like 'transfer allowed'
 
         context 'without a root namespace change' do
-          let(:new_group) { create(:group, parent: root_group) }
+          let_it_be(:new_group) { create(:group, parent: root_group) }
 
-          it 'allows transfer' do
+          it_behaves_like 'transfer allowed'
+        end
+
+        context 'with namespaced packages present' do
+          let_it_be(:package) { create(:npm_package, project: project, name: "@#{project.root_namespace.path}/test") }
+
+          it 'does not allow transfer' do
             transfer_service.execute(new_group)
 
-            expect(transfer_service.error).to be nil
-            expect(group.parent).to eq(new_group)
+            expect(transfer_service.error).to eq('Transfer failed: Group contains projects with NPM packages scoped to the current root level group.')
+            expect(group.parent).not_to eq(new_group)
+          end
+
+          context 'namespaced package is pending destruction' do
+            let!(:group) { create(:group) }
+
+            before do
+              package.pending_destruction!
+            end
+
+            it_behaves_like 'transfer allowed'
           end
         end
 
         context 'when transferring a group into a root group' do
-          let(:new_group) { nil }
+          let_it_be(:root_group) { create(:group) }
+          let_it_be(:group) { create(:group, parent: root_group) }
+          let_it_be(:new_group) { nil }
 
-          it_behaves_like 'transfer not allowed'
+          it_behaves_like 'transfer allowed'
         end
       end
     end

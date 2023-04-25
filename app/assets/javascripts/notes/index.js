@@ -1,14 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import NotesApp from './components/notes_app.vue';
 import { store } from './stores';
 import { getNotesFilterData } from './utils/get_notes_filter_data';
 
-export default () => {
+export default ({ editorAiActions = [] } = {}) => {
   const el = document.getElementById('js-vue-notes');
   if (!el) {
     return;
@@ -60,7 +59,7 @@ export default () => {
       showTimelineViewToggle,
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
-      resourceGlobalId: convertToGraphQLId(noteableData.noteableType, noteableData.id),
+      editorAiActions: editorAiActions.map((factory) => factory(notesDataset)),
     },
     data() {
       return {
