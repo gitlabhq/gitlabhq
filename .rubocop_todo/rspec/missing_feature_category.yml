@@ -5494,7 +5494,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/rubocop/cop/gitlab/change_timezone_spec.rb'
     - 'spec/rubocop/cop/gitlab/const_get_inherit_false_spec.rb'
     - 'spec/rubocop/cop/gitlab/delegate_predicate_methods_spec.rb'
-    - 'spec/rubocop/cop/gitlab/deprecate_track_redis_hll_event_spec.rb'
     - 'spec/rubocop/cop/gitlab/event_store_subscriber_spec.rb'
     - 'spec/rubocop/cop/gitlab/except_spec.rb'
     - 'spec/rubocop/cop/gitlab/feature_available_usage_spec.rb'

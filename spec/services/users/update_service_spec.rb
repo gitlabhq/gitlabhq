@@ -185,6 +185,49 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
       end.not_to raise_error
     end
 
+    describe 'updates the enabled_following' do
+      let(:user) { create(:user) }
+
+      before do
+        3.times do
+          user.follow(create(:user))
+          create(:user).follow(user)
+        end
+        user.reload
+      end
+
+      it 'removes followers and followees' do
+        expect do
+          update_user(user, enabled_following: false)
+        end.to change { user.followed_users.count }.from(3).to(0)
+                                                   .and change { user.following_users.count }.from(3).to(0)
+        expect(user.enabled_following).to eq(false)
+      end
+
+      it 'does not remove followers/followees if feature flag is off' do
+        stub_feature_flags(disable_follow_users: false)
+
+        expect do
+          update_user(user, enabled_following: false)
+        end.to not_change { user.followed_users.count }
+                                                   .and not_change { user.following_users.count }
+      end
+
+      context 'when there is more followers/followees then batch limit' do
+        before do
+          stub_env('BATCH_SIZE', 1)
+        end
+
+        it 'removes followers and followees' do
+          expect do
+            update_user(user, enabled_following: false)
+          end.to change { user.followed_users.count }.from(3).to(0)
+                                                     .and change { user.following_users.count }.from(3).to(0)
+          expect(user.enabled_following).to eq(false)
+        end
+      end
+    end
+
     def update_user(user, opts)
       described_class.new(user, opts.merge(user: user)).execute
     end

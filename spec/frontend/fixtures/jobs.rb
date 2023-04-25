@@ -50,6 +50,7 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
 
     shared_examples 'graphql queries' do |path, jobs_query|
       let_it_be(:variables) { {} }
+      let_it_be(:success_path) { '' }
 
       let_it_be(:query) do
         get_graphql_query_as_string("#{path}/#{jobs_query}")
@@ -57,9 +58,10 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
 
       fixtures_path = 'graphql/jobs/'
 
-      it "#{fixtures_path}#{jobs_query}.json" do
+      it "#{fixtures_path}#{jobs_query}.json", :aggregate_failures do
         post_graphql(query, current_user: user, variables: variables)
 
+        expect(graphql_data.dig(*success_path)).not_to be_nil
         expect_graphql_errors_to_be_empty
       end
 
@@ -87,15 +89,18 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
 
     it_behaves_like 'graphql queries', 'jobs/components/table/graphql/queries', 'get_jobs.query.graphql' do
       let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
+      let(:success_path) { %w[project jobs] }
     end
 
     it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_all_jobs.query.graphql' do
       let(:user) { create(:admin) }
+      let(:success_path) { 'jobs' }
     end
 
     it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_cancelable_jobs_count.query.graphql' do
       let(:variables) { { statuses: %w[PENDING RUNNING] } }
       let(:user) { create(:admin) }
+      let(:success_path) { %w[cancelable count] }
     end
   end
 

@@ -1009,6 +1009,20 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         expect(response).to have_gitlab_http_status(:not_modified)
       end
     end
+
+    context 'on a user with disabled following' do
+      before do
+        user.enabled_following = false
+        user.save!
+      end
+
+      it 'does not change following' do
+        post api("/users/#{followee.id}/follow", user)
+
+        expect(user.followees).to be_empty
+        expect(response).to have_gitlab_http_status(:not_modified)
+      end
+    end
   end
 
   describe 'POST /users/:id/unfollow' do

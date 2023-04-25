@@ -914,6 +914,35 @@ RSpec.describe UsersController, feature_category: :user_management do
         expect(user).not_to be_following(public_user)
       end
     end
+
+    context 'when user or followee disabled following' do
+      before do
+        sign_in(user)
+      end
+
+      it 'alerts and not follow if user disabled following' do
+        user.enabled_following = false
+
+        post user_follow_url(username: public_user.username)
+        expect(response).to be_redirect
+
+        expected_message = format(_('Action not allowed.'))
+        expect(flash[:alert]).to eq(expected_message)
+        expect(user).not_to be_following(public_user)
+      end
+
+      it 'alerts and not follow if followee disabled following' do
+        public_user.enabled_following = false
+        public_user.save!
+
+        post user_follow_url(username: public_user.username)
+        expect(response).to be_redirect
+
+        expected_message = format(_('Action not allowed.'))
+        expect(flash[:alert]).to eq(expected_message)
+        expect(user).not_to be_following(public_user)
+      end
+    end
   end
 
   context 'token authentication' do

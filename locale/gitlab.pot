@@ -2226,6 +2226,9 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
+msgid "Action not allowed."
+msgstr ""
+
 msgid "Action to take when receiving an alert. %{docsLink}"
 msgstr ""
 
@@ -33326,6 +33329,12 @@ msgstr ""
 msgid "Preferences|Diff colors"
 msgstr ""
 
+msgid "Preferences|Disable follow users"
+msgstr ""
+
+msgid "Preferences|Disable follow users feature"
+msgstr ""
+
 msgid "Preferences|Display time in 24-hour format"
 msgstr ""
 
@@ -33402,6 +33411,9 @@ msgid "Preferences|This feature is experimental and translations are not yet com
 msgstr ""
 
 msgid "Preferences|Time preferences"
+msgstr ""
+
+msgid "Preferences|Turns off the ability to follow or be followed by other users."
 msgstr ""
 
 msgid "Preferences|Use relative times"

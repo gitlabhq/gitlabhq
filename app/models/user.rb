@@ -349,29 +349,30 @@ class User < ApplicationRecord
   # User's role
   enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
 
-  delegate  :notes_filter_for,
-            :set_notes_filter,
-            :first_day_of_week, :first_day_of_week=,
-            :timezone, :timezone=,
-            :time_display_relative, :time_display_relative=,
-            :time_format_in_24h, :time_format_in_24h=,
-            :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
-            :view_diffs_file_by_file, :view_diffs_file_by_file=,
-            :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
-            :tab_width, :tab_width=,
-            :sourcegraph_enabled, :sourcegraph_enabled=,
-            :gitpod_enabled, :gitpod_enabled=,
-            :setup_for_company, :setup_for_company=,
-            :render_whitespace_in_code, :render_whitespace_in_code=,
-            :markdown_surround_selection, :markdown_surround_selection=,
-            :markdown_automatic_lists, :markdown_automatic_lists=,
-            :diffs_deletion_color, :diffs_deletion_color=,
-            :diffs_addition_color, :diffs_addition_color=,
-            :use_legacy_web_ide, :use_legacy_web_ide=,
-            :use_new_navigation, :use_new_navigation=,
-            :pinned_nav_items, :pinned_nav_items=,
-            :achievements_enabled, :achievements_enabled=,
-            to: :user_preference
+  delegate :notes_filter_for,
+           :set_notes_filter,
+           :first_day_of_week, :first_day_of_week=,
+           :timezone, :timezone=,
+           :time_display_relative, :time_display_relative=,
+           :time_format_in_24h, :time_format_in_24h=,
+           :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
+           :view_diffs_file_by_file, :view_diffs_file_by_file=,
+           :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
+           :tab_width, :tab_width=,
+           :sourcegraph_enabled, :sourcegraph_enabled=,
+           :gitpod_enabled, :gitpod_enabled=,
+           :setup_for_company, :setup_for_company=,
+           :render_whitespace_in_code, :render_whitespace_in_code=,
+           :markdown_surround_selection, :markdown_surround_selection=,
+           :markdown_automatic_lists, :markdown_automatic_lists=,
+           :diffs_deletion_color, :diffs_deletion_color=,
+           :diffs_addition_color, :diffs_addition_color=,
+           :use_legacy_web_ide, :use_legacy_web_ide=,
+           :use_new_navigation, :use_new_navigation=,
+           :pinned_nav_items, :pinned_nav_items=,
+           :achievements_enabled, :achievements_enabled=,
+           :enabled_following, :enabled_following=,
+           to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
@@ -1694,7 +1695,7 @@ class User < ApplicationRecord
   end
 
   def follow(user)
-    return false if self.id == user.id
+    return false unless following_users_allowed?(user)
 
     begin
       followee = Users::UserFollowUser.create(follower_id: self.id, followee_id: user.id)
@@ -1711,6 +1712,18 @@ class User < ApplicationRecord
     else
       false
     end
+  end
+
+  def following_users_allowed?(user)
+    return false if self.id == user.id
+
+    following_users_enabled? && user.following_users_enabled?
+  end
+
+  def following_users_enabled?
+    return true unless ::Feature.enabled?(:disable_follow_users, self)
+
+    enabled_following
   end
 
   def forkable_namespaces

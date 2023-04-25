@@ -9,13 +9,13 @@ module SnippetsActions
   include Gitlab::NoteableMetadata
   include Snippets::SendBlob
   include SnippetsSort
-  include RedisTracking
+  include ProductAnalyticsTracking
 
   included do
     skip_before_action :verify_authenticity_token,
       if: -> { action_name == 'show' && js_request? }
 
-    track_redis_hll_event :show, name: 'i_snippets_show'
+    track_event :show, name: 'i_snippets_show'
 
     respond_to :html
   end

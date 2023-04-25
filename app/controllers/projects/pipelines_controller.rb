@@ -2,7 +2,7 @@
 
 class Projects::PipelinesController < Projects::ApplicationController
   include ::Gitlab::Utils::StrongMemoize
-  include RedisTracking
+  include ProductAnalyticsTracking
   include ProductAnalyticsTracking
   include ProjectStatsRefreshConflictsGuard
 
@@ -34,11 +34,11 @@ class Projects::PipelinesController < Projects::ApplicationController
     label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
     destinations: %i[redis_hll snowplow]
 
-  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_pipelines', if: -> { should_track_ci_cd_pipelines? }
-  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_deployment_frequency', if: -> { should_track_ci_cd_deployment_frequency? }
-  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_lead_time', if: -> { should_track_ci_cd_lead_time? }
-  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_time_to_restore_service', if: -> { should_track_ci_cd_time_to_restore_service? }
-  track_redis_hll_event :charts, name: 'p_analytics_ci_cd_change_failure_rate', if: -> { should_track_ci_cd_change_failure_rate? }
+  track_event :charts, name: 'p_analytics_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
+  track_event :charts, name: 'p_analytics_ci_cd_deployment_frequency', conditions: -> { should_track_ci_cd_deployment_frequency? }
+  track_event :charts, name: 'p_analytics_ci_cd_lead_time', conditions: -> { should_track_ci_cd_lead_time? }
+  track_event :charts, name: 'p_analytics_ci_cd_time_to_restore_service', conditions: -> { should_track_ci_cd_time_to_restore_service? }
+  track_event :charts, name: 'p_analytics_ci_cd_change_failure_rate', conditions: -> { should_track_ci_cd_change_failure_rate? }
 
   wrap_parameters Ci::Pipeline
 

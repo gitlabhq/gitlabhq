@@ -30,20 +30,62 @@ RSpec.describe API::Entities::User do
     end
 
     %i(followers following is_followed).each do |relationship|
-      context 'when current user cannot read user profile' do
-        let(:can_read_user_profile) { false }
-
+      shared_examples 'does not expose relationship' do
         it "does not expose #{relationship}" do
           expect(subject).not_to include(relationship)
         end
       end
 
-      context 'when current user can read user profile' do
-        let(:can_read_user_profile) { true }
-
+      shared_examples 'exposes relationship' do
         it "exposes #{relationship}" do
           expect(subject).to include(relationship)
         end
+      end
+
+      context 'when current user cannot read user profile' do
+        let(:can_read_user_profile) { false }
+
+        it_behaves_like 'does not expose relationship'
+      end
+
+      context 'when current user can read user profile' do
+        let(:can_read_user_profile) { true }
+
+        it_behaves_like 'exposes relationship'
+      end
+
+      context 'when current user can read user profile and disable_follow_users is switched off' do
+        let(:can_read_user_profile) { true }
+
+        before do
+          stub_feature_flags(disable_follow_users: false)
+          user.enabled_following = false
+          user.save!
+        end
+
+        it_behaves_like 'exposes relationship'
+      end
+
+      context 'when current user can read user profile, disable_follow_users is switched on and user disabled it for themself' do
+        let(:can_read_user_profile) { true }
+
+        before do
+          user.enabled_following = false
+          user.save!
+        end
+
+        it_behaves_like 'does not expose relationship'
+      end
+
+      context 'when current user can read user profile, disable_follow_users is switched on and current user disabled it for themself' do
+        let(:can_read_user_profile) { true }
+
+        before do
+          current_user.enabled_following = false
+          current_user.save!
+        end
+
+        it_behaves_like 'does not expose relationship'
       end
     end
   end

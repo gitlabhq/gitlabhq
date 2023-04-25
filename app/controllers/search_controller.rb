@@ -3,7 +3,7 @@
 class SearchController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
   include SearchHelper
-  include RedisTracking
+  include ProductAnalyticsTracking
   include ProductAnalyticsTracking
   include SearchRateLimitable
 

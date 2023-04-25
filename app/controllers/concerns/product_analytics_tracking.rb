@@ -2,7 +2,6 @@
 
 module ProductAnalyticsTracking
   include Gitlab::Tracking::Helpers
-  include RedisTracking
   extend ActiveSupport::Concern
 
   class_methods do
@@ -38,5 +37,24 @@ module ProductAnalyticsTracking
       context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: name).to_context],
       **optional_arguments
     )
+  end
+
+  def track_unique_redis_hll_event(event_name, &block)
+    custom_id = block ? yield(self) : nil
+
+    unique_id = custom_id || visitor_id
+
+    return unless unique_id
+
+    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_id)
+  end
+
+  def visitor_id
+    return cookies[:visitor_id] if cookies[:visitor_id].present?
+    return unless current_user
+
+    uuid = SecureRandom.uuid
+    cookies[:visitor_id] = { value: uuid, expires: 24.months }
+    uuid
   end
 end

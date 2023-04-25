@@ -5,7 +5,7 @@ module WikiActions
   include PreviewMarkdown
   include SendsBlob
   include Gitlab::Utils::StrongMemoize
-  include RedisTracking
+  include ProductAnalyticsTracking
   extend ActiveSupport::Concern
 
   RESCUE_GIT_TIMEOUTS_IN = %w[show edit history diff pages].freeze
@@ -46,7 +46,7 @@ module WikiActions
       end
     end
 
-    track_redis_hll_event :show, name: 'wiki_action'
+    track_event :show, name: 'wiki_action'
 
     helper_method :view_file_button, :diff_file_html_data
 

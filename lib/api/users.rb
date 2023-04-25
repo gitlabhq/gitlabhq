@@ -195,12 +195,13 @@ module API
         not_found!('User') unless user
 
         followee = current_user.follow(user)
+
+        not_modified! unless followee
+
         if followee&.errors&.any?
           render_api_error!(followee.errors.full_messages.join(', '), 400)
         elsif followee&.persisted?
           present user, with: Entities::UserBasic
-        else
-          not_modified!
         end
       end
 

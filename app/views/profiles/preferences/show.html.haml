@@ -170,5 +170,21 @@
       - if Feature.enabled?(:user_time_settings)
         .form-group
           = f.gitlab_ui_checkbox_component :time_format_in_24h, s_('Preferences|Display time in 24-hour format')
+  - if Feature.enabled?(:disable_follow_users, @user)
+    .row.js-preferences-form.js-search-settings-section
+      .col-sm-12
+        %hr
+      .col-lg-4.profile-settings-sidebar#disabled_following
+        %h4.gl-mt-0
+          = s_('Preferences|Disable follow users feature')
+        %p
+          = s_('Preferences|Turns off the ability to follow or be followed by other users.')
+          = succeed '.' do
+            = link_to _('Learn more'), help_page_path('user/profile/index', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+      .col-lg-8
+        .form-group
+          = f.gitlab_ui_checkbox_component :enabled_following,
+          s_('Preferences|Disable follow users')
+
 
   #js-profile-preferences-app{ data: data_attributes }

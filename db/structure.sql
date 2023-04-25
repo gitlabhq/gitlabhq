@@ -23487,6 +23487,7 @@ CREATE TABLE user_preferences (
     achievements_enabled boolean DEFAULT true NOT NULL,
     pinned_nav_items jsonb DEFAULT '{}'::jsonb NOT NULL,
     pass_user_identities_to_ci_jwt boolean DEFAULT false NOT NULL,
+    enabled_following boolean DEFAULT true NOT NULL,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );
@@ -30780,6 +30781,8 @@ CREATE UNIQUE INDEX index_group_deploy_tokens_on_group_and_deploy_token_ids ON g
 
 CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_group ON group_group_links USING btree (shared_group_id, shared_with_group_id);
 
+CREATE INDEX index_group_group_links_on_shared_with_group_and_group_access ON group_group_links USING btree (shared_with_group_id, group_access);
+
 CREATE INDEX index_group_group_links_on_shared_with_group_and_shared_group ON group_group_links USING btree (shared_with_group_id, shared_group_id);
 
 CREATE INDEX index_group_import_states_on_group_id ON group_import_states USING btree (group_id);
@@ -33010,6 +33013,8 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
+CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
+
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);
 
 CREATE UNIQUE INDEX uniq_pkgs_deb_grp_architectures_on_distribution_id_and_name ON packages_debian_group_architectures USING btree (distribution_id, name);
@@ -34470,7 +34475,7 @@ ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY projects
-    ADD CONSTRAINT fk_03ec10b0d3 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL NOT VALID;
+    ADD CONSTRAINT fk_03ec10b0d3 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_05d96922bd FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;

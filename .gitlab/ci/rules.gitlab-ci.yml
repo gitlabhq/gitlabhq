@@ -821,10 +821,23 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *ci-build-images-patterns
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *code-qa-patterns
+    # Rules to support .qa:rules:package-and-test-ee
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+    - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+    - <<: *if-merge-request
+      changes: *ci-qa-patterns
+    - <<: *if-force-ci
 
 .build-images:rules:build-qa-image:
   rules:
@@ -843,7 +856,6 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64
-    - <<: *if-force-ci
     - <<: *if-ruby2-branch
 
 .build-images:rules:build-qa-image-as-if-foss:
@@ -872,7 +884,6 @@
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-ruby2-branch
     - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-auto-deploy-branches
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
     - <<: *if-default-refs
@@ -1275,6 +1286,8 @@
 ##########
 .notify:rules:create-issues-for-failing-tests:
   rules:
+    - <<: *if-not-canonical-namespace
+      when: never
     # Don't report child pipeline failures
     - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
       when: never
@@ -1331,14 +1344,32 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request
+    - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
+    - <<: *if-ruby2-branch
+    # Rules to support .qa:rules:package-and-test-ee
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-all-e2e
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *ci-qa-patterns
+      allow_failure: true
     - <<: *if-force-ci
       allow_failure: true
-    - <<: *if-ruby2-branch
 
 .qa:rules:package-and-test-common:
   rules:

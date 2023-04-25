@@ -36,7 +36,7 @@
           = render Pajamas::ButtonComponent.new(href: [:admin, @user],
             icon: 'user',
             button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|View user in admin area'), data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}})
-        - if current_user && current_user.id != @user.id
+        - if current_user && current_user.following_users_allowed?(@user)
           - if current_user.following?(@user)
             = form_tag user_unfollow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
               = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-w-full', data: { track_action: 'click_button', track_label: 'unfollow_from_profile' } }) do

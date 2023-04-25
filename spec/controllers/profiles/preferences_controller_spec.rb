@@ -109,5 +109,33 @@ RSpec.describe Profiles::PreferencesController do
         expect(response.parsed_body['type']).to eq('alert')
       end
     end
+
+    context 'on disable_follow_users feature flag' do
+      context 'with feature flag disabled' do
+        before do
+          stub_feature_flags(disable_follow_users: false)
+        end
+
+        it 'does not update enabled_following preference of user' do
+          prefs = { enabled_following: false }
+
+          go params: prefs
+          user.reload
+
+          expect(user.enabled_following).to eq(true)
+        end
+      end
+
+      context 'with feature flag enabled' do
+        it 'does not update enabled_following preference of user' do
+          prefs = { enabled_following: false }
+
+          go params: prefs
+          user.reload
+
+          expect(user.enabled_following).to eq(false)
+        end
+      end
+    end
   end
 end
