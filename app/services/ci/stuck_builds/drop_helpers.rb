@@ -45,23 +45,26 @@ module Ci
       end
 
       def track_exception_for_build(ex, build)
-        Gitlab::ErrorTracking.track_exception(ex,
-            build_id: build.id,
-            build_name: build.name,
-            build_stage: build.stage_name,
-            pipeline_id: build.pipeline_id,
-            project_id: build.project_id
+        Gitlab::ErrorTracking.track_exception(
+          ex,
+          build_id: build.id,
+          build_name: build.name,
+          build_stage: build.stage_name,
+          pipeline_id: build.pipeline_id,
+          project_id: build.project_id
         )
       end
 
       def log_dropping_message(type, build, reason)
-        Gitlab::AppLogger.info(class: self.class.name,
-                               message: "Dropping #{type} build",
-                               build_stuck_type: type,
-                               build_id: build.id,
-                               runner_id: build.runner_id,
-                               build_status: build.status,
-                               build_failure_reason: reason)
+        Gitlab::AppLogger.info(
+          class: self.class.name,
+          message: "Dropping #{type} build",
+          build_stuck_type: type,
+          build_id: build.id,
+          runner_id: build.runner_id,
+          build_status: build.status,
+          build_failure_reason: reason
+        )
       end
     end
   end

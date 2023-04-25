@@ -456,6 +456,44 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
         it_behaves_like 'has no register url'
       end
     end
+
+    context 'with a project runner' do
+      context 'with registration available' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1], registration_type: :authenticated_user) }
+
+        it_behaves_like 'has register url' do
+          let(:expected_url) { "http://localhost/#{project1.full_path}/-/runners/#{runner.id}/register" }
+        end
+      end
+
+      context 'with no project' do
+        let(:destroyed_project) { create(:project) }
+        let(:runner) { create(:ci_runner, :project, projects: [destroyed_project], registration_type: :authenticated_user) }
+
+        before do
+          destroyed_project.destroy!
+        end
+
+        it_behaves_like 'has no register url'
+      end
+
+      context 'with no registration available' do
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1]) }
+
+        it_behaves_like 'has no register url'
+      end
+
+      context 'with no access' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1], registration_type: :authenticated_user) }
+
+        before do
+          group.add_maintainer(user)
+        end
+
+        it_behaves_like 'has no register url'
+      end
+    end
   end
 
   describe 'for runner with status' do

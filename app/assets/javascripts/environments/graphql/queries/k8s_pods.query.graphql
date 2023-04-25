@@ -1,4 +1,4 @@
-query getK8sPods($configuration: Object, $namespace: String) {
+query getK8sPods($configuration: LocalConfiguration, $namespace: String) {
   k8sPods(configuration: $configuration, namespace: $namespace) @client {
     status {
       phase

@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category: :service_desk do
   let_it_be(:user) { create(:user) }
 
-  let(:organization) { create(:organization, name: 'Test', group: group, state: 'active') }
+  let(:crm_organization) { create(:crm_organization, name: 'Test', group: group, state: 'active') }
 
-  subject(:update) { described_class.new(group: group, current_user: user, params: params).execute(organization) }
+  subject(:update) { described_class.new(group: group, current_user: user, params: params).execute(crm_organization) }
 
   describe '#execute' do
     context 'when the user has no permission' do
@@ -33,7 +33,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category
       context 'when name is changed' do
         let(:params) { { name: 'GitLab' } }
 
-        it 'updates the organization' do
+        it 'updates the crm_organization' do
           response = update
 
           expect(response).to be_success
@@ -42,7 +42,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category
       end
 
       context 'when activating' do
-        let(:organization) { create(:organization, state: 'inactive') }
+        let(:crm_organization) { create(:crm_organization, state: 'inactive') }
         let(:params) { { active: true } }
 
         it 'updates the contact' do
@@ -56,7 +56,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category
       context 'when deactivating' do
         let(:params) { { active: false } }
 
-        it 'updates the organization' do
+        it 'updates the crm_organization' do
           response = update
 
           expect(response).to be_success
@@ -64,7 +64,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category
         end
       end
 
-      context 'when the organization is invalid' do
+      context 'when the crm_organization is invalid' do
         let(:params) { { name: nil } }
 
         it 'returns an error' do

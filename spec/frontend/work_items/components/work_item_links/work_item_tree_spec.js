@@ -4,11 +4,11 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import OkrActionsSplitButton from '~/work_items/components/work_item_links/okr_actions_split_button.vue';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
@@ -17,11 +17,12 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 } from '~/work_items/constants';
-import { childrenWorkItems, projectWorkItemResponse } from '../../mock_data';
+import { childrenWorkItems, workItemByIidResponseFactory } from '../../mock_data';
 
 describe('WorkItemTree', () => {
-  let getWorkItemQueryHandler;
   let wrapper;
+
+  const getWorkItemQueryHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
 
   const findEmptyState = () => wrapper.findByTestId('tree-empty');
   const findToggleFormSplitButton = () => wrapper.findComponent(OkrActionsSplitButton);
@@ -35,13 +36,9 @@ describe('WorkItemTree', () => {
     parentWorkItemType = 'Objective',
     confidential = false,
     children = childrenWorkItems,
-    apolloProvider = null,
   } = {}) => {
-    getWorkItemQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
-
     wrapper = shallowMountExtended(WorkItemTree, {
-      apolloProvider:
-        apolloProvider || createMockApollo([[workItemByIidQuery, getWorkItemQueryHandler]]),
+      apolloProvider: createMockApollo([[workItemByIidQuery, getWorkItemQueryHandler]]),
       propsData: {
         workItemType,
         parentWorkItemType,

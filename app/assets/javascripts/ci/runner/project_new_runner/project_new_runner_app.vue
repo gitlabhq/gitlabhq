@@ -1,9 +1,11 @@
 <script>
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
+import { redirectTo, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import { DEFAULT_PLATFORM, PROJECT_TYPE } from '../constants';
+import { DEFAULT_PLATFORM, PARAM_KEY_PLATFORM, PROJECT_TYPE } from '../constants';
+import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
   name: 'ProjectNewRunnerApp',
@@ -23,11 +25,15 @@ export default {
     };
   },
   methods: {
-    onSaved() {
-      createAlert({
+    onSaved(runner) {
+      const params = { [PARAM_KEY_PLATFORM]: this.platform };
+      const ephemeralRegisterUrl = setUrlParams(params, runner.ephemeralRegisterUrl);
+
+      saveAlertToLocalStorage({
         message: s__('Runners|Runner created.'),
         variant: VARIANT_SUCCESS,
       });
+      redirectTo(ephemeralRegisterUrl);
     },
     onError(error) {
       createAlert({ message: error.message });

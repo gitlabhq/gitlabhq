@@ -19,8 +19,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
     before do
       project.add_developer(user)
 
-      create(:protected_branch, :developers_can_merge,
-             name: pipeline.ref, project: project)
+      create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
     end
 
     context 'when there are already retried jobs present' do
@@ -408,8 +407,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
   context 'when user is not allowed to trigger manual action' do
     before do
       project.add_developer(user)
-      create(:protected_branch, :maintainers_can_push,
-             name: pipeline.ref, project: project)
+      create(:protected_branch, :maintainers_can_push, name: pipeline.ref, project: project)
     end
 
     context 'when there is a failed manual action present' do
@@ -490,11 +488,15 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
   end
 
   def create_processable(type, name, status, stage, **opts)
-    create(type, name: name,
-                 status: status,
-                 ci_stage: stage,
-                 stage_idx: stage.position,
-                 pipeline: pipeline, **opts) do |_job|
+    create(
+      type,
+      name: name,
+      status: status,
+      ci_stage: stage,
+      stage_idx: stage.position,
+      pipeline: pipeline,
+      **opts
+    ) do |_job|
       ::Ci::ProcessPipelineService.new(pipeline).execute
     end
   end

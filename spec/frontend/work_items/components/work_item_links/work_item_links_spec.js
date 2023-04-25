@@ -14,7 +14,6 @@ import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -24,8 +23,8 @@ import {
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   changeWorkItemParentMutationResponse,
+  workItemByIidResponseFactory,
   workItemQueryResponse,
-  projectWorkItemResponse,
   mockWorkItemCommentNote,
 } from '../../mock_data';
 
@@ -46,9 +45,7 @@ describe('WorkItemLinks', () => {
   const mutationChangeParentHandler = jest
     .fn()
     .mockResolvedValue(changeWorkItemParentMutationResponse);
-
-  const childWorkItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const childWorkItemByIidHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
+  const childWorkItemByIidHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
 
   const createComponent = async ({
     data = {},
@@ -61,7 +58,6 @@ describe('WorkItemLinks', () => {
       [
         [getWorkItemLinksQuery, fetchHandler],
         [changeWorkItemParentMutation, mutationHandler],
-        [workItemQuery, childWorkItemQueryHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
         [workItemByIidQuery, childWorkItemByIidHandler],
       ],
@@ -308,18 +304,10 @@ describe('WorkItemLinks', () => {
 
       expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
     });
-
-    it('does not fetch work item by id if link is hovered for 250+ ms', async () => {
-      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-      await waitForPromises();
-
-      expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
-    });
   });
 
-  it('starts prefetching work item by iid if URL contains work item id', async () => {
-    setWindowLocation('?work_item_iid=5&iid_path=true');
+  it('starts prefetching work item by iid if URL contains work_item_iid query parameter', async () => {
+    setWindowLocation('?work_item_iid=5');
     await createComponent();
 
     expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
@@ -329,7 +317,7 @@ describe('WorkItemLinks', () => {
   });
 
   it('does not open the modal if work item iid URL parameter is not found in child items', async () => {
-    setWindowLocation('?work_item_iid=555&iid_path=true');
+    setWindowLocation('?work_item_iid=555');
     await createComponent();
 
     expect(showModal).not.toHaveBeenCalled();
@@ -337,7 +325,7 @@ describe('WorkItemLinks', () => {
   });
 
   it('opens the modal if work item iid URL parameter is found in child items', async () => {
-    setWindowLocation('?work_item_iid=2&iid_path=true');
+    setWindowLocation('?work_item_iid=2');
     await createComponent();
 
     expect(showModal).toHaveBeenCalled();

@@ -33,13 +33,9 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
           .with(test_event_name_1, values: user1.id)
           .and_call_original
 
-        expect { track_artifact_report }
-          .to change {
-                counter.unique_events(event_names: test_event_name_1,
-                                      start_date: start_time,
-                                      end_date: end_time)
-              }
-          .by 1
+        expect { track_artifact_report }.to change {
+          counter.unique_events(event_names: test_event_name_1, start_date: start_time, end_date: end_time)
+        }.by 1
       end
     end
 
@@ -81,13 +77,9 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
         expect do
           described_class.new.execute(pipeline1)
           described_class.new.execute(pipeline2)
-        end
-          .to change {
-                counter.unique_events(event_names: test_event_name_1,
-                                      start_date: start_time,
-                                      end_date: end_time)
-              }
-          .by 1
+        end.to change {
+          counter.unique_events(event_names: test_event_name_1, start_date: start_time, end_date: end_time)
+        }.by 1
       end
     end
 
@@ -109,13 +101,9 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
         expect do
           described_class.new.execute(pipeline1)
           described_class.new.execute(pipeline2)
-        end
-          .to change {
-                counter.unique_events(event_names: test_event_name_1,
-                                      start_date: start_time,
-                                      end_date: end_time)
-              }
-          .by 2
+        end.to change {
+          counter.unique_events(event_names: test_event_name_1, start_date: start_time, end_date: end_time)
+        }.by 2
       end
     end
 
@@ -134,13 +122,9 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
           .with(test_event_name_2, values: user1.id)
           .and_call_original
 
-        expect { track_artifact_report }
-          .to change {
-                counter.unique_events(event_names: test_event_name_2,
-                                      start_date: start_time,
-                                      end_date: end_time)
-              }
-          .by 1
+        expect { track_artifact_report }.to change {
+          counter.unique_events(event_names: test_event_name_2, start_date: start_time, end_date: end_time)
+        }.by 1
       end
     end
 
@@ -158,13 +142,9 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
         expect do
           described_class.new.execute(pipeline1)
           described_class.new.execute(pipeline2)
-        end
-          .to change {
-                counter.unique_events(event_names: test_event_name_2,
-                                      start_date: start_time,
-                                      end_date: end_time)
-              }
-          .by 1
+        end.to change {
+          counter.unique_events(event_names: test_event_name_2, start_date: start_time, end_date: end_time)
+        }.by 1
       end
     end
 
@@ -186,13 +166,9 @@ RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :
         expect do
           described_class.new.execute(pipeline1)
           described_class.new.execute(pipeline2)
-        end
-          .to change {
-                counter.unique_events(event_names: test_event_name_2,
-                                      start_date: start_time,
-                                      end_date: end_time)
-              }
-          .by 2
+        end.to change {
+          counter.unique_events(event_names: test_event_name_2, start_date: start_time, end_date: end_time)
+        }.by 2
       end
     end
   end

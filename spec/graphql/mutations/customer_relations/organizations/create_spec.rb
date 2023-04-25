@@ -7,7 +7,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Create do
   let_it_be(:group) { create(:group, :crm_enabled) }
 
   let(:valid_params) do
-    attributes_for(:organization,
+    attributes_for(:crm_organization,
       group: group,
       description: 'This company is super important!',
       default_rate: 1_000

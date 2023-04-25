@@ -67,6 +67,9 @@ The token also includes custom claims provided by GitLab:
 | `environment`           | Job specifies an environment | Environment this job deploys to ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9). |
 | `environment_protected` | Job specifies an environment | `true` if deployed environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9). |
 | `deployment_tier`       | Job specifies an environment | [Deployment tier](../environments/index.md#deployment-tier-of-environments) of the environment the job specifies. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2. |
+| `runner_id`             | Always                       | ID of the runner executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
+| `runner_environment`    | Always                       | The type of runner used by the job. Can be either `gitlab-hosted` or `self-hosted`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
+| `sha`                   | Always                       | The commit SHA for the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 
 ```json
 {
@@ -86,6 +89,9 @@ The token also includes custom claims provided by GitLab:
   "environment": "test-environment2",
   "environment_protected": "false",
   "deployment_tier": "testing",
+  "runner_id": 1,
+  "runner_environment": "self-hosted",
+  "sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
   "jti": "235b3a54-b797-45c7-ae9a-f72d7bc6ef5b",
   "iss": "https://gitlab.example.com",
   "iat": 1681395193,

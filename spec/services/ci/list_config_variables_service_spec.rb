@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ListConfigVariablesService,
-:use_clean_rails_memory_store_caching, feature_category: :secrets_management do
+  :use_clean_rails_memory_store_caching, feature_category: :secrets_management do
   include ReactiveCachingHelpers
 
   let(:ci_config) { {} }

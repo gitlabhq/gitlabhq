@@ -1860,6 +1860,9 @@ msgstr ""
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr ""
 
+msgid "AI|There is too much text in the chat. Please try again with a shorter text."
+msgstr ""
+
 msgid "AI|Unhelpful"
 msgstr ""
 
@@ -1870,6 +1873,9 @@ msgid "AI|Wrong"
 msgstr ""
 
 msgid "AI|You are not allowed to copy any part of this output into issues, comments, GitLab source code, commit messages, merge requests or any other user interface in the %{gitlabOrg} or %{gitlabCom} groups."
+msgstr ""
+
+msgid "AI|You can ask AI for more information."
 msgstr ""
 
 msgid "API"
@@ -11048,6 +11054,9 @@ msgstr ""
 msgid "ComplianceReport|Framework successfully removed"
 msgstr ""
 
+msgid "ComplianceReport|Full target branch name"
+msgstr ""
+
 msgid "ComplianceReport|Less than 2 approvers"
 msgstr ""
 
@@ -11061,6 +11070,9 @@ msgid "ComplianceReport|Remove framework from selected projects"
 msgstr ""
 
 msgid "ComplianceReport|Retrieving the compliance framework report failed. Refresh the page and try again."
+msgstr ""
+
+msgid "ComplianceReport|Search target branch"
 msgstr ""
 
 msgid "ComplianceReport|Select at least one project to apply the bulk action"
@@ -16690,10 +16702,19 @@ msgstr ""
 msgid "Environments|protected"
 msgstr ""
 
+msgid "Environment|Age"
+msgstr ""
+
 msgid "Environment|Auto stop %{time}"
 msgstr ""
 
+msgid "Environment|Cluster IP"
+msgstr ""
+
 msgid "Environment|Deployment tier"
+msgstr ""
+
+msgid "Environment|External IP"
 msgstr ""
 
 msgid "Environment|Failed"
@@ -16708,7 +16729,13 @@ msgstr ""
 msgid "Environment|Pods"
 msgstr ""
 
+msgid "Environment|Ports"
+msgstr ""
+
 msgid "Environment|Running"
+msgstr ""
+
+msgid "Environment|Services"
 msgstr ""
 
 msgid "Environment|Succeeded"
@@ -25904,6 +25931,9 @@ msgid "Leave project"
 msgstr ""
 
 msgid "Leave zen mode"
+msgstr ""
+
+msgid "Legacy Web IDE"
 msgstr ""
 
 msgid "Legacy burndown chart"
@@ -38373,6 +38403,9 @@ msgstr ""
 msgid "Runners|Project runners"
 msgstr ""
 
+msgid "Runners|Project › CI/CD Settings › Runners"
+msgstr ""
+
 msgid "Runners|Property Name"
 msgstr ""
 
@@ -43617,6 +43650,9 @@ msgstr ""
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
+msgid "TanukiBot|Tanuki Bot"
+msgstr ""
+
 msgid "Target"
 msgstr ""
 
@@ -48633,9 +48669,6 @@ msgstr ""
 msgid "View log"
 msgstr ""
 
-msgid "View logs"
-msgstr ""
-
 msgid "View milestones"
 msgstr ""
 
@@ -50308,7 +50341,16 @@ msgstr ""
 msgid "Workspaces|Create workspace"
 msgstr ""
 
+msgid "Workspaces|Creating"
+msgstr ""
+
 msgid "Workspaces|Develop anywhere"
+msgstr ""
+
+msgid "Workspaces|Error"
+msgstr ""
+
+msgid "Workspaces|Failed"
 msgstr ""
 
 msgid "Workspaces|Failed to create workspace"
@@ -50320,6 +50362,9 @@ msgstr ""
 msgid "Workspaces|New workspace"
 msgstr ""
 
+msgid "Workspaces|Running"
+msgstr ""
+
 msgid "Workspaces|Select cluster agent"
 msgstr ""
 
@@ -50329,10 +50374,22 @@ msgstr ""
 msgid "Workspaces|Select project"
 msgstr ""
 
+msgid "Workspaces|Starting"
+msgstr ""
+
+msgid "Workspaces|Stopped"
+msgstr ""
+
+msgid "Workspaces|Stopping"
+msgstr ""
+
 msgid "Workspaces|To create a workspace for this project, an administrator must configure an agent for the project's group."
 msgstr ""
 
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
+msgstr ""
+
+msgid "Workspaces|Unknown state"
 msgstr ""
 
 msgid "Workspaces|Workspaces"

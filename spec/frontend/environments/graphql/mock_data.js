@@ -812,3 +812,56 @@ const succeededPod = { status: { phase: 'Succeeded' } };
 const failedPod = { status: { phase: 'Failed' } };
 
 export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
+
+export const k8sServicesMock = [
+  {
+    metadata: {
+      name: 'my-first-service',
+      namespace: 'default',
+      creationTimestamp: new Date(),
+    },
+    spec: {
+      ports: [
+        {
+          name: 'https',
+          protocol: 'TCP',
+          port: 443,
+          targetPort: 8443,
+        },
+      ],
+      clusterIP: '10.96.0.1',
+      externalIP: '-',
+      type: 'ClusterIP',
+    },
+  },
+  {
+    metadata: {
+      name: 'my-second-service',
+      namespace: 'default',
+      creationTimestamp: '2020-07-03T14:06:04Z',
+    },
+    spec: {
+      ports: [
+        {
+          name: 'http',
+          protocol: 'TCP',
+          appProtocol: 'http',
+          port: 80,
+          targetPort: 'http',
+          nodePort: 31989,
+        },
+        {
+          name: 'https',
+          protocol: 'TCP',
+          appProtocol: 'https',
+          port: 443,
+          targetPort: 'https',
+          nodePort: 32679,
+        },
+      ],
+      clusterIP: '10.105.219.238',
+      externalIP: '-',
+      type: 'NodePort',
+    },
+  },
+];

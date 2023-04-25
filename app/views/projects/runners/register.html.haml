@@ -1,0 +1,7 @@
+- runner_name = "##{@runner.id} (#{@runner.short_sha})"
+
+- add_to_breadcrumbs _('CI/CD Settings'), project_settings_ci_cd_path(@project)
+- breadcrumb_title s_('Runners|Register runner')
+- page_title s_('Runners|Register'), runner_name
+
+#js-project-register-runner{ data: { runner_id: @runner.id, runners_path: project_runners_path(@project) } }

@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395793
 milestone: '15.10'
 type: development
 group: group::source code
-default_enabled: false
+default_enabled: true

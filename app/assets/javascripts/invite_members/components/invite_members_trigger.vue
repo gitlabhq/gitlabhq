@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLink, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import eventHub from '../event_hub';
 import {
@@ -7,10 +7,11 @@ import {
   TRIGGER_DEFAULT_QA_SELECTOR,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
+  TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '../constants';
 
 export default {
-  components: { GlButton, GlLink, GlDropdownItem },
+  components: { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem },
   props: {
     displayText: {
       type: String,
@@ -55,6 +56,9 @@ export default {
         'data-test-id': 'invite-members-button',
       };
     },
+    item() {
+      return { text: this.displayText };
+    },
   },
   methods: {
     checkTrigger(targetTriggerElement) {
@@ -63,10 +67,15 @@ export default {
     openModal() {
       eventHub.$emit('openModal', { source: this.triggerSource });
     },
+    handleDisclosureDropdownAction() {
+      this.openModal();
+      this.$emit('modal-opened');
+    },
   },
   TRIGGER_ELEMENT_BUTTON,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
+  TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 };
 </script>
 
@@ -97,6 +106,12 @@ export default {
     {{ displayText }}
     <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
   </gl-dropdown-item>
+  <gl-disclosure-dropdown-item
+    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN)"
+    v-bind="componentAttributes"
+    :item="item"
+    @action="handleDisclosureDropdownAction"
+  />
   <gl-link v-else v-bind="componentAttributes" data-is-link="true" @click="openModal">
     {{ displayText }}
   </gl-link>

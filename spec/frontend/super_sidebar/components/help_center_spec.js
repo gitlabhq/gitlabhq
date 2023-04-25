@@ -7,6 +7,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
+import { helpCenterState } from '~/super_sidebar/constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { sidebarData } from '../mock_data';
 
@@ -99,9 +100,10 @@ describe('HelpCenter component', () => {
     describe('with show_tanuki_bot true', () => {
       beforeEach(() => {
         createWrapper({ ...sidebarData, show_tanuki_bot: true });
+        jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
       });
 
-      it('shows Ask the Tanuki Bot with the help items', () => {
+      it('shows Ask the Tanuki Bot with the help items via Portal', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           expect.objectContaining({
             icon: 'tanuki',
@@ -110,6 +112,20 @@ describe('HelpCenter component', () => {
           }),
           ...DEFAULT_HELP_ITEMS,
         ]);
+      });
+
+      describe('when Ask the Tanuki Bot button is clicked', () => {
+        beforeEach(() => {
+          findButton('Ask the Tanuki Bot').click();
+        });
+
+        it('closes the dropdown', () => {
+          expect(wrapper.vm.$refs.dropdown.close).toHaveBeenCalled();
+        });
+
+        it('sets helpCenterState.showTanukiBotChatDrawer to true', () => {
+          expect(helpCenterState.showTanukiBotChatDrawer).toBe(true);
+        });
       });
     });
 

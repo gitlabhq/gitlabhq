@@ -7,6 +7,7 @@ RSpec.shared_context 'with FOSS query type fields' do
       :board_list,
       :ci_application_settings,
       :ci_config,
+      :ci_pipeline_stage,
       :ci_variables,
       :container_repository,
       :current_user,

@@ -23,7 +23,7 @@ Using `eksctl` enables the following when building an EKS Cluster:
 - You have various cluster configuration options:
   - Selection of operating system: Amazon Linux 2, Windows, Bottlerocket
   - Selection of Hardware Architecture: x86, ARM, GPU
-  - Selection of Kubernetes version (the GitLab-managed clusters for your project's applications have [specific Kubernetes version requirements](../../user/clusters/agent/index.md#supported-cluster-versions))
+  - Selection of Kubernetes version (the GitLab-managed clusters for your project's applications have [specific Kubernetes version requirements](../../user/clusters/agent/index.md#gitlab-agent-for-kubernetes-supported-cluster-versions))
 - It can deploy high value-add items to the cluster, including:
   - A bastion host to keep the cluster endpoint private and possible perform performance testing.
   - Prometheus and Grafana for monitoring.

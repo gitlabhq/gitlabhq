@@ -20,6 +20,10 @@ export const sidebarState = Vue.observable({
   closePeekTimer: null,
 });
 
+export const helpCenterState = Vue.observable({
+  showTanukiBotChatDrawer: false,
+});
+
 export const MAX_FREQUENT_PROJECTS_COUNT = 5;
 export const MAX_FREQUENT_GROUPS_COUNT = 3;
 

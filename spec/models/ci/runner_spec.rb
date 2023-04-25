@@ -2093,4 +2093,30 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       end
     end
   end
+
+  describe '#gitlab_hosted?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:runner) { build_stubbed(:ci_runner) }
+
+    where(:saas, :runner_type, :expected_value) do
+      true  | :instance_type | true
+      true  | :group_type    | false
+      true  | :project_type  | false
+      false | :instance_type | false
+      false | :group_type    | false
+      false | :project_type  | false
+    end
+
+    with_them do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(saas)
+        runner.runner_type = runner_type
+      end
+
+      it 'returns the correct value based on saas and runner type' do
+        expect(runner.gitlab_hosted?).to eq(expected_value)
+      end
+    end
+  end
 end

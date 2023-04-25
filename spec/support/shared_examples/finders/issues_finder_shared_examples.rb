@@ -988,9 +988,9 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         let_it_be(:root_group) { create(:group) }
         let_it_be(:group) { create(:group, parent: root_group) }
         let_it_be(:project_crm) { create(:project, :public, group: group) }
-        let_it_be(:organization) { create(:organization, group: root_group) }
-        let_it_be(:contact1) { create(:contact, group: root_group, organization: organization) }
-        let_it_be(:contact2) { create(:contact, group: root_group, organization: organization) }
+        let_it_be(:crm_organization) { create(:crm_organization, group: root_group) }
+        let_it_be(:contact1) { create(:contact, group: root_group, organization: crm_organization) }
+        let_it_be(:contact2) { create(:contact, group: root_group, organization: crm_organization) }
 
         let_it_be(:contact1_item1) { create(factory, project: project_crm) }
         let_it_be(:contact1_item2) { create(factory, project: project_crm) }
@@ -1028,10 +1028,10 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         context 'filtering by crm organization' do
-          let(:params) { { project_id: project_crm.id, crm_organization_id: organization.id } }
+          let(:params) { { project_id: project_crm.id, crm_organization_id: crm_organization.id } }
 
           context 'when the user can read crm organization' do
-            it 'returns for that organization' do
+            it 'returns for that crm organization' do
               root_group.add_reporter(user)
 
               expect(items).to contain_exactly(contact1_item1, contact1_item2, contact2_item1)
@@ -1039,7 +1039,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
 
           context 'when the user can not read crm organization' do
-            it 'does not filter by organization' do
+            it 'does not filter by crm organization' do
               expect(items).to match_array(all_project_issues)
             end
           end

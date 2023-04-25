@@ -1,126 +1,67 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples "protected branches > access control > CE" do
+  let(:no_one) { ProtectedRef::AccessLevel.humanize(::Gitlab::Access::NO_ACCESS) }
+
   ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
-
-      find(".js-allowed-to-merge").click
-      within('[data-testid="allowed-to-merge-dropdown"]') do
-        expect(first("li")).to have_content("Roles")
-        find(:link, 'No one').click
-      end
-
-      within('.js-new-protected-branch') do
-        allowed_to_push_button = find(".js-allowed-to-push")
-
-        unless allowed_to_push_button.text == access_type_name
-          allowed_to_push_button.click
-          within(".dropdown.show .dropdown-menu") { click_on access_type_name }
-        end
-      end
-
+      set_allowed_to('merge', no_one)
+      set_allowed_to('push', access_type_name)
       click_on_protect
-      wait_for_requests
 
       expect(ProtectedBranch.count).to eq(1)
       expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to eq([access_type_id])
     end
 
-    it "allows updating protected branches so that #{access_type_name} can push to them" do
-      visit project_protected_branches_path(project)
-
-      set_protected_branch_name('master')
-
-      find(".js-allowed-to-merge").click
-      within('[data-testid="allowed-to-merge-dropdown"]') do
-        expect(first("li")).to have_content("Roles")
-        find(:link, 'No one').click
-      end
-
-      find(".js-allowed-to-push").click
-      within('[data-testid="allowed-to-push-dropdown"]') do
-        expect(first("li")).to have_content("Roles")
-        find(:link, 'No one').click
-      end
-
-      click_on_protect
-
-      expect(ProtectedBranch.count).to eq(1)
-
-      within(".protected-branches-list") do
-        find(".js-allowed-to-push").click
-
-        within('.js-allowed-to-push-container') do
-          expect(first("li")).to have_content("Roles")
-          find(:link, access_type_name).click
-        end
-
-        find(".js-allowed-to-push").click
-      end
-
-      wait_for_requests
-
-      expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
-    end
-  end
-
-  ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can merge to" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
-
-      within('.js-new-protected-branch') do
-        allowed_to_merge_button = find(".js-allowed-to-merge")
-
-        unless allowed_to_merge_button.text == access_type_name
-          allowed_to_merge_button.click
-          within(".dropdown.show .dropdown-menu") { click_on access_type_name }
-        end
-      end
-
-      find(".js-allowed-to-push").click
-      within('[data-testid="allowed-to-push-dropdown"]') do
-        expect(first("li")).to have_content("Roles")
-        find(:link, 'No one').click
-      end
-
+      set_allowed_to('merge', access_type_name)
+      set_allowed_to('push', no_one)
       click_on_protect
 
       expect(ProtectedBranch.count).to eq(1)
       expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to eq([access_type_id])
     end
 
-    it "allows updating protected branches so that #{access_type_name} can merge to them" do
+    it "allows updating protected branches so that #{access_type_name} can push to them" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
-
-      find(".js-allowed-to-merge").click
-      within('[data-testid="allowed-to-merge-dropdown"]') do
-        expect(first("li")).to have_content("Roles")
-        find(:link, 'No one').click
-      end
-
-      find(".js-allowed-to-push").click
-      within('[data-testid="allowed-to-push-dropdown"]') do
-        expect(first("li")).to have_content("Roles")
-        find(:link, 'No one').click
-      end
-
+      set_allowed_to('merge', no_one)
+      set_allowed_to('push', no_one)
       click_on_protect
 
       expect(ProtectedBranch.count).to eq(1)
 
       within(".protected-branches-list") do
-        find(".js-allowed-to-merge").click
+        within_select(".js-allowed-to-push") do
+          click_on(access_type_name)
+        end
+      end
 
-        within('.js-allowed-to-merge-container') do
-          expect(first("li")).to have_content("Roles")
-          find(:link, access_type_name).click
+      wait_for_requests
+
+      expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
+    end
+
+    it "allows updating protected branches so that #{access_type_name} can merge to them" do
+      visit project_protected_branches_path(project)
+
+      set_protected_branch_name('master')
+      set_allowed_to('merge', no_one)
+      set_allowed_to('push', no_one)
+      click_on_protect
+
+      expect(ProtectedBranch.count).to eq(1)
+
+      within(".protected-branches-list") do
+        within_select(".js-allowed-to-merge") do
+          click_on(access_type_name)
         end
       end
 

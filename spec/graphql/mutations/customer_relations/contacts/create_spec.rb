@@ -57,10 +57,10 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
         end
       end
 
-      context 'when attaching to an organization' do
+      context 'when attaching to an crm_organization' do
         context 'when all ok' do
           before do
-            organization = create(:organization, group: group)
+            organization = create(:crm_organization, group: group)
             valid_params[:organization_id] = organization.to_global_id
           end
 
@@ -69,7 +69,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
           end
         end
 
-        context 'when organization does not exist' do
+        context 'when crm_organization does not exist' do
           before do
             valid_params[:organization_id] = global_id_of(model_name: 'CustomerRelations::Organization', id: non_existing_record_id)
           end
@@ -79,10 +79,10 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
           end
         end
 
-        context 'when organzation belongs to a different group' do
+        context 'when crm_organzation belongs to a different group' do
           before do
-            organization = create(:organization)
-            valid_params[:organization_id] = organization.to_global_id
+            crm_organization = create(:crm_organization)
+            valid_params[:organization_id] = crm_organization.to_global_id
           end
 
           it 'returns the relevant error' do

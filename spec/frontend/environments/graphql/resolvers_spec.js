@@ -19,6 +19,7 @@ import {
   folder,
   resolvedFolder,
   k8sPodsMock,
+  k8sServicesMock,
 } from './mock_data';
 
 const ENDPOINT = `${TEST_HOST}/environments`;
@@ -28,6 +29,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   let mock;
   let mockApollo;
   let localState;
+
+  const configuration = {
+    basePath: 'kas-proxy/',
+    baseOptions: {
+      headers: { 'GitLab-Agent-Id': '1' },
+    },
+  };
 
   beforeEach(() => {
     mockResolvers = resolvers(ENDPOINT);
@@ -147,12 +155,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
   describe('k8sPods', () => {
     const namespace = 'default';
-    const configuration = {
-      basePath: 'kas-proxy/',
-      baseOptions: {
-        headers: { 'GitLab-Agent-Id': '1' },
-      },
-    };
 
     const mockPodsListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
@@ -196,6 +198,38 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(mockResolvers.Query.k8sPods(null, { configuration })).rejects.toThrow(
+        'API error',
+      );
+    });
+  });
+  describe('k8sServices', () => {
+    const mockServicesListFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        data: {
+          items: k8sServicesMock,
+        },
+      });
+    });
+
+    beforeEach(() => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
+        .mockImplementation(mockServicesListFn);
+    });
+
+    it('should request services from the cluster_client library', async () => {
+      const services = await mockResolvers.Query.k8sServices(null, { configuration });
+
+      expect(mockServicesListFn).toHaveBeenCalled();
+
+      expect(services).toEqual(k8sServicesMock);
+    });
+    it('should throw an error if the API call fails', async () => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'listCoreV1ServiceForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(mockResolvers.Query.k8sServices(null, { configuration })).rejects.toThrow(
         'API error',
       );
     });

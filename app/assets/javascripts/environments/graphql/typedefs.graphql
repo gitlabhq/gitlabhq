@@ -75,6 +75,24 @@ input LocalConfiguration {
   baseOptions: JSON
 }
 
+type k8sServiceMetadata {
+  name: String
+  namespace: String
+  creationTimestamp: String
+}
+
+type k8sServiceSpec {
+  type: String
+  clusterIP: String
+  externalIP: String
+  ports: JSON
+}
+
+type LocalK8sServices {
+  metadata: k8sServiceMetadata
+  spec: k8sServiceSpec
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -85,6 +103,7 @@ extend type Query {
   isEnvironmentStopping(environment: LocalEnvironmentInput): Boolean
   isLastDeployment(environment: LocalEnvironmentInput): Boolean
   k8sPods(configuration: LocalConfiguration, namespace: String): [LocalK8sPods]
+  k8sServices(configuration: LocalConfiguration): [LocalK8sServices]
 }
 
 extend type Mutation {

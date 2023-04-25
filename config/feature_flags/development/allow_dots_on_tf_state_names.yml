@@ -1,8 +1,0 @@
----
-name: allow_dots_on_tf_state_names
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106861
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385597
-milestone: '15.7'
-type: development
-group: group::configure
-default_enabled: true

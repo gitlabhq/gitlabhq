@@ -50,8 +50,8 @@ RSpec.describe CustomerRelations::Contacts::CreateService, feature_category: :se
       end
 
       it 'returns an error when the organization belongs to a different group' do
-        organization = create(:organization)
-        params[:organization_id] = organization.id
+        crm_organization = create(:crm_organization)
+        params[:organization_id] = crm_organization.id
 
         expect(response).to be_error
         expect(response.message).to match_array([not_found_or_does_not_belong])

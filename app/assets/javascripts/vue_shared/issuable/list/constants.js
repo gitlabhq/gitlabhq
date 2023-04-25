@@ -1,7 +1,7 @@
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { __ } from '~/locale';
 
-export const IssuableListTabs = [
+export const issuableListTabs = [
   {
     id: 'state-opened',
     name: STATUS_OPEN,
@@ -22,7 +22,7 @@ export const IssuableListTabs = [
   },
 ];
 
-export const AvailableSortOptions = [
+export const availableSortOptions = [
   {
     id: 1,
     title: __('Created date'),

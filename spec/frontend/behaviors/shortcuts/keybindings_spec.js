@@ -7,7 +7,7 @@ import {
   TOGGLE_PERFORMANCE_BAR,
   HIDE_APPEARING_CONTENT,
   LOCAL_STORAGE_KEY,
-  WEB_IDE_COMMIT,
+  BOLD_TEXT,
 } from '~/behaviors/shortcuts/keybindings';
 
 describe('~/behaviors/shortcuts/keybindings', () => {
@@ -67,11 +67,11 @@ describe('~/behaviors/shortcuts/keybindings', () => {
     const customization = ['mod+shift+c'];
 
     beforeEach(() => {
-      setupCustomizations(JSON.stringify({ [WEB_IDE_COMMIT.id]: customization }));
+      setupCustomizations(JSON.stringify({ [BOLD_TEXT.id]: customization }));
     });
 
     it('returns the default keybinding for the command', () => {
-      expect(keysFor(WEB_IDE_COMMIT)).toEqual(['mod+enter']);
+      expect(keysFor(BOLD_TEXT)).toEqual(['mod+b']);
     });
   });
 

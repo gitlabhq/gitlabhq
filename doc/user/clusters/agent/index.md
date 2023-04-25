@@ -52,9 +52,9 @@ Use this workflow:
 
 This workflow has a weaker security model and is not recommended for production deployments.
 
-## Supported cluster versions
+## GitLab agent for Kubernetes supported cluster versions
 
-GitLab supports the following Kubernetes versions. You can upgrade your
+The agent for Kubernetes supports the following Kubernetes versions. You can upgrade your
 Kubernetes version to a supported version at any time:
 
 - 1.26 (support ends on March 22, 2024 or when 1.29 becomes supported)

@@ -53,7 +53,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { DEFAULT_PAGE_SIZE, IssuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import getIssuesCountsQuery from '../queries/get_issues_counts.query.graphql';
 import { AutocompleteCache } from '../utils';
 
@@ -67,7 +67,7 @@ const MilestoneToken = () =>
 
 export default {
   i18n,
-  IssuableListTabs,
+  issuableListTabs,
   components: {
     GlDisclosureDropdown,
     GlEmptyState,
@@ -457,7 +457,7 @@ export default {
     show-work-item-type-icon
     :sort-options="sortOptions"
     :tab-counts="tabCounts"
-    :tabs="$options.IssuableListTabs"
+    :tabs="$options.issuableListTabs"
     truncate-counts
     :url-params="urlParams"
     use-keyset-pagination

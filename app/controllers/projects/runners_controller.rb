@@ -2,8 +2,8 @@
 
 class Projects::RunnersController < Projects::ApplicationController
   before_action :authorize_admin_build!
-  before_action :authorize_create_runner!, only: [:new]
-  before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
+  before_action :authorize_create_runner!, only: [:new, :register]
+  before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
 
   feature_category :runner
   urgency :low
@@ -24,7 +24,11 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def new
-    render_404 unless Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
+    render_404 unless create_runner_workflow_for_namespace_enabled?
+  end
+
+  def register
+    render_404 unless create_runner_workflow_for_namespace_enabled? && runner.registration_available?
   end
 
   def destroy
@@ -79,5 +83,9 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def runner_params
     params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
+  end
+
+  def create_runner_workflow_for_namespace_enabled?
+    Feature.enabled?(:create_runner_workflow_for_namespace, project.namespace)
   end
 end

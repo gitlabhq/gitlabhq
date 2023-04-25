@@ -51,7 +51,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
             perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :id })
 
             expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']).to include('`updated_at` filter and `updated_at` sorting must be paired')
+            expect(json_response['message']).to include('`updated_at` filter requires `updated_at` sort')
           end
         end
       end

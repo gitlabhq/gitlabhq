@@ -7,11 +7,11 @@ RSpec.describe CustomerRelations::Organizations::CreateService, feature_category
     let_it_be(:user) { create(:user) }
 
     let(:group) { create(:group, :crm_enabled) }
-    let(:params) { attributes_for(:organization, group: group) }
+    let(:params) { attributes_for(:crm_organization, group: group) }
 
     subject(:response) { described_class.new(group: group, current_user: user, params: params).execute }
 
-    it 'creates an organization' do
+    it 'creates a crm_organization' do
       group.add_developer(user)
 
       expect(response).to be_success
@@ -24,7 +24,7 @@ RSpec.describe CustomerRelations::Organizations::CreateService, feature_category
       expect(response.message).to match_array(['You have insufficient permissions to create an organization for this group'])
     end
 
-    it 'returns an error when the organization is not persisted' do
+    it 'returns an error when the crm_organization is not persisted' do
       group.add_developer(user)
       params[:name] = nil
 

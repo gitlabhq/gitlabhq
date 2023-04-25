@@ -5,7 +5,6 @@ import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -21,7 +20,6 @@ import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
 import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
-import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
@@ -43,14 +41,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['projectPath', 'reportAbusePath'],
   props: {
-    workItemId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     issuableId: {
       type: Number,
       required: false,
@@ -75,10 +67,8 @@ export default {
         this.error = e.message || this.$options.i18n.fetchError;
       },
       async result() {
-        const { id, iid } = this.childUrlParams();
-        this.activeChild = this.fetchByIid
-          ? this.children.find((child) => child.iid === iid) ?? {}
-          : this.children.find((child) => child.id === id) ?? {};
+        const iid = getParameterByName('work_item_iid');
+        this.activeChild = this.children.find((child) => child.iid === iid) ?? {};
         await this.$nextTick();
         if (!isEmpty(this.activeChild)) {
           this.$refs.modal.show();
@@ -147,31 +137,11 @@ export default {
     childrenCountLabel() {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
-    fetchByIid() {
-      return true;
-    },
   },
   mounted() {
-    if (!isEmpty(this.childUrlParams())) {
-      this.addWorkItemQuery(this.childUrlParams());
-    }
+    this.addWorkItemQuery(getParameterByName('work_item_iid'));
   },
   methods: {
-    childUrlParams() {
-      const params = {};
-      if (this.fetchByIid) {
-        const iid = getParameterByName('work_item_iid');
-        if (iid) {
-          params.iid = iid;
-        }
-      } else {
-        const workItemId = getParameterByName('work_item_id');
-        if (workItemId) {
-          params.id = convertToGraphQLId(TYPENAME_WORK_ITEM, workItemId);
-        }
-      }
-      return params;
-    },
     showAddForm(formType) {
       this.$refs.wrapper.show();
       this.isShownAddForm = true;
@@ -200,11 +170,8 @@ export default {
       this.removeHierarchyChild(child);
       this.activeToast = this.$toast.show(s__('WorkItem|Task deleted'));
     },
-    updateWorkItemIdUrlQuery({ id, iid } = {}) {
-      const params = this.fetchByIid
-        ? { work_item_iid: iid }
-        : { work_item_id: getIdFromGraphQLId(id) };
-      updateHistory({ url: setUrlParams(params), replace: true });
+    updateWorkItemIdUrlQuery({ iid } = {}) {
+      updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
     },
     async addHierarchyChild(workItem) {
       return this.$apollo.mutate({
@@ -251,31 +218,28 @@ export default {
         });
       }
     },
-    addWorkItemQuery({ id, iid }) {
-      const variables = this.fetchByIid
-        ? {
-            fullPath: this.projectPath,
-            iid,
-          }
-        : {
-            id,
-          };
+    addWorkItemQuery(iid) {
+      if (!iid) {
+        return;
+      }
+
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query() {
-          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        query: workItemByIidQuery,
+        variables: {
+          fullPath: this.projectPath,
+          iid,
         },
-        variables,
         update(data) {
-          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+          return data.workspace.workItems.nodes[0];
         },
         context: {
           isSingleRequest: true,
         },
       });
     },
-    prefetchWorkItem({ id, iid }) {
+    prefetchWorkItem({ iid }) {
       this.prefetch = setTimeout(
-        () => this.addWorkItemQuery({ id, iid }),
+        () => this.addWorkItemQuery(iid),
         DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       );
     },

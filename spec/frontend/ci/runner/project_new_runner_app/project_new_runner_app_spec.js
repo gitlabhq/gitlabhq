@@ -5,9 +5,16 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import ProjectRunnerRunnerApp from '~/ci/runner/project_new_runner/project_new_runner_app.vue';
+import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import { PROJECT_TYPE, DEFAULT_PLATFORM } from '~/ci/runner/constants';
+import {
+  PARAM_KEY_PLATFORM,
+  PROJECT_TYPE,
+  DEFAULT_PLATFORM,
+  WINDOWS_PLATFORM,
+} from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
+import { redirectTo } from '~/lib/utils/url_utility';
 import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
 
 const mockProjectId = 'gid://gitlab/Project/72';
@@ -63,11 +70,30 @@ describe('ProjectRunnerRunnerApp', () => {
         findRunnerCreateForm().vm.$emit('saved', mockCreatedRunner);
       });
 
-      it('shows an alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
+      it('pushes an alert to be shown after redirection', () => {
+        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
           message: s__('Runners|Runner created.'),
           variant: VARIANT_SUCCESS,
         });
+      });
+
+      it('redirects to the registration page', () => {
+        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
+
+        expect(redirectTo).toHaveBeenCalledWith(url);
+      });
+    });
+
+    describe('When another platform is selected and a runner is saved', () => {
+      beforeEach(() => {
+        findRunnerPlatformsRadioGroup().vm.$emit('input', WINDOWS_PLATFORM);
+        findRunnerCreateForm().vm.$emit('saved', mockCreatedRunner);
+      });
+
+      it('redirects to the registration page with the platform', () => {
+        const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
+
+        expect(redirectTo).toHaveBeenCalledWith(url);
       });
     });
 

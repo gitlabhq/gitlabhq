@@ -67,21 +67,23 @@ module Ci
 
     def failed_archive_counter
       @failed_archive_counter ||=
-        Gitlab::Metrics.counter(:job_trace_archive_failed_total,
-                                "Counter of failed attempts of trace archiving")
+        Gitlab::Metrics.counter(:job_trace_archive_failed_total, "Counter of failed attempts of trace archiving")
     end
 
     def archive_error(error, job, worker_name)
       failed_archive_counter.increment
 
-      Sidekiq.logger.warn(class: worker_name,
-                          message: "Failed to archive trace. message: #{error.message}.",
-                          job_id: job.id)
+      Sidekiq.logger.warn(
+        class: worker_name,
+        message: "Failed to archive trace. message: #{error.message}.",
+        job_id: job.id
+      )
 
-      Gitlab::ErrorTracking
-        .track_and_raise_for_dev_exception(error,
-                          issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
-                          job_id: job.id)
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        error,
+        issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
+        job_id: job.id
+      )
     end
   end
 end

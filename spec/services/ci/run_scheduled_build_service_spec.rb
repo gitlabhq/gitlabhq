@@ -13,8 +13,7 @@ RSpec.describe Ci::RunScheduledBuildService, feature_category: :continuous_integ
     before do
       project.add_developer(user)
 
-      create(:protected_branch, :developers_can_merge,
-             name: pipeline.ref, project: project)
+      create(:protected_branch, :developers_can_merge, name: pipeline.ref, project: project)
     end
 
     context 'when build is scheduled' do

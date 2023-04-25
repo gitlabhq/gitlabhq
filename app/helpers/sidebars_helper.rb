@@ -155,18 +155,19 @@ module SidebarsHelper
       {
         name: show_headers ? section[:title] : '',
         items: section[:menu_items].map do |item|
-          {
-            text: item[:title],
-            href: item[:href],
-            extraAttrs: {
-              'data-track-label': item[:id],
-              'data-track-action': 'click_link',
-              'data-track-property': 'nav_create_menu',
-              'data-qa-selector': 'create_menu_item',
-              'data-qa-create-menu-item': item[:id]
-            }
-          }
-        end
+                 {
+                   text: item[:title],
+                   href: item[:href].presence,
+                   component: item[:component].presence,
+                   extraAttrs: {
+                     'data-track-label': item[:id],
+                     'data-track-action': 'click_link',
+                     'data-track-property': 'nav_create_menu',
+                     'data-qa-selector': 'create_menu_item',
+                     'data-qa-create-menu-item': item[:id]
+                   }
+                 }
+               end
       }
     end
   end

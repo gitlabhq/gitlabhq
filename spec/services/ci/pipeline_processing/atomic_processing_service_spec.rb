@@ -646,8 +646,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           # Users need ability to merge into a branch in order to trigger
           # protected manual actions.
           #
-          create(:protected_branch, :developers_can_merge,
-                  name: 'master', project: project)
+          create(:protected_branch, :developers_can_merge, name: 'master', project: project)
         end
 
         it 'properly processes entire pipeline' do

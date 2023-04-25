@@ -29,7 +29,7 @@ import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { IssuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
@@ -213,7 +213,7 @@ describe('CE IssuesListApp component', () => {
         }),
         initialSortBy: CREATED_DESC,
         issuables: getIssuesQueryResponse.data.project.issues.nodes,
-        tabs: IssuableListTabs,
+        tabs: issuableListTabs,
         currentTab: STATUS_OPEN,
         tabCounts: {
           opened: 1,

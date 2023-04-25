@@ -22,7 +22,7 @@ RSpec.describe DeploymentsFinder do
       it 'raises an error' do
         expect { subject }.to raise_error(
           described_class::InefficientQueryError,
-          '`updated_at` filter and `updated_at` sorting must be paired')
+          '`updated_at` filter requires `updated_at` sort')
       end
     end
 
@@ -178,8 +178,8 @@ RSpec.describe DeploymentsFinder do
           'iid'         | 'desc' | [:deployment_3, :deployment_2, :deployment_1]
           'ref'         | 'asc'  | [:deployment_2, :deployment_1, :deployment_3]
           'ref'         | 'desc' | [:deployment_3, :deployment_1, :deployment_2]
-          'updated_at'  | 'asc'  | described_class::InefficientQueryError
-          'updated_at'  | 'desc' | described_class::InefficientQueryError
+          'updated_at'  | 'asc'  | [:deployment_2, :deployment_3, :deployment_1]
+          'updated_at'  | 'desc' | [:deployment_1, :deployment_3, :deployment_2]
           'finished_at' | 'asc'  | described_class::InefficientQueryError
           'finished_at' | 'desc' | described_class::InefficientQueryError
           'invalid'     | 'asc'  | [:deployment_1, :deployment_2, :deployment_3]

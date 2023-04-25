@@ -31,9 +31,10 @@ before we remove them.
 
 ### OpenSearch version requirements
 
-| GitLab version        | OpenSearch version    |
-|-----------------------|--------------------------|
-| GitLab 15.0 or later  | OpenSearch 1.x or later  |
+| GitLab version          | OpenSearch version        |
+|-------------------------|---------------------------|
+| GitLab 15.0 to 15.5.2   | OpenSearch 1.x            |
+| GitLab 15.5.3 and later | OpenSearch 1.x and later  |
 
 If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
 a message is logged in the

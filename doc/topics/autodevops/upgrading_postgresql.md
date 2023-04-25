@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Upgrading PostgreSQL for Auto DevOps **(FREE)**
 
-Auto DevOps provides an [in-cluster PostgreSQL database](customize.md#postgresql-database-support)
-for your application.
+When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
+[in-cluster PostgreSQL database](customize.md#postgresql-database-support) for your application.
 
 The version of the chart used to provision PostgreSQL:
 

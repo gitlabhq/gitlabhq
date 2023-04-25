@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:runner) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
 
   let(:params) do
     {
@@ -71,6 +71,79 @@ RSpec.describe Projects::RunnersController, feature_category: :runner_fleet do
 
         it 'renders a 404' do
           get :new, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
+  describe '#register' do
+    subject(:register) { get :register, params: { namespace_id: project.namespace, project_id: project, id: new_runner } }
+
+    context 'when create_runner_workflow_for_namespace is enabled' do
+      before do
+        stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
+      end
+
+      context 'when user is maintainer' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        context 'when runner can be registered after creation' do
+          let_it_be(:new_runner) { create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user) }
+
+          it 'renders a :register template' do
+            register
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:register)
+          end
+        end
+
+        context 'when runner cannot be registered after creation' do
+          let_it_be(:new_runner) { runner }
+
+          it 'returns :not_found' do
+            register
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
+      context 'when user is not maintainer' do
+        before do
+          project.add_developer(user)
+        end
+
+        context 'when runner can be registered after creation' do
+          let_it_be(:new_runner) { create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user) }
+
+          it 'returns :not_found' do
+            register
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
+
+    context 'when create_runner_workflow_for_namespace is disabled' do
+      let_it_be(:new_runner) { create(:ci_runner, :project, projects: [project], registration_type: :authenticated_user) }
+
+      before do
+        stub_feature_flags(create_runner_workflow_for_namespace: false)
+      end
+
+      context 'when user is maintainer' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'returns :not_found' do
+          register
 
           expect(response).to have_gitlab_http_status(:not_found)
         end

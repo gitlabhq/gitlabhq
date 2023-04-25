@@ -18,7 +18,7 @@ export const createNewMenuGroups = [
       },
       {
         text: 'Invite members',
-        href: '/groups/gitlab-org/-/group_members',
+        component: 'invite_members',
       },
     ],
   },

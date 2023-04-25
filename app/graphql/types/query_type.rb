@@ -14,6 +14,13 @@ module Types
           null: true,
           description: 'CI related settings that apply to the entire instance.'
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
+
+    field :ci_pipeline_stage, ::Types::Ci::StageType,
+      null: true, description: 'Stage belonging to a CI pipeline.' do
+      argument :id, type: ::Types::GlobalIDType[::Ci::Stage],
+        required: true, description: 'Global ID of the CI stage.'
+    end
+
     field :ci_variables,
           Types::Ci::InstanceVariableType.connection_type,
           null: true,
@@ -201,6 +208,15 @@ module Types
 
     def query_complexity
       context.query
+    end
+
+    def ci_pipeline_stage(id:)
+      stage = ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(id))
+      authorized = Ability.allowed?(current_user, :read_build, stage.project)
+
+      return unless authorized
+
+      stage
     end
   end
 end

@@ -1193,8 +1193,10 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
     context 'when pipeline is running for a tag' do
       before do
-        config = YAML.dump(test: { script: 'test', only: ['branches'] },
-                           deploy: { script: 'deploy', only: ['tags'] })
+        config = YAML.dump(
+          test: { script: 'test', only: ['branches'] },
+          deploy: { script: 'deploy', only: ['tags'] }
+        )
 
         stub_ci_pipeline_yaml_file(config)
       end
@@ -1369,11 +1371,13 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
     describe 'Pipeline for external pull requests' do
       let(:response) do
-        execute_service(source: source,
-                        external_pull_request: pull_request,
-                        ref: ref_name,
-                        source_sha: source_sha,
-                        target_sha: target_sha)
+        execute_service(
+          source: source,
+          external_pull_request: pull_request,
+          ref: ref_name,
+          source_sha: source_sha,
+          target_sha: target_sha
+        )
       end
 
       let(:pipeline) { response.payload }
@@ -1525,11 +1529,13 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
     describe 'Pipelines for merge requests' do
       let(:response) do
-        execute_service(source: source,
-                        merge_request: merge_request,
-                        ref: ref_name,
-                        source_sha: source_sha,
-                        target_sha: target_sha)
+        execute_service(
+          source: source,
+          merge_request: merge_request,
+          ref: ref_name,
+          source_sha: source_sha,
+          target_sha: target_sha
+        )
       end
 
       let(:pipeline) { response.payload }

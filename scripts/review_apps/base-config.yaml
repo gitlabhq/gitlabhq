@@ -83,7 +83,7 @@ gitlab:
         cpu: 400m
         memory: 920Mi
       limits:
-        cpu: 800m
+        cpu: 1000m
         memory: 1380Mi
 
   sidekiq:

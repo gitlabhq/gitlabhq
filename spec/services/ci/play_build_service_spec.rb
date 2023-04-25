@@ -16,8 +16,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
     let(:project) { create(:project) }
 
     it 'allows user to play build if protected branch rules are met' do
-      create(:protected_branch, :developers_can_merge,
-             name: build.ref, project: project)
+      create(:protected_branch, :developers_can_merge, name: build.ref, project: project)
 
       service.execute(build)
 

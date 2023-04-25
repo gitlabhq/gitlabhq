@@ -890,7 +890,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :subg
       let(:subsub_project) { create(:project, group: subsubgroup) }
 
       let!(:contacts) { create_list(:contact, 4, group: root_group) }
-      let!(:organizations) { create_list(:organization, 2, group: root_group) }
+      let!(:organizations) { create_list(:crm_organization, 2, group: root_group) }
 
       before do
         create(:issue_customer_relations_contact, contact: contacts[0], issue: create(:issue, project: root_project))

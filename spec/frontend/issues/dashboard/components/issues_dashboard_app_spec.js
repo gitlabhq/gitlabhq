@@ -145,7 +145,7 @@ describe('IssuesDashboardApp component', () => {
           closed: 2,
           all: 3,
         },
-        tabs: IssuesDashboardApp.IssuableListTabs,
+        tabs: IssuesDashboardApp.issuableListTabs,
         urlParams: {
           sort: urlSortParams[CREATED_DESC],
           state: STATUS_OPEN,

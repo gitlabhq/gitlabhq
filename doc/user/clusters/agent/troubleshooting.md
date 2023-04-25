@@ -239,4 +239,4 @@ When you install the agent, you might encounter an error that states:
 Error: parse error at (gitlab-agent/templates/observability-secret.yaml:1): unclosed action
 ```
 
-This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#supported-cluster-versions).
+This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#gitlab-agent-for-kubernetes-supported-cluster-versions).

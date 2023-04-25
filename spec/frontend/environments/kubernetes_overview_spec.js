@@ -4,6 +4,7 @@ import { GlCollapse, GlButton, GlAlert } from '@gitlab/ui';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
 import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
+import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
 import { agent } from './graphql/mock_data';
 import { mockKasTunnelUrl } from './mock_data';
 
@@ -32,6 +33,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
   const findCollapseButton = () => wrapper.findComponent(GlButton);
   const findAgentInfo = () => wrapper.findComponent(KubernetesAgentInfo);
   const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
+  const findKubernetesTabs = () => wrapper.findComponent(KubernetesTabs);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createWrapper = () => {
@@ -99,6 +101,12 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     it('renders kubernetes pods', () => {
       expect(findKubernetesPods().props()).toEqual({
         namespace: agent.kubernetesNamespace,
+        configuration,
+      });
+    });
+
+    it('renders kubernetes tabs', () => {
+      expect(findKubernetesTabs().props()).toEqual({
         configuration,
       });
     });

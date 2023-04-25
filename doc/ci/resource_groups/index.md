@@ -194,13 +194,11 @@ You must define [`strategy: depend`](../yaml/index.md#triggerstrategy)
 with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
 finishes.
 
-## API
+## Related topics
 
-See the [API documentation](../../api/resource_groups.md).
-
-## Related features
-
-Read more how you can use GitLab for [safe deployments](../environments/deployment_safety.md).
+- [API documentation](../../api/resource_groups.md)
+- [Log documentation](../../administration/logs/index.md#ci_resource_groups_jsonlog)
+- [GitLab for safe deployments](../environments/deployment_safety.md)
 
 ## Troubleshooting
 

@@ -11,6 +11,13 @@ import {
 import VueDraggable from 'vuedraggable';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { createAlert } from '~/alert';
+import {
+  keysFor,
+  METRICS_COPY_LINK_TO_CHART,
+  METRICS_DOWNLOAD_CSV,
+  METRICS_EXPAND_PANEL,
+  METRICS_SHOW_ALERTS,
+} from '~/behaviors/shortcuts/keybindings';
 import invalidUrl from '~/lib/utils/invalid_url';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -18,7 +25,7 @@ import { mergeUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { defaultTimeRange } from '~/vue_shared/constants';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { metricStates, keyboardShortcutKeys } from '../constants';
+import { metricStates } from '../constants';
 import {
   timeRangeFromUrl,
   panelToUrl,
@@ -214,12 +221,28 @@ export default {
   created() {
     window.addEventListener('keyup', this.onKeyup);
 
-    Mousetrap.bind(Object.values(keyboardShortcutKeys), this.runShortcut);
+    Mousetrap.bind(keysFor(METRICS_EXPAND_PANEL), () =>
+      this.runShortcut('onExpandFromKeyboardShortcut'),
+    );
+    Mousetrap.bind(keysFor(METRICS_SHOW_ALERTS), () =>
+      this.runShortcut('showAlertModalFromKeyboardShortcut'),
+    );
+    Mousetrap.bind(keysFor(METRICS_DOWNLOAD_CSV), () =>
+      this.runShortcut('downloadCsvFromKeyboardShortcut'),
+    );
+    Mousetrap.bind(keysFor(METRICS_COPY_LINK_TO_CHART), () =>
+      this.runShortcut('copyChartLinkFromKeyboardShotcut'),
+    );
   },
   destroyed() {
     window.removeEventListener('keyup', this.onKeyup);
 
-    Mousetrap.unbind(Object.values(keyboardShortcutKeys));
+    [
+      METRICS_COPY_LINK_TO_CHART,
+      METRICS_DOWNLOAD_CSV,
+      METRICS_EXPAND_PANEL,
+      METRICS_SHOW_ALERTS,
+    ].forEach((command) => Mousetrap.unbind(keysFor(command)));
   },
   mounted() {
     if (!this.hasMetrics) {
@@ -339,42 +362,18 @@ export default {
     },
     /**
      * TODO: Investigate this to utilize the eventBus from Vue
-     * The intentation behind this cleanup is to allow for better tests
+     * The intention behind this cleanup is to allow for better tests
      * as well as use the correct eventBus facilities that are compatible
      * with Vue 3
      * https://gitlab.com/gitlab-org/gitlab/-/issues/225583
      */
     //
-    runShortcut(e) {
+    runShortcut(actionToRun) {
       const panel = this.$refs[this.hoveredPanel];
 
       if (!panel) return;
 
       const [panelInstance] = panel;
-      let actionToRun = '';
-
-      switch (e.key) {
-        case keyboardShortcutKeys.EXPAND:
-          actionToRun = 'onExpandFromKeyboardShortcut';
-          break;
-
-        case keyboardShortcutKeys.SHOW_ALERT:
-          actionToRun = 'showAlertModalFromKeyboardShortcut';
-          break;
-
-        case keyboardShortcutKeys.DOWNLOAD_CSV:
-          actionToRun = 'downloadCsvFromKeyboardShortcut';
-          break;
-
-        case keyboardShortcutKeys.CHART_COPY:
-          actionToRun = 'copyChartLinkFromKeyboardShotcut';
-          break;
-
-        default:
-          actionToRun = 'onExpandFromKeyboardShortcut';
-          break;
-      }
-
       panelInstance[actionToRun]();
     },
     setHoveredPanel(groupKey, graphIndex) {

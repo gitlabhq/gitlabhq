@@ -40,6 +40,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:synchronize_fork, @project&.fork_source)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
+    push_frontend_feature_flag(:explain_code_chat, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)

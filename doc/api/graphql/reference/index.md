@@ -108,6 +108,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="queryciminutesusagedate"></a>`date` | [`Date`](#date) | Date for which to retrieve the usage data, should be the first day of a month. |
 | <a id="queryciminutesusagenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the Namespace for the monthly CI/CD minutes usage. |
 
+### `Query.ciPipelineStage`
+
+Stage belonging to a CI pipeline.
+
+Returns [`CiStage`](#cistage).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycipipelinestageid"></a>`id` | [`CiStageID!`](#cistageid) | Global ID of the CI stage. |
+
 ### `Query.ciVariables`
 
 List of the instance's CI/CD variables.
@@ -25348,6 +25360,12 @@ An example `CiRunnerID` is: `"gid://gitlab/Ci::Runner/1"`.
 A `CiRunnerManagerID` is a global ID. It is encoded as a string.
 
 An example `CiRunnerManagerID` is: `"gid://gitlab/Ci::RunnerManager/1"`.
+
+### `CiStageID`
+
+A `CiStageID` is a global ID. It is encoded as a string.
+
+An example `CiStageID` is: `"gid://gitlab/Ci::Stage/1"`.
 
 ### `ClustersAgentID`
 

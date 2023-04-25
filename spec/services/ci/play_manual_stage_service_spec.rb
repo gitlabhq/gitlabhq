@@ -11,10 +11,7 @@ RSpec.describe Ci::PlayManualStageService, '#execute', feature_category: :contin
   let(:stage_status) { 'manual' }
 
   let(:stage) do
-    create(:ci_stage,
-           pipeline: pipeline,
-           project: project,
-           name: 'test')
+    create(:ci_stage, pipeline: pipeline, project: project, name: 'test')
   end
 
   before do

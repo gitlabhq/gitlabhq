@@ -59,8 +59,8 @@ class DeploymentsFinder
 
     # Currently, the inefficient parameters are allowed in order to avoid breaking changes in Deployment API.
     # We'll switch to a hard error in https://gitlab.com/gitlab-org/gitlab/-/issues/328500.
-    if (filter_by_updated_at? && !order_by_updated_at?) || (!filter_by_updated_at? && order_by_updated_at?)
-      error = InefficientQueryError.new('`updated_at` filter and `updated_at` sorting must be paired')
+    if filter_by_updated_at? && !order_by_updated_at?
+      error = InefficientQueryError.new('`updated_at` filter requires `updated_at` sort')
 
       Gitlab::ErrorTracking.log_exception(error)
 

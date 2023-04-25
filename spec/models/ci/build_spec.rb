@@ -3842,6 +3842,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                                  'ID_TOKEN_1' => { aud: 'developers' },
                                  'ID_TOKEN_2' => { aud: 'maintainers' }
                                })
+        build.runner = build_stubbed(:ci_runner)
       end
 
       subject(:runner_vars) { build.variables.to_runner_variables }

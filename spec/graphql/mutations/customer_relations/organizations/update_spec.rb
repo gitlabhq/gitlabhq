@@ -10,10 +10,10 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
   let(:default_rate) { 1000.to_f }
   let(:description) { 'VIP' }
   let(:does_not_exist_or_no_permission) { Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR }
-  let(:organization) { create(:organization, group: group) }
+  let(:crm_organization) { create(:crm_organization, group: group) }
   let(:attributes) do
     {
-      id: organization.to_global_id,
+      id: crm_organization.to_global_id,
       name: name,
       default_rate: default_rate,
       description: description
@@ -27,7 +27,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
       )
     end
 
-    context 'when the user does not have permission to update an organization' do
+    context 'when the user does not have permission to update an crm_organization' do
       before do
         group.add_reporter(user)
       end
@@ -38,7 +38,7 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
       end
     end
 
-    context 'when the organization does not exist' do
+    context 'when the crm_organization does not exist' do
       it 'raises an error' do
         attributes[:id] = "gid://gitlab/CustomerRelations::Organization/#{non_existing_record_id}"
 
@@ -47,12 +47,12 @@ RSpec.describe Mutations::CustomerRelations::Organizations::Update do
       end
     end
 
-    context 'when the user has permission to update an organization' do
+    context 'when the user has permission to update an crm_organization' do
       before_all do
         group.add_developer(user)
       end
 
-      it 'updates the organization with correct values' do
+      it 'updates the crm_organization with correct values' do
         expect(resolve_mutation[:organization]).to have_attributes(attributes)
       end
 

@@ -506,6 +506,10 @@ module Ci
         !runner_managers.any?
     end
 
+    def gitlab_hosted?
+      Gitlab.com? && instance_type?
+    end
+
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do

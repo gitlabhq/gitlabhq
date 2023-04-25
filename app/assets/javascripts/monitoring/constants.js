@@ -256,19 +256,6 @@ export const VARIABLE_TYPES = {
  */
 export const VARIABLE_PREFIX = 'var-';
 
-/**
- * All of the actions inside each panel dropdown can be accessed
- * via keyboard shortcuts than can be activated via mouse hovers
- * and or focus via tabs.
- */
-
-export const keyboardShortcutKeys = {
-  EXPAND: 'e',
-  SHOW_ALERT: 'a',
-  DOWNLOAD_CSV: 'd',
-  CHART_COPY: 'c',
-};
-
 export const thresholdModeTypes = {
   ABSOLUTE: 'absolute',
   PERCENTAGE: 'percentage',

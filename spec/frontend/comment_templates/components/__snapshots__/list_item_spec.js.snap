@@ -58,7 +58,7 @@ exports[`Comment templates list item component renders list item 1`] = `
         </button>
          
         <div
-          class="gl-new-dropdown-panel"
+          class="gl-new-dropdown-panel gl-w-31"
           data-testid="base-dropdown-menu"
           id="base-dropdown-7"
         >

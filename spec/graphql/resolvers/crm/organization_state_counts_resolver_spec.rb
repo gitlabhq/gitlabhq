@@ -9,10 +9,10 @@ RSpec.describe Resolvers::Crm::OrganizationStateCountsResolver do
   let_it_be(:group) { create(:group, :crm_enabled) }
 
   before_all do
-    create(:organization, group: group, name: "ABC Corp")
-    create(:organization, group: group, name: "123 Corp", state: 'inactive')
-    create_list(:organization, 3, group: group)
-    create_list(:organization, 2, group: group, state: 'inactive')
+    create(:crm_organization, group: group, name: "ABC Corp")
+    create(:crm_organization, group: group, name: "123 Corp", state: 'inactive')
+    create_list(:crm_organization, 3, group: group)
+    create_list(:crm_organization, 2, group: group, state: 'inactive')
   end
 
   describe '#resolve' do
@@ -36,7 +36,7 @@ RSpec.describe Resolvers::Crm::OrganizationStateCountsResolver do
 
       context 'with a group' do
         context 'when no filter is provided' do
-          it 'returns the count of all organizations' do
+          it 'returns the count of all crm_organizations' do
             counts = resolve_counts(group)
             expect(counts['active']).to eq(4)
             expect(counts['inactive']).to eq(3)

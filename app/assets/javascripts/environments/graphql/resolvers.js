@@ -85,6 +85,30 @@ export const resolvers = (endpoint) => ({
           throw error;
         });
     },
+    k8sServices(_, { configuration }) {
+      const coreV1Api = new CoreV1Api(new Configuration(configuration));
+      return coreV1Api
+        .listCoreV1ServiceForAllNamespaces()
+        .then((res) => {
+          const items = res?.data?.items || [];
+          return items.map((item) => {
+            const { type, clusterIP, externalIP, ports } = item.spec;
+            return {
+              metadata: item.metadata,
+              spec: {
+                type,
+                clusterIP: clusterIP || '-',
+                externalIP: externalIP || '-',
+                ports,
+              },
+            };
+          });
+        })
+        .catch((err) => {
+          const error = err?.response?.data?.message ? new Error(err.response.data.message) : err;
+          throw error;
+        });
+    },
   },
   Mutation: {
     stopEnvironmentREST(_, { environment }, { client }) {

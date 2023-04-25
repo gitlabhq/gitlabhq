@@ -1,4 +1,4 @@
-import { GlButton, GlLink, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlLink, GlDropdownItem, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import eventHub from '~/invite_members/event_hub';
@@ -7,6 +7,7 @@ import {
   TRIGGER_DEFAULT_QA_SELECTOR,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
+  TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
 import { GlEmoji } from '../mock_data/member_modal';
 
@@ -23,6 +24,7 @@ const triggerComponent = {
   anchor: GlLink,
   'text-emoji': GlLink,
   'dropdown-text-emoji': GlDropdownItem,
+  'dropdown-text': GlButton,
 };
 
 const createComponent = (props = {}) => {
@@ -34,6 +36,8 @@ const createComponent = (props = {}) => {
     },
     stubs: {
       GlEmoji,
+      GlDisclosureDropdownItem,
+      GlButton,
     },
   });
 };
@@ -114,5 +118,24 @@ describe('dropdown item with emoji', () => {
 
     expect(findEmoji().exists()).toBe(true);
     expect(findEmoji().attributes('data-name')).toBe('shaking_hands');
+  });
+});
+
+describe('disclosure dropdown item', () => {
+  const findTrigger = () => wrapper.findComponent(GlDisclosureDropdownItem);
+
+  beforeEach(() => {
+    createComponent({ triggerElement: TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN });
+  });
+
+  it('renders a trigger button', () => {
+    expect(findTrigger().exists()).toBe(true);
+    expect(findTrigger().text()).toBe(displayText);
+  });
+
+  it('emits modalOpened which clicked', () => {
+    findTrigger().vm.$emit('action');
+
+    expect(wrapper.emitted('modal-opened')).toHaveLength(1);
   });
 });

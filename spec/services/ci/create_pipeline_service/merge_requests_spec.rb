@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness,
-feature_category: :continuous_integration do
+  feature_category: :continuous_integration do
   context 'merge requests handling' do
     let_it_be(:project)  { create(:project, :repository) }
     let_it_be(:user)     { project.first_owner }
@@ -31,11 +31,13 @@ feature_category: :continuous_integration do
     context 'when pushing a change' do
       context 'when a merge request already exists' do
         let!(:merge_request) do
-          create(:merge_request,
-                 source_project: project,
-                 source_branch: 'feature',
-                 target_project: project,
-                 target_branch: 'master')
+          create(
+            :merge_request,
+            source_project: project,
+            source_branch: 'feature',
+            target_project: project,
+            target_branch: 'master'
+          )
         end
 
         it 'does not create a pipeline' do

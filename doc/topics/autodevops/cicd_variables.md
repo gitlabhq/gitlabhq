@@ -62,8 +62,7 @@ Use these variables to customize and deploy your build.
 ## Database variables
 
 WARNING:
-The default value of `true` for `POSTGRES_ENABLED` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387766)
-in GitLab 15.8. In [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), the default value will change to `false`.
+From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), `POSTGRES_ENABLED` is no longer set by default.
 
 Use these variables to integrate CI/CD with PostgreSQL databases.
 
@@ -71,7 +70,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 |-----------------------------------------|------------------------------------|
 | `DB_INITIALIZE`                         | Used to specify the command to run to initialize the application's PostgreSQL database. Runs inside the application pod. |
 | `DB_MIGRATE`                            | Used to specify the command to run to migrate the application's PostgreSQL database. Runs inside the application pod. |
-| `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `true` until GitLab 16.0, when the default will change to `false`. Set to `false` to disable the automatic deployment of PostgreSQL. |
+| `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Set to `true` to enable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
 | `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |

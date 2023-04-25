@@ -1,4 +1,4 @@
-import { GlModal, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlModal, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 
@@ -12,8 +12,8 @@ describe('DeleteButton', () => {
   let wrapper;
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findForm = () => wrapper.find('form');
   const findModalText = () => wrapper.findByText(MODAL_BODY);
 

@@ -31,6 +31,16 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
 
           expect(page).to have_link(s_('Runners|New project runner'), href: new_project_runner_path(project))
         end
+
+        describe 'runner registration', :js do
+          before do
+            visit new_project_runner_path(project)
+          end
+
+          it_behaves_like 'creates runner and shows register page' do
+            let(:register_path_pattern) { register_project_runner_path(project, '.*') }
+          end
+        end
       end
 
       context 'when create_runner_workflow_for_namespace is disabled' do

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Create a CRM contact', :js, feature_category: :service_desk do
   let(:user)  { create(:user) }
   let(:group) { create(:group, :crm_enabled) }
-  let!(:organization) { create(:organization, group: group, name: 'GitLab') }
+  let!(:crm_organization) { create(:crm_organization, group: group, name: 'GitLab') }
 
   before do
     group.add_owner(user)

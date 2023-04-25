@@ -52,7 +52,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import { DEFAULT_PAGE_SIZE, IssuableListTabs } from '~/vue_shared/issuable/list/constants';
+import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
@@ -108,7 +108,7 @@ const CrmOrganizationToken = () =>
 
 export default {
   i18n,
-  IssuableListTabs,
+  issuableListTabs,
   components: {
     CsvImportExportButtons,
     EmptyStateWithAnyIssues,
@@ -774,7 +774,7 @@ export default {
       :issuables="issues"
       :error="issuesError"
       label-filter-param="label_name"
-      :tabs="$options.IssuableListTabs"
+      :tabs="$options.issuableListTabs"
       :current-tab="state"
       :tab-counts="tabCounts"
       :truncate-counts="!isProject"

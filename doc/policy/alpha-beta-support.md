@@ -49,3 +49,11 @@ Generally Available features means that they passed the [Production Readiness Re
 - Ready for production use at any scale.
 - Fully documented and supported.
 - UX complete and in line with GitLab design standards.
+
+## Never internal
+
+Features are never internal (GitLab team-members) only.
+Our [mission is "everyone can contribute"](https://about.gitlab.com/company/mission/), and that is only possible if people outside the company can try a feature.
+We will get higher quality (more diverse) feedback if people from different organizations try something.
+We've also learned that internal only as a state slows us down more than it speeds us up.
+The experimental features are only shown when people/organizations opt-in to experiments, we are allowed to make mistakes here and literally experiment.

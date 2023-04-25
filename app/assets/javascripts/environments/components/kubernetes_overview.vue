@@ -5,6 +5,7 @@ import csrf from '~/lib/utils/csrf';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesPods from './kubernetes_pods.vue';
+import KubernetesTabs from './kubernetes_tabs.vue';
 
 export default {
   components: {
@@ -13,6 +14,7 @@ export default {
     GlAlert,
     KubernetesAgentInfo,
     KubernetesPods,
+    KubernetesTabs,
   },
   inject: ['kasTunnelUrl'],
   props: {
@@ -102,6 +104,10 @@ export default {
         <kubernetes-pods
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
+          class="gl-mb-5"
+          @cluster-error="onClusterError" />
+        <kubernetes-tabs
+          :configuration="k8sAccessConfiguration"
           class="gl-mb-5"
           @cluster-error="onClusterError"
       /></template>

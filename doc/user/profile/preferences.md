@@ -110,12 +110,9 @@ between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
 NOTE:
 While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
 
-### Dashboard
+### Homepage
 
-For users who have access to a large number of projects but only keep up with a
-select few, the amount of activity on the your dashboard can be
-overwhelming. From the **Dashboard** dropdown list, select what you'd like displayed on your
-personal dashboard.
+This setting changes the behavior of the tanuki icon in the upper-left corner of GitLab.
 
 ### Group overview content
 

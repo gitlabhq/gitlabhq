@@ -1,9 +1,9 @@
 <script>
 import {
   GlModal,
-  GlDropdown,
+  GlDisclosureDropdown,
   GlTooltipDirective,
-  GlDropdownItem,
+  GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -12,8 +12,8 @@ import csrf from '~/lib/utils/csrf';
 export default {
   components: {
     GlModal,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -63,36 +63,42 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
-    right
-    category="tertiary"
-    :aria-label="__('More actions')"
-    icon="ellipsis_v"
-    no-caret
-  >
-    <gl-dropdown-item
-      v-gl-modal-directive="modal.id"
-      :aria-label="actionPrimaryText"
-      variant="danger"
+  <div>
+    <gl-disclosure-dropdown
+      placement="right"
+      category="tertiary"
+      :aria-label="__('More actions')"
+      icon="ellipsis_v"
+      no-caret
     >
-      {{ actionPrimaryText }}
-
-      <form ref="deleteForm" method="post" :action="deletePath">
-        <input type="hidden" name="_method" value="delete" />
-        <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
-      </form>
-
-      <gl-modal
-        :modal-id="modal.id"
-        :title="modalTitle"
-        :action-primary="modal.actionPrimary"
-        :action-cancel="modal.actionCancel"
-        @primary="confirmDelete"
+      <gl-disclosure-dropdown-item
+        v-gl-modal-directive="modal.id"
+        :aria-label="actionPrimaryText"
+        variant="danger"
       >
-        <p>
-          {{ deleteConfirmationText }}
-        </p>
-      </gl-modal>
-    </gl-dropdown-item>
-  </gl-dropdown>
+        <template #list-item>
+          <span class="gl-text-red-500">
+            {{ actionPrimaryText }}
+          </span>
+        </template>
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown>
+
+    <form ref="deleteForm" method="post" :action="deletePath">
+      <input type="hidden" name="_method" value="delete" />
+      <input type="hidden" name="authenticity_token" :value="$options.csrf.token" />
+    </form>
+
+    <gl-modal
+      :modal-id="modal.id"
+      :title="modalTitle"
+      :action-primary="modal.actionPrimary"
+      :action-cancel="modal.actionCancel"
+      @primary="confirmDelete"
+    >
+      <p>
+        {{ deleteConfirmationText }}
+      </p>
+    </gl-modal>
+  </div>
 </template>

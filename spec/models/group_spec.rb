@@ -3162,11 +3162,11 @@ RSpec.describe Group, feature_category: :subgroups do
 
   describe '.organizations' do
     it 'returns organizations belonging to the group' do
-      organization1 = create(:organization, group: group)
-      create(:organization)
-      organization3 = create(:organization, group: group)
+      crm_organization1 = create(:crm_organization, group: group)
+      create(:crm_organization)
+      crm_organization3 = create(:crm_organization, group: group)
 
-      expect(group.organizations).to contain_exactly(organization1, organization3)
+      expect(group.organizations).to contain_exactly(crm_organization1, crm_organization3)
     end
   end
 

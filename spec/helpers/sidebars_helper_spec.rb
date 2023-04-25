@@ -250,10 +250,13 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           name: "",
           items: [
             { href: "/projects/new", text: "New project/repository",
+              component: nil,
               extraAttrs: extra_attrs.call("general_new_project") },
             { href: "/groups/new", text: "New group",
+              component: nil,
               extraAttrs: extra_attrs.call("general_new_group") },
             { href: "/-/snippets/new", text: "New snippet",
+              component: nil,
               extraAttrs: extra_attrs.call("general_new_snippet") }
           ]
         }
@@ -279,10 +282,13 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           name: "In this group",
           items: array_including(
             { href: "/projects/new", text: "New project/repository",
+              component: nil,
               extraAttrs: extra_attrs.call("new_project") },
             { href: "/groups/new#create-group-pane", text: "New subgroup",
+              component: nil,
               extraAttrs: extra_attrs.call("new_subgroup") },
-            { href: "", text: "Invite members",
+            { href: nil, text: "Invite members",
+              component: 'invite_members',
               extraAttrs: extra_attrs.call("invite") }
           )
         ),
@@ -290,10 +296,13 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           name: "In GitLab",
           items: array_including(
             { href: "/projects/new", text: "New project/repository",
+              component: nil,
               extraAttrs: extra_attrs.call("general_new_project") },
             { href: "/groups/new", text: "New group",
+              component: nil,
               extraAttrs: extra_attrs.call("general_new_group") },
             { href: "/-/snippets/new", text: "New snippet",
+              component: nil,
               extraAttrs: extra_attrs.call("general_new_snippet") }
           )
         )

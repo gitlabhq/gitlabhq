@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query', feature_category: :shared do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, public_builds: false) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:developer) { create(:user) }
 
@@ -113,6 +113,38 @@ RSpec.describe 'Query', feature_category: :shared do
             'project' => a_graphql_entity_for(project, :full_path)
           )
         end
+      end
+    end
+  end
+
+  describe '.ciPipelineStage' do
+    let_it_be(:ci_stage) { create(:ci_stage, name: 'graphql test stage', project: project) }
+
+    let(:query) do
+      <<~GRAPHQL
+        {
+          ciPipelineStage(id: "#{ci_stage.to_global_id}") {
+            name
+          }
+        }
+      GRAPHQL
+    end
+
+    context 'when the current user has access to the stage' do
+      it 'fetches the stage for the given ID' do
+        project.add_developer(developer)
+
+        post_graphql(query, current_user: developer)
+
+        expect(graphql_data.dig('ciPipelineStage', 'name')).to eq('graphql test stage')
+      end
+    end
+
+    context 'when the current user does not have access to the stage' do
+      it 'returns nil' do
+        post_graphql(query, current_user: developer)
+
+        expect(graphql_data['ciPipelineStage']).to be_nil
       end
     end
   end

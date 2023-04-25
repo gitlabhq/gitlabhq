@@ -158,6 +158,8 @@ module Types
           Gitlab::Routing.url_helpers.register_admin_runner_url(runner)
         when 'group_type'
           Gitlab::Routing.url_helpers.register_group_runner_url(runner.groups[0], runner)
+        when 'project_type'
+          Gitlab::Routing.url_helpers.register_project_runner_url(runner.projects[0], runner)
         end
       end
 
@@ -212,6 +214,10 @@ module Types
           group = runner.groups[0]
 
           group && context[:current_user]&.can?(:register_group_runners, group)
+        when 'project_type'
+          project = runner.projects[0]
+
+          project && context[:current_user]&.can?(:register_project_runners, project)
         end
       end
     end

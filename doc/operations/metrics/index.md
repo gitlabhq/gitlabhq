@@ -162,7 +162,6 @@ chart panel. To activate keyboard shortcuts, use keyboard tabs to highlight the
 with your mouse, then press the key corresponding to your desired action:
 
 - **Expand panel** - <kbd>e</kbd>
-- **View logs** - <kbd>l</kbd> (lowercase 'L')
 - **Download CSV** - <kbd>d</kbd>
 - **Copy link to chart** - <kbd>c</kbd>
 - **Alerts** - <kbd>a</kbd>

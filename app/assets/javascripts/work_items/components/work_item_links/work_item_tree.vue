@@ -1,7 +1,6 @@
 <script>
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
+import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
@@ -10,7 +9,6 @@ import {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '../../constants';
-import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
@@ -28,7 +26,6 @@ export default {
     WorkItemLinksForm,
     WorkItemLinkChild,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     workItemType: {
       type: String,
@@ -72,9 +69,6 @@ export default {
     };
   },
   computed: {
-    fetchByIid() {
-      return true;
-    },
     childrenIds() {
       return this.children.map((c) => c.id);
     },
@@ -85,6 +79,9 @@ export default {
         )
         .some((hierarchy) => hierarchy.hasChildren);
     },
+  },
+  mounted() {
+    this.addWorkItemQuery(getParameterByName('work_item_iid'));
   },
   methods: {
     showAddForm(formType, childType) {
@@ -99,10 +96,10 @@ export default {
     hideAddForm() {
       this.isShownAddForm = false;
     },
-    prefetchWorkItem({ id, iid }) {
+    prefetchWorkItem({ iid }) {
       if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
         this.prefetch = setTimeout(
-          () => this.addWorkItemQuery({ id, iid }),
+          () => this.addWorkItemQuery(iid),
           DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
         );
       }
@@ -112,22 +109,19 @@ export default {
         clearTimeout(this.prefetch);
       }
     },
-    addWorkItemQuery({ id, iid }) {
-      const variables = this.fetchByIid
-        ? {
-            fullPath: this.projectPath,
-            iid,
-          }
-        : {
-            id,
-          };
+    addWorkItemQuery(iid) {
+      if (!iid) {
+        return;
+      }
+
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query() {
-          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        query: workItemByIidQuery,
+        variables: {
+          fullPath: this.projectPath,
+          iid,
         },
-        variables,
         update(data) {
-          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+          return data.workspace.workItems.nodes[0];
         },
         context: {
           isSingleRequest: true,
