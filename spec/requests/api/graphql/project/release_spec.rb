@@ -132,7 +132,7 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
 
         let(:release_fields) do
           query_graphql_field(:assets, nil,
-            query_graphql_field(:links, nil, 'nodes { id name url external, directAssetUrl }'))
+            query_graphql_field(:links, nil, 'nodes { id name url, directAssetUrl }'))
         end
 
         it 'finds all release links' do
@@ -141,7 +141,6 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
           expected = release.links.map do |link|
             a_graphql_entity_for(
               link, :name, :url,
-              'external' => link.external?,
               'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << "/downloads#{link.filepath}" : link.url
             )
           end
@@ -322,16 +321,15 @@ RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :re
 
         let(:release_fields) do
           query_graphql_field(:assets, nil,
-            query_graphql_field(:links, nil, 'nodes { id name url external, directAssetUrl }'))
+            query_graphql_field(:links, nil, 'nodes { id name url, directAssetUrl }'))
         end
 
-        it 'finds all non source external release links' do
+        it 'finds all non source release links' do
           post_query
 
           expected = release.links.map do |link|
             a_graphql_entity_for(
               link, :name, :url,
-              'external' => true,
               'directAssetUrl' => link.filepath ? Gitlab::Routing.url_helpers.project_release_url(project, release) << "/downloads#{link.filepath}" : link.url
             )
           end

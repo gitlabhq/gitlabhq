@@ -22,7 +22,6 @@ RSpec.describe 'Deletes a release asset link', feature_category: :release_orches
         url
         linkType
         directAssetUrl
-        external
       }
       errors
     FIELDS
@@ -39,8 +38,7 @@ RSpec.describe 'Deletes a release asset link', feature_category: :release_orches
       name: release_link.name,
       url: release_link.url,
       linkType: release_link.link_type.upcase,
-      directAssetUrl: end_with(release_link.filepath),
-      external: true
+      directAssetUrl: end_with(release_link.filepath)
     }.with_indifferent_access
 
     expect(mutation_response[:link]).to match(expected_response)

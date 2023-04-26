@@ -18,9 +18,8 @@ class Projects::Analytics::CycleAnalytics::SummaryController < Projects::Applica
 
   private
 
-  override :all_cycle_analytics_params
-  def all_cycle_analytics_params
-    super.merge({ namespace: @project.project_namespace })
+  def namespace
+    @project.project_namespace
   end
 
   def project_level

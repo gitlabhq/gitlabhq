@@ -32,7 +32,6 @@ RSpec.describe 'Creation of a new release asset link', feature_category: :releas
         url
         linkType
         directAssetUrl
-        external
       }
       errors
     FIELDS
@@ -49,8 +48,7 @@ RSpec.describe 'Creation of a new release asset link', feature_category: :releas
       name: mutation_arguments[:name],
       url: mutation_arguments[:url],
       linkType: mutation_arguments[:linkType],
-      directAssetUrl: end_with(mutation_arguments[:directAssetPath]),
-      external: true
+      directAssetUrl: end_with(mutation_arguments[:directAssetPath])
     }.with_indifferent_access
 
     expect(mutation_response[:link]).to include(expected_response)

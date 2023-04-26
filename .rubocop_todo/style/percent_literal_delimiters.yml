@@ -1109,7 +1109,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/views/layouts/_head.html.haml_spec.rb'
     - 'spec/views/layouts/nav/sidebar/_project.html.haml_spec.rb'
     - 'spec/views/projects/commit/branches.html.haml_spec.rb'
-    - 'spec/views/shared/runners/_runner_details.html.haml_spec.rb'
     - 'spec/workers/concerns/worker_context_spec.rb'
     - 'spec/workers/container_registry/migration/enqueuer_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/advance_stage_worker_spec.rb'

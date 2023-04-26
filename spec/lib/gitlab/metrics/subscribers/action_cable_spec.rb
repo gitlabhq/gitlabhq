@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, feature_category: :application_performance do
   let(:subscriber) { described_class.new }
   let(:counter) { double(:counter) }
-  let(:histogram) { double(:histogram) }
+  let(:transmitted_bytes_counter) { double(:counter) }
   let(:channel_class) { 'IssuesChannel' }
   let(:event) { double(:event, name: name, payload: payload) }
 
@@ -13,9 +13,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
     allow(::Gitlab::Metrics).to receive(:counter).with(
       :action_cable_single_client_transmissions_total, /transmit/
     ).and_return(counter)
-    allow(::Gitlab::Metrics).to receive(:histogram).with(
-      :action_cable_transmitted_bytes, /transmit/
-    ).and_return(histogram)
+    allow(::Gitlab::Metrics).to receive(:counter).with(
+      :action_cable_transmitted_bytes_total, /transmit/
+    ).and_return(transmitted_bytes_counter)
   end
 
   describe '#transmit' do
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
 
       it 'tracks the event with "caller" set to "channel"' do
         expect(counter).to receive(:increment).with(expected_labels)
-        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+        expect(transmitted_bytes_counter).to receive(:increment).with(expected_labels, message_size)
 
         subscriber.transmit(event)
       end
@@ -62,14 +62,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
 
       it 'tracks the event with correct "caller" and "broadcasting"' do
         expect(counter).to receive(:increment).with(expected_labels)
-        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+        expect(transmitted_bytes_counter).to receive(:increment).with(expected_labels, message_size)
 
         subscriber.transmit(event)
       end
 
       it 'is indifferent to keys being symbols or strings in result payload' do
         expect(counter).to receive(:increment).with(expected_labels)
-        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+        expect(transmitted_bytes_counter).to receive(:increment).with(expected_labels, message_size)
 
         event.payload[:data].deep_stringify_keys!
 
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
 
       it 'tracks the event with "caller" set to "unknown"' do
         expect(counter).to receive(:increment).with(expected_labels)
-        expect(histogram).to receive(:observe).with(expected_labels, message_size)
+        expect(transmitted_bytes_counter).to receive(:increment).with(expected_labels, message_size)
 
         subscriber.transmit(event)
       end

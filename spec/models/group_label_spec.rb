@@ -41,11 +41,13 @@ RSpec.describe GroupLabel do
 
     context 'cross-project' do
       let(:namespace) { build_stubbed(:namespace) }
-      let(:source_project) { build_stubbed(:project, name: 'project-1', namespace: namespace) }
-      let(:target_project) { build_stubbed(:project, name: 'project-2', namespace: namespace) }
+      let(:source_project) { build_stubbed(:project, namespace: namespace) }
+      let(:target_project) { build_stubbed(:project, namespace: namespace) }
 
       it 'returns a String reference to the object' do
-        expect(label.to_reference(source_project, target_project: target_project)).to eq %(project-1~#{label.id})
+        expect(label.to_reference(source_project, target_project: target_project)).to(
+          eq("#{source_project.path}~#{label.id}")
+        )
       end
     end
 

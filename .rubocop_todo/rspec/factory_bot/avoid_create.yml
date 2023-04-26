@@ -619,7 +619,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/shared/projects/_inactive_project_deletion_alert.html.haml_spec.rb'
     - 'spec/views/shared/projects/_list.html.haml_spec.rb'
     - 'spec/views/shared/projects/_project.html.haml_spec.rb'
-    - 'spec/views/shared/runners/_runner_details.html.haml_spec.rb'
     - 'spec/views/shared/snippets/_snippet.html.haml_spec.rb'
     - 'spec/views/shared/web_hooks/_web_hook_disabled_alert.html.haml_spec.rb'
     - 'spec/views/shared/wikis/_sidebar.html.haml_spec.rb'

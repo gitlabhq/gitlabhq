@@ -25,7 +25,12 @@ module QA
     describe 'OIDC' do
       it(
         'creates GitLab OIDC application and uses it to login',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/405137'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/405137',
+        quarantine: {
+          only: { pipeline: :nightly },
+          type: :investigating,
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408317'
+        }
       ) do
         instance_oauth_app
 

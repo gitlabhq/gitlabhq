@@ -61,7 +61,7 @@ module CycleAnalyticsParams
   end
 
   def all_cycle_analytics_params
-    permitted_cycle_analytics_params.merge(current_user: current_user)
+    permitted_cycle_analytics_params.merge(current_user: current_user, namespace: namespace)
   end
 
   def request_params

@@ -20,11 +20,6 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
     @project.project_namespace
   end
 
-  override :all_cycle_analytics_params
-  def all_cycle_analytics_params
-    super.merge({ namespace: @project.project_namespace })
-  end
-
   override :cycle_analytics_configuration
   def cycle_analytics_configuration(stages)
     super(stages.select { |stage| permitted_stage?(stage) })

@@ -17,7 +17,7 @@ module Gitlab
         TRANSMIT_SUBSCRIPTION_CONFIRMATION = :action_cable_subscription_confirmations_total
         TRANSMIT_SUBSCRIPTION_REJECTION = :action_cable_subscription_rejections_total
         BROADCAST = :action_cable_broadcasts_total
-        DATA_TRANSMITTED_BYTES = :action_cable_transmitted_bytes
+        DATA_TRANSMITTED_BYTES = :action_cable_transmitted_bytes_total
 
         def transmit_subscription_confirmation(event)
           confirm_subscription_counter.increment
@@ -38,7 +38,7 @@ module Gitlab
 
           transmit_counter.increment(labels)
           data_size = Gitlab::Json.generate(payload[:data]).bytesize
-          transmitted_bytes_histogram.observe(labels, data_size)
+          transmitted_bytes_counter.increment(labels, data_size)
         end
 
         def broadcast(event)
@@ -117,9 +117,12 @@ module Gitlab
           end
         end
 
-        def transmitted_bytes_histogram
-          strong_memoize("transmitted_bytes_histogram") do
-            ::Gitlab::Metrics.histogram(DATA_TRANSMITTED_BYTES, 'Message size, in bytes, transmitted over action cable')
+        def transmitted_bytes_counter
+          strong_memoize("transmitted_bytes_counter") do
+            ::Gitlab::Metrics.counter(
+              DATA_TRANSMITTED_BYTES,
+              'Total number of bytes transmitted over ActionCable'
+            )
           end
         end
       end

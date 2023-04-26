@@ -26,7 +26,11 @@ For authentication, the Releases API accepts either:
 
 ## List Releases
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+> - The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
+<!--- end_remove -->
 
 Returns a paginated list of releases, sorted by `released_at`.
 
@@ -158,14 +162,12 @@ Example response:
                "id":2,
                "name":"awesome-v0.2.msi",
                "url":"http://192.168.10.15:3000/msi",
-               "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
                "link_type":"other"
             },
             {
                "id":1,
                "name":"awesome-v0.2.dmg",
                "url":"http://192.168.10.15:3000",
-               "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
                "link_type":"other"
             }
          ],
@@ -256,7 +258,11 @@ Example response:
 
 ## Get a Release by a tag name
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+> - The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
+<!--- end_remove -->
 
 Gets a release for the given tag.
 
@@ -386,7 +392,6 @@ Example response:
             "id":3,
             "name":"hoge",
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
-            "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
             "link_type":"other"
          }
       ]
@@ -465,6 +470,13 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in issue 352945](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
 
 ## Create a release
+
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+
+> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
+
+<!--- end_remove -->
 
 Creates a release. Developer level access to the project is required to create a release.
 
@@ -594,7 +606,6 @@ Example response:
             "id":3,
             "name":"hoge",
             "url":"https://gitlab.example.com/root/awesome-app/-/tags/v0.11.1/binaries/linux-amd64",
-            "external":true, // deprecated in GitLab 15.9, will be removed in GitLab 16.0.
             "link_type":"other"
          }
       ],

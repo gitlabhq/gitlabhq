@@ -10,11 +10,13 @@ RSpec.describe RemovePhabricatorFromApplicationSettings, feature_category: :impo
 
   describe "#up" do
     it 'removes phabricator and preserves existing valid import sources' do
-      settings.create!(import_sources: import_sources_with_phabricator)
+      record = settings.create!(import_sources: import_sources_with_phabricator)
 
       migrate!
 
-      expect(YAML.safe_load(ApplicationSetting.last.import_sources)).to eq(import_sources_without_phabricator)
+      expect(record.reload.import_sources).to start_with('---')
+
+      expect(ApplicationSetting.last.import_sources).to eq(import_sources_without_phabricator)
     end
   end
 end

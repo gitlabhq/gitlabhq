@@ -82,7 +82,6 @@ Object {
           Object {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-3",
-            "external": true,
             "id": "gid://gitlab/Releases::Link/13",
             "linkType": "image",
             "name": "Image",
@@ -91,7 +90,6 @@ Object {
           Object {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-2",
-            "external": true,
             "id": "gid://gitlab/Releases::Link/12",
             "linkType": "package",
             "name": "Package",
@@ -100,7 +98,6 @@ Object {
           Object {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-1",
-            "external": false,
             "id": "gid://gitlab/Releases::Link/11",
             "linkType": "runbook",
             "name": "Runbook",
@@ -109,7 +106,6 @@ Object {
           Object {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/linux-amd64",
-            "external": true,
             "id": "gid://gitlab/Releases::Link/10",
             "linkType": "other",
             "name": "linux-amd64 binaries",
@@ -306,7 +302,6 @@ Object {
         Object {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-3",
-          "external": true,
           "id": "gid://gitlab/Releases::Link/13",
           "linkType": "image",
           "name": "Image",
@@ -315,7 +310,6 @@ Object {
         Object {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-2",
-          "external": true,
           "id": "gid://gitlab/Releases::Link/12",
           "linkType": "package",
           "name": "Package",
@@ -324,7 +318,6 @@ Object {
         Object {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-1",
-          "external": false,
           "id": "gid://gitlab/Releases::Link/11",
           "linkType": "runbook",
           "name": "Runbook",
@@ -333,7 +326,6 @@ Object {
         Object {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/linux-amd64",
-          "external": true,
           "id": "gid://gitlab/Releases::Link/10",
           "linkType": "other",
           "name": "linux-amd64 binaries",

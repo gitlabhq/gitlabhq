@@ -92,9 +92,9 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
 
       it 'can be unpinned from within its section' do
-        section = find("[data-testid=\"nav-item-link\"]", text: 'Operate')
+        section = find("button", text: 'Operate')
 
-        within(section.sibling('ul')) do
+        within(section.sibling('div')) do
           remove_pin('Terraform modules')
         end
 

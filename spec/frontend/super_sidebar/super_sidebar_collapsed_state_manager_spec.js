@@ -108,7 +108,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
         ${xl}              | ${xl}              | ${false}             | ${false}
         ${sm}              | ${sm}              | ${true}              | ${true}
       `(
-        'when changing width from $initialWindowWidth to $updatedWindowWidth expect the page to be initialized to be done $timesInitalised times',
+        'when changing width from $initialWindowWidth to $updatedWindowWidth expect page to have collapsed class before resize to be $hasClassBeforeResize and after resize to be $hasClassAfterResize',
         ({ initialWindowWidth, updatedWindowWidth, hasClassBeforeResize, hasClassAfterResize }) => {
           getCookie.mockReturnValue(undefined);
           window.innerWidth = initialWindowWidth;

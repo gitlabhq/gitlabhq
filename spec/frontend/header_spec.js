@@ -1,11 +1,11 @@
+import htmlOpenIssue from 'test_fixtures/issues/open-issue.html';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import initTodoToggle, { initNavUserDropdownTracking } from '~/header';
-import { loadHTMLFixture, setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 describe('Header', () => {
   describe('Todos notification', () => {
     const todosPendingCount = '.js-todos-count';
-    const fixtureTemplate = 'issues/open-issue.html';
 
     function isTodosCountHidden() {
       return document.querySelector(todosPendingCount).classList.contains('hidden');
@@ -23,7 +23,7 @@ describe('Header', () => {
 
     beforeEach(() => {
       initTodoToggle();
-      loadHTMLFixture(fixtureTemplate);
+      setHTMLFixture(htmlOpenIssue);
     });
 
     afterEach(() => {

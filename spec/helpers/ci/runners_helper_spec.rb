@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnersHelper do
+RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
   let_it_be(:user) { create(:user) }
 
   before do
@@ -35,6 +35,14 @@ RSpec.describe Ci::RunnersHelper do
       runner = create(:ci_runner, created_at: 4.months.ago)
       expect(helper.runner_status_icon(runner)).to include("is stale")
       expect(helper.runner_status_icon(runner)).to include("never contacted")
+    end
+  end
+
+  describe '#runner_short_name' do
+    it 'shows runner short name' do
+      runner = build_stubbed(:ci_runner, id: non_existing_record_id)
+
+      expect(helper.runner_short_name(runner)).to eq("##{runner.id} (#{runner.short_sha})")
     end
   end
 
@@ -77,7 +85,7 @@ RSpec.describe Ci::RunnersHelper do
   describe '#admin_runners_data_attributes' do
     let_it_be(:admin) { create(:user, :admin) }
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
-    let_it_be(:project_runner) { create(:ci_runner, :project ) }
+    let_it_be(:project_runner) { create(:ci_runner, :project) }
 
     before do
       allow(helper).to receive(:current_user).and_return(admin)

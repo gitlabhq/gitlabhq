@@ -16,6 +16,140 @@ For new projects, Microsoft suggests you use the
 [OpenID Connect protocol](../administration/auth/oidc.md#configure-microsoft-azure),
 which uses the Microsoft identity platform (v2.0) endpoint.
 
+## Migrate to the OpenID Connect protocol
+
+To migrate to the OpenID Connect protocol, see [configure multiple OpenID Connect providers](../administration/auth/oidc.md#configure-multiple-openid-connect-providers).
+
+You must set the `uid_field`, which differs across the providers:
+
+| Provider                                                                                                        | `uid` | Remarks                                                               |
+|-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
+| [`omniauth-azure-oauth2`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/omniauth-azure-oauth2) | `sub` | Additional attributes `oid`, `tid` are offered within the info object |
+| [`omniauth-azure-activedirectory-v2`](https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/)         | `oid` | You must configure `oid` as `uid_field` when migrating                |
+| [`omniauth_openid_connect`](https://github.com/omniauth/omniauth_openid_connect/)                               | `sub` | Specify `uid_field` to use another field                              |
+
+To migrate from `omniauth-azure-oauth2` to `omniauth_openid_connect` you
+must change the configuration:
+
+- **For Omnibus installations**
+
+```diff
+gitlab_rails['omniauth_providers'] = [
+  {
+    name: "azure_oauth2",
+    # label: "Provider name", # optional label for login button, defaults to "Azure AD"
+    args: {
++      name: "azure_oauth2",
++      strategy_class: "OmniAuth::Strategies::OpenIDConnect",
++      scope: ["openid", "profile", "email"],
++      response_type: "code",
++      issuer:  "https://login.microsoftonline.com/<tenant_id>/v2.0",
++      client_auth_method: "query",
++      discovery: true,
++      uid_field: "sub",
++      client_options: {
++        identifier: "<client_id>",
++        secret: "<client_secret>",
++        redirect_uri: "https://gitlab.example.com/users/auth/azure_oauth2/callback"
++      }
+-      client_id: "<client_id>",
+-      client_secret: "<client_secret>",
+-      tenant_id: "<tenant_id>",
+    }
+  }
+]
+```
+
+- **For installations from source**
+
+```diff
+  - { name: 'azure_oauth2',
+      # label: 'Provider name', # optional label for login button, defaults to "Azure AD"
+-      args: { client_id: '<client_id>',
+-              client_secret: '<client_secret>',
+-              tenant_id: '<tenant_id>' } }
++      icon: "<custom_provider_icon>",
++      args: {
++        name: "azure_oauth2",
++        strategy_class: "OmniAuth::Strategies::OpenIDConnect",
++        scope: ["openid","profile","email"],
++        response_type: "code",
++        issuer: 'https://login.microsoftonline.com/<tenant_id>/v2.0',
++        discovery: true,
++        client_auth_method: 'query',
++        uid_field: 'sub',
++        send_scope_to_token_endpoint: "false",
++        client_options: {
++          identifier: "<client_id>",
++          secret: "<client_secret>",
++          redirect_uri: "<your_gitlab_url>/users/auth/azure_oauth2/callback"
++        }
++      }
+    }
+```
+
+To migrate for example from `omniauth-azure-activedirectory-v2` to `omniauth_openid_connect` you
+must change the configuration:
+
+- **For Omnibus installations**
+
+```diff
+gitlab_rails['omniauth_providers'] = [
+  {
+ -    name: "azure_activedirectory_v2",
+    # label: "Provider name", # optional label for login button, defaults to "Azure AD v2"
+    args: {
++      name: "azure_activedirectory_v2",
++      strategy_class: "OmniAuth::Strategies::OpenIDConnect",
++      scope: ["openid", "profile", "email"],
++      response_type: "code",
++      issuer:  "https://login.microsoftonline.com/<tenant_id>/v2.0",
++      client_auth_method: "query",
++      discovery: true,
++      uid_field: "oid",
++      client_options: {
++        identifier: "<client_id>",
++        secret: "<client_secret>",
++        redirect_uri: "https://gitlab.example.com/users/auth/azure_activedirectory_v2/callback"
++      }
+-      client_id: "<client_id>",
+-      client_secret: "<client_secret>",
+-      tenant_id: "<tenant_id>",
+    }
+  }
+]
+```
+
+- **For installations from source**
+
+```diff
+  - { name: 'azure_activedirectory_v2',
+      # label: 'Provider name', # optional label for login button, defaults to "Azure AD v2"
+-      args: { client_id: '<client_id>',
+-              client_secret: '<client_secret>',
+-              tenant_id: '<tenant_id>' } }
++      icon: "<custom_provider_icon>",
++      args: {
++        name: "azure_activedirectory_v2",
++        strategy_class: "OmniAuth::Strategies::OpenIDConnect",
++        scope: ["openid","profile","email"],
++        response_type: "code",
++        issuer: 'https://login.microsoftonline.com/<tenant_id>/v2.0',
++        discovery: true,
++        client_auth_method: 'query',
++        uid_field: 'oid',
++        send_scope_to_token_endpoint: "false",
++        client_options: {
++          identifier: "<client_id>",
++          secret: "<client_secret>",
++          redirect_uri: "<your_gitlab_url>/users/auth/azure_activedirectory_v2/callback"
++        }
++      }
+    }
+```
+
+For more information on other customizations, see [`gitlab_username_claim`](index.md#authentication-sources).
+
 ## Register an Azure application
 
 To enable the Microsoft Azure OAuth 2.0 OmniAuth provider, you must register

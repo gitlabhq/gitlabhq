@@ -422,22 +422,6 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
             .to eq('release-18.04.dmg')
           expect(json_response['assets']['links'].first['url'])
             .to eq('https://my-external-hosting.example.com/scrambled-url/app.zip')
-          expect(json_response['assets']['links'].first['external'])
-            .to be_truthy
-        end
-
-        context 'when link is internal' do
-          let(:url) do
-            "#{project.web_url}/-/jobs/artifacts/v11.6.0-rc4/download?" \
-            "job=rspec-mysql+41%2F50"
-          end
-
-          it 'has external false' do
-            get api("/projects/#{project.id}/releases/v0.1", maintainer)
-
-            expect(json_response['assets']['links'].first['external'])
-              .to be_falsy
-          end
         end
       end
 

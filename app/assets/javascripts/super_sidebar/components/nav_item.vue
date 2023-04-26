@@ -1,6 +1,6 @@
 <script>
 import { kebabCase } from 'lodash';
-import { GlButton, GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
+import { GlButton, GlIcon, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -16,7 +16,6 @@ export default {
   name: 'NavItem',
   components: {
     GlButton,
-    GlCollapse,
     GlIcon,
     GlBadge,
   },
@@ -46,21 +45,7 @@ export default {
       default: () => ({}),
     },
   },
-  data() {
-    return {
-      expanded: this.item.is_active,
-    };
-  },
   computed: {
-    elem() {
-      return this.isSection ? 'button' : 'a';
-    },
-    collapseIcon() {
-      return this.expanded ? 'chevron-up' : 'chevron-down';
-    },
-    isSection() {
-      return Boolean(this.item?.items?.length);
-    },
     itemId() {
       return kebabCase(this.item.title);
     },
@@ -74,13 +59,10 @@ export default {
       );
     },
     isActive() {
-      if (this.isSection) {
-        return !this.expanded && this.item.is_active;
-      }
       return this.item.is_active;
     },
     isPinnable() {
-      return this.panelSupportsPins && !this.isSection && !this.isStatic;
+      return this.panelSupportsPins && !this.isStatic;
     },
     isPinned() {
       return this.pinnedItemIds.ids.includes(this.item.id);
@@ -102,13 +84,6 @@ export default {
       };
     },
     linkProps() {
-      if (this.isSection) {
-        return {
-          'aria-controls': this.itemId,
-          'aria-expanded': String(this.expanded),
-          'data-qa-menu-item': this.item.title,
-        };
-      }
       return {
         ...this.$attrs,
         ...this.trackingProps,
@@ -119,10 +94,6 @@ export default {
     },
     computedLinkClasses() {
       return {
-        // Reset user agent styles on <button>
-        'gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left': this.isSection,
-        'gl-w-full gl-focus--focus': this.isSection,
-        'nav-item-link': !this.isSection,
         'gl-bg-t-gray-a-08': this.isActive,
         'gl-py-2': this.isPinnable,
         'gl-py-3': !this.isPinnable,
@@ -131,27 +102,18 @@ export default {
       };
     },
   },
-  methods: {
-    click(event) {
-      if (this.isSection) {
-        event.preventDefault();
-        this.expanded = !this.expanded;
-      }
-    },
-  },
 };
 </script>
 
 <template>
   <li>
-    <component
-      :is="elem"
+    <a
       v-bind="linkProps"
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none!"
+      class="nav-item-link gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none!"
       :class="computedLinkClasses"
       data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
-      @click="click"
+      :data-qa-menu-item="item.title"
     >
       <div
         :class="[isActive ? 'gl-bg-blue-500' : 'gl-bg-transparent']"
@@ -176,11 +138,10 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="isSection || hasPill || isPinnable" class="gl-flex-grow-1 gl-text-right gl-mr-3">
+      <span v-if="hasPill || isPinnable" class="gl-flex-grow-1 gl-text-right gl-mr-3">
         <gl-badge v-if="hasPill" size="sm" variant="info">
           {{ pillData }}
         </gl-badge>
-        <gl-icon v-else-if="isSection" :name="collapseIcon" />
         <gl-button
           v-else-if="isPinnable && !isPinned"
           size="small"
@@ -198,24 +159,6 @@ export default {
           @click.prevent="$emit('pin-remove', item.id)"
         />
       </span>
-    </component>
-    <gl-collapse
-      v-if="isSection"
-      :id="itemId"
-      v-model="expanded"
-      data-qa-selector="menu_section"
-      :data-qa-section="item.title"
-      :aria-label="item.title"
-      class="gl-list-style-none gl-p-0"
-      tag="ul"
-    >
-      <nav-item
-        v-for="subItem of item.items"
-        :key="`${item.title}-${subItem.title}`"
-        :item="subItem"
-        @pin-add="(itemId) => $emit('pin-add', itemId)"
-        @pin-remove="(itemId) => $emit('pin-remove', itemId)"
-      />
-    </gl-collapse>
+    </a>
   </li>
 </template>

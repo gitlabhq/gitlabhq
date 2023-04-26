@@ -37,15 +37,9 @@ module Releases
       url.start_with?(release.project.web_url)
     end
 
-    # `external?` is deprecated in 15.9 and will be removed in 16.0.
-    def external?
-      !internal?
-    end
-
     def hook_attrs
       {
         id: id,
-        external: external?, # `external` is deprecated in 15.9 and will be removed in 16.0.
         link_type: link_type,
         name: name,
         url: url

@@ -59,7 +59,7 @@ export default {
       :gfm="gfmCopyText"
       :title="__('Copy file path')"
       category="tertiary"
-      css-class="btn-clipboard btn-transparent lh-100 position-static"
+      css-class="gl-mr-2"
     />
 
     <small class="gl-mr-3">{{ blobSize }}</small>

@@ -9,6 +9,7 @@ import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
 } from '../utils/trigger_successful_invite_alert';
+import { PROJECT_SELECT_LABEL_ID } from '../constants';
 import ProjectSelect from './project_select.vue';
 
 export default {
@@ -130,7 +131,7 @@ export default {
     defaultError: s__('ImportAProjectModal|Unable to import project members'),
     successMessage: s__('ImportAProjectModal|Successfully imported'),
   },
-  projectSelectLabelId: 'project-select',
+  projectSelectLabelId: PROJECT_SELECT_LABEL_ID,
   modalId: uniqueId('import-a-project-modal-'),
 };
 </script>
@@ -157,10 +158,11 @@ export default {
       :invalid-feedback="invalidFeedbackMessage"
       :state="validationState"
       data-testid="form-group"
+      label-cols="auto"
+      label-class="gl-pt-3!"
+      :label="$options.i18n.projectLabel"
+      :label-for="$options.projectSelectLabelId"
     >
-      <label :id="$options.projectSelectLabelId" class="col-form-label">{{
-        $options.i18n.projectLabel
-      }}</label>
       <project-select v-model="projectToBeImported" />
     </gl-form-group>
     <p>{{ $options.i18n.modalHelpText }}</p>

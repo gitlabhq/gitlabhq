@@ -61,16 +61,6 @@ describe('NavItem component', () => {
   });
 
   describe('Data Tracking Attributes', () => {
-    it('adds no labels on sections', () => {
-      const id = 'my-id';
-      createWrapper({ title: 'Foo', id, items: [{ title: 'Baz' }] });
-
-      expect(findLink().attributes('data-track-action')).toBeUndefined();
-      expect(findLink().attributes('data-track-label')).toBeUndefined();
-      expect(findLink().attributes('data-track-property')).toBeUndefined();
-      expect(findLink().attributes('data-track-extra')).toBeUndefined();
-    });
-
     it.each`
       id           | panelType    | eventLabel             | eventProperty             | eventExtra
       ${'abc'}     | ${'xyz'}     | ${'abc'}               | ${'nav_panel_xyz'}        | ${undefined}

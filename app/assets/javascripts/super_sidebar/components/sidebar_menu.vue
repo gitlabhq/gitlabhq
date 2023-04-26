@@ -4,10 +4,12 @@ import axios from '~/lib/utils/axios_utils';
 import { PANELS_WITH_PINS } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
+import MenuSection from './menu_section.vue';
 
 export default {
   name: 'SidebarMenu',
   components: {
+    MenuSection,
     NavItem,
     PinnedSection,
   },
@@ -129,8 +131,8 @@ export default {
 </script>
 
 <template>
-  <nav class="gl-py-2 gl-relative">
-    <section v-if="staticItems.length > 0" class="gl-mx-2">
+  <nav class="gl-p-2 gl-relative">
+    <section v-if="staticItems.length > 0">
       <ul class="gl-p-0 gl-m-0">
         <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
       </ul>
@@ -144,11 +146,13 @@ export default {
       @pin-reorder="movePin"
     />
 
-    <ul class="gl-px-2 gl-list-style-none">
-      <nav-item
+    <ul class="gl-p-0 gl-list-style-none">
+      <component
+        :is="item.items && item.items.length ? 'MenuSection' : 'NavItem'"
         v-for="item in nonStaticItems"
         :key="item.id"
         :item="item"
+        tag="li"
         @pin-add="createPin"
         @pin-remove="destroyPin"
       />

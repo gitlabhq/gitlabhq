@@ -80,15 +80,6 @@ RSpec.describe Releases::Link do
     end
   end
 
-  describe '#external?' do
-    subject { link.external? }
-
-    let(:link) { build(:release_link, release: release, url: url) }
-    let(:url) { 'https://google.com/-/jobs/140463678/artifacts/download' }
-
-    it { is_expected.to be_truthy }
-  end
-
   describe 'supported protocols' do
     where(:protocol) do
       %w(http https ftp)

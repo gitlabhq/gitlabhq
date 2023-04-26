@@ -1,4 +1,4 @@
-- runner_name = "##{@runner.id} (#{@runner.short_sha})"
+- runner_name = runner_short_name(@runner)
 - breadcrumb_title s_('Runners|Register')
 - page_title s_('Runners|Register'), runner_name
 - add_to_breadcrumbs _('Runners'), group_runners_path(@group)

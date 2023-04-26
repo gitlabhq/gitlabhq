@@ -35,6 +35,10 @@ module Ci
       end
     end
 
+    def runner_short_name(runner)
+      "##{runner.id} (#{runner.short_sha})"
+    end
+
     def runner_link(runner)
       display_name = truncate(runner.display_name, length: 15)
       id = "\##{runner.id}"

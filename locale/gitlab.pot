@@ -15550,10 +15550,28 @@ msgstr ""
 msgid "Domain Verification"
 msgstr ""
 
+msgid "DomainVerification|Add Domain"
+msgstr ""
+
+msgid "DomainVerification|Domain was added"
+msgstr ""
+
+msgid "DomainVerification|Domain was removed"
+msgstr ""
+
+msgid "DomainVerification|Domain was updated"
+msgstr ""
+
+msgid "DomainVerification|Failed to verify domain ownership"
+msgstr ""
+
 msgid "DomainVerification|How do I configure a domain?"
 msgstr ""
 
 msgid "DomainVerification|No domains configured. Create a domain in a project in this group hierarchy."
+msgstr ""
+
+msgid "DomainVerification|Successfully verified domain ownership"
 msgstr ""
 
 msgid "DomainVerification|The following domains are configured for projects in this group. Users with email addresses that match a verified domain do not need to confirm their account."
@@ -20509,9 +20527,6 @@ msgid "Group membership expiration date removed"
 msgstr ""
 
 msgid "Group milestone"
-msgstr ""
-
-msgid "Group name"
 msgstr ""
 
 msgid "Group name (your organization)"
@@ -35252,9 +35267,6 @@ msgstr ""
 msgid "Projects are graded based on the highest severity vulnerability present"
 msgstr ""
 
-msgid "Projects are organized into groups"
-msgstr ""
-
 msgid "Projects are where you store your code, access issues, wiki and other features of GitLab."
 msgstr ""
 
@@ -35321,6 +35333,9 @@ msgstr ""
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
+msgid "ProjectsNew|An error occurred while checking group path. Please refresh and try again."
+msgstr ""
+
 msgid "ProjectsNew|Analyze your source code for known security vulnerabilities."
 msgstr ""
 
@@ -35352,6 +35367,9 @@ msgid "ProjectsNew|Description format"
 msgstr ""
 
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
+msgstr ""
+
+msgid "ProjectsNew|Group name"
 msgstr ""
 
 msgid "ProjectsNew|Import"
@@ -35390,7 +35408,13 @@ msgstr ""
 msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
 msgstr ""
 
+msgid "ProjectsNew|Project name"
+msgstr ""
+
 msgid "ProjectsNew|Projects"
+msgstr ""
+
+msgid "ProjectsNew|Projects are organized into groups"
 msgstr ""
 
 msgid "ProjectsNew|Recommended if you're new to GitLab"
@@ -35399,10 +35423,19 @@ msgstr ""
 msgid "ProjectsNew|Run CI/CD for external repository"
 msgstr ""
 
+msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."
+msgstr ""
+
 msgid "ProjectsNew|Visibility Level"
 msgstr ""
 
 msgid "ProjectsNew|Want to organize several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}"
+msgstr ""
+
+msgid "ProjectsNew|You can always change your URL later"
+msgstr ""
+
+msgid "ProjectsNew|Your project will be created at:"
 msgstr ""
 
 msgid "PrometheusAlerts|exceeded"
@@ -50643,9 +50676,6 @@ msgstr ""
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "You can always change your URL later"
-msgstr ""
-
 msgid "You can always edit this later"
 msgstr ""
 
@@ -51466,9 +51496,6 @@ msgid "Your project is no longer receiving GitLab Ultimate benefits as of 2022-0
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"
-msgstr ""
-
-msgid "Your project will be created at:"
 msgstr ""
 
 msgid "Your projects"
@@ -53215,6 +53242,9 @@ msgid "must be less than the limit of %{tag_limit} tags"
 msgstr ""
 
 msgid "must be set for a project namespace"
+msgstr ""
+
+msgid "must be specified"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"

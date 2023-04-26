@@ -14,7 +14,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
 describe('PinnedSection component', () => {
   let wrapper;
 
-  const findToggle = () => wrapper.find('a');
+  const findToggle = () => wrapper.find('button');
 
   const createWrapper = () => {
     wrapper = mountExtended(PinnedSection, {
