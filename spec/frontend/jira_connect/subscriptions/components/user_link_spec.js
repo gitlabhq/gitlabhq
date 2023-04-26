@@ -3,7 +3,6 @@ import UserLink from '~/jira_connect/subscriptions/components/user_link.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 
 jest.mock('~/jira_connect/subscriptions/utils', () => ({
   getGitlabSignInURL: jest.fn().mockImplementation((path) => Promise.resolve(path)),
@@ -23,28 +22,19 @@ describe('UserLink', () => {
     });
   };
 
-  const findSignInLink = () => wrapper.findByTestId('sign-in-link');
   const findGitlabUserLink = () => wrapper.findByTestId('gitlab-user-link');
   const findSprintf = () => wrapper.findComponent(GlSprintf);
   const findOauthButton = () => wrapper.findComponent(SignInOauthButton);
 
   describe.each`
-    userSignedIn | hasSubscriptions | expectGlSprintf | expectGlLink | expectOauthButton | jiraConnectOauthEnabled
-    ${true}      | ${false}         | ${true}         | ${false}     | ${false}          | ${false}
-    ${false}     | ${true}          | ${false}        | ${true}      | ${false}          | ${false}
-    ${true}      | ${true}          | ${true}         | ${false}     | ${false}          | ${false}
-    ${false}     | ${false}         | ${false}        | ${false}     | ${false}          | ${false}
-    ${false}     | ${true}          | ${false}        | ${false}     | ${true}           | ${true}
+    userSignedIn | hasSubscriptions | expectGlSprintf | expectOauthButton
+    ${false}     | ${false}         | ${false}        | ${false}
+    ${false}     | ${true}          | ${false}        | ${true}
+    ${true}      | ${false}         | ${true}         | ${false}
+    ${true}      | ${true}          | ${true}         | ${false}
   `(
-    'when `userSignedIn` is $userSignedIn, `hasSubscriptions` is $hasSubscriptions, `jiraConnectOauthEnabled` is $jiraConnectOauthEnabled',
-    ({
-      userSignedIn,
-      hasSubscriptions,
-      expectGlSprintf,
-      expectGlLink,
-      expectOauthButton,
-      jiraConnectOauthEnabled,
-    }) => {
+    'when `userSignedIn` is $userSignedIn, `hasSubscriptions` is $hasSubscriptions',
+    ({ userSignedIn, hasSubscriptions, expectGlSprintf, expectOauthButton }) => {
       it('renders template correctly', () => {
         createComponent(
           {
@@ -53,38 +43,16 @@ describe('UserLink', () => {
           },
           {
             provide: {
-              glFeatures: {
-                jiraConnectOauth: jiraConnectOauthEnabled,
-              },
               oauthMetadata: {},
             },
           },
         );
 
         expect(findSprintf().exists()).toBe(expectGlSprintf);
-        expect(findSignInLink().exists()).toBe(expectGlLink);
         expect(findOauthButton().exists()).toBe(expectOauthButton);
       });
     },
   );
-
-  describe('sign in link', () => {
-    it('renders with correct href', async () => {
-      const mockUsersPath = '/user';
-      createComponent(
-        {
-          userSignedIn: false,
-          hasSubscriptions: true,
-        },
-        { provide: { usersPath: mockUsersPath } },
-      );
-
-      await waitForPromises();
-
-      expect(findSignInLink().exists()).toBe(true);
-      expect(findSignInLink().attributes('href')).toBe(mockUsersPath);
-    });
-  });
 
   describe('gitlab user link', () => {
     describe.each`

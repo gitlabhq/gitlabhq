@@ -19,20 +19,16 @@ describe('SignInGitlabCom', () => {
   let wrapper;
   let store;
 
-  const findSignInLegacyButton = () => wrapper.findComponent(SignInLegacyButton);
   const findSignInOauthButton = () => wrapper.findComponent(SignInOauthButton);
   const findSubscriptionsList = () => wrapper.findComponent(SubscriptionsList);
 
-  const createComponent = ({ props, jiraConnectOauthEnabled } = {}) => {
+  const createComponent = ({ props } = {}) => {
     store = createStore();
 
     wrapper = shallowMount(SignInGitlabCom, {
       store,
       provide: {
         ...defaultProvide,
-        glFeatures: {
-          jiraConnectOauth: jiraConnectOauthEnabled,
-        },
       },
       propsData: props,
       stubs: {
@@ -48,57 +44,37 @@ describe('SignInGitlabCom', () => {
       ${'with subscriptions'}    | ${true}          | ${SignInGitlabCom.i18n.signInButtonTextWithSubscriptions}
       ${'without subscriptions'} | ${false}         | ${I18N_DEFAULT_SIGN_IN_BUTTON_TEXT}
     `('$scenario', ({ hasSubscriptions, signInButtonText }) => {
-      describe('when `jiraConnectOauthEnabled` feature flag is disabled', () => {
-        beforeEach(() => {
-          createComponent({
-            jiraConnectOauthEnabled: false,
-            props: {
-              hasSubscriptions,
-            },
-          });
-        });
-
-        it('renders legacy sign in button', () => {
-          const button = findSignInLegacyButton();
-          expect(button.props('usersPath')).toBe(mockUsersPath);
-          expect(button.text()).toMatchInterpolatedText(signInButtonText);
+      beforeEach(() => {
+        createComponent({
+          props: {
+            hasSubscriptions,
+          },
         });
       });
 
-      describe('when `jiraConnectOauthEnabled` feature flag is enabled', () => {
-        beforeEach(() => {
-          createComponent({
-            jiraConnectOauthEnabled: true,
-            props: {
-              hasSubscriptions,
-            },
+      describe('oauth sign in button', () => {
+        it('renders oauth sign in button', () => {
+          const button = findSignInOauthButton();
+          expect(button.text()).toMatchInterpolatedText(signInButtonText);
+        });
+
+        describe('when button emits `sign-in` event', () => {
+          it('emits `sign-in-oauth` event', () => {
+            const button = findSignInOauthButton();
+
+            const mockUser = { name: 'test' };
+            button.vm.$emit('sign-in', mockUser);
+
+            expect(wrapper.emitted('sign-in-oauth')[0]).toEqual([mockUser]);
           });
         });
 
-        describe('oauth sign in button', () => {
-          it('renders oauth sign in button', () => {
+        describe('when button emits `error` event', () => {
+          it('emits `error` event', () => {
             const button = findSignInOauthButton();
-            expect(button.text()).toMatchInterpolatedText(signInButtonText);
-          });
+            button.vm.$emit('error');
 
-          describe('when button emits `sign-in` event', () => {
-            it('emits `sign-in-oauth` event', () => {
-              const button = findSignInOauthButton();
-
-              const mockUser = { name: 'test' };
-              button.vm.$emit('sign-in', mockUser);
-
-              expect(wrapper.emitted('sign-in-oauth')[0]).toEqual([mockUser]);
-            });
-          });
-
-          describe('when button emits `error` event', () => {
-            it('emits `error` event', () => {
-              const button = findSignInOauthButton();
-              button.vm.$emit('error');
-
-              expect(wrapper.emitted('error')).toHaveLength(1);
-            });
+            expect(wrapper.emitted('error')).toHaveLength(1);
           });
         });
       });

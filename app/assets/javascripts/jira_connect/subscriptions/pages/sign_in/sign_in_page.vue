@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     isOauthSelfManagedEnabled() {
-      return this.glFeatures.jiraConnectOauth && this.publicKeyStorageEnabled;
+      return this.publicKeyStorageEnabled;
     },
   },
 };

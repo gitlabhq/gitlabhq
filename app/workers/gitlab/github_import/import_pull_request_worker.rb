@@ -16,6 +16,10 @@ module Gitlab
       def object_type
         :pull_request
       end
+
+      def parallel_import_batch
+        { size: 200, delay: 1.minute }
+      end
     end
   end
 end

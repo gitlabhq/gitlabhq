@@ -59,7 +59,7 @@ export default ({ editorAiActions = [] } = {}) => {
       showTimelineViewToggle,
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
-      editorAiActions: editorAiActions.map((factory) => factory(notesDataset)),
+      editorAiActions: editorAiActions.map((factory) => factory(noteableData)),
     },
     data() {
       return {

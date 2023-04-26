@@ -45,21 +45,14 @@ export default {
       return !isEmpty(this.subscriptions);
     },
     userSignedIn() {
-      if (this.isOauthEnabled) {
-        return Boolean(this.currentUser);
-      }
-
-      return Boolean(!this.usersPath);
-    },
-    isOauthEnabled() {
-      return this.glFeatures.jiraConnectOauth;
+      return Boolean(this.currentUser);
     },
     /**
      * Returns false if the GitLab for Jira app doesn't support the user's browser.
      * Any web API that the GitLab for Jira app depends on should be checked here.
      */
     isBrowserSupported() {
-      return !this.isOauthEnabled || AccessorUtilities.canUseCrypto();
+      return AccessorUtilities.canUseCrypto();
     },
     gitlabUrl() {
       return gon.gitlab_url;
@@ -80,11 +73,10 @@ export default {
     }),
     ...mapActions(['fetchSubscriptions']),
     /**
-     * Fetch subscriptions from the REST API,
-     * if the jiraConnectOauth flag is enabled.
+     * Fetch subscriptions from the REST API.
      */
     fetchSubscriptionsOauth() {
-      if (!this.isOauthEnabled || !this.userSignedIn) return;
+      if (!this.userSignedIn) return;
 
       this.fetchSubscriptions(this.subscriptionsPath);
     },

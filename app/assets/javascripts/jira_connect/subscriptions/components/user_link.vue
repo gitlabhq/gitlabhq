@@ -54,9 +54,6 @@ export default {
         ? this.$options.i18n.signedInAsUserText
         : this.$options.i18n.signedInText;
     },
-    isOauthEnabled() {
-      return this.glFeatures.jiraConnectOauth;
-    },
   },
   async created() {
     this.signInURL = await getGitlabSignInURL(this.usersPath);
@@ -79,13 +76,9 @@ export default {
     </gl-sprintf>
 
     <template v-else-if="hasSubscriptions">
-      <sign-in-oauth-button v-if="isOauthEnabled" category="tertiary">
+      <sign-in-oauth-button category="tertiary">
         {{ $options.i18n.signInText }}
       </sign-in-oauth-button>
-
-      <gl-link v-else data-testid="sign-in-link" :href="signInURL" target="_blank">
-        {{ $options.i18n.signInText }}
-      </gl-link>
     </template>
   </div>
 </template>

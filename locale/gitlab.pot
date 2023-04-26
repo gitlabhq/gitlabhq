@@ -10949,6 +10949,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Description is required"
 msgstr ""
 
+msgid "ComplianceFrameworks|Edit compliance framework"
+msgstr ""
+
 msgid "ComplianceFrameworks|Edit framework"
 msgstr ""
 
@@ -10989,6 +10992,9 @@ msgid "ComplianceFrameworks|Remove default"
 msgstr ""
 
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
+msgstr ""
+
+msgid "ComplianceFrameworks|Saved changes to compliance framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Set default"

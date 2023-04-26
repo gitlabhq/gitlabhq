@@ -9,7 +9,6 @@ export default {
   name: 'SignInGitlabCom',
   components: {
     SubscriptionsList,
-    SignInLegacyButton: () => import('../../components/sign_in_legacy_button.vue'),
     SignInOauthButton: () => import('../../components/sign_in_oauth_button.vue'),
   },
   mixins: [glFeatureFlagMixin()],
@@ -18,11 +17,6 @@ export default {
     hasSubscriptions: {
       type: Boolean,
       required: true,
-    },
-  },
-  computed: {
-    useSignInOauthButton() {
-      return this.glFeatures.jiraConnectOauth;
     },
   },
   i18n: {
@@ -44,16 +38,12 @@ export default {
     <div v-if="hasSubscriptions">
       <div class="gl-display-flex gl-justify-content-end gl-mb-3">
         <sign-in-oauth-button
-          v-if="useSignInOauthButton"
           :gitlab-base-path="$options.GITLAB_COM_BASE_PATH"
           @sign-in="$emit('sign-in-oauth', $event)"
           @error="onSignInError"
         >
           {{ $options.i18n.signInButtonTextWithSubscriptions }}
         </sign-in-oauth-button>
-        <sign-in-legacy-button v-else :users-path="usersPath">
-          {{ $options.i18n.signInButtonTextWithSubscriptions }}
-        </sign-in-legacy-button>
       </div>
 
       <subscriptions-list />
@@ -61,12 +51,10 @@ export default {
     <div v-else class="gl-text-center">
       <p class="gl-mb-7">{{ $options.i18n.signInText }}</p>
       <sign-in-oauth-button
-        v-if="useSignInOauthButton"
         :gitlab-base-path="$options.GITLAB_COM_BASE_PATH"
         @sign-in="$emit('sign-in-oauth', $event)"
         @error="onSignInError"
       />
-      <sign-in-legacy-button v-else class="gl-mb-7" :users-path="usersPath" />
     </div>
   </div>
 </template>

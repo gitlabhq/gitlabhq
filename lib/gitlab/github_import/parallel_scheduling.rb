@@ -3,6 +3,8 @@
 module Gitlab
   module GithubImport
     module ParallelScheduling
+      include JobDelayCalculator
+
       attr_reader :project, :client, :page_counter, :already_imported_cache_key,
                   :job_waiter_cache_key, :job_waiter_remaining_cache_key
 
@@ -197,11 +199,6 @@ module Gitlab
         raise NotImplementedError
       end
 
-      # Default batch settings for parallel import (can be redefined in Importer classes)
-      def parallel_import_batch
-        { size: 1000, delay: 1.minute }
-      end
-
       def abort_on_failure
         false
       end
@@ -242,12 +239,6 @@ module Gitlab
 
           JobWaiter.new(jobs_remaining, key)
         end
-      end
-
-      def calculate_job_delay(job_index)
-        multiplier = (job_index / parallel_import_batch[:size])
-
-        (multiplier * parallel_import_batch[:delay]) + 1.second
       end
     end
   end

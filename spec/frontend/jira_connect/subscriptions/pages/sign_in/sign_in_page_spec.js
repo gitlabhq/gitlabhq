@@ -12,20 +12,11 @@ describe('SignInPage', () => {
   const findSignInGitlabCom = () => wrapper.findComponent(SignInGitlabCom);
   const findSignInGitabMultiversion = () => wrapper.findComponent(SignInGitlabMultiversion);
 
-  const createComponent = ({
-    props = {},
-    jiraConnectOauthEnabled,
-    publicKeyStorageEnabled,
-  } = {}) => {
+  const createComponent = ({ props = {}, publicKeyStorageEnabled } = {}) => {
     store = createStore();
 
     wrapper = shallowMount(SignInPage, {
       store,
-      provide: {
-        glFeatures: {
-          jiraConnectOauth: jiraConnectOauthEnabled,
-        },
-      },
       propsData: {
         hasSubscriptions: false,
         publicKeyStorageEnabled,
@@ -35,20 +26,13 @@ describe('SignInPage', () => {
   };
 
   it.each`
-    jiraConnectOauthEnabled | publicKeyStorageEnabled | shouldRenderDotCom | shouldRenderMultiversion
-    ${false}                | ${true}                 | ${true}            | ${false}
-    ${false}                | ${false}                | ${true}            | ${false}
-    ${true}                 | ${true}                 | ${false}           | ${true}
-    ${true}                 | ${false}                | ${true}            | ${false}
+    publicKeyStorageEnabled | shouldRenderDotCom | shouldRenderMultiversion
+    ${true}                 | ${false}           | ${true}
+    ${false}                | ${true}            | ${false}
   `(
-    'renders correct component when jiraConnectOauth is $jiraConnectOauthEnabled',
-    ({
-      jiraConnectOauthEnabled,
-      publicKeyStorageEnabled,
-      shouldRenderDotCom,
-      shouldRenderMultiversion,
-    }) => {
-      createComponent({ jiraConnectOauthEnabled, publicKeyStorageEnabled });
+    'renders correct component when publicKeyStorageEnabled is $publicKeyStorageEnabled',
+    ({ publicKeyStorageEnabled, shouldRenderDotCom, shouldRenderMultiversion }) => {
+      createComponent({ publicKeyStorageEnabled });
 
       expect(findSignInGitlabCom().exists()).toBe(shouldRenderDotCom);
       expect(findSignInGitabMultiversion().exists()).toBe(shouldRenderMultiversion);

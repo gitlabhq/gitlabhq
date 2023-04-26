@@ -42,24 +42,15 @@ export default {
       isLoading: false,
     };
   },
-  computed: {
-    oauthEnabled() {
-      return this.glFeatures.jiraConnectOauth;
-    },
-  },
   methods: {
     ...mapActions(['addSubscription']),
     async onClick() {
-      if (this.oauthEnabled) {
-        this.isLoading = true;
-        await this.addSubscription({
-          namespacePath: this.group.full_path,
-          subscriptionsPath: this.subscriptionsPath,
-        });
-        this.isLoading = false;
-      } else {
-        this.deprecatedAddSubscription();
-      }
+      this.isLoading = true;
+      await this.addSubscription({
+        namespacePath: this.group.full_path,
+        subscriptionsPath: this.subscriptionsPath,
+      });
+      this.isLoading = false;
     },
     deprecatedAddSubscription() {
       this.isLoading = true;

@@ -25,8 +25,14 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
       end
     end
 
-    context 'with an existing project' do
+    context 'with an existing project', :clean_gitlab_redis_cache do
       let(:project) { create(:project, import_url: 'https://t0ken@github.com/repo/repo.git') }
+
+      before do
+        allow_next_instance_of(Gitlab::GithubImport::Client) do |instance|
+          allow(instance).to receive(:rate_limit_resets_in).and_return(14)
+        end
+      end
 
       it 'notifies any waiters upon successfully importing the data' do
         expect(worker)
@@ -57,13 +63,13 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
         expect(worker)
           .not_to receive(:notify_waiter)
 
-        expect_next_instance_of(Gitlab::GithubImport::Client) do |instance|
-          expect(instance).to receive(:rate_limit_resets_in).and_return(14)
-        end
+        expect(worker)
+          .to receive(:object_type)
+          .and_return(:pull_request)
 
         expect(worker.class)
           .to receive(:perform_in)
-          .with(14, project.id, { 'number' => 2 }, '123')
+          .with(15, project.id, { 'number' => 2 }, '123')
 
         worker.perform(project.id, { 'number' => 2 }, '123')
       end
