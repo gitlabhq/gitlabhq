@@ -265,11 +265,23 @@ RSpec.describe EnvironmentStatus do
 
       context 'when environment is stopped' do
         before do
+          stub_feature_flags(review_apps_redeploy_mr_widget: false)
           environment.stop!
         end
 
         it 'does not return environment status' do
           expect(subject.count).to eq(0)
+        end
+      end
+
+      context 'when environment is stopped and review_apps_redeploy_mr_widget is turned on' do
+        before do
+          stub_feature_flags(review_apps_redeploy_mr_widget: true)
+          environment.stop!
+        end
+
+        it 'returns environment regardless of status' do
+          expect(subject.count).to eq(1)
         end
       end
     end

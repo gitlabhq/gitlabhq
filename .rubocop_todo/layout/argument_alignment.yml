@@ -1474,7 +1474,6 @@ Layout/ArgumentAlignment:
     - 'ee/spec/services/ee/vulnerability_feedback_module/update_service_spec.rb'
     - 'ee/spec/services/elastic/process_bookkeeping_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
-    - 'ee/spec/services/epics/tree_reorder_service_spec.rb'
     - 'ee/spec/services/geo/blob_upload_service_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/hashed_storage_attachments_migration_service_spec.rb'

@@ -1,0 +1,8 @@
+---
+name: expose_authorized_cluster_agents
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117128
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407841
+milestone: '16.0'
+type: development
+group: group::environments
+default_enabled: false

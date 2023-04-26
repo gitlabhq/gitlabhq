@@ -67,7 +67,6 @@ Layout/SpaceInsideParens:
     - 'ee/spec/services/ee/users/update_service_spec.rb'
     - 'ee/spec/services/epic_issues/update_service_spec.rb'
     - 'ee/spec/services/epics/related_epic_links/destroy_service_spec.rb'
-    - 'ee/spec/services/epics/tree_reorder_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
     - 'ee/spec/services/geo/replication_toggle_request_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'

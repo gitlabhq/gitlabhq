@@ -7678,6 +7678,29 @@ The edge type for [`ClusterAgentActivityEvent`](#clusteragentactivityevent).
 | <a id="clusteragentactivityeventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="clusteragentactivityeventedgenode"></a>`node` | [`ClusterAgentActivityEvent`](#clusteragentactivityevent) | The item at the end of the edge. |
 
+#### `ClusterAgentAuthorizationCiAccessConnection`
+
+The connection type for [`ClusterAgentAuthorizationCiAccess`](#clusteragentauthorizationciaccess).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentauthorizationciaccessconnectionedges"></a>`edges` | [`[ClusterAgentAuthorizationCiAccessEdge]`](#clusteragentauthorizationciaccessedge) | A list of edges. |
+| <a id="clusteragentauthorizationciaccessconnectionnodes"></a>`nodes` | [`[ClusterAgentAuthorizationCiAccess]`](#clusteragentauthorizationciaccess) | A list of nodes. |
+| <a id="clusteragentauthorizationciaccessconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ClusterAgentAuthorizationCiAccessEdge`
+
+The edge type for [`ClusterAgentAuthorizationCiAccess`](#clusteragentauthorizationciaccess).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentauthorizationciaccessedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="clusteragentauthorizationciaccessedgenode"></a>`node` | [`ClusterAgentAuthorizationCiAccess`](#clusteragentauthorizationciaccess) | The item at the end of the edge. |
+
 #### `ClusterAgentConnection`
 
 The connection type for [`ClusterAgent`](#clusteragent).
@@ -12374,6 +12397,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="clusteragentactivityeventlevel"></a>`level` | [`String`](#string) | Severity of the event. |
 | <a id="clusteragentactivityeventrecordedat"></a>`recordedAt` | [`Time`](#time) | Timestamp the event was recorded. |
 | <a id="clusteragentactivityeventuser"></a>`user` | [`UserCore`](#usercore) | User associated with the event. |
+
+### `ClusterAgentAuthorizationCiAccess`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentauthorizationciaccessagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Authorized cluster agent. |
+| <a id="clusteragentauthorizationciaccessconfig"></a>`config` | [`JSON`](#json) | Configuration for the authorized project. |
 
 ### `ClusterAgentToken`
 
@@ -18586,6 +18618,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
 | <a id="projectavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the project. |
 | <a id="projectbranchrules"></a>`branchRules` | [`BranchRuleConnection`](#branchruleconnection) | Branch rules configured for the project. (see [Connections](#connections)) |
+| <a id="projectciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
 | <a id="projectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | The CI Job Tokens scope of access. |

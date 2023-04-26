@@ -364,6 +364,7 @@ class Project < ApplicationRecord
   has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace'
   has_many :management_clusters, class_name: 'Clusters::Cluster', foreign_key: :management_project_id, inverse_of: :management_project
   has_many :cluster_agents, class_name: 'Clusters::Agent'
+  has_many :ci_access_project_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization'
 
   has_many :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :project

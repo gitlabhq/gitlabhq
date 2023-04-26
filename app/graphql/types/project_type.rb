@@ -522,6 +522,12 @@ module Types
           description: 'Cluster agents associated with the project.',
           resolver: ::Resolvers::Clusters::AgentsResolver
 
+    field :ci_access_authorized_agents, ::Types::Clusters::Agents::Authorizations::CiAccessType.connection_type,
+          null: true,
+          description: 'Authorized cluster agents for the project through ci_access keyword.',
+          resolver: ::Resolvers::Clusters::Agents::Authorizations::CiAccessResolver,
+          authorize: :read_cluster_agent
+
     field :merge_commit_template, GraphQL::Types::String,
           null: true,
           description: 'Template used to create merge commit message in merge requests.'

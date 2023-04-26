@@ -34,7 +34,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       issue_status_counts terraform_states alert_management_integrations
       container_repositories container_repositories_count
       pipeline_analytics squash_read_only sast_ci_configuration
-      cluster_agent cluster_agents agent_configurations
+      cluster_agent cluster_agents agent_configurations ci_access_authorized_agents
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages

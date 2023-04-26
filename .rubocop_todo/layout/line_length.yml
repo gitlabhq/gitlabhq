@@ -2251,7 +2251,6 @@ Layout/LineLength:
     - 'ee/spec/services/epic_issues/create_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/epics/related_epic_links/create_service_spec.rb'
-    - 'ee/spec/services/epics/tree_reorder_service_spec.rb'
     - 'ee/spec/services/epics/update_dates_service_spec.rb'
     - 'ee/spec/services/epics/update_service_spec.rb'
     - 'ee/spec/services/external_status_checks/update_service_spec.rb'

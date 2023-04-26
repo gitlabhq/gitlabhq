@@ -145,6 +145,58 @@ bin/rake 'gitlab:seed:vulnerabilities'
 bin/rake 'gitlab:seed:vulnerabilities[group-path/project-path]'
 ```
 
+#### Seed a project with environments
+
+You can seed a project with [environments](../ci/environments/index.md).
+
+By default, this creates 10 environments, each with the prefix `ENV_`.
+Only `project_path` is required to run this command.
+
+```shell
+bundle exec rake "gitlab:seed:project_environments[project_path, seed_count, prefix]"
+
+# Examples
+bundle exec rake "gitlab:seed:project_environments[flightjs/Flight]"
+bundle exec rake "gitlab:seed:project_environments[flightjs/Flight, 25, FLIGHT_ENV_]"
+```
+
+#### Seed CI variables
+
+You can seed a project, group, or instance with [CI variables](../ci/variables/index.md).
+
+By default, each command creates 10 CI variables. Variable names are prepended with its own
+default prefix (`VAR_` for project-level variables, `GROUP_VAR_` for group-level variables,
+and `INSTANCE_VAR_` for instance-level variables).
+
+Instance-level variables do not have environment scopes. Project-level and group-level variables
+use the default `"*"` environment scope if no `environment_scope` is supplied. If `environment_scope`
+is set to `"unique"`, each variable is created with its own unique environment.
+
+```shell
+# Seed a project with project-level CI variables
+# Only `project_path` is required to run this command.
+bundle exec rake "gitlab:seed:ci_variables_project[project_path, seed_count, environment_scope, prefix]"
+
+# Seed a group with group-level CI variables
+# Only `group_name` is required to run this command.
+bundle exec rake "gitlab:seed:ci_variables_group[group_name, seed_count, environment_scope, prefix]"
+
+# Seed an instance with instance-level CI variables
+bundle exec rake "gitlab:seed:ci_variables_instance[seed_count, prefix]"
+
+# Examples
+bundle exec rake "gitlab:seed:ci_variables_project[flightjs/Flight]"
+bundle exec rake "gitlab:seed:ci_variables_project[flightjs/Flight, 25, staging]"
+bundle exec rake "gitlab:seed:ci_variables_project[flightjs/Flight, 25, unique, CI_VAR_]"
+
+bundle exec rake "gitlab:seed:ci_variables_group[group_name]"
+bundle exec rake "gitlab:seed:ci_variables_group[group_name, 25, staging]"
+bundle exec rake "gitlab:seed:ci_variables_group[group_name, 25, unique, CI_VAR_]"
+
+bundle exec rake "gitlab:seed:ci_variables_instance"
+bundle exec rake "gitlab:seed:ci_variables_instance[25, CI_VAR_]"
+```
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill

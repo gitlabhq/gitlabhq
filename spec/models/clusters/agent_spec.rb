@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Agent do
+RSpec.describe Clusters::Agent, feature_category: :deployment_management do
   subject { create(:cluster_agent) }
 
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
@@ -162,5 +162,76 @@ RSpec.describe Clusters::Agent do
     end
 
     it { is_expected.to be_like_time(event2.recorded_at) }
+  end
+
+  describe '#ci_access_authorized_for?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:organization) { create(:group) }
+    let_it_be(:agent_management_project) { create(:project, group: organization) }
+    let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
+    let_it_be(:deployment_project) { create(:project, group: organization) }
+
+    let(:user) { create(:user) }
+
+    subject { agent.ci_access_authorized_for?(user) }
+
+    it { is_expected.to eq(false) }
+
+    context 'with project-level authorization' do
+      let!(:authorization) { create(:agent_ci_access_project_authorization, agent: agent, project: deployment_project) }
+
+      where(:user_role, :allowed) do
+        :guest       | false
+        :reporter    | false
+        :developer   | true
+        :maintainer  | true
+        :owner       | true
+      end
+
+      with_them do
+        before do
+          deployment_project.add_member(user, user_role)
+        end
+
+        it { is_expected.to eq(allowed) }
+      end
+
+      context 'when expose_authorized_cluster_agents feature flag is disabled' do
+        before do
+          stub_feature_flags(expose_authorized_cluster_agents: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
+    context 'with group-level authorization' do
+      let!(:authorization) { create(:agent_ci_access_group_authorization, agent: agent, group: organization) }
+
+      where(:user_role, :allowed) do
+        :guest       | false
+        :reporter    | false
+        :developer   | true
+        :maintainer  | true
+        :owner       | true
+      end
+
+      with_them do
+        before do
+          organization.add_member(user, user_role)
+        end
+
+        it { is_expected.to eq(allowed) }
+      end
+
+      context 'when expose_authorized_cluster_agents feature flag is disabled' do
+        before do
+          stub_feature_flags(expose_authorized_cluster_agents: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
   end
 end

@@ -508,6 +508,7 @@ project:
 - cluster
 - clusters
 - cluster_agents
+- ci_access_project_authorizations
 - cluster_project
 - creator
 - cycle_analytics_stages
