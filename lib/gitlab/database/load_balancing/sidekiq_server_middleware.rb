@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module LoadBalancing
       class SidekiqServerMiddleware
+        include WalTrackingReceiver
+
         JobReplicaNotUpToDate = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
         REPLICA_WAIT_SLEEP_SECONDS = 0.5
@@ -91,19 +93,6 @@ module Gitlab
           # if `retry_count` is `nil` it indicates that this job was never retried
           # the `0` indicates that this is a first retry
           job['retry_count'].nil?
-        end
-
-        def databases_in_sync?(wal_locations)
-          ::Gitlab::Database::LoadBalancing.each_load_balancer.all? do |lb|
-            if (location = wal_locations.with_indifferent_access[lb.name])
-              lb.select_up_to_date_host(location)
-            else
-              # If there's no entry for a load balancer it means the Sidekiq
-              # job doesn't care for it. In this case we'll treat the load
-              # balancer as being in sync.
-              true
-            end
-          end
         end
       end
     end

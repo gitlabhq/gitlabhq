@@ -302,6 +302,7 @@ runs the GitLab test suite "as if JiHu", meaning as if the pipeline would run
 in the context of [GitLab JH](../jh_features_review.md). These jobs are only
 created in the following cases:
 
+- when changes are made to feature flags
 - when the `pipeline:run-as-if-jh` label is set on the merge request
 
 This pipeline runs under the context of a generated branch in the

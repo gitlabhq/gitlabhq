@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_setting do
+RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_setting, feature_category: :shared do
   include StubENV
   include UsageDataHelpers
 
@@ -396,6 +396,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
         expect(response).to redirect_to(general_admin_application_settings_path)
         expect(application_settings.reload.invitation_flow_enforcement).to eq(true)
+      end
+    end
+
+    context 'maximum includes' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates ci_max_includes setting' do
+        put :update, params: { application_setting: { ci_max_includes: 200 } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.ci_max_includes).to eq(200)
       end
     end
   end

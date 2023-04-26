@@ -11,7 +11,7 @@ module JiraConnectHelper
       subscriptions_path: jira_connect_subscriptions_path(format: :json),
       users_path: current_user ? nil : jira_connect_users_path, # users_path is used to determine if user is signed in
       gitlab_user_path: current_user ? user_path(current_user) : nil,
-      oauth_metadata: Feature.enabled?(:jira_connect_oauth, current_user) ? jira_connect_oauth_data(installation).to_json : nil,
+      oauth_metadata: jira_connect_oauth_data(installation).to_json,
       public_key_storage_enabled: Gitlab::CurrentSettings.jira_connect_public_key_storage_enabled?
     }
   end

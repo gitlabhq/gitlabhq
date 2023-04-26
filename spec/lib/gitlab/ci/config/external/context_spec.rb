@@ -24,7 +24,6 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     context 'with values' do
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq([]) }
-      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
@@ -37,11 +36,26 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
 
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq([]) }
-      it { expect(subject.max_includes).to eq(Gitlab::Ci::Config::External::Context::MAX_INCLUDES) }
       it { expect(subject.execution_deadline).to eq(0) }
       it { expect(subject.variables).to be_instance_of(Gitlab::Ci::Variables::Collection) }
       it { expect(subject.variables_hash).to be_instance_of(ActiveSupport::HashWithIndifferentAccess) }
       it { expect(subject.pipeline_config).to be_nil }
+    end
+
+    describe 'max_includes' do
+      it 'returns the default value of application setting `ci_max_includes`' do
+        expect(subject.max_includes).to eq(150)
+      end
+
+      context 'when application setting `ci_max_includes` is changed' do
+        before do
+          stub_application_setting(ci_max_includes: 200)
+        end
+
+        it 'returns the new value of application setting `ci_max_includes`' do
+          expect(subject.max_includes).to eq(200)
+        end
+      end
     end
   end
 

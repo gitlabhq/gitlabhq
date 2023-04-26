@@ -5,6 +5,7 @@ module Gitlab
     module LoadBalancing
       class SidekiqClientMiddleware
         include Gitlab::Utils::StrongMemoize
+        include WalTrackingSender
 
         def call(worker_class, job, _queue, _redis_pool)
           # Mailers can't be constantized
@@ -30,15 +31,7 @@ module Gitlab
         end
 
         def set_data_consistency_locations!(job)
-          locations = {}
-
-          ::Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-            if (location = wal_location_for(lb))
-              locations[lb.name] = location
-            end
-          end
-
-          job['wal_locations'] = locations
+          job['wal_locations'] = wal_locations_by_db_name
           job['wal_location_source'] = wal_location_source
         end
 
@@ -47,17 +40,6 @@ module Gitlab
             ::Gitlab::Database::LoadBalancing::ROLE_PRIMARY
           else
             ::Gitlab::Database::LoadBalancing::ROLE_REPLICA
-          end
-        end
-
-        def wal_location_for(load_balancer)
-          # When only using the primary there's no need for any WAL queries.
-          return if load_balancer.primary_only?
-
-          if uses_primary?
-            load_balancer.primary_write_location
-          else
-            load_balancer.host&.database_replica_location || load_balancer.primary_write_location
           end
         end
 

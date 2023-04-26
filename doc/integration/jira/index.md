@@ -6,38 +6,34 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira **(FREE)**
 
-If your organization uses [Jira](https://www.atlassian.com/software/jira) issues,
-you can [migrate your issues from Jira](../../user/project/import/jira.md) and work
-exclusively in GitLab. However, if you'd like to continue to use Jira, you can
-integrate it with GitLab. GitLab offers two types of Jira integrations, and you
-can use one or both depending on the capabilities you need.
+If your organization uses [Jira](https://www.atlassian.com/software/jira),
+you can [migrate your issues from Jira to GitLab](../../user/project/import/jira.md).
+If you want to continue to use Jira, you can integrate Jira with GitLab instead.
 
-## Compare integrations
+## Jira integrations
 
-After you set up one or both of these integrations, you can cross-reference activity
-in your GitLab project with any of your projects in Jira.
+GitLab offers two types of Jira integrations. You can
+use one or both depending on the capabilities you need.
 
-### Jira integration
+### Jira issue integration
 
-The Jira integration connects one or more GitLab projects to a Jira instance. You can host
-the Jira instance yourself or in [Atlassian Cloud](https://www.atlassian.com/migration/assess/why-cloud).
-The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
+You can use the [Jira issue integration](configure.md) developed by GitLab with Jira Cloud, Jira Data Center, or Jira Server. With this integration, you can:
 
-For more information, see [Jira integration](configure.md).
+- View and search Jira issues directly in GitLab.
+- Refer to Jira issues by ID in GitLab commits and merge requests.
+- Create Jira issues for vulnerabilities.
 
 ### Jira development panel
 
-The [Jira development panel](development_panel.md) connects all GitLab projects in a group or personal namespace.
-When you configure the Jira development panel, you can
-[view GitLab activity for an issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
-including related branches, commits, and merge requests.
+You can use the [Jira development panel](development_panel.md) to [view GitLab activity for an issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
+including related branches, commits, and merge requests. To configure the Jira development panel:
 
-To set up the Jira development panel, use the GitLab for Jira Cloud app
-or the Jira DVCS connector. For more information, see [Configure the panel](development_panel.md#configure-the-panel).
+- **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed by GitLab.
+- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed by Atlassian.
 
-### Direct feature comparison
+## Jira integration capabilities
 
-| Capability | Jira integration | Jira development panel |
+| Capability | Jira issue integration | Jira development panel |
 |-|-|-|
 | Mention a Jira issue ID in a GitLab commit or merge request, and a link to the Jira issue is created. | Yes. | No. |
 | Mention a Jira issue ID in GitLab and the Jira issue shows the GitLab issue or merge request. | Yes. A Jira comment with the GitLab issue or MR title links to GitLab. The first mention is also added to the Jira issue under **Web links**. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
@@ -50,25 +46,13 @@ or the Jira DVCS connector. For more information, see [Configure the panel](deve
 | Create a GitLab branch from a Jira issue. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
 | Mention a Jira issue ID in a GitLab merge request, and deployments are synced. | No. | Yes, in the issue's [development panel](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/). |
 
-## Authentication in Jira
-
-The authentication method in Jira depends on whether you host Jira on your own server or on
-[Atlassian cloud](https://www.atlassian.com/migration/assess/why-cloud):
-
-- **Jira Server** supports basic authentication. When connecting, a **username and password** are
-  required. Connecting to Jira Server using the Central Authentication Service (CAS) is not possible. For more information, read
-  how to [set up a user in Jira Server](jira_server_configuration.md).
-- **Jira on Atlassian cloud** supports authentication through an API token. When connecting to Jira on
-  Atlassian cloud, an email and API token are required. For more information, see
-  [Create a Jira Cloud API token](configure.md#create-a-jira-cloud-api-token).
-
 ## Privacy considerations
 
 All Jira integrations share data with Jira to make it visible outside of GitLab.
 If you integrate a private GitLab project with Jira, the private data is
 shared with users who have access to your Jira project.
 
-The [Jira integration](#jira-integration) posts GitLab data in the form of comments in Jira issues.
+The [Jira issue integration](configure.md) posts GitLab data in the form of comments in Jira issues.
 The GitLab for Jira Cloud app and Jira DVCS connector share this data through the [Jira development panel](development_panel.md).
 This method provides more fine-grained access control because access can be restricted to certain user groups or roles.
 

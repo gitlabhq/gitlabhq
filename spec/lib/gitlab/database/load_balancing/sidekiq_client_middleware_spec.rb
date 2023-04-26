@@ -64,47 +64,31 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
 
     shared_examples_for 'mark data consistency location' do |data_consistency|
       include_context 'data consistency worker class', data_consistency, :load_balancing_for_test_data_consistency_worker
-
-      let(:location) { '0/D525E3A8' }
+      include_context 'when tracking WAL location reference'
 
       context 'when write was not performed' do
         before do
-          allow(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary?).and_return(false)
+          stub_no_writes_performed!
         end
 
         context 'when replica hosts are available' do
           it 'passes database_replica_location' do
-            expected_location = {}
-
-            Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-              expect(lb.host)
-                .to receive(:database_replica_location)
-                .and_return(location)
-
-              expected_location[lb.name] = location
-            end
+            expected_locations = expect_tracked_locations_when_replicas_available
 
             run_middleware
 
-            expect(job['wal_locations']).to eq(expected_location)
+            expect(job['wal_locations']).to eq(expected_locations)
             expect(job['wal_location_source']).to eq(:replica)
           end
         end
 
         context 'when no replica hosts are available' do
           it 'passes primary_write_location' do
-            expected_location = {}
-
-            Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-              expect(lb).to receive(:host).at_least(:once).and_return(nil)
-              expect(lb).to receive(:primary_write_location).and_return(location)
-
-              expected_location[lb.name] = location
-            end
+            expected_locations = expect_tracked_locations_when_no_replicas_available
 
             run_middleware
 
-            expect(job['wal_locations']).to eq(expected_location)
+            expect(job['wal_locations']).to eq(expected_locations)
             expect(job['wal_location_source']).to eq(:replica)
           end
         end
@@ -114,23 +98,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
 
       context 'when write was performed' do
         before do
-          allow(Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary?).and_return(true)
+          stub_write_performed!
         end
 
         it 'passes primary write location', :aggregate_failures do
-          expected_location = {}
-
-          Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-            expect(lb)
-              .to receive(:primary_write_location)
-              .and_return(location)
-
-            expected_location[lb.name] = location
-          end
+          expected_locations = expect_tracked_locations_from_primary_only
 
           run_middleware
 
-          expect(job['wal_locations']).to eq(expected_location)
+          expect(job['wal_locations']).to eq(expected_locations)
           expect(job['wal_location_source']).to eq(:primary)
         end
 

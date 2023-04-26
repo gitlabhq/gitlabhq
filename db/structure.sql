@@ -11804,6 +11804,7 @@ CREATE TABLE application_settings (
     encrypted_product_analytics_configurator_connection_string_iv bytea,
     silent_mode_enabled boolean DEFAULT false NOT NULL,
     package_metadata_purl_types smallint[] DEFAULT '{}'::smallint[],
+    ci_max_includes integer DEFAULT 150 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -12596,6 +12597,7 @@ CREATE TABLE boards_epic_boards (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     name text DEFAULT 'Development'::text NOT NULL,
+    display_colors boolean DEFAULT true NOT NULL,
     CONSTRAINT check_bcbbffe601 CHECK ((char_length(name) <= 255))
 );
 

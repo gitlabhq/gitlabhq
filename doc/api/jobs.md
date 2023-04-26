@@ -867,8 +867,9 @@ POST /projects/:id/jobs/:job_id/play
 Example request:
 
 ```shell
-curl --request POST "https://gitlab.example.com/api/v4/projects/1/jobs/1/play
-     --header "PRIVATE-TOKEN: <your_access_token>"
+curl --request POST "https://gitlab.example.com/api/v4/projects/1/jobs/1/play" \
+     --header "Content-Type: application/json" \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
      --data @variables.json
 ```
 

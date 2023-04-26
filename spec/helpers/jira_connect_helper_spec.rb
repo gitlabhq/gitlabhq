@@ -69,16 +69,6 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
           )
         end
 
-        context 'jira_connect_oauth feature is disabled' do
-          before do
-            stub_feature_flags(jira_connect_oauth: false)
-          end
-
-          it 'does not assign oauth_metadata' do
-            expect(oauth_metadata).to be_nil
-          end
-        end
-
         context 'with self-managed instance' do
           let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://gitlab.example.com') }
 

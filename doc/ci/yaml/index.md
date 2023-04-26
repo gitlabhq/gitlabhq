@@ -136,16 +136,6 @@ The `include` files are:
 - Always evaluated first and then merged with the content of the `.gitlab-ci.yml` file,
   regardless of the position of the `include` keyword.
 
-You can have up to 150 includes per pipeline, including [nested](includes.md#use-nested-includes) includes:
-
-- In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
-  In nested includes, the same file can be included multiple times, but duplicated includes
-  count towards the limit.
-- From [GitLab 14.9 to GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987), you can have up to 100 includes.
-  The same file can be included multiple times in nested includes, but duplicates are ignored.
-- In GitLab 14.9 and earlier you can have up to 100 includes, but the same file can not
-  be included multiple times.
-
 The time limit to resolve all files is 30 seconds.
 
 **Keyword type**: Global keyword.
@@ -171,6 +161,16 @@ The time limit to resolve all files is 30 seconds.
     do not affect job reruns.
   - Pipeline, the `include` files are fetched again. If they changed after the last
     pipeline run, the new pipeline uses the changed configuration.
+- You can have up to 150 includes per pipeline by default, including [nested](includes.md#use-nested-includes). Additionally:
+  - In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) self-managed users can
+    change the [maximum includes](../../user/admin_area/settings/continuous_integration.md#maximum-includes) value.
+  - In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
+    In nested includes, the same file can be included multiple times, but duplicated includes
+    count towards the limit.
+  - From [GitLab 14.9 to GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987), you can have up to 100 includes.
+    The same file can be included multiple times in nested includes, but duplicates are ignored.
+  - In GitLab 14.9 and earlier you can have up to 100 includes, but the same file can not
+    be included multiple times.
 
 **Related topics**:
 

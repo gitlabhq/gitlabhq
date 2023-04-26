@@ -196,6 +196,7 @@ module API
       optional :jira_connect_proxy_url, type: String, desc: "URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app"
       optional :bulk_import_enabled, type: Boolean, desc: 'Enable migrating GitLab groups and projects by direct transfer'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
+      optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

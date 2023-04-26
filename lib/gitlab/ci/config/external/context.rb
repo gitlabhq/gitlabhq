@@ -9,8 +9,7 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
-          MAX_INCLUDES = 150
-          TEMP_MAX_INCLUDES = 100 # For logging; to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/367150
+          TEMP_MAX_INCLUDES = 100 # For logging; to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/396776
 
           include ::Gitlab::Utils::StrongMemoize
 
@@ -32,7 +31,7 @@ module Gitlab
             @expandset = []
             @execution_deadline = 0
             @logger = logger || Gitlab::Ci::Pipeline::Logger.new(project: project)
-            @max_includes = MAX_INCLUDES
+            @max_includes = Gitlab::CurrentSettings.current_application_settings.ci_max_includes
             yield self if block_given?
           end
 

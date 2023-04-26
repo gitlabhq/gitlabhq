@@ -973,6 +973,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionexplaincode"></a>`explainCode` | [`AiExplainCodeInput`](#aiexplaincodeinput) | Input for explain_code AI action. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
+| <a id="mutationaiactionmarkupformat"></a>`markupFormat` | [`MarkupFormat`](#markupformat) | Indicates the response format. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 
 #### Fields
@@ -3061,6 +3062,7 @@ Input type: `EpicBoardCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationepicboardcreatedisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. Ignored unless `epic_color_highlight` flag is enabled. |
 | <a id="mutationepicboardcreategrouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group with which the resource is associated. |
 | <a id="mutationepicboardcreatehidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationepicboardcreatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
@@ -3127,6 +3129,7 @@ Input type: `EpicBoardUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationepicboardupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationepicboardupdatedisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. Ignored unless `epic_color_highlight` flag is enabled. |
 | <a id="mutationepicboardupdatehidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="mutationepicboardupdatehideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="mutationepicboardupdateid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | Epic board global ID. |
@@ -13951,6 +13954,7 @@ Represents an epic board.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="epicboarddisplaycolors"></a>`displayColors` | [`Boolean`](#boolean) | Whether or not display epic colors. |
 | <a id="epicboardhidebackloglist"></a>`hideBacklogList` | [`Boolean`](#boolean) | Whether or not backlog list is hidden. |
 | <a id="epicboardhideclosedlist"></a>`hideClosedList` | [`Boolean`](#boolean) | Whether or not closed list is hidden. |
 | <a id="epicboardid"></a>`id` | [`BoardsEpicBoardID!`](#boardsepicboardid) | Global ID of the epic board. |
@@ -20424,7 +20428,6 @@ Represents an asset link associated with a release.
 | ---- | ---- | ----------- |
 | <a id="releaseassetlinkdirectassetpath"></a>`directAssetPath` | [`String`](#string) | Relative path for the direct asset link. |
 | <a id="releaseassetlinkdirectasseturl"></a>`directAssetUrl` | [`String`](#string) | Direct asset URL of the link. |
-| <a id="releaseassetlinkexternal"></a>`external` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.9. No longer used. |
 | <a id="releaseassetlinkid"></a>`id` | [`ID!`](#id) | ID of the link. |
 | <a id="releaseassetlinklinktype"></a>`linkType` | [`ReleaseAssetLinkType`](#releaseassetlinktype) | Type of the link: `other`, `runbook`, `image`, `package`; defaults to `other`. |
 | <a id="releaseassetlinkname"></a>`name` | [`String`](#string) | Name of the link. |
@@ -24148,6 +24151,16 @@ List limit metric setting.
 | <a id="listlimitmetricall_metrics"></a>`all_metrics` | Limit list by number and total weight of issues. |
 | <a id="listlimitmetricissue_count"></a>`issue_count` | Limit list by number of issues. |
 | <a id="listlimitmetricissue_weights"></a>`issue_weights` | Limit list by total weight of issues. |
+
+### `MarkupFormat`
+
+List markup formats.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="markupformathtml"></a>`HTML` | HTML format. |
+| <a id="markupformatmarkdown"></a>`MARKDOWN` | Markdown format. |
+| <a id="markupformatraw"></a>`RAW` | Raw format. |
 
 ### `MeasurementIdentifier`
 

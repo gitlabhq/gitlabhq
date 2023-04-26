@@ -484,7 +484,8 @@ module ApplicationSettingsHelper
       :user_defaults_to_private_profile,
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
-      :gitlab_dedicated_instance
+      :gitlab_dedicated_instance,
+      :ci_max_includes
     ].tap do |settings|
       next if Gitlab.com?
 

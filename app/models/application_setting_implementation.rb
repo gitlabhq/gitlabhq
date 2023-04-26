@@ -252,7 +252,8 @@ module ApplicationSettingImplementation
         allow_runner_registration_token: true,
         user_defaults_to_private_profile: false,
         projects_api_rate_limit_unauthenticated: 400,
-        gitlab_dedicated_instance: false
+        gitlab_dedicated_instance: false,
+        ci_max_includes: 150
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

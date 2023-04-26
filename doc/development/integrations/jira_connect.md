@@ -74,7 +74,8 @@ To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [J
 
 ## Test the GitLab OAuth authentication flow
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81126) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `jira_connect_oauth`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81126) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `jira_connect_oauth`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117648) in GitLab 16.0. Feature flag `jira_connect_oauth` removed.
 
 GitLab for Jira users can authenticate with GitLab using GitLab OAuth.
 
@@ -83,18 +84,7 @@ This feature is not ready for production use. The feature flag should only be en
 
 The following steps describe setting up an environment to test the GitLab OAuth flow:
 
-1. Start a Gitpod session and open the rails console.
-
-   ```shell
-   bundle exec rails console
-   ```
-
-1. Enable the feature flag.
-
-   ```shell
-   Feature.enable(:jira_connect_oauth)
-   ```
-
+1. Start a Gitpod session.
 1. On your GitLab instance, go to **Admin > Applications**.
 1. Create a new application with the following settings:
    - Name: `Jira Connect`

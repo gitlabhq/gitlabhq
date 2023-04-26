@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > Repository settings', feature_category: :projects do
+  include Features::MirroringHelpers
+
   let(:project) { create(:project_empty_repo) }
   let(:user) { create(:user) }
   let(:role) { :developer }
@@ -171,10 +173,8 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
       end
 
       it 'creates a push mirror that mirrors all branches', :js do
-        expect(page).to have_css('.js-mirror-protected-hidden[value="0"]', visible: false)
-
-        fill_in 'url', with: ssh_url
-        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+        wait_for_mirror_field_javascript('protected', '0')
+        fill_and_wait_for_mirror_url_javascript('url', ssh_url)
 
         select 'SSH public key', from: 'Authentication method'
         select_direction
@@ -191,10 +191,8 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
       it 'creates a push mirror that only mirrors protected branches', :js do
         find('#only_protected_branches').click
 
-        expect(page).to have_css('.js-mirror-protected-hidden[value="1"]', visible: false)
-
-        fill_in 'url', with: ssh_url
-        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+        wait_for_mirror_field_javascript('protected', '1')
+        fill_and_wait_for_mirror_url_javascript('url', ssh_url)
 
         select 'SSH public key', from: 'Authentication method'
         select_direction
@@ -211,8 +209,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
       it 'creates a push mirror that keeps divergent refs', :js do
         select_direction
 
-        fill_in 'url', with: ssh_url
-        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+        fill_and_wait_for_mirror_url_javascript('url', ssh_url)
 
         fill_in 'Password', with: 'password'
         check 'Keep divergent refs'
@@ -231,8 +228,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
       end
 
       it 'generates an SSH public key on submission', :js do
-        fill_in 'url', with: ssh_url
-        expect(page).to have_css(".js-mirror-url-hidden[value=\"#{ssh_url}\"]", visible: false)
+        fill_and_wait_for_mirror_url_javascript('url', ssh_url)
 
         select 'SSH public key', from: 'Authentication method'
 

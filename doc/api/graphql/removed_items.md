@@ -10,6 +10,18 @@ GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
 
+## GitLab 16.0
+
+Fields removed in GitLab 16.0.
+
+### GraphQL Fields
+
+[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111750) in GitLab 16.0:
+
+| Field name           | GraphQL type             | Deprecated in | Use instead                |
+|----------------------|--------------------------|---------------|----------------------------|
+| `external`           | `GraphQL::Types::Boolean`| 15.9          | None                       |
+
 ## GitLab 15.0
 
 Fields removed in GitLab 15.0.

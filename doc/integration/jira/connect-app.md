@@ -79,7 +79,6 @@ To create an OAuth application:
 1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
-1. Optional. Enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md) to avoid [authentication problems in some browsers](#browser-displays-a-sign-in-message-when-already-signed-in).
 
 ## Connect the GitLab for Jira Cloud app for self-managed instances **(FREE SELF)**
 
@@ -252,7 +251,7 @@ You need to sign in or sign up before continuing.
 The GitLab for Jira Cloud app uses an iframe to add namespaces on the
 settings page. Some browsers block cross-site cookies, which can lead to this issue.
 
-To resolve this issue, set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances) and enable the `jira_connect_oauth` [feature flag](../../administration/feature_flags.md).
+To resolve this issue, set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 
 ### Manual installation fails
 

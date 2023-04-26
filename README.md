@@ -43,7 +43,7 @@ We are hiring developers, support people, and production engineers all the time,
 On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:
 
 - [Subscriptions](https://about.gitlab.com/pricing/)
-- [Consultancy](https://about.gitlab.com/consultancy/)
+- [Professional Services](https://about.gitlab.com/services/)
 - [Community](https://about.gitlab.com/community/)
 - [Hosted GitLab.com](https://about.gitlab.com/gitlab-com/) use GitLab as a free service
 - [GitLab Enterprise Edition](https://about.gitlab.com/features/#enterprise) with additional features aimed at larger organizations.

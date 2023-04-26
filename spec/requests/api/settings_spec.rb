@@ -70,6 +70,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['projects_api_rate_limit_unauthenticated']).to eq(400)
       expect(json_response['silent_mode_enabled']).to be(false)
       expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
+      expect(json_response['ci_max_includes']).to eq(150)
     end
   end
 
@@ -815,6 +816,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['pipeline_limit_per_project_user_sha'])
+          .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with ci_max_includes' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          ci_max_includes: 200
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_max_includes' => 200
+        )
+      end
+
+      it 'allows a zero value' do
+        put api("/application/settings", admin), params: {
+          ci_max_includes: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'ci_max_includes' => 0
+        )
+      end
+
+      it 'does not allow a nil value' do
+        put api("/application/settings", admin), params: {
+          ci_max_includes: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['ci_max_includes'])
           .to include(a_string_matching('is not a number'))
       end
     end

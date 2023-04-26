@@ -12,7 +12,10 @@ export function getFixture(relativePath) {
     throw new ErrorWithStack(
       `Fixture file ${relativePath} does not exist.
 
-Did you run bin/rake frontend:fixtures?`,
+Did you run bin/rake frontend:fixtures? You can also download fixtures from the gitlab-org/gitlab package registry.
+
+See https://docs.gitlab.com/ee/development/testing_guide/frontend_testing.html#download-fixtures for more info.
+`,
       getFixture,
     );
   }

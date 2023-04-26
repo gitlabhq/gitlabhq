@@ -46,6 +46,11 @@
       .form-group
         = f.gitlab_ui_checkbox_component :protected_ci_variables, s_('AdminSettings|Protect CI/CD variables by default'), help_text: s_('AdminSettings|New CI/CD variables in projects and groups default to protected.')
       .form-group
+        = f.label :ci_max_includes, s_('AdminSettings|Maximum includes'), class: 'label-bold'
+        = f.number_field :ci_max_includes, class: 'form-control gl-form-input'
+        .form-text.text-muted
+          = s_('AdminSettings|The maximum number of included files per pipeline.')
+      .form-group
         = f.label :ci_config_path, _('Default CI/CD configuration file'), class: 'label-bold'
         = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
         %p.form-text.text-muted

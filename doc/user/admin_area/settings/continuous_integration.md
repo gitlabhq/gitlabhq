@@ -194,6 +194,16 @@ To set all new [CI/CD variables](../../../ci/variables/index.md) as
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Select **Protect CI/CD variables by default**.
 
+## Maximum includes
+
+The maximum number of [includes](../../../ci/yaml/includes.md) per pipeline can be set at the instance level.
+The default is `150`.
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Change the value of **Maximum includes**.
+1. Select **Save changes** for the changes to take effect.
+
 ## Default CI/CD configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.

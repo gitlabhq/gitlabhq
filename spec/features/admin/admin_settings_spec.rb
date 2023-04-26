@@ -426,6 +426,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           fill_in 'application_setting_auto_devops_domain', with: 'domain.com'
           uncheck 'Keep the latest artifacts for all jobs in the latest successful pipelines'
           uncheck 'Enable pipeline suggestion banner'
+          fill_in 'application_setting_ci_max_includes', with: 200
           click_button 'Save changes'
         end
 
@@ -433,6 +434,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.auto_devops_domain).to eq('domain.com')
         expect(current_settings.keep_latest_artifact).to be false
         expect(current_settings.suggest_pipeline_enabled).to be false
+        expect(current_settings.ci_max_includes).to be 200
         expect(page).to have_content "Application settings saved successfully"
       end
 
