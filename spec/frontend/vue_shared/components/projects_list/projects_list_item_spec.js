@@ -1,4 +1,4 @@
-import { GlAvatarLabeled, GlBadge, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
@@ -12,6 +12,8 @@ import {
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
+
+jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}1`);
 
 describe('ProjectsListItem', () => {
   let wrapper;
@@ -32,6 +34,8 @@ describe('ProjectsListItem', () => {
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findIssuesLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.issues });
   const findForksLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.forks });
+  const findProjectTopics = () => wrapper.findByTestId('project-topics');
+  const findPopover = () => findProjectTopics().findComponent(GlPopover);
 
   it('renders project avatar', () => {
     createComponent();
@@ -164,6 +168,66 @@ describe('ProjectsListItem', () => {
       });
 
       expect(findForksLink().exists()).toBe(false);
+    });
+  });
+
+  describe('if project has topics', () => {
+    it('renders first three topics', () => {
+      createComponent();
+
+      const firstThreeTopics = project.topics.slice(0, 3);
+      const firstThreeBadges = findProjectTopics().findAllComponents(GlBadge).wrappers.slice(0, 3);
+      const firstThreeBadgesText = firstThreeBadges.map((badge) => badge.text());
+      const firstThreeBadgesHref = firstThreeBadges.map((badge) => badge.attributes('href'));
+
+      expect(firstThreeTopics).toEqual(firstThreeBadgesText);
+      expect(firstThreeBadgesHref).toEqual(
+        firstThreeTopics.map((topic) => `/explore/projects/topics/${encodeURIComponent(topic)}`),
+      );
+    });
+
+    it('renders the rest of the topics in a popover', () => {
+      createComponent();
+
+      const topics = project.topics.slice(3);
+      const badges = findPopover().findAllComponents(GlBadge).wrappers;
+      const badgesText = badges.map((badge) => badge.text());
+      const badgesHref = badges.map((badge) => badge.attributes('href'));
+
+      expect(topics).toEqual(badgesText);
+      expect(badgesHref).toEqual(
+        topics.map((topic) => `/explore/projects/topics/${encodeURIComponent(topic)}`),
+      );
+    });
+
+    it('renders button to open popover', () => {
+      createComponent();
+
+      const expectedButtonId = 'project-topics-popover-1';
+
+      expect(wrapper.findByText('+ 2 more').attributes('id')).toBe(expectedButtonId);
+      expect(findPopover().props('target')).toBe(expectedButtonId);
+    });
+
+    describe('when topic has a name longer than 15 characters', () => {
+      it('truncates name and shows tooltip with full name', () => {
+        const topicWithLongName = 'topic with very very very long name';
+
+        createComponent({
+          propsData: {
+            project: {
+              ...project,
+              topics: [topicWithLongName, ...project.topics],
+            },
+          },
+        });
+
+        const firstTopicBadge = findProjectTopics().findComponent(GlBadge);
+        const tooltip = getBinding(firstTopicBadge.element, 'gl-tooltip');
+
+        expect(firstTopicBadge.text()).toBe('topic with ver…');
+        expect(tooltip.value).toBe(topicWithLongName);
+      });
     });
   });
 });

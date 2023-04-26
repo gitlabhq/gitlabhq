@@ -1,6 +1,5 @@
 query getAllJobs($after: String, $first: Int = 50, $statuses: [CiJobStatus!]) {
   jobs(after: $after, first: $first, statuses: $statuses) {
-    count
     pageInfo {
       endCursor
       hasNextPage

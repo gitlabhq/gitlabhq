@@ -103,20 +103,20 @@ describe('HelpCenter component', () => {
         jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
       });
 
-      it('shows Ask the Tanuki Bot with the help items via Portal', () => {
+      it('shows Ask the GitLab Chat with the help items', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           expect.objectContaining({
             icon: 'tanuki',
-            text: HelpCenter.i18n.tanuki,
+            text: HelpCenter.i18n.chat,
             extraAttrs: trackingAttrs('tanuki_bot_help_dropdown'),
           }),
           ...DEFAULT_HELP_ITEMS,
         ]);
       });
 
-      describe('when Ask the Tanuki Bot button is clicked', () => {
+      describe('when Ask the GitLab Chat button is clicked', () => {
         beforeEach(() => {
-          findButton('Ask the Tanuki Bot').click();
+          findButton('Ask the GitLab Chat').click();
         });
 
         it('closes the dropdown', () => {

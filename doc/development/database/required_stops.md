@@ -33,6 +33,32 @@ You may need to introduce a required stop for mitigation when:
 - **Cause:** The dependent migration may fail if the background migration is incomplete.
 - **Mitigation:** Ensure that all background migrations are finalized before authoring dependent migrations.
 
+### Remove a migration
+
+If a migration is removed, you may need to introduce a required stop to ensure customers
+don't miss the required change.
+
+- **Cause:** Dependent migrations may fail, or the application may not function, because a required
+  migration was removed.
+- **Mitigation:** Ensure migrations are only removed after they've been a part of a planned
+  required stop.
+
+### A migration timestamp is very old
+
+If a migration timestamp is very old (> 3 weeks, or after a before the last stop),
+these scenarios may cause issues:
+
+- If the migration depends on another migration with a newer timestamp but introduced in a
+  previous release _after_ a required stop, then the new migration may run sequentially sooner
+  than the prerequisite migration, and thus fail.
+- If the migration timestamp ID is before the last, it may be inadvertently squashed when the
+  team squashes other migrations from the required stop.
+
+- **Cause:** The migration may fail if it depends on a migration with a later timestamp introduced
+  in an earlier version. Or, the migration may be inadvertently squashed after a required stop.
+- **Mitigation:** Aim for migration timestamps to fall inside the release dates and be sure that
+  they are not dated prior to the last required stop.
+
 ### Bugs in migration related tooling
 
 In a few circumstances, bugs in migration related tooling has required us to introduce stops. While we aim

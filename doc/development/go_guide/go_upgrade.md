@@ -150,6 +150,7 @@ if you need help finding the correct person or labels:
 | [Alertmanager](https://github.com/prometheus/alertmanager) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
 | Docker Distribution Pruner    | [Issue Tracker](https://gitlab.com/gitlab-org/docker-distribution-pruner) |
 | Gitaly                        | [Issue Tracker](https://gitlab.com/gitlab-org/gitaly/-/issues) |
+| GitLab CLI (`glab`).          | [Issue Tracker](https://gitlab.com/gitlab-org/cli/-/issues)
 | GitLab Compose Kit            | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues) |
 | GitLab Container Registry     | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry) |
 | GitLab Elasticsearch Indexer  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues) |

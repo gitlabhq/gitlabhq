@@ -5910,7 +5910,7 @@ msgstr ""
 msgid "Ask someone with write access to resolve it."
 msgstr ""
 
-msgid "Ask the Tanuki Bot"
+msgid "Ask the GitLab Chat"
 msgstr ""
 
 msgid "Ask your group owner to set up a group runner."
@@ -43734,13 +43734,13 @@ msgstr ""
 msgid "TanukiBot|For example, %{linkStart}what is a fork?%{linkEnd}"
 msgstr ""
 
+msgid "TanukiBot|GitLab Chat"
+msgstr ""
+
 msgid "TanukiBot|Give feedback"
 msgstr ""
 
 msgid "TanukiBot|Sources"
-msgstr ""
-
-msgid "TanukiBot|Tanuki Bot"
 msgstr ""
 
 msgid "TanukiBot|There was an error communicating with Tanuki Bot. Please reach out to GitLab support for more assistance or try again later."
@@ -44990,6 +44990,9 @@ msgstr ""
 msgid "There was an error fetching the %{replicableType}"
 msgstr ""
 
+msgid "There was an error fetching the cancelable jobs."
+msgstr ""
+
 msgid "There was an error fetching the deploy freezes."
 msgstr ""
 
@@ -45006,6 +45009,9 @@ msgid "There was an error fetching the jobs."
 msgstr ""
 
 msgid "There was an error fetching the number of jobs for your project."
+msgstr ""
+
+msgid "There was an error fetching the number of jobs."
 msgstr ""
 
 msgid "There was an error fetching the top labels for the selected group"

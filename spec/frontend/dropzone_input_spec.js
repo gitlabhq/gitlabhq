@@ -1,7 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import htmlNewMilestone from 'test_fixtures/milestones/new-milestone.html';
 import mock from 'xhr-mock';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import PasteMarkdownTable from '~/behaviors/markdown/paste_markdown_table';
@@ -48,7 +49,7 @@ describe('dropzone_input', () => {
     };
 
     beforeEach(() => {
-      loadHTMLFixture('milestones/new-milestone.html');
+      setHTMLFixture(htmlNewMilestone);
 
       form = $('#new_milestone');
       form.data('uploads-path', TEST_UPLOAD_PATH);

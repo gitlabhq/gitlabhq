@@ -1,4 +1,5 @@
 import mockJobsCount from 'test_fixtures/graphql/jobs/get_jobs_count.query.graphql.json';
+import mockAllJobsCount from 'test_fixtures/graphql/jobs/get_all_jobs_count.query.graphql.json';
 import mockJobsEmpty from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.empty.json';
 import mockAllJobsEmpty from 'test_fixtures/graphql/jobs/get_all_jobs.query.graphql.empty.json';
 import mockJobsPaginated from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.paginated.json';
@@ -22,6 +23,7 @@ export const mockJobsNodes = mockJobs.data.project.jobs.nodes;
 export const mockAllJobsNodes = mockAllJobs.data.jobs.nodes;
 export const mockJobsNodesAsGuest = mockJobsAsGuest.data.project.jobs.nodes;
 export const mockJobsCountResponse = mockJobsCount;
+export const mockAllJobsCountResponse = mockAllJobsCount;
 export const mockCancelableJobsCountResponse = mockCancelableJobsCount;
 
 export const stages = [

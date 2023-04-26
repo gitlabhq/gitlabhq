@@ -1,5 +1,14 @@
 <script>
-import { GlAvatarLabeled, GlIcon, GlLink, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlIcon,
+  GlLink,
+  GlBadge,
+  GlTooltipDirective,
+  GlPopover,
+  GlSprintf,
+} from '@gitlab/ui';
+import uniqueId from 'lodash/uniqueId';
 
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
@@ -7,6 +16,10 @@ import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
+import { truncate } from '~/lib/utils/text_utility';
+
+const MAX_TOPICS_TO_SHOW = 3;
+const MAX_TOPIC_TITLE_LENGTH = 15;
 
 export default {
   i18n: {
@@ -14,6 +27,9 @@ export default {
     forks: __('Forks'),
     issues: __('Issues'),
     archived: __('Archived'),
+    topics: __('Topics'),
+    topicsPopoverTargetText: __('+ %{count} more'),
+    moreTopics: __('More topics'),
   },
   components: {
     GlAvatarLabeled,
@@ -21,6 +37,8 @@ export default {
     UserAccessRoleBadge,
     GlLink,
     GlBadge,
+    GlPopover,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +51,7 @@ export default {
      *   id: number | string;
      *   name: string;
      *   webUrl: string;
+     *   topics: string[];
      *   forksCount?: number;
      *   avatarUrl: string | null;
      *   starCount: number;
@@ -48,6 +67,11 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      topicsPopoverTarget: uniqueId('project-topics-popover-'),
+    };
   },
   computed: {
     visibilityIcon() {
@@ -83,9 +107,32 @@ export default {
     isIssuesEnabled() {
       return this.project.issuesAccessLevel === FEATURABLE_ENABLED;
     },
+    hasTopics() {
+      return this.project.topics.length;
+    },
+    visibleTopics() {
+      return this.project.topics.slice(0, MAX_TOPICS_TO_SHOW);
+    },
+    popoverTopics() {
+      return this.project.topics.slice(MAX_TOPICS_TO_SHOW);
+    },
   },
   methods: {
     numberToMetricPrefix,
+    topicPath(topic) {
+      return `/explore/projects/topics/${encodeURIComponent(topic)}`;
+    },
+    topicTitle(topic) {
+      return truncate(topic, MAX_TOPIC_TITLE_LENGTH);
+    },
+    topicTooltipTitle(topic) {
+      // Matches conditional in app/assets/javascripts/lib/utils/text_utility.js#L88
+      if (topic.length - 1 > MAX_TOPIC_TITLE_LENGTH) {
+        return topic;
+      }
+
+      return null;
+    },
   },
 };
 </script>
@@ -111,6 +158,43 @@ export default {
           accessLevelLabel
         }}</user-access-role-badge>
       </template>
+      <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
+        <div
+          class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center gl-mx-n2 gl-my-n2"
+        >
+          <span class="gl-p-2 gl-text-secondary">{{ $options.i18n.topics }}:</span>
+          <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
+            <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+              {{ topicTitle(topic) }}
+            </gl-badge>
+          </div>
+          <template v-if="popoverTopics.length">
+            <div
+              :id="topicsPopoverTarget"
+              class="gl-p-2 gl-text-secondary"
+              role="button"
+              tabindex="0"
+            >
+              <gl-sprintf :message="$options.i18n.topicsPopoverTargetText">
+                <template #count>{{ popoverTopics.length }}</template>
+              </gl-sprintf>
+            </div>
+            <gl-popover :target="topicsPopoverTarget" :title="$options.i18n.moreTopics">
+              <div class="gl-font-base gl-font-weight-normal gl-mx-n2 gl-my-n2">
+                <div
+                  v-for="topic in popoverTopics"
+                  :key="topic"
+                  class="gl-p-2 gl-display-inline-block"
+                >
+                  <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+                    {{ topicTitle(topic) }}
+                  </gl-badge>
+                </div>
+              </div>
+            </gl-popover>
+          </template>
+        </div>
+      </div>
     </gl-avatar-labeled>
     <div
       class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-mt-0"

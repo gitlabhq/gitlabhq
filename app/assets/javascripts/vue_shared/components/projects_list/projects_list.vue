@@ -11,6 +11,7 @@ export default {
      *   id: number | string;
      *   name: string;
      *   webUrl: string;
+     *   topics: string[];
      *   forksCount?: number;
      *   avatarUrl: string | null;
      *   starCount: number;

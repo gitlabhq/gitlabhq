@@ -1,6 +1,5 @@
 <script>
 import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import { validateQueryString } from '~/jobs/components/filtered_search/utils';
 import JobsTable from '~/jobs/components/table/jobs_table.vue';
@@ -9,14 +8,24 @@ import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_
 import JobsTableEmptyState from '~/jobs/components/table/jobs_table_empty_state.vue';
 import { createAlert } from '~/alert';
 import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
-import { DEFAULT_FIELDS_ADMIN, RAW_TEXT_WARNING_ADMIN } from '../constants';
+import {
+  DEFAULT_FIELDS_ADMIN,
+  RAW_TEXT_WARNING_ADMIN,
+  JOBS_COUNT_ERROR_MESSAGE,
+  JOBS_FETCH_ERROR_MSG,
+  LOADING_ARIA_LABEL,
+  CANCELABLE_JOBS_ERROR_MSG,
+} from '../constants';
 import GetAllJobs from './graphql/queries/get_all_jobs.query.graphql';
+import GetAllJobsCount from './graphql/queries/get_all_jobs_count.query.graphql';
 import CancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
 
 export default {
   i18n: {
-    jobsFetchErrorMsg: __('There was an error fetching the jobs.'),
-    loadingAriaLabel: __('Loading'),
+    jobsCountErrorMsg: JOBS_COUNT_ERROR_MESSAGE,
+    jobsFetchErrorMsg: JOBS_FETCH_ERROR_MSG,
+    loadingAriaLabel: LOADING_ARIA_LABEL,
+    cancelableJobsErrorMsg: CANCELABLE_JOBS_ERROR_MSG,
   },
   filterSearchBoxStyles:
     'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-gray-900 gl-border-b gl-border-gray-100',
@@ -51,21 +60,35 @@ export default {
         return this.variables;
       },
       update(data) {
-        const { jobs: { nodes: list = [], pageInfo = {}, count } = {} } = data || {};
+        const { jobs: { nodes: list = [], pageInfo = {} } = {} } = data || {};
         return {
           list,
           pageInfo,
-          count,
         };
       },
       error() {
         this.error = this.$options.i18n.jobsFetchErrorMsg;
       },
     },
+    jobsCount: {
+      query: GetAllJobsCount,
+      update(data) {
+        return data?.jobs?.count || 0;
+      },
+      context: {
+        isSingleRequest: true,
+      },
+      error() {
+        this.error = this.$options.i18n.jobsCountErrorMsg;
+      },
+    },
     cancelable: {
       query: CancelableJobs,
       update(data) {
         this.isCancelable = data.cancelable.count !== 0;
+      },
+      error() {
+        this.error = this.$options.i18n.cancelableJobsErrorMsg;
       },
     },
   },
@@ -81,6 +104,7 @@ export default {
       filterSearchTriggered: false,
       DEFAULT_FIELDS_ADMIN,
       isCancelable: false,
+      jobsCount: null,
     };
   },
   computed: {
@@ -108,9 +132,6 @@ export default {
     },
     showFilteredSearch() {
       return !this.scope;
-    },
-    jobsCount() {
-      return this.jobs.count;
     },
     showLoadingSpinner() {
       return this.loading && this.infiniteScrollingTriggered;
@@ -160,6 +181,7 @@ export default {
         });
 
         this.$apollo.queries.jobs.refetch({ statuses: null });
+        this.$apollo.queries.jobsCount.refetch({ statuses: null });
 
         return;
       }
@@ -183,6 +205,7 @@ export default {
           });
 
           this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
+          this.$apollo.queries.jobsCount.refetch({ statuses: filter.value.data });
         }
       });
     },

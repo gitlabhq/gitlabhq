@@ -83,7 +83,7 @@ You can create a merge request when you add, edit, or upload a file to a reposit
 
 1. [Add, edit, or upload](../repository/web_editor.md) a file to the repository.
 1. In the **Commit message**, enter a reason for the commit.
-1. Select the **Target branch** or create a new branch by typing the name (without spaces, capital letters, or special chars).
+1. Select the **Target branch** or create a new branch by typing the name (without spaces).
 1. Select the **Start a new merge request with these changes** checkbox or toggle. This checkbox or toggle is visible only
    if the target is not the same as the source branch, or if the source branch is protected.
 1. Select **Commit changes**.

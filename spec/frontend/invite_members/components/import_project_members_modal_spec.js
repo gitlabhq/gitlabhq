@@ -1,6 +1,8 @@
 import { GlFormGroup, GlSprintf, GlModal } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { createWrapper } from '@vue/test-utils';
+import { BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -107,6 +109,15 @@ describe('ImportProjectMembersModal', () => {
   });
 
   describe('submitting the import', () => {
+    it('prevents closing', () => {
+      const evt = { preventDefault: jest.fn() };
+      createComponent();
+
+      findGlModal().vm.$emit('primary', evt);
+
+      expect(evt.preventDefault).toHaveBeenCalledTimes(1);
+    });
+
     describe('when the import is successful with reloadPageOnSubmit', () => {
       beforeEach(() => {
         createComponent({
@@ -159,6 +170,12 @@ describe('ImportProjectMembersModal', () => {
           'Successfully imported',
           wrapper.vm.$options.toastOptions,
         );
+      });
+
+      it('hides the modal', () => {
+        const rootWrapper = createWrapper(wrapper.vm.$root);
+
+        expect(rootWrapper.emitted(BV_HIDE_MODAL)).toHaveLength(1);
       });
 
       it('does not call displaySuccessfulInvitationAlert on mount', () => {

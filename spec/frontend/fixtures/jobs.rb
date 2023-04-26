@@ -48,7 +48,7 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
     let!(:with_artifact) { create(:ci_build, :success, name: 'with_artifact', job_artifacts: [artifact], pipeline: pipeline) }
     let!(:with_coverage) { create(:ci_build, :success, name: 'with_coverage', coverage: 40.0, pipeline: pipeline) }
 
-    shared_examples 'graphql queries' do |path, jobs_query|
+    shared_examples 'graphql queries' do |path, jobs_query, skip_non_defaults = false|
       let_it_be(:variables) { {} }
       let_it_be(:success_path) { '' }
 
@@ -65,29 +65,36 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
         expect_graphql_errors_to_be_empty
       end
 
-      it "#{fixtures_path}#{jobs_query}.as_guest.json" do
-        guest = create(:user)
-        project.add_guest(guest)
+      context 'with non default fixtures', if: !skip_non_defaults do
+        it "#{fixtures_path}#{jobs_query}.as_guest.json" do
+          guest = create(:user)
+          project.add_guest(guest)
 
-        post_graphql(query, current_user: guest, variables: variables)
+          post_graphql(query, current_user: guest, variables: variables)
 
-        expect_graphql_errors_to_be_empty
-      end
+          expect_graphql_errors_to_be_empty
+        end
 
-      it "#{fixtures_path}#{jobs_query}.paginated.json" do
-        post_graphql(query, current_user: user, variables: variables.merge({ first: 2 }))
+        it "#{fixtures_path}#{jobs_query}.paginated.json" do
+          post_graphql(query, current_user: user, variables: variables.merge({ first: 2 }))
 
-        expect_graphql_errors_to_be_empty
-      end
+          expect_graphql_errors_to_be_empty
+        end
 
-      it "#{fixtures_path}#{jobs_query}.empty.json" do
-        post_graphql(query, current_user: user, variables: variables.merge({ first: 0 }))
+        it "#{fixtures_path}#{jobs_query}.empty.json" do
+          post_graphql(query, current_user: user, variables: variables.merge({ first: 0 }))
 
-        expect_graphql_errors_to_be_empty
+          expect_graphql_errors_to_be_empty
+        end
       end
     end
 
     it_behaves_like 'graphql queries', 'jobs/components/table/graphql/queries', 'get_jobs.query.graphql' do
+      let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
+      let(:success_path) { %w[project jobs] }
+    end
+
+    it_behaves_like 'graphql queries', 'jobs/components/table/graphql/queries', 'get_jobs_count.query.graphql', true do
       let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
       let(:success_path) { %w[project jobs] }
     end
@@ -97,32 +104,15 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
       let(:success_path) { 'jobs' }
     end
 
-    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_cancelable_jobs_count.query.graphql' do
+    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_cancelable_jobs_count.query.graphql', true do
       let(:variables) { { statuses: %w[PENDING RUNNING] } }
       let(:user) { create(:admin) }
       let(:success_path) { %w[cancelable count] }
     end
-  end
 
-  describe 'get_jobs_count.query.graphql', type: :request do
-    let!(:build) { create(:ci_build, :success, name: 'build', pipeline: pipeline) }
-    let!(:cancelable) { create(:ci_build, :cancelable, name: 'cancelable', pipeline: pipeline) }
-    let!(:failed) { create(:ci_build, :failed, name: 'failed', pipeline: pipeline) }
-
-    fixtures_path = 'graphql/jobs/'
-    get_jobs_count_query = 'get_jobs_count.query.graphql'
-    full_path = 'frontend-fixtures/builds-project'
-
-    let_it_be(:query) do
-      get_graphql_query_as_string("jobs/components/table/graphql/queries/#{get_jobs_count_query}")
-    end
-
-    it "#{fixtures_path}#{get_jobs_count_query}.json" do
-      post_graphql(query, current_user: user, variables: {
-        fullPath: full_path
-      })
-
-      expect_graphql_errors_to_be_empty
+    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_all_jobs_count.query.graphql', true do
+      let(:user) { create(:admin) }
+      let(:success_path) { 'jobs' }
     end
   end
 end

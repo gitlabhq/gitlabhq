@@ -2,7 +2,7 @@
 import { GlFormGroup, GlModal, GlSprintf } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { importProjectMembers } from '~/api/projects_api';
-import { BV_SHOW_MODAL } from '~/lib/utils/constants';
+import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 import {
@@ -81,11 +81,17 @@ export default {
     openModal() {
       this.$root.$emit(BV_SHOW_MODAL, this.$options.modalId);
     },
+    closeModal() {
+      this.$root.$emit(BV_HIDE_MODAL, this.$options.modalId);
+    },
     resetFields() {
       this.invalidFeedbackMessage = '';
       this.projectToBeImported = {};
     },
-    submitImport() {
+    submitImport(e) {
+      // We never want to hide when submitting
+      e.preventDefault();
+
       this.isLoading = true;
       return importProjectMembers(this.projectId, this.projectToBeImported.id)
         .then(this.onInviteSuccess)

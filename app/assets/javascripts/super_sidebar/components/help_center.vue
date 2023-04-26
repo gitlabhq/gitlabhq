@@ -38,7 +38,7 @@ export default {
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
     whatsnew: __("What's new"),
-    tanuki: __('Ask the Tanuki Bot'),
+    chat: __('Ask the GitLab Chat'),
   },
   props: {
     sidebarData: {
@@ -71,7 +71,7 @@ export default {
           items: [
             this.sidebarData.show_tanuki_bot && {
               icon: 'tanuki',
-              text: this.$options.i18n.tanuki,
+              text: this.$options.i18n.chat,
               action: this.showTanukiBotChat,
               extraAttrs: {
                 ...this.trackingAttrs('tanuki_bot_help_dropdown'),

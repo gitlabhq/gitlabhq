@@ -1,6 +1,10 @@
 import { s__, __ } from '~/locale';
 import { DEFAULT_FIELDS, RAW_TEXT_WARNING } from '~/jobs/components/table/constants';
 
+export const JOBS_COUNT_ERROR_MESSAGE = __('There was an error fetching the number of jobs.');
+export const JOBS_FETCH_ERROR_MSG = __('There was an error fetching the jobs.');
+export const LOADING_ARIA_LABEL = __('Loading');
+export const CANCELABLE_JOBS_ERROR_MSG = __('There was an error fetching the cancelable jobs.');
 export const CANCEL_JOBS_MODAL_ID = 'cancel-jobs-modal';
 export const CANCEL_JOBS_MODAL_TITLE = s__('AdminArea|Are you sure?');
 export const CANCEL_JOBS_BUTTON_TEXT = s__('AdminArea|Cancel all jobs');

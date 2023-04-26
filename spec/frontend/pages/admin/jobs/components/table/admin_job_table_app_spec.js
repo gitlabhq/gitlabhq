@@ -3,11 +3,11 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { s__ } from '~/locale';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 import getAllJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs.query.graphql';
+import getAllJobsCount from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs_count.query.graphql';
 import getCancelableJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_cancelable_jobs_count.query.graphql';
 import AdminJobsTableApp from '~/pages/admin/jobs/components/table/admin_jobs_table_app.vue';
 import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
@@ -17,11 +17,19 @@ import { TEST_HOST } from 'spec/test_constants';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import {
+  JOBS_FETCH_ERROR_MSG,
+  CANCELABLE_JOBS_ERROR_MSG,
+  LOADING_ARIA_LABEL,
+  RAW_TEXT_WARNING_ADMIN,
+  JOBS_COUNT_ERROR_MESSAGE,
+} from '~/pages/admin/jobs/components/constants';
+import {
   mockAllJobsResponsePaginated,
   mockCancelableJobsCountResponse,
   mockAllJobsResponseEmpty,
   statuses,
   mockFailedSearchToken,
+  mockAllJobsCountResponse,
 } from '../../../../../jobs/mock_data';
 
 Vue.use(VueApollo);
@@ -35,6 +43,7 @@ describe('Job table app', () => {
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
   const cancelHandler = jest.fn().mockResolvedValue(mockCancelableJobsCountResponse);
   const emptyHandler = jest.fn().mockResolvedValue(mockAllJobsResponseEmpty);
+  const countSuccessHandler = jest.fn().mockResolvedValue(mockAllJobsCountResponse);
 
   const findSkeletonLoader = () => wrapper.findComponent(JobsSkeletonLoader);
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
@@ -48,10 +57,11 @@ describe('Job table app', () => {
   const triggerInfiniteScroll = () =>
     wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
-  const createMockApolloProvider = (handler, cancelableHandler) => {
+  const createMockApolloProvider = (handler, cancelableHandler, countHandler) => {
     const requestHandlers = [
       [getAllJobsQuery, handler],
       [getCancelableJobsQuery, cancelableHandler],
+      [getAllJobsCount, countHandler],
     ];
 
     return createMockApollo(requestHandlers);
@@ -60,6 +70,7 @@ describe('Job table app', () => {
   const createComponent = ({
     handler = successHandler,
     cancelableHandler = cancelHandler,
+    countHandler = countSuccessHandler,
     mountFn = shallowMount,
     data = {},
   } = {}) => {
@@ -72,7 +83,7 @@ describe('Job table app', () => {
       provide: {
         jobStatuses: statuses,
       },
-      apolloProvider: createMockApolloProvider(handler, cancelableHandler),
+      apolloProvider: createMockApolloProvider(handler, cancelableHandler, countHandler),
     });
   };
 
@@ -133,6 +144,7 @@ describe('Job table app', () => {
         const pageSize = 50;
 
         expect(findLoadingSpinner().exists()).toBe(true);
+        expect(findLoadingSpinner().attributes('aria-label')).toBe(LOADING_ARIA_LABEL);
 
         await waitForPromises();
 
@@ -172,8 +184,56 @@ describe('Job table app', () => {
 
       await waitForPromises();
 
-      expect(findAlert().text()).toBe('There was an error fetching the jobs.');
+      expect(findAlert().text()).toBe(JOBS_FETCH_ERROR_MSG);
       expect(findTable().exists()).toBe(false);
+    });
+
+    it('should show an alert if there is an error fetching the jobs count data', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(JOBS_COUNT_ERROR_MESSAGE);
+    });
+
+    it('should show an alert if there is an error fetching the cancelable jobs data', async () => {
+      createComponent({ handler: successHandler, cancelableHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(CANCELABLE_JOBS_ERROR_MSG);
+    });
+
+    it('jobs table should still load if count query fails', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTable().exists()).toBe(true);
+    });
+
+    it('jobs table should still load if cancel query fails', async () => {
+      createComponent({ handler: successHandler, cancelableHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTable().exists()).toBe(true);
+    });
+
+    it('jobs count should be zero if count query fails', async () => {
+      createComponent({ handler: successHandler, countHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findTabs().props('allJobsCount')).toBe(0);
+    });
+
+    it('cancel button should be hidden if query fails', async () => {
+      createComponent({ handler: successHandler, cancelableHandler: failedHandler });
+
+      await waitForPromises();
+
+      expect(findCancelJobsButton().exists()).toBe(false);
     });
   });
 
@@ -233,11 +293,21 @@ describe('Job table app', () => {
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
     });
 
+    it('refetches jobs count query when filtering', async () => {
+      createComponent();
+
+      jest.spyOn(wrapper.vm.$apollo.queries.jobsCount, 'refetch').mockImplementation(jest.fn());
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(0);
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+
+      expect(wrapper.vm.$apollo.queries.jobsCount.refetch).toHaveBeenCalledTimes(1);
+    });
+
     it('shows raw text warning when user inputs raw text', async () => {
       const expectedWarning = {
-        message: s__(
-          'Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens.',
-        ),
+        message: RAW_TEXT_WARNING_ADMIN,
         type: 'warning',
       };
 

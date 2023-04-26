@@ -161,6 +161,10 @@ For more details on group visibility, see
 
 ## Restrict visibility levels
 
+When restricting visibility levels, consider how these restrictions interact
+with permissions for subgroups and projects that inherit their visibility from
+the item you're changing. 
+
 To restrict visibility levels for groups, projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with Administrator access level.
@@ -181,7 +185,7 @@ To restrict visibility levels for groups, projects, snippets, and selected pages
 1. Select **Save changes**.
 
 For more details on project visibility, see
-[Project visibility](../../public_access.md).
+[Project visibility](../../public_access.md). 
 
 ## Configure allowed import sources
 

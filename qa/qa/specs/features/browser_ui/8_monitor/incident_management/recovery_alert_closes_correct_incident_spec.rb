@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', product_group: :respond do
+  RSpec.describe 'Monitor', product_group: :respond, quarantine: {
+    type: :bug,
+    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/395512'
+  } do
     describe 'Recovery alert' do
       shared_examples 'triggers recovery alert' do
         it 'only closes the correct incident', :aggregate_failures do
@@ -31,12 +34,7 @@ module QA
 
       context(
         'when using HTTP endpoint integration',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393842',
-        quarantine: {
-          only: { pipeline: :nightly },
-          type: :bug,
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403596'
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393842'
       ) do
         include_context 'sends and resolves test alerts'
 
