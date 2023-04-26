@@ -209,7 +209,7 @@ module Gitlab
                               scope.runners_token
                             end
 
-            response = ::Ci::Runners::RegisterRunnerService.new.execute(runners_token, name: name, **args)
+            response = ::Ci::Runners::RegisterRunnerService.new(runners_token, name: name, **args).execute
             runner = response.payload[:runner]
 
             ::Ci::Runners::ProcessRunnerVersionUpdateWorker.new.perform(args[:version])

@@ -11,6 +11,7 @@ class CommitStatus < Ci::ApplicationRecord
   include SafelyChangeColumnDefault
 
   self.table_name = 'ci_builds'
+  self.sequence_name = 'ci_builds_id_seq'
   self.primary_key = :id
   partitionable scope: :pipeline
   columns_changing_default :partition_id
@@ -60,10 +61,10 @@ class CommitStatus < Ci::ApplicationRecord
   scope :by_name, -> (name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
   scope :with_pipeline, -> { joins(:pipeline) }
-  scope :updated_at_before, ->(date) { where('ci_builds.updated_at < ?', date) }
-  scope :created_at_before, ->(date) { where('ci_builds.created_at < ?', date) }
+  scope :updated_at_before, ->(date) { where("#{quoted_table_name}.updated_at < ?", date) }
+  scope :created_at_before, ->(date) { where("#{quoted_table_name}.created_at < ?", date) }
   scope :scheduled_at_before, ->(date) {
-    where('ci_builds.scheduled_at IS NOT NULL AND ci_builds.scheduled_at < ?', date)
+    where("#{quoted_table_name}.scheduled_at IS NOT NULL AND #{quoted_table_name}.scheduled_at < ?", date)
   }
   scope :with_when_executed, ->(when_executed) { where(when: when_executed) }
 

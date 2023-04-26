@@ -67,26 +67,39 @@ RSpec.describe 'New project', :js, feature_category: :projects do
   context 'as an admin' do
     let(:user) { create(:admin) }
 
-    before do
-      sign_in(user)
+    shared_examples '"New project" page' do
+      before do
+        sign_in(user)
+      end
+
+      it 'shows "New project" page', :js do
+        visit new_project_path
+        click_link 'Create blank project'
+
+        expect(page).to have_content('Project name')
+        expect(page).to have_content('Project URL')
+        expect(page).to have_content('Project slug')
+
+        click_link('New project')
+        click_link 'Import project'
+
+        expect(page).to have_link('GitHub')
+        expect(page).to have_link('Bitbucket')
+        expect(page).to have_link('GitLab.com')
+        expect(page).to have_button('Repository by URL')
+        expect(page).to have_link('GitLab export')
+      end
     end
 
-    it 'shows "New project" page', :js do
-      visit new_project_path
-      click_link 'Create blank project'
+    include_examples '"New project" page'
 
-      expect(page).to have_content('Project name')
-      expect(page).to have_content('Project URL')
-      expect(page).to have_content('Project slug')
+    context 'when the new navigation is enabled' do
+      before do
+        user.update!(use_new_navigation: true)
+        stub_feature_flags(super_sidebar_nav: true)
+      end
 
-      click_link('New project')
-      click_link 'Import project'
-
-      expect(page).to have_link('GitHub')
-      expect(page).to have_link('Bitbucket')
-      expect(page).to have_link('GitLab.com')
-      expect(page).to have_button('Repository by URL')
-      expect(page).to have_link('GitLab export')
+      include_examples '"New project" page'
     end
 
     shared_examples 'renders importer link' do |params|

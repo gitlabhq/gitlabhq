@@ -90,7 +90,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
     context 'validating the parent of a namespace' do
       using RSpec::Parameterized::TableSyntax
 
-      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:parent_type, :child_type, :error) do
         nil                      | ref(:user_sti_name)      | nil
         nil                      | ref(:group_sti_name)     | nil
@@ -105,7 +104,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
         ref(:user_sti_name)      | ref(:group_sti_name)     | 'user namespace cannot be the parent of another namespace'
         ref(:user_sti_name)      | ref(:project_sti_name)   | nil
       end
-      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'validates namespace parent' do
@@ -170,7 +168,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
 
       let_it_be(:parent) { create(:namespace) }
 
-      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:namespace_type, :path, :valid) do
         ref(:project_sti_name)   | 'j'               | true
         ref(:project_sti_name)   | 'path.'           | false
@@ -191,7 +188,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
         ref(:user_sti_name)      | 'namespace__path' | false
         ref(:user_sti_name)      | 'blob'            | true
       end
-      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'validates namespace path' do
@@ -873,34 +869,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
           .and_return(project)
 
         expect(namespace.first_project_with_container_registry_tags).to eq(project)
-      end
-
-      context 'when the feature flag use_sub_repositories_api is disabled' do
-        before do
-          stub_feature_flags(use_sub_repositories_api: false)
-        end
-
-        it 'returns the project' do
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-
-          expect(namespace.first_project_with_container_registry_tags).to eq(project)
-        end
-
-        it 'returns no project' do
-          stub_container_registry_tags(repository: :any, tags: nil)
-
-          expect(namespace.first_project_with_container_registry_tags).to be_nil
-        end
-
-        it 'does not cause N+1 query in fetching registries' do
-          stub_container_registry_tags(repository: :any, tags: [])
-          control_count = ActiveRecord::QueryRecorder.new { namespace.any_project_has_container_registry_tags? }.count
-
-          other_repositories = create_list(:container_repository, 2)
-          create(:project, namespace: namespace, container_repositories: other_repositories)
-
-          expect { namespace.first_project_with_container_registry_tags }.not_to exceed_query_limit(control_count + 1)
-        end
       end
     end
   end

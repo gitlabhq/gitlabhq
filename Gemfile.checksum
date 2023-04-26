@@ -419,7 +419,7 @@
 {"name":"omniauth-oauth","version":"1.2.0","platform":"ruby","checksum":"e7a78658498dc83aa3f3be1a776425c0f06a60d45d9236dbe5e98e61fadf827b"},
 {"name":"omniauth-oauth2","version":"1.8.0","platform":"ruby","checksum":"b2f8e9559cc7e2d4efba57607691d6d2b634b879fc5b5b6ccfefa3da85089e78"},
 {"name":"omniauth-oauth2-generic","version":"0.2.8","platform":"ruby","checksum":"ce6e8539019d5ebf2f48867072b9f248f148bb4cbe7166dee655865abfae7613"},
-{"name":"omniauth-saml","version":"2.0.0","platform":"ruby","checksum":"02594fd6630de26a9e65a2e64223e9ad32324fa97a6c7f1f22a1553ea3dd44c7"},
+{"name":"omniauth-saml","version":"2.1.0","platform":"ruby","checksum":"969cb7ba271891d09dfa57b206fc274f43203c52727492517decda93decc6906"},
 {"name":"omniauth-twitter","version":"1.4.0","platform":"ruby","checksum":"c5cc6c77cd767745ffa9ebbd5fbd694a3fa99d1d2d82a4d7def0bf3b6131b264"},
 {"name":"omniauth_openid_connect","version":"0.6.1","platform":"ruby","checksum":"5f1318f5b19b05e339ff494def060b57a503b1e3ea83c3a0ced6cc014407d423"},
 {"name":"open4","version":"1.3.4","platform":"ruby","checksum":"a1df037310624ecc1ea1d81264b11c83e96d0c3c1c6043108d37d396dcd0f4b1"},

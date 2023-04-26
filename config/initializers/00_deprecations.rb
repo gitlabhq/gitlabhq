@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# Silence warnings:
+
+# PG::Coder.new(hash) is deprecated. Please use keyword arguments instead! Called from ...
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118484#note_1366522061
+# Can be removed with Rails 7.0.
+Warning.ignore(/PG::Coder.new\(hash\) is deprecated/)
+
 if Rails.env.production?
   ActiveSupport::Deprecation.silenced = !Gitlab::Utils.to_boolean(ENV['GITLAB_LOG_DEPRECATIONS'])
   ActiveSupport::Deprecation.behavior = :notify

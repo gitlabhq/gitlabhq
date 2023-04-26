@@ -1076,9 +1076,9 @@ GEM
     omniauth-oauth2-generic (0.2.8)
       omniauth-oauth2 (~> 1.0)
       rake
-    omniauth-saml (2.0.0)
+    omniauth-saml (2.1.0)
       omniauth (~> 2.0)
-      ruby-saml (~> 1.9)
+      ruby-saml (~> 1.12)
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
@@ -1853,7 +1853,7 @@ DEPENDENCIES
   omniauth-google-oauth2 (~> 1.1)
   omniauth-oauth2-generic (~> 0.2.2)
   omniauth-salesforce (~> 1.0.5)!
-  omniauth-saml (~> 2.0.0)
+  omniauth-saml (~> 2.1.0)
   omniauth-twitter (~> 1.4)
   omniauth_crowd (~> 2.4.0)!
   omniauth_openid_connect (~> 0.6.1)

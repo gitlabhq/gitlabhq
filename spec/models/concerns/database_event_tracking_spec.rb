@@ -57,6 +57,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
         label: 'application_setting_terms',
         property: 'create',
         namespace: nil,
+        project: nil,
         "id" => 1
       )
     end
@@ -72,6 +73,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
         label: 'application_setting_terms',
         property: 'update',
         namespace: nil,
+        project: nil,
         "id" => 3
       )
     end
@@ -87,6 +89,7 @@ RSpec.describe DatabaseEventTracking, :snowplow do
         label: 'application_setting_terms',
         property: 'destroy',
         namespace: nil,
+        project: nil,
         "id" => 1
       )
     end

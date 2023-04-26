@@ -3,6 +3,8 @@
 module DatabaseEventTracking
   extend ActiveSupport::Concern
 
+  FEATURE_FLAG_BATCH2_CLASSES = %w[Vulnerability MergeRequest::Metrics].freeze
+
   included do
     after_create_commit :publish_database_create_event
     after_destroy_commit :publish_database_destroy_event
@@ -22,7 +24,8 @@ module DatabaseEventTracking
   end
 
   def publish_database_event(name)
-    return unless Feature.enabled?(:product_intelligence_database_event_tracking)
+    return unless database_events_for_class_enabled?
+    return unless database_events_feature_flag_enabled?
 
     # Gitlab::Tracking#event is triggering Snowplow event
     # Snowplow events are sent with usage of
@@ -34,7 +37,8 @@ module DatabaseEventTracking
       self.class.to_s,
       "database_event_#{name}",
       label: self.class.table_name,
-      namespace: try(:group) || try(:namespace),
+      project: try(:project),
+      namespace: (try(:group) || try(:namespace)) || try(:project)&.namespace,
       property: name,
       **filtered_record_attributes
     )
@@ -49,5 +53,15 @@ module DatabaseEventTracking
     attributes
       .with_indifferent_access
       .slice(*self.class::SNOWPLOW_ATTRIBUTES)
+  end
+
+  def database_events_for_class_enabled?
+    is_batch2 = FEATURE_FLAG_BATCH2_CLASSES.include?(self.class.to_s)
+
+    !is_batch2 || Feature.enabled?(:product_intelligence_database_event_tracking_batch2)
+  end
+
+  def database_events_feature_flag_enabled?
+    Feature.enabled?(:product_intelligence_database_event_tracking)
   end
 end

@@ -27,7 +27,7 @@ RSpec.describe Projects::UpdateStatisticsService, feature_category: :projects do
         ['repository_size']                                  | [:size]
         [:repository_size]                                   | [:size]
         [:lfs_objects_size]                                  | nil
-        [:commit_count]                                      | [:commit_count] # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+        [:commit_count]                                      | [:commit_count]
         [:repository_size, :commit_count]                    | %i(size commit_count)
         [:repository_size, :commit_count, :lfs_objects_size] | %i(size commit_count)
       end

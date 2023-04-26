@@ -51,7 +51,7 @@ module API
           attributes[:maintenance_note] ||= deprecated_note if deprecated_note
           attributes[:active] = !attributes.delete(:paused) if attributes.include?(:paused)
 
-          result = ::Ci::Runners::RegisterRunnerService.new.execute(params[:token], attributes)
+          result = ::Ci::Runners::RegisterRunnerService.new(params[:token], attributes).execute
           @runner = result.success? ? result.payload[:runner] : nil
           forbidden! unless @runner
 

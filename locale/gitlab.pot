@@ -21764,6 +21764,9 @@ msgstr ""
 msgid "I accept the %{terms_link}"
 msgstr ""
 
+msgid "I do not know."
+msgstr ""
+
 msgid "I forgot my password"
 msgstr ""
 

@@ -49,7 +49,7 @@ coverage_fuzzing_unlicensed:
       coverage_fuzzing: gl-coverage-fuzzing-report.json
     when: always
   rules:
-    - if: $COVFUZZ_DISABLED
+    - if: $COVFUZZ_DISABLED == 'true' || $COVFUZZ_DISABLED == '1'
       when: never
 
     # Add the job to merge request pipelines if there's an open merge request.

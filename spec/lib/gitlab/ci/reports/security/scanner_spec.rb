@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scanner do
 
       context 'when the `name` of the scanners are equal' do
         where(:scanner_1_attributes, :scanner_2_attributes, :expected_comparison_result) do
-          { external_id: 'gemnasium', name: 'foo', vendor: 'a' } | { external_id: 'gemnasium', name: 'foo', vendor: 'a' } | 0 # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+          { external_id: 'gemnasium', name: 'foo', vendor: 'a' } | { external_id: 'gemnasium', name: 'foo', vendor: 'a' } | 0
           { external_id: 'gemnasium', name: 'foo', vendor: 'a' } | { external_id: 'gemnasium', name: 'foo', vendor: 'b' } | -1
           { external_id: 'gemnasium', name: 'foo', vendor: 'b' } | { external_id: 'gemnasium', name: 'foo', vendor: 'a' } | 1
         end

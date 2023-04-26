@@ -13,7 +13,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
     stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
   end
 
-  subject(:execute) { described_class.new.execute(token, args) }
+  subject(:execute) { described_class.new(token, args).execute }
 
   context 'when no token is provided' do
     let(:token) { '' }

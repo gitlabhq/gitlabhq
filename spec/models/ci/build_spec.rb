@@ -1477,7 +1477,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           ActiveRecord::QueryRecorder.new { subject }
         end
 
-        index_for_build = recorded.log.index { |l| l.include?("UPDATE \"ci_builds\"") }
+        index_for_build = recorded.log.index { |l| l.include?("UPDATE #{described_class.quoted_table_name}") }
         index_for_deployment = recorded.log.index { |l| l.include?("UPDATE \"deployments\"") }
 
         expect(index_for_build).to be < index_for_deployment

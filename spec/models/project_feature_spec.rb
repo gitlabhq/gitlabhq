@@ -288,7 +288,6 @@ RSpec.describe ProjectFeature, feature_category: :projects do
     end
 
     context 'sync packages_enabled' do
-      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:initial_value, :new_value, :expected_result) do
         ProjectFeature::DISABLED | ProjectFeature::DISABLED | false
         ProjectFeature::DISABLED | ProjectFeature::ENABLED  | true
@@ -300,7 +299,6 @@ RSpec.describe ProjectFeature, feature_category: :projects do
         ProjectFeature::PUBLIC   | ProjectFeature::ENABLED  | true
         ProjectFeature::PUBLIC   | ProjectFeature::PUBLIC   | true
       end
-      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'set correct value' do

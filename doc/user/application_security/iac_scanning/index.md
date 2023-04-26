@@ -153,6 +153,8 @@ To disable analyzer rules:
      - Find it in the [JSON report artifact](#reports-json-format).
      - Search for the rule name in the [list of KICS queries](https://docs.kics.io/latest/queries/all-queries/) and copy the alphanumeric identifier that's shown. The rule name is shown on the [Vulnerability Page](../vulnerabilities/index.md) when a rule violation is detected.
 
+After you merge the `sast-ruleset.toml` file to the default branch, existing findings for disabled rules are [automatically resolved](#automatic-vulnerability-resolution).
+
 In the following example `sast-ruleset.toml` file, the disabled rules are assigned to
 the `kics` analyzer by matching the `type` and `value` of identifiers:
 

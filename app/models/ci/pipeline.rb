@@ -91,7 +91,7 @@ module Ci
     has_many :variables, class_name: 'Ci::PipelineVariable'
     has_many :latest_builds, -> { latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
-      not_expired.or(where_exists(::Ci::Pipeline.artifacts_locked.where('ci_pipelines.id = ci_builds.commit_id'))).downloadable.with_job
+      not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
     has_many :latest_successful_builds, -> { latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
 
@@ -406,12 +406,18 @@ module Ci
     end
 
     scope :with_reports, -> (reports_scope) do
-      where('EXISTS (?)', ::Ci::Build.latest.with_artifacts(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
+      where('EXISTS (?)',
+        ::Ci::Build
+          .latest
+          .with_artifacts(reports_scope)
+          .where("#{quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id")
+          .select(1)
+      )
     end
 
     scope :with_only_interruptible_builds, -> do
       where('NOT EXISTS (?)',
-        Ci::Build.where('ci_builds.commit_id = ci_pipelines.id')
+        Ci::Build.where("#{Ci::Build.quoted_table_name}.commit_id = #{quoted_table_name}.id")
                  .with_status(STARTED_STATUSES)
                  .not_interruptible
       )

@@ -241,13 +241,23 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
       context 'when not an applicable version' do
         let(:target_branch) { '14-9-stable-ee' }
 
-        it_behaves_like 'with a warning', described_class::VERSION_WARNING_MESSAGE
+        it 'warns about the package-and-test pipeline and the version' do
+          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
+          expect(stable_branch).to receive(:warn).with(described_class::VERSION_WARNING_MESSAGE)
+
+          subject
+        end
       end
 
       context 'when the version API request fails' do
         let(:response_success) { false }
 
-        it_behaves_like 'with a warning', described_class::FAILED_VERSION_REQUEST_MESSAGE
+        it 'warns about the package-and-test pipeline and the version request' do
+          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
+          expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
+
+          subject
+        end
       end
 
       context 'when more than one page of versions is needed' do
@@ -293,6 +303,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
 
         it 'adds a warning' do
           expect(HTTParty).to receive(:get).and_return(version_response).at_least(10).times
+          expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
           expect(stable_branch).to receive(:warn).with(described_class::FAILED_VERSION_REQUEST_MESSAGE)
 
           subject

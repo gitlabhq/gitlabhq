@@ -308,7 +308,7 @@ class Namespace < ApplicationRecord
   end
 
   def first_project_with_container_registry_tags
-    if ContainerRegistry::GitlabApiClient.supports_gitlab_api? && Feature.enabled?(:use_sub_repositories_api)
+    if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       ContainerRegistry::GitlabApiClient.one_project_with_container_registry_tag(full_path)
     else
       all_projects.includes(:container_repositories).find(&:has_container_registry_tags?)

@@ -47,7 +47,7 @@ RSpec.describe Topics::MergeService, feature_category: :shared do
       where(:source_topic_parameter, :target_topic_parameter, :expected_message) do
         nil                | ref(:target_topic) | 'The source topic is not a topic.'
         ref(:source_topic) | nil                | 'The target topic is not a topic.'
-        ref(:target_topic) | ref(:target_topic) | 'The source topic and the target topic are identical.' # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+        ref(:target_topic) | ref(:target_topic) | 'The source topic and the target topic are identical.'
       end
 
       with_them do

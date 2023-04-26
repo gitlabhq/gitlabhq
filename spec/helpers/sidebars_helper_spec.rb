@@ -187,7 +187,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       context 'in a project' do
-        let(:project) { build(:project) }
+        # rubocop: disable RSpec/FactoryBot/AvoidCreate
+        let_it_be(:project) { create(:project) }
+        # rubocop: enable RSpec/FactoryBot/AvoidCreate
 
         it 'returns project-specific shortcut links' do
           expect(subject[:shortcut_links]).to eq([

@@ -7975,8 +7975,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       using RSpec::Parameterized::TableSyntax
 
       where(:topic_list, :expected_result) do
-        ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
-        ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray, Lint/BinaryOperatorWithIdenticalOperands
+        ['topicA', 'topicB']              | %w[topicA topicB] # rubocop:disable Style/WordArray
+        ['topicB', 'topicA']              | %w[topicB topicA] # rubocop:disable Style/WordArray
         ['   topicC  ', ' topicD    ']    | %w[topicC topicD]
         ['topicE', 'topicF', 'topicE']    | %w[topicE topicF] # rubocop:disable Style/WordArray
         ['topicE  ', 'topicF', ' topicE'] | %w[topicE topicF]
@@ -8051,7 +8051,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
 
       using RSpec::Parameterized::TableSyntax
 
-      # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
       where(:initial_visibility, :new_visibility, :new_topic_list, :expected_count_changes) do
         ref(:private)  | nil            | 't2, t3' | [0, 0, 0]
         ref(:internal) | nil            | 't2, t3' | [-1, 0, 1]
@@ -8075,7 +8074,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         ref(:public)   | ref(:internal) | 't2, t3' | [-1, 0, 1]
         ref(:public)   | ref(:private)  | 't2, t3' | [-1, -1, 0]
       end
-      # rubocop:enable Lint/BinaryOperatorWithIdenticalOperands
 
       with_them do
         it 'increments or decrements counters of topics' do

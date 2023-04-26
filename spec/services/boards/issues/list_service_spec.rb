@@ -85,7 +85,6 @@ RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
       end
     end
 
-    # rubocop: disable RSpec/MultipleMemoizedHelpers
     context 'when parent is a group' do
       let(:project) { create(:project, :empty_repo, namespace: group) }
       let(:project1) { create(:project, :empty_repo, namespace: group) }
@@ -156,7 +155,6 @@ RSpec.describe Boards::Issues::ListService, feature_category: :team_planning do
         it_behaves_like 'issues list service'
       end
     end
-    # rubocop: enable RSpec/MultipleMemoizedHelpers
   end
 
   describe '.initialize_relative_positions' do
