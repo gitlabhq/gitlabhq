@@ -139,7 +139,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/quick_actions/extractor_spec.rb'
     - 'spec/lib/gitlab/search_context/builder_spec.rb'
     - 'spec/lib/gitlab/session_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_daemon/memory_killer_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/structured_logger_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/extra_done_log_metadata_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/server_metrics_spec.rb'

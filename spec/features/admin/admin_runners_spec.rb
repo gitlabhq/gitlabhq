@@ -32,15 +32,30 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
     end
 
     describe "runners registration" do
-      before do
-        stub_feature_flags(create_runner_workflow_for_admin: false)
+      context 'when create_runner_workflow_for_namespace is enabled' do
+        before do
+          stub_feature_flags(create_runner_workflow_for_admin: true)
 
-        visit admin_runners_path
+          visit admin_runners_path
+        end
+
+        it_behaves_like "shows and resets runner registration token" do
+          let(:dropdown_text) { s_('Runners|Register an instance runner') }
+          let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
+        end
       end
 
-      it_behaves_like "shows and resets runner registration token" do
-        let(:dropdown_text) { s_('Runners|Register an instance runner') }
-        let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
+      context 'when create_runner_workflow_for_namespace is disabled' do
+        before do
+          stub_feature_flags(create_runner_workflow_for_admin: false)
+
+          visit admin_runners_path
+        end
+
+        it_behaves_like "shows and resets runner registration token" do
+          let(:dropdown_text) { s_('Runners|Register an instance runner') }
+          let(:registration_token) { Gitlab::CurrentSettings.runners_registration_token }
+        end
       end
     end
 

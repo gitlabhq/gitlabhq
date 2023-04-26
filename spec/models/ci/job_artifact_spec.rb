@@ -483,9 +483,11 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
 
       context "when #{file_type} type with other formats" do
         described_class.file_formats.except(file_format).values.each do |other_format|
-          let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: other_format) }
+          context "with #{other_format}" do
+            let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: other_format) }
 
-          it { is_expected.not_to be_valid }
+            it { is_expected.not_to be_valid }
+          end
         end
       end
     end

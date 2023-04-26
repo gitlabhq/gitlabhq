@@ -151,7 +151,7 @@ module Types
       end
 
       def ephemeral_register_url
-        return unless ephemeral_register_url_access_allowed?(runner)
+        return unless context[:current_user]&.can?(:read_ephemeral_token, runner) && runner.registration_available?
 
         case runner.runner_type
         when 'instance_type'
@@ -202,23 +202,6 @@ module Types
 
       def can_admin_runners?
         context[:current_user]&.can_admin_all_resources?
-      end
-
-      def ephemeral_register_url_access_allowed?(runner)
-        return unless runner.registration_available?
-
-        case runner.runner_type
-        when 'instance_type'
-          can_admin_runners?
-        when 'group_type'
-          group = runner.groups[0]
-
-          group && context[:current_user]&.can?(:register_group_runners, group)
-        when 'project_type'
-          project = runner.projects[0]
-
-          project && context[:current_user]&.can?(:register_project_runners, project)
-        end
       end
     end
   end

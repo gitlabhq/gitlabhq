@@ -618,12 +618,7 @@ export default {
           :can-update="canUpdate"
           @error="updateError = $event"
         />
-        <work-item-created-updated
-          :work-item-id="workItem.id"
-          :work-item-iid="workItemIid"
-          :full-path="fullPath"
-          :fetch-by-iid="fetchByIid"
-        />
+        <work-item-created-updated :work-item-iid="workItemIid" :full-path="fullPath" />
         <work-item-state
           :work-item="workItem"
           :work-item-parent-id="workItemParentId"
@@ -646,7 +641,6 @@ export default {
           :work-item-id="workItem.id"
           :can-update="canUpdate"
           :full-path="fullPath"
-          :fetch-by-iid="fetchByIid"
           :query-variables="queryVariables"
           @error="updateError = $event"
         />
@@ -664,8 +658,6 @@ export default {
           :work-item-id="workItem.id"
           :work-item-milestone="workItemMilestone.milestone"
           :work-item-type="workItemType"
-          :fetch-by-iid="fetchByIid"
-          :query-variables="queryVariables"
           :can-update="canUpdate"
           :full-path="fullPath"
           @error="updateError = $event"
@@ -677,7 +669,6 @@ export default {
           :weight="workItemWeight.weight"
           :work-item-id="workItem.id"
           :work-item-type="workItemType"
-          :fetch-by-iid="fetchByIid"
           :query-variables="queryVariables"
           @error="updateError = $event"
         />

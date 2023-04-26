@@ -71,6 +71,12 @@ export const I18N_STALE_NEVER_CONTACTED_TOOLTIP = s__(
   'Runners|Runner is stale; it has never contacted this instance',
 );
 
+// Registration dropdown
+export const I18N_REGISTER_INSTANCE_TYPE = s__('Runners|Register an instance runner');
+export const I18N_REGISTER_GROUP_TYPE = s__('Runners|Register a group runner');
+export const I18N_REGISTER_PROJECT_TYPE = s__('Runners|Register a project runner');
+export const I18N_REGISTER_RUNNER = s__('Runners|Register a runner');
+
 // Actions
 export const I18N_EDIT = __('Edit');
 

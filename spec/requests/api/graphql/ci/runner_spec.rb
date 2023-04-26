@@ -7,7 +7,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
   let_it_be(:user) { create(:user, :admin) }
   let_it_be(:another_admin) { create(:user, :admin) }
-  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
 
   let_it_be(:active_instance_runner) do
     create(:ci_runner, :instance, :with_runner_manager,
@@ -379,6 +379,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   end
 
   describe 'ephemeralRegisterUrl' do
+    let(:runner_args) { { registration_type: :authenticated_user, creator: creator } }
     let(:query) do
       %(
         query {
@@ -403,54 +404,46 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       end
     end
 
-    context 'with an instance runner' do
-      context 'with registration available' do
-        let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
+    context 'with an instance runner', :freeze_time do
+      let(:creator) { user }
+      let(:runner) { create(:ci_runner, **runner_args) }
 
+      context 'with valid ephemeral registration' do
         it_behaves_like 'has register url' do
           let(:expected_url) { "http://localhost/admin/runners/#{runner.id}/register" }
         end
       end
 
-      context 'with no registration available' do
-        let_it_be(:runner) { create(:ci_runner) }
+      context 'when runner ephemeral registration has expired' do
+        let(:runner) do
+          create(:ci_runner, created_at: (Ci::Runner::REGISTRATION_AVAILABILITY_TIME + 1.second).ago, **runner_args)
+        end
+
+        it_behaves_like 'has no register url'
+      end
+
+      context 'when runner has already been registered' do
+        let(:runner) { create(:ci_runner, :with_runner_manager, **runner_args) }
 
         it_behaves_like 'has no register url'
       end
     end
 
     context 'with a group runner' do
-      context 'with registration available' do
-        let_it_be(:runner) { create(:ci_runner, :group, groups: [group], registration_type: :authenticated_user) }
+      let(:creator) { user }
+      let(:runner) { create(:ci_runner, :group, groups: [group], **runner_args) }
 
+      context 'with valid ephemeral registration' do
         it_behaves_like 'has register url' do
           let(:expected_url) { "http://localhost/groups/#{group.path}/-/runners/#{runner.id}/register" }
         end
       end
 
-      context 'with no group' do
-        let(:destroyed_group) { create(:group) }
-        let(:runner) { create(:ci_runner, :group, groups: [destroyed_group], registration_type: :authenticated_user) }
+      context 'when request not from creator' do
+        let(:creator) { another_admin }
 
         before do
-          destroyed_group.destroy!
-        end
-
-        it_behaves_like 'has no register url'
-      end
-
-      context 'with no registration available' do
-        let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
-
-        it_behaves_like 'has no register url'
-      end
-
-      context 'with no access' do
-        let_it_be(:user) { create(:user) }
-        let_it_be(:runner) { create(:ci_runner, :group, groups: [group], registration_type: :authenticated_user) }
-
-        before do
-          group.add_maintainer(user)
+          group.add_owner(another_admin)
         end
 
         it_behaves_like 'has no register url'
@@ -458,37 +451,20 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     end
 
     context 'with a project runner' do
-      context 'with registration available' do
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1], registration_type: :authenticated_user) }
+      let(:creator) { user }
+      let(:runner) { create(:ci_runner, :project, projects: [project1], **runner_args) }
 
+      context 'with valid ephemeral registration' do
         it_behaves_like 'has register url' do
           let(:expected_url) { "http://localhost/#{project1.full_path}/-/runners/#{runner.id}/register" }
         end
       end
 
-      context 'with no project' do
-        let(:destroyed_project) { create(:project) }
-        let(:runner) { create(:ci_runner, :project, projects: [destroyed_project], registration_type: :authenticated_user) }
+      context 'when request not from creator' do
+        let(:creator) { another_admin }
 
         before do
-          destroyed_project.destroy!
-        end
-
-        it_behaves_like 'has no register url'
-      end
-
-      context 'with no registration available' do
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1]) }
-
-        it_behaves_like 'has no register url'
-      end
-
-      context 'with no access' do
-        let_it_be(:user) { create(:user) }
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project1], registration_type: :authenticated_user) }
-
-        before do
-          group.add_maintainer(user)
+          project1.add_owner(another_admin)
         end
 
         it_behaves_like 'has no register url'
@@ -1016,11 +992,11 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   describe 'sorting and pagination' do
     let(:query) do
       <<~GQL
-      query($id: CiRunnerID!, $projectSearchTerm: String, $n: Int, $cursor: String) {
-        runner(id: $id) {
-          #{fields}
+        query($id: CiRunnerID!, $projectSearchTerm: String, $n: Int, $cursor: String) {
+          runner(id: $id) {
+            #{fields}
+          }
         }
-      }
       GQL
     end
 
@@ -1039,18 +1015,18 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       let(:fields) do
         <<~QUERY
-        projects(search: $projectSearchTerm, first: $n, after: $cursor) {
-          count
-          nodes {
-            id
+          projects(search: $projectSearchTerm, first: $n, after: $cursor) {
+            count
+            nodes {
+              id
+            }
+            pageInfo {
+              hasPreviousPage
+              startCursor
+              endCursor
+              hasNextPage
+            }
           }
-          pageInfo {
-            hasPreviousPage
-            startCursor
-            endCursor
-            hasNextPage
-          }
-        }
         QUERY
       end
 

@@ -21,5 +21,9 @@ FactoryBot.define do
     trait :soft_failure do
       retry_count { 1 }
     end
+
+    trait :github_import_failure do
+      external_identifiers { { iid: 2, object_type: 'pull_request', title: 'Implement cool feature' } }
+    end
   end
 end

@@ -8,7 +8,12 @@ RSpec.describe ImportFailure do
     let_it_be(:correlation_id) { 'ABC' }
     let_it_be(:hard_failure) { create(:import_failure, :hard_failure, project: project, correlation_id_value: correlation_id) }
     let_it_be(:soft_failure) { create(:import_failure, :soft_failure, project: project, correlation_id_value: correlation_id) }
+    let_it_be(:github_import_failure) { create(:import_failure, :github_import_failure, project: project) }
     let_it_be(:unrelated_failure) { create(:import_failure, project: project) }
+
+    it 'returns failures with external_identifiers' do
+      expect(ImportFailure.with_external_identifiers).to match_array([github_import_failure])
+    end
 
     it 'returns failures for the given correlation ID' do
       expect(ImportFailure.failures_by_correlation_id(correlation_id)).to match_array([hard_failure, soft_failure])

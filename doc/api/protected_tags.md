@@ -53,7 +53,6 @@ Example response:
 ## Get a single protected tag or wildcard protected tag
 
 Gets a single protected tag or wildcard protected tag.
-The pagination parameters `page` and `per_page` can be used to restrict the list of protected tags.
 
 ```plaintext
 GET /projects/:id/protected_tags/:name

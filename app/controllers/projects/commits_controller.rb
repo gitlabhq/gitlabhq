@@ -91,7 +91,7 @@ class Projects::CommitsController < Projects::ApplicationController
         @repository.commits(ref, **options)
       end
 
-    @commits.load_tags if Feature.enabled?(:show_tags_on_commits_view, @project)
+    @commits.load_tags
     @commits.each(&:lazy_author) # preload authors
 
     @commits = @commits.with_markdown_cache.with_latest_pipeline(ref)

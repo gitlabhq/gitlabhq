@@ -385,6 +385,57 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     end
   end
 
+  describe "GET failures" do
+    let_it_be_with_reload(:project) { create(:project, import_type: 'github', import_status: :started, import_source: 'example/repo', import_url: 'https://fake.url') }
+    let!(:import_failure) do
+      create(:import_failure,
+        project: project,
+        source: 'Gitlab::GithubImport::Importer::PullRequestImporter',
+        external_identifiers: { iid: 2, object_type: 'pull_request', title: 'My Pull Request' }
+      )
+    end
+
+    context 'when import is not finished' do
+      it 'return bad_request' do
+        get :failures, params: { project_id: project.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('The import is not complete.')
+      end
+    end
+
+    context 'when import is finished' do
+      before do
+        project.import_state.finish
+      end
+
+      it 'includes failure details in response' do
+        get :failures, params: { project_id: project.id }
+
+        expect(json_response[0]['type']).to eq('pull_request')
+        expect(json_response[0]['title']).to eq('My Pull Request')
+        expect(json_response[0]['provider_url']).to eq("https://fake.url/example/repo/pull/2")
+        expect(json_response[0]['details']['source']).to eq(import_failure.source)
+      end
+
+      it 'paginates records' do
+        issue_title = 'My Issue'
+
+        create(
+          :import_failure,
+          project: project,
+          source: 'Gitlab::GithubImport::Importer::IssueAndLabelLinksImporter',
+          external_identifiers: { iid: 3, object_type: 'issue', title: issue_title }
+        )
+
+        get :failures, params: { project_id: project.id, page: 2, per_page: 1 }
+
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['title']).to eq(issue_title)
+      end
+    end
+  end
+
   describe "POST cancel" do
     let_it_be(:project) do
       create(

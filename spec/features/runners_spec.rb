@@ -21,19 +21,28 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
         project.add_maintainer(user)
       end
 
-      context 'when create_runner_workflow_for_namespace is enabled' do
+      context 'when create_runner_workflow_for_namespace is enabled', :js do
         before do
           stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
+
+          visit project_runners_path(project)
         end
 
         it 'user can see a link with instructions on how to install GitLab Runner' do
-          visit project_runners_path(project)
-
           expect(page).to have_link(s_('Runners|New project runner'), href: new_project_runner_path(project))
         end
 
-        describe 'runner registration', :js do
+        it_behaves_like "shows and resets runner registration token" do
+          let(:dropdown_text) { s_('Runners|Register a project runner') }
+          let(:registration_token) { project.runners_token }
+        end
+      end
+
+      context 'when user views new runner page' do
+        context 'when create_runner_workflow_for_namespace is enabled', :js do
           before do
+            stub_feature_flags(create_runner_workflow_for_namespace: [project.namespace])
+
             visit new_project_runner_path(project)
           end
 

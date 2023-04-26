@@ -276,7 +276,7 @@ module ApplicationHelper
     if startup_css_enabled?
       stylesheet_link_tag(path, media: "print", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
     else
-      stylesheet_link_tag(path, crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
+      stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
     end
   end
 

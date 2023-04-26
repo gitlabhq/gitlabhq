@@ -70,15 +70,6 @@ export default {
       type: String,
       required: true,
     },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    queryVariables: {
-      type: Object,
-      required: true,
-    },
   },
   data() {
     return {

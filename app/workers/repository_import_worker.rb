@@ -14,10 +14,6 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
   worker_resource_boundary :memory
 
-  # technical debt: https://gitlab.com/gitlab-org/gitlab/issues/33991
-  sidekiq_options memory_killer_memory_growth_kb: ENV.fetch('MEMORY_KILLER_REPOSITORY_IMPORT_WORKER_MEMORY_GROWTH_KB', 50).to_i
-  sidekiq_options memory_killer_max_memory_growth_kb: ENV.fetch('MEMORY_KILLER_REPOSITORY_IMPORT_WORKER_MAX_MEMORY_GROWTH_KB', 300_000).to_i
-
   def perform(project_id)
     @project = Project.find_by_id(project_id)
     return if project.nil? || !start_import?

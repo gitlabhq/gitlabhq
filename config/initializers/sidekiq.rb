@@ -32,8 +32,6 @@ queues_config_hash = Gitlab::Redis::Queues.params
 queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
-enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero? &&
-  !Gitlab::Utils.to_boolean(ENV['GITLAB_MEMORY_WATCHDOG_ENABLED'], default: true)
 
 Sidekiq.configure_server do |config|
   config[:strict] = false
@@ -69,8 +67,6 @@ Sidekiq.configure_server do |config|
     # Start monitor to track running jobs. By default, cancel job is not enabled
     # To cancel job, it requires `SIDEKIQ_MONITOR_WORKER=1` to enable notification channel
     Gitlab::SidekiqDaemon::Monitor.instance.start
-
-    Gitlab::SidekiqDaemon::MemoryKiller.instance.start if enable_sidekiq_memory_killer
 
     first_sidekiq_worker = !ENV['SIDEKIQ_WORKER_ID'] || ENV['SIDEKIQ_WORKER_ID'] == '0'
     health_checks = Settings.monitoring.sidekiq_health_checks

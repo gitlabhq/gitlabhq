@@ -22,6 +22,7 @@ namespace :import do
     get :details
     get :callback
     get :realtime_changes
+    get :failures
     post :cancel
     post :cancel_all
     get :counts

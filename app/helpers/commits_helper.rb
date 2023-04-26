@@ -160,23 +160,18 @@ module CommitsHelper
   # This includes a keyed hash for values that can be nil, to prevent invalid cache entries
   # being served if the order should change in future.
   def commit_partial_cache_key(commit, ref:, merge_request:, request:)
-    keyed_hash = {
-      merge_request: merge_request&.cache_key,
-      pipeline_status: commit.detailed_status_for(ref)&.cache_key,
-      xhr: request.xhr?,
-      controller: controller.controller_path,
-      path: @path # referred to in #link_to_browse_code
-    }
-
-    if Feature.enabled?(:show_tags_on_commits_view, commit.project)
-      keyed_hash[:referenced_by] = tag_checksum(commit.referenced_by)
-    end
-
     [
       commit,
       commit.author,
       ref,
-      keyed_hash
+      {
+        merge_request: merge_request&.cache_key,
+        pipeline_status: commit.detailed_status_for(ref)&.cache_key,
+        xhr: request.xhr?,
+        controller: controller.controller_path,
+        path: @path, # referred to in #link_to_browse_code
+        referenced_by: tag_checksum(commit.referenced_by)
+      }
     ]
   end
 

@@ -341,27 +341,6 @@ RSpec.describe CommitsHelper do
       ])
     end
 
-    context 'when the show_tags_on_commits_view flag is disabled' do
-      before do
-        stub_feature_flags(show_tags_on_commits_view: false)
-      end
-
-      specify do
-        expect(subject).to eq([
-          commit,
-          commit.author,
-          ref,
-          {
-            merge_request: merge_request.cache_key,
-            pipeline_status: pipeline.cache_key,
-            xhr: true,
-            controller: "commits",
-            path: current_path
-          }
-        ])
-      end
-    end
-
     describe "final cache key output" do
       subject { ActiveSupport::Cache.expand_cache_key(cache_key) }
 

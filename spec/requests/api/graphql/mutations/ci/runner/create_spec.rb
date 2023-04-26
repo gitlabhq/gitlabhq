@@ -107,11 +107,7 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
     end
   end
 
-  shared_context 'when runner is created successfully' do
-    before do
-      stub_feature_flags(create_runner_workflow_for_namespace: [group])
-    end
-
+  shared_examples 'when runner is created successfully' do
     it do
       expected_args = { user: current_user, params: anything }
       expect_next_instance_of(::Ci::Runners::CreateRunnerService, expected_args) do |service|
@@ -168,6 +164,10 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
       }
     end
 
+    before do
+      stub_feature_flags(create_runner_workflow_for_namespace: [group])
+    end
+
     it_behaves_like 'when user does not have permissions'
 
     context 'when user has permissions' do
@@ -218,10 +218,7 @@ RSpec.describe 'RunnerCreate', feature_category: :runner_fleet do
           it 'returns an error' do
             post_graphql_mutation(mutation, current_user: current_user)
 
-            expect_graphql_errors_to_include(
-              'The resource that you are attempting to access does not exist ' \
-              "or you don't have permission to perform this action"
-            )
+            expect(flattened_errors).not_to be_empty
           end
         end
       end

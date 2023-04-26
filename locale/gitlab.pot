@@ -19881,6 +19881,9 @@ msgstr ""
 msgid "Gitea Import"
 msgstr ""
 
+msgid "GithubImporter|%{noteable_type} comment %{note_id}"
+msgstr ""
+
 msgid "GithubImporter|Collaborators"
 msgstr ""
 
@@ -19896,10 +19899,19 @@ msgstr ""
 msgid "GithubImporter|GitHub gists with more than 10 files must be manually migrated."
 msgstr ""
 
+msgid "GithubImporter|Issue %{issue_iid} attachment"
+msgstr ""
+
 msgid "GithubImporter|Issue links"
 msgstr ""
 
+msgid "GithubImporter|Merge request %{merge_request_iid} attachment"
+msgstr ""
+
 msgid "GithubImporter|Merge request links"
+msgstr ""
+
+msgid "GithubImporter|Note attachment"
 msgstr ""
 
 msgid "GithubImporter|Note links"
@@ -19917,7 +19929,22 @@ msgstr ""
 msgid "GithubImporter|Please follow %{import_snippets_url} for more details."
 msgstr ""
 
+msgid "GithubImporter|Pull request %{pull_request_iid} merger"
+msgstr ""
+
+msgid "GithubImporter|Pull request %{pull_request_iid} review request"
+msgstr ""
+
+msgid "GithubImporter|Pull request review %{review_id}"
+msgstr ""
+
+msgid "GithubImporter|Pull request review comment %{note_id}"
+msgstr ""
+
 msgid "GithubImporter|Pull requests"
+msgstr ""
+
+msgid "GithubImporter|Release %{tag} attachment"
 msgstr ""
 
 msgid "GithubImporter|Release links"
@@ -44420,6 +44447,9 @@ msgstr ""
 msgid "The import cannot be canceled because it is %{project_status}"
 msgstr ""
 
+msgid "The import is not complete."
+msgstr ""
+
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
@@ -50422,6 +50452,9 @@ msgstr ""
 msgid "Workspaces|Failed to create workspace"
 msgstr ""
 
+msgid "Workspaces|Failed to update workspace"
+msgstr ""
+
 msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
 msgstr ""
 
@@ -50447,6 +50480,12 @@ msgid "Workspaces|Stopped"
 msgstr ""
 
 msgid "Workspaces|Stopping"
+msgstr ""
+
+msgid "Workspaces|Terminate"
+msgstr ""
+
+msgid "Workspaces|Terminating"
 msgstr ""
 
 msgid "Workspaces|To create a workspace for this project, an administrator must configure an agent for the project's group."

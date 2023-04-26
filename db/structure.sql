@@ -30845,6 +30845,8 @@ CREATE INDEX index_import_export_uploads_on_updated_at ON import_export_uploads 
 
 CREATE INDEX index_import_failures_on_correlation_id_value ON import_failures USING btree (correlation_id_value);
 
+CREATE INDEX index_import_failures_on_external_identifiers ON import_failures USING btree (external_identifiers) WHERE (external_identifiers <> '{}'::jsonb);
+
 CREATE INDEX index_import_failures_on_group_id_not_null ON import_failures USING btree (group_id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON import_failures USING btree (project_id, correlation_id_value) WHERE (retry_count = 0);

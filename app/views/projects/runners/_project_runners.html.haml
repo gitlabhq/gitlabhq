@@ -7,6 +7,7 @@
     - if can?(current_user, :create_runner, @project)
       = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), variant: :confirm) do
         = s_('Runners|New project runner')
+      #js-project-runner-registration-dropdown{ data: { registration_token: @project.runners_token, project_id: @project.id } }
     - else
       = _('Please contact an admin to create runners.')
       = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'

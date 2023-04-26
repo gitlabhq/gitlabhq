@@ -108,22 +108,6 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' }
       end
 
-      context 'when the show_tags_on_commits_view flag is disabled' do
-        let(:id) { "master/README.md" }
-
-        before do
-          stub_feature_flags(show_tags_on_commits_view: false)
-        end
-
-        it 'does not load tags' do
-          expect_next_instance_of(CommitCollection) do |collection|
-            expect(collection).not_to receive(:load_tags)
-          end
-
-          get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
-        end
-      end
-
       context "when the ref name ends in .atom" do
         context "when the ref does not exist with the suffix" do
           before do

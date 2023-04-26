@@ -162,7 +162,6 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/redis/shared_state_spec.rb'
     - 'spec/lib/gitlab/redis/sidekiq_status_spec.rb'
     - 'spec/lib/gitlab/relative_positioning/range_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_daemon/memory_killer_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/structured_logger_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/until_executed_spec.rb'

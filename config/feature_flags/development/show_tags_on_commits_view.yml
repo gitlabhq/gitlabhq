@@ -1,8 +1,0 @@
----
-name: show_tags_on_commits_view
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111493
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/392003
-milestone: '15.10'
-type: development
-group: group::source code
-default_enabled: true

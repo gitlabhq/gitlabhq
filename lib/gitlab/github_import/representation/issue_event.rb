@@ -22,7 +22,7 @@ module Gitlab
         def github_identifiers
           {
             id: id,
-            iid: issuable_id,
+            issuable_iid: issuable_id,
             event: event
           }
         end

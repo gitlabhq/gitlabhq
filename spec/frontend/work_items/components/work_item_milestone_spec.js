@@ -9,27 +9,20 @@ import {
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
-import { resolvers, config } from '~/graphql_shared/issuable_client';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import {
   projectMilestonesResponse,
   projectMilestonesResponseWithNoMilestones,
   mockMilestoneWidgetResponse,
-  workItemResponseFactory,
   updateWorkItemMutationErrorResponse,
-  workItemMilestoneSubscriptionResponse,
-  projectWorkItemResponse,
   updateWorkItemMutationResponse,
-} from 'jest/work_items/mock_data';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+} from '../mock_data';
 
 describe('WorkItemMilestone component', () => {
   Vue.use(VueApollo);
@@ -52,72 +45,34 @@ describe('WorkItemMilestone component', () => {
   const findDropdownTextAtIndex = (index) => findDropdownTexts().at(index);
   const findInputGroup = () => wrapper.findComponent(GlFormGroup);
 
-  const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
-  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
-
-  const networkResolvedValue = new Error();
-
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectMilestonesResponse);
   const successSearchWithNoMatchingMilestones = jest
     .fn()
     .mockResolvedValue(projectMilestonesResponseWithNoMilestones);
-  const milestoneSubscriptionHandler = jest
-    .fn()
-    .mockResolvedValue(workItemMilestoneSubscriptionResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
 
-  const showDropdown = () => {
-    findDropdown().vm.$emit('shown');
-  };
-
-  const hideDropdown = () => {
-    findDropdown().vm.$emit('hide');
-  };
+  const showDropdown = () => findDropdown().vm.$emit('shown');
+  const hideDropdown = () => findDropdown().vm.$emit('hide');
 
   const createComponent = ({
     canUpdate = true,
     milestone = mockMilestoneWidgetResponse,
     searchQueryHandler = successSearchQueryHandler,
-    fetchByIid = false,
     mutationHandler = successUpdateWorkItemMutationHandler,
   } = {}) => {
-    const apolloProvider = createMockApollo(
-      [
-        [workItemQuery, workItemQueryHandler],
-        [workItemMilestoneSubscription, milestoneSubscriptionHandler],
+    wrapper = shallowMountExtended(WorkItemMilestone, {
+      apolloProvider: createMockApollo([
         [projectMilestonesQuery, searchQueryHandler],
         [updateWorkItemMutation, mutationHandler],
-        [workItemByIidQuery, workItemByIidResponseHandler],
-      ],
-      resolvers,
-      {
-        typePolicies: config.cacheConfig.typePolicies,
-      },
-    );
-
-    apolloProvider.clients.defaultClient.writeQuery({
-      query: workItemQuery,
-      variables: {
-        id: workItemId,
-      },
-      data: workItemQueryResponse.data,
-    });
-
-    wrapper = shallowMountExtended(WorkItemMilestone, {
-      apolloProvider,
+      ]),
       propsData: {
         canUpdate,
         workItemMilestone: milestone,
         workItemId,
         workItemType,
         fullPath,
-        queryVariables: {
-          id: workItemId,
-        },
-        fetchByIid,
       },
       stubs: {
         GlDropdown,
@@ -244,7 +199,7 @@ describe('WorkItemMilestone component', () => {
     it.each`
       errorType          | expectedErrorMessage                                                 | mockValue                              | resolveFunction
       ${'graphql error'} | ${'Something went wrong while updating the task. Please try again.'} | ${updateWorkItemMutationErrorResponse} | ${'mockResolvedValue'}
-      ${'network error'} | ${'Something went wrong while updating the task. Please try again.'} | ${networkResolvedValue}                | ${'mockRejectedValue'}
+      ${'network error'} | ${'Something went wrong while updating the task. Please try again.'} | ${new Error()}                         | ${'mockRejectedValue'}
     `(
       'emits an error when there is a $errorType',
       async ({ mockValue, expectedErrorMessage, resolveFunction }) => {

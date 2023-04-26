@@ -6,7 +6,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import labelSearchQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemLabelsSubscription from 'ee_else_ce/work_items/graphql/work_item_labels.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -15,11 +14,9 @@ import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constan
 import {
   projectLabelsResponse,
   mockLabels,
-  workItemQueryResponse,
-  workItemResponseFactory,
+  workItemByIidResponseFactory,
   updateWorkItemMutationResponse,
   workItemLabelsSubscriptionResponse,
-  projectWorkItemResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -34,8 +31,9 @@ describe('WorkItemLabels component', () => {
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findLabelsTitle = () => wrapper.findByTestId('labels-title');
 
-  const workItemQuerySuccess = jest.fn().mockResolvedValue(workItemQueryResponse);
-  const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
+  const workItemQuerySuccess = jest
+    .fn()
+    .mockResolvedValue(workItemByIidResponseFactory({ labels: null }));
   const successSearchQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
@@ -48,27 +46,22 @@ describe('WorkItemLabels component', () => {
     workItemQueryHandler = workItemQuerySuccess,
     searchQueryHandler = successSearchQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
-    fetchByIid = false,
-    queryVariables = { id: workItemId },
+    queryVariables = { iid: '1' },
   } = {}) => {
-    const apolloProvider = createMockApollo([
-      [workItemQuery, workItemQueryHandler],
-      [labelSearchQuery, searchQueryHandler],
-      [updateWorkItemMutation, updateWorkItemMutationHandler],
-      [workItemLabelsSubscription, subscriptionHandler],
-      [workItemByIidQuery, workItemByIidResponseHandler],
-    ]);
-
     wrapper = mountExtended(WorkItemLabels, {
+      apolloProvider: createMockApollo([
+        [workItemByIidQuery, workItemQueryHandler],
+        [labelSearchQuery, searchQueryHandler],
+        [updateWorkItemMutation, updateWorkItemMutationHandler],
+        [workItemLabelsSubscription, subscriptionHandler],
+      ]),
       propsData: {
         workItemId,
         canUpdate,
         fullPath: 'test-project-path',
         queryVariables,
-        fetchByIid,
       },
       attachTo: document.body,
-      apolloProvider,
     });
   };
 
@@ -186,7 +179,7 @@ describe('WorkItemLabels component', () => {
   });
 
   it('adds new labels to the end', async () => {
-    const response = workItemResponseFactory({ labels: [mockLabels[1]] });
+    const response = workItemByIidResponseFactory({ labels: [mockLabels[1]] });
     const workItemQueryHandler = jest.fn().mockResolvedValue(response);
     createComponent({
       workItemQueryHandler,
@@ -263,24 +256,15 @@ describe('WorkItemLabels component', () => {
     });
   });
 
-  it('calls the global ID work item query when `fetchByIid` prop is false', async () => {
-    createComponent({ fetchByIid: false });
+  it('calls the work item query', async () => {
+    createComponent();
     await waitForPromises();
 
     expect(workItemQuerySuccess).toHaveBeenCalled();
-    expect(workItemByIidResponseHandler).not.toHaveBeenCalled();
   });
 
-  it('calls the IID work item query when when `fetchByIid` prop is true', async () => {
-    createComponent({ fetchByIid: true });
-    await waitForPromises();
-
-    expect(workItemQuerySuccess).not.toHaveBeenCalled();
-    expect(workItemByIidResponseHandler).toHaveBeenCalled();
-  });
-
-  it('skips calling the handlers when missing the needed queryVariables', async () => {
-    createComponent({ queryVariables: {}, fetchByIid: false });
+  it('skips calling the work item query when missing queryVariables', async () => {
+    createComponent({ queryVariables: {} });
     await waitForPromises();
 
     expect(workItemQuerySuccess).not.toHaveBeenCalled();

@@ -106,12 +106,12 @@ function upload_gitlab_assets_package() {
 # Fixtures functions
 function check_fixtures_download() {
   if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED:-}" != "true" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
     return 1
   fi
 
-  # Note: Currently, reusing frontend fixtures is only supported in EE.
-  # Other projects will be supported through this issue in the future: https://gitlab.com/gitlab-org/gitlab/-/issues/393615.
   if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is only supported in EE."
     return 1
   fi
 
@@ -128,13 +128,13 @@ function check_fixtures_download() {
 
 function check_fixtures_reuse() {
   if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED:-}" != "true" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
     rm -rf "tmp/tests/frontend";
     return 1
   fi
 
-  # Note: Currently, reusing frontend fixtures is only supported in EE.
-  # Other projects will be supported through this issue in the future: https://gitlab.com/gitlab-org/gitlab/-/issues/393615.
   if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
+    echoinfo "INFO: Reusing frontend fixtures is only supported in EE."
     rm -rf "tmp/tests/frontend";
     return 1
   fi
@@ -143,11 +143,12 @@ function check_fixtures_reuse() {
     # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
     # jobs don't download the exact same artifact multiple times.
     if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
-      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}.";
+      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}. Dependent jobs will use the artifacts from the first parallelized job.";
       rm -rf "tmp/tests/frontend";
     fi
     return 0
   else
+    echoinfo "INFO: 'tmp/tests/frontend' does not exist.";
     return 1
   fi
 }

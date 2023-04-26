@@ -8,6 +8,8 @@ class ImportFailure < ApplicationRecord
   validates :group, presence: true, unless: :project
   validates :external_identifiers, json_schema: { filename: "import_failure_external_identifiers" }
 
+  scope :with_external_identifiers, -> { where.not(external_identifiers: {}) }
+
   # Returns any `import_failures` for relations that were unrecoverable errors or failed after
   # several retries. An import can be successful even if some relations failed to import correctly.
   # A retry_count of 0 indicates that either no retries were attempted, or they were exceeded.

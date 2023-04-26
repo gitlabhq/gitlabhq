@@ -1736,7 +1736,6 @@ Layout/ArgumentAlignment:
     - 'lib/gitlab/seeders/ci/runner/runner_fleet_pipeline_seeder.rb'
     - 'lib/gitlab/setup_helper.rb'
     - 'lib/gitlab/sidekiq_config/worker.rb'
-    - 'lib/gitlab/sidekiq_daemon/memory_killer.rb'
     - 'lib/gitlab/spamcheck/client.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/database_metric.rb'
     - 'lib/gitlab/usage_data.rb'

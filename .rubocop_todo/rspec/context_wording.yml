@@ -2020,7 +2020,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/search_context/controller_concern_spec.rb'
     - 'spec/lib/gitlab/search_results_spec.rb'
     - 'spec/lib/gitlab/sidekiq_config/worker_router_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_daemon/memory_killer_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/json_formatter_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/admin_mode/client_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/admin_mode/server_spec.rb'

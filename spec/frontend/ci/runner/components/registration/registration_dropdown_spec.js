@@ -12,7 +12,14 @@ import RegistrationDropdown from '~/ci/runner/components/registration/registrati
 import RegistrationToken from '~/ci/runner/components/registration/registration_token.vue';
 import RegistrationTokenResetDropdownItem from '~/ci/runner/components/registration/registration_token_reset_dropdown_item.vue';
 
-import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
+import {
+  INSTANCE_TYPE,
+  GROUP_TYPE,
+  PROJECT_TYPE,
+  I18N_REGISTER_INSTANCE_TYPE,
+  I18N_REGISTER_GROUP_TYPE,
+  I18N_REGISTER_PROJECT_TYPE,
+} from '~/ci/runner/constants';
 
 import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
 import getRunnerSetupInstructionsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_setup.query.graphql';
@@ -81,13 +88,13 @@ describe('RegistrationDropdown', () => {
 
   it.each`
     type             | text
-    ${INSTANCE_TYPE} | ${s__('Runners|Register an instance runner')}
-    ${GROUP_TYPE}    | ${s__('Runners|Register a group runner')}
-    ${PROJECT_TYPE}  | ${s__('Runners|Register a project runner')}
-  `('Dropdown text for type $type is "$text"', () => {
-    createComponent({ props: { type: INSTANCE_TYPE } }, mountExtended);
+    ${INSTANCE_TYPE} | ${I18N_REGISTER_INSTANCE_TYPE}
+    ${GROUP_TYPE}    | ${I18N_REGISTER_GROUP_TYPE}
+    ${PROJECT_TYPE}  | ${I18N_REGISTER_PROJECT_TYPE}
+  `('Dropdown text for type $type is "$text"', ({ type, text }) => {
+    createComponent({ props: { type } }, mountExtended);
 
-    expect(wrapper.text()).toContain('Register an instance runner');
+    expect(wrapper.text()).toContain(text);
   });
 
   it('Passes attributes to dropdown', () => {
@@ -214,7 +221,7 @@ describe('RegistrationDropdown', () => {
     { createRunnerWorkflowForAdmin: true },
     { createRunnerWorkflowForNamespace: true },
   ])('When showing a "deprecated" warning', (glFeatures) => {
-    it('Passes deprecated variant props and attributes to dropdown', () => {
+    it('passes deprecated variant props and attributes to dropdown', () => {
       createComponent({
         provide: { glFeatures },
       });
@@ -230,6 +237,17 @@ describe('RegistrationDropdown', () => {
       });
     });
 
+    it.each`
+      type             | text
+      ${INSTANCE_TYPE} | ${I18N_REGISTER_INSTANCE_TYPE}
+      ${GROUP_TYPE}    | ${I18N_REGISTER_GROUP_TYPE}
+      ${PROJECT_TYPE}  | ${I18N_REGISTER_PROJECT_TYPE}
+    `('dropdown text for type $type is "$text"', ({ type, text }) => {
+      createComponent({ props: { type } }, mountExtended);
+
+      expect(wrapper.text()).toContain(text);
+    });
+
     it('shows warning text', () => {
       createComponent(
         {
@@ -243,7 +261,7 @@ describe('RegistrationDropdown', () => {
       expect(text.exists()).toBe(true);
     });
 
-    it('button shows only ellipsis icon', () => {
+    it('button shows ellipsis icon', () => {
       createComponent(
         {
           provide: { glFeatures },
@@ -251,7 +269,6 @@ describe('RegistrationDropdown', () => {
         mountExtended,
       );
 
-      expect(findDropdownBtn().text()).toBe('');
       expect(findDropdownBtn().findComponent(GlIcon).props('name')).toBe('ellipsis_v');
       expect(findDropdownBtn().findAllComponents(GlIcon)).toHaveLength(1);
     });

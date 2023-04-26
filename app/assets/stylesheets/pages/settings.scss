@@ -75,9 +75,3 @@
     }
   }
 }
-
-.gl-md-flex-nowrap.gl-md-flex-nowrap {
-  @include gl-media-breakpoint-up(md) {
-    @include gl-flex-nowrap;
-  }
-}

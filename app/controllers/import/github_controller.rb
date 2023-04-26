@@ -91,6 +91,21 @@ class Import::GithubController < Import::BaseController
     render json: Import::GithubRealtimeRepoSerializer.new.represent(already_added_projects)
   end
 
+  def failures
+    project = Project.imported_from(provider_name).find(params[:project_id])
+
+    unless project.import_finished?
+      return render status: :bad_request, json: {
+        message: _('The import is not complete.')
+      }
+    end
+
+    failures = project.import_failures.with_external_identifiers
+    serializer = Import::GithubFailureSerializer.new.with_pagination(request, response)
+
+    render json: serializer.represent(failures)
+  end
+
   def cancel
     project = Project.imported_from(provider_name).find(params[:project_id])
     result = Import::Github::CancelProjectImportService.new(project, current_user).execute

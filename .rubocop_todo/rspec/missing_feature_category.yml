@@ -4395,7 +4395,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/sidekiq_config/worker_router_spec.rb'
     - 'spec/lib/gitlab/sidekiq_config/worker_spec.rb'
     - 'spec/lib/gitlab/sidekiq_config_spec.rb'
-    - 'spec/lib/gitlab/sidekiq_daemon/memory_killer_spec.rb'
     - 'spec/lib/gitlab/sidekiq_daemon/monitor_spec.rb'
     - 'spec/lib/gitlab/sidekiq_death_handler_spec.rb'
     - 'spec/lib/gitlab/sidekiq_logging/deduplication_logger_spec.rb'

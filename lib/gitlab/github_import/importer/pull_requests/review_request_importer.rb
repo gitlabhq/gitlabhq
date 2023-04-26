@@ -8,7 +8,6 @@ module Gitlab
           def initialize(review_request, project, client)
             @review_request = review_request
             @user_finder = UserFinder.new(project, client)
-            @issue_finder = IssuableFinder.new(project, client)
           end
 
           def execute

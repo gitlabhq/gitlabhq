@@ -702,16 +702,16 @@ RSpec.describe ApplicationHelper do
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="print" href="/stylesheets/test.css" />')
     end
 
-    it 'uses regular stylesheet when feature flag disabled' do
+    it 'uses regular stylesheet when feature flag enabled' do
       stub_feature_flags(remove_startup_css: true)
 
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="all" href="/stylesheets/test.css" />')
     end
 
     it 'uses regular stylesheet when no_startup_css param present' do
       allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
 
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="all" href="/stylesheets/test.css" />')
     end
   end
 

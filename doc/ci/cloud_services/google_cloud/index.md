@@ -31,7 +31,7 @@ To complete this tutorial:
 
 ## Create the Google Cloud Workload Identity Pool
 
-[Create a new Google Cloud Workload Identity Pool](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds#oidc) with the following options:
+[Create a new Google Cloud Workload Identity Pool](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds#create_the_workload_identity_pool_and_provider) with the following options:
 
 - **Name**: Human-friendly name for the Workload Identity Pool, such as `GitLab`.
 - **Pool ID**: Unique ID in the Google Cloud project for the Workload Identity Pool,
@@ -81,7 +81,7 @@ However, you have no permissions on Google Cloud (_authorization_).
 
 To grant your GitLab CI/CD job permissions on Google Cloud, you must:
 
-1. [Create a Google Cloud Service Account](https://www.google.com/search?q=google+cloud+create+service+account).
+1. [Create a Google Cloud Service Account](https://cloud.google.com/iam/docs/service-accounts-create).
    You can use whatever name and ID you prefer.
 1. [Grant IAM permissions](https://cloud.google.com/iam/docs/granting-changing-revoking-access) to your
    service account on Google Cloud resources. These permissions vary significantly based on

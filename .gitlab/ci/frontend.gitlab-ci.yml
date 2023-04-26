@@ -141,9 +141,8 @@ retrieve-frontend-fixtures:
     - source scripts/gitlab_component_helpers.sh
     - |
       if check_fixtures_reuse; then
+        echoinfo "INFO: Reusing frontend fixtures from 'retrieve-frontend-fixtures'."
         exit 0
-      else
-        echo "No frontend fixtures directory, generating frontend fixtures."
       fi
     - run_timed_command "gem install knapsack --no-document"
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
