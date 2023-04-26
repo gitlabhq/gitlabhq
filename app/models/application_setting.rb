@@ -100,283 +100,288 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
 
   validates :grafana_url,
-            system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
-              blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
-            }),
-            if: :grafana_url_absolute?
+    system_hook_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({
+      blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
+    }),
+    if: :grafana_url_absolute?
 
   validate :validate_grafana_url
 
   validates :uuid, presence: true
 
   validates :outbound_local_requests_whitelist,
-            length: { maximum: 1_000, message: N_('is too long (maximum is 1000 entries)') },
-            allow_nil: false,
-            qualified_domain_array: true
+    length: { maximum: 1_000, message: N_('is too long (maximum is 1000 entries)') },
+    allow_nil: false,
+    qualified_domain_array: true
 
   validates :session_expire_delay,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :minimum_password_length,
-            presence: true,
-            numericality: { only_integer: true,
-                            greater_than_or_equal_to: DEFAULT_MINIMUM_PASSWORD_LENGTH,
-                            less_than_or_equal_to: Devise.password_length.max }
+    presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: DEFAULT_MINIMUM_PASSWORD_LENGTH,
+      less_than_or_equal_to: Devise.password_length.max
+    }
 
   validates :home_page_url,
-            allow_blank: true,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
-            if: :home_page_url_column_exists?
+    allow_blank: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
+    if: :home_page_url_column_exists?
 
   validates :help_page_support_url,
-            allow_blank: true,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
-            if: :help_page_support_url_column_exists?
+    allow_blank: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS,
+    if: :help_page_support_url_column_exists?
 
   validates :help_page_documentation_base_url,
-            length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
-            allow_blank: true,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
+    length: { maximum: 255, message: N_("is too long (maximum is %{count} characters)") },
+    allow_blank: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   validates :after_sign_out_path,
-            allow_blank: true,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
+    allow_blank: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   validates :abuse_notification_email,
-            devise_email: true,
-            allow_blank: true
+    devise_email: true,
+    allow_blank: true
 
   validates :two_factor_grace_period,
-            numericality: { greater_than_or_equal_to: 0 }
+    numericality: { greater_than_or_equal_to: 0 }
 
   validates :recaptcha_site_key,
-            presence: true,
-            if: :recaptcha_or_login_protection_enabled
+    presence: true,
+    if: :recaptcha_or_login_protection_enabled
 
   validates :recaptcha_private_key,
-            presence: true,
-            if: :recaptcha_or_login_protection_enabled
+    presence: true,
+    if: :recaptcha_or_login_protection_enabled
 
   validates :akismet_api_key,
-            presence: true,
-            if: :akismet_enabled
+    presence: true,
+    if: :akismet_enabled
 
   validates :spam_check_api_key,
-            length: { maximum: 2000, message: N_('is too long (maximum is %{count} characters)') },
-            allow_blank: true
+    length: { maximum: 2000, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
 
   validates :unique_ips_limit_per_user,
-            numericality: { greater_than_or_equal_to: 1 },
-            presence: true,
-            if: :unique_ips_limit_enabled
+    numericality: { greater_than_or_equal_to: 1 },
+    presence: true,
+    if: :unique_ips_limit_enabled
 
   validates :unique_ips_limit_time_window,
-            numericality: { greater_than_or_equal_to: 0 },
-            presence: true,
-            if: :unique_ips_limit_enabled
+    numericality: { greater_than_or_equal_to: 0 },
+    presence: true,
+    if: :unique_ips_limit_enabled
 
-  validates :kroki_url,
-            presence: { if: :kroki_enabled }
+  validates :kroki_url, presence: { if: :kroki_enabled }
 
   validate :validate_kroki_url, if: :kroki_enabled
 
   validates :kroki_formats, json_schema: { filename: 'application_setting_kroki_formats' }
 
   validates :metrics_method_call_threshold,
-           numericality: { greater_than_or_equal_to: 0 },
-           presence: true,
-           if: :prometheus_metrics_enabled
+    numericality: { greater_than_or_equal_to: 0 },
+    presence: true,
+    if: :prometheus_metrics_enabled
 
-  validates :plantuml_url,
-            presence: true,
-            if: :plantuml_enabled
+  validates :plantuml_url, presence: true, if: :plantuml_enabled
 
-  validates :sourcegraph_url,
-            presence: true,
-            if: :sourcegraph_enabled
+  validates :sourcegraph_url, presence: true, if: :sourcegraph_enabled
 
   validates :gitpod_url,
-            presence: true,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),
-            if: :gitpod_enabled
+    presence: true,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ enforce_sanitization: true }),
+    if: :gitpod_enabled
 
   validates :mailgun_signing_key,
-            presence: true,
-            length: { maximum: 255 },
-            if: :mailgun_events_enabled
+    presence: true,
+    length: { maximum: 255 },
+    if: :mailgun_events_enabled
 
   validates :snowplow_collector_hostname,
-            presence: true,
-            hostname: true,
-            if: :snowplow_enabled
+    presence: true,
+    hostname: true,
+    if: :snowplow_enabled
 
   validates :max_attachment_size,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :max_artifacts_size,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :max_export_size,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :max_import_size,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :max_pages_size,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0,
-                            less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte }
+    presence: true,
+    numericality: {
+      only_integer: true, greater_than_or_equal_to: 0,
+      less_than: ::Gitlab::Pages::MAX_SIZE / 1.megabyte
+    }
 
   validates :max_pages_custom_domains_per_project,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :jobs_per_stage_page_size,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :max_terraform_state_size_bytes,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :container_registry_token_expire_delay,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :repository_storages, presence: true
   validate :check_repository_storages
   validate :check_repository_storages_weighted
 
   validates :auto_devops_domain,
-            allow_blank: true,
-            hostname: { allow_numeric_hostname: true, require_valid_tld: true },
-            if: :auto_devops_enabled?
+    allow_blank: true,
+    hostname: { allow_numeric_hostname: true, require_valid_tld: true },
+    if: :auto_devops_enabled?
 
   validates :enabled_git_access_protocol,
-            inclusion: { in: %w(ssh http), allow_blank: true }
+    inclusion: { in: %w(ssh http), allow_blank: true }
 
   validates :domain_denylist,
-            presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
-            if: :domain_denylist_enabled?
+    presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
+    if: :domain_denylist_enabled?
 
   validates :housekeeping_optimize_repository_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :terminal_max_session_time,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :polling_interval_multiplier,
-            presence: true,
-            numericality: { greater_than_or_equal_to: 0 }
+    presence: true,
+    numericality: { greater_than_or_equal_to: 0 }
 
   validates :gitaly_timeout_default,
-            presence: true,
-            if: :gitaly_timeout_default_changed?,
-            numericality: {
-              only_integer: true,
-              greater_than_or_equal_to: 0,
-              less_than_or_equal_to: Settings.gitlab.max_request_duration_seconds
-            }
+    presence: true,
+    if: :gitaly_timeout_default_changed?,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 0,
+      less_than_or_equal_to: Settings.gitlab.max_request_duration_seconds
+    }
 
   validates :gitaly_timeout_medium,
-            presence: true,
-            if: :gitaly_timeout_medium_changed?,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    if: :gitaly_timeout_medium_changed?,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :gitaly_timeout_medium,
-            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
-            if: :gitaly_timeout_default
+    numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+    if: :gitaly_timeout_default
   validates :gitaly_timeout_medium,
-            numericality: { greater_than_or_equal_to: :gitaly_timeout_fast },
-            if: :gitaly_timeout_fast
+    numericality: { greater_than_or_equal_to: :gitaly_timeout_fast },
+    if: :gitaly_timeout_fast
 
   validates :gitaly_timeout_fast,
-            presence: true,
-            if: :gitaly_timeout_fast_changed?,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    presence: true,
+    if: :gitaly_timeout_fast_changed?,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :gitaly_timeout_fast,
-            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
-            if: :gitaly_timeout_default
+    numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+    if: :gitaly_timeout_default
 
   validates :diff_max_patch_bytes,
-            presence: true,
-            numericality: { only_integer: true,
-                            greater_than_or_equal_to: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
-                            less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND }
+    presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+      less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND
+    }
 
   validates :diff_max_files,
-            presence: true,
-            numericality: { only_integer: true,
-                            greater_than_or_equal_to: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
-                            less_than_or_equal_to: Commit::MAX_DIFF_FILES_SETTING_UPPER_BOUND }
+    presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
+      less_than_or_equal_to: Commit::MAX_DIFF_FILES_SETTING_UPPER_BOUND
+    }
 
   validates :diff_max_lines,
-            presence: true,
-            numericality: { only_integer: true,
-                            greater_than_or_equal_to: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
-                            less_than_or_equal_to: Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND }
+    presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
+      less_than_or_equal_to: Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND
+    }
 
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
   validates :default_preferred_language, presence: true, inclusion: { in: Gitlab::I18n.available_locales }
 
   validates :personal_access_token_prefix,
-            format: { with: %r{\A[a-zA-Z0-9_+=/@:.-]+\z},
-                      message: N_("can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'") },
-            length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
-            allow_blank: true
+    format: { with: %r{\A[a-zA-Z0-9_+=/@:.-]+\z},
+              message: N_("can contain only letters of the Base64 alphabet (RFC4648) with the addition of '@', ':' and '.'") },
+    length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
 
   validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
 
   validates :archive_builds_in_seconds,
-            allow_nil: true,
-            numericality: {
-              only_integer: true,
-              greater_than_or_equal_to: 1.day.seconds,
-              message: N_('must be at least 1 day')
-            }
+    allow_nil: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 1.day.seconds,
+      message: N_('must be at least 1 day')
+    }
 
   validates :local_markdown_version,
-            allow_nil: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than: 65536 }
+    allow_nil: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than: 65536 }
 
   validates :asset_proxy_url,
-            presence: true,
-            allow_blank: false,
-            url: true,
-            if: :asset_proxy_enabled?
+    presence: true,
+    allow_blank: false,
+    url: true,
+    if: :asset_proxy_enabled?
 
   validates :asset_proxy_secret_key,
-            presence: true,
-            allow_blank: false,
-            if: :asset_proxy_enabled?
+    presence: true,
+    allow_blank: false,
+    if: :asset_proxy_enabled?
 
   validates :static_objects_external_storage_url,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
   validates :static_objects_external_storage_auth_token,
-            presence: true,
-            if: :static_objects_external_storage_url?
+    presence: true,
+    if: :static_objects_external_storage_url?
 
   validates :protected_paths,
-            length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
-            allow_nil: false
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
 
   validates :push_event_hooks_limit,
-            numericality: { greater_than_or_equal_to: 0 }
+    numericality: { greater_than_or_equal_to: 0 }
 
   validates :push_event_activities_limit,
-            numericality: { greater_than_or_equal_to: 0 }
+    numericality: { greater_than_or_equal_to: 0 }
 
   validates :snippet_size_limit, numericality: { only_integer: true, greater_than: 0 }
   validates :wiki_page_max_content_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 1.kilobytes }
@@ -388,59 +393,59 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :hashed_storage_enabled, inclusion: { in: [true], message: N_("Hashed storage can't be disabled anymore for new projects") }
 
   validates :container_registry_delete_tags_service_timeout,
-            :container_registry_cleanup_tags_service_max_list_size,
-            :container_registry_expiration_policies_worker_capacity,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    :container_registry_cleanup_tags_service_max_list_size,
+    :container_registry_expiration_policies_worker_capacity,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :container_registry_expiration_policies_caching,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :container_registry_import_max_tags_count,
-            :container_registry_import_max_retries,
-            :container_registry_import_start_max_retries,
-            :container_registry_import_max_step_duration,
-            :container_registry_pre_import_timeout,
-            :container_registry_import_timeout,
-            allow_nil: false,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    :container_registry_import_max_retries,
+    :container_registry_import_start_max_retries,
+    :container_registry_import_max_step_duration,
+    :container_registry_pre_import_timeout,
+    :container_registry_import_timeout,
+    allow_nil: false,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :container_registry_pre_import_tags_rate,
-            allow_nil: false,
-            numericality: { greater_than_or_equal_to: 0 }
+    allow_nil: false,
+    numericality: { greater_than_or_equal_to: 0 }
   validates :container_registry_import_target_plan, presence: true
   validates :container_registry_import_created_before, presence: true
 
   validates :dependency_proxy_ttl_group_policy_worker_capacity,
-            allow_nil: false,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    allow_nil: false,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :packages_cleanup_package_file_worker_capacity,
-            :package_registry_cleanup_policies_worker_capacity,
-            allow_nil: false,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    :package_registry_cleanup_policies_worker_capacity,
+    allow_nil: false,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :invisible_captcha_enabled,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :invitation_flow_enforcement, :can_create_group, :user_defaults_to_private_profile,
-            allow_nil: false,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :deactivate_dormant_users_period,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 90, message: N_("'%{value}' days of inactivity must be greater than or equal to 90") },
-            if: :deactivate_dormant_users?
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 90, message: N_("'%{value}' days of inactivity must be greater than or equal to 90") },
+    if: :deactivate_dormant_users?
 
   validates :allow_possible_spam,
-            allow_nil: false,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :deny_all_requests_except_allowed,
-            allow_nil: false,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :silent_mode_enabled,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -469,93 +474,90 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validate :terms_exist, if: :enforce_terms?
 
   validates :external_authorization_service_default_label,
-            presence: true,
-            if: :external_authorization_service_enabled
+    presence: true,
+    if: :external_authorization_service_enabled
 
   validates :external_authorization_service_url,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true,
-            if: :external_authorization_service_enabled
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true,
+    if: :external_authorization_service_enabled
 
   validates :external_authorization_service_timeout,
-            numericality: { greater_than: 0, less_than_or_equal_to: 10 },
-            if: :external_authorization_service_enabled
+    numericality: { greater_than: 0, less_than_or_equal_to: 10 },
+    if: :external_authorization_service_enabled
 
   validates :spam_check_endpoint_url,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w(tls grpc) }), allow_blank: true
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w(tls grpc) }), allow_blank: true
 
   validates :spam_check_endpoint_url,
-            presence: true,
-            if: :spam_check_endpoint_enabled
+    presence: true,
+    if: :spam_check_endpoint_enabled
 
   validates :external_auth_client_key,
-            presence: true,
-            if: ->(setting) { setting.external_auth_client_cert.present? }
+    presence: true,
+    if: ->(setting) { setting.external_auth_client_cert.present? }
 
   validates :lets_encrypt_notification_email,
-            devise_email: true,
-            format: { without: /@example\.(com|org|net)\z/,
-                      message: N_("Let's Encrypt does not accept emails on example.com") },
-            allow_blank: true
+    devise_email: true,
+    format: { without: /@example\.(com|org|net)\z/, message: N_("Let's Encrypt does not accept emails on example.com") },
+    allow_blank: true
 
   validates :lets_encrypt_notification_email,
-            presence: true,
-            if: :lets_encrypt_terms_of_service_accepted?
+    presence: true,
+    if: :lets_encrypt_terms_of_service_accepted?
 
   validates :eks_integration_enabled,
-            inclusion: { in: [true, false] }
+    inclusion: { in: [true, false] }
 
   validates :eks_account_id,
-            format: { with: Gitlab::Regex.aws_account_id_regex,
-                      message: Gitlab::Regex.aws_account_id_message },
-            if: :eks_integration_enabled?
+    format: { with: Gitlab::Regex.aws_account_id_regex, message: Gitlab::Regex.aws_account_id_message },
+    if: :eks_integration_enabled?
 
   validates :eks_access_key_id,
-            length: { in: 16..128 },
-            if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
+    length: { in: 16..128 },
+    if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates :eks_secret_access_key,
-            presence: true,
-            if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
+    presence: true,
+    if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates_with X509CertificateCredentialsValidator,
-                 certificate: :external_auth_client_cert,
-                 pkey: :external_auth_client_key,
-                 pass: :external_auth_client_key_pass,
-                 if: ->(setting) { setting.external_auth_client_cert.present? }
+    certificate: :external_auth_client_cert,
+    pkey: :external_auth_client_key,
+    pass: :external_auth_client_key_pass,
+    if: ->(setting) { setting.external_auth_client_cert.present? }
 
   validates :default_ci_config_path,
-    format: { without: %r{(\.{2}|\A/)},
-              message: N_('cannot include leading slash or directory traversal.') },
+    format: { without: %r{(\.{2}|\A/)}, message: N_('cannot include leading slash or directory traversal.') },
     length: { maximum: 255 },
     allow_blank: true
 
   validates :issues_create_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :raw_blob_request_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :pipeline_limit_per_project_user_sha,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :ci_jwt_signing_key,
-            rsa_key: true, allow_nil: true
+    rsa_key: true, allow_nil: true
 
   validates :customers_dot_jwt_signing_key,
-            rsa_key: true, allow_nil: true
+    rsa_key: true, allow_nil: true
 
   validates :rate_limiting_response_text,
-            length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
-            allow_blank: true
+    length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
 
   validates :jira_connect_application_key,
-            length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
-            allow_blank: true
+    length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true
 
   validates :jira_connect_proxy_url,
-            length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
-            allow_blank: true,
-            public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
+    length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
+    allow_blank: true,
+    public_url: ADDRESSABLE_URL_VALIDATION_OPTIONS
 
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period
@@ -592,36 +594,36 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   validates :notes_create_limit_allowlist,
-            length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
-            allow_nil: false
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
 
   validates :admin_mode,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :external_pipeline_validation_service_url,
-            addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS, allow_blank: true
 
   validates :external_pipeline_validation_service_timeout,
-            allow_nil: true,
-            numericality: { only_integer: true, greater_than: 0 }
+    allow_nil: true,
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :whats_new_variant,
-            inclusion: { in: ApplicationSetting.whats_new_variants.keys }
+    inclusion: { in: ApplicationSetting.whats_new_variants.keys }
 
   validates :floc_enabled,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   enum sidekiq_job_limiter_mode: {
-         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::TRACK_MODE => 0,
-         Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE => 1 # The default
-       }
+    Gitlab::SidekiqMiddleware::SizeLimiter::Validator::TRACK_MODE => 0,
+    Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE => 1 # The default
+  }
 
   validates :sidekiq_job_limiter_mode,
-            inclusion: { in: self.sidekiq_job_limiter_modes }
+    inclusion: { in: self.sidekiq_job_limiter_modes }
   validates :sidekiq_job_limiter_compression_threshold_bytes,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :sidekiq_job_limiter_limit_bytes,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :sentry_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -646,8 +648,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :users_get_by_id_limit,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :users_get_by_id_limit_allowlist,
-          length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
-          allow_nil: false
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
 
   validates :update_runner_versions_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -657,21 +659,21 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     if: :update_runner_versions_enabled?
 
   validates :inactive_projects_min_size_mb,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :inactive_projects_delete_after_months,
-            numericality: { only_integer: true, greater_than: 0 }
+    numericality: { only_integer: true, greater_than: 0 }
 
   validates :inactive_projects_send_warning_email_after_months,
-            numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
+    numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
   validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
 
   attr_encrypted :asset_proxy_secret_key,
-                 mode: :per_attribute_iv,
-                 key: Settings.attr_encrypted_db_key_base_truncated,
-                 algorithm: 'aes-256-cbc',
-                 insecure_mode: true
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_truncated,
+    algorithm: 'aes-256-cbc',
+    insecure_mode: true
 
   private_class_method def self.encryption_options_base_32_aes_256_gcm
     {
@@ -713,27 +715,27 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :disable_admin_oauth_scopes,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :bulk_import_enabled,
-            allow_nil: false,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :allow_runner_registration_token,
-            allow_nil: false,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :default_syntax_highlighting_theme,
-            allow_nil: false,
-            numericality: { only_integer: true, greater_than: 0 },
-            inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }
+    allow_nil: false,
+    numericality: { only_integer: true, greater_than: 0 },
+    inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }
 
   validates :gitlab_dedicated_instance,
-            allow_nil: false,
-            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    allow_nil: false,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?

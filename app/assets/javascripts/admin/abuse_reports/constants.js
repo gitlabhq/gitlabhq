@@ -86,4 +86,5 @@ export const ACTIONS_I18N = {
   removeUserAndReportConfirm: __('USER %{user} WILL BE REMOVED! Are you sure?'),
   removeUserAndReport: __('Remove user & report'),
   removeReport: __('Remove report'),
+  actionsToggleText: __('Actions'),
 };

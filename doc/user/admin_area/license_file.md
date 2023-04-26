@@ -183,6 +183,10 @@ License.current.license_id
 
 # License data in Base64-encoded ASCII format
 License.current.data
+
+# Confirm the current billable seat count excluding guest users. This is useful for customers who use an Ultimate subscription tier where Guest seats are not counted.
+User.active.without_bots.excluding_guests.count
+
 ```
 
 #### Interaction with licenses that start in the future

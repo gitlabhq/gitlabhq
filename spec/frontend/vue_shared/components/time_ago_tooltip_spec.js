@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 
 import timezoneMock from 'timezone-mock';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 describe('Time ago with tooltip component', () => {
@@ -49,10 +50,34 @@ describe('Time ago with tooltip component', () => {
     expect(vm.attributes('datetime')).toEqual(timestamp);
   });
 
+  it('should render with the timestamp provided as Date', () => {
+    buildVm({ time: new Date(timestamp) });
+
+    expect(vm.text()).toEqual(timeAgoTimestamp);
+  });
+
   it('should render provided scope content with the correct timeAgo string', () => {
     buildVm(null, { default: `<span>The time is {{ props.timeAgo }}</span>` });
 
     expect(vm.text()).toEqual(`The time is ${timeAgoTimestamp}`);
+  });
+
+  describe('with User Setting timeDisplayRelative: false', () => {
+    beforeEach(() => {
+      window.gon = { time_display_relative: false };
+    });
+
+    it('should render with the correct absolute datetime in the default format', () => {
+      buildVm();
+
+      expect(vm.text()).toEqual('May 8, 2017, 2:57 PM');
+    });
+
+    it('should render with the correct absolute datetime in the requested dateTimeFormat', () => {
+      buildVm({ dateTimeFormat: DATE_ONLY_FORMAT });
+
+      expect(vm.text()).toEqual('May 8, 2017');
+    });
   });
 
   describe('number based timestamps', () => {

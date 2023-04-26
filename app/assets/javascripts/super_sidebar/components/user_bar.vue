@@ -67,6 +67,7 @@ export default {
     return {
       mrMenuShown: false,
       todoCount: this.sidebarData.todos_pending_count,
+      searchTooltip: this.$options.i18n.searchKbdHelp,
     };
   },
   computed: {
@@ -84,6 +85,12 @@ export default {
     updateTodos(e) {
       this.todoCount = e.detail.count || 0;
     },
+    hideSearchTooltip() {
+      this.searchTooltip = '';
+    },
+    showSearchTooltip() {
+      this.searchTooltip = this.$options.i18n.searchKbdHelp;
+    },
   },
 };
 </script>
@@ -93,6 +100,7 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2">
       <a
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
+        class="tanuki-logo-container"
         :href="rootPath"
         :title="$options.i18n.homepage"
         data-track-action="click_link"
@@ -128,14 +136,14 @@ export default {
 
       <gl-button
         id="super-sidebar-search"
-        v-gl-tooltip.bottom.hover.html="$options.i18n.searchKbdHelp"
+        v-gl-tooltip.bottom.hover.html="searchTooltip"
         v-gl-modal="$options.SEARCH_MODAL_ID"
         data-testid="super-sidebar-search-button"
         icon="search"
         :aria-label="$options.i18n.search"
         category="tertiary"
       />
-      <search-modal />
+      <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
 
       <user-menu :data="sidebarData" />
 

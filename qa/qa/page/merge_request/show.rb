@@ -215,7 +215,10 @@ module QA
         end
 
         def edit!
-          click_element(:edit_button)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:edit_button))
         end
 
         def fast_forward_not_possible?
@@ -390,12 +393,18 @@ module QA
         end
 
         def view_email_patches
-          click_element(:mr_code_dropdown)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:mr_code_dropdown))
           visit_link_in_element(:download_email_patches_menu_item)
         end
 
         def view_plain_diff
-          click_element(:mr_code_dropdown)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:mr_code_dropdown))
           visit_link_in_element(:download_plain_diff_menu_item)
         end
 
@@ -406,7 +415,10 @@ module QA
         end
 
         def click_open_in_web_ide
-          click_element(:mr_code_dropdown)
+          # Click by JS is needed to bypass the Moved MR actions popover
+          # Change back to regular click_element when moved_mr_sidebar FF is removed
+          # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
+          click_by_javascript(find_element(:mr_code_dropdown))
           click_element(:open_in_web_ide_button)
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests

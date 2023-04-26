@@ -1,10 +1,10 @@
-import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { GlButton, GlModal } from '@gitlab/ui';
-import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { sprintf } from '~/locale';
@@ -16,26 +16,29 @@ jest.mock('~/alert');
 describe('AbuseReportActions', () => {
   let wrapper;
 
-  const findRemoveUserAndReportButton = () => wrapper.findAllComponents(GlButton).at(0);
-  const findBlockUserButton = () => wrapper.findAllComponents(GlButton).at(1);
-  const findRemoveReportButton = () => wrapper.findAllComponents(GlButton).at(2);
+  const findRemoveUserAndReportButton = () => wrapper.findByText('Remove user & report');
+  const findBlockUserButton = () => wrapper.findByTestId('block-user-button');
+  const findRemoveReportButton = () => wrapper.findByText('Remove report');
   const findConfirmationModal = () => wrapper.findComponent(GlModal);
 
   const report = mockAbuseReports[0];
 
-  const createComponent = ({ props, mountFn } = { props: {}, mountFn: mount }) => {
-    wrapper = mountFn(AbuseReportActions, {
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(AbuseReportActions, {
       propsData: {
         report,
         ...props,
       },
+      stubs: {
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
+      },
     });
   };
-  const createShallowComponent = (props) => createComponent({ props, mountFn: shallowMount });
 
   describe('default', () => {
     beforeEach(() => {
-      createShallowComponent();
+      createComponent();
     });
 
     it('displays "Block user", "Remove user & report", and "Remove report" buttons', () => {
@@ -55,11 +58,11 @@ describe('AbuseReportActions', () => {
 
   describe('block button when user is already blocked', () => {
     it('is disabled and has the correct text', () => {
-      createShallowComponent({ report: { ...report, userBlocked: true } });
+      createComponent({ report: { ...report, userBlocked: true } });
 
       const button = findBlockUserButton();
       expect(button.text()).toBe(ACTIONS_I18N.alreadyBlocked);
-      expect(button.attributes('disabled')).toBe('true');
+      expect(button.attributes('disabled')).toBe('disabled');
     });
   });
 
@@ -127,7 +130,7 @@ describe('AbuseReportActions', () => {
           blockButtonDisabled: undefined,
         },
       ])(
-        'when reponse JSON is $responseData',
+        'when response JSON is $responseData',
         ({ responseData, createAlertArgs, blockButtonText, blockButtonDisabled }) => {
           beforeEach(async () => {
             axiosMock.onPut(report.blockUserPath).reply(HTTP_STATUS_OK, responseData);

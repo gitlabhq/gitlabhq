@@ -48,6 +48,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
           
         <timeago-tooltip-stub
           cssclass=""
+          datetimeformat="DATE_WITH_TIME_FORMAT"
           time="2019-01-01"
           tooltipplacement="bottom"
         />

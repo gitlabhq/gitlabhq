@@ -173,6 +173,22 @@ describe('UserBar component', () => {
     it('should render search modal', () => {
       expect(findSearchModal().exists()).toBe(true);
     });
+
+    describe('Search tooltip', () => {
+      it('should hide search tooltip when modal is shown', async () => {
+        findSearchModal().vm.$emit('shown');
+        await nextTick();
+        const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
+        expect(tooltip.value).toBe('');
+      });
+
+      it('should add search tooltip when modal is hidden', async () => {
+        findSearchModal().vm.$emit('hidden');
+        await nextTick();
+        const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
+        expect(tooltip.value).toBe(`Search GitLab <kbd>/</kbd>`);
+      });
+    });
   });
 
   describe('While impersonating a user', () => {

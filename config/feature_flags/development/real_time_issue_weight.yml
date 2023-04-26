@@ -1,8 +1,0 @@
----
-name: real_time_issue_weight
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115059
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398619
-milestone: '15.11'
-type: development
-group: group::application performance
-default_enabled: false

@@ -5,10 +5,6 @@
   .gl-dark & {
     mix-blend-mode: screen;
   }
-
-  .notification {
-    border-color: $gray-50;
-  }
 }
 
 @mixin notification-dot($color, $size, $top, $left) {
@@ -57,21 +53,39 @@
       @include gl-vertical-align-middle;
     }
 
-    .user-bar-item {
+    .user-bar-item,
+    .tanuki-logo-container {
       @include gl-rounded-base;
       @include gl-p-2;
       @include gl-bg-transparent;
       @include gl-border-none;
 
+      &:focus,
+      &:active {
+        @include gl-focus;
+      }
+    }
+
+    .user-bar-item {
       &:hover,
       &:focus,
       &:active {
         @include active-toggle;
       }
+    }
 
+    $light-mode-btn-bg: #e0dfe5;
+    $dark-mode-btn-bg: #53515b;
+
+    .tanuki-logo-container {
+      &:hover,
       &:focus,
       &:active {
-        @include gl-focus;
+        background-color: $light-mode-btn-bg;
+
+        .gl-dark & {
+          background-color: $dark-mode-btn-bg;
+        }
       }
     }
   }

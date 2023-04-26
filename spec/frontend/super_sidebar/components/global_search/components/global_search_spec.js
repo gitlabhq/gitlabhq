@@ -1,4 +1,4 @@
-import { GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -86,6 +86,8 @@ describe('GlobalSearchModal', () => {
       SCOPE_TOKEN_MAX_LENGTH,
     );
   };
+
+  const findGlobalSearchModal = () => wrapper.findComponent(GlModal);
 
   const findGlobalSearchForm = () => wrapper.findByTestId('global-search-form');
   const findGlobalSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
@@ -348,6 +350,22 @@ describe('GlobalSearchModal', () => {
             expect(visitUrl).not.toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
           });
         });
+      });
+    });
+
+    describe('Modal events', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('should emit `shown` event when modal shown`', () => {
+        findGlobalSearchModal().vm.$emit('shown');
+        expect(wrapper.emitted('shown')).toHaveLength(1);
+      });
+
+      it('should emit `hidden` event when modal hidden`', () => {
+        findGlobalSearchModal().vm.$emit('hidden');
+        expect(wrapper.emitted('hidden')).toHaveLength(1);
       });
     });
   });

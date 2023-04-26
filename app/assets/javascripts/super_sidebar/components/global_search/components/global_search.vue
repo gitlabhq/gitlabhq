@@ -217,6 +217,8 @@ export default {
     body-class="gl-p-0!"
     modal-class="global-search-modal"
     :centered="false"
+    @hidden="$emit('hidden')"
+    @shown="$emit('shown')"
   >
     <form
       role="search"

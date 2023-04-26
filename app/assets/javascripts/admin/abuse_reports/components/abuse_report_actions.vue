@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDropdown, GlModal } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlModal } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
@@ -25,12 +25,13 @@ const modalActionButtonAttributes = {
     },
   },
 };
+const BLOCK_ACTION = 'block';
+const REMOVE_USER_AND_REPORT_ACTION = 'removeUserAndReport';
 
 export default {
   name: 'AbuseReportActions',
   components: {
-    GlButton,
-    GlDropdown,
+    GlDisclosureDropdown,
     GlModal,
   },
   modalId: 'abuse-report-row-action-confirm-modal',
@@ -62,15 +63,42 @@ export default {
     },
     modalData() {
       return {
-        block: {
+        [BLOCK_ACTION]: {
           action: this.blockUser,
           confirmText: this.$options.i18n.blockUserConfirm,
         },
-        removeUserAndReport: {
+        [REMOVE_USER_AND_REPORT_ACTION]: {
           action: this.removeUserAndReport,
           confirmText: this.removeUserAndReportConfirmText,
         },
       };
+    },
+    reportActionsDropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.removeUserAndReport,
+          action: () => {
+            this.showConfirmModal(REMOVE_USER_AND_REPORT_ACTION);
+          },
+          extraAttrs: { class: 'gl-text-red-500!' },
+        },
+        {
+          text: this.blockUserButtonText,
+          action: () => {
+            this.showConfirmModal(BLOCK_ACTION);
+          },
+          extraAttrs: {
+            disabled: this.userBlocked,
+            'data-testid': 'block-user-button',
+          },
+        },
+        {
+          text: this.$options.i18n.removeReport,
+          action: () => {
+            this.removeReport();
+          },
+        },
+      ];
     },
   },
   methods: {
@@ -123,18 +151,16 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown text="Actions" text-sr-only icon="ellipsis_v" category="tertiary" no-caret right>
-    <div class="gl-px-2">
-      <gl-button block variant="danger" @click="showConfirmModal('removeUserAndReport')">
-        {{ $options.i18n.removeUserAndReport }}
-      </gl-button>
-      <gl-button block :disabled="userBlocked" @click="showConfirmModal('block')">
-        {{ blockUserButtonText }}
-      </gl-button>
-      <gl-button block @click="removeReport">
-        {{ $options.i18n.removeReport }}
-      </gl-button>
-    </div>
+  <div>
+    <gl-disclosure-dropdown
+      :toggle-text="$options.i18n.actionsToggleText"
+      text-sr-only
+      icon="ellipsis_v"
+      category="tertiary"
+      no-caret
+      placement="right"
+      :items="reportActionsDropdownItems"
+    />
     <gl-modal
       v-model="confirmModalShown"
       :modal-id="$options.modalId"
@@ -144,5 +170,5 @@ export default {
       :action-secondary="$options.modalActionButtonAttributes.secondary"
       @primary="modalData[actionToConfirm].action"
     />
-  </gl-dropdown>
+  </div>
 </template>

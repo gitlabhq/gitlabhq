@@ -132,7 +132,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
 
       def open_actions_dropdown(report_row)
         within(report_row) do
-          find('.dropdown-toggle').click
+          find('[data-testid="base-dropdown-toggle"]').click
         end
       end
 

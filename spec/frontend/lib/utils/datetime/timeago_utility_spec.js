@@ -1,3 +1,4 @@
+import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/constants';
 import { getTimeago, localTimeAgo, timeFor, duration } from '~/lib/utils/datetime/timeago_utility';
 import { s__ } from '~/locale';
 import '~/commons/bootstrap';
@@ -24,14 +25,36 @@ describe('TimeAgo utils', () => {
         window.gon = { time_display_relative: false };
       });
 
-      it.each([
+      const defaultFormatExpectations = [
         [new Date().toISOString(), 'Jul 6, 2020, 12:00 AM'],
         [new Date(), 'Jul 6, 2020, 12:00 AM'],
         [new Date().getTime(), 'Jul 6, 2020, 12:00 AM'],
         // Slightly different behaviour when `null` is passed :see_no_evil`
         [null, 'Jan 1, 1970, 12:00 AM'],
-      ])('formats date `%p` as `%p`', (date, result) => {
+      ];
+
+      it.each(defaultFormatExpectations)('formats date `%p` as `%p`', (date, result) => {
         expect(getTimeago().format(date)).toEqual(result);
+      });
+
+      describe('with unknown format', () => {
+        it.each(defaultFormatExpectations)(
+          'uses default format and formats date `%p` as `%p`',
+          (date, result) => {
+            expect(getTimeago('non_existent').format(date)).toEqual(result);
+          },
+        );
+      });
+
+      describe('with DATE_ONLY_FORMAT', () => {
+        it.each([
+          [new Date().toISOString(), 'Jul 6, 2020'],
+          [new Date(), 'Jul 6, 2020'],
+          [new Date().getTime(), 'Jul 6, 2020'],
+          [null, 'Jan 1, 1970'],
+        ])('formats date `%p` as `%p`', (date, result) => {
+          expect(getTimeago(DATE_ONLY_FORMAT).format(date)).toEqual(result);
+        });
       });
     });
   });

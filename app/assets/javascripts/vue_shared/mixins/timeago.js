@@ -5,8 +5,8 @@ import { formatDate, getTimeago, timeagoLanguageCode } from '~/lib/utils/datetim
  */
 export default {
   methods: {
-    timeFormatted(time) {
-      const timeago = getTimeago();
+    timeFormatted(time, format) {
+      const timeago = getTimeago(format);
 
       return timeago.format(time, timeagoLanguageCode);
     },

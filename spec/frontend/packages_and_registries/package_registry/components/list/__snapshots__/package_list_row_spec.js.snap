@@ -95,6 +95,7 @@ exports[`packages_list_row renders 1`] = `
             Created 
             <timeago-tooltip-stub
               cssclass=""
+              datetimeformat="DATE_WITH_TIME_FORMAT"
               time="2020-08-17T14:23:32Z"
               tooltipplacement="top"
             />

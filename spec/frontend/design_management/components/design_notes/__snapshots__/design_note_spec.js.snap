@@ -58,6 +58,7 @@ exports[`Design note component should match the snapshot 1`] = `
         >
           <time-ago-tooltip-stub
             cssclass=""
+            datetimeformat="DATE_WITH_TIME_FORMAT"
             time="2019-07-26T15:02:20Z"
             tooltipplacement="bottom"
           />
