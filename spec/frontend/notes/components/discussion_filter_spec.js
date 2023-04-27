@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -34,7 +34,8 @@ describe('DiscussionFilter component', () => {
   const filterDiscussion = jest.fn();
 
   const findFilter = (filterType) =>
-    wrapper.find(`.dropdown-item[data-filter-type="${filterType}"]`);
+    wrapper.find(`.gl-new-dropdown-item[data-filter-type="${filterType}"]`);
+  const findGlDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
@@ -109,7 +110,7 @@ describe('DiscussionFilter component', () => {
 
     describe('when the dropdown is clicked', () => {
       it('calls the right actions', () => {
-        wrapper.find('.js-newest-first').vm.$emit('click');
+        wrapper.find('.js-newest-first').vm.$emit('action');
 
         expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
           direction: DESC,
@@ -130,7 +131,7 @@ describe('DiscussionFilter component', () => {
 
     describe('when the dropdown item is clicked', () => {
       it('calls the right actions', () => {
-        wrapper.find('.js-oldest-first').vm.$emit('click');
+        wrapper.find('.js-oldest-first').vm.$emit('action');
 
         expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
           direction: ASC,
@@ -140,8 +141,8 @@ describe('DiscussionFilter component', () => {
         });
       });
 
-      it('sets is-checked to true on the active button in the dropdown', () => {
-        expect(wrapper.find('.js-newest-first').props('isChecked')).toBe(true);
+      it('sets is-selected to true on the active button in the dropdown', () => {
+        expect(findGlDisclosureDropdownItem().attributes('is-selected')).toBe('true');
       });
     });
   });
@@ -152,13 +153,13 @@ describe('DiscussionFilter component', () => {
     });
 
     it('renders the all filters', () => {
-      expect(wrapper.findAll('.discussion-filter-container .dropdown-item').length).toBe(
+      expect(wrapper.findAll('.discussion-filter-container .gl-new-dropdown-item').length).toBe(
         discussionFiltersMock.length,
       );
     });
 
     it('renders the default selected item', () => {
-      expect(wrapper.find('.discussion-filter-container .dropdown-item').text().trim()).toBe(
+      expect(wrapper.find('.discussion-filter-container .gl-new-dropdown-item').text().trim()).toBe(
         discussionFiltersMock[0].title,
       );
     });
@@ -166,19 +167,19 @@ describe('DiscussionFilter component', () => {
     it('disables the dropdown when discussions are loading', () => {
       store.state.isLoading = true;
 
-      expect(wrapper.findComponent(GlDropdown).props('disabled')).toBe(true);
+      expect(wrapper.findComponent(GlDisclosureDropdown).props('disabled')).toBe(true);
     });
 
     it('updates to the selected item', () => {
       const filterItem = findFilter(DISCUSSION_FILTER_TYPES.ALL);
 
-      filterItem.trigger('click');
+      filterItem.vm.$emit('action');
 
       expect(filterItem.text().trim()).toBe('Show all activity');
     });
 
     it('only updates when selected filter changes', () => {
-      findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
+      findFilter(DISCUSSION_FILTER_TYPES.ALL).vm.$emit('action');
 
       expect(filterDiscussion).not.toHaveBeenCalled();
     });
@@ -186,19 +187,19 @@ describe('DiscussionFilter component', () => {
     it('disables timeline view if it was enabled', () => {
       store.state.isTimelineEnabled = true;
 
-      findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
+      findFilter(DISCUSSION_FILTER_TYPES.HISTORY).vm.$emit('action');
 
       expect(store.state.isTimelineEnabled).toBe(false);
     });
 
     it('disables commenting when "Show history only" filter is applied', () => {
-      findFilter(DISCUSSION_FILTER_TYPES.HISTORY).trigger('click');
+      findFilter(DISCUSSION_FILTER_TYPES.HISTORY).vm.$emit('action');
 
       expect(store.state.commentsDisabled).toBe(true);
     });
 
     it('enables commenting when "Show history only" filter is not applied', () => {
-      findFilter(DISCUSSION_FILTER_TYPES.ALL).trigger('click');
+      findFilter(DISCUSSION_FILTER_TYPES.ALL).vm.$emit('action');
 
       expect(store.state.commentsDisabled).toBe(false);
     });
@@ -229,7 +230,7 @@ describe('DiscussionFilter component', () => {
   });
 
   describe('URL with Links to notes', () => {
-    const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+    const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
 
     afterEach(() => {
       window.location.hash = '';
@@ -240,7 +241,7 @@ describe('DiscussionFilter component', () => {
       wrapper = mountComponent();
 
       await nextTick();
-      const filtered = findDropdownItems().filter((el) => el.classes('is-active'));
+      const filtered = findGlDisclosureDropdownItems().filter((el) => el.classes('is-active'));
 
       expect(filtered).toHaveLength(1);
       expect(filtered.at(0).text()).toBe(discussionFiltersMock[0].title);
@@ -251,7 +252,7 @@ describe('DiscussionFilter component', () => {
       wrapper = mountComponent();
 
       await nextTick();
-      const filtered = findDropdownItems().filter((el) => el.classes('is-active'));
+      const filtered = findGlDisclosureDropdownItems().filter((el) => el.classes('is-active'));
 
       expect(filtered).toHaveLength(1);
       expect(filtered.at(0).text()).toBe(discussionFiltersMock[0].title);

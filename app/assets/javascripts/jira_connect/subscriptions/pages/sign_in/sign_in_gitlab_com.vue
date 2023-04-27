@@ -2,7 +2,6 @@
 import { s__ } from '~/locale';
 
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SubscriptionsList from '../../components/subscriptions_list.vue';
 
 export default {
@@ -11,8 +10,6 @@ export default {
     SubscriptionsList,
     SignInOauthButton: () => import('../../components/sign_in_oauth_button.vue'),
   },
-  mixins: [glFeatureFlagMixin()],
-  inject: ['usersPath'],
   props: {
     hasSubscriptions: {
       type: Boolean,

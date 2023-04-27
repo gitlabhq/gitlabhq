@@ -51,22 +51,6 @@ describe('JiraConnect store mutations', () => {
     });
   });
 
-  describe('ADD_SUBSCRIPTION_LOADING', () => {
-    it('sets addSubscriptionLoading', () => {
-      mutations.ADD_SUBSCRIPTION_LOADING(localState, true);
-
-      expect(localState.addSubscriptionLoading).toBe(true);
-    });
-  });
-
-  describe('ADD_SUBSCRIPTION_ERROR', () => {
-    it('sets addSubscriptionError', () => {
-      mutations.ADD_SUBSCRIPTION_ERROR(localState, true);
-
-      expect(localState.addSubscriptionError).toBe(true);
-    });
-  });
-
   describe('SET_CURRENT_USER', () => {
     it('sets currentUser', () => {
       const mockUser = { name: 'root' };

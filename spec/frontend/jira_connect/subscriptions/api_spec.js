@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import {
   axiosInstance,
-  addSubscription,
   removeSubscription,
   fetchGroups,
   getCurrentUser,
@@ -19,7 +18,6 @@ describe('JiraConnect API', () => {
   let axiosMock;
   let response;
 
-  const mockAddPath = 'addPath';
   const mockRemovePath = 'removePath';
   const mockNamespace = 'namespace';
   const mockJwt = 'jwt';
@@ -34,29 +32,6 @@ describe('JiraConnect API', () => {
   afterEach(() => {
     axiosMock.restore();
     response = null;
-  });
-
-  describe('addSubscription', () => {
-    const makeRequest = () => addSubscription(mockAddPath, mockNamespace);
-
-    it('returns success response', async () => {
-      jest.spyOn(axiosInstance, 'post');
-      axiosMock
-        .onPost(mockAddPath, {
-          jwt: mockJwt,
-          namespace_path: mockNamespace,
-        })
-        .replyOnce(HTTP_STATUS_OK, mockResponse);
-
-      response = await makeRequest();
-
-      expect(getJwt).toHaveBeenCalled();
-      expect(axiosInstance.post).toHaveBeenCalledWith(mockAddPath, {
-        jwt: mockJwt,
-        namespace_path: mockNamespace,
-      });
-      expect(response.data).toEqual(mockResponse);
-    });
   });
 
   describe('removeSubscription', () => {

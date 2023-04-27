@@ -4,26 +4,24 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection post-processing and revocation **(ULTIMATE)**
+# Automatic response to leaked secrets **(ULTIMATE)**
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
-> - [Disabled by default for GitLab personal access tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `gitlab_pat_auto_revocation`. Available to GitLab.com only.
-> - [Enabled by default for GitLab personal access tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) in GitLab 15.9
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 
-GitLab.com and self-managed supports running post-processing hooks after detecting a secret. These
-hooks can perform actions, like notifying the vendor that issued the secret.
-The vendor can then confirm the credentials and take remediation actions, like:
+GitLab Secret Detection automatically responds when it finds certain types of leaked secrets.
+Automatic responses can:
 
-- Revoking a secret.
-- Reissuing a secret.
-- Notifying the creator of the secret.
+- Automatically revoke the secret.
+- Notify the partner that issued the secret. The partner can then revoke the secret, notify its owner, or otherwise protect against abuse.
 
-GitLab supports post-processing for the following vendors and secrets:
+## Supported secret types and actions
 
-| Vendor | Secret | GitLab.com | Self-managed |
+GitLab supports automatic response for the following types of secrets:
+
+| Secret type | Action taken | Supported on GitLab.com | Supported in self-managed |
 | ----- | --- | --- | --- |
-| GitLab | [Personal access tokens](../../profile/personal_access_tokens.md) | ✅ | ✅ 15.9 and later |
-| Amazon Web Services (AWS) | [IAM access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) | ✅ | ⚙ |
+| GitLab [Personal access tokens](../../profile/personal_access_tokens.md) | Immediately revoke token, send email to owner | ✅ | ✅ [15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) |
+| Amazon Web Services (AWS) [IAM access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) | Notify AWS | ✅ | ⚙ |
 
 **Component legend**
 

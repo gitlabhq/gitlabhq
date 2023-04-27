@@ -32,10 +32,12 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
     let(:approved_label) { 'product intelligence::approved' }
     let(:changed_files) { ['metrics/counts_7d/test_metric.yml'] }
     let(:changed_lines) { ['+tier: ee'] }
+    let(:fake_changes) { instance_double(Gitlab::Dangerfiles::Changes, files: changed_files) }
 
     before do
+      allow(fake_changes).to receive(:by_category).with(:product_intelligence).and_return(fake_changes)
+      allow(fake_helper).to receive(:changes).and_return(fake_changes)
       allow(fake_helper).to receive(:all_changed_files).and_return(changed_files)
-      allow(fake_helper).to receive(:changes_by_category).and_return(product_intelligence: changed_files, database: ['other_files.yml'])
       allow(fake_helper).to receive(:markdown_list).with(changed_files).and_return(markdown_formatted_list)
     end
 
@@ -60,6 +62,15 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
         subject
 
         expect(labels_to_add).to match_array [previous_label_to_add, review_pending_label]
+      end
+
+      it 'receives all the changed files by calling the correct helper method', :aggregate_failures do
+        expect(fake_helper).not_to receive(:changes_by_category)
+        expect(fake_helper).to receive(:changes)
+        expect(fake_changes).to receive(:by_category).with(:product_intelligence)
+        expect(fake_changes).to receive(:files)
+
+        subject
       end
     end
 

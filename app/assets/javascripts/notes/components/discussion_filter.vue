@@ -1,5 +1,10 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash, doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -25,9 +30,10 @@ const SORT_OPTIONS = [
 export default {
   SORT_OPTIONS,
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlIcon,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
+    GlDisclosureDropdownItem,
     LocalStorageSync,
   },
   mixins: [Tracking.mixin()],
@@ -164,44 +170,64 @@ export default {
       as-string
       @input="setDiscussionSortDirection({ direction: $event })"
     />
-    <gl-dropdown
+    <gl-disclosure-dropdown
       id="discussion-preferences-dropdown"
       class="full-width-mobile"
       data-qa-selector="discussion_preferences_dropdown"
-      :text="__('Sort or filter')"
+      :toggle-text="__('Sort or filter')"
       :disabled="isLoading"
-      right
+      placement="right"
     >
-      <div id="discussion-sort">
-        <gl-dropdown-item
+      <gl-disclosure-dropdown-group id="discussion-sort">
+        <gl-disclosure-dropdown-item
           v-for="{ text, key, cls } in $options.SORT_OPTIONS"
           :key="text"
           :class="cls"
-          is-check-item
-          :is-checked="isSortDropdownItemActive(key)"
-          @click="fetchSortedDiscussions(key)"
+          :is-selected="isSortDropdownItemActive(key)"
+          @action="fetchSortedDiscussions(key)"
         >
-          {{ text }}
-        </gl-dropdown-item>
-      </div>
-      <gl-dropdown-divider />
-      <div
+          <template #list-item>
+            <gl-icon
+              name="mobile-issue-close"
+              data-testid="dropdown-item-checkbox"
+              :class="[
+                'gl-dropdown-item-check-icon',
+                { 'gl-visibility-hidden': !isSortDropdownItemActive(key) },
+                'gl-text-blue-400',
+              ]"
+            />
+            {{ text }}
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+      <gl-disclosure-dropdown-group
         id="discussion-filter"
         class="discussion-filter-container js-discussion-filter-container"
+        bordered
       >
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           v-for="filter in filters"
           :key="filter.value"
-          is-check-item
-          :is-checked="filter.value === currentValue"
+          :is-selected="filter.value === currentValue"
           :class="{ 'is-active': filter.value === currentValue }"
           :data-filter-type="filterType(filter.value)"
           data-qa-selector="filter_menu_item"
-          @click.prevent="selectFilter(filter.value)"
+          @action="selectFilter(filter.value)"
         >
-          {{ filter.title }}
-        </gl-dropdown-item>
-      </div>
-    </gl-dropdown>
+          <template #list-item>
+            <gl-icon
+              name="mobile-issue-close"
+              data-testid="dropdown-item-checkbox"
+              :class="[
+                'gl-dropdown-item-check-icon',
+                { 'gl-visibility-hidden': filter.value !== currentValue },
+                'gl-text-blue-400',
+              ]"
+            />
+            {{ filter.title }}
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+    </gl-disclosure-dropdown>
   </div>
 </template>

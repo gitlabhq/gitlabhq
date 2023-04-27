@@ -67,12 +67,6 @@ RSpec.describe Metrics::Dashboard::SelfMonitoringDashboardService, :use_clean_ra
       it { is_expected.to be_truthy }
     end
 
-    context 'with dashboard_path' do
-      let(:params) { { dashboard_path: self_monitoring_dashboard_path } }
-
-      it { is_expected.to be_truthy }
-    end
-
     context 'with a different dashboard selected' do
       let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
       let(:params) { { dashboard_path: dashboard_path, environment: environment } }

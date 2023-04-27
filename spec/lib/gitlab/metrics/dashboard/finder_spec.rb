@@ -44,12 +44,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
       it_behaves_like 'valid dashboard service response'
     end
 
-    context 'when the self-monitoring dashboard is specified' do
-      let(:dashboard_path) { self_monitoring_dashboard_path }
-
-      it_behaves_like 'valid dashboard service response'
-    end
-
     context 'when no dashboard is specified' do
       let(:service_call) { described_class.find(project, user, environment: environment) }
 
@@ -178,37 +172,6 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
         }
 
         expect(all_dashboard_paths).to eq([project_dashboard2, k8s_pod_health_dashboard, project_dashboard1, system_dashboard])
-      end
-    end
-
-    context 'when the project is self-monitoring' do
-      let(:self_monitoring_dashboard) do
-        {
-          path: self_monitoring_dashboard_path,
-          display_name: 'Overview',
-          default: true,
-          system_dashboard: true,
-          out_of_the_box_dashboard: true
-        }
-      end
-
-      let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
-      let(:project) { project_with_dashboard(dashboard_path) }
-
-      before do
-        stub_application_setting(self_monitoring_project_id: project.id)
-      end
-
-      it 'includes self-monitoring and project dashboards' do
-        project_dashboard = {
-          path: dashboard_path,
-          display_name: 'test.yml',
-          default: false,
-          system_dashboard: false,
-          out_of_the_box_dashboard: false
-        }
-
-        expect(all_dashboard_paths).to eq([self_monitoring_dashboard, project_dashboard])
       end
     end
   end

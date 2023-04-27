@@ -33,8 +33,8 @@ module Tooling
       ].freeze
 
       def check!
-        # exit if not matching files or if no product intelligence labels
-        product_intelligence_paths_to_review = helper.changes_by_category[:product_intelligence]
+        product_intelligence_paths_to_review = helper.changes.by_category(:product_intelligence).files
+
         labels_to_add = missing_labels
 
         return if product_intelligence_paths_to_review.empty? || skip_review?

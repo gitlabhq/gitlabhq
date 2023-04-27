@@ -7,9 +7,7 @@ module JiraConnectHelper
     {
       groups_path: api_v4_groups_path(params: { min_access_level: Gitlab::Access::MAINTAINER, skip_groups: skip_groups }),
       subscriptions: subscriptions.map { |s| serialize_subscription(s) }.to_json,
-      add_subscriptions_path: jira_connect_subscriptions_path,
       subscriptions_path: jira_connect_subscriptions_path(format: :json),
-      users_path: current_user ? nil : jira_connect_users_path, # users_path is used to determine if user is signed in
       gitlab_user_path: current_user ? user_path(current_user) : nil,
       oauth_metadata: jira_connect_oauth_data(installation).to_json,
       public_key_storage_enabled: Gitlab::CurrentSettings.jira_connect_public_key_storage_enabled?

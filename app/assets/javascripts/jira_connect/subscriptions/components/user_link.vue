@@ -1,8 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
-import { getGitlabSignInURL } from '~/jira_connect/subscriptions/utils';
 
 export default {
   components: {
@@ -10,11 +8,7 @@ export default {
     GlSprintf,
     SignInOauthButton: () => import('./sign_in_oauth_button.vue'),
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
-    usersPath: {
-      default: '',
-    },
     gitlabUserPath: {
       default: '',
     },
@@ -34,11 +28,6 @@ export default {
       default: null,
     },
   },
-  data() {
-    return {
-      signInURL: '',
-    };
-  },
   computed: {
     gitlabUserName() {
       return gon.current_username ?? this.user?.username;
@@ -54,9 +43,6 @@ export default {
         ? this.$options.i18n.signedInAsUserText
         : this.$options.i18n.signedInText;
     },
-  },
-  async created() {
-    this.signInURL = await getGitlabSignInURL(this.usersPath);
   },
   i18n: {
     signInText: __('Sign in to GitLab'),

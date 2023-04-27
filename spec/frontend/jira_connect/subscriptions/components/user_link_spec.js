@@ -4,10 +4,6 @@ import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_o
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-jest.mock('~/jira_connect/subscriptions/utils', () => ({
-  getGitlabSignInURL: jest.fn().mockImplementation((path) => Promise.resolve(path)),
-}));
-
 describe('UserLink', () => {
   let wrapper;
 

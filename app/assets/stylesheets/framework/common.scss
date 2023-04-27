@@ -474,7 +474,8 @@ li.note {
     width: 100%;
 
     > .dropdown-menu,
-    > .btn {
+    > .btn,
+    > .gl-new-dropdown-toggle > .gl-button-text {
       width: 100%;
     }
   }

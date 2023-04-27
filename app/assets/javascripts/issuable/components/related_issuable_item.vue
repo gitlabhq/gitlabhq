@@ -124,7 +124,7 @@ export default {
       'issuable-info-container': !canReorder,
       'card-body': canReorder,
     }"
-    class="item-body gl-display-flex gl-align-items-center gl-gap-3 gl-mx-n2"
+    class="item-body gl-display-flex gl-align-items-center gl-gap-3"
   >
     <div
       class="item-contents gl-display-flex gl-align-items-center gl-flex-wrap gl-flex-grow-1 gl-gap-2 gl-px-3 gl-py-2 py-xl-0 flex-xl-nowrap gl-min-h-7"

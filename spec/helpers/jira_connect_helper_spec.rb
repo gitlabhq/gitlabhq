@@ -27,16 +27,10 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
       it 'includes Jira Connect app attributes' do
         is_expected.to include(
           :groups_path,
-          :add_subscriptions_path,
           :subscriptions_path,
-          :users_path,
           :subscriptions,
           :gitlab_user_path
         )
-      end
-
-      it 'assigns users_path with value' do
-        expect(subject[:users_path]).to eq(jira_connect_users_path)
       end
 
       context 'with oauth_metadata' do

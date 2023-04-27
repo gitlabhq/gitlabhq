@@ -5,10 +5,8 @@ import {
   persistAlert,
   retrieveAlert,
   getJwt,
-  getLocation,
   reloadPage,
   sizeToParent,
-  getGitlabSignInURL,
 } from '~/jira_connect/subscriptions/utils';
 
 describe('JiraConnect utils', () => {
@@ -69,29 +67,6 @@ describe('JiraConnect utils', () => {
       });
     });
 
-    describe('getLocation', () => {
-      const mockLocation = 'test/location';
-      const getLocationSpy = jest.fn((callback) => callback(mockLocation));
-
-      it('resolves to the function call when AP.getLocation is a function', async () => {
-        global.AP = {
-          getLocation: getLocationSpy,
-        };
-
-        const location = await getLocation();
-
-        expect(getLocationSpy).toHaveBeenCalled();
-        expect(location).toBe(mockLocation);
-      });
-
-      it('resolves to undefined when AP.getLocation is not a function', async () => {
-        const location = await getLocation();
-
-        expect(getLocationSpy).not.toHaveBeenCalled();
-        expect(location).toBeUndefined();
-      });
-    });
-
     describe('reloadPage', () => {
       const reloadSpy = jest.fn();
 
@@ -137,26 +112,5 @@ describe('JiraConnect utils', () => {
         expect(sizeToParentSpy).not.toHaveBeenCalled();
       });
     });
-  });
-
-  describe('getGitlabSignInURL', () => {
-    const mockSignInURL = 'https://gitlab.com/sign_in';
-
-    it.each`
-      returnTo            | expectResult
-      ${undefined}        | ${mockSignInURL}
-      ${''}               | ${mockSignInURL}
-      ${'/test/location'} | ${`${mockSignInURL}?return_to=${encodeURIComponent('/test/location')}`}
-    `(
-      'returns `$expectResult` when `AP.getLocation` resolves to `$returnTo`',
-      async ({ returnTo, expectResult }) => {
-        global.AP = {
-          getLocation: jest.fn().mockImplementation((cb) => cb(returnTo)),
-        };
-
-        const url = await getGitlabSignInURL(mockSignInURL);
-        expect(url).toBe(expectResult);
-      },
-    );
   });
 });

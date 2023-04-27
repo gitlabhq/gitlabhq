@@ -2,7 +2,6 @@ import '~/webpack';
 
 import setConfigs from '@gitlab/ui/dist/config';
 import Vue from 'vue';
-import GlFeatureFlagsPlugin from '~/vue_shared/gl_feature_flags_plugin';
 import Translate from '~/vue_shared/translate';
 
 import JiraConnectApp from './components/app.vue';
@@ -17,14 +16,11 @@ export function initJiraConnect() {
 
   setConfigs();
   Vue.use(Translate);
-  Vue.use(GlFeatureFlagsPlugin);
 
   const {
     groupsPath,
     subscriptions,
-    addSubscriptionsPath,
     subscriptionsPath,
-    usersPath,
     gitlabUserPath,
     oauthMetadata,
     publicKeyStorageEnabled,
@@ -38,9 +34,7 @@ export function initJiraConnect() {
     store,
     provide: {
       groupsPath,
-      addSubscriptionsPath,
       subscriptionsPath,
-      usersPath,
       gitlabUserPath,
       oauthMetadata: oauthMetadata ? JSON.parse(oauthMetadata) : null,
       publicKeyStorageEnabled,

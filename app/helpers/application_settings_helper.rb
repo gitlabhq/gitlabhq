@@ -542,28 +542,6 @@ module ApplicationSettingsHelper
     Rack::Attack.throttles.key?('protected paths')
   end
 
-  def self_monitoring_project_data
-    {
-      'create_self_monitoring_project_path' =>
-        create_self_monitoring_project_admin_application_settings_path,
-
-      'status_create_self_monitoring_project_path' =>
-        status_create_self_monitoring_project_admin_application_settings_path,
-
-      'delete_self_monitoring_project_path' =>
-        delete_self_monitoring_project_admin_application_settings_path,
-
-      'status_delete_self_monitoring_project_path' =>
-        status_delete_self_monitoring_project_admin_application_settings_path,
-
-      'self_monitoring_project_exists' =>
-        Gitlab::CurrentSettings.self_monitoring_project.present?.to_s,
-
-      'self_monitoring_project_full_path' =>
-        Gitlab::CurrentSettings.self_monitoring_project&.full_path
-    }
-  end
-
   def valid_runner_registrars
     Gitlab::CurrentSettings.valid_runner_registrars
   end

@@ -25041,12 +25041,6 @@ msgstr ""
 msgid "Job logs and artifacts"
 msgstr ""
 
-msgid "Job to create self-monitoring project is in progress"
-msgstr ""
-
-msgid "Job to delete self-monitoring project is in progress"
-msgstr ""
-
 msgid "Job was retried"
 msgstr ""
 
@@ -31725,9 +31719,6 @@ msgid "Pagination|« First"
 msgstr ""
 
 msgid "Parameter"
-msgstr ""
-
-msgid "Parameter \"job_id\" cannot exceed length of %{job_id_max_size}"
 msgstr ""
 
 msgid "Parent"
@@ -40819,15 +40810,6 @@ msgid "Selecting a GitLab user will add a link to the GitLab user in the descrip
 msgstr ""
 
 msgid "Self-monitoring project does not exist"
-msgstr ""
-
-msgid "Self-monitoring project does not exist. Please check logs for any error messages"
-msgstr ""
-
-msgid "Self-monitoring project has been successfully deleted"
-msgstr ""
-
-msgid "Self-monitoring project was not deleted. Please check logs for any error messages"
 msgstr ""
 
 msgid "Self-monitoring was %{deprecation}deprecated%{link_end} in GitLab 14.9, and is %{removal}scheduled for removal%{link_end} in GitLab 16.0. For information on a possible replacement, %{opstrace}learn more about Opstrace%{link_end}."

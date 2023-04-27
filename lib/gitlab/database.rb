@@ -35,7 +35,7 @@ module Gitlab
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
     # Migrations before this version may have been removed
-    MIN_SCHEMA_GITLAB_VERSION = '15.0'
+    MIN_SCHEMA_GITLAB_VERSION = '15.11'
 
     # Schema we store dynamically managed partitions in (e.g. for time partitioning)
     DYNAMIC_PARTITIONS_SCHEMA = :gitlab_partitions_dynamic

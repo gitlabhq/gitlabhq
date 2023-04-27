@@ -10,8 +10,6 @@ describe('GroupsListItem', () => {
   let wrapper;
   let store;
 
-  const mockAddSubscriptionsPath = '/addSubscriptionsPath';
-
   const createComponent = ({ mountFn = shallowMount, provide } = {}) => {
     store = createStore();
 
@@ -23,7 +21,6 @@ describe('GroupsListItem', () => {
         group: mockGroup1,
       },
       provide: {
-        addSubscriptionsPath: mockAddSubscriptionsPath,
         ...provide,
       },
     });

@@ -92,10 +92,6 @@ RSpec.describe Metrics::Dashboard::CloneDashboardService, :use_clean_rails_memor
                           ::Gitlab::Metrics::Dashboard::Stages::CommonMetricsInserter
                         ]
 
-        it_behaves_like 'valid dashboard cloning process',
-          ::Metrics::Dashboard::SelfMonitoringDashboardService::DASHBOARD_PATH,
-          [::Gitlab::Metrics::Dashboard::Stages::CustomMetricsInserter]
-
         context 'selected branch already exists' do
           let(:branch) { 'existing_branch' }
 

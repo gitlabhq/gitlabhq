@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash';
 import { mapState, mapMutations, mapActions } from 'vuex';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
 import AccessorUtilities from '~/lib/utils/accessor';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '../constants';
 import { SET_ALERT } from '../store/mutation_types';
 import SignInPage from '../pages/sign_in/sign_in_page.vue';
@@ -23,11 +22,7 @@ export default {
     SubscriptionsPage,
     UserLink,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
-    usersPath: {
-      default: '',
-    },
     subscriptionsPath: {
       default: '',
     },

@@ -14,8 +14,6 @@ import {
   SET_SUBSCRIPTIONS,
   SET_SUBSCRIPTIONS_LOADING,
   SET_SUBSCRIPTIONS_ERROR,
-  ADD_SUBSCRIPTION_LOADING,
-  ADD_SUBSCRIPTION_ERROR,
   SET_ALERT,
   SET_CURRENT_USER,
   SET_CURRENT_USER_ERROR,
@@ -51,25 +49,17 @@ export const addSubscription = async (
   { commit, state, dispatch },
   { namespacePath, subscriptionsPath },
 ) => {
-  try {
-    commit(ADD_SUBSCRIPTION_LOADING, true);
+  await addJiraConnectSubscription(namespacePath, {
+    jwt: await getJwt(),
+    accessToken: state.accessToken,
+  });
 
-    await addJiraConnectSubscription(namespacePath, {
-      jwt: await getJwt(),
-      accessToken: state.accessToken,
-    });
+  commit(SET_ALERT, {
+    title: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
+    message: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,
+    linkUrl: INTEGRATIONS_DOC_LINK,
+    variant: 'success',
+  });
 
-    commit(SET_ALERT, {
-      title: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_TITLE,
-      message: I18N_ADD_SUBSCRIPTION_SUCCESS_ALERT_MESSAGE,
-      linkUrl: INTEGRATIONS_DOC_LINK,
-      variant: 'success',
-    });
-
-    dispatch('fetchSubscriptions', subscriptionsPath);
-  } catch (e) {
-    commit(ADD_SUBSCRIPTION_ERROR, e);
-  } finally {
-    commit(ADD_SUBSCRIPTION_LOADING, false);
-  }
+  dispatch('fetchSubscriptions', subscriptionsPath);
 };

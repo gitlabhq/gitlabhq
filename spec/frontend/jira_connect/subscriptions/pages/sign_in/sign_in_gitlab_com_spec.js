@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
 import SignInGitlabCom from '~/jira_connect/subscriptions/pages/sign_in/sign_in_gitlab_com.vue';
-import SignInLegacyButton from '~/jira_connect/subscriptions/components/sign_in_legacy_button.vue';
 import SignInOauthButton from '~/jira_connect/subscriptions/components/sign_in_oauth_button.vue';
 import SubscriptionsList from '~/jira_connect/subscriptions/components/subscriptions_list.vue';
 import createStore from '~/jira_connect/subscriptions/store';
@@ -9,10 +8,8 @@ import { I18N_DEFAULT_SIGN_IN_BUTTON_TEXT } from '~/jira_connect/subscriptions/c
 
 jest.mock('~/jira_connect/subscriptions/utils');
 
-const mockUsersPath = '/test';
 const defaultProvide = {
   oauthMetadata: {},
-  usersPath: mockUsersPath,
 };
 
 describe('SignInGitlabCom', () => {
@@ -32,7 +29,6 @@ describe('SignInGitlabCom', () => {
       },
       propsData: props,
       stubs: {
-        SignInLegacyButton,
         SignInOauthButton,
       },
     });

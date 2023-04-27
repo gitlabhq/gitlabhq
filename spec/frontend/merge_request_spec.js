@@ -1,6 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlMergeRequestWithTaskList from 'test_fixtures/merge_requests/merge_request_with_task_list.html';
+import htmlMergeRequestOfCurrentUser from 'test_fixtures/merge_requests/merge_request_of_current_user.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'spec/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -16,7 +18,7 @@ describe('MergeRequest', () => {
     let mock;
 
     beforeEach(() => {
-      loadHTMLFixture('merge_requests/merge_request_with_task_list.html');
+      setHTMLFixture(htmlMergeRequestWithTaskList);
 
       jest.spyOn(axios, 'patch');
       mock = new MockAdapter(axios);
@@ -112,7 +114,7 @@ describe('MergeRequest', () => {
   describe('hideCloseButton', () => {
     describe('merge request of current_user', () => {
       beforeEach(() => {
-        loadHTMLFixture('merge_requests/merge_request_of_current_user.html');
+        setHTMLFixture(htmlMergeRequestOfCurrentUser);
         test.el = document.querySelector('.js-issuable-actions');
         MergeRequest.hideCloseButton();
       });

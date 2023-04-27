@@ -22,17 +22,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     :preferences, :update, :reset_health_check_token
   ]
 
-  feature_category :metrics, [
-    :create_self_monitoring_project,
-    :status_create_self_monitoring_project,
-    :delete_self_monitoring_project,
-    :status_delete_self_monitoring_project
-  ]
   urgency :low, [
-    :create_self_monitoring_project,
-    :status_create_self_monitoring_project,
-    :delete_self_monitoring_project,
-    :status_delete_self_monitoring_project,
     :reset_error_tracking_access_token
   ]
 
@@ -124,90 +114,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     redirect_to ::Gitlab::LetsEncrypt.terms_of_service_url
   end
 
-  # Specs are in spec/requests/self_monitoring_project_spec.rb
-  def create_self_monitoring_project
-    job_id = SelfMonitoringProjectCreateWorker.with_status.perform_async # rubocop:disable CodeReuse/Worker
-
-    render status: :accepted, json: {
-      job_id: job_id,
-      monitor_status: status_create_self_monitoring_project_admin_application_settings_path
-    }
-  end
-
-  # Specs are in spec/requests/self_monitoring_project_spec.rb
-  def status_create_self_monitoring_project
-    job_id = params[:job_id].to_s
-
-    unless job_id.length <= PARAM_JOB_ID_MAX_SIZE
-      return render status: :bad_request, json: {
-        message: format(_('Parameter "job_id" cannot exceed length of %{job_id_max_size}'), job_id_max_size: PARAM_JOB_ID_MAX_SIZE)
-      }
-    end
-
-    if SelfMonitoringProjectCreateWorker.in_progress?(job_id) # rubocop:disable CodeReuse/Worker
-      ::Gitlab::PollingInterval.set_header(response, interval: 3_000)
-
-      return render status: :accepted, json: {
-        message: _('Job to create self-monitoring project is in progress')
-      }
-    end
-
-    return render status: :ok, json: self_monitoring_data if @application_setting.self_monitoring_project_id.present?
-
-    render status: :bad_request, json: {
-      message: _('Self-monitoring project does not exist. Please check logs ' \
-        'for any error messages')
-    }
-  end
-
-  # Specs are in spec/requests/self_monitoring_project_spec.rb
-  def delete_self_monitoring_project
-    job_id = SelfMonitoringProjectDeleteWorker.with_status.perform_async # rubocop:disable CodeReuse/Worker
-
-    render status: :accepted, json: {
-      job_id: job_id,
-      monitor_status: status_delete_self_monitoring_project_admin_application_settings_path
-    }
-  end
-
-  # Specs are in spec/requests/self_monitoring_project_spec.rb
-  def status_delete_self_monitoring_project
-    job_id = params[:job_id].to_s
-
-    unless job_id.length <= PARAM_JOB_ID_MAX_SIZE
-      return render status: :bad_request, json: {
-        message: format(_('Parameter "job_id" cannot exceed length of %{job_id_max_size}'), job_id_max_size: PARAM_JOB_ID_MAX_SIZE)
-      }
-    end
-
-    if SelfMonitoringProjectDeleteWorker.in_progress?(job_id) # rubocop:disable CodeReuse/Worker
-      ::Gitlab::PollingInterval.set_header(response, interval: 3_000)
-
-      return render status: :accepted, json: {
-        message: _('Job to delete self-monitoring project is in progress')
-      }
-    end
-
-    if @application_setting.self_monitoring_project_id.nil?
-      return render status: :ok, json: {
-        message: _('Self-monitoring project has been successfully deleted')
-      }
-    end
-
-    render status: :bad_request, json: {
-      message: _('Self-monitoring project was not deleted. Please check logs ' \
-        'for any error messages')
-    }
-  end
-
   private
-
-  def self_monitoring_data
-    {
-      project_id: @application_setting.self_monitoring_project_id,
-      project_full_path: @application_setting.self_monitoring_project&.full_path
-    }
-  end
 
   def set_application_setting
     @application_setting = ApplicationSetting.current_without_cache

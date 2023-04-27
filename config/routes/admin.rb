@@ -156,11 +156,6 @@ namespace :admin do
     match :general, :integrations, :repository, :ci_cd, :reporting, :metrics_and_profiling, :network, :preferences, via: [:get, :patch]
     get :lets_encrypt_terms_of_service
 
-    post :create_self_monitoring_project
-    get :status_create_self_monitoring_project
-    delete :delete_self_monitoring_project
-    get :status_delete_self_monitoring_project
-
     get :service_usage_data
 
     resource :appearances, only: [:show, :create, :update], path: 'appearance', module: 'application_settings' do
