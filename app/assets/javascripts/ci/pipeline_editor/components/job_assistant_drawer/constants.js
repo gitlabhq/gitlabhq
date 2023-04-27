@@ -1,4 +1,4 @@
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export const DRAWER_CONTAINER_CLASS = '.content-wrapper';
 
@@ -87,7 +87,15 @@ export const JOB_TEMPLATE = {
   ],
 };
 
+export const ENTRYPOINT_PLACEHOLDER_EXAMPLE =
+  "['/bin/bash','-c','ln -snf /bin/bash /bin/sh && /bin/bash -c $0']";
+
+export const ENTRYPOINT_PLACEHOLDER_INPUT =
+  'bin/bash,-c,ln -snf /bin/bash /bin/sh && /bin/bash -c $0';
+
 export const i18n = {
+  ARRAY_FIELD_DESCRIPTION: s__('JobAssistant|Please use "," to separate array type fields.'),
+  INPUT_FORMAT: s__('JobAssistant|Input format'),
   ADD_JOB: s__('JobAssistant|Add job'),
   SCRIPT: s__('JobAssistant|Script'),
   JOB_NAME: s__('JobAssistant|Job name'),
@@ -108,4 +116,18 @@ export const i18n = {
   WHEN: s__('JobAssistant|When'),
   ALLOW_FAILURE: s__('JobAssistant|Allow failure'),
   INVALID_START_IN: s__('JobAssistant|Error - Valid value is between 1 second and 1 week'),
+  ADD_SERVICE: s__('JobAssistant|Add service'),
+  SERVICE: s__('JobAssistant|Service'),
+  SERVICE_NAME: s__('JobAssistant|Service name (optional)'),
+  SERVICE_ENTRYPOINT: s__('JobAssistant|Service entrypoint (optional)'),
+  ENTRPOINT_PLACEHOLDER_TEXT: sprintf(
+    s__(
+      'JobAssistant|Example: %{entrypointPlaceholderExample}, Input format: %{entrypointPlaceholderInput}',
+    ),
+    {
+      entrypointPlaceholderExample: ENTRYPOINT_PLACEHOLDER_EXAMPLE,
+      entrypointPlaceholderInput: ENTRYPOINT_PLACEHOLDER_INPUT,
+    },
+    false,
+  ),
 };

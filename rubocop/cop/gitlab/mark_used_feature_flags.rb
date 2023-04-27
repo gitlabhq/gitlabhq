@@ -173,7 +173,7 @@ module RuboCop
         end
 
         def trackable_flag?(node)
-          feature_method?(node) || self_method?(node)
+          feature_method?(node) || self_method?(node) || worker_method?(node)
         end
 
         def defined_feature_flags

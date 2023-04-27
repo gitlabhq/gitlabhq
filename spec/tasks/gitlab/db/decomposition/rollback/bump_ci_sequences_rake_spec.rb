@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_stdout,
-               :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
+               :suppress_gitlab_schemas_validate_connection, feature_category: :cell, query_analyzers: false do
   before :all do
     Rake.application.rake_require 'tasks/gitlab/db/decomposition/rollback/bump_ci_sequences'
 
@@ -100,5 +100,7 @@ RSpec.describe 'gitlab:db:decomposition:rollback:bump_ci_sequences', :silence_st
 end
 
 def last_value_of_sequence(connection, sequence_name)
-  connection.select_value("select last_value from #{sequence_name}")
+  allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408220') do
+    connection.select_value("select last_value from #{sequence_name}")
+  end
 end

@@ -70,7 +70,7 @@ module Gitlab
 
         def rename_partitions(statements, old_table_name, new_table_name)
           Gitlab::Database::PostgresPartition.for_parent_table(old_table_name).each do |partition|
-            new_partition_name = partition.name.sub(/#{old_table_name}/, new_table_name)
+            new_partition_name = partition.name.sub(/#{old_table_name}/, new_table_name.to_s)
             old_primary_key = default_primary_key(partition.name)
             new_primary_key = default_primary_key(new_partition_name)
 

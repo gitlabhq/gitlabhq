@@ -25,23 +25,23 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
   before do
     connection.execute(<<~SQL)
-      CREATE TABLE referenced_table (
+      CREATE TABLE _test_referenced_table (
         id bigserial primary key not null
       )
     SQL
     connection.execute(<<~SQL)
 
-      CREATE TABLE parent_table (
+      CREATE TABLE _test_parent_table (
          id bigserial not null,
          referenced_id bigint not null,
          created_at timestamptz not null,
          primary key (id, created_at),
-        constraint fk_referenced foreign key (referenced_id) references referenced_table(id)
+        constraint fk_referenced foreign key (referenced_id) references _test_referenced_table(id)
        ) PARTITION BY RANGE(created_at)
     SQL
   end
 
-  def create_partition(name:, from:, to:, attached:, drop_after:, table: 'parent_table')
+  def create_partition(name:, from:, to:, attached:, drop_after:, table: :_test_parent_table)
     from = from.beginning_of_month
     to = to.beginning_of_month
     full_name = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{name}"
@@ -64,20 +64,20 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
   describe '#perform' do
     context 'when the partition should not be dropped yet' do
       it 'does not drop the partition' do
-        create_partition(name: 'test_partition',
+        create_partition(name: :_test_partition,
                          from: 2.months.ago, to: 1.month.ago,
                          attached: false,
                          drop_after: 1.day.from_now)
 
         dropper.perform
 
-        expect_partition_present('test_partition')
+        expect_partition_present(:_test_partition)
       end
     end
 
     context 'with a partition to drop' do
       before do
-        create_partition(name: 'test_partition',
+        create_partition(name: :_test_partition,
                          from: 2.months.ago,
                          to: 1.month.ago.beginning_of_month,
                          attached: false,
@@ -87,45 +87,45 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       it 'drops the partition' do
         dropper.perform
 
-        expect(table_oid('test_partition')).to be_nil
+        expect(table_oid(:_test_partition)).to be_nil
       end
 
       context 'removing foreign keys' do
         it 'removes foreign keys from the table before dropping it' do
           expect(dropper).to receive(:drop_detached_partition).and_wrap_original do |drop_method, partition|
-            expect(partition.table_name).to eq('test_partition')
+            expect(partition.table_name).to eq('_test_partition')
             expect(foreign_key_exists_by_name(partition.table_name, 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_falsey
 
             drop_method.call(partition)
           end
 
-          expect(foreign_key_exists_by_name('test_partition', 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_truthy
+          expect(foreign_key_exists_by_name(:_test_partition, 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_truthy
 
           dropper.perform
         end
 
         it 'does not remove foreign keys from the parent table' do
-          expect { dropper.perform }.not_to change { foreign_key_exists_by_name('parent_table', 'fk_referenced') }.from(true)
+          expect { dropper.perform }.not_to change { foreign_key_exists_by_name('_test_parent_table', 'fk_referenced') }.from(true)
         end
 
         context 'when another process drops the foreign key' do
           it 'skips dropping that foreign key' do
             expect(dropper).to receive(:drop_foreign_key_if_present).and_wrap_original do |drop_meth, *args|
-              connection.execute('alter table gitlab_partitions_dynamic.test_partition drop constraint fk_referenced;')
+              connection.execute('alter table gitlab_partitions_dynamic._test_partition drop constraint fk_referenced;')
               drop_meth.call(*args)
             end
 
             dropper.perform
 
-            expect_partition_removed('test_partition')
+            expect_partition_removed(:_test_partition)
           end
         end
 
         context 'when another process drops the partition' do
           it 'skips dropping the foreign key' do
             expect(dropper).to receive(:drop_foreign_key_if_present).and_wrap_original do |drop_meth, *args|
-              connection.execute('drop table gitlab_partitions_dynamic.test_partition')
-              Postgresql::DetachedPartition.where(table_name: 'test_partition').delete_all
+              connection.execute('drop table gitlab_partitions_dynamic._test_partition')
+              Postgresql::DetachedPartition.where(table_name: :_test_partition).delete_all
             end
 
             expect(Gitlab::AppLogger).not_to receive(:error)
@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
     context 'when the partition to drop is still attached to its table' do
       before do
-        create_partition(name: 'test_partition',
+        create_partition(name: :_test_partition,
                          from: 2.months.ago,
                          to: 1.month.ago.beginning_of_month,
                          attached: true,
@@ -169,8 +169,8 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       it 'does not drop the partition, but does remove the DetachedPartition entry' do
         dropper.perform
         aggregate_failures do
-          expect(table_oid('test_partition')).not_to be_nil
-          expect(Postgresql::DetachedPartition.find_by(table_name: 'test_partition')).to be_nil
+          expect(table_oid(:_test_partition)).not_to be_nil
+          expect(Postgresql::DetachedPartition.find_by(table_name: :_test_partition)).to be_nil
         end
       end
 
@@ -185,20 +185,20 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
           dropper.perform
 
-          expect(table_oid('test_partition')).not_to be_nil
+          expect(table_oid(:_test_partition)).not_to be_nil
         end
       end
     end
 
     context 'with multiple partitions to drop' do
       before do
-        create_partition(name: 'partition_1',
+        create_partition(name: :_test_partition_1,
                          from: 3.months.ago,
                          to: 2.months.ago,
                          attached: false,
                          drop_after: 1.second.ago)
 
-        create_partition(name: 'partition_2',
+        create_partition(name: :_test_partition_2,
                          from: 2.months.ago,
                          to: 1.month.ago,
                          attached: false,
@@ -208,8 +208,8 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
       it 'drops both partitions' do
         dropper.perform
 
-        expect_partition_removed('partition_1')
-        expect_partition_removed('partition_2')
+        expect_partition_removed(:_test_partition_1)
+        expect_partition_removed(:_test_partition_2)
       end
 
       context 'when the first drop returns an error' do
@@ -223,7 +223,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
           expect(Postgresql::DetachedPartition.count).to eq(1)
           errored_partition_name = Postgresql::DetachedPartition.first!.table_name
 
-          dropped_partition_name = (%w[partition_1 partition_2] - [errored_partition_name]).first
+          dropped_partition_name = (%w[_test_partition_1 _test_partition_2] - [errored_partition_name]).first
           expect_partition_present(errored_partition_name)
           expect_partition_removed(dropped_partition_name)
         end

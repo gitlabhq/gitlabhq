@@ -15,9 +15,15 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
   end
 
   let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
+  let(:verdict_score) { 0.01 }
+  let(:verdict_evaluated) { true }
 
   let(:response) do
-    ::Spamcheck::SpamVerdict.new(verdict: verdict_value)
+    response = ::Spamcheck::SpamVerdict.new
+    response.verdict = verdict_value
+    response.score = verdict_score
+    response.evaluated = verdict_evaluated
+    response
   end
 
   let(:spam_client_result) do
@@ -237,18 +243,44 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
         end
 
         context 'if the result is a NOOP verdict' do
+          let(:verdict_evaluated) { false }
           let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::NOOP }
 
           it 'returns the verdict' do
             is_expected.to eq(NOOP)
+            expect(user.spam_score).to eq(0.0)
           end
         end
 
         context 'the result is a valid verdict' do
+          let(:verdict_score) { 0.05 }
           let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
 
-          it 'returns the verdict' do
-            is_expected.to eq(ALLOW)
+          context 'the result was evaluated' do
+            it 'returns the verdict and updates the spam score' do
+              is_expected.to eq(ALLOW)
+              expect(user.spam_score).to be_within(0.000001).of(verdict_score)
+            end
+          end
+
+          context 'the result was not evaluated' do
+            let(:verdict_evaluated) { false }
+
+            it 'returns the verdict and does not update the spam score' do
+              expect(subject).to eq(ALLOW)
+              expect(user.spam_score).to eq(0.0)
+            end
+          end
+
+          context 'user spam score feature is disabled' do
+            before do
+              stub_feature_flags(user_spam_scores: false)
+            end
+
+            it 'returns the verdict and does not update the spam score' do
+              expect(subject).to eq(ALLOW)
+              expect(user.spam_score).to eq(0.0)
+            end
           end
         end
 
@@ -259,16 +291,17 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
           using RSpec::Parameterized::TableSyntax
 
-          where(:verdict_value, :expected) do
-            ::Spamcheck::SpamVerdict::Verdict::ALLOW              | ::Spam::SpamConstants::ALLOW
-            ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW  | ::Spam::SpamConstants::CONDITIONAL_ALLOW
-            ::Spamcheck::SpamVerdict::Verdict::DISALLOW           | ::Spam::SpamConstants::DISALLOW
-            ::Spamcheck::SpamVerdict::Verdict::BLOCK              | ::Spam::SpamConstants::BLOCK_USER
+          where(:verdict_value, :expected, :verdict_score) do
+            ::Spamcheck::SpamVerdict::Verdict::ALLOW              | ::Spam::SpamConstants::ALLOW              | 0.1
+            ::Spamcheck::SpamVerdict::Verdict::CONDITIONAL_ALLOW  | ::Spam::SpamConstants::CONDITIONAL_ALLOW  | 0.5
+            ::Spamcheck::SpamVerdict::Verdict::DISALLOW           | ::Spam::SpamConstants::DISALLOW           | 0.8
+            ::Spamcheck::SpamVerdict::Verdict::BLOCK              | ::Spam::SpamConstants::BLOCK_USER         | 0.9
           end
 
           with_them do
-            it "returns expected spam constant" do
+            it "returns expected spam constant and updates the spam score" do
               is_expected.to eq(expected)
+              expect(user.spam_score).to be_within(0.000001).of(verdict_score)
             end
           end
         end

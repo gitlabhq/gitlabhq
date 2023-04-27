@@ -19,12 +19,12 @@ module Gitlab
 
       DICTIONARY_PATH = 'db/docs/'
 
-      def self.table_schemas(tables, undefined: true)
-        tables.map { |table| table_schema(table, undefined: undefined) }.to_set
+      def self.table_schemas!(tables)
+        tables.map { |table| table_schema!(table) }.to_set
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity
-      def self.table_schema(name, undefined: true)
+      def self.table_schema(name)
         schema_name, table_name = name.split('.', 2) # Strip schema name like: `public.`
 
         # Most of names do not have schemas, ensure that this is table
@@ -68,8 +68,12 @@ module Gitlab
         # All `pg_` tables are marked as `internal`
         return :gitlab_internal if table_name.start_with?('pg_')
 
-        # When undefined it's best to return a unique name so that we don't incorrectly assume that 2 undefined schemas belong on the same database
-        undefined ? :"undefined_#{table_name}" : nil
+        # Sometimes the name of an index can be interpreted as a table's name.
+        # For eg, if we execute "ALTER INDEX my_index..", my_index is interpreted as a table name.
+        # In such cases, we should return the schema of the database table actually
+        # holding that index.
+        index_name = table_name
+        derive_schema_from_index(index_name)
       end
       # rubocop:enable Metrics/CyclomaticComplexity
 
@@ -94,10 +98,13 @@ module Gitlab
       end
 
       def self.table_schema!(name)
-        self.table_schema(name, undefined: false) || raise(
+        # rubocop:disable Gitlab/DocUrl
+        self.table_schema(name) || raise(
           UnknownSchemaError,
-          "Could not find gitlab schema for table #{name}: Any new tables must be added to the database dictionary"
+          "Could not find gitlab schema for table #{name}: Any new or deleted tables must be added to the database dictionary " \
+          "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
+        # rubocop:enable Gitlab/DocUrl
       end
 
       def self.deleted_views_and_tables_to_schema
@@ -122,6 +129,15 @@ module Gitlab
 
       def self.schema_names
         @schema_names ||= self.views_and_tables_to_schema.values.to_set
+      end
+
+      private_class_method def self.derive_schema_from_index(index_name)
+        index = Gitlab::Database::PostgresIndex.find_by(name: index_name,
+          schema: ApplicationRecord.connection.current_schema)
+
+        return unless index
+
+        table_schema(index.tablename)
       end
 
       private_class_method def self.build_dictionary(path_globs)

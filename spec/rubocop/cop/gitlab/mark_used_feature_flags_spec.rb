@@ -201,6 +201,11 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     include_examples 'does not set any flags as used', 'data_consistency :delayed'
   end
 
+  describe 'Class with included WorkerAttributes `data_consistency` method' do
+    include_examples 'sets flag as used', 'ActionMailer::MailDeliveryJob.data_consistency :delayed, feature_flag: :foo', 'foo'
+    include_examples 'does not set any flags as used', 'data_consistency :delayed'
+  end
+
   describe 'Worker `deduplicate` method' do
     include_examples 'sets flag as used', 'deduplicate :delayed, feature_flag: :foo', 'foo'
     include_examples 'does not set any flags as used', 'deduplicate :delayed'

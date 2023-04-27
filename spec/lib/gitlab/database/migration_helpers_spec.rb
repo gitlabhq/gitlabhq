@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   it { expect(model.singleton_class.ancestors).to include(described_class::WraparoundVacuumHelpers) }
 
   describe 'overridden dynamic model helpers' do
-    let(:test_table) { '_test_batching_table' }
+    let(:test_table) { :_test_batching_table }
 
     before do
       model.connection.execute(<<~SQL)
@@ -243,7 +243,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
       context 'when targeting a partition table' do
         let(:schema) { 'public' }
-        let(:name) { '_test_partition_01' }
+        let(:name) { :_test_partition_01 }
         let(:identifier) { "#{schema}.#{name}" }
 
         before do
@@ -322,10 +322,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         context 'when targeting a partition table' do
           let(:schema) { 'public' }
-          let(:partition_table_name) { '_test_partition_01' }
+          let(:partition_table_name) { :_test_partition_01 }
           let(:identifier) { "#{schema}.#{partition_table_name}" }
-          let(:index_name) { '_test_partitioned_index' }
-          let(:partition_index_name) { '_test_partition_01_partition_id_idx' }
+          let(:index_name) { :_test_partitioned_index }
+          let(:partition_index_name) { :_test_partition_01_partition_id_idx }
           let(:column_name) { 'partition_id' }
 
           before do
@@ -395,10 +395,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
           context 'when targeting a partition table' do
             let(:schema) { 'public' }
-            let(:partition_table_name) { '_test_partition_01' }
+            let(:partition_table_name) { :_test_partition_01 }
             let(:identifier) { "#{schema}.#{partition_table_name}" }
-            let(:index_name) { '_test_partitioned_index' }
-            let(:partition_index_name) { '_test_partition_01_partition_id_idx' }
+            let(:index_name) { :_test_partitioned_index }
+            let(:partition_index_name) { :_test_partition_01_partition_id_idx }
 
             before do
               model.execute(<<~SQL)
@@ -972,8 +972,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#foreign_key_exists?' do
-    let(:referenced_table_name) { '_test_gitlab_main_referenced' }
-    let(:referencing_table_name) { '_test_gitlab_main_referencing' }
+    let(:referenced_table_name) { :_test_gitlab_main_referenced }
+    let(:referencing_table_name) { :_test_gitlab_main_referencing }
     let(:schema) { 'public' }
     let(:identifier) { "#{schema}.#{referencing_table_name}" }
 
@@ -1092,8 +1092,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
 
     context 'with foreign key using multiple columns' do
-      let(:p_referenced_table_name) { '_test_gitlab_main_p_referenced' }
-      let(:p_referencing_table_name) { '_test_gitlab_main_p_referencing' }
+      let(:p_referenced_table_name) { :_test_gitlab_main_p_referenced }
+      let(:p_referencing_table_name) { :_test_gitlab_main_p_referencing }
 
       before do
         model.connection.execute(<<~SQL)
@@ -1217,7 +1217,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       end
 
       context 'when the table is write-locked' do
-        let(:test_table) { '_test_table' }
+        let(:test_table) { :_test_table }
         let(:lock_writes_manager) do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
@@ -1399,7 +1399,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       end
 
       context 'when the table in the other database is write-locked' do
-        let(:test_table) { '_test_table' }
+        let(:test_table) { :_test_table }
         let(:lock_writes_manager) do
           Gitlab::Database::LockWritesManager.new(
             table_name: test_table,
@@ -2092,7 +2092,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#create_temporary_columns_and_triggers' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
     let(:column) { :id }
     let(:mappings) do
       {
@@ -2186,7 +2186,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#initialize_conversion_of_integer_to_bigint' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
     let(:column) { :id }
     let(:tmp_column) { model.convert_to_bigint_column(column) }
 
@@ -2271,7 +2271,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#restore_conversion_of_integer_to_bigint' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
     let(:column) { :id }
     let(:tmp_column) { model.convert_to_bigint_column(column) }
 
@@ -2326,7 +2326,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#revert_initialize_conversion_of_integer_to_bigint' do
-    let(:table) { :test_table }
+    let(:table) { :_test_table }
 
     before do
       model.create_table table, id: false do |t|
@@ -2757,39 +2757,39 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
   describe '#add_primary_key_using_index' do
     it "executes the statement to add the primary key" do
-      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
+      expect(model).to receive(:execute).with /ALTER TABLE "_test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
 
-      model.add_primary_key_using_index(:test_table, :old_name, :new_name)
+      model.add_primary_key_using_index(:_test_table, :old_name, :new_name)
     end
   end
 
   context 'when changing the primary key of a given table' do
     before do
-      model.create_table(:test_table, primary_key: :id) do |t|
+      model.create_table(:_test_table, primary_key: :id) do |t|
         t.integer :partition_number, default: 1
       end
 
-      model.add_index(:test_table, :id, unique: true, name: :old_index_name)
-      model.add_index(:test_table, [:id, :partition_number], unique: true, name: :new_index_name)
+      model.add_index(:_test_table, :id, unique: true, name: :old_index_name)
+      model.add_index(:_test_table, [:id, :partition_number], unique: true, name: :new_index_name)
     end
 
     describe '#swap_primary_key' do
       it 'executes statements to swap primary key', :aggregate_failures do
         expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).and_call_original
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "new_index_name"/).and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" DROP CONSTRAINT "_test_table_pkey" CASCADE/).and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" ADD CONSTRAINT "_test_table_pkey" PRIMARY KEY USING INDEX "new_index_name"/).and_call_original
 
-        model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+        model.swap_primary_key(:_test_table, :_test_table_pkey, :new_index_name)
       end
 
       context 'when new index does not exist' do
         before do
-          model.remove_index(:test_table, column: [:id, :partition_number])
+          model.remove_index(:_test_table, column: [:id, :partition_number])
         end
 
         it 'raises ActiveRecord::StatementInvalid' do
           expect do
-            model.swap_primary_key(:test_table, :test_table_pkey, :new_index_name)
+            model.swap_primary_key(:_test_table, :_test_table_pkey, :new_index_name)
           end.to raise_error(ActiveRecord::StatementInvalid)
         end
       end
@@ -2798,27 +2798,27 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     describe '#unswap_primary_key' do
       it 'executes statements to unswap primary key' do
         expect(model).to receive(:with_lock_retries).with(raise_on_exhaustion: true).ordered.and_yield
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" DROP CONSTRAINT "test_table_pkey" CASCADE/).ordered.and_call_original
-        expect(model).to receive(:execute).with(/ALTER TABLE "test_table" ADD CONSTRAINT "test_table_pkey" PRIMARY KEY USING INDEX "old_index_name"/).ordered.and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" DROP CONSTRAINT "_test_table_pkey" CASCADE/).ordered.and_call_original
+        expect(model).to receive(:execute).with(/ALTER TABLE "_test_table" ADD CONSTRAINT "_test_table_pkey" PRIMARY KEY USING INDEX "old_index_name"/).ordered.and_call_original
 
-        model.unswap_primary_key(:test_table, :test_table_pkey, :old_index_name)
+        model.unswap_primary_key(:_test_table, :_test_table_pkey, :old_index_name)
       end
     end
   end
 
   describe '#drop_sequence' do
     it "executes the statement to drop the sequence" do
-      expect(model).to receive(:execute).with /ALTER TABLE "test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "test_table_id_seq"/
+      expect(model).to receive(:execute).with /ALTER TABLE "_test_table" ALTER COLUMN "test_column" DROP DEFAULT;\nDROP SEQUENCE IF EXISTS "_test_table_id_seq"/
 
-      model.drop_sequence(:test_table, :test_column, :test_table_id_seq)
+      model.drop_sequence(:_test_table, :test_column, :_test_table_id_seq)
     end
   end
 
   describe '#add_sequence' do
     it "executes the statement to add the sequence" do
-      expect(model).to receive(:execute).with "CREATE SEQUENCE \"test_table_id_seq\" START 1;\nALTER TABLE \"test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'test_table_id_seq\')\n"
+      expect(model).to receive(:execute).with "CREATE SEQUENCE \"_test_table_id_seq\" START 1;\nALTER TABLE \"_test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'_test_table_id_seq\')\n"
 
-      model.add_sequence(:test_table, :test_column, :test_table_id_seq, 1)
+      model.add_sequence(:_test_table, :test_column, :_test_table_id_seq, 1)
     end
   end
 

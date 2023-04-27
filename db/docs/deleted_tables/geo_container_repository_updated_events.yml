@@ -1,0 +1,12 @@
+---
+table_name: geo_container_repository_updated_events
+classes:
+  - Geo::ContainerRepositoryUpdatedEvent
+feature_categories:
+  - geo_replication
+description:
+introduced_by_url:
+milestone:
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107732
+removed_in_milestone: '15.8'

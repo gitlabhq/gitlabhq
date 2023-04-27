@@ -100,7 +100,7 @@ module Gitlab
           end
 
           def dml_schemas(tables)
-            extra_schemas = ::Gitlab::Database::GitlabSchema.table_schemas(tables)
+            extra_schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
 
             SCHEMA_MAPPING.each do |schema, mapped_schema|
               next unless extra_schemas.delete?(schema)

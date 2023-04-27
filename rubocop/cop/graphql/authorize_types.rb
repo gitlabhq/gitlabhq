@@ -12,7 +12,7 @@ module RuboCop
                            QueryType GraphQL::Schema BaseUnion BaseInputObject].freeze
 
         def_node_search :authorize?, <<~PATTERN
-          (send nil? :authorize ...)
+          (send nil? :authorize sym+)
         PATTERN
 
         def on_class(node)

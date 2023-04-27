@@ -20,17 +20,24 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
   shared_examples 'maps table name to table schema' do
     using RSpec::Parameterized::TableSyntax
 
+    before do
+      ApplicationRecord.connection.execute(<<~SQL)
+        CREATE INDEX index_name_on_table_belonging_to_gitlab_main ON public.projects (name);
+      SQL
+    end
+
     where(:name, :classification) do
-      'ci_builds'                              | :gitlab_ci
-      'my_schema.ci_builds'                    | :gitlab_ci
-      'my_schema.ci_runner_machine_builds_100' | :gitlab_ci
-      'my_schema._test_gitlab_main_table'      | :gitlab_main
-      'information_schema.columns'             | :gitlab_internal
-      'audit_events_part_5fc467ac26'           | :gitlab_main
-      '_test_gitlab_main_table'                | :gitlab_main
-      '_test_gitlab_ci_table'                  | :gitlab_ci
-      '_test_my_table'                         | :gitlab_shared
-      'pg_attribute'                           | :gitlab_internal
+      'ci_builds'                                    | :gitlab_ci
+      'my_schema.ci_builds'                          | :gitlab_ci
+      'my_schema.ci_runner_machine_builds_100'       | :gitlab_ci
+      'my_schema._test_gitlab_main_table'            | :gitlab_main
+      'information_schema.columns'                   | :gitlab_internal
+      'audit_events_part_5fc467ac26'                 | :gitlab_main
+      '_test_gitlab_main_table'                      | :gitlab_main
+      '_test_gitlab_ci_table'                        | :gitlab_ci
+      '_test_my_table'                               | :gitlab_shared
+      'pg_attribute'                                 | :gitlab_internal
+      'index_name_on_table_belonging_to_gitlab_main' | :gitlab_main
     end
 
     with_them do
@@ -120,10 +127,10 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
   end
 
-  describe '.table_schemas' do
+  describe '.table_schemas!' do
     let(:tables) { %w[users projects ci_builds] }
 
-    subject { described_class.table_schemas(tables) }
+    subject { described_class.table_schemas!(tables) }
 
     it 'returns the matched schemas' do
       expect(subject).to match_array %i[gitlab_main gitlab_ci].to_set
@@ -132,26 +139,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     context 'when one of the tables does not have a matching table schema' do
       let(:tables) { %w[users projects unknown ci_builds] }
 
-      context 'and undefined parameter is false' do
-        subject { described_class.table_schemas(tables, undefined: false) }
-
-        it 'includes a nil value' do
-          is_expected.to match_array [:gitlab_main, nil, :gitlab_ci].to_set
-        end
-      end
-
-      context 'and undefined parameter is true' do
-        subject { described_class.table_schemas(tables, undefined: true) }
-
-        it 'includes "undefined_<table_name>"' do
-          is_expected.to match_array [:gitlab_main, :undefined_unknown, :gitlab_ci].to_set
-        end
-      end
-
-      context 'and undefined parameter is not specified' do
-        it 'includes a nil value' do
-          is_expected.to match_array [:gitlab_main, :undefined_unknown, :gitlab_ci].to_set
-        end
+      it 'raises error' do
+        expect { subject }.to raise_error(/Could not find gitlab schema for table unknown/)
       end
     end
   end
@@ -164,23 +153,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     context 'when mapping fails' do
       let(:name) { 'unknown_table' }
 
-      context "and parameter 'undefined' is set to true" do
-        subject { described_class.table_schema(name, undefined: true) }
-
-        it { is_expected.to eq(:undefined_unknown_table) }
-      end
-
-      context "and parameter 'undefined' is set to false" do
-        subject { described_class.table_schema(name, undefined: false) }
-
-        it { is_expected.to be_nil }
-      end
-
-      context "and parameter 'undefined' is not set" do
-        subject { described_class.table_schema(name) }
-
-        it { is_expected.to eq(:undefined_unknown_table) }
-      end
+      it { is_expected.to be_nil }
     end
   end
 
@@ -196,7 +169,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         expect { subject }.to raise_error(
           Gitlab::Database::GitlabSchema::UnknownSchemaError,
           "Could not find gitlab schema for table #{name}: " \
-          "Any new tables must be added to the database dictionary"
+          "Any new or deleted tables must be added to the database dictionary " \
+          "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
       end
     end

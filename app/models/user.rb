@@ -2225,6 +2225,10 @@ class User < ApplicationRecord
       namespace_commit_emails.find_by(namespace: project.root_namespace)
   end
 
+  def spam_score
+    abuse_trust_scores.spamcheck.average(:score) || 0.0
+  end
+
   def trust_scores_for_source(source)
     abuse_trust_scores.where(source: source)
   end

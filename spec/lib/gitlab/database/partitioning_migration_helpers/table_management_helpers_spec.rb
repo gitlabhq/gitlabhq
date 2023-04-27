@@ -15,9 +15,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   let_it_be(:connection) { ActiveRecord::Base.connection }
 
   let(:source_table) { :_test_original_table }
-  let(:partitioned_table) { '_test_migration_partitioned_table' }
-  let(:function_name) { '_test_migration_function_name' }
-  let(:trigger_name) { '_test_migration_trigger_name' }
+  let(:partitioned_table) { :_test_migration_partitioned_table }
+  let(:function_name) { :_test_migration_function_name }
+  let(:trigger_name) { :_test_migration_trigger_name }
   let(:partition_column) { 'created_at' }
   let(:min_date) { Date.new(2019, 12) }
   let(:max_date) { Date.new(2020, 3) }
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:new_primary_key) { [old_primary_key, partition_column] }
 
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -225,7 +225,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           end
         end
 
-        let(:non_int_table) { :another_example }
+        let(:non_int_table) { :_test_another_example }
         let(:old_primary_key) { 'identifier' }
 
         it 'does not change the primary key datatype' do
@@ -420,7 +420,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:migration_class) { 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
 
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -460,7 +460,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
   describe '#enqueue_partitioning_data_migration' do
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -513,7 +513,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
   describe '#cleanup_partitioning_data_migration' do
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
@@ -588,10 +588,10 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   describe '#finalize_backfilling_partitioned_table' do
-    let(:source_column) { 'id' }
+    let(:source_column) { :id }
 
     context 'when the table is not allowed' do
-      let(:source_table) { :this_table_is_not_allowed }
+      let(:source_table) { :_test_this_table_is_not_allowed }
 
       it 'raises an error' do
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original

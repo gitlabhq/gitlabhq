@@ -258,7 +258,7 @@ RSpec.describe ApplicationRecord do
 
     before do
       ApplicationRecord.connection.execute(<<~SQL)
-        create table tests (
+        create table _test_tests (
           id bigserial primary key not null,
           ignore_me text
         )
@@ -267,7 +267,7 @@ RSpec.describe ApplicationRecord do
     context 'without an ignored column' do
       let(:test_model) do
         Class.new(ApplicationRecord) do
-          self.table_name = 'tests'
+          self.table_name = :_test_tests
         end
       end
 
@@ -278,7 +278,7 @@ RSpec.describe ApplicationRecord do
       let(:test_model) do
         Class.new(ApplicationRecord) do
           include IgnorableColumns
-          self.table_name = 'tests'
+          self.table_name = :_test_tests
 
           ignore_columns :ignore_me, remove_after: '2100-01-01', remove_with: '99.12'
         end

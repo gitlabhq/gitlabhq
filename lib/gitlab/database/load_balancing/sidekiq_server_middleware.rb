@@ -11,15 +11,16 @@ module Gitlab
         REPLICA_WAIT_SLEEP_SECONDS = 0.5
 
         def call(worker, job, _queue)
-          worker_class = worker.class
-          strategy = select_load_balancing_strategy(worker_class, job)
+          # ActiveJobs have wrapped class stored in 'wrapped' key
+          resolved_class = job['wrapped']&.safe_constantize || worker.class
+          strategy = select_load_balancing_strategy(resolved_class, job)
 
           job['load_balancing_strategy'] = strategy.to_s
 
           if use_primary?(strategy)
             ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
           elsif strategy == :retry
-            raise JobReplicaNotUpToDate, "Sidekiq job #{worker_class} JID-#{job['jid']} couldn't use the replica."\
+            raise JobReplicaNotUpToDate, "Sidekiq job #{resolved_class} JID-#{job['jid']} couldn't use the replica."\
               " Replica was not up to date."
           else
             # this means we selected an up-to-date replica, but there is nothing to do in this case.
@@ -72,7 +73,7 @@ module Gitlab
         end
 
         def load_balancing_available?(worker_class)
-          worker_class.include?(::ApplicationWorker) &&
+          worker_class.include?(::WorkerAttributes) &&
             worker_class.utilizes_load_balancing_capabilities? &&
             worker_class.get_data_consistency_feature_flag_enabled?
         end

@@ -9,6 +9,7 @@ import { DRAWER_CONTAINER_CLASS, JOB_TEMPLATE, JOB_RULES_WHEN, i18n } from './co
 import { removeEmptyObj, trimFields, validateEmptyValue, validateStartIn } from './utils';
 import JobSetupItem from './accordion_items/job_setup_item.vue';
 import ImageItem from './accordion_items/image_item.vue';
+import ServicesItem from './accordion_items/services_item.vue';
 import ArtifactsAndCacheItem from './accordion_items/artifacts_and_cache_item.vue';
 import RulesItem from './accordion_items/rules_item.vue';
 
@@ -20,6 +21,7 @@ export default {
     GlButton,
     JobSetupItem,
     ImageItem,
+    ServicesItem,
     ArtifactsAndCacheItem,
     RulesItem,
   },
@@ -188,6 +190,7 @@ export default {
         @update-job="updateJob"
       />
       <image-item :job="job" @update-job="updateJob" />
+      <services-item :job="job" @update-job="updateJob" />
       <artifacts-and-cache-item :job="job" @update-job="updateJob" />
       <rules-item :job="job" :is-start-valid="isStartValid" @update-job="updateJob" />
     </gl-accordion>

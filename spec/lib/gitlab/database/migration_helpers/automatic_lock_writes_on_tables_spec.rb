@@ -224,13 +224,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
         let(:config_model) { Gitlab::Database.database_base_models[:main] }
 
         it "raises an error about undefined gitlab_schema" do
-          expected_error_message = <<~ERROR
-              No gitlab_schema is defined for the table #{table_name}. Please consider
-              adding it to the database dictionary.
-              More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html
-          ERROR
-
-          expect { run_migration }.to raise_error(expected_error_message)
+          expect { run_migration }.to raise_error(
+            Gitlab::Database::GitlabSchema::UnknownSchemaError,
+            "Could not find gitlab schema for table foobar: " \
+            "Any new or deleted tables must be added to the database dictionary " \
+            "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
+          )
         end
       end
     end

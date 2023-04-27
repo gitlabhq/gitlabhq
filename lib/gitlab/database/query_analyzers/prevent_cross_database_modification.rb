@@ -106,7 +106,7 @@ module Gitlab
 
           context[:modified_tables_by_db][database].merge(tables)
           all_tables = context[:modified_tables_by_db].values.flat_map(&:to_a)
-          schemas = ::Gitlab::Database::GitlabSchema.table_schemas(all_tables)
+          schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(all_tables)
 
           schemas += ApplicationRecord.gitlab_transactions_stack
 
@@ -114,10 +114,6 @@ module Gitlab
             message = "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
                       "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. " \
                       "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions for details on how to resolve this exception."
-
-            if schemas.any? { |s| s.to_s.start_with?("undefined") }
-              message += " The gitlab_schema was undefined for one or more of the tables in this transaction. Any new tables must be added to lib/gitlab/database/gitlab_schemas.yml ."
-            end
 
             raise CrossDatabaseModificationAcrossUnsupportedTablesError, message
           end

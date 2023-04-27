@@ -56,7 +56,8 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
         "for query accessing unknown gitlab_schema" => {
           model: ::ApplicationRecord,
           sql: "SELECT 1 FROM new_table",
-          expect_error: /The query tried to access \["new_table"\] \(of undefined_new_table\)/,
+          expect_error:
+            /Could not find gitlab schema for table new_table/,
           setup: -> (_) { skip_if_shared_database(:ci) }
         }
       }

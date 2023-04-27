@@ -40,7 +40,7 @@ module Database
         return
       end
 
-      schemas = ::Gitlab::Database::GitlabSchema.table_schemas(tables)
+      schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
       schemas.subtract(IGNORED_SCHEMAS)
 
       if schemas.many?

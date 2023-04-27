@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
   include Database::PartitioningHelpers
   include ExclusiveLeaseHelpers
 
-  let(:partitioned_table_name) { "_test_gitlab_main_my_model_example_table" }
+  let(:partitioned_table_name) { :_test_gitlab_main_my_model_example_table }
 
   context 'creating partitions (mocked)' do
     subject(:sync_partitions) { described_class.new(model).sync_partitions }
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     let(:manager) { described_class.new(model) }
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
     let(:connection) { ActiveRecord::Base.connection }
-    let(:table) { "foo" }
+    let(:table) { :_test_foo }
     let(:partitioning_strategy) do
       double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil)
     end
@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
     end
 
     it 'logs an error if the partitions are not detachable' do
-      allow(Gitlab::Database::PostgresForeignKey).to receive(:by_referenced_table_identifier).with("public.foo")
+      allow(Gitlab::Database::PostgresForeignKey).to receive(:by_referenced_table_identifier).with("public._test_foo")
         .and_return([double(name: "fk_1", constrained_table_identifier: "public.constrainted_table_1")])
 
       expect(Gitlab::AppLogger).to receive(:error).with(
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
           exception_class: Gitlab::Database::Partitioning::PartitionManager::UnsafeToDetachPartitionError,
           exception_message:
             "Cannot detach foo1, it would block while checking foreign key fk_1 on public.constrainted_table_1",
-          table_name: "foo"
+          table_name: :_test_foo
         }
       )
 

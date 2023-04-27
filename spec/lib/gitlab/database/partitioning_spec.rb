@@ -65,17 +65,17 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
   describe '.sync_partitions' do
     let(:ci_connection) { Ci::ApplicationRecord.connection }
-    let(:table_names) { %w[partitioning_test1 partitioning_test2] }
+    let(:table_names) { %w[_test_partitioning_test1 _test_partitioning_test2] }
     let(:models) do
       [
         Class.new(ApplicationRecord) do
           include PartitionedTable
 
-          self.table_name = 'partitioning_test1'
+          self.table_name = :_test_partitioning_test1
           partitioned_by :created_at, strategy: :monthly
         end,
         Class.new(Gitlab::Database::Partitioning::TableWithoutModel).tap do |klass|
-          klass.table_name = 'partitioning_test2'
+          klass.table_name = :_test_partitioning_test2
           klass.partitioned_by(:created_at, strategy: :monthly)
           klass.limit_connection_names = %i[main]
         end
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         Class.new(Ci::ApplicationRecord) do
           include PartitionedTable
 
-          self.table_name = 'partitioning_test3'
+          self.table_name = :_test_partitioning_test3
           partitioned_by :created_at, strategy: :monthly
         end
       end
@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
       before do
         skip_if_shared_database(:ci)
 
-        (table_names + ['partitioning_test3']).each do |table_name|
+        (table_names + [:_test_partitioning_test3]).each do |table_name|
           execute_on_each_database("DROP TABLE IF EXISTS #{table_name}")
 
           execute_on_each_database(<<~SQL)
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
       end
 
       after do
-        (table_names + ['partitioning_test3']).each do |table_name|
+        (table_names + [:_test_partitioning_test3]).each do |table_name|
           ci_connection.execute("DROP TABLE IF EXISTS #{table_name}")
         end
       end
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
   end
 
   describe '.drop_detached_partitions' do
-    let(:table_names) { %w[detached_test_partition1 detached_test_partition2] }
+    let(:table_names) { %w[_test_detached_test_partition1 _test_detached_test_partition2] }
 
     before do
       table_names.each do |table_name|

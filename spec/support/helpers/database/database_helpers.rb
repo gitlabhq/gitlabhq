@@ -6,9 +6,9 @@ module Database
     # we can swapout the view for a table of identical structure.
     def swapout_view_for_table(view, connection:)
       connection.execute(<<~SQL.squish)
-        CREATE TABLE #{view}_copy (LIKE #{view});
+        CREATE TABLE _test_#{view}_copy (LIKE #{view});
         DROP VIEW #{view};
-        ALTER TABLE #{view}_copy RENAME TO #{view};
+        ALTER TABLE _test_#{view}_copy RENAME TO #{view};
       SQL
     end
 

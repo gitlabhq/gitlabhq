@@ -221,27 +221,16 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     end
   end
 
-  context 'when some table with a defined schema and another table with undefined gitlab_schema is modified' do
-    it 'raises an error including including message about undefined schema' do
-      expect do
-        Project.transaction do
-          project.touch
-          project.connection.execute('UPDATE foo_bars_undefined_table SET a=1 WHERE id = -1')
-        end
-      end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
-    end
-  end
-
   context 'when execution is rescued with StandardError' do
     it 'raises cross-database data modification exception' do
       expect do
         Project.transaction do
           project.touch
-          project.connection.execute('UPDATE foo_bars_undefined_table SET a=1 WHERE id = -1')
+          project.connection.execute('UPDATE ci_pipelines SET id=1 WHERE id = -1')
         end
       rescue StandardError
         # Ensures that standard rescue does not silence errors
-      end.to raise_error /Cross-database data modification.*The gitlab_schema was undefined/
+      end.to raise_error /Cross-database data modification/
     end
   end
 

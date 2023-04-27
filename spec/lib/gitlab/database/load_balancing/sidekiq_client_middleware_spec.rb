@@ -62,9 +62,16 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
       include_examples 'job data consistency'
     end
 
-    shared_examples_for 'mark data consistency location' do |data_consistency|
-      include_context 'data consistency worker class', data_consistency, :load_balancing_for_test_data_consistency_worker
+    shared_examples_for 'mark data consistency location' do |data_consistency, worker_klass|
+      let(:location) { '0/D525E3A8' }
       include_context 'when tracking WAL location reference'
+
+      if worker_klass
+        let(:worker_class) { worker_klass }
+        let(:expected_consistency) { data_consistency }
+      else
+        include_context 'data consistency worker class', data_consistency, :load_balancing_for_test_data_consistency_worker
+      end
 
       context 'when write was not performed' do
         before do
@@ -115,17 +122,34 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
     end
 
     context 'when worker cannot be constantized' do
-      let(:worker_class) { 'ActionMailer::MailDeliveryJob' }
+      let(:worker_class) { 'InvalidWorker' }
       let(:expected_consistency) { :always }
 
       include_examples 'does not pass database locations'
     end
 
     context 'when worker class does not include ApplicationWorker' do
-      let(:worker_class) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper }
+      let(:worker_class) { Gitlab::SidekiqConfig::DummyWorker }
       let(:expected_consistency) { :always }
 
       include_examples 'does not pass database locations'
+    end
+
+    context 'when job contains wrapped worker' do
+      let(:worker_class) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper }
+
+      context 'when wrapped worker does not include WorkerAttributes' do
+        let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", "wrapped" => Gitlab::SidekiqConfig::DummyWorker } }
+        let(:expected_consistency) { :always }
+
+        include_examples 'does not pass database locations'
+      end
+
+      context 'when wrapped worker includes WorkerAttributes' do
+        let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", "wrapped" => ActionMailer::MailDeliveryJob } }
+
+        include_examples 'mark data consistency location', :delayed, ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper
+      end
     end
 
     context 'database wal location was already provided' do

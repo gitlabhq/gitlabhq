@@ -185,7 +185,7 @@ module Gitlab
         # Note Rails already has a truncate_tables, see
         # https://github.com/rails/rails/blob/6-1-stable/activerecord/lib/active_record/connection_adapters/abstract/database_statements.rb#L193
         def truncate_tables!(*table_names, connection: self.connection)
-          table_schemas = Gitlab::Database::GitlabSchema.table_schemas(table_names)
+          table_schemas = Gitlab::Database::GitlabSchema.table_schemas!(table_names)
 
           raise ArgumentError, "`table_names` must resolve to only one `gitlab_schema`" if table_schemas.size != 1
 

@@ -66,7 +66,14 @@ module Spam
       return unless Gitlab::CurrentSettings.spam_check_endpoint_enabled
 
       begin
-        spamcheck_client.spam?(spammable: target, user: user, context: context, extra_features: extra_features).verdict
+        result = spamcheck_client.spam?(spammable: target, user: user, context: context, extra_features: extra_features)
+
+        if result.evaluated? && Feature.enabled?(:user_spam_scores)
+          Abuse::TrustScore.create!(user: user, score: result.score, source: :spamcheck)
+        end
+
+        result.verdict
+
       rescue StandardError => e
         Gitlab::ErrorTracking.log_exception(e, error: ERROR_TYPE)
         nil

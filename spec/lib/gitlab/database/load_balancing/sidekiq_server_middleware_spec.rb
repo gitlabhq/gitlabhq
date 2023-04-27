@@ -175,10 +175,21 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       end
     end
 
-    context 'when worker class does not include ApplicationWorker' do
+    context 'when worker class does not include WorkerAttributes' do
       let(:worker) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper.new }
 
       include_examples 'stick to the primary', 'primary'
+    end
+
+    context 'when job contains wrapped worker class' do
+      let(:worker) { ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper.new }
+      let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations, 'wrapped' => 'ActionMailer::MailDeliveryJob' } }
+
+      it 'uses wrapped job if available' do
+        expect(middleware).to receive(:select_load_balancing_strategy).with(ActionMailer::MailDeliveryJob, job).and_call_original
+
+        run_middleware
+      end
     end
 
     context 'when worker data consistency is :always' do

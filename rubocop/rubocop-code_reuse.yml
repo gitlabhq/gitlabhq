@@ -41,3 +41,4 @@ CodeReuse/ActiveRecord:
     - ee/db/fixtures/**/*.rb
     - ee/lib/tasks/**/*.rake
     - ee/lib/ee/gitlab/background_migration/**/*.rb
+    - ee/lib/gitlab/llm/open_ai/response_modifiers/tanuki_bot.rb

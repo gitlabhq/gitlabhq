@@ -25056,6 +25056,9 @@ msgstr ""
 msgid "JobAssistant|Add path"
 msgstr ""
 
+msgid "JobAssistant|Add service"
+msgstr ""
+
 msgid "JobAssistant|Allow failure"
 msgstr ""
 
@@ -25077,6 +25080,9 @@ msgstr ""
 msgid "JobAssistant|Error - Valid value is between 1 second and 1 week"
 msgstr ""
 
+msgid "JobAssistant|Example: %{entrypointPlaceholderExample}, Input format: %{entrypointPlaceholderInput}"
+msgstr ""
+
 msgid "JobAssistant|Image"
 msgstr ""
 
@@ -25084,6 +25090,9 @@ msgid "JobAssistant|Image entrypoint (optional)"
 msgstr ""
 
 msgid "JobAssistant|Image name (optional)"
+msgstr ""
+
+msgid "JobAssistant|Input format"
 msgstr ""
 
 msgid "JobAssistant|Job Setup"
@@ -25095,10 +25104,22 @@ msgstr ""
 msgid "JobAssistant|Job name"
 msgstr ""
 
+msgid "JobAssistant|Please use \",\" to separate array type fields."
+msgstr ""
+
 msgid "JobAssistant|Rules"
 msgstr ""
 
 msgid "JobAssistant|Script"
+msgstr ""
+
+msgid "JobAssistant|Service"
+msgstr ""
+
+msgid "JobAssistant|Service entrypoint (optional)"
+msgstr ""
+
+msgid "JobAssistant|Service name (optional)"
 msgstr ""
 
 msgid "JobAssistant|Stage (optional)"

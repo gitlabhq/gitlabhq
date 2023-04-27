@@ -21,7 +21,7 @@ module Gitlab
         @with_retries = with_retries
 
         @table_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
-          .extract_schema_qualified_name(table_name)
+          .extract_schema_qualified_name(table_name.to_s)
           .identifier
       end
 
