@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CommitsController, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_maintainer(user)
@@ -105,7 +106,22 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         expect_next_instance_of(CommitCollection) do |collection|
           expect(collection).to receive(:load_tags)
         end
+
         get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when tag has a non-ASCII encoding' do
+        before do
+          repository.add_tag(user, 'tést', 'master')
+        end
+
+        it 'does not raise an exception' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
       context "when the ref name ends in .atom" do

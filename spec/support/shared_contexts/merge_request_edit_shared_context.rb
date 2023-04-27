@@ -9,11 +9,13 @@ RSpec.shared_context 'merge request edit context' do
   let(:target_project) { create(:project, :public, :repository) }
   let(:source_project) { target_project }
   let(:merge_request) do
-    create(:merge_request,
-           source_project: source_project,
-           target_project: target_project,
-           source_branch: 'fix',
-           target_branch: 'master')
+    create(
+      :merge_request,
+      source_project: source_project,
+      target_project: target_project,
+      source_branch: 'fix',
+      target_branch: 'master'
+    )
   end
 
   before do

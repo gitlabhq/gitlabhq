@@ -26,7 +26,7 @@ class CommitPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def tags_for_display
-    commit.referenced_by&.map { |tag| tag.delete_prefix(Gitlab::Git::TAG_REF_PREFIX) }
+    commit.referenced_by&.map { |tag_name| Gitlab::Git.ref_name(tag_name) }
   end
 
   def signature_html

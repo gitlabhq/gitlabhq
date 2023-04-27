@@ -87,8 +87,6 @@ module API
         case source_type
         when 'project'
           user_project
-        else
-          nil
         end
       end
     end

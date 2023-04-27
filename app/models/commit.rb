@@ -388,8 +388,6 @@ class Commit
         Gitlab::X509::Commit.new(self).signature
       when :SSH
         Gitlab::Ssh::Commit.new(self).signature
-      else
-        nil
       end
     end
   end

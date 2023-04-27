@@ -20,7 +20,6 @@ FactoryBot.define do
       component_file.file = fixture_file_upload(evaluator.file_fixture) if evaluator.file_fixture.present?
     end
 
-    file_md5 { '12345abcde' }
     file_sha256 { 'be93151dc23ac34a82752444556fe79b32c7a1ad' }
 
     trait(:packages) do
@@ -49,7 +48,6 @@ FactoryBot.define do
     end
 
     trait(:empty) do
-      file_md5 { 'd41d8cd98f00b204e9800998ecf8427e' }
       file_sha256 { 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' }
       file_fixture { nil }
       size { 0 }

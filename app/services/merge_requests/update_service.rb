@@ -262,8 +262,6 @@ module MergeRequests
         assignees_service.execute(merge_request)
       when :spend_time
         add_time_spent_service.execute(merge_request)
-      else
-        nil
       end
     end
 

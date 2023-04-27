@@ -52,8 +52,6 @@ module Types
           object.nuget_metadatum
         when 'pypi'
           object.pypi_metadatum
-        else
-          nil
         end
       end
       # rubocop: enable GraphQL/ResolverMethodLength

@@ -96,8 +96,6 @@ module Gitlab
           nil # not implemented, see https://gitlab.com/gitlab-org/gitlab/issues/19260
         when :X509
           X509::Tag.new(@repository, self).signature
-        else
-          nil
         end
       end
 

@@ -4046,26 +4046,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#use_merge_base_pipeline_for_comparison?' do
     let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
+    let(:service_class) { Ci::CompareReportsBaseService }
 
     subject { merge_request.use_merge_base_pipeline_for_comparison?(service_class) }
 
-    context 'when service class is Ci::CompareMetricsReportsService' do
-      let(:service_class) { 'Ci::CompareMetricsReportsService' }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when service class is Ci::CompareCodequalityReportsService' do
-      let(:service_class) { 'Ci::CompareCodequalityReportsService' }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when service class is different' do
-      let(:service_class) { 'Ci::GenerateCoverageReportsService' }
-
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to eq(false) }
   end
 
   describe '#comparison_base_pipeline' do
@@ -4073,6 +4058,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
+    let(:service_class) { ::Ci::CompareReportsBaseService }
     let!(:base_pipeline) do
       create(:ci_pipeline,
         :with_test_reports,
@@ -4082,50 +4068,42 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
+    before do
+      allow(merge_request).to receive(:use_merge_base_pipeline_for_comparison?)
+        .with(service_class).and_return(uses_merge_base)
+    end
+
     context 'when service class uses merge base pipeline' do
-      where(:service_class) do
-        %w[
-          Ci::CompareMetricsReportsService
-          Ci::CompareCodequalityReportsService
-          Ci::CompareSecurityReportsService
-        ]
-      end
+      let(:uses_merge_base) { true }
 
       context 'when merge request has a merge request pipeline' do
         let(:merge_request) do
           create(:merge_request, :with_merge_request_pipeline, source_project: project)
         end
 
-        let(:merge_base_pipeline) do
-          create(:ci_pipeline, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
+        let!(:merge_base_pipeline) do
+          create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
         end
 
         before do
-          merge_base_pipeline
           merge_request.update_head_pipeline
         end
 
-        with_them do
-          it 'returns the merge_base_pipeline' do
-            expect(pipeline).to eq(merge_base_pipeline)
-          end
+        it 'returns the merge_base_pipeline' do
+          expect(pipeline).to eq(merge_base_pipeline)
         end
       end
 
-      context 'when merge does not have a merge request pipeline' do
-        with_them do
-          it 'returns the base_pipeline' do
-            expect(pipeline).to eq(base_pipeline)
-          end
-        end
+      it 'returns the base_pipeline when merge does not have a merge request pipeline' do
+        expect(pipeline).to eq(base_pipeline)
       end
     end
 
-    context 'when service class is Ci::CompareSecurityReportsService and feature flag is off' do
-      let(:service_class) { 'Ci::CompareSecurityReportsService' }
+    context 'when service_class does not use merge base pipeline' do
+      let(:uses_merge_base) { false }
 
-      before do
-        stub_feature_flags(use_merge_base_for_security_widget: false)
+      it 'returns the base_pipeline' do
+        expect(pipeline).to eq(base_pipeline)
       end
 
       context 'when merge request has a merge request pipeline' do
@@ -4136,20 +4114,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         it 'returns the base pipeline' do
           expect(pipeline).to eq(base_pipeline)
         end
-      end
-
-      context 'when merge does not have a merge request pipeline' do
-        it 'returns the base_pipeline' do
-          expect(pipeline).to eq(base_pipeline)
-        end
-      end
-    end
-
-    context 'when service_class is different' do
-      let(:service_class) { 'Ci::GenerateCoverageReportsService' }
-
-      it 'returns the base_pipeline' do
-        expect(pipeline).to eq(base_pipeline)
       end
     end
   end

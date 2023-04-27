@@ -20,7 +20,6 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
   let_it_be(:component_file_other_architecture, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_2) }
   let_it_be(:component_file_other_component, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_2, architecture: architecture1_1) }
   let_it_be(:component_file_other_compression_type, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, compression_type: :xz) }
-  let_it_be(:component_file_other_file_md5, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, file_md5: 'other_md5') }
   let_it_be(:component_file_other_file_sha256, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component1_1, architecture: architecture1_1, file_sha256: 'other_sha256') }
   let_it_be(:component_file_other_container, freeze: can_freeze) { create("debian_#{container_type}_component_file", component: component2_1, architecture: architecture2_1) }
   let_it_be_with_refind(:component_file_with_file_type_sources) { create("debian_#{container_type}_component_file", :sources, component: component1_1) }
@@ -98,10 +97,6 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
 
     describe '#file_store' do
       it { is_expected.to validate_presence_of(:file_store) }
-    end
-
-    describe '#file_md5' do
-      it { is_expected.to validate_presence_of(:file_md5) }
     end
 
     describe '#file_sha256' do

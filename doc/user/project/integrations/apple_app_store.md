@@ -9,9 +9,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `apple_app_store_integration`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385335) in GitLab 15.10. Feature flag `apple_app_store_integration` removed.
 
+This feature is part of [Mobile DevOps](../../../ci/mobile_devops.md) developed by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/).
+The feature is still in development, but you can:
+
+- [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
+- [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
+- [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
+
 With the Apple App Store integration, you can configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com) to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
 
-The integration is designed to be able to work out of the box with [fastlane](http://fastlane.tools/), but can be used with other build tools as well.
+The Apple App Store integration works out of the box with [fastlane](https://fastlane.tools/). You can also use this integration with other build tools.
 
 ## Prerequisites
 
@@ -27,9 +34,9 @@ GitLab supports enabling the Apple App Store integration at the project level. C
 1. Select **Apple App Store**.
 1. Turn on the **Active** toggle under **Enable Integration**.
 1. Provide the Apple App Store Connect configuration information:
-   - **Issuer ID**: The Apple App Store Connect Issuer ID can be found in the *Keys* section under *Users and Access* the Apple App Store Connect portal.
-   - **Key ID**: The Key ID of the new private key that was just generated.
-   - **Private Key**: The Private Key that was just generated. Note: you are only be able to download this key one time.
+   - **Issuer ID**: The Apple App Store Connect issuer ID.
+   - **Key ID**: The key ID of the generated private key.
+   - **Private Key**: The generated private key. You can download this key only once.
 
 1. Select **Save changes**.
 
@@ -47,9 +54,9 @@ Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variab
 `$APP_STORE_CONNECT_API_KEY_KEY`, and send them to a third-party server. For more details, see
 [CI/CD variable security](../../../ci/variables/index.md#cicd-variable-security).
 
-## fastlane Example
+## Enable the integration in fastlane
 
-Because this integration works out of the box with fastlane adding the code below to an app's `fastlane/Fastfile` activates the integration, and create the connection for any interactions with the Apple App Store uploading a Test Flight or public App Store release.
+To enable the integration in fastlane and upload a TestFlight or public App Store release, you can add the following code to your app's `fastlane/Fastfile`:
 
 ```ruby
 app_store_connect_api_key

@@ -36,8 +36,6 @@ module Gitlab
                     target.name
                   elsif target.is_a? String
                     target
-                  else
-                    nil
                   end
       end
     end

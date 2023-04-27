@@ -36,14 +36,6 @@ class MergeRequest < ApplicationRecord
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
-  ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON = {
-    'Ci::CompareMetricsReportsService' => ->(project) { true },
-    'Ci::CompareCodequalityReportsService' => ->(project) { true },
-    'Ci::CompareSecurityReportsService' => ->(project) do
-      Feature.enabled?(:use_merge_base_for_security_widget, project)
-    end
-  }.freeze
-
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
@@ -1705,7 +1697,7 @@ class MergeRequest < ApplicationRecord
   def compare_reports(service_class, current_user = nil, report_type = nil, additional_params = {})
     with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
       unless service_class.new(project, current_user, id: id, report_type: report_type, additional_params: additional_params)
-        .latest?(comparison_base_pipeline(service_class.name), actual_head_pipeline, data)
+        .latest?(comparison_base_pipeline(service_class), actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
 
@@ -1741,7 +1733,7 @@ class MergeRequest < ApplicationRecord
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
-    service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(identifier), actual_head_pipeline)
+    service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(service_class), actual_head_pipeline)
   end
 
   MAX_RECENT_DIFF_HEAD_SHAS = 100
@@ -1882,8 +1874,9 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def use_merge_base_pipeline_for_comparison?(service_class)
-    ALLOWED_TO_USE_MERGE_BASE_PIPELINE_FOR_COMPARISON[service_class]&.call(project)
+  # Overridden in EE
+  def use_merge_base_pipeline_for_comparison?(_)
+    false
   end
 
   def comparison_base_pipeline(service_class)

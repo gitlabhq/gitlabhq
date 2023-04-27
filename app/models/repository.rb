@@ -710,8 +710,6 @@ class Repository
 
     if last_commit
       blob_at(last_commit.sha, path)
-    else
-      nil
     end
   end
 
@@ -966,8 +964,6 @@ class Repository
       same_head = branch.target == root_ref_sha
       merged = ancestor?(branch.target, root_ref_sha)
       !same_head && merged
-    else
-      nil
     end
   end
 

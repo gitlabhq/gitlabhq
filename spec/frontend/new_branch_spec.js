@@ -1,4 +1,5 @@
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlBranchesNewBranch from 'test_fixtures/branches/new_branch.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import NewBranchForm from '~/new_branch_form';
 
 describe('Branch', () => {
@@ -20,7 +21,7 @@ describe('Branch', () => {
     }
 
     beforeEach(() => {
-      loadHTMLFixture('branches/new_branch.html');
+      setHTMLFixture(htmlBranchesNewBranch);
       document.querySelector('form').addEventListener('submit', (e) => e.preventDefault());
       testContext.form = new NewBranchForm(document.querySelector('.js-create-branch-form'), []);
     });

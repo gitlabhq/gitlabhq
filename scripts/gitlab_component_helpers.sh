@@ -56,6 +56,7 @@ export GITLAB_ASSETS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/assets/${NODE_ENV}-${
 
 # Fixtures constants
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
+export REUSE_FRONTEND_FIXTURES_ENABLED="${REUSE_FRONTEND_FIXTURES_ENABLED:-"true"}"
 
 # Workhorse functions
 function gitlab_workhorse_archive_doesnt_exist() {
@@ -105,7 +106,7 @@ function upload_gitlab_assets_package() {
 
 # Fixtures functions
 function check_fixtures_download() {
-  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED:-}" != "true" ]]; then
+  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED}" != "true" ]]; then
     echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
     return 1
   fi
@@ -118,7 +119,7 @@ function check_fixtures_download() {
   if [[ -z "${CI_MERGE_REQUEST_IID:-}" ]]; then
     return 1
   else
-    if tooling/bin/find_only_js_changes && ! fixtures_archive_doesnt_exist; then
+    if tooling/bin/find_only_allowed_files_changes && ! fixtures_archive_doesnt_exist; then
       return 0
     else
       return 1
@@ -127,7 +128,7 @@ function check_fixtures_download() {
 }
 
 function check_fixtures_reuse() {
-  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED:-}" != "true" ]]; then
+  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED}" != "true" ]]; then
     echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
     rm -rf "tmp/tests/frontend";
     return 1
@@ -142,8 +143,8 @@ function check_fixtures_reuse() {
   if [[ -d "tmp/tests/frontend" ]]; then
     # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
     # jobs don't download the exact same artifact multiple times.
-    if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX}" -ne 1 ]]; then
-      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX}. Dependent jobs will use the artifacts from the first parallelized job.";
+    if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX:-}" -ne 1 ]]; then
+      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX:-}. Dependent jobs will use the artifacts from the first parallelized job.";
       rm -rf "tmp/tests/frontend";
     fi
     return 0

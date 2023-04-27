@@ -50,8 +50,6 @@ module QA
             :production
           when PRE_PROD_ADDRESS
             :pre
-          else
-            nil
           end
         end
       end

@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlGlFieldErrors from 'test_fixtures_static/gl_field_errors.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GlFieldErrors from '~/gl_field_errors';
 
 describe('GL Style Field Errors', () => {
@@ -10,7 +11,7 @@ describe('GL Style Field Errors', () => {
   });
 
   beforeEach(() => {
-    loadHTMLFixture('static/gl_field_errors.html');
+    setHTMLFixture(htmlGlFieldErrors);
     const $form = $('form.gl-show-field-errors');
 
     testContext.$form = $form;

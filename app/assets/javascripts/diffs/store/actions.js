@@ -108,6 +108,7 @@ export const setBaseConfig = ({ commit }, options) => {
 export const fetchFileByFile = async ({ state, getters, commit }) => {
   const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
   const id = parseUrlHashAsFileHash(window?.location?.hash, state.currentDiffFileId);
+  const versionPath = state.mergeRequestDiff?.version_path;
   const treeEntry = id
     ? getters.flatBlobsList.find(({ fileHash }) => fileHash === id)
     : getters.flatBlobsList[0];
@@ -122,7 +123,15 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
       new_path: treeEntry.filePaths.new,
       w: state.showWhitespace ? '0' : '1',
       view: 'inline',
+      commit_id: getters.commitId,
     };
+
+    if (versionPath) {
+      const { diffId, startSha } = getDerivedMergeRequestInformation({ endpoint: versionPath });
+
+      urlParams.diff_id = diffId;
+      urlParams.start_sha = startSha;
+    }
 
     axios
       .get(mergeUrlParams({ ...urlParams }, state.endpointDiffForPath))

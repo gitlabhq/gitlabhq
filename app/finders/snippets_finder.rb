@@ -179,8 +179,6 @@ class SnippetsFinder < UnionFinder
       Snippet::INTERNAL
     when 'are_public'
       Snippet::PUBLIC
-    else
-      nil
     end
   end
 

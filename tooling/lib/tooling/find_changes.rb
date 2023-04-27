@@ -8,6 +8,8 @@ module Tooling
   class FindChanges
     include Helpers::PredictiveTestsHelper
 
+    ALLOWED_FILE_TYPES = ['.js', '.vue', '.md', '.scss'].freeze
+
     def initialize(
       from:,
       changed_files_pathname: nil,
@@ -41,8 +43,8 @@ module Tooling
       end
     end
 
-    def only_js_files_changed
-      file_changes.any? && file_changes.all? { |file| file.end_with?('.js') }
+    def only_allowed_files_changed
+      file_changes.any? && file_changes.all? { |file| ALLOWED_FILE_TYPES.include?(File.extname(file)) }
     end
 
     private

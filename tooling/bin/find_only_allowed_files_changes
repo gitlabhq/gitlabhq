@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/tooling/find_changes'
+
+if Tooling::FindChanges.new(from: :api).only_allowed_files_changed
+  puts "Only files with extensions #{ALLOWED_FILE_TYPES.join(', ')} were changed"
+  exit 0
+else
+  puts "Changes were made to files with extensions other than #{ALLOWED_FILE_TYPES.join(', ')}"
+  exit 1
+end

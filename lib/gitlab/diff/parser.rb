@@ -84,8 +84,6 @@ module Gitlab
           "new"
         when "-"
           "old"
-        else
-          nil
         end
       end
     end

@@ -168,30 +168,23 @@ describe('DiffsStoreActions', () => {
 
     describe('when a tree entry exists for the file, but it has not been marked as loaded', () => {
       let state;
+      let getters;
       let commit;
       let hubSpy;
+      const defaultParams = {
+        old_path: 'old/123',
+        new_path: 'new/123',
+        w: '1',
+        view: 'inline',
+      };
       const endpointDiffForPath = '/diffs/set/endpoint/path';
-      const diffForPath = mergeUrlParams(
-        {
-          old_path: 'old/123',
-          new_path: 'new/123',
-          w: '1',
-          view: 'inline',
-        },
-        endpointDiffForPath,
-      );
+      const diffForPath = mergeUrlParams(defaultParams, endpointDiffForPath);
       const treeEntry = {
         fileHash: 'e334a2a10f036c00151a04cea7938a5d4213a818',
         filePaths: { old: 'old/123', new: 'new/123' },
       };
       const fileResult = {
         diff_files: [{ file_hash: 'e334a2a10f036c00151a04cea7938a5d4213a818' }],
-      };
-      const getters = {
-        flatBlobsList: [treeEntry],
-        getDiffFileByHash(hash) {
-          return state.diffFiles?.find((entry) => entry.file_hash === hash);
-        },
       };
 
       beforeEach(() => {
@@ -200,7 +193,12 @@ describe('DiffsStoreActions', () => {
           endpointDiffForPath,
           diffFiles: [],
         };
-        getters.flatBlobsList = [treeEntry];
+        getters = {
+          flatBlobsList: [treeEntry],
+          getDiffFileByHash(hash) {
+            return state.diffFiles?.find((entry) => entry.file_hash === hash);
+          },
+        };
         hubSpy = jest.spyOn(diffsEventHub, '$emit');
       });
 
@@ -246,6 +244,73 @@ describe('DiffsStoreActions', () => {
           expect(commit).toHaveBeenCalledWith(types.SET_CURRENT_DIFF_FILE, expected);
         },
       );
+
+      it('should fetch data without commit ID', async () => {
+        getters.commitId = null;
+        mock.onGet(diffForPath).reply(HTTP_STATUS_OK, fileResult);
+
+        await diffActions.fetchFileByFile({ state, getters, commit });
+
+        // wait for the mocked network request to return and start processing the .then
+        await waitForPromises();
+
+        // This tests that commit_id is NOT added, if there isn't one in the store
+        expect(mock.history.get[0].url).toEqual(diffForPath);
+      });
+
+      it('should fetch data with commit ID', async () => {
+        const finalPath = mergeUrlParams(
+          { ...defaultParams, commit_id: '123' },
+          endpointDiffForPath,
+        );
+
+        getters.commitId = '123';
+        mock.onGet(finalPath).reply(HTTP_STATUS_OK, fileResult);
+
+        await diffActions.fetchFileByFile({ state, getters, commit });
+
+        // wait for the mocked network request to return and start processing the .then
+        await waitForPromises();
+
+        expect(mock.history.get[0].url).toEqual(finalPath);
+      });
+
+      describe('version parameters', () => {
+        const diffId = '4';
+        const startSha = 'abc';
+        const pathRoot = 'a/a/-/merge_requests/1';
+
+        it('fetches the data when there is no mergeRequestDiff', async () => {
+          diffActions.fetchFileByFile({ state, getters, commit });
+
+          // wait for the mocked network request to return and start processing the .then
+          await waitForPromises();
+
+          expect(mock.history.get[0].url).toEqual(diffForPath);
+        });
+
+        it.each`
+          desc                                   | versionPath                                              | start_sha    | diff_id
+          ${'no additional version information'} | ${`${pathRoot}?search=terms`}                            | ${undefined} | ${undefined}
+          ${'the diff_id'}                       | ${`${pathRoot}?diff_id=${diffId}`}                       | ${undefined} | ${diffId}
+          ${'the start_sha'}                     | ${`${pathRoot}?start_sha=${startSha}`}                   | ${startSha}  | ${undefined}
+          ${'all available version information'} | ${`${pathRoot}?diff_id=${diffId}&start_sha=${startSha}`} | ${startSha}  | ${diffId}
+        `('fetches the data and includes $desc', async ({ versionPath, start_sha, diff_id }) => {
+          const finalPath = mergeUrlParams(
+            { ...defaultParams, diff_id, start_sha },
+            endpointDiffForPath,
+          );
+          state.mergeRequestDiff = { version_path: versionPath };
+          mock.onGet(finalPath).reply(HTTP_STATUS_OK, fileResult);
+
+          diffActions.fetchFileByFile({ state, getters, commit });
+
+          // wait for the mocked network request to return and start processing the .then
+          await waitForPromises();
+
+          expect(mock.history.get[0].url).toEqual(finalPath);
+        });
+      });
     });
   });
 

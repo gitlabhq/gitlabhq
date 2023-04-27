@@ -110,8 +110,6 @@ module Gitlab
           else
             false
           end
-        else
-          nil
         end
       rescue StandardError
         nil

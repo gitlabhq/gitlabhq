@@ -8,6 +8,9 @@ module Packages
       included do
         include Sortable
         include FileStoreMounter
+        include IgnorableColumns
+
+        ignore_column :file_md5, remove_with: '16.2', remove_after: '2023-06-22'
 
         def self.container_foreign_key
           "#{container_type}_id".to_sym
@@ -30,7 +33,6 @@ module Packages
         validates :file, length: { minimum: 0, allow_nil: false }
         validates :size, presence: true
         validates :file_store, presence: true
-        validates :file_md5, presence: true
         validates :file_sha256, presence: true
 
         scope :with_container, ->(container) do

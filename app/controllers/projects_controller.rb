@@ -84,8 +84,6 @@ class ProjectsController < Projects::ApplicationController
     @current_user_group =
       if current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count == 1
         current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).first
-      else
-        nil
       end
 
     @project = Project.new(namespace_id: @namespace&.id)

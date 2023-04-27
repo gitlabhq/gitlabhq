@@ -26,8 +26,6 @@ module Mutations
       elsif fields[:needs_captcha_response]
         fields.delete :spam
         raise NeedsCaptchaResponseError.new(NEEDS_CAPTCHA_RESPONSE_MESSAGE, extensions: fields)
-      else
-        nil
       end
     end
   end

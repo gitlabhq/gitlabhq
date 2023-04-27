@@ -161,7 +161,7 @@ To change the Web IDE theme:
 
 The active color theme is stored in the [user settings](#edit-settings).
 
-## Privacy and data collection for extensions
+<!-- ## Privacy and data collection for extensions
 
 The Web IDE Extension Marketplace is based on Open VSX. Open VSX does not collect any
 data about you or your activities on the platform.
@@ -173,7 +173,7 @@ Other extensions might collect data for analytics or advertising purposes.
 To protect your privacy and data:
 
 - Carefully review the permissions requested by an extension before you install the extension.
-- Keep your extensions up to date to ensure that any security or privacy vulnerabilities are addressed promptly.
+- Keep your extensions up to date to ensure that any security or privacy vulnerabilities are addressed promptly. -->
 
 ## Interactive web terminals for the Web IDE (Beta)
 

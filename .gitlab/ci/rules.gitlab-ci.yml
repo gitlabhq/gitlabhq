@@ -1156,6 +1156,8 @@
     # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
     - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
       when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *code-backstage-patterns
     - <<: *if-foss-default-branch

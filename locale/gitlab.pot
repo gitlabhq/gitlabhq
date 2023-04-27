@@ -11078,6 +11078,9 @@ msgstr ""
 msgid "ComplianceReport|No violations found"
 msgstr ""
 
+msgid "ComplianceReport|No violations found. Change search options and try again"
+msgstr ""
+
 msgid "ComplianceReport|Remove framework from selected projects"
 msgstr ""
 

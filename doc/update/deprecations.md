@@ -61,6 +61,22 @@ Due to low customer usage, Accessibility Testing is deprecated and will be remov
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Atlassian Crowd OmniAuth provider
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.3</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
+next major release, GitLab 16.0. This gem sees very little use and its
+[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
+[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Auto DevOps support for Herokuish is deprecated
 
 <div class="deprecation-notes">
@@ -496,22 +512,6 @@ We will stop publishing runner images based on the following, end-of-life Alpine
 <div class="milestone-wrapper" data-milestone="16.0">
 
 ## GitLab 16.0
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Atlassian Crowd OmniAuth provider
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
-next major release, GitLab 16.0. This gem sees very little use and its
-[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
-[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
-
-</div>
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 

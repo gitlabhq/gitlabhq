@@ -400,8 +400,6 @@ class Note < ApplicationRecord
       project.merge_requests.by_commit_sha(commit_id)
     elsif for_merge_request?
       MergeRequest.id_in(noteable_id)
-    else
-      nil
     end
   end
 

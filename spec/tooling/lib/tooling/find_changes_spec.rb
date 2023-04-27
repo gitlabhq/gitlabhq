@@ -182,8 +182,8 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
     end
   end
 
-  describe '#only_js_files_changed' do
-    subject { instance.only_js_files_changed }
+  describe '#only_allowed_files_changed' do
+    subject { instance.only_allowed_files_changed }
 
     context 'when fetching changes from changed files' do
       let(:from) { :changed_files }
@@ -200,8 +200,16 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
         end
       end
 
-      context 'when changed files contain not only *.js changes' do
-        let(:changed_files_file_content) { 'a.js b.rb' }
+      context 'when changed files contain both *.vue and *.js changes' do
+        let(:changed_files_file_content) { 'a.js b.vue' }
+
+        it 'returns true' do
+          expect(subject).to be true
+        end
+      end
+
+      context 'when changed files contain not allowed changes' do
+        let(:changed_files_file_content) { 'a.js b.vue c.rb' }
 
         it 'returns false' do
           expect(subject).to be false

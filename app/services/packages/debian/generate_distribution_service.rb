@@ -163,7 +163,6 @@ module Packages
       end
 
       def reuse_or_create_component_file(component, component_file_type, architecture, content)
-        file_md5 = Digest::MD5.hexdigest(content)
         file_sha256 = Digest::SHA256.hexdigest(content)
         component_files = component.files
                                    .with_file_type(component_file_type)
@@ -194,7 +193,6 @@ module Packages
             architecture: architecture,
             compression_type: nil,
             file: CarrierWaveStringFile.new(content),
-            file_md5: file_md5,
             file_sha256: file_sha256,
             size: content.bytesize
           )

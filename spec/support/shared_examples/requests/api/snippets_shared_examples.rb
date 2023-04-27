@@ -261,8 +261,6 @@ RSpec.shared_examples 'snippet access with different users' do
       other_user
     when :admin
       admin
-    else
-      nil
     end
   end
 

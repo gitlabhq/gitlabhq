@@ -13,8 +13,6 @@ module APIInternalBaseHelpers
       Gitlab::GlRepository::PROJECT.identifier_for_container(container)
     when Snippet
       Gitlab::GlRepository::SNIPPET.identifier_for_container(container)
-    else
-      nil
     end
   end
 
