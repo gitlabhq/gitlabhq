@@ -156,7 +156,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::BuildPrepareWorker' => 3,
         'Ci::BuildScheduleWorker' => 3,
         'Ci::BuildTraceChunkFlushWorker' => 3,
-        'Ci::CreateCrossProjectPipelineWorker' => 3,
         'Ci::CreateDownstreamPipelineWorker' => 3,
         'Ci::DailyBuildGroupReportResultsWorker' => 3,
         'Ci::DeleteObjectsWorker' => 0,

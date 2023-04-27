@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlOpenIssues from 'test_fixtures/issues/open-issue.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import Sidebar from '~/right_sidebar';
 
@@ -26,11 +27,10 @@ const assertSidebarState = (state) => {
 
 describe('RightSidebar', () => {
   describe('fixture tests', () => {
-    const fixtureName = 'issues/open-issue.html';
     let mock;
 
     beforeEach(() => {
-      loadHTMLFixture(fixtureName);
+      setHTMLFixture(htmlOpenIssues);
       mock = new MockAdapter(axios);
       new Sidebar(); // eslint-disable-line no-new
       $aside = $('.right-sidebar');

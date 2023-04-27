@@ -10,9 +10,10 @@ RSpec.describe 'Database schema', feature_category: :database do
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
   IGNORED_INDEXES_ON_FKS = {
-    slack_integrations_scopes: %w[slack_api_scope_id],
-    p_ci_builds_metadata: %w[partition_id], # composable FK, the columns are reversed in the index definition
-    p_ci_runner_machine_builds: %w[partition_id] # composable FK, the columns are reversed in the index definition
+    # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
+    # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
+    search_namespace_index_assignments: [%w[search_index_id index_type]],
+    slack_integrations_scopes: [%w[slack_api_scope_id]]
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -51,27 +52,14 @@ RSpec.describe 'Database schema', feature_category: :database do
     broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
-    ci_build_needs: %w[partition_id build_id],
-    ci_build_pending_states: %w[partition_id build_id],
-    ci_build_report_results: %w[partition_id build_id],
-    ci_build_trace_chunks: %w[partition_id build_id],
-    ci_build_trace_metadata: %w[partition_id build_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
-    ci_builds_runner_session: %w[partition_id build_id],
-    p_ci_builds_metadata: %w[partition_id build_id runner_machine_id],
-    ci_job_artifacts: %w[partition_id job_id],
-    ci_job_variables: %w[partition_id job_id],
     ci_namespace_monthly_usages: %w[namespace_id],
-    ci_pending_builds: %w[partition_id build_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],
-    ci_resources: %w[partition_id build_id],
     ci_runner_projects: %w[runner_id],
-    ci_running_builds: %w[partition_id build_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_stages: %w[partition_id],
     ci_trigger_requests: %w[commit_id],
-    ci_unit_test_failures: %w[partition_id build_id],
     cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     compliance_management_frameworks: %w[group_id],
@@ -152,37 +140,35 @@ RSpec.describe 'Database schema', feature_category: :database do
         describe table do
           let(:indexes) { connection.indexes(table) }
           let(:columns) { connection.columns(table) }
-          let(:foreign_keys) { connection.foreign_keys(table) }
+          let(:foreign_keys) { to_foreign_keys(Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table)) }
           let(:loose_foreign_keys) { Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table).fetch(table, []) }
           let(:all_foreign_keys) { foreign_keys + loose_foreign_keys }
-          # take the first column in case we're using a composite primary key
-          let(:primary_key_column) { Array(connection.primary_key(table)).first }
+          let(:composite_primary_key) { Array.wrap(connection.primary_key(table)) }
 
           context 'all foreign keys' do
             # for index to be effective, the FK constraint has to be at first place
             it 'are indexed' do
-              first_indexed_column = indexes.filter_map do |index|
+              indexed_columns = indexes.filter_map do |index|
                 columns = index.columns
 
                 # In cases of complex composite indexes, a string is returned eg:
                 # "lower((extern_uid)::text), group_id"
-                columns = columns.split(',') if columns.is_a?(String)
-                column = columns.first.chomp
+                columns = columns.split(',').map(&:chomp) if columns.is_a?(String)
 
                 # A partial index is not suitable for a foreign key column, unless
                 # the only condition is for the presence of the foreign key itself
-                column if index.where.nil? || index.where == "(#{column} IS NOT NULL)"
+                columns if index.where.nil? || index.where == "(#{columns.first} IS NOT NULL)"
               end
               foreign_keys_columns = all_foreign_keys.map(&:column)
-              required_indexed_columns = foreign_keys_columns - ignored_index_columns(table)
+              required_indexed_columns = to_columns(foreign_keys_columns - ignored_index_columns(table))
 
-              # Add the primary key column to the list of indexed columns because
+              # Add the composite primary key to the list of indexed columns because
               # postgres and mysql both automatically create an index on the primary
               # key. Also, the rails connection.indexes() method does not return
               # automatically generated indexes (like the primary key index).
-              first_indexed_column.push(primary_key_column)
+              indexed_columns.push(composite_primary_key)
 
-              expect(first_indexed_column.uniq).to include(*required_indexed_columns)
+              expect(required_indexed_columns).to be_indexed_by(indexed_columns)
             end
           end
 
@@ -191,14 +177,15 @@ RSpec.describe 'Database schema', feature_category: :database do
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
             let(:ignored_columns) { ignored_fk_columns(table) }
             let(:foreign_keys_columns) do
-              all_foreign_keys
-                .reject { |fk| fk.name&.end_with?("_p") || fk.name&.end_with?("_id_convert_to_bigint") }
-                .map(&:column)
-                .uniq # we can have FK and loose FK present at the same time
+              to_columns(
+                all_foreign_keys
+                  .reject { |fk| fk.name&.end_with?("_id_convert_to_bigint") }
+                  .map(&:column)
+              )
             end
 
             it 'do have the foreign keys' do
-              expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)
+              expect(column_names_with_id - ignored_columns).to be_a_foreign_key_column_of(foreign_keys_columns)
             end
 
             it 'and having foreign key are not in the ignore list' do
@@ -342,7 +329,7 @@ RSpec.describe 'Database schema', feature_category: :database do
         model = klass.safe_constantize
         table_name = model.table_name
 
-        primary_key_columns = Array(model.connection.primary_key(table_name))
+        primary_key_columns = Array.wrap(model.connection.primary_key(table_name))
         next if primary_key_columns.count == 1
 
         describe table_name do
@@ -380,6 +367,26 @@ RSpec.describe 'Database schema', feature_category: :database do
     SQL
 
     ApplicationRecord.connection.select_all(sql).to_a
+  end
+
+  def to_foreign_keys(constraints)
+    constraints.map do |constraint|
+      from_table = constraint.constrained_table_identifier
+      ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
+        from_table,
+        constraint.referenced_table_identifier,
+        {
+          name: constraint.name,
+          column: constraint.constrained_columns,
+          on_delete: constraint.on_delete_action&.to_sym,
+          gitlab_schema: Gitlab::Database::GitlabSchema.table_schema!(from_table)
+        }
+      )
+    end
+  end
+
+  def to_columns(items)
+    items.map { |item| Array.wrap(item) }.uniq
   end
 
   def models_by_table_name

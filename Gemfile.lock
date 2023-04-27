@@ -924,7 +924,7 @@ GEM
     loofah (2.20.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    lookbook (1.5.3)
+    lookbook (1.5.5)
       actioncable
       activemodel
       css_parser
@@ -1136,7 +1136,7 @@ GEM
       tty-color (~> 0.5)
     peek (1.1.0)
       railties (>= 4.0.0)
-    pg (1.4.6)
+    pg (1.5.2)
     pg_query (2.2.1)
       google-protobuf (>= 3.19.2)
     plist (3.6.0)
@@ -1154,7 +1154,8 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (0.19.1)
+    prometheus-client-mmap (0.21.0)
+      rb_sys (~> 0.9)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -1234,6 +1235,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    rb_sys (0.9.73)
     rbtrace (0.4.14)
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
@@ -1819,7 +1821,7 @@ DEPENDENCIES
   lockbox (~> 1.1.1)
   lograge (~> 0.5)
   loofah (~> 2.20.0)
-  lookbook (~> 1.5, >= 1.5.3)
+  lookbook (~> 1.5, >= 1.5.5)
   lru_redux
   mail (= 2.8.1)
   mail-smtp_pool (~> 0.1.0)!
@@ -1864,11 +1866,11 @@ DEPENDENCIES
   parallel (~> 1.19)
   parslet (~> 1.8)
   peek (~> 1.1)
-  pg (~> 1.4.6)
+  pg (~> 1.5.2)
   pg_query (~> 2.2, >= 2.2.1)
   png_quantizator (~> 0.2.1)
   premailer-rails (~> 1.10.3)
-  prometheus-client-mmap (~> 0.19)
+  prometheus-client-mmap (~> 0.21)
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.6.1)

@@ -22,6 +22,12 @@ Fields removed in GitLab 16.0.
 |----------------------|--------------------------|---------------|----------------------------|
 | `external`           | `GraphQL::Types::Boolean`| 15.9          | None                       |
 
+[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118617) in GitLab 16.0:
+
+| Field name           | GraphQL type             | Deprecated in | Use instead                |
+|----------------------|--------------------------|---------------|----------------------------|
+| `confidence`         | `GraphQL::Types::String` | 15.4          | None                       |
+
 ## GitLab 15.0
 
 Fields removed in GitLab 15.0.

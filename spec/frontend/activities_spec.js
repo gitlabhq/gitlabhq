@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow */
 
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlEventFilter from 'test_fixtures_static/event_filter.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Activities from '~/activities';
 import Pager from '~/pager';
 
 describe('Activities', () => {
   window.gon || (window.gon = {});
-  const fixtureTemplate = 'static/event_filter.html';
   const filters = [
     {
       id: 'all',
@@ -39,7 +39,7 @@ describe('Activities', () => {
   }
 
   beforeEach(() => {
-    loadHTMLFixture(fixtureTemplate);
+    setHTMLFixture(htmlEventFilter);
     jest.spyOn(Pager, 'init').mockImplementation(() => {});
     new Activities();
   });

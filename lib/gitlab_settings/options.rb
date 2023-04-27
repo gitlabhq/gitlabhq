@@ -23,7 +23,7 @@ module GitlabSettings
     end
 
     def []=(key, value)
-      @options[key.to_s] = Options.build(value)
+      @options[key.to_s] = self.class.build(value)
     end
 
     def key?(name)
@@ -34,7 +34,7 @@ module GitlabSettings
     def to_hash
       @options.deep_transform_values do |option|
         case option
-        when GitlabSettings::Options
+        when self.class
           option.to_hash
         else
           option
@@ -44,11 +44,11 @@ module GitlabSettings
     alias_method :to_h, :to_hash
 
     def merge(other)
-      Options.build(to_hash.merge(other.deep_stringify_keys))
+      self.class.build(to_hash.merge(other.deep_stringify_keys))
     end
 
     def deep_merge(other)
-      Options.build(to_hash.deep_merge(other.deep_stringify_keys))
+      self.class.build(to_hash.deep_merge(other.deep_stringify_keys))
     end
 
     def is_a?(klass)

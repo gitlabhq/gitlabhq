@@ -33,6 +33,7 @@ export const SUPER_SIDEBAR_PEEK_CLOSE_DELAY = 500;
 export const TRACKING_UNKNOWN_ID = 'item_without_id';
 export const TRACKING_UNKNOWN_PANEL = 'nav_panel_unknown';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';
+export const CLICK_PINNED_MENU_ITEM_ACTION = 'click_pinned_menu_item';
 
 export const PANELS_WITH_PINS = ['group', 'project'];
 

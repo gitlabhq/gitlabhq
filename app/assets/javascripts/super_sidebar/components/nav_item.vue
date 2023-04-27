@@ -4,6 +4,7 @@ import { GlButton, GlIcon, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
+  CLICK_PINNED_MENU_ITEM_ACTION,
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
@@ -25,7 +26,7 @@ export default {
     panelType: { default: '' },
   },
   props: {
-    draggable: {
+    isInPinnedSection: {
       type: Boolean,
       required: false,
       default: false,
@@ -75,7 +76,9 @@ export default {
           : {};
 
       return {
-        'data-track-action': CLICK_MENU_ITEM_ACTION,
+        'data-track-action': this.isInPinnedSection
+          ? CLICK_PINNED_MENU_ITEM_ACTION
+          : CLICK_MENU_ITEM_ACTION,
         'data-track-label': this.item.id ?? TRACKING_UNKNOWN_ID,
         'data-track-property': this.panelType
           ? `nav_panel_${this.panelType}`
@@ -125,7 +128,7 @@ export default {
         <slot name="icon">
           <gl-icon v-if="item.icon" :name="item.icon" class="gl-ml-2 item-icon" />
           <gl-icon
-            v-else-if="draggable"
+            v-else-if="isInPinnedSection"
             name="grip"
             class="gl-text-gray-400 gl-ml-2 draggable-icon"
           />

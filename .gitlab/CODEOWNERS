@@ -1228,7 +1228,11 @@ lib/gitlab/checks/**
 /lib/tasks/gitlab/password.rake
 /lib/tasks/tokens.rake
 
-[Verify backend] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan
+[Verify] @gitlab-org/maintainers/cicd-verify @shinya.maeda @stanhu @ayufan
+# With these catch-all rules we will require backend approval and use it as an
+# opportunity to refine specific rules defined in this section.
+# Note that frontend, CI templates and other concerns should be kept within
+# the same section.
 /**/app/**/ci/
 /**/lib/**/ci/
 /**/spec/**/ci/
@@ -1340,9 +1344,10 @@ lib/gitlab/checks/**
 /ee/spec/controllers/projects/subscriptions_controller_spec.rb
 /ee/spec/helpers/ee/projects/pipeline_helper_spec.rb
 /ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb
+
 # Overrides for Verify. These files below require approval from teams outside Verify.
-/**/ci/reports/**/ @gitlab-org/maintainers/rails-backend
-/**/ci/parsers/**/ @gitlab-org/maintainers/rails-backend
+/**/lib/**/ci/reports/**/ @gitlab-org/maintainers/rails-backend
+/**/lib/**/ci/parsers/**/ @gitlab-org/maintainers/rails-backend
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/parsers/security/ @gitlab-org/govern/threat-insights-backend-team
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
@@ -1350,16 +1355,16 @@ lib/gitlab/checks/**
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
 
-[Verify frontend] @gitlab-org/ci-cd/verify/frontend
-/**/spec/frontend/**/ci/
-/**/javascripts/ci/
-/**/javascripts/pipelines/
-/**/javascripts/jobs/
-/**/javascripts/token_access/
-/**/javascripts/admin/application_settings/runner_token_expiration/
-/**/javascripts/usage_quotas/pipelines/ @sheldonled @aalakkad @kpalchyk
+# Verify frontend
+/**/spec/frontend/**/ci/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
 
-[CI/CD templates]
+# CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf

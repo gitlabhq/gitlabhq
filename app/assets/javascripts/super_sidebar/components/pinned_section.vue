@@ -84,8 +84,8 @@ export default {
       <nav-item
         v-for="item of draggableItems"
         :key="item.id"
-        draggable
         :item="item"
+        is-in-pinned-section
         @pin-remove="(itemId) => $emit('pin-remove', itemId)"
       />
     </draggable>

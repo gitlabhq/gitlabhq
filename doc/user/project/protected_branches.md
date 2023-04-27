@@ -42,7 +42,7 @@ When a branch matches multiple rules, the **most permissive rule** determines th
 level of protection for the branch. For example, consider these rules, which include
 [wildcards](#configure-multiple-protected-branches-by-using-a-wildcard):
 
-| Branch name pattern | Allowed to merge       | Allowed to push |
+| Branch name pattern | Allowed to merge       | Allowed to push and merge |
 |---------------------|------------------------|-----------------|
 | `v1.x`              | Maintainer             | Maintainer      |
 | `v1.*`              | Maintainer + Developer | Maintainer      |
@@ -54,7 +54,7 @@ As the most permissive option determines the behavior, the resulting permissions
 - **Allowed to merge:** Of the three settings, `Maintainer + Developer` is most permissive,
   and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
   (which each have stricter permissions), users with the Developer role can merge into the branch.
-- **Allowed to push:** Of the three settings, `Maintainer` is the most permissive, and controls
+- **Allowed to push and merge:** Of the three settings, `Maintainer` is the most permissive, and controls
   branch behavior as a result. Even though branches matching `v*` are set to `No one`, branches
   that _also_ match `v1.x` or `v1.*` receive the more permissive `Maintainer` permission.
 
@@ -62,9 +62,9 @@ To be certain that a rule controls the behavior of a branch,
 _all_ other patterns that match must apply less or equally permissive rules.
 
 If you want to ensure that `No one` is allowed to push to branch `v1.x`, every pattern
-that matches `v1.x` must set `Allowed to push` to `No one`, like this:
+that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
 
-| Branch name pattern | Allowed to merge       | Allowed to push |
+| Branch name pattern | Allowed to merge       | Allowed to push and merge |
 |---------------------|------------------------|-----------------|
 | `v1.x`              | Maintainer             | No one          |
 | `v1.*`              | Maintainer + Developer | No one          |
@@ -101,7 +101,7 @@ To protect a branch for all the projects in a group:
 1. Expand **Protected branches**.
 1. In the **Branch** text box, type the branch name or a wildcard.
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
-1. From the **Allowed to push** list, select a role that can push to this branch.
+1. From the **Allowed to push and merge** list, select a role that can push to this branch.
 1. Select **Protect**.
 
 The protected branch is added to the list of protected branches.
@@ -111,7 +111,7 @@ The protected branch is added to the list of protected branches.
 Prerequisite:
 
 - You must have at least the Maintainer role.
-- When granting a group **Allowed to merge** or **Allowed to push** permissions
+- When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
   on a protected branch, the group must be added to the project.
 
 To protect a branch:
@@ -121,7 +121,7 @@ To protect a branch:
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to merge** list, select a role, or group that can merge into this branch. In GitLab Premium, you can also add users.
-1. From the **Allowed to push** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
+1. From the **Allowed to push and merge** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
 1. Select **Protect**.
 
 The protected branch displays in the list of protected branches.
@@ -130,7 +130,7 @@ The protected branch displays in the list of protected branches.
 
 If both a specific rule and a wildcard rule apply to the same branch, the most
 permissive rule controls how the branch behaves. For merge controls to work properly,
-set **Allowed to push** to a broader set of users than **Allowed to merge**.
+set **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
 Prerequisite:
 
@@ -151,7 +151,7 @@ To protect multiple branches at the same time:
    | `*gitlab*`                | `gitlab`, `gitlab/staging`, `master/gitlab/production` |
 
 1. From the **Allowed to merge** list, select a role, or group that can merge into this branch. In GitLab Premium, you can also add users.
-1. From the **Allowed to push** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
+1. From the **Allowed to push and merge** list, select a role, group, or user that can push to this branch. In GitLab Premium, you can also add users.
 1. Select **Protect**.
 
 The protected branch displays in the list of protected branches.
@@ -162,7 +162,7 @@ Users with at least the Developer role can create a protected branch.
 
 Prerequisites:
 
-- **Allowed to push** is set to **No one**
+- **Allowed to push and merge** is set to **No one**
 - **Allowed to merge** is set to **Developers**.
 
 You can create a protected branch by using the UI or API only.
@@ -189,11 +189,7 @@ like the [GitLab workflow](../../topics/gitlab_flow.md).
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to merge** list, select **Developers + Maintainers**.
-1. From the **Allowed to push** list, select **No one**.
-
-   NOTE:
-   Setting a role, group or user as **Allowed to push** also allows those users to merge.
-
+1. From the **Allowed to push and merge** list, select **No one**.
 1. Select **Protect**.
 
 ## Allow everyone to push directly to a protected branch
@@ -204,7 +200,7 @@ You can allow everyone with write access to push to the protected branch.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push** list, select **Developers + Maintainers**.
+1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
 1. Select **Protect**.
 
 ## Allow deploy keys to push to a protected branch
@@ -232,7 +228,7 @@ To allow a deploy key to push to a protected branch:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push** list, select the deploy key.
+1. From the **Allowed to push and merge** list, select the deploy key.
 1. Select **Protect**.
 
 Deploy keys are not available in the **Allowed to merge** dropdown list.
@@ -251,7 +247,7 @@ To protect a new branch and enable force push:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push** and **Allowed to merge** lists, select the settings you want.
+1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
 1. To allow all users with push access to force push, turn on the **Allowed to force push** toggle.
 1. To reject code pushes that change files listed in the `CODEOWNERS` file, turn on the
    **Require approval from code owners** toggle.
@@ -278,7 +274,7 @@ To protect a new branch and enable Code Owner's approval:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push** and **Allowed to merge** lists, select the settings you want.
+1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
 1. Turn on the **Require approval from code owners** toggle.
 1. Select **Protect**.
 
