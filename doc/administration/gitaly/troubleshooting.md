@@ -380,6 +380,12 @@ push, which causes a significant delay.
 
 If Git pushes are too slow when Dynatrace is enabled, disable Dynatrace.
 
+### `gitaly check` fails with `401` status code
+
+`gitaly check` can fail with `401` status code if Gitaly can't access the internal GitLab API.
+
+One way to resolve this is to make sure the entry is correct for the GitLab internal API URL configured in `gitlab.rb` with `gitlab_rails['internal_api_url']`.
+
 ## Gitaly fails to fork processes stored on `noexec` file systems
 
 Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount

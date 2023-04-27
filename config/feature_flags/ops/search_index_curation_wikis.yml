@@ -1,0 +1,8 @@
+---
+name: search_index_curation_wikis
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104423"
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383093
+milestone: '16.0'
+type: ops
+group: group::global search
+default_enabled: false

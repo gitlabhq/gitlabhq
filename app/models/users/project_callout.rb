@@ -12,10 +12,9 @@ module Users
       awaiting_members_banner: 1, # EE-only
       web_hook_disabled: 2,
       ultimate_feature_removal_banner: 3,
-      storage_enforcement_banner_first_enforcement_threshold: 4, # EE-only
-      storage_enforcement_banner_second_enforcement_threshold: 5, # EE-only
-      storage_enforcement_banner_third_enforcement_threshold: 6, # EE-only
-      storage_enforcement_banner_fourth_enforcement_threshold: 7, # EE-only
+      namespace_storage_pre_enforcement_banner: 4, # EE-only
+      # 5,6,7 were unused and removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118330,
+      # they can be replaced.
       license_check_deprecation_alert: 8 # EE-only
     }
 

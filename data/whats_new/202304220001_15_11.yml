@@ -8,7 +8,7 @@
   gitlab-com: true
   available_in: [Premium, Ultimate]
   documentation_link: 'https://docs.gitlab.com/ee/user/project/repository/code_suggestions.html#code-suggestions-beta'
-  image_url: 'https://about.gitlab.com/images/15_11/DemoFastApi-lg.gif'
+  image_url: 'https://about.gitlab.com/images/15_11/code-suggestions-loop.gif'
   published_at: 2023-04-22
   release: 15.11
 - name: Manage project compliance frameworks report at group level
@@ -36,7 +36,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: 'https://docs.gitlab.com/ee/ci/pipelines/downstream_pipelines.html#recreate-a-downstream-pipeline'
-  image_url: 'https://www.youtube-nocookie.com/embed/xCqGWWRx-1E'
+  image_url: 'https://img.youtube.com/vi/xCqGWWRx-1E/hqdefault.jpg'
   published_at: 2023-04-22
   release: 15.11
 - name: Vulnerability dismissal reasons
@@ -53,6 +53,6 @@
   gitlab-com: true
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-dismissal-reasons'
-  image_url: 'https://about.gitlab.com//images/15_11/vulnerability_dismissal_types__reasons.png'
+  image_url: 'https://about.gitlab.com/images/15_11/vulnerability_dismissal_types__reasons.png'
   published_at: 2023-04-22
   release: 15.11

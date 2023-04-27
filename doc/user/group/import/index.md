@@ -119,7 +119,7 @@ To ensure GitLab maps users and their contributions correctly:
    - Set up or use your existing [SAML SSO provider](../saml_sso/index.md) and leverage user synchronization of SAML SSO groups supported through
      [SCIM](../../group/saml_sso/scim_setup.md). You can
      [bypass the GitLab user account verification with verified email domains](../saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
-1. Ensure that users have a public email on the source GitLab instance that matches any confirmed email address on the destination GitLab instance. Most
+1. Ensure that users have a [public email](../../profile/index.md#set-your-public-email) on the source GitLab instance that matches any confirmed email address on the destination GitLab instance. Most
    users receive an email asking them to confirm their email address.
 1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), all users must
    [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).

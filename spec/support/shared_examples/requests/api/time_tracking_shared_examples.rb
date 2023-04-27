@@ -173,8 +173,7 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
 
   describe "GET /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_stats" do
     it "returns the time stats for #{issuable_name}" do
-      issuable.update!(spend_time: { duration: 1800, user_id: user.id },
-                       time_estimate: 3600)
+      issuable.update!(spend_time: { duration: 1800, user_id: user.id }, time_estimate: 3600)
 
       get api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_stats", user)
 

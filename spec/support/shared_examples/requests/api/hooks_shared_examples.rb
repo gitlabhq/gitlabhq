@@ -176,8 +176,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
     it "adds hook", :aggregate_failures do
       expect do
-        post api(collection_uri, user, admin_mode: user.admin?),
-             params: hook_creation_params
+        post api(collection_uri, user, admin_mode: user.admin?), params: hook_creation_params
       end.to change { hooks_count }.by(1)
 
       expect(response).to have_gitlab_http_status(:created)
@@ -201,8 +200,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       token = "secret token"
 
       expect do
-        post api(collection_uri, user, admin_mode: user.admin?),
-             params: { url: "http://example.com", token: token }
+        post api(collection_uri, user, admin_mode: user.admin?), params: { url: "http://example.com", token: token }
       end.to change { hooks_count }.by(1)
 
       expect(response).to have_gitlab_http_status(:created)
@@ -352,7 +350,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
     it 'sets the variable' do
       expect do
         put api("#{hook_uri}/url_variables/abc", user, admin_mode: user.admin?),
-                params: { value: 'some secret value' }
+          params: { value: 'some secret value' }
       end.to change { hook.reload.url_variables }.to(eq('abc' => 'some secret value'))
 
       expect(response).to have_gitlab_http_status(:no_content)
@@ -362,7 +360,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       hook.update!(url_variables: { 'abc' => 'xyz', 'def' => 'other value' })
 
       put api("#{hook_uri}/url_variables/abc", user, admin_mode: user.admin?),
-              params: { value: 'some secret value' }
+        params: { value: 'some secret value' }
 
       expect(response).to have_gitlab_http_status(:no_content)
       expect(hook.reload.url_variables).to eq('abc' => 'some secret value', 'def' => 'other value')
@@ -370,21 +368,21 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
     it "returns a 404 error when editing non existent hook" do
       put api("#{hook_uri(non_existing_record_id)}/url_variables/abc", user, admin_mode: user.admin?),
-              params: { value: 'xyz' }
+        params: { value: 'xyz' }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it "returns a 422 error when the key is illegal" do
       put api("#{hook_uri}/url_variables/abc%20def", user, admin_mode: user.admin?),
-              params: { value: 'xyz' }
+        params: { value: 'xyz' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
     it "returns a 422 error when the value is illegal" do
       put api("#{hook_uri}/url_variables/abc", user, admin_mode: user.admin?),
-              params: { value: '' }
+        params: { value: '' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end

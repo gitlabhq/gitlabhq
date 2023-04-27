@@ -715,6 +715,18 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :product_analytics_clickhouse_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  # TOFA API integration settngs
+  attr_encrypted :tofa_client_library_args, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_client_library_class, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_client_library_create_credentials_method, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_client_library_fetch_access_token_method, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_host, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_request_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_request_payload, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_response_json_keys, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_url, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :tofa_access_token_expires_in, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

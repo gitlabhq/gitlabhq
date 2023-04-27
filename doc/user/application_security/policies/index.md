@@ -138,3 +138,17 @@ When you create a new security policy or change an existing policy, a new branch
 If you have group or instance [push rules that do not allow branch name patterns](../../project/repository/push_rules.md#validate-branch-names) that contain the text `update-policy-<timestamp>`, you will get an error that states `Branch name 'update-policy-<timestamp>' does not follow the pattern '<branch_name_regex>'`.
 
 The workaround is to amend your group or instance push rules to allow branches following the pattern `update-policy-` followed by an integer timestamp.
+
+### Troubleshooting common issues configuring security policies
+
+- Confirm that projects contain a `.gitlab-ci.yml` file. This file is required for scan execution policies.
+- Confirm that scanners are properly configured and producing results for the latest branch. Security Policies are designed to require approval when there are no results (no security report), as this ensures that no vulnerabilities are introduced. We cannot know if there are any vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
+- When running scan execution policies based on a SAST action, ensure target repositories contain proper code files. SAST runs different analyzers [based on the types of files in the repo](../sast/index.md#supported-languages-and-frameworks), and if no supported files are found it will not run any jobs. See the [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) for more details.
+- Check for any branch configuration conflicts. If your policy is configured to enforce rules on `main` but some projects within the scope are using `master` as their default branch, the policy is not applied for the latter. Support for specifying the `default` branch in your policies is proposed in [epic 9468](https://gitlab.com/groups/gitlab-org/-/epics/9468).
+- Scan result policies created at the group or sub-group level can take some time to apply to all the merge requests in the group.
+- Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more [about the schedule rule type](../policies/scan-execution-policies.md#schedule-rule-type).
+- When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is based on your server time for self managed instances. When testing new policies, it may appear pipelines are not running properly when in fact they are scheduled in your server's timezone.
+- When enforcing scan execution policies, the target project's pipeline is triggered by the user who last updated the security policy project's `policy.yml` file. The user must have permission to trigger the pipeline in the project for the policy to be enforced, and the pipeline to run. Work to address this is being tracked in [issue 394958].
+- You should not link a security policy project to a development project and to the group or sub-group the development project belongs to at the same time. Linking this way will result in approval rules from the Scan Result Policy not being applied to merge requests in the development project.
+
+If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

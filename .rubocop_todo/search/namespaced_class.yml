@@ -118,6 +118,7 @@ Search/NamespacedClass:
     - 'ee/lib/elastic/latest/user_class_proxy.rb'
     - 'ee/lib/elastic/latest/user_config.rb'
     - 'ee/lib/elastic/latest/user_instance_proxy.rb'
+    - 'ee/lib/elastic/latest/wiki_config.rb'
     - 'ee/lib/elastic/metrics_update_service.rb'
     - 'ee/lib/elastic/migration.rb'
     - 'ee/lib/elastic/multi_version_class_proxy.rb'

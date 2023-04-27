@@ -36,12 +36,6 @@ class Namespace < ApplicationRecord
   SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_WITH_OVERRIDE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
 
-  # This date is just a placeholder until namespace storage enforcement timeline is confirmed at which point
-  # this should be replaced, see https://about.gitlab.com/pricing/faq-efficient-free-tier/#user-limits-on-gitlab-saas-free-tier
-  MIN_STORAGE_ENFORCEMENT_DATE = 3.months.from_now.to_date
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/367531
-  MIN_STORAGE_ENFORCEMENT_USAGE = 5.gigabytes
-
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -585,12 +579,6 @@ class Namespace < ApplicationRecord
 
   def issue_repositioning_disabled?
     Feature.enabled?(:block_issue_repositioning, self, type: :ops)
-  end
-
-  def storage_enforcement_date
-    return Date.current if Feature.enabled?(:namespace_storage_limit_bypass_date_check, self)
-
-    MIN_STORAGE_ENFORCEMENT_DATE
   end
 
   def certificate_based_clusters_enabled?

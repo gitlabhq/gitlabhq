@@ -1245,6 +1245,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: github_importer:github_import_import_release_attachments
+  :worker_name: Gitlab::GithubImport::ImportReleaseAttachmentsWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: github_importer:github_import_pull_requests_import_review_request
   :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker
   :feature_category: :importers

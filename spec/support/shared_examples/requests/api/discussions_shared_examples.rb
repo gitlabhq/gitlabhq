@@ -231,8 +231,7 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
 
     it 'returns a 404 error when note id not found' do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
-              "discussions/#{note.discussion_id}/notes/#{non_existing_record_id}", user),
-              params: { body: 'Hello!' }
+              "discussions/#{note.discussion_id}/notes/#{non_existing_record_id}", user), params: { body: 'Hello!' }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

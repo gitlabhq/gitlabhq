@@ -24989,6 +24989,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_banner_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_BANNER_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_banner_error_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_banner_info_threshold"></a>`NAMESPACE_STORAGE_LIMIT_BANNER_INFO_THRESHOLD` | Callout feature name for namespace_storage_limit_banner_info_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_banner_warning_threshold"></a>`NAMESPACE_STORAGE_LIMIT_BANNER_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_banner_warning_threshold. |
+| <a id="usercalloutfeaturenameenumnamespace_storage_pre_enforcement_banner"></a>`NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
 | <a id="usercalloutfeaturenameenumnew_top_level_group_alert"></a>`NEW_TOP_LEVEL_GROUP_ALERT` | Callout feature name for new_top_level_group_alert. |
 | <a id="usercalloutfeaturenameenumnew_user_signups_cap_reached"></a>`NEW_USER_SIGNUPS_CAP_REACHED` | Callout feature name for new_user_signups_cap_reached. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
@@ -25003,10 +25004,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumsecurity_newsletter_callout"></a>`SECURITY_NEWSLETTER_CALLOUT` | Callout feature name for security_newsletter_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_training_feature_promotion"></a>`SECURITY_TRAINING_FEATURE_PROMOTION` | Callout feature name for security_training_feature_promotion. |
-| <a id="usercalloutfeaturenameenumstorage_enforcement_banner_first_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_FIRST_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_first_enforcement_threshold. |
-| <a id="usercalloutfeaturenameenumstorage_enforcement_banner_fourth_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_FOURTH_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_fourth_enforcement_threshold. |
-| <a id="usercalloutfeaturenameenumstorage_enforcement_banner_second_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_SECOND_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_second_enforcement_threshold. |
-| <a id="usercalloutfeaturenameenumstorage_enforcement_banner_third_enforcement_threshold"></a>`STORAGE_ENFORCEMENT_BANNER_THIRD_ENFORCEMENT_THRESHOLD` | Callout feature name for storage_enforcement_banner_third_enforcement_threshold. |
 | <a id="usercalloutfeaturenameenumsubmit_license_usage_data_banner"></a>`SUBMIT_LICENSE_USAGE_DATA_BANNER` | Callout feature name for submit_license_usage_data_banner. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |
 | <a id="usercalloutfeaturenameenumsuggest_popover_dismissed"></a>`SUGGEST_POPOVER_DISMISSED` | Callout feature name for suggest_popover_dismissed. |

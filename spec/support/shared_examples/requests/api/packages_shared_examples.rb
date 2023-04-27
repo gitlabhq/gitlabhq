@@ -144,17 +144,25 @@ end
 
 RSpec.shared_examples 'a package tracking event' do |category, action, service_ping_context = true|
   let(:context) do
-    [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                              event: snowplow_gitlab_standard_context[:property]).to_h]
+    [
+      Gitlab::Tracking::ServicePingContext.new(
+        data_source: :redis_hll,
+        event: snowplow_gitlab_standard_context[:property]
+      ).to_h
+    ]
   end
 
   it "creates a gitlab tracking event #{action}", :snowplow, :aggregate_failures do
     subject
 
     if service_ping_context
-      expect_snowplow_event(category: category, action: action,
-                            label: "redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly",
-                            context: context, **snowplow_gitlab_standard_context)
+      expect_snowplow_event(
+        category: category,
+        action: action,
+        label: "redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly",
+        context: context,
+        **snowplow_gitlab_standard_context
+      )
     else
       expect_snowplow_event(category: category, action: action, **snowplow_gitlab_standard_context)
     end

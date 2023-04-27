@@ -68,7 +68,7 @@ To change or add a commit to the contributor's merge request:
 
    ```shell
    git fetch "git@gitlab.com:contributor/forked-project.git" 'fork-branch'
-   git checkout -b contributor/fork-branch' FETCH_HEAD
+   git checkout -b 'contributor/fork-branch' FETCH_HEAD
    ```
 
    Those commands fetch the branch from the forked project, and create a local branch

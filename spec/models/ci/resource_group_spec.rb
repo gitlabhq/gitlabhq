@@ -118,7 +118,7 @@ RSpec.describe Ci::ResourceGroup do
 
     let!(:resource_group) { create(:ci_resource_group, process_mode: process_mode, project: project) }
 
-    Ci::HasStatus::STATUSES_ENUM.keys.each do |status|
+    Ci::HasStatus::STATUSES_ENUM.keys.each do |status| # rubocop:diable RSpec/UselessDynamicDefinition
       let!("build_1_#{status}") { create(:ci_build, pipeline: pipeline_1, status: status, resource_group: resource_group) }
       let!("build_2_#{status}") { create(:ci_build, pipeline: pipeline_2, status: status, resource_group: resource_group) }
     end
