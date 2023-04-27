@@ -41,24 +41,6 @@ RSpec.describe Gitlab::Ci::Build::Cache do
     context 'when the cache is an array with files inside hashes' do
       let(:cache_config) { [{ key: { files: ['file1.json'] } }, { key: { files: ['file1.json', 'file2.json'] } }] }
 
-      context 'with ci_fix_for_runner_cache_prefix disabled' do
-        before do
-          stub_feature_flags(ci_fix_for_runner_cache_prefix: false)
-        end
-
-        it 'instantiates a cache seed' do
-          allow(Gitlab::Ci::Pipeline::Seed::Build::Cache).to receive(:new).and_return(cache_seed_a, cache_seed_b)
-
-          cache
-
-          expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new)
-            .with(pipeline, cache_config.first, 0)
-          expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new)
-            .with(pipeline, cache_config.second, 1)
-          expect(cache.instance_variable_get(:@cache)).to match_array([cache_seed_a, cache_seed_b])
-        end
-      end
-
       it 'instantiates a cache seed' do
         allow(Gitlab::Ci::Pipeline::Seed::Build::Cache).to receive(:new).and_return(cache_seed_a, cache_seed_b)
 

@@ -1,6 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { IssuableStatusText } from '~/issues/constants';
+import { issuableStatusText } from '~/issues/constants';
 
 export default {
   components: {
@@ -18,7 +18,7 @@ export default {
       return issue || mergeRequest;
     },
     issuableStatus() {
-      return IssuableStatusText[this.subject.state];
+      return issuableStatusText[this.subject.state];
     },
     issuableFullReference() {
       return this.timelog.project.fullPath + this.subject.reference;

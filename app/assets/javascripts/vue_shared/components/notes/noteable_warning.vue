@@ -2,7 +2,7 @@
 import { GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 
-const NoteableTypeText = {
+const noteableTypeText = {
   Issue: __('issue'),
   Epic: __('epic'),
   MergeRequest: __('merge request'),
@@ -53,7 +53,7 @@ export default {
       return this.isConfidential && this.isLocked;
     },
     noteableTypeText() {
-      return NoteableTypeText[this.noteableType];
+      return noteableTypeText[this.noteableType];
     },
     confidentialContextText() {
       return sprintf(__('This is a confidential %{noteableTypeText}.'), {

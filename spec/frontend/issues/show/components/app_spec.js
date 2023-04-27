@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import {
-  IssuableStatusText,
+  issuableStatusText,
   STATUS_CLOSED,
   STATUS_OPEN,
   STATUS_REOPENED,
@@ -368,7 +368,7 @@ describe('Issuable output', () => {
       `('$title', async ({ state }) => {
         await wrapper.setProps({ issuableStatus: state });
 
-        expect(findStickyHeader().text()).toContain(IssuableStatusText[state]);
+        expect(findStickyHeader().text()).toContain(issuableStatusText[state]);
       });
 
       it.each`

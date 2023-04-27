@@ -13,17 +13,13 @@ module Packages
         return error('Package already exists.', 403) if current_package_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 
-        if Feature.enabled?(:npm_obtain_lease_to_create_package, project)
-          package = try_obtain_lease do
-            ApplicationRecord.transaction { create_npm_package! }
-          end
-
-          return error('Could not obtain package lease.', 400) unless package
-
-          package
-        else
+        package = try_obtain_lease do
           ApplicationRecord.transaction { create_npm_package! }
         end
+
+        return error('Could not obtain package lease.', 400) unless package
+
+        package
       end
 
       private

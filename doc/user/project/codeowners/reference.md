@@ -190,7 +190,7 @@ and users. Order of owners is not important.
 
 Groups and subgroups can be owners of an entry.
 Each entry can be owned by [one or more owners](#entry-owners).
-For more details see the [Groups as Code Owners section](index.md#groups-as-code-owners).
+For more details see the [Add a group as a Code Owner](index.md#add-a-group-as-a-code-owner).
 
 ```plaintext
 /path/to/entry.rb @group
@@ -275,7 +275,7 @@ and `example@gitlab.com` are accessible on the project and we create an entry:
 
 GitLab ignores `@grou`, `@i_left`, `@i_dont_exist`, and `invalid@gitlab.com`.
 
-For more information on who is accessible, see [Groups as Code Owners](index.md#groups-as-code-owners).
+For more information on who is accessible, see [Add a group as a Code Owner](index.md#add-a-group-as-a-code-owner).
 
 ### Zero owners
 

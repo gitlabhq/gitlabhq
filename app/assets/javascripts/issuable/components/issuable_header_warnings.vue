@@ -6,7 +6,7 @@ import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/cons
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
-const NoteableTypeText = {
+const noteableTypeText = {
   issue: __('issue'),
   merge_request: __('merge request'),
 };
@@ -46,7 +46,7 @@ export default {
           visible: this.hidden,
           dataTestId: 'hidden',
           tooltip: sprintf(__('This %{issuable} is hidden because its author has been banned'), {
-            issuable: NoteableTypeText[this.getNoteableData.targetType],
+            issuable: noteableTypeText[this.getNoteableData.targetType],
           }),
         },
       ];

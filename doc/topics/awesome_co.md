@@ -46,19 +46,6 @@ Where `:name` is the name of the AwesomeCo. (This will reflect .rb files located
 
 Where `:namespace_id` is the ID of the User or Group Namespace
 
-## List of Awesome Companies
-
-Each company (i.e. test data template) is represented as a Ruby file (.rb) in `db/seeds/awesome_co`.
-
-### AwesomeCo (db/seeds/awesome_co/awesome_co.rb)
-
-```shell
-$ bundle exec rake "ee:gitlab:seed:awesome_co[awesome_co,:namespace_id]"
-Seeding AwesomeCo for :namespace_id
-```
-
-AwesomeCo is an automated seeding of [this demo repository](https://gitlab.com/tech-marketing/demos/gitlab-agile-demo/awesome-co).
-
 ## Develop
 
 AwesomeCo seeding uses FactoryBot definitions from `spec/factories` which ...
@@ -76,6 +63,72 @@ AwesomeCo seeding uses FactoryBot definitions from `spec/factories` which ...
 
 Factories reside in `spec/factories/*` and are fixtures for Rails models found in `app/models/*`. For example, For a model named `app/models/issue.rb`, the factory will
 be named `spec/factories/issues.rb`. For a model named `app/models/project.rb`, the factory will be named `app/models/projects.rb`.
+
+There are currently three parsers that the GitLab Data Seeder supports. Ruby, YAML, and JSON.
+
+### Ruby
+
+All Ruby Seeds must define a `DataSeeder` class with a `#seed` instance method. You may structure your Ruby class as you wish. All FactoryBot [methods](https://www.rubydoc.info/gems/factory_bot/FactoryBot/Syntax/Methods) (`create`, `build`, `create_list`) will be included in the class automatically and may be called.
+
+The `DataSeeder` class will have the following instance variables defined upon seeding:
+
+- `@seed_file` - The `File` object.
+- `@owner` - The owner of the seed data.
+- `@name` - The name of the seed. This will be the seed file name without the extension.
+- `@group` - The root group that all seeded data will be created under.
+
+```ruby
+# frozen_string_literal: true
+
+class DataSeeder
+  def seed
+    my_group = create(:group, name: 'My Group', path: 'my-group-path', parent: @group)
+    my_project = create(:project, :public, name: 'My Project', namespace: my_group, creator: @owner)
+  end
+end
+```
+
+### YAML
+
+The YAML Parser is a DSL that supports Factory definitions and allows you to seed data using a human-readable format.
+
+```yaml
+name: My Seeder
+groups:
+  - _id: my_group
+    name: My Group
+    path: my-group-path
+
+projects:
+  - _id: my_project
+    name: My Project
+    namespace_id: <%= groups.my_group.id %>
+    creator_id: <%= @owner.id %>
+    traits:
+      - public
+```
+
+### JSON
+
+The JSON Parser allows you to house seed files in JSON format.
+
+```json
+{
+  "name": "My Seeder",
+  "groups": [
+    { "_id": "my_group", "name": "My Group", "path": "my-group-path" }
+  ],
+  "projects": [
+    {
+      "_id": "my_project",
+      "name": "My Project",
+      "namespace_id": "<%= groups.my_group.id %>",
+      "creator_id": "<%= @owner.id %>",
+      "traits": ["public"]
+    }
+  ]
+}
+```
 
 ### Taxonomy of a Factory
 

@@ -37,26 +37,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
     end
 
     context 'with cache:key:files' do
-      context 'with ci_fix_for_runner_cache_prefix disabled' do
-        before do
-          stub_feature_flags(ci_fix_for_runner_cache_prefix: false)
-        end
-
-        shared_examples 'default key' do
-          let(:config) do
-            { key: { files: files } }
-          end
-
-          context 'without a prefix' do
-            it 'uses default key with an index as a prefix' do
-              expected = { key: '1-default' }
-
-              is_expected.to include(expected)
-            end
-          end
-        end
-      end
-
       shared_examples 'default key' do
         let(:config) do
           { key: { files: files } }

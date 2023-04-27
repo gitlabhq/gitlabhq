@@ -10684,7 +10684,7 @@ The connection type for [`Timelog`](#timelog).
 | <a id="timelogconnectionedges"></a>`edges` | [`[TimelogEdge]`](#timelogedge) | A list of edges. |
 | <a id="timelogconnectionnodes"></a>`nodes` | [`[Timelog]`](#timelog) | A list of nodes. |
 | <a id="timelogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-| <a id="timelogconnectiontotalspenttime"></a>`totalSpentTime` | [`Int!`](#int) | Total time spent in seconds. |
+| <a id="timelogconnectiontotalspenttime"></a>`totalSpentTime` | [`BigInt!`](#bigint) | Total time spent in seconds. |
 
 #### `TimelogEdge`
 

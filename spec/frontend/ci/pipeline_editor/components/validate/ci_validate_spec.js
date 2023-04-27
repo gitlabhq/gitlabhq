@@ -1,4 +1,4 @@
-import { GlAlert, GlDropdown, GlIcon, GlLoadingIcon, GlPopover } from '@gitlab/ui';
+import { GlAlert, GlDisclosureDropdown, GlIcon, GlLoadingIcon, GlPopover } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { createLocalVue } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
@@ -90,7 +90,7 @@ describe('Pipeline Editor Validate Tab', () => {
   const findHelpIcon = () => wrapper.findComponent(GlIcon);
   const findIllustration = () => wrapper.findByRole('img');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findPipelineSource = () => wrapper.findComponent(GlDropdown);
+  const findPipelineSource = () => wrapper.findComponent(GlDisclosureDropdown);
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findCiLintResults = () => wrapper.findComponent(CiLintResults);
   const findResultsCta = () => wrapper.findByTestId('resimulate-pipeline-button');
@@ -118,7 +118,7 @@ describe('Pipeline Editor Validate Tab', () => {
 
     it('renders disabled pipeline source dropdown', () => {
       expect(findPipelineSource().exists()).toBe(true);
-      expect(findPipelineSource().attributes('text')).toBe(i18n.pipelineSourceDefault);
+      expect(findPipelineSource().attributes('toggletext')).toBe(i18n.pipelineSourceDefault);
       expect(findPipelineSource().props('disabled')).toBe(true);
     });
 

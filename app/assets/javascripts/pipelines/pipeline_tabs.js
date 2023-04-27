@@ -35,7 +35,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     pipelineProjectPath,
     totalJobCount,
     licenseManagementApiUrl,
-    licenseManagementSettingsPath,
     licenseScanCount,
     licensesApiPath,
     canManageLicenses,
@@ -47,6 +46,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     emptyStateImagePath,
     artifactsExpiredImagePath,
     isFullCodequalityReportAvailable,
+    securityPoliciesPath,
     testsCount,
   } = dataset;
 
@@ -86,7 +86,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       pipelineProjectPath,
       totalJobCount,
       licenseManagementApiUrl,
-      licenseManagementSettingsPath,
       licenseScanCount,
       licensesApiPath,
       canManageLicenses: parseBoolean(canManageLicenses),
@@ -97,6 +96,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       emptyDagSvgPath,
       emptyStateImagePath,
       artifactsExpiredImagePath,
+      securityPoliciesPath,
       testsCount,
     },
     errorCaptured(err, _vm, info) {

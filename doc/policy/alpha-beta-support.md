@@ -56,4 +56,5 @@ Features are never internal (GitLab team-members) only.
 Our [mission is "everyone can contribute"](https://about.gitlab.com/company/mission/), and that is only possible if people outside the company can try a feature.
 We will get higher quality (more diverse) feedback if people from different organizations try something.
 We've also learned that internal only as a state slows us down more than it speeds us up.
+Release the experiment instead of testing internally or waiting for the feature to be in a Beta state.
 The experimental features are only shown when people/organizations opt-in to experiments, we are allowed to make mistakes here and literally experiment.

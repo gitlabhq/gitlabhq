@@ -2,6 +2,8 @@
 
 module Clusters
   class Agent < ApplicationRecord
+    include FromUnion
+
     self.table_name = 'cluster_agents'
 
     INACTIVE_AFTER = 1.hour.freeze
@@ -66,6 +68,15 @@ module Clusters
         all_ci_access_authorized_projects_for(user).limit(1),
         all_ci_access_authorized_namespaces_for(user).limit(1)
       ).exists?
+    end
+
+    # As of today, all config values of associated authorization rows have the same value.
+    # See `UserAccess::RefreshService` for more information.
+    def user_access_config
+      self.class.from_union(
+        user_access_project_authorizations.select('config').limit(1),
+        user_access_group_authorizations.select('config').limit(1)
+      ).compact.first&.config
     end
 
     private

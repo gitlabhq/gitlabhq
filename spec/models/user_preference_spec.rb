@@ -61,6 +61,10 @@ RSpec.describe UserPreference do
       it { is_expected.not_to allow_value(nil).for(:pass_user_identities_to_ci_jwt) }
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
+
+    describe 'visibility_pipeline_id_type' do
+      it { is_expected.to define_enum_for(:visibility_pipeline_id_type).with_values(id: 0, iid: 1) }
+    end
   end
 
   describe 'notes filters global keys' do

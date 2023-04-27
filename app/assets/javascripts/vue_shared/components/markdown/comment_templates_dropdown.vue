@@ -96,7 +96,7 @@ export default {
         data-testid="comment-template-dropdown-toggle"
         @keydown.prevent
       >
-        <gl-icon name="symlink" class="gl-mr-0!" />
+        <gl-icon name="comment-lines" class="gl-mr-0!" />
         <gl-icon name="chevron-down" />
       </gl-button>
     </template>

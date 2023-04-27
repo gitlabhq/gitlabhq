@@ -372,34 +372,28 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       ActionController::Base.new.send(:generate_csrf_token)
     end
 
-    let_it_be(:project) { create(:project) }
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user_access_config) do
+    let_it_be(:organization) { create(:group) }
+    let_it_be(:configuration_project) { create(:project, group: organization) }
+    let_it_be(:agent) { create(:cluster_agent, name: 'the-agent', project: configuration_project) }
+    let_it_be(:another_agent) { create(:cluster_agent) }
+    let_it_be(:deployment_project) { create(:project, group: organization) }
+    let_it_be(:deployment_group) { create(:group, parent: organization) }
+
+    let(:user_access_config) do
       {
         'user_access' => {
           'access_as' => { 'agent' => {} },
-          'projects' => [{ 'id' => project.full_path }],
-          'groups' => [{ 'id' => group.full_path }]
+          'projects' => [{ 'id' => deployment_project.full_path }],
+          'groups' => [{ 'id' => deployment_group.full_path }]
         }
       }
     end
-
-    let_it_be(:configuration_project) do
-      create(
-        :project, :custom_repo,
-        files: {
-          ".gitlab/agents/the-agent/config.yaml" => user_access_config.to_yaml
-        }
-      )
-    end
-
-    let_it_be(:agent) { create(:cluster_agent, name: 'the-agent', project: configuration_project) }
-    let_it_be(:another_agent) { create(:cluster_agent) }
 
     let(:user) { create(:user) }
 
     before do
       allow(::Gitlab::Kas).to receive(:enabled?).and_return true
+      Clusters::Agents::Authorizations::UserAccess::RefreshService.new(agent, config: user_access_config).execute
     end
 
     it 'returns 400 when cookie is invalid' do
@@ -442,7 +436,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     it 'returns 200 when user has access' do
-      project.add_member(user, :developer)
+      deployment_project.add_member(user, :developer)
       token = new_token
       public_id = stub_user_session(user, token)
       access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
@@ -452,7 +446,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     it 'returns 401 when user has valid KAS cookie and CSRF token but has no access to requested agent' do
-      project.add_member(user, :developer)
+      deployment_project.add_member(user, :developer)
       token = new_token
       public_id = stub_user_session(user, token)
       access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
@@ -464,7 +458,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     it 'returns 401 when global flag is disabled' do
       stub_feature_flags(kas_user_access: false)
 
-      project.add_member(user, :developer)
+      deployment_project.add_member(user, :developer)
       token = new_token
       public_id = stub_user_session(user, token)
       access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)
@@ -474,7 +468,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     it 'returns 401 when user id is not found in session' do
-      project.add_member(user, :developer)
+      deployment_project.add_member(user, :developer)
       token = new_token
       public_id = stub_user_session_with_no_user_id(user, token)
       access_key = Gitlab::Kas::UserAccess.encrypt_public_session_id(public_id)

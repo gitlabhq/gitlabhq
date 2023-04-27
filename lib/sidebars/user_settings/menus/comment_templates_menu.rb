@@ -18,7 +18,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'symlink'
+          'comment-lines'
         end
 
         override :render?

@@ -6,7 +6,7 @@ RSpec.describe Sidebars::UserSettings::Menus::CommentTemplatesMenu, feature_cate
   it_behaves_like 'User settings menu',
     link: '/-/profile/comment_templates',
     title: _('Comment Templates'),
-    icon: 'symlink',
+    icon: 'comment-lines',
     active_routes: { controller: :comment_templates }
 
   describe '#render?' do

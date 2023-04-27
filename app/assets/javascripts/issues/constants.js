@@ -19,7 +19,7 @@ export const TYPE_TEST_CASE = 'test_case';
 export const WORKSPACE_GROUP = 'group';
 export const WORKSPACE_PROJECT = 'project';
 
-export const IssuableStatusText = {
+export const issuableStatusText = {
   [STATUS_CLOSED]: __('Closed'),
   [STATUS_OPEN]: __('Open'),
   [STATUS_REOPENED]: __('Open'),

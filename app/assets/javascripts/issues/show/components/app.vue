@@ -3,7 +3,7 @@ import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gi
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import {
-  IssuableStatusText,
+  issuableStatusText,
   STATUS_CLOSED,
   TYPE_EPIC,
   TYPE_INCIDENT,
@@ -263,7 +263,7 @@ export default {
       return this.isClosed ? 'info' : 'success';
     },
     statusText() {
-      return IssuableStatusText[this.issuableStatus];
+      return issuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
       return [TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);

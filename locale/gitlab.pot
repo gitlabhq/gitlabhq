@@ -26185,9 +26185,6 @@ msgstr ""
 msgid "Licenses|Components"
 msgstr ""
 
-msgid "Licenses|Detected in Project"
-msgstr ""
-
 msgid "Licenses|Displays licenses detected in the project that are out of compliance with the project's policies, based on the %{linkStart}latest successful%{linkEnd} scan"
 msgstr ""
 
@@ -26209,16 +26206,10 @@ msgstr ""
 msgid "Licenses|Name"
 msgstr ""
 
-msgid "Licenses|Policies"
-msgstr ""
-
 msgid "Licenses|Policy"
 msgstr ""
 
 msgid "Licenses|Policy violation: denied"
-msgstr ""
-
-msgid "Licenses|Specified policies in this project"
 msgstr ""
 
 msgid "Licenses|The file could not be uploaded."
@@ -52226,9 +52217,6 @@ msgid "ciReport|Loading %{reportName} report"
 msgstr ""
 
 msgid "ciReport|Loading Code Quality report"
-msgstr ""
-
-msgid "ciReport|Manage Licenses"
 msgstr ""
 
 msgid "ciReport|Manage licenses"

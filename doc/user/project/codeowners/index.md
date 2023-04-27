@@ -78,11 +78,28 @@ all others are ignored:
 1. In the `docs` directory: `./docs/CODEOWNERS`.
 1. In the `.gitlab` directory: `./.gitlab/CODEOWNERS`.
 
-### Groups as Code Owners
+### Add a group as a Code Owner
 
 > Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
 
-You can use members of groups and subgroups as Code Owners for projects:
+To set the members of a group or subgroup as a Code Owner:
+
+In the `CODEOWNERS` file, enter text that follows one of these patterns:
+
+```plaintext
+# All group members as Code Owners for a file
+file.md @group-x
+
+# All subgroup members as Code Owners for a file
+file.md @group-x/subgroup-y
+
+# All group and subgroup members as Code Owners for a file
+file.md @group-x @group-x/subgroup-y
+```
+
+#### Group inheritance and eligibility
+
+> Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
 
 ```mermaid
 graph TD
@@ -103,6 +120,8 @@ The eligible Code Owners are:
 - **Project A**: the members of **Group X** only, because **Project A** doesn't belong to **Subgroup Y**.
 - **Project B**: the members of both **Group X** and **Subgroup Y**.
 
+##### Inviting subgroups to projects in parent groups
+
 You can [invite](../members/share_project_with_groups.md) **Subgroup Y** to **Project A**
 so that their members also become eligible Code Owners.
 
@@ -110,40 +129,26 @@ so that their members also become eligible Code Owners.
 graph LR
     A[Parent group X] -->|owns| B[Project A]
     A -->|also contains| C[Subgroup Y]
-    C -.->D{Invite Subgroup Y<br/>to Project A?} -.->|yes| F[Approvals can be<br/> required] -.-> B
-    D{Invite Subgroup Y<br/>to Project A?} -.->|no| I[Subgroup Y cannot be<br /> an approver] -.-> B
-    C -.->E{Add Subgroup Y<br/>as Code Owners<br/>to Project A?} -.->|yes| H[Approvals can only<br/>be optional] -.-> B
+    C -.->D{Invite Subgroup Y<br/>to Project A?} -.->|yes| E[Members of Subgroup Y<br/>can submit Approvals]
+    D{Invite Subgroup Y<br/>to Project A?} -.->|no| F[Members of Subgroup Y<br />cannot submit Approvals]
+    E -.->|Add Subgroup Y<br/> as Code Owner to Project A| I[Approvals can be<br/>required] -.-> B
+    F -.-> |Add Subgroup Y<br/> as Code Owners to Project A| J[Approvals can only<br/>be optional] -.-> B
 ```
 
 If you do not invite **Subgroup Y** to **Project A**, but make them Code Owners, their approval
 of the merge request becomes optional.
 
+##### Inviting subgroups to parent groups
+
 Inviting **Subgroup Y** to a parent group of **Project A**
 [is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set **Subgroup Y** as
-Code Owners, add this group directly to the project itself.
+Code Owners [invite this group directly to the project](#inviting-subgroups-to-projects-in-parent-groups) itself.
 
 NOTE:
 For approval to be required, groups as Code Owners must have a direct membership
 (not inherited membership) in the project. Approval can only be optional for groups
 that inherit membership. Members in the Code Owners group also must be direct members,
 and not inherit membership from any parent groups.
-
-#### Add a group as a Code Owner
-
-To set a group as a Code Owner:
-
-In the `CODEOWNERS` file, enter text that follows one of these patterns:
-
-```plaintext
-# All group members as Code Owners for a file
-file.md @group-x
-
-# All subgroup members as Code Owners for a file
-file.md @group-x/subgroup-y
-
-# All group and subgroup members as Code Owners for a file
-file.md @group-x @group-x/subgroup-y
-```
 
 ### Define more specific owners for more specifically defined files or directories
 

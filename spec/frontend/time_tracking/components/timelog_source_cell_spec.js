@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimelogSourceCell from '~/time_tracking/components/timelog_source_cell.vue';
 import {
-  IssuableStatusText,
+  issuableStatusText,
   STATUS_CLOSED,
   STATUS_MERGED,
   STATUS_OPEN,
@@ -83,10 +83,10 @@ describe('TimelogSourceCell component', () => {
 
     it.each`
       state              | stateDescription
-      ${STATUS_OPEN}     | ${IssuableStatusText[STATUS_OPEN]}
-      ${STATUS_REOPENED} | ${IssuableStatusText[STATUS_REOPENED]}
-      ${STATUS_LOCKED}   | ${IssuableStatusText[STATUS_LOCKED]}
-      ${STATUS_CLOSED}   | ${IssuableStatusText[STATUS_CLOSED]}
+      ${STATUS_OPEN}     | ${issuableStatusText[STATUS_OPEN]}
+      ${STATUS_REOPENED} | ${issuableStatusText[STATUS_REOPENED]}
+      ${STATUS_LOCKED}   | ${issuableStatusText[STATUS_LOCKED]}
+      ${STATUS_CLOSED}   | ${issuableStatusText[STATUS_CLOSED]}
     `('shows $stateDescription when the state is $state', ({ state, stateDescription }) => {
       mountComponent(createIssuableTimelogMock('issue', { state }));
 
@@ -124,9 +124,9 @@ describe('TimelogSourceCell component', () => {
     });
     it.each`
       state            | stateDescription
-      ${STATUS_OPEN}   | ${IssuableStatusText[STATUS_OPEN]}
-      ${STATUS_CLOSED} | ${IssuableStatusText[STATUS_CLOSED]}
-      ${STATUS_MERGED} | ${IssuableStatusText[STATUS_MERGED]}
+      ${STATUS_OPEN}   | ${issuableStatusText[STATUS_OPEN]}
+      ${STATUS_CLOSED} | ${issuableStatusText[STATUS_CLOSED]}
+      ${STATUS_MERGED} | ${issuableStatusText[STATUS_MERGED]}
     `('shows $stateDescription when the state is $state', ({ state, stateDescription }) => {
       mountComponent(createIssuableTimelogMock('mergeRequest', { state }));
 

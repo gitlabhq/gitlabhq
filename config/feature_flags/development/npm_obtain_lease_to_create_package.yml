@@ -1,8 +1,0 @@
----
-name: npm_obtain_lease_to_create_package
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114317
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397668
-milestone: '15.11'
-type: development
-group: group::package registry
-default_enabled: false

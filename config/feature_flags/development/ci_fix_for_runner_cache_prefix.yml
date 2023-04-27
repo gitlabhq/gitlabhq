@@ -1,8 +1,0 @@
----
-name: ci_fix_for_runner_cache_prefix
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113273
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404710
-milestone: '15.11'
-type: development
-group: group::pipeline authoring
-default_enabled: false

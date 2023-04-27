@@ -5,7 +5,7 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class TimelogConnectionType < CountableConnectionType
       field :total_spent_time,
-            GraphQL::Types::Int,
+            GraphQL::Types::BigInt,
             null: false,
             description: 'Total time spent in seconds.'
 

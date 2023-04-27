@@ -234,4 +234,46 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
       end
     end
   end
+
+  describe '#user_access_config' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project) }
+    let_it_be_with_refind(:agent) { create(:cluster_agent, project: project) }
+
+    subject { agent.user_access_config }
+
+    it { is_expected.to be_nil }
+
+    context 'with user_access project authorizations' do
+      before do
+        create(:agent_user_access_project_authorization, agent: agent, project: project, config: config)
+      end
+
+      let(:config) { {} }
+
+      it { is_expected.to eq(config) }
+
+      context 'when access_as keyword exists' do
+        let(:config) { { 'access_as' => { 'agent' => {} } } }
+
+        it { is_expected.to eq(config) }
+      end
+    end
+
+    context 'with user_access group authorizations' do
+      before do
+        create(:agent_user_access_group_authorization, agent: agent, group: group, config: config)
+      end
+
+      let(:config) { {} }
+
+      it { is_expected.to eq(config) }
+
+      context 'when access_as keyword exists' do
+        let(:config) { { 'access_as' => { 'agent' => {} } } }
+
+        it { is_expected.to eq(config) }
+      end
+    end
+  end
 end

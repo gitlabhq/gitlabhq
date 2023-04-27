@@ -300,20 +300,6 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       subject
     end
 
-    context 'with npm_obtain_lease_to_create_package disabled' do
-      before do
-        stub_feature_flags(npm_obtain_lease_to_create_package: false)
-      end
-
-      it 'does not obtain a lease' do
-        lease = stub_exclusive_lease(lease_key, 'uuid', timeout: described_class::DEFAULT_LEASE_TIMEOUT)
-
-        expect(lease).not_to receive(:try_obtain)
-
-        subject
-      end
-    end
-
     context 'when the lease is already taken' do
       before do
         stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)

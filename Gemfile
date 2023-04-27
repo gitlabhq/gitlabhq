@@ -28,7 +28,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'view_component', '~> 2.82.0'
 
 # Supported DBs
-gem 'pg', '~> 1.5.2'
+gem 'pg', '~> 1.4.6'
 
 gem 'neighbor', '~> 0.2.3'
 
@@ -370,7 +370,7 @@ gem 'prometheus-client-mmap', '~> 0.21', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.3.10', require: false
+  gem 'lefthook', '~> 1.3.11', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 

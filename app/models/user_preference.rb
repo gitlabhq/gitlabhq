@@ -35,6 +35,8 @@ class UserPreference < ApplicationRecord
   attribute :time_format_in_24h, default: false
   attribute :render_whitespace_in_code, default: false
 
+  enum visibility_pipeline_id_type: { id: 0, iid: 1 }
+
   class << self
     def notes_filters
       {

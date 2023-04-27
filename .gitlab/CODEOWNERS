@@ -1466,13 +1466,13 @@ ee/lib/ee/api/entities/project.rb
 
 [JH Frontend] @jihulab/maintainers/frontend
 /jh/app/assets/
-/jh/*.scss
-/jh/*.js
-/jh/*.vue
+/jh/**/*.scss
+/jh/**/*.js
+/jh/**/*.vue
 
 [JH Rails Backend] @jihulab/maintainers/rails-backend
-/jh/*.rb
-/jh/*.rake
+/jh/**/*.rb
+/jh/**/*.rake
 /jh/qa/ @jihulab/maintainers/quality
 
 [JH Technical Writer] @jihulab/maintainers/technical-writer
