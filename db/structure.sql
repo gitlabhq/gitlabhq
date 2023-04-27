@@ -21164,6 +21164,28 @@ CREATE TABLE project_settings (
     CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500))
 );
 
+CREATE TABLE project_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    project_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_0d5a9e7bde CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE project_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_states_id_seq OWNED BY project_states.id;
+
 CREATE TABLE project_statistics (
     id integer NOT NULL,
     project_id integer NOT NULL,
@@ -25457,6 +25479,8 @@ ALTER TABLE ONLY project_repository_storage_moves ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY project_security_settings ALTER COLUMN project_id SET DEFAULT nextval('project_security_settings_project_id_seq'::regclass);
 
+ALTER TABLE ONLY project_states ALTER COLUMN id SET DEFAULT nextval('project_states_id_seq'::regclass);
+
 ALTER TABLE ONLY project_statistics ALTER COLUMN id SET DEFAULT nextval('project_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY project_topics ALTER COLUMN id SET DEFAULT nextval('project_topics_id_seq'::regclass);
@@ -27800,6 +27824,9 @@ ALTER TABLE ONLY project_security_settings
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT project_settings_pkey PRIMARY KEY (project_id);
+
+ALTER TABLE ONLY project_states
+    ADD CONSTRAINT project_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT project_statistics_pkey PRIMARY KEY (id);
@@ -31873,6 +31900,16 @@ CREATE INDEX index_project_settings_on_project_id_partially ON project_settings 
 CREATE UNIQUE INDEX index_project_settings_on_push_rule_id ON project_settings USING btree (push_rule_id);
 
 CREATE INDEX index_project_stages_on_stage_event_hash_id ON analytics_cycle_analytics_project_stages USING btree (stage_event_hash_id);
+
+CREATE INDEX index_project_states_failed_verification ON project_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_project_states_needs_verification ON project_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX index_project_states_on_project_id ON project_states USING btree (project_id);
+
+CREATE INDEX index_project_states_on_verification_state ON project_states USING btree (verification_state);
+
+CREATE INDEX index_project_states_pending_verification ON project_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_project_statistics_on_namespace_id ON project_statistics USING btree (namespace_id);
 
@@ -36612,6 +36649,9 @@ ALTER TABLE ONLY user_preferences
 
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT fk_rails_a6a9612965 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_states
+    ADD CONSTRAINT fk_rails_a6e5821877 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_permission_export_uploads
     ADD CONSTRAINT fk_rails_a7130085e3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

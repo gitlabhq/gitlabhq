@@ -225,7 +225,7 @@ export default {
       v-model="searchText"
       role="searchbox"
       class="gl-z-index-1"
-      data-qa-selector="search_term_field"
+      data-qa-selector="global_search_input"
       autocomplete="off"
       :placeholder="$options.i18n.SEARCH_GITLAB"
       :aria-activedescendant="currentFocusedId"

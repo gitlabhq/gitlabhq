@@ -1,13 +1,13 @@
 import $ from 'jquery';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { flatten } from 'lodash';
 import { Mousetrap } from '~/lib/mousetrap';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Shortcuts, { LOCAL_MOUSETRAP_DATA_KEY } from '~/behaviors/shortcuts/shortcuts';
 
 jest.mock('mousetrap/plugins/pause/mousetrap-pause', () => {});
 
 describe('Shortcuts', () => {
-  const fixtureName = 'snippets/show.html';
   const createEvent = (type, target) =>
     $.Event(type, {
       target,
@@ -19,7 +19,7 @@ describe('Shortcuts', () => {
   });
 
   beforeEach(() => {
-    loadHTMLFixture(fixtureName);
+    setHTMLFixture(htmlSnippetsShow);
 
     jest.spyOn(document.querySelector('.js-new-note-form .js-md-preview-button'), 'focus');
     jest.spyOn(document.querySelector('.edit-note .js-md-preview-button'), 'focus');

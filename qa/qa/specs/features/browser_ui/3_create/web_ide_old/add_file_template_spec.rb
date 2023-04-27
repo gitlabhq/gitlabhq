@@ -2,7 +2,7 @@
 
 # TODO: remove this test when coverage is replaced or deemed irrelevant
 module QA
-  RSpec.describe 'Create', :skip_live_env, product_group: :editor do
+  RSpec.describe 'Create', :skip_live_env, product_group: :ide do
     before do
       skip("Skipped but kept as reference. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741#note_1330720944")
     end

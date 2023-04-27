@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do # to be converted to a smoke test once proved to be stable
+  RSpec.describe 'Create', product_group: :source_code do # to be converted to a smoke test once proved to be stable
     describe 'Project snippet creation' do
       let(:snippet) do
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|

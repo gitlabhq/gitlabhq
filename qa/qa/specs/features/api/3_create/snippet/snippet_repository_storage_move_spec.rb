@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Create', product_group: :source_code do
     describe 'Snippet repository storage', :requires_admin, :orchestrated, :repository_storage do
       let(:source_storage) { { type: :gitaly, name: 'default' } }
       let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }

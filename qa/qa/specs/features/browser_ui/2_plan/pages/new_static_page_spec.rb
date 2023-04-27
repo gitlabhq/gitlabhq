@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create',
+  RSpec.describe 'Plan',
     :gitlab_pages,
     :orchestrated,
     except: { job: 'review-qa-*' },
@@ -11,7 +11,7 @@ module QA
     },
     feature_flag: { name: 'show_pages_in_deployments_menu' } do
     # TODO: Convert back to :smoke once proved to be stable. Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/300906
-    describe 'Pages', product_group: :editor do
+    describe 'Pages', product_group: :knowledge do
       let!(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'gitlab-pages-project'

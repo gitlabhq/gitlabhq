@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Create', product_group: :source_code do
     describe 'Snippet index page' do
       let(:personal_snippet_with_single_file) do
         Resource::Snippet.fabricate_via_api! do |snippet|

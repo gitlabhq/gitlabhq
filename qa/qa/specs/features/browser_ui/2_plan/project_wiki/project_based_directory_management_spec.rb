@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Plan', product_group: :knowledge do
     describe 'A project wiki' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:new_path) { "a/new/path-with-spaces" }
@@ -11,7 +11,7 @@ module QA
       end
 
       it 'can change the directory path of a page',
-testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347821' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347821' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)

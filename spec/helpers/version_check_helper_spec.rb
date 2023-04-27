@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe VersionCheckHelper do
+  include StubVersion
+
   let_it_be(:user) { create(:user) }
 
   describe '#show_version_check?' do
@@ -79,6 +81,34 @@ RSpec.describe VersionCheckHelper do
         it 'returns correct results' do
           expect(helper.show_security_patch_upgrade_alert?).to eq result
         end
+      end
+    end
+  end
+
+  describe '#link_to_version' do
+    let(:release_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/-/tags/deadbeef' }
+
+    before do
+      allow(Gitlab::Source).to receive(:release_url).and_return(release_url)
+    end
+
+    context 'for a pre-release' do
+      before do
+        stub_version('8.0.2-pre', 'deadbeef')
+      end
+
+      it 'links to commit sha' do
+        expect(helper.link_to_version).to eq("8.0.2-pre <small><a href=\"#{release_url}\">deadbeef</a></small>")
+      end
+    end
+
+    context 'for a normal release' do
+      before do
+        stub_version('8.0.2-ee', 'deadbeef')
+      end
+
+      it 'links to version tag' do
+        expect(helper.link_to_version).to include("<a href=\"#{release_url}\">v8.0.2-ee</a>")
       end
     end
   end

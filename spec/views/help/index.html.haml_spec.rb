@@ -22,8 +22,7 @@ RSpec.describe 'help/index' do
 
     context 'when logged in' do
       def version_link_regexp(path)
-        base_url = "#{view.source_host_url}/#{view.source_code_group}"
-        %r{#{Regexp.escape(base_url)}/(gitlab|gitlab-foss)/#{Regexp.escape(path)}}
+        %r{#{Regexp.escape(Gitlab::Saas.com_url)}/gitlab-org/(gitlab|gitlab-foss)/#{Regexp.escape(path)}}
       end
 
       before do

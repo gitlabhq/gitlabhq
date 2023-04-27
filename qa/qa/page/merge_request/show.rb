@@ -206,7 +206,7 @@ module QA
           # we must reload the page. https://gitlab.com/gitlab-org/gitlab/-/issues/398557
           wait_until(reload: true, skip_finished_loading_check_on_refresh: true) do
             QA::Runtime::Logger.debug('Ensuring that diff has loaded async')
-            has_element?(:file_tree_button, skip_finished_loading_check: true, wait: 1)
+            has_element?(:file_tree_button, skip_finished_loading_check: true, wait: 5)
           end
         end
 

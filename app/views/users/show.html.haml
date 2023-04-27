@@ -14,8 +14,8 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  %div{ class: container_class }
-    .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty? || show_super_sidebar?)] }
+  .cover-block.user-cover-block.gl-border-t.gl-border-b.gl-mt-n1
+    %div{ class: container_class }
       = render layout: 'users/cover_controls' do
         - if @user == current_user
           = render Pajamas::ButtonComponent.new(href: profile_path,
@@ -46,7 +46,7 @@
               = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-w-full', data: { qa_selector: 'follow_user_link', track_action: 'click_button', track_label: 'follow_from_profile' } }) do
                 = _('Follow')
 
-      .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?)] }
+      .profile-header{ class: [('with-no-profile-tabs' if profile_tabs.empty?), ('gl-mb-4!' if show_super_sidebar?)] }
         .gl-display-inline-block.gl-mx-8.gl-vertical-align-top
           .avatar-holder
             = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer' do
@@ -129,7 +129,7 @@
         .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }
           .fade-left= sprite_icon('chevron-lg-left', size: 12)
           .fade-right= sprite_icon('chevron-lg-right', size: 12)
-          %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
+          %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs.gl-border-b-0
             - if profile_tab?(:overview)
               %li.js-overview-tab
                 = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do

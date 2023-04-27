@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Testing project wiki', product_group: :editor do
+  RSpec.describe 'Plan' do
+    describe 'Testing project wiki', product_group: :knowledge do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
 
       before do

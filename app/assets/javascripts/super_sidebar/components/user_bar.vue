@@ -139,6 +139,7 @@ export default {
         v-gl-tooltip.bottom.hover.html="searchTooltip"
         v-gl-modal="$options.SEARCH_MODAL_ID"
         data-testid="super-sidebar-search-button"
+        data-qa-selector="global_search_button"
         icon="search"
         :aria-label="$options.i18n.search"
         category="tertiary"

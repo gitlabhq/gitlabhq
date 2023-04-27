@@ -234,6 +234,7 @@ export default {
           v-model="searchText"
           role="searchbox"
           data-testid="global-search-input"
+          data-qa-selector="global_search_input"
           autocomplete="off"
           :placeholder="$options.i18n.SEARCH_GITLAB"
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"

@@ -29,6 +29,14 @@ module QA
           view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
             element :user_profile_link
           end
+
+          view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+            element :global_search_button
+          end
+
+          view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
+            element :global_search_input
+          end
         else
           view 'app/views/layouts/header/_default.html.haml' do
             element :navbar, required: true
@@ -72,7 +80,7 @@ module QA
         end
 
         view 'app/assets/javascripts/header_search/components/app.vue' do
-          element :search_term_field
+          element :global_search_input
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
@@ -219,8 +227,8 @@ module QA
         end
 
         def search_for(term)
-          click_element(:search_box)
-          fill_element :search_term_field, "#{term}\n"
+          click_element(Runtime::Env.super_sidebar_enabled? ? :global_search_button : :search_box)
+          fill_element(:global_search_input, "#{term}\n")
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)

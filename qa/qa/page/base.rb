@@ -284,17 +284,13 @@ module QA
           false
         end
 
-        # Check for the element before waiting for requests, just in case unrelated requests are in progress.
-        # This is to avoid waiting unnecessarily after the element we're interested in has already appeared.
-        return true if try_find_element.call(wait)
+        # Check to see if we can return early, without the need to wait for all network requests to complete
+        # We don't want to add overhead to cases where wait=0 as the caller in these cases is indicating that they
+        # don't want any overhead
+        return true if wait > 1 && try_find_element.call(1)
 
-        # If the element didn't appear, wait for requests and then check again
         wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
-
-        # We only wait one second now because we previously waited the full expected duration,
-        # plus however long it took for requests to complete. One second should be enough
-        # for the UI to update after requests complete.
-        try_find_element.call(1)
+        try_find_element.call(wait)
       end
 
       def has_no_element?(name, **kwargs)

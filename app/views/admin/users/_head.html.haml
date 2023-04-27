@@ -1,4 +1,4 @@
-.gl-display-flex.gl-flex-wrap.gl-justify-content-space-between.gl-align-items-center.gl-py-3.gl-mb-5.gl-border-b-solid.gl-border-gray-100.gl-border-b-1
+.gl-display-flex.gl-flex-wrap.gl-justify-content-space-between.gl-align-items-center.gl-pt-3
   .gl-my-3
     %h1.page-title.gl-font-size-h-display.gl-m-0
       = @user.name
@@ -27,8 +27,6 @@
       = render_if_exists 'admin/users/gma_user_badge'
 
   .gl-my-3.gl-display-flex.gl-flex-wrap.gl-my-n2.gl-mx-n2
-    .gl-p-2
-      #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
     - if @user != current_user
       - if impersonation_enabled?
         .gl-p-2
@@ -42,6 +40,8 @@
     .gl-p-2
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_identity_path(@user)) do
         = _('New identity')
+    .gl-p-2
+      #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
 = gl_tabs_nav do
   = gl_tab_link_to _("Account"), admin_user_path(@user)
   = gl_tab_link_to _("Groups and projects"), projects_admin_user_path(@user)

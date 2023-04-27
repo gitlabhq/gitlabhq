@@ -16498,9 +16498,6 @@ msgstr ""
 msgid "Environment scope"
 msgstr ""
 
-msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default."
-msgstr ""
-
 msgid "Environment variables on this GitLab instance are configured to be %{link_start}protected%{link_end} by default."
 msgstr ""
 
@@ -50464,6 +50461,12 @@ msgstr ""
 msgid "Workspaces|New workspace"
 msgstr ""
 
+msgid "Workspaces|Restart"
+msgstr ""
+
+msgid "Workspaces|Restarting"
+msgstr ""
+
 msgid "Workspaces|Running"
 msgstr ""
 
@@ -50476,7 +50479,13 @@ msgstr ""
 msgid "Workspaces|Select project"
 msgstr ""
 
+msgid "Workspaces|Start"
+msgstr ""
+
 msgid "Workspaces|Starting"
+msgstr ""
+
+msgid "Workspaces|Stop"
 msgstr ""
 
 msgid "Workspaces|Stopped"

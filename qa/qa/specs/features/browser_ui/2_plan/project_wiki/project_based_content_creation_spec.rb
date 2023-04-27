@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Plan', product_group: :knowledge do
     describe 'Testing wiki content creation inside a project' do
       let(:new_wiki_title) { "just_another_wiki_page" }
       let(:new_wiki_content) { "this content is changed or added" }

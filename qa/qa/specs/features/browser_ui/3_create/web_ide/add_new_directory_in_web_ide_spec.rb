@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Create', product_group: :ide do
     describe 'Add a directory in Web IDE' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
