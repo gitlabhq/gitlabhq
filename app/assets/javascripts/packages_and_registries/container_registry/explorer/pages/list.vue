@@ -1,5 +1,6 @@
 <script>
 import {
+  GlButton,
   GlEmptyState,
   GlTooltipDirective,
   GlSprintf,
@@ -28,12 +29,14 @@ import {
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   SORT_FIELDS,
+  SETTINGS_TEXT,
 } from '../constants/index';
 import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
 
 export default {
   name: 'RegistryListPage',
   components: {
+    GlButton,
     GlEmptyState,
     ProjectEmptyState: () =>
       import(
@@ -75,6 +78,7 @@ export default {
     CONNECTION_ERROR_MESSAGE,
     EMPTY_RESULT_TITLE,
     EMPTY_RESULT_MESSAGE,
+    SETTINGS_TEXT,
   },
   searchConfig: SORT_FIELDS,
   apollo: {
@@ -305,6 +309,13 @@ export default {
             :docker-build-command="dockerBuildCommand"
             :docker-push-command="dockerPushCommand"
             :docker-login-command="dockerLoginCommand"
+          />
+          <gl-button
+            v-if="config.showContainerRegistrySettings"
+            v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
+            icon="settings"
+            :href="config.cleanupPoliciesSettingsPath"
+            :aria-label="$options.i18n.SETTINGS_TEXT"
           />
         </template>
       </registry-header>

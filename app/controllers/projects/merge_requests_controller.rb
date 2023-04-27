@@ -32,6 +32,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
+  before_action only: :index do
+    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
+  end
+
   before_action only: [:show, :diffs] do
     push_frontend_feature_flag(:content_editor_on_issues, project&.group)
     push_force_frontend_feature_flag(:content_editor_on_issues, project&.content_editor_on_issues_feature_flag_enabled?)

@@ -24,6 +24,8 @@ module QA
 
       it 'successfully exports issues list as CSV', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347968' do
         Page::Project::Issue::Index.perform do |index|
+          index.click_issues_list_more_actions_dropdown
+
           index.click_export_as_csv_button
 
           expect(index.export_issues_modal).to have_content('2 issues selected')

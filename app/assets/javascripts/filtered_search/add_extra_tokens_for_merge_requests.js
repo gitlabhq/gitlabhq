@@ -101,8 +101,10 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     ],
   };
 
-  IssuableTokenKeys.tokenKeys.splice(3, 0, approvedToken.token);
-  IssuableTokenKeys.conditions.push(...approvedToken.conditions);
+  if (gon.features.mrApprovedFilter) {
+    IssuableTokenKeys.tokenKeys.splice(3, 0, approvedToken.token);
+    IssuableTokenKeys.conditions.push(...approvedToken.conditions);
+  }
 
   const approvedBy = {
     token: {
@@ -149,7 +151,7 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     ],
   };
 
-  const tokenPosition = 4;
+  const tokenPosition = gon.features.mrApprovedFilter ? 4 : 3;
   IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, approvedBy.token);
   IssuableTokenKeys.tokenKeysWithAlternative.splice(
     tokenPosition,

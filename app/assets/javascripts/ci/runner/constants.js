@@ -195,7 +195,6 @@ export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';
 export const LINUX_PLATFORM = 'linux';
 export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
-export const AWS_PLATFORM = 'aws';
 
 export const DOWNLOAD_LOCATIONS = {
   [LINUX_PLATFORM]: [

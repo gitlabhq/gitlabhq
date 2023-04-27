@@ -105,4 +105,31 @@ describe('MRWidget approvals summary', () => {
       expect(wrapper.findComponent(UserAvatarList).exists()).toBe(false);
     });
   });
+
+  describe('user avatars list layout', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not add top padding initially', () => {
+      const avatarsList = findAvatars();
+
+      expect(avatarsList.classes()).not.toContain('gl-pt-1');
+    });
+
+    it('adds some top padding when the list is expanded', async () => {
+      const avatarsList = findAvatars();
+      await avatarsList.vm.$emit('expanded');
+
+      expect(avatarsList.classes()).toContain('gl-pt-1');
+    });
+
+    it('removes the top padding when the list collapsed', async () => {
+      const avatarsList = findAvatars();
+      await avatarsList.vm.$emit('expanded');
+      await avatarsList.vm.$emit('collapsed');
+
+      expect(avatarsList.classes()).not.toContain('gl-pt-1');
+    });
+  });
 });

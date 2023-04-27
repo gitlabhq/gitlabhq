@@ -14,6 +14,7 @@ RSpec.describe 'Merge Requests > Exports as CSV', :js, feature_category: :code_r
 
   context 'button is clicked' do
     before do
+      click_button 'Actions'
       click_button 'Export as CSV'
     end
 

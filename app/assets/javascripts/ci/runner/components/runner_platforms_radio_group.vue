@@ -1,5 +1,4 @@
 <script>
-import AWS_LOGO_URL from '@gitlab/svgs/dist/illustrations/logos/aws.svg?url';
 import DOCKER_LOGO_URL from '@gitlab/svgs/dist/illustrations/third-party-logos/ci_cd-template-logos/docker.png';
 import KUBERNETES_LOGO_URL from '@gitlab/svgs/dist/illustrations/logos/kubernetes.svg?url';
 import { GlFormRadioGroup, GlIcon, GlLink } from '@gitlab/ui';
@@ -8,7 +7,6 @@ import {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
-  AWS_PLATFORM,
   DOCKER_HELP_URL,
   KUBERNETES_HELP_URL,
 } from '../constants';
@@ -43,8 +41,6 @@ export default {
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
 
-  AWS_PLATFORM,
-  AWS_LOGO_URL,
   DOCKER_HELP_URL,
   DOCKER_LOGO_URL,
   KUBERNETES_HELP_URL,
@@ -67,20 +63,6 @@ export default {
         </runner-platforms-radio>
         <runner-platforms-radio v-model="model" :value="$options.WINDOWS_PLATFORM">
           Windows
-        </runner-platforms-radio>
-      </div>
-    </div>
-
-    <div class="gl-mt-3 gl-mb-6">
-      <label>{{ s__('Runners|Cloud templates') }}</label>
-      <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <div class="gl-display-flex gl-flex-wrap gl-gap-5">
-        <runner-platforms-radio
-          v-model="model"
-          :image="$options.AWS_LOGO_URL"
-          :value="$options.AWS_PLATFORM"
-        >
-          AWS
         </runner-platforms-radio>
       </div>
     </div>

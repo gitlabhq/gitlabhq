@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlDropdown } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -11,6 +11,7 @@ import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_coun
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   getIssuesCountsQueryResponse,
@@ -126,12 +127,16 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
+  const findCalendarButton = () =>
+    wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.calendarLabel });
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
+  const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
-  const findGlButtonAt = (index) => findGlButtons().at(index);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
+  const findRssButton = () => wrapper.findByRole('menuitem', { name: IssuesListApp.i18n.rssLabel });
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -232,63 +237,66 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('header action buttons', () => {
-    it('renders rss button', async () => {
-      wrapper = mountComponent({ mountFn: mount });
-      await waitForPromises();
+    describe('actions dropdown', () => {
+      it('renders', () => {
+        wrapper = mountComponent({ mountFn: mount });
 
-      expect(findGlButtonAt(0).props('icon')).toBe('rss');
-      expect(findGlButtonAt(0).attributes()).toMatchObject({
-        href: defaultProvide.rssPath,
-        'aria-label': IssuesListApp.i18n.rssLabel,
+        expect(findDropdown().props()).toMatchObject({
+          category: 'tertiary',
+          icon: 'ellipsis_v',
+          text: 'Actions',
+          textSrOnly: true,
+        });
       });
-    });
 
-    it('renders calendar button', async () => {
-      wrapper = mountComponent({ mountFn: mount });
-      await waitForPromises();
+      describe('csv import/export buttons', () => {
+        describe('when user is signed in', () => {
+          beforeEach(() => {
+            setWindowLocation('?search=refactor&state=opened');
 
-      expect(findGlButtonAt(1).props('icon')).toBe('calendar');
-      expect(findGlButtonAt(1).attributes()).toMatchObject({
-        href: defaultProvide.calendarPath,
-        'aria-label': IssuesListApp.i18n.calendarLabel,
-      });
-    });
+            wrapper = mountComponent({
+              provide: { initialSortBy: CREATED_DESC, isSignedIn: true },
+              mountFn: mount,
+            });
 
-    describe('csv import/export component', () => {
-      describe('when user is signed in', () => {
-        beforeEach(() => {
-          setWindowLocation('?search=refactor&state=opened');
-
-          wrapper = mountComponent({
-            provide: { initialSortBy: CREATED_DESC, isSignedIn: true },
-            mountFn: mount,
+            return waitForPromises();
           });
 
-          return waitForPromises();
+          it('renders', () => {
+            expect(findCsvImportExportButtons().props()).toMatchObject({
+              exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&state=opened`,
+              issuableCount: 1,
+            });
+          });
         });
 
-        it('renders', () => {
-          expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: `${defaultProvide.exportCsvPath}?search=refactor&state=opened`,
-            issuableCount: 1,
+        describe('when user is not signed in', () => {
+          it('does not render', () => {
+            wrapper = mountComponent({ provide: { isSignedIn: false }, mountFn: mount });
+
+            expect(findCsvImportExportButtons().exists()).toBe(false);
+          });
+        });
+
+        describe('when in a group context', () => {
+          it('does not render', () => {
+            wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
+
+            expect(findCsvImportExportButtons().exists()).toBe(false);
           });
         });
       });
 
-      describe('when user is not signed in', () => {
-        it('does not render', () => {
-          wrapper = mountComponent({ provide: { isSignedIn: false }, mountFn: mount });
+      it('renders RSS button link', () => {
+        wrapper = mountComponent({ mountFn: mountExtended });
 
-          expect(findCsvImportExportButtons().exists()).toBe(false);
-        });
+        expect(findRssButton().attributes('href')).toBe(defaultProvide.rssPath);
       });
 
-      describe('when in a group context', () => {
-        it('does not render', () => {
-          wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
+      it('renders calendar button link', () => {
+        wrapper = mountComponent({ mountFn: mountExtended });
 
-          expect(findCsvImportExportButtons().exists()).toBe(false);
-        });
+        expect(findCalendarButton().attributes('href')).toBe(defaultProvide.calendarPath);
       });
     });
 
@@ -296,7 +304,7 @@ describe('CE IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
 
-        expect(findGlButtonAt(2).text()).toBe('Edit issues');
+        expect(findGlButton().text()).toBe('Edit issues');
       });
 
       it('does not render when user does not have permissions', () => {
@@ -309,7 +317,7 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
         jest.spyOn(eventHub, '$emit');
 
-        findGlButtonAt(2).vm.$emit('click');
+        findGlButton().vm.$emit('click');
         await waitForPromises();
 
         expect(eventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
@@ -320,8 +328,8 @@ describe('CE IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
 
-        expect(findGlButtonAt(2).text()).toBe('New issue');
-        expect(findGlButtonAt(2).attributes('href')).toBe(defaultProvide.newIssuePath);
+        expect(findGlButton().text()).toBe('New issue');
+        expect(findGlButton().attributes('href')).toBe(defaultProvide.newIssuePath);
       });
 
       it('does not render when user does not have permissions', () => {

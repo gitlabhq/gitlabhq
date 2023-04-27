@@ -6,18 +6,11 @@ import {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
-  AWS_PLATFORM,
   DOCKER_HELP_URL,
   KUBERNETES_HELP_URL,
 } from '~/ci/runner/constants';
 
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-
-const mockProvide = {
-  awsImgPath: 'awsLogo.svg',
-  dockerImgPath: 'dockerLogo.svg',
-  kubernetesImgPath: 'kubernetesLogo.svg',
-};
 
 describe('RunnerPlatformsRadioGroup', () => {
   let wrapper;
@@ -35,7 +28,6 @@ describe('RunnerPlatformsRadioGroup', () => {
         value: null,
         ...props,
       },
-      provide: mockProvide,
       ...options,
     });
   };
@@ -51,7 +43,6 @@ describe('RunnerPlatformsRadioGroup', () => {
       ['Linux', null],
       ['macOS', null],
       ['Windows', null],
-      ['AWS', expect.any(String)],
       ['Docker', expect.any(String)],
       ['Kubernetes', expect.any(String)],
     ]);
@@ -69,7 +60,6 @@ describe('RunnerPlatformsRadioGroup', () => {
     ${'Linux'}   | ${LINUX_PLATFORM}
     ${'macOS'}   | ${MACOS_PLATFORM}
     ${'Windows'} | ${WINDOWS_PLATFORM}
-    ${'AWS'}     | ${AWS_PLATFORM}
   `('user can select "$text"', async ({ text, value }) => {
     const radio = findFormRadioByText(text);
     expect(radio.props('value')).toBe(value);

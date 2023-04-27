@@ -24,7 +24,7 @@ module QA
     end
   end
 
-  RSpec.describe 'Manage', :orchestrated, :runner, :requires_admin, :smtp, product_group: :integrations do
+  RSpec.describe 'Manage', :orchestrated, :runner, :requires_admin, :smtp, product_group: :import_and_integrate do
     describe 'Pipeline status emails' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:emails) { %w[foo@bar.com baz@buzz.com] }

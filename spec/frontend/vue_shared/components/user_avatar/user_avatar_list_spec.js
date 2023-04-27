@@ -148,6 +148,13 @@ describe('UserAvatarList', () => {
       expect(links.length).toEqual(TEST_BREAKPOINT);
     });
 
+    it('does not emit any event on mount', async () => {
+      factory();
+      await nextTick();
+
+      expect(wrapper.emitted()).toEqual({});
+    });
+
     describe('with expand clicked', () => {
       beforeEach(() => {
         factory();
@@ -160,13 +167,25 @@ describe('UserAvatarList', () => {
         expect(links.length).toEqual(props.items.length);
       });
 
-      it('with collapse clicked, it renders avatars up to breakpoint', async () => {
-        clickButton();
+      it('emits the `expanded` event', () => {
+        expect(wrapper.emitted('expanded')).toHaveLength(1);
+      });
 
-        await nextTick();
-        const links = wrapper.findAllComponents(UserAvatarLink);
+      describe('with collapse clicked', () => {
+        beforeEach(() => {
+          clickButton();
+        });
 
-        expect(links.length).toEqual(TEST_BREAKPOINT);
+        it('renders avatars up to breakpoint', async () => {
+          await nextTick();
+          const links = wrapper.findAllComponents(UserAvatarLink);
+
+          expect(links.length).toEqual(TEST_BREAKPOINT);
+        });
+
+        it('emits the `collapsed` event', () => {
+          expect(wrapper.emitted('collapsed')).toHaveLength(1);
+        });
       });
     });
   });

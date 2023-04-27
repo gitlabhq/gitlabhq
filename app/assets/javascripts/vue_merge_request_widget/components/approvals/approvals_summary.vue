@@ -33,6 +33,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      isUserAvatarListExpanded: false,
+    };
+  },
   computed: {
     approvers() {
       return this.approvalState.approvedBy?.nodes || [];
@@ -120,6 +125,14 @@ export default {
       return gon.current_user_id;
     },
   },
+  methods: {
+    onUserAvatarListExpanded() {
+      this.isUserAvatarListExpanded = true;
+    },
+    onUserAvatarListCollapsed() {
+      this.isUserAvatarListExpanded = false;
+    },
+  },
 };
 </script>
 
@@ -130,9 +143,12 @@ export default {
       <span v-if="approvalLeftMessage">{{ message }}</span>
       <span v-else class="gl-font-weight-bold">{{ message }}</span>
       <user-avatar-list
-        class="gl-display-inline-flex gl-vertical-align-middle"
+        class="gl-display-inline-block"
+        :class="{ 'gl-pt-1': isUserAvatarListExpanded }"
         :img-size="24"
         :items="approvers"
+        @expanded="onUserAvatarListExpanded"
+        @collapsed="onUserAvatarListCollapsed"
       />
     </template>
     <template v-if="disableCommittersApproval && currentUserHasCommitted">

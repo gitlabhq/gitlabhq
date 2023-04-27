@@ -3,22 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedTag::CreateAccessLevel, feature_category: :source_code_management do
+  include_examples 'protected tag access'
+
   describe 'associations' do
     it { is_expected.to belong_to(:deploy_key) }
   end
 
   describe 'validations', :aggregate_failures do
     let_it_be(:protected_tag) { create(:protected_tag) }
-
-    it 'verifies access levels' do
-      is_expected.to validate_inclusion_of(:access_level).in_array(
-        [
-          Gitlab::Access::MAINTAINER,
-          Gitlab::Access::DEVELOPER,
-          Gitlab::Access::NO_ACCESS
-        ]
-      )
-    end
 
     context 'when deploy key enabled for the project' do
       let(:deploy_key) { create(:deploy_key, projects: [protected_tag.project]) }

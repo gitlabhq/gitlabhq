@@ -85,6 +85,7 @@ export const i18n = {
   editIssues: __('Edit issues'),
   errorFetchingCounts: __('An error occurred while getting issue counts'),
   errorFetchingIssues: __('An error occurred while loading issues'),
+  importIssues: __('Import issues'),
   issueRepositioningMessage: __(
     'Issues are being rebalanced at the moment, so manual reordering is disabled.',
   ),

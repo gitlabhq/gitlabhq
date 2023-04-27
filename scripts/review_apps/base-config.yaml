@@ -229,7 +229,7 @@ postgresql:
       memory: 1000Mi
     limits:
       cpu: 1000m
-      memory: 1600Mi
+      memory: 1800Mi
   master:
     nodeSelector:
       preemptible: "false"

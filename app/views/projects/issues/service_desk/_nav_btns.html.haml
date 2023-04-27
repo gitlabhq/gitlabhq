@@ -6,15 +6,29 @@
 - notification_email = @current_user.present? ? @current_user.notification_email_or_default : nil
 
 .nav-controls.issues-nav-controls.gl-font-size-0
-  - if show_feed_buttons
-    = render 'shared/issuable/feed_buttons'
-
-  .js-csv-import-export-buttons{ data: { show_export_button: show_export_button.to_s, show_import_button: show_import_button.to_s, issuable_type: issuable_type, issuable_count: issuables_count_for_state(issuable_type.to_sym, params[:state]), email: notification_email, export_csv_path: export_csv_project_issues_path(@project, request.query_parameters), import_csv_issues_path: import_csv_namespace_project_issues_path, container_class: 'gl-mr-3', can_edit: can_edit.to_s, project_import_jira_path: project_import_jira_path(@project), max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes) } }
-
   - if @can_bulk_update
     = button_tag _("Edit issues"), class: "gl-button btn btn-default gl-mr-3 js-bulk-update-toggle"
   - if show_new_issue_link?(@project)
     = link_to _("New issue"), new_project_issue_path(@project,
                                                   issue: { milestone_id: finder.milestones.first.try(:id) }),
-                                                  class: "gl-button btn btn-confirm",
+                                                  class: "gl-button btn btn-confirm gl-mr-3",
                                                   id: "new_issue_link"
+
+.dropdown.gl-dropdown
+  = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret has-tooltip gl-display-none! gl-md-display-inline-flex!", data: { toggle: 'dropdown', title: _('Actions') } do
+    = sprite_icon "ellipsis_v", size: 16, css_class: "dropdown-icon gl-icon"
+    %span.gl-sr-only
+      = _('Actions')
+  = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md btn-block gl-button gl-dropdown-toggle gl-md-display-none!", data: { 'toggle' => 'dropdown' } do
+    %span.gl-dropdown-button-text= _('Actions')
+    = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon"
+  .dropdown-menu.dropdown-menu-right
+    .gl-dropdown-inner
+      .gl-dropdown-contents
+        %ul
+          .js-csv-import-export-buttons{ data: { show_export_button: show_export_button.to_s, show_import_button: show_import_button.to_s, issuable_type: issuable_type, issuable_count: issuables_count_for_state(issuable_type.to_sym, params[:state]), email: notification_email, export_csv_path: export_csv_project_issues_path(@project, request.query_parameters), import_csv_issues_path: import_csv_namespace_project_issues_path, can_edit: can_edit.to_s, project_import_jira_path: project_import_jira_path(@project), max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes) } }
+          %li.gl-dropdown-divider
+            %hr.dropdown-divider
+          %li.gl-dropdown-item
+            - if show_feed_buttons
+              = render 'shared/issuable/feed_buttons'

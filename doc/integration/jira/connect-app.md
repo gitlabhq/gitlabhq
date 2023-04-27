@@ -146,7 +146,7 @@ self-managed GitLab instances with Jira Cloud, you can do one of the following:
 
 [Prerequisites](#prerequisites-1)
 
-To configure your Atlassian Cloud instance so you can install applications
+To configure your Jira instance so you can install applications
 from outside the Marketplace:
 
 1. Sign in to your Jira instance as an administrator.

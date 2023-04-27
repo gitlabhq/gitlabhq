@@ -7,7 +7,7 @@ module QA
       :requires_admin,
       :integrations,
       :orchestrated,
-      product_group: :integrations
+      product_group: :import_and_integrate
     ) do
       before(:context) do
         toggle_local_requests(true)

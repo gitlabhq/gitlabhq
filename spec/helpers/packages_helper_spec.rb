@@ -129,6 +129,62 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
     end
   end
 
+  describe '#show_container_registry_settings' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:admin) { create(:admin) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
+    subject { helper.show_container_registry_settings(project) }
+
+    context 'with container registry config enabled' do
+      before do
+        stub_config(registry: { enabled: true })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'with container registry config disabled' do
+      before do
+        stub_config(registry: { enabled: false })
+      end
+
+      context 'when user has permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(true)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when user does not have permission' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
   describe '#show_group_package_registry_settings' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }

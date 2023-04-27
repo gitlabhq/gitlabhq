@@ -5,7 +5,7 @@
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
   RSpec.describe "Manage", :skip_live_env, only: { job: "large-gitlab-import" } do
-    describe "Gitlab migration", orchestrated: false, product_group: :import do
+    describe "Gitlab migration", orchestrated: false, product_group: :import_and_integrate do
       include_context "with gitlab group migration"
 
       let!(:logger) { Runtime::Logger.logger }

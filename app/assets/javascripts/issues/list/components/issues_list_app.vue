@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFilteredSearchToken,
+  GlTooltipDirective,
+  GlDropdown,
+  GlDropdownItem,
+  GlDropdownDivider,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isEmpty } from 'lodash';
@@ -9,8 +16,8 @@ import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.grap
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import {
   STATUS_ALL,
@@ -114,6 +121,9 @@ export default {
     EmptyStateWithAnyIssues,
     EmptyStateWithoutAnyIssues,
     GlButton,
+    GlDropdown,
+    GlDropdownDivider,
+    GlDropdownItem,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
@@ -802,26 +812,6 @@ export default {
     >
       <template #nav-actions>
         <gl-button
-          v-gl-tooltip
-          :href="rssPath"
-          icon="rss"
-          :title="$options.i18n.rssLabel"
-          :aria-label="$options.i18n.rssLabel"
-        />
-        <gl-button
-          v-gl-tooltip
-          :href="calendarPath"
-          icon="calendar"
-          :title="$options.i18n.calendarLabel"
-          :aria-label="$options.i18n.calendarLabel"
-        />
-        <csv-import-export-buttons
-          v-if="showCsvButtons"
-          class="gl-md-mr-3"
-          :export-csv-path="exportCsvPathWithQuery"
-          :issuable-count="currentTabCount"
-        />
-        <gl-button
           v-if="canBulkUpdate"
           :disabled="isBulkEditButtonDisabled"
           @click="handleBulkUpdateClick"
@@ -842,6 +832,30 @@ export default {
           :query-variables="newIssueDropdownQueryVariables"
           :extract-projects="extractProjects"
         />
+        <gl-dropdown
+          v-gl-tooltip.hover="$options.i18n.actionsLabel"
+          category="tertiary"
+          icon="ellipsis_v"
+          no-caret
+          :text="$options.i18n.actionsLabel"
+          text-sr-only
+          data-qa-selector="issues_list_more_actions_dropdown"
+        >
+          <csv-import-export-buttons
+            v-if="showCsvButtons"
+            :export-csv-path="exportCsvPathWithQuery"
+            :issuable-count="currentTabCount"
+          />
+
+          <gl-dropdown-divider v-if="showCsvButtons" />
+
+          <gl-dropdown-item :href="rssPath">
+            {{ $options.i18n.rssLabel }}
+          </gl-dropdown-item>
+          <gl-dropdown-item :href="calendarPath">
+            {{ $options.i18n.calendarLabel }}
+          </gl-dropdown-item>
+        </gl-dropdown>
       </template>
 
       <template #timeframe="{ issuable = {} }">

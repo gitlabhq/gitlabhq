@@ -60,9 +60,11 @@ export default {
   methods: {
     expand() {
       this.isExpanded = true;
+      this.$emit('expanded');
     },
     collapse() {
       this.isExpanded = false;
+      this.$emit('collapsed');
     },
   },
 };

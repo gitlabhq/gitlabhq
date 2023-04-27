@@ -11478,6 +11478,9 @@ msgstr ""
 msgid "ContainerRegistry|Configuration digest: %{digest}"
 msgstr ""
 
+msgid "ContainerRegistry|Configure in settings"
+msgstr ""
+
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
@@ -38210,9 +38213,6 @@ msgstr ""
 msgid "Runners|Clear selection"
 msgstr ""
 
-msgid "Runners|Cloud templates"
-msgstr ""
-
 msgid "Runners|Command to register runner"
 msgstr ""
 
@@ -52109,6 +52109,9 @@ msgstr ""
 msgid "ciReport|Container Scanning"
 msgstr ""
 
+msgid "ciReport|Container Scanning detects known vulnerabilities in your container images."
+msgstr ""
+
 msgid "ciReport|Container scanning"
 msgstr ""
 
@@ -52139,7 +52142,7 @@ msgstr ""
 msgid "ciReport|Dependency Scanning"
 msgstr ""
 
-msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code's dependencies."
+msgid "ciReport|Dependency Scanning detects known vulnerabilities in your project's dependencies."
 msgstr ""
 
 msgid "ciReport|Dependency scanning"
@@ -52166,7 +52169,7 @@ msgstr ""
 msgid "ciReport|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
-msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
+msgid "ciReport|Dynamic Application Security Testing (DAST) detects vulnerabilities in your web application."
 msgstr ""
 
 msgid "ciReport|Failed to load %{reportName} report"
@@ -52261,7 +52264,7 @@ msgstr ""
 msgid "ciReport|Secret Detection"
 msgstr ""
 
-msgid "ciReport|Secret Detection detects secrets and credentials vulnerabilities in your source code."
+msgid "ciReport|Secret Detection detects leaked credentials in your source code."
 msgstr ""
 
 msgid "ciReport|Secret detection"
@@ -52294,7 +52297,7 @@ msgstr ""
 msgid "ciReport|Static Application Security Testing (SAST)"
 msgstr ""
 
-msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."
+msgid "ciReport|Static Application Security Testing (SAST) detects potential vulnerabilities in your source code."
 msgstr ""
 
 msgid "ciReport|TTFB P90"

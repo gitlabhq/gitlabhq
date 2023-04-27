@@ -1,8 +1,8 @@
-import { GlSkeletonLoader, GlSprintf, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlSprintf, GlAlert, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-
 import VueApollo from 'vue-apollo';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
@@ -16,6 +16,7 @@ import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
   SORT_FIELDS,
+  SETTINGS_TEXT,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import deleteContainerRepositoryMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
 import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
@@ -48,6 +49,7 @@ describe('List Page', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const findCliCommands = () => wrapper.findComponent(CliCommands);
+  const findSettingsLink = () => wrapper.findComponent(GlButton);
   const findProjectEmptyState = () => wrapper.findComponent(ProjectEmptyState);
   const findGroupEmptyState = () => wrapper.findComponent(GroupEmptyState);
   const findRegistryHeader = () => wrapper.findComponent(RegistryHeader);
@@ -110,6 +112,9 @@ describe('List Page', () => {
           ...dockerCommands,
         };
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
@@ -122,6 +127,42 @@ describe('List Page', () => {
     expect(findRegistryHeader().props()).toMatchObject({
       imagesCount: 2,
       metadataLoading: false,
+      helpPagePath: '',
+      hideExpirationPolicyData: false,
+      showCleanupPolicyLink: false,
+      expirationPolicy: {},
+      cleanupPoliciesSettingsPath: '',
+    });
+  });
+
+  describe('link to settings', () => {
+    beforeEach(() => {
+      const config = {
+        showContainerRegistrySettings: true,
+        cleanupPoliciesSettingsPath: 'bar',
+      };
+      mountComponent({ config });
+    });
+
+    it('is rendered', () => {
+      expect(findSettingsLink().exists()).toBe(true);
+    });
+
+    it('has the right icon', () => {
+      expect(findSettingsLink().props('icon')).toBe('settings');
+    });
+
+    it('has the right attributes', () => {
+      expect(findSettingsLink().attributes()).toMatchObject({
+        'aria-label': SETTINGS_TEXT,
+        href: 'bar',
+      });
+    });
+
+    it('sets tooltip with right label', () => {
+      const tooltip = getBinding(findSettingsLink().element, 'gl-tooltip');
+
+      expect(tooltip.value).toBe(SETTINGS_TEXT);
     });
   });
 
@@ -234,6 +275,14 @@ describe('List Page', () => {
         await waitForApolloRequestRender();
 
         expect(findCliCommands().exists()).toBe(false);
+      });
+
+      it('link to settings is not visible', async () => {
+        mountComponent({ resolver, config });
+
+        await waitForApolloRequestRender();
+
+        expect(findSettingsLink().exists()).toBe(false);
       });
     });
   });

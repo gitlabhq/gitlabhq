@@ -36,11 +36,9 @@ export function initCsvImportExportButtons() {
     email,
     exportCsvPath,
     importCsvIssuesPath,
-    containerClass,
     canEdit,
     projectImportJiraPath,
     maxAttachmentSize,
-    showLabel,
   } = el.dataset;
 
   return new Vue({
@@ -52,11 +50,9 @@ export function initCsvImportExportButtons() {
       issuableType,
       email,
       importCsvIssuesPath,
-      containerClass,
       canEdit: parseBoolean(canEdit),
       projectImportJiraPath,
       maxAttachmentSize,
-      showLabel,
     },
     render: (createElement) =>
       createElement(CsvImportExportButtons, {

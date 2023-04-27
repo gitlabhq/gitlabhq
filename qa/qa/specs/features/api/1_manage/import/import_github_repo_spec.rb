@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', product_group: :import,
+  RSpec.describe 'Manage', product_group: :import_and_integrate,
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/407297',
       type: :investigating

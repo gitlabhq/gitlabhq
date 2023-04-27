@@ -43,6 +43,7 @@ RSpec.shared_examples "updates atom feed link" do |type|
   it "for #{type}" do
     sign_in(user)
     visit path
+    click_button 'Actions', match: :first
 
     link = find_link('Subscribe to RSS feed')
     params = CGI.parse(URI.parse(link[:href]).query)

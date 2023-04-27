@@ -23,6 +23,7 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
     before do
       sign_in(user)
       visit path
+      click_button 'Actions'
     end
 
     it_behaves_like "it has an RSS link with current_user's feed token"
@@ -32,6 +33,7 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
   context 'when signed out' do
     before do
       visit path
+      click_button 'Actions'
     end
 
     it_behaves_like "it has an RSS link without a feed token"

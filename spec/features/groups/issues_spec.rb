@@ -23,6 +23,10 @@ RSpec.describe 'Group issues page', feature_category: :subgroups do
     context 'rss feed' do
       let(:access_level) { ProjectFeature::ENABLED }
 
+      before do
+        click_button 'Actions'
+      end
+
       context 'when signed in' do
         let(:user) do
           user_in_group.ensure_feed_token

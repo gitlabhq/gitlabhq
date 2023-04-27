@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
@@ -6,9 +6,9 @@ import eventHub from '~/issues/show/event_hub';
 describe('TaskListItemActions component', () => {
   let wrapper;
 
-  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
-  const findConvertToTaskItem = () => wrapper.findAllComponents(GlDropdownItem).at(0);
-  const findDeleteItem = () => wrapper.findAllComponents(GlDropdownItem).at(1);
+  const findGlDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findConvertToTaskItem = () => wrapper.findAllComponents(GlDisclosureDropdownItem).at(0);
+  const findDeleteItem = () => wrapper.findAllComponents(GlDisclosureDropdownItem).at(1);
 
   const mountComponent = () => {
     const li = document.createElement('li');
@@ -20,6 +20,7 @@ describe('TaskListItemActions component', () => {
       provide: { canUpdate: true },
       attachTo: document.querySelector('div'),
     });
+    wrapper.vm.$refs.dropdown.close = jest.fn();
   };
 
   beforeEach(() => {
@@ -30,8 +31,8 @@ describe('TaskListItemActions component', () => {
     expect(findGlDropdown().props()).toMatchObject({
       category: 'tertiary',
       icon: 'ellipsis_v',
-      right: true,
-      text: TaskListItemActions.i18n.taskActions,
+      placement: 'right',
+      toggleText: TaskListItemActions.i18n.taskActions,
       textSrOnly: true,
     });
   });
@@ -39,7 +40,7 @@ describe('TaskListItemActions component', () => {
   it('emits event when `Convert to task` dropdown item is clicked', () => {
     jest.spyOn(eventHub, '$emit');
 
-    findConvertToTaskItem().vm.$emit('click');
+    findConvertToTaskItem().vm.$emit('action');
 
     expect(eventHub.$emit).toHaveBeenCalledWith('convert-task-list-item', '3:1-3:10');
   });
@@ -47,7 +48,7 @@ describe('TaskListItemActions component', () => {
   it('emits event when `Delete` dropdown item is clicked', () => {
     jest.spyOn(eventHub, '$emit');
 
-    findDeleteItem().vm.$emit('click');
+    findDeleteItem().vm.$emit('action');
 
     expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', '3:1-3:10');
   });

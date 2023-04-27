@@ -4,7 +4,7 @@
 .row.justify-content-center
   .col-md-5.new-session-forms-container
     .login-page
-      #signin-container
+      #signin-container{ class: ('borderless' if Feature.enabled?(:restyle_login_page, @project)) }
         = render 'devise/shared/tab_single', tab_title: _('Enter Admin Mode')
         .tab-content
           .login-box.tab-pane.gl-p-5.active{ id: 'login-pane', role: 'tabpanel' }
