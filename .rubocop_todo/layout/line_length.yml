@@ -5007,7 +5007,7 @@ Layout/LineLength:
     - 'spec/support/database/prevent_cross_database_modification.rb'
     - 'spec/support/database/prevent_cross_joins.rb'
     - 'spec/support/db_cleaner.rb'
-    - 'spec/support/flaky_tests.rb'
+    - 'spec/support/fast_quarantine.rb'
     - 'spec/support/helpers/api_helpers.rb'
     - 'spec/support/helpers/board_helpers.rb'
     - 'spec/support/helpers/cycle_analytics_helpers.rb'

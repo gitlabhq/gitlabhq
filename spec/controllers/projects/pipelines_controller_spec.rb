@@ -1148,7 +1148,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     def clear_controller_memoization
       controller.clear_memoization(:pipeline_test_report)
-      controller.instance_variable_set(:@pipeline, nil)
+      controller.remove_instance_variable(:@pipeline)
     end
   end
 

@@ -165,6 +165,7 @@ variables:
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
+  RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
   TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
   TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
 
@@ -173,7 +174,6 @@ variables:
   CACHE_CLASSES: "true"
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
-  SKIP_FLAKY_TESTS_AUTOMATICALLY: "false"
   RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"

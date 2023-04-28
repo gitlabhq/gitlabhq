@@ -22,10 +22,10 @@ Packages can be published to your project, group, or instance.
 | [Generic packages](../generic_packages/index.md)    | Y       | N     | N        |
 | [Terraform](../terraform_module_registry/index.md)  | Y       | N     | N        |
 | [Composer](../composer_repository/index.md)         | N       | Y     | N        |
-| [Conan](../conan_repository/index.md)               | Y       | N     | N        |
+| [Conan](../conan_repository/index.md)               | Y       | N     | Y        |
 | [Helm](../helm_repository/index.md)                 | Y       | N     | N        |
 | [Debian](../debian_repository/index.md)             | Y       | N     | N        |
-| [Go](../go_proxy/index.md)                          | Y       | N     | Y        |
+| [Go](../go_proxy/index.md)                          | Y       | N     | N        |
 | [Ruby gems](../rubygems_registry/index.md)          | Y       | N     | N        |
 
 ## Pulling packages **(FREE)**

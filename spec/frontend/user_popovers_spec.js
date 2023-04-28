@@ -1,5 +1,6 @@
 import { within } from '@testing-library/dom';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlMergeRequestWithMentions from 'test_fixtures/merge_requests/merge_request_with_mentions.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import UsersCache from '~/lib/utils/users_cache';
 import initUserPopovers from '~/user_popovers';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,8 +11,6 @@ jest.mock('~/api/user_api', () => ({
 }));
 
 describe('User Popovers', () => {
-  const fixtureTemplate = 'merge_requests/merge_request_with_mentions.html';
-
   const selector = '.js-user-link[data-user], .js-user-link[data-user-id]';
   const findFixtureLinks = () => Array.from(document.querySelectorAll(selector));
   const createUserLink = () => {
@@ -40,7 +39,7 @@ describe('User Popovers', () => {
   };
 
   const setupTestSubject = () => {
-    loadHTMLFixture(fixtureTemplate);
+    setHTMLFixture(htmlMergeRequestWithMentions);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
     jest.spyOn(UsersCache, 'retrieveById').mockImplementation((userId) => usersCacheSpy(userId));

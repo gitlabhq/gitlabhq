@@ -274,10 +274,7 @@ coverage-jdk11:
 
 ### Python example
 
-The following [`.gitlab-ci.yml`](../yaml/index.md) example for Python uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data and [coverage.py](https://coverage.readthedocs.io/) to convert the report to use full relative paths.
-The information isn't displayed without the conversion.
-
-This example assumes that the code for your package is in `src/` and your tests are in `tests.py`:
+The following [`.gitlab-ci.yml`](../yaml/index.md) example uses [pytest-cov](https://pytest-cov.readthedocs.io/) to collect test coverage data:
 
 ```yaml
 run tests:
@@ -285,9 +282,7 @@ run tests:
   image: python:3
   script:
     - pip install pytest pytest-cov
-    - coverage run -m pytest
-    - coverage report
-    - coverage xml
+    - pytest --cov --cov-report term --cov-report xml:coverage.xml
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:

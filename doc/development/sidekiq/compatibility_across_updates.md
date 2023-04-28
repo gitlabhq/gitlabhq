@@ -169,7 +169,8 @@ To remove a worker class, follow these steps over two minor releases:
        MyDeprecatedWorkerOne
        MyDeprecatedWorkerTwo
      ]
-
+     # Always use `disable_ddl_transaction!` while using the `sidekiq_remove_jobs` method, as we had multiple production incidents due to `idle-in-transaction` timeout.
+     disable_ddl_transaction!
      def up
        sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)
      end

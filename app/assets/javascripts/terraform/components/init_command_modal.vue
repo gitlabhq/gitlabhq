@@ -26,7 +26,8 @@ export default {
     },
     stateName: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -39,7 +40,9 @@ export default {
   },
   methods: {
     getModalInfoCopyStr() {
-      const stateNameEncoded = encodeURIComponent(this.stateName);
+      const stateNameEncoded = this.stateName
+        ? encodeURIComponent(this.stateName)
+        : '<YOUR-STATE-NAME>';
 
       return `export GITLAB_ACCESS_TOKEN=<YOUR-ACCESS-TOKEN>
 terraform init \\

@@ -1044,7 +1044,7 @@ Style/IfUnlessModifier:
     - 'spec/spec_helper.rb'
     - 'spec/support/capybara.rb'
     - 'spec/support/external_authorization_service_helpers.rb'
-    - 'spec/support/flaky_tests.rb'
+    - 'spec/support/fast_quarantine.rb'
     - 'spec/support/generate-seed-repo-rb'
     - 'spec/support/helpers/filter_spec_helper.rb'
     - 'spec/support/helpers/filtered_search_helpers.rb'

@@ -8,6 +8,7 @@ const terraformApiUrl = 'https://gitlab.com/api/v4/projects/1';
 const username = 'username';
 const modalId = 'fake-modal-id';
 const stateName = 'aws/eu-central-1';
+const stateNamePlaceholder = '<YOUR-STATE-NAME>';
 const stateNameEncoded = encodeURIComponent(stateName);
 const modalInfoCopyStr = `export GITLAB_ACCESS_TOKEN=<YOUR-ACCESS-TOKEN>
 terraform init \\
@@ -34,49 +35,68 @@ describe('InitCommandModal', () => {
     username,
   };
 
-  const findExplanatoryText = () => wrapper.findByTestId('init-command-explanatory-text');
-  const findLink = () => wrapper.findComponent(GlLink);
-  const findInitCommand = () => wrapper.findByTestId('terraform-init-command');
-  const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
-
-  beforeEach(() => {
+  const mountComponent = ({ props = propsData } = {}) => {
     wrapper = shallowMountExtended(InitCommandModal, {
-      propsData,
+      propsData: props,
       provide: provideData,
       stubs: {
         GlSprintf,
       },
     });
+  };
+
+  const findExplanatoryText = () => wrapper.findByTestId('init-command-explanatory-text');
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findInitCommand = () => wrapper.findByTestId('terraform-init-command');
+  const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
+
+  describe('when has stateName', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    describe('on rendering', () => {
+      it('renders the explanatory text', () => {
+        expect(findExplanatoryText().text()).toContain('personal access token');
+      });
+
+      it('renders the personal access token link', () => {
+        expect(findLink().attributes('href')).toBe(accessTokensPath);
+      });
+
+      describe('init command', () => {
+        it('includes correct address', () => {
+          expect(findInitCommand().text()).toContain(
+            `-backend-config="address=${terraformApiUrl}/${stateNameEncoded}"`,
+          );
+        });
+        it('includes correct username', () => {
+          expect(findInitCommand().text()).toContain(`-backend-config="username=${username}"`);
+        });
+      });
+
+      it('renders the copyToClipboard button', () => {
+        expect(findCopyButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when copy button is clicked', () => {
+      it('copies init command to clipboard', () => {
+        expect(findCopyButton().props('text')).toBe(modalInfoCopyStr);
+      });
+    });
   });
-
-  describe('on rendering', () => {
-    it('renders the explanatory text', () => {
-      expect(findExplanatoryText().text()).toContain('personal access token');
+  describe('when has no stateName', () => {
+    beforeEach(() => {
+      mountComponent({ props: { modalId } });
     });
 
-    it('renders the personal access token link', () => {
-      expect(findLink().attributes('href')).toBe(accessTokensPath);
-    });
-
-    describe('init command', () => {
+    describe('on rendering', () => {
       it('includes correct address', () => {
         expect(findInitCommand().text()).toContain(
-          `-backend-config="address=${terraformApiUrl}/${stateNameEncoded}"`,
+          `-backend-config="address=${terraformApiUrl}/${stateNamePlaceholder}"`,
         );
       });
-      it('includes correct username', () => {
-        expect(findInitCommand().text()).toContain(`-backend-config="username=${username}"`);
-      });
-    });
-
-    it('renders the copyToClipboard button', () => {
-      expect(findCopyButton().exists()).toBe(true);
-    });
-  });
-
-  describe('when copy button is clicked', () => {
-    it('copies init command to clipboard', () => {
-      expect(findCopyButton().props('text')).toBe(modalInfoCopyStr);
     });
   });
 });

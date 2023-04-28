@@ -34,7 +34,11 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL.", status: :error, http_status: 404)
+        if issuable_type == :issue
+          is_expected.to eq(message: "Couldn't link #{issuable_type}. You must have at least the Reporter role in both projects.", status: :error, http_status: 403)
+        else
+          is_expected.to eq(message: "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL.", status: :error, http_status: 404)
+        end
       end
 
       it 'no relationship is created' do

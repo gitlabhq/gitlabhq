@@ -14,6 +14,10 @@ module IssueLinks
 
     private
 
+    def readonly_issuables(issuables)
+      @readonly_issuables ||= issuables.select { |issuable| issuable.readable_by?(current_user) }
+    end
+
     def track_event
       track_incident_action(current_user, issuable, :incident_relate)
     end

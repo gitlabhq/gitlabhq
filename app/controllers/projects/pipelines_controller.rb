@@ -265,29 +265,34 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def pipeline
-    @pipeline ||= if params[:id].blank? && params[:latest]
-                    latest_pipeline
-                  else
-                    project
-                      .all_pipelines
-                      .includes(builds: :tags, user: :status)
-                      .find(params[:id])
-                      .present(current_user: current_user)
-                  end
+    return @pipeline if defined?(@pipeline)
+
+    pipelines =
+      if find_latest_pipeline?
+        project.latest_pipelines(params['ref'])
+      else
+        project.all_pipelines.id_in(params[:id])
+      end
+
+    @pipeline = pipelines
+      .includes(builds: :tags, user: :status)
+      .take
+      &.present(current_user: current_user)
+
+    @pipeline || not_found
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def set_pipeline_path
-    @pipeline_path ||= if params[:id].blank? && params[:latest]
+    @pipeline_path ||= if find_latest_pipeline?
                          latest_project_pipelines_path(@project, params['ref'])
                        else
                          project_pipeline_path(@project, @pipeline)
                        end
   end
 
-  def latest_pipeline
-    @project.latest_pipeline(params['ref'])
-            &.present(current_user: current_user)
+  def find_latest_pipeline?
+    params[:id].blank? && params[:latest]
   end
 
   def disable_query_limiting

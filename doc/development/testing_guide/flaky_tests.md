@@ -151,16 +151,28 @@ usually a good idea.
 
 ## Quarantined tests
 
-When we have a flaky test in `master`, quarantine the test after the first failure and
-create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master).
+When we have a flaky test in `master`:
 
-If the test cannot be fixed in a timely fashion, there is an impact on the
-productivity of all the developers, so it should be quarantined. There are two ways to quarantine tests, depending on the test framework being used: RSpec and Jest.
+1. Create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
+1. Quarantine the test after the first failure.
+   If the test cannot be fixed in a timely fashion, there is an impact on the
+   productivity of all the developers, so it should be quarantined.
 
 ### RSpec
 
-Add the corresponding category and group labels to issue using [`feature_category` metadata](../feature_categorization/index.md#rspec-examples).
-For RSpec tests, you can use the `:quarantine` metadata with the issue URL.
+#### Fast quarantine
+
+To quickly quarantine a test without having to open a merge request and wait for pipelines,
+you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
+
+#### Long-term quarantine
+
+Once a test is fast-quarantined, you can proceed with the long-term quarantining process. This can be done by opening a merge request.
+
+First, ensure the test file has a [`feature_category` metadata](../feature_categorization/index.md#rspec-examples), to ensure correct attribution of the test file.
+
+Then, you can use the `quarantine: '<issue url>'` metadata with the URL of the
+~"failure::flaky-test" issue you created previously.
 
 ```ruby
 it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
@@ -222,11 +234,10 @@ For example, `FLAKY_RSPEC_GENERATE_REPORT=1 bin/rspec ...`.
 
 ### Usage of the `rspec/flaky/report-suite.json` report
 
-The `rspec/flaky/report-suite.json` report is:
-
-- Used for [automatically skipping known flaky tests](../pipelines/index.md#automatic-skipping-of-flaky-tests).
-- [Imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/master/extract/gitlab_flaky_tests/upload.py)
-  once per day, for monitoring with the [internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
+The `rspec/flaky/report-suite.json` report is
+[imported into Snowflake](https://gitlab.com/gitlab-data/analytics/-/blob/7085bea51bb2f8f823e073393934ba5f97259459/extract/gitlab_flaky_tests/upload.py#L19)
+once per day, for monitoring with the
+[internal dashboard](https://app.periscopedata.com/app/gitlab/888968/EP---Flaky-tests).
 
 ## Problems we had in the past at GitLab
 

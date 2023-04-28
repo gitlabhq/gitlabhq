@@ -66,7 +66,6 @@ module Gitlab
           ProjectTemplate.new('pelican', 'Pages/Pelican', _('Everything you need to create a GitLab Pages site using Pelican'), 'https://gitlab.com/pages/pelican', 'illustrations/third-party-logos/pelican.svg'),
           ProjectTemplate.new('jekyll', 'Pages/Jekyll', _('Everything you need to create a GitLab Pages site using Jekyll'), 'https://gitlab.com/pages/jekyll', 'illustrations/logos/jekyll.svg'),
           ProjectTemplate.new('plainhtml', 'Pages/Plain HTML', _('Everything you need to create a GitLab Pages site using plain HTML'), 'https://gitlab.com/pages/plain-html'),
-          ProjectTemplate.new('gitbook', 'Pages/GitBook', _('Everything you need to create a GitLab Pages site using GitBook'), 'https://gitlab.com/pages/gitbook', 'illustrations/logos/gitbook.svg'),
           ProjectTemplate.new('hexo', 'Pages/Hexo', _('Everything you need to create a GitLab Pages site using Hexo'), 'https://gitlab.com/pages/hexo', 'illustrations/logos/hexo.svg'),
           ProjectTemplate.new('middleman', 'Pages/Middleman', _('Everything you need to create a GitLab Pages site using Middleman'), 'https://gitlab.com/gitlab-org/project-templates/middleman', 'illustrations/logos/middleman.svg'),
           ProjectTemplate.new('gitpod_spring_petclinic', 'Gitpod/Spring Petclinic', _('A Gitpod configured Webapplication in Spring and Java'), 'https://gitlab.com/gitlab-org/project-templates/gitpod-spring-petclinic', 'illustrations/logos/gitpod.svg'),

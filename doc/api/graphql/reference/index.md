@@ -18609,7 +18609,6 @@ Represents a product analytics dashboard visualization.
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |
 | <a id="projectdastscannerprofiles"></a>`dastScannerProfiles` | [`DastScannerProfileConnection`](#dastscannerprofileconnection) | DAST scanner profiles associated with the project. (see [Connections](#connections)) |
 | <a id="projectdastsiteprofiles"></a>`dastSiteProfiles` | [`DastSiteProfileConnection`](#dastsiteprofileconnection) | DAST Site Profiles associated with the project. (see [Connections](#connections)) |
-| <a id="projectdependencies"></a>`dependencies` **{warning-solid}** | [`DependencyConnection`](#dependencyconnection) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. Software dependencies used by the project. |
 | <a id="projectdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
@@ -18979,6 +18978,26 @@ Returns [`ProjectDataTransfer`](#projectdatatransfer).
 | ---- | ---- | ----------- |
 | <a id="projectdatatransferfrom"></a>`from` | [`Date`](#date) | Retain egress data for one year. Data for the current month will increase dynamically as egress occurs. |
 | <a id="projectdatatransferto"></a>`to` | [`Date`](#date) | End date for the data. |
+
+##### `Project.dependencies`
+
+Software dependencies used by the project.
+
+WARNING:
+**Introduced** in 15.9.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`DependencyConnection`](#dependencyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectdependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
 
 ##### `Project.deployment`
 
@@ -23624,6 +23643,17 @@ Weight of the data visualization palette.
 | <a id="dependencyproxymanifeststatuserror"></a>`ERROR` | Dependency proxy manifest has a status of error. |
 | <a id="dependencyproxymanifeststatuspending_destruction"></a>`PENDING_DESTRUCTION` | Dependency proxy manifest has a status of pending_destruction. |
 | <a id="dependencyproxymanifeststatusprocessing"></a>`PROCESSING` | Dependency proxy manifest has a status of processing. |
+
+### `DependencySort`
+
+Values for sorting dependencies.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dependencysortname_asc"></a>`NAME_ASC` | Name by ascending order. |
+| <a id="dependencysortname_desc"></a>`NAME_DESC` | Name by descending order. |
+| <a id="dependencysortpackager_asc"></a>`PACKAGER_ASC` | Packager by ascending order. |
+| <a id="dependencysortpackager_desc"></a>`PACKAGER_DESC` | Packager by descending order. |
 
 ### `DeploymentApprovalSummaryStatus`
 

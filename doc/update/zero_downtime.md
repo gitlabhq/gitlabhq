@@ -93,8 +93,8 @@ meet the other online upgrade requirements mentioned above.
 ## Multi-node / HA deployment
 
 WARNING:
-You can only upgrade one minor release at a time. So from 13.6 to 13.7, not to 13.8.
-If you attempt more than one minor release, the upgrade may fail.
+You can only upgrade one minor release at a time. So from 15.6 to 15.7, not to 15.8.
+If you attempt more than one minor release, the upgrade may fail. 
 
 ### Use a load balancer in front of web (Puma) nodes
 
@@ -544,7 +544,7 @@ setting `gitlab_rails['auto_migrate'] = false` in
 ## Multi-node / HA deployment with Geo **(PREMIUM SELF)**
 
 WARNING:
-You can only upgrade one minor release at a time.
+You can only upgrade one minor release at a time. You also must first start with the Gitaly cluster, updating Gitaly one node one at a time. This will ensure access to the Git repositories for the remainder of the upgrade process.
 
 This section describes the steps required to upgrade a multi-node / HA
 deployment with Geo. Some steps must be performed on a particular node. This

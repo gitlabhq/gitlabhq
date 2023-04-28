@@ -19,8 +19,8 @@ The Package Registry supports the following package manager types:
 | [PyPI](../pypi_repository/index.md)              | 12.10+         | GA                                                              |
 | [Generic packages](../generic_packages/index.md) | 13.5+          | GA                                                              |
 | [Composer](../composer_repository/index.md)      | 13.2+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817)       |
-| [Conan](../conan_repository/index.md)            | 12.6+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816)       |
 | [Helm](../helm_repository/index.md)              | 14.1+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366)       |
+| [Conan](../conan_repository/index.md)            | 12.6+          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
 | [Debian](../debian_repository/index.md)          | 14.2+          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
 | [Go](../go_proxy/index.md)                       | 13.1+          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
 | [Ruby gems](../rubygems_registry/index.md)       | 13.10+         | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3200) |

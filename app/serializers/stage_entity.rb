@@ -67,7 +67,7 @@ class StageEntity < Grape::Entity
   end
 
   def preload_metadata(statuses)
-    Preloaders::CommitStatusPreloader.new(statuses).execute([:metadata])
+    Preloaders::CommitStatusPreloader.new(statuses).execute([:metadata, :pipeline])
 
     statuses
   end

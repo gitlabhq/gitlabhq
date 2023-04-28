@@ -357,8 +357,8 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application.log`
 - Installations from source: `/home/git/gitlab/log/application.log`
 
-It helps you discover events happening in your instance such as user creation
-and project deletion. For example:
+It contains a less structured version of the logs in
+[`application_json.log`](#application_jsonlog), like this example:
 
 ```plaintext
 October 06, 2014 11:56: User "Administrator" (admin@example.com) was created
@@ -377,7 +377,8 @@ Depending on your installation method, this file is located at:
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/application_json.log`
 - Installations from source: `/home/git/gitlab/log/application_json.log`
 
-It contains the JSON version of the logs in `application.log`, like this example:
+It helps you discover events happening in your instance such as user creation
+and project deletion. For example:
 
 ```json
 {

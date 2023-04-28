@@ -12209,6 +12209,9 @@ msgstr ""
 msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"
 msgstr ""
 
+msgid "Couldn't link %{issuable}. You must have at least the Reporter role in both projects."
+msgstr ""
+
 msgid "Country / Region"
 msgstr ""
 
@@ -17446,9 +17449,6 @@ msgid "Everything you need to create a GitLab Pages site using Bridgetown"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Gatsby"
-msgstr ""
-
-msgid "Everything you need to create a GitLab Pages site using GitBook"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Hexo"
@@ -35234,9 +35234,6 @@ msgstr ""
 msgid "ProjectTemplates|Pages/Gatsby"
 msgstr ""
 
-msgid "ProjectTemplates|Pages/GitBook"
-msgstr ""
-
 msgid "ProjectTemplates|Pages/Hexo"
 msgstr ""
 
@@ -43927,13 +43924,13 @@ msgstr ""
 msgid "Terraform|Download JSON"
 msgstr ""
 
+msgid "Terraform|Explore documentation"
+msgstr ""
+
 msgid "Terraform|Failed to load Terraform reports"
 msgstr ""
 
 msgid "Terraform|Generating the report caused an error."
-msgstr ""
-
-msgid "Terraform|How to use GitLab-managed Terraform state?"
 msgstr ""
 
 msgid "Terraform|Job status"

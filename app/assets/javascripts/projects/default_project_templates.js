@@ -53,10 +53,6 @@ export default {
     text: s__('ProjectTemplates|Pages/Plain HTML'),
     icon: '.template-option .icon-plainhtml',
   },
-  gitbook: {
-    text: s__('ProjectTemplates|Pages/GitBook'),
-    icon: '.template-option .icon-gitbook',
-  },
   hexo: {
     text: s__('ProjectTemplates|Pages/Hexo'),
     icon: '.template-option .icon-hexo',

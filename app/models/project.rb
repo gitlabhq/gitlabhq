@@ -1260,12 +1260,16 @@ class Project < ApplicationRecord
     latest_successful_build_for_ref(job_name, ref) || raise(ActiveRecord::RecordNotFound, "Couldn't find job #{job_name}")
   end
 
-  def latest_pipeline(ref = default_branch, sha = nil)
+  def latest_pipelines(ref = default_branch, sha = nil)
     ref = ref.presence || default_branch
     sha ||= commit(ref)&.sha
-    return unless sha
+    return ci_pipelines.none unless sha
 
-    ci_pipelines.newest_first(ref: ref, sha: sha).take
+    ci_pipelines.newest_first(ref: ref, sha: sha)
+  end
+
+  def latest_pipeline(ref = default_branch, sha = nil)
+    latest_pipelines(ref, sha).take
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

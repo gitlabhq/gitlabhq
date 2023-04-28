@@ -379,7 +379,10 @@ When transferring groups, note:
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
-- Transfers fail if [packages](../packages/index.md) exist in any of the projects in the group, or in any of its subgroups.
+- Transfers fail if [npm packages](../packages/npm_registry/index.md) exist in any of the projects in the group, or in any of its subgroups.
+- Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group level endpoint.
+- Existing package names need to be updated if the package uses an instance level endpoint ([Maven](../packages/maven_repository/index.md#naming-convention), [npm](../packages/npm_registry/index.md#naming-convention), [Conan](../packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another root level namespace.
+- [Maven packages](../packages/maven_repository/index.md#naming-convention) follow a naming convention that prevent installing or publishing the respective package from a group level endpoint after group transfer.
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
 
 To transfer a group:

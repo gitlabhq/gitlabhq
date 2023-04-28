@@ -19,6 +19,10 @@ module IssuableLinks
         return error(issuables_already_assigned_message, 409)
       end
 
+      if render_no_permission_error?
+        return error(issuables_no_permission_error_message, 403)
+      end
+
       if render_not_found_error?
         return error(issuables_not_found_message, 404)
       end
@@ -46,12 +50,17 @@ module IssuableLinks
 
       link
     end
+
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
     def render_conflict_error?
       referenced_issuables.present? && (referenced_issuables - previous_related_issuables).empty?
+    end
+
+    def render_no_permission_error?
+      readonly_issuables(referenced_issuables).present? && linkable_issuables(referenced_issuables).empty?
     end
 
     def render_not_found_error?
@@ -116,6 +125,10 @@ module IssuableLinks
       _('%{issuable}(s) already assigned' % { issuable: target_issuable_type.capitalize })
     end
 
+    def issuables_no_permission_error_message
+      _("Couldn't link %{issuable}. You must have at least the Reporter role in both projects." % { issuable: target_issuable_type })
+    end
+
     def issuables_not_found_message
       _('No matching %{issuable} found. Make sure that you are adding a valid %{issuable} URL.' % { issuable: target_issuable_type })
     end
@@ -131,6 +144,10 @@ module IssuableLinks
 
     def linkable_issuables(objects)
       raise NotImplementedError
+    end
+
+    def readonly_issuables(_issuables)
+      [] # default to empty for non-issues
     end
 
     def previous_related_issuables

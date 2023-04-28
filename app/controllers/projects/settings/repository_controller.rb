@@ -122,21 +122,6 @@ module Projects
         ]
       end
 
-      def access_levels_options
-        {
-          create_access_levels: levels_for_dropdown,
-          push_access_levels: levels_for_dropdown,
-          merge_access_levels: levels_for_dropdown
-        }
-      end
-
-      def levels_for_dropdown
-        roles = ProtectedRef::AccessLevel.human_access_levels.map do |id, text|
-          { id: id, text: text, before_divider: true }
-        end
-        { roles: roles }
-      end
-
       def protectable_tags_for_dropdown
         { open_tags: ProtectableDropdown.new(@project, :tags).hash }
       end
@@ -154,7 +139,7 @@ module Projects
       def load_gon_index
         gon.push(protectable_tags_for_dropdown)
         gon.push(protectable_branches_for_dropdown)
-        gon.push(access_levels_options)
+        gon.push(helpers.protected_access_levels_for_dropdowns)
         gon.push(current_project_id: project.id) if project
       end
     end

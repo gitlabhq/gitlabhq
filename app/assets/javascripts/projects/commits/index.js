@@ -46,6 +46,7 @@ export const initCommitsRefSwitcher = () => {
       return createElement(RefSelector, {
         props: {
           projectId,
+          queryParams: { sort: 'updated_desc' },
           value: useSymbolicRefNames ? `refs/${refType}/${ref}` : ref,
           useSymbolicRefNames,
         },
