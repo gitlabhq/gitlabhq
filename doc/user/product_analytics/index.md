@@ -36,7 +36,7 @@ title: Product Analytics flow
 flowchart TB
     subgraph Adding data
         A([SDK]) --Send user data--> B[Analytics Proxy]
-        B --Transform data and pass it through--> C[Jitsu]
+        B --Transform data and pass it through--> C[Snowplow]
         C --Pass the data to the associated database--> D([Clickhouse])
     end
     subgraph Showing dashboards

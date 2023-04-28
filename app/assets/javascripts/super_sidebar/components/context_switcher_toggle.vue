@@ -35,6 +35,7 @@ export default {
   <button
     type="button"
     class="context-switcher-toggle gl-p-0 gl-bg-transparent gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-border-0 border-top border-bottom gl-border-gray-a-08 gl-box-shadow-none gl-display-flex gl-align-items-center gl-font-weight-bold gl-w-full gl-h-8 gl-flex-shrink-0"
+    data-qa-selector="context_switcher"
   >
     <span
       v-if="context.icon"

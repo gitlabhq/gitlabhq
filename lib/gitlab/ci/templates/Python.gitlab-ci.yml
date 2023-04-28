@@ -23,26 +23,24 @@ cache:
     - venv/
 
 before_script:
-  - python --version  # For debugging
+  - python --version ; pip --version  # For debugging
   - pip install virtualenv
   - virtualenv venv
   - source venv/bin/activate
 
 test:
   script:
-    - python setup.py test
-    - pip install tox flake8  # you can also use tox
-    - tox -e py,flake8
+    - pip install ruff tox  # you can also use tox
+    - pip install --editable ".[test]"
+    - tox -e py,ruff
 
 run:
   script:
-    - python setup.py bdist_wheel
-    # an alternative approach is to install and run:
-    - pip install dist/*
+    - pip install .
     # run the command here
   artifacts:
     paths:
-      - dist/*.whl
+      - build/*
 
 pages:
   script:

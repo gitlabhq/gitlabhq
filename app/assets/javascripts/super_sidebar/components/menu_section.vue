@@ -68,6 +68,8 @@ export default {
     <button
       class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
+      data-qa-selector="menu_section_button"
+      :data-qa-section-name="item.title"
       @click="isExpanded = !isExpanded"
     >
       <span
@@ -91,7 +93,12 @@ export default {
       </span>
     </button>
 
-    <gl-collapse v-model="isExpanded" :aria-label="item.title">
+    <gl-collapse
+      v-model="isExpanded"
+      :aria-label="item.title"
+      data-qa-selector="menu_section"
+      :data-qa-section-name="item.title"
+    >
       <slot>
         <ul class="gl-list-style-none gl-p-0 gl-m-0">
           <nav-item

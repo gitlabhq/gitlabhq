@@ -179,7 +179,7 @@ export default {
     <gl-alert v-else-if="hasError" variant="danger" :dismissible="false" class="gl-m-2">
       {{ $options.i18n.searchError }}
     </gl-alert>
-    <nav v-else :aria-label="$options.i18n.contextNavigation">
+    <nav v-else :aria-label="$options.i18n.contextNavigation" data-qa-selector="context_navigation">
       <ul class="gl-p-0 gl-m-0 gl-list-style-none">
         <li v-if="!isSearch">
           <div aria-hidden="true" class="gl-font-weight-bold gl-px-3 gl-py-3">

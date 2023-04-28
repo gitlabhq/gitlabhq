@@ -116,7 +116,6 @@ export default {
       :class="computedLinkClasses"
       data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
-      :data-qa-menu-item="item.title"
     >
       <div
         :class="[isActive ? 'gl-bg-blue-500' : 'gl-bg-transparent']"
