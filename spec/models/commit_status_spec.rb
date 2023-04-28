@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitStatus do
+RSpec.describe CommitStatus, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
 
   let_it_be(:pipeline) do
@@ -28,6 +28,22 @@ RSpec.describe CommitStatus do
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
+
+  it { is_expected.to validate_length_of(:stage).is_at_most(255) }
+  it { is_expected.to validate_length_of(:ref).is_at_most(255) }
+  it { is_expected.to validate_length_of(:target_url).is_at_most(255) }
+  it { is_expected.to validate_length_of(:description).is_at_most(255) }
+
+  context 'when feature flag ci_builds_columns_size_validation is disabled' do
+    before do
+      stub_feature_flags(ci_builds_columns_size_validation: false)
+    end
+
+    it { is_expected.not_to validate_length_of(:stage).is_at_most(255) }
+    it { is_expected.not_to validate_length_of(:ref).is_at_most(255) }
+    it { is_expected.not_to validate_length_of(:target_url).is_at_most(255) }
+    it { is_expected.not_to validate_length_of(:description).is_at_most(255) }
+  end
 
   it { is_expected.to delegate_method(:sha).to(:pipeline) }
   it { is_expected.to delegate_method(:short_sha).to(:pipeline) }

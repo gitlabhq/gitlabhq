@@ -65,10 +65,11 @@ export const initSuperSidebar = () => {
 
   if (!el) return false;
 
-  bindSuperSidebarCollapsedEvents();
-  initSuperSidebarCollapsedState();
+  const { rootPath, sidebar, toggleNewNavEndpoint, forceDesktopExpandedSidebar } = el.dataset;
 
-  const { rootPath, sidebar, toggleNewNavEndpoint } = el.dataset;
+  bindSuperSidebarCollapsedEvents();
+  initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
+
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
 

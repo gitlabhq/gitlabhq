@@ -7,7 +7,7 @@
 
     - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user)
     - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
-    %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, toggle_new_nav_endpoint: profile_preferences_url } }
+    %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, toggle_new_nav_endpoint: profile_preferences_url, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s } }
 
     - if display_whats_new?
       #whats-new-app{ data: { version_digest: whats_new_version_digest } }

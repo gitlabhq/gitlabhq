@@ -48,6 +48,7 @@ import PasteMarkdown from '../extensions/paste_markdown';
 import Reference from '../extensions/reference';
 import ReferenceLabel from '../extensions/reference_label';
 import ReferenceDefinition from '../extensions/reference_definition';
+import Selection from '../extensions/selection';
 import Sourcemap from '../extensions/sourcemap';
 import Strike from '../extensions/strike';
 import Subscript from '../extensions/subscript';
@@ -143,6 +144,7 @@ export const createContentEditor = ({
     Reference,
     ReferenceLabel,
     ReferenceDefinition,
+    Selection,
     Sourcemap,
     Strike,
     Subscript,

@@ -141,7 +141,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
 
     context 'when work item does not the assignee widget' do
-      let(:work_item) { build(:work_item, :incident) }
+      let(:work_item) { build(:work_item, :test_case) }
 
       it 'omits assignee related quick action commands' do
         is_expected.not_to include(:assign, :unassign, :reassign)

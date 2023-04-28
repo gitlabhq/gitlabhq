@@ -1833,6 +1833,9 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
+msgid "AI Generated Test File"
+msgstr ""
+
 msgid "AI actions"
 msgstr ""
 
@@ -18894,6 +18897,9 @@ msgid "Generate project access tokens scoped to this project for your applicatio
 msgstr ""
 
 msgid "Generate site and private keys at"
+msgstr ""
+
+msgid "Generate test with AI"
 msgstr ""
 
 msgid "Generated with JSON data"
@@ -47062,6 +47068,9 @@ msgid "Unable to fully load the default commit message. You can still apply this
 msgstr ""
 
 msgid "Unable to generate new instance ID"
+msgstr ""
+
+msgid "Unable to generate tests for specified file."
 msgstr ""
 
 msgid "Unable to load commits. Try again later."

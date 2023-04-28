@@ -272,6 +272,12 @@ rspec:coverage:
     - rspec unit pg13
     - rspec integration pg13
     - rspec system pg13
+    # as-if-foss jobs
+    - rspec migration pg13-as-if-foss
+    - rspec background_migration pg13-as-if-foss
+    - rspec unit pg13-as-if-foss
+    - rspec integration pg13-as-if-foss
+    - rspec system pg13-as-if-foss
     # EE jobs
     - rspec-ee migration pg13
     - rspec-ee background_migration pg13

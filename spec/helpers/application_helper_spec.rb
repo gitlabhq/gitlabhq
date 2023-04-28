@@ -737,4 +737,43 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe 'collapsed_super_sidebar?' do
+    context 'when @force_desktop_expanded_sidebar is true' do
+      before do
+        helper.instance_variable_set(:@force_desktop_expanded_sidebar, true)
+      end
+
+      it 'returns false' do
+        expect(helper.collapsed_super_sidebar?).to eq(false)
+      end
+
+      it 'does not use the cookie value' do
+        expect(helper).not_to receive(:cookies)
+        helper.collapsed_super_sidebar?
+      end
+    end
+
+    context 'when @force_desktop_expanded_sidebar is not set (default)' do
+      context 'when super_sidebar_collapsed cookie is true' do
+        before do
+          helper.request.cookies['super_sidebar_collapsed'] = 'true'
+        end
+
+        it 'returns true' do
+          expect(helper.collapsed_super_sidebar?).to eq(true)
+        end
+      end
+
+      context 'when super_sidebar_collapsed cookie is false' do
+        before do
+          helper.request.cookies['super_sidebar_collapsed'] = 'false'
+        end
+
+        it 'returns false' do
+          expect(helper.collapsed_super_sidebar?).to eq(false)
+        end
+      end
+    end
+  end
 end

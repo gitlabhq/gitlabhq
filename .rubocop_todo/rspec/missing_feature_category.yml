@@ -4844,7 +4844,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/models/commit_signatures/gpg_signature_spec.rb'
     - 'spec/models/commit_signatures/x509_commit_signature_spec.rb'
     - 'spec/models/commit_spec.rb'
-    - 'spec/models/commit_status_spec.rb'
     - 'spec/models/compare_spec.rb'
     - 'spec/models/concerns/access_requestable_spec.rb'
     - 'spec/models/concerns/after_commit_queue_spec.rb'

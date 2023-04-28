@@ -52,6 +52,11 @@ export default {
     compareButtonLabel: __('Compare submodule commit revisions'),
     fileModeTooltip: __('File permissions'),
   },
+  inject: {
+    showGenerateTestFileButton: {
+      default: false,
+    },
+  },
   props: {
     discussionPath: {
       type: String,
@@ -227,6 +232,7 @@ export default {
       'setCurrentFileHash',
       'reviewFile',
       'setFileCollapsedByUser',
+      'setGenerateTestFilePath',
     ]),
     handleToggleFile() {
       this.$emit('toggleFile');
@@ -412,6 +418,12 @@ export default {
             <gl-icon name="ellipsis_v" class="mr-0" />
             <span class="sr-only">{{ $options.i18n.optionsDropdownTitle }}</span>
           </template>
+          <gl-dropdown-item
+            v-if="showGenerateTestFileButton"
+            @click="setGenerateTestFilePath(diffFile.new_path)"
+          >
+            {{ __('Generate test with AI') }}
+          </gl-dropdown-item>
           <gl-dropdown-item
             v-if="diffFile.replaced_view_path"
             ref="replacedFileButton"

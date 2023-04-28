@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { mapState, mapGetters, mapActions } from 'vuex';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import api from '~/api';
 import {
   keysFor,
@@ -78,6 +79,8 @@ export default {
     GlPagination,
     GlSprintf,
     GlAlert,
+    GenerateTestFileDrawer: () =>
+      import('ee_component/ai/components/generate_test_file_drawer.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   alerts: {
@@ -226,6 +229,7 @@ export default {
       'showWhitespace',
       'targetBranchName',
       'branchName',
+      'generateTestFilePath',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -296,6 +300,9 @@ export default {
     },
     fileReviews() {
       return reviewStatuses(this.diffFiles, this.mrReviews);
+    },
+    resourceId() {
+      return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
   },
   watch: {
@@ -450,6 +457,7 @@ export default {
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
+      'setGenerateTestFilePath',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -807,5 +815,11 @@ export default {
         </div>
       </div>
     </div>
+    <generate-test-file-drawer
+      v-if="getNoteableData.id"
+      :resource-id="resourceId"
+      :file-path="generateTestFilePath"
+      @close="() => setGenerateTestFilePath('')"
+    />
   </div>
 </template>

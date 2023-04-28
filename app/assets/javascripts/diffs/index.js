@@ -28,6 +28,7 @@ export default function initDiffsApp(store = notesStore) {
     apolloProvider,
     provide: {
       newCommentTemplatePath: dataset.newCommentTemplatePath,
+      showGenerateTestFileButton: parseBoolean(dataset.showGenerateTestFileButton),
     },
     data() {
       return {

@@ -41,6 +41,7 @@ module Gitlab
             :award_emoji
           ],
           incident: [
+            :assignees,
             :description,
             :hierarchy,
             :notes,

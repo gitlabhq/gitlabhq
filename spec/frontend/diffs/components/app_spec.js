@@ -31,6 +31,8 @@ const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 
 Vue.use(Vuex);
 
+Vue.config.ignoredElements = ['copy-code'];
+
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.findComponent(CollapsedFilesWarning);
 }

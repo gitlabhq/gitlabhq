@@ -1,5 +1,7 @@
 - @breadcrumb_title = _("Help")
 - page_title    _("Help")
 - header_title  _("Help"), help_path
+- if show_super_sidebar?
+  - @force_desktop_expanded_sidebar = true
 
 = render template: "layouts/application"

@@ -91,6 +91,12 @@ describe('Super Sidebar Collapsed State Manager', () => {
         expect(setCookie).not.toHaveBeenCalled();
       },
     );
+
+    it('does not collapse sidebar when forceDesktopExpandedSidebar is true and windowWidth is xl', () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+      initSuperSidebarCollapsedState(true);
+      expect(findPage().classList).not.toContain(SIDEBAR_COLLAPSED_CLASS);
+    });
   });
 
   describe('bindSuperSidebarCollapsedEvents', () => {

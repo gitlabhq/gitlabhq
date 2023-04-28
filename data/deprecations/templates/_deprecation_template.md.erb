@@ -35,6 +35,8 @@ These GitLab features are deprecated and no longer recommended for use.
 Each deprecated feature will be removed in a future release.
 Some features cause breaking changes when they are removed.
 
+On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
+
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 

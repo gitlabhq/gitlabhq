@@ -244,7 +244,7 @@
     "cheerio": "^1.0.0-rc.9",
     "commander": "^2.20.3",
     "custom-jquery-matchers": "^2.1.0",
-    "eslint": "8.38.0",
+    "eslint": "8.39.0",
     "eslint-import-resolver-jest": "3.0.2",
     "eslint-import-resolver-webpack": "0.13.2",
     "eslint-plugin-import": "^2.27.5",

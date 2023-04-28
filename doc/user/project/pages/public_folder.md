@@ -91,11 +91,34 @@ NOTE:
 GitLab Pages supports only static sites. For Next.js, you can use
 Next's [Static HTML export functionality](https://nextjs.org/docs/advanced-features/static-html-export).
 
-Use the `-o public` flag after `next export` as the build command, for
-example:
+With the release of [Next.js 13](https://nextjs.org/blog/next-13) a lot has changed on how Next.js works.
+It is recommended to use the following `next.config.js` so all static assets can be exported properly:
 
-```shell
-next export -o public
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    unoptimized: true,
+  },
+  assetPrefix: "https://example.gitlab.io/namespace-here/my-gitlab-project/"
+}
+
+module.exports = nextConfig
+```
+
+An example `.gitlab-ci.yml` can be as minimal as:
+
+```yaml
+pages:
+  before_script:
+    - npm install
+  script:
+    - npm run build
+    - mv out/* public
+  artifacts:
+    paths:
+      - public
 ```
 
 ## Nuxt.js

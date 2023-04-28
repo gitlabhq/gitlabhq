@@ -36,8 +36,11 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
   }
 };
 
-export const initSuperSidebarCollapsedState = () => {
-  const collapsed = isDesktopBreakpoint() ? getCollapsedCookie() : true;
+export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = false) => {
+  let collapsed = true;
+  if (isDesktopBreakpoint()) {
+    collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
+  }
   toggleSuperSidebarCollapsed(collapsed, false);
 };
 

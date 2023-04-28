@@ -9,4 +9,4 @@ if (process.env.NODE_ENV !== 'production') {
 Vue.use(GlFeatureFlagsPlugin);
 Vue.use(Translate);
 
-Vue.config.ignoredElements = ['gl-emoji'];
+Vue.config.ignoredElements = ['gl-emoji', 'copy-code'];

@@ -380,6 +380,8 @@ module ApplicationHelper
   end
 
   def collapsed_super_sidebar?
+    return false if @force_desktop_expanded_sidebar
+
     cookies["super_sidebar_collapsed"] == "true"
   end
 

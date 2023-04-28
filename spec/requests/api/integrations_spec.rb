@@ -48,7 +48,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       # integration; this integration must be installed via the UI.
       names = Integration.available_integration_names
       names.delete(Integrations::GitlabSlackApplication.to_param) if Gitlab.ee?
-      names
+      names - %w[shimo zentao]
     end
 
     with_them do

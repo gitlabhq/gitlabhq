@@ -8,6 +8,7 @@
 - link_classes = "flex-grow-1 mx-1 "
 - if show_super_sidebar?
   - @left_sidebar = true
+  - @force_desktop_expanded_sidebar = true
   - nav "user_profile"
 
 = content_for :meta_tags do

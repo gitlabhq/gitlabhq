@@ -35,6 +35,8 @@ These GitLab features are deprecated and no longer recommended for use.
 Each deprecated feature will be removed in a future release.
 Some features cause breaking changes when they are removed.
 
+On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
+
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 
@@ -219,6 +221,19 @@ The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operato
 We plan to implement a new method to bind runners to a GitLab instance
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
 The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### GraphQL: The `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` enum is deprecated. Use `DISABLED_AND_OVERRIDABLE` instead
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.8</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` GraphQL enum type will be replaced with the value, `DISABLED_AND_OVERRIDABLE`.
 
 </div>
 
@@ -1075,19 +1090,6 @@ be present during the 16.x cycle to avoid breaking the API signature, and will b
 </div>
 
 The `confidential` field for a `Note` will be deprecated and renamed to `internal`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### GraphQL: The `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` enum is deprecated. Use `DISABLED_AND_OVERRIDABLE` instead
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-In GitLab 16.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` GraphQL enum type will be replaced with the value, `DISABLED_AND_OVERRIDABLE`.
 
 </div>
 

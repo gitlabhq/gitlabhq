@@ -29,6 +29,15 @@ module Gitlab
             refresh_seats
             ::QA::Support::WaitForRequests.wait_for_requests
           end
+
+          # Waits for subscription to be synced and UI to be updated
+          #
+          # @param subscription_plan [String]
+          def wait_for_subscription(subscription_plan, page:)
+            ::QA::Support::Waiter.wait_until(max_duration: 30, sleep_interval: 2, reload_page: page) do
+              billing_plan_header.match?(/currently using the #{subscription_plan} plan/i)
+            end
+          end
         end
       end
     end
