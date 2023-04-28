@@ -102,11 +102,7 @@ export default {
       return this.hasCycleAnalyticsForGroups ? METRICS_REQUESTS : SUMMARY_METRICS_REQUEST;
     },
     showLinkToDashboard() {
-      return Boolean(
-        this.features?.groupLevelAnalyticsDashboard &&
-          this.features?.groupAnalyticsDashboardsPage &&
-          this.groupPath,
-      );
+      return Boolean(this.features?.groupLevelAnalyticsDashboard && this.groupPath);
     },
     dashboardsPath() {
       const { fullPath } = this.namespace;

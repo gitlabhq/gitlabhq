@@ -1,8 +1,0 @@
----
-name: group_analytics_dashboards_page
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98767'
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375251
-milestone: '15.5'
-type: development
-group: group::optimize
-default_enabled: true

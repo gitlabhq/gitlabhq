@@ -282,7 +282,6 @@ Lint/UnusedMethodArgument:
     - 'ee/app/services/group_saml/identity/destroy_service.rb'
     - 'ee/app/services/projects/update_mirror_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/process_scan_result_policy_service.rb'
-    - 'ee/app/services/vulnerabilities/finding_dismiss_service.rb'
     - 'ee/app/validators/vulnerabilities/cvss_vector_validator.rb'
     - 'ee/app/workers/automation/execute_rule_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/refresh_seats_worker.rb'

@@ -4,7 +4,7 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ArtifactRow from '~/ci/artifacts/components/artifact_row.vue';
-import { BULK_DELETE_FEATURE_FLAG } from '~/ci/artifacts/constants';
+import { BULK_DELETE_FEATURE_FLAG, I18N_BULK_DELETE_MAX_SELECTED } from '~/ci/artifacts/constants';
 
 describe('ArtifactRow component', () => {
   let wrapper;
@@ -18,13 +18,15 @@ describe('ArtifactRow component', () => {
   const findDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
-  const createComponent = ({ canDestroyArtifacts = true, glFeatures = {} } = {}) => {
+  const createComponent = ({ canDestroyArtifacts = true, glFeatures = {}, props = {} } = {}) => {
     wrapper = shallowMountExtended(ArtifactRow, {
       propsData: {
         artifact,
         isSelected: false,
         isLoading: false,
         isLastRow: false,
+        isSelectedArtifactsLimitReached: false,
+        ...props,
       },
       provide: { canDestroyArtifacts, glFeatures },
       stubs: { GlBadge, GlFriendlyWrap },
@@ -79,14 +81,34 @@ describe('ArtifactRow component', () => {
 
   describe('bulk delete checkbox', () => {
     describe('with permission and feature flag enabled', () => {
-      beforeEach(() => {
-        createComponent({ glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true } });
-      });
-
       it('emits selectArtifact when toggled', () => {
+        createComponent({ glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true } });
+
         findCheckbox().vm.$emit('input', true);
 
         expect(wrapper.emitted('selectArtifact')).toStrictEqual([[artifact, true]]);
+      });
+
+      describe('when the selected artifacts limit is reached', () => {
+        it('remains enabled if the artifact was selected', () => {
+          createComponent({
+            glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+            props: { isSelected: true, isSelectedArtifactsLimitReached: true },
+          });
+
+          expect(findCheckbox().attributes('disabled')).toBeUndefined();
+          expect(findCheckbox().attributes('title')).toBe('');
+        });
+
+        it('is disabled if the artifact was not selected', () => {
+          createComponent({
+            glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+            props: { isSelected: false, isSelectedArtifactsLimitReached: true },
+          });
+
+          expect(findCheckbox().attributes('disabled')).toBe('true');
+          expect(findCheckbox().attributes('title')).toBe(I18N_BULK_DELETE_MAX_SELECTED);
+        });
       });
     });
 

@@ -2,7 +2,9 @@ import { GlDrawer, GlLabel, GlModal, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
 import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -12,22 +14,28 @@ import actions from '~/boards/stores/actions';
 import getters from '~/boards/stores/getters';
 import mutations from '~/boards/stores/mutations';
 import sidebarEventHub from '~/sidebar/event_hub';
-import { mockLabelList } from '../mock_data';
+import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
+import { mockLabelList, issueBoardListsQueryResponse } from '../mock_data';
 
+Vue.use(VueApollo);
 Vue.use(Vuex);
 
 describe('BoardSettingsSidebar', () => {
   let wrapper;
+  let mockApollo;
   const labelTitle = mockLabelList.label.title;
   const labelColor = mockLabelList.label.color;
   const listId = mockLabelList.id;
   const modalID = 'board-settings-sidebar-modal';
+
+  const boardListQueryHandler = jest.fn().mockResolvedValue(issueBoardListsQueryResponse);
 
   const createComponent = ({
     canAdminList = false,
     list = {},
     sidebarType = LIST,
     activeId = inactiveId,
+    isApolloBoard = false,
   } = {}) => {
     const boardLists = {
       [listId]: list,
@@ -38,14 +46,25 @@ describe('BoardSettingsSidebar', () => {
       mutations,
       actions,
     });
+    mockApollo = createMockApollo([[boardListsQuery, boardListQueryHandler]]);
 
     wrapper = extendedWrapper(
       shallowMount(BoardSettingsSidebar, {
+        apolloProvider: mockApollo,
         store,
         provide: {
           canAdminList,
           scopedLabelsAvailable: false,
           isIssueBoard: true,
+          boardType: 'group',
+          fullPath: 'gitlab-org',
+          issuableType: 'issue',
+          isGroupBoard: true,
+          isApolloBoard,
+        },
+        propsData: {
+          listId: 'gid://gitlab/List/1',
+          boardId: 'gid://gitlab/Board/1',
         },
         directives: {
           GlModal: createMockDirective('gl-modal'),
@@ -175,6 +194,14 @@ describe('BoardSettingsSidebar', () => {
     it('has the correct ID on the modal', () => {
       createComponent({ canAdminList: true, activeId: listId, list: mockLabelList });
       expect(findModal().props('modalId')).toBe(modalID);
+    });
+  });
+
+  describe('Apollo boards', () => {
+    it('fetches list', () => {
+      createComponent({ isApolloBoard: true });
+
+      expect(boardListQueryHandler).toHaveBeenCalled();
     });
   });
 });

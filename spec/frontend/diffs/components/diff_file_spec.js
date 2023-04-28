@@ -166,6 +166,23 @@ describe('DiffFile', () => {
           });
         },
       );
+
+      it('emits the "first file shown" and "files end" events when in File-by-File mode', async () => {
+        ({ wrapper, store } = createComponent({
+          file: getReadableFile(),
+          first: false,
+          last: false,
+          props: {
+            viewDiffsFileByFile: true,
+          },
+        }));
+
+        await nextTick();
+
+        expect(eventHub.$emit).toHaveBeenCalledTimes(2);
+        expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
+        expect(eventHub.$emit).toHaveBeenCalledWith(EVT_PERF_MARK_DIFF_FILES_END);
+      });
     });
 
     describe('after loading the diff', () => {

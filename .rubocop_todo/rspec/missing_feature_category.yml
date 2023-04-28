@@ -3,9 +3,7 @@ RSpec/MissingFeatureCategory:
   Exclude:
     - 'ee/spec/components/billing/plan_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/limit_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/storage/project_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/subgroup_pre_enforcement_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/storage/user_pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/clusters_controller_spec.rb'
     - 'ee/spec/controllers/autocomplete_controller_spec.rb'

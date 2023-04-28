@@ -23,7 +23,6 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   before_action do
     push_licensed_feature(:cycle_analytics_for_groups) if project.licensed_feature_available?(:cycle_analytics_for_groups)
     push_licensed_feature(:group_level_analytics_dashboard) if project.licensed_feature_available?(:group_level_analytics_dashboard)
-    push_frontend_feature_flag(:group_analytics_dashboards_page, namespace)
 
     if project.licensed_feature_available?(:cycle_analytics_for_projects)
       push_licensed_feature(:cycle_analytics_for_projects)

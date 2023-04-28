@@ -196,6 +196,7 @@ export default {
         :filters="filterParams"
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-xs-display-none!': addColumnFormVisible }"
+        @setActiveList="$emit('setActiveList', $event)"
       />
 
       <transition name="slide" @after-enter="afterFormEnters">
@@ -211,6 +212,7 @@ export default {
       :can-admin-list="canAdminList"
       :filters="filterParams"
       :style="{ height: boardHeight }"
+      @setActiveList="$emit('setActiveList', $event)"
     />
 
     <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />

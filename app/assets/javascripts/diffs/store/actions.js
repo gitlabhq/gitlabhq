@@ -113,6 +113,8 @@ export const fetchFileByFile = async ({ state, getters, commit }) => {
     ? getters.flatBlobsList.find(({ fileHash }) => fileHash === id)
     : getters.flatBlobsList[0];
 
+  eventHub.$emit(EVT_PERF_MARK_DIFF_FILES_START);
+
   if (treeEntry && !treeEntry.diffLoaded && !getters.getDiffFileByHash(id)) {
     // Overloading "batch" loading indicators so the UI stays mostly the same
     commit(types.SET_BATCH_LOADING_STATE, 'loading');

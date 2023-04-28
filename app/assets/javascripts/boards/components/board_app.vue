@@ -15,6 +15,7 @@ export default {
   inject: ['initialBoardId', 'initialFilterParams', 'isIssueBoard', 'isApolloBoard'],
   data() {
     return {
+      activeListId: '',
       boardId: this.initialBoardId,
       filterParams: { ...this.initialFilterParams },
       isShowingEpicsSwimlanes: Boolean(queryToObject(window.location.search).group_by),
@@ -27,6 +28,11 @@ export default {
         return {
           isIssue: this.isIssueBoard,
         };
+      },
+      result({ data: { activeBoardItem } }) {
+        if (activeBoardItem) {
+          this.setActiveId('');
+        }
       },
       skip() {
         return !this.isApolloBoard;
@@ -41,7 +47,7 @@ export default {
     },
     isAnySidebarOpen() {
       if (this.isApolloBoard) {
-        return this.activeBoardItem?.id;
+        return this.activeBoardItem?.id || this.activeListId;
       }
       return this.isSidebarOpen;
     },
@@ -53,8 +59,12 @@ export default {
     window.removeEventListener('popstate', refreshCurrentPage);
   },
   methods: {
+    setActiveId(id) {
+      this.activeListId = id;
+    },
     switchBoard(id) {
       this.boardId = id;
+      this.setActiveId('');
     },
     setFilters(filters) {
       const filterParams = { ...filters };
@@ -78,7 +88,12 @@ export default {
       :board-id="boardId"
       :is-swimlanes-on="isSwimlanesOn"
       :filter-params="filterParams"
+      @setActiveList="setActiveId"
     />
-    <board-settings-sidebar />
+    <board-settings-sidebar
+      :list-id="activeListId"
+      :board-id="boardId"
+      @unsetActiveId="setActiveId('')"
+    />
   </div>
 </template>

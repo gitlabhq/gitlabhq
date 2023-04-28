@@ -135,3 +135,66 @@ export const propsConflictsModal = {
   sourcePath: 'path/to/project',
   selectedBranch: 'my-branch',
 };
+
+export const paginatedTreeResponseFactory = ({
+  numberOfBlobs = 3,
+  numberOfTrees = 3,
+  hasNextPage = false,
+  blobHasReadme = false,
+} = {}) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/278964',
+      __typename: 'Project',
+      repository: {
+        __typename: 'Repository',
+        paginatedTree: {
+          __typename: 'TreeConnection',
+          pageInfo: {
+            __typename: 'PageInfo',
+            endCursor: hasNextPage ? 'aaa' : '',
+            startCursor: '',
+            hasNextPage,
+          },
+          nodes: [
+            {
+              __typename: 'Tree',
+              trees: {
+                __typename: 'TreeEntryConnection',
+                nodes: new Array(numberOfTrees).fill({
+                  __typename: 'TreeEntry',
+                  id:
+                    'gid://gitlab/Gitlab::Graphql::Representation::TreeEntry/dc36320ac91aca2f890a31458c9e9920159e68a3',
+                  sha: 'dc36320ac91aca2f890a31458c9e9920159e68ae',
+                  name: 'gitlab-resize-image',
+                  flatPath: 'workhorse/cmd/gitlab-resize-image',
+                  type: 'tree',
+                  webPath: '/gitlab-org/gitlab/-/tree/master/workhorse/cmd/gitlab-resize-image',
+                }),
+              },
+              submodules: {
+                __typename: 'SubmoduleConnection',
+                nodes: [],
+              },
+              blobs: {
+                __typename: 'BlobConnection',
+                nodes: new Array(numberOfBlobs).fill({
+                  __typename: 'Blob',
+                  id:
+                    'gid://gitlab/Gitlab::Graphql::Representation::TreeEntry/99712dbc6b26ff92c15bf93449ea09df38adfb10',
+                  sha: '99712dbc6b26ff92c15bf93449ea09df38adfb1b',
+                  name: blobHasReadme ? 'README.md' : 'fakeBlob',
+                  flatPath: blobHasReadme ? 'README.md' : 'fakeBlob',
+                  type: 'blob',
+                  mode: '100644',
+                  webPath: '/gitlab-org/gitlab-build-images/-/blob/master/README.md',
+                  lfsOid: null,
+                }),
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+});

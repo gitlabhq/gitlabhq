@@ -6537,32 +6537,6 @@ Input type: `VulnerabilityExternalIssueLinkDestroyInput`
 | <a id="mutationvulnerabilityexternalissuelinkdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilityexternalissuelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.vulnerabilityFindingDismiss`
-
-WARNING:
-**Deprecated** in 15.5.
-Use VulnerabilityDismiss for vulnerabilities or SecurityFindingDismiss for pipeline findings.
-
-Input type: `VulnerabilityFindingDismissInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationvulnerabilityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilityfindingdismisscomment"></a>`comment` | [`String`](#string) | Comment why finding should be dismissed. |
-| <a id="mutationvulnerabilityfindingdismissdismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason why finding should be dismissed. |
-| <a id="mutationvulnerabilityfindingdismissid"></a>`id` **{warning-solid}** | [`VulnerabilitiesFindingID`](#vulnerabilitiesfindingid) | **Deprecated:** Use `uuid`. Deprecated in 15.2. |
-| <a id="mutationvulnerabilityfindingdismissuuid"></a>`uuid` | [`String`](#string) | UUID of the finding to be dismissed. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationvulnerabilityfindingdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilityfindingdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationvulnerabilityfindingdismissfinding"></a>`finding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Finding after dismissal. |
-
 ### `Mutation.vulnerabilityIssueLinkCreate`
 
 Input type: `VulnerabilityIssueLinkCreateInput`
@@ -25934,12 +25908,6 @@ An example `UsersSavedReplyID` is: `"gid://gitlab/Users::SavedReply/1"`.
 A `VulnerabilitiesExternalIssueLinkID` is a global ID. It is encoded as a string.
 
 An example `VulnerabilitiesExternalIssueLinkID` is: `"gid://gitlab/Vulnerabilities::ExternalIssueLink/1"`.
-
-### `VulnerabilitiesFindingID`
-
-A `VulnerabilitiesFindingID` is a global ID. It is encoded as a string.
-
-An example `VulnerabilitiesFindingID` is: `"gid://gitlab/Vulnerabilities::Finding/1"`.
 
 ### `VulnerabilitiesScannerID`
 

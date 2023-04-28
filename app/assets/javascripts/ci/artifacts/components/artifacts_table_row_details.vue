@@ -33,6 +33,10 @@ export default {
       type: Object,
       required: true,
     },
+    isSelectedArtifactsLimitReached: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -107,6 +111,7 @@ export default {
             :artifact="item"
             :is-selected="isSelected(item)"
             :is-last-row="isLastRow(index)"
+            :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
             v-on="$listeners"
             @delete="showModal(item)"
           />

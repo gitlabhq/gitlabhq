@@ -41,6 +41,7 @@ describe('ArtifactsTableRowDetails component', () => {
         selectedArtifacts,
         refetchArtifacts,
         queryVariables: {},
+        isSelectedArtifactsLimitReached: false,
       },
       provide: { canDestroyArtifacts: true },
       data() {

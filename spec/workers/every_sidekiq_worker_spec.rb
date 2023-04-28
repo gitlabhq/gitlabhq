@@ -443,8 +443,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Security::AutoFixWorker' => 3,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,
-        'SelfMonitoringProjectCreateWorker' => 3,
-        'SelfMonitoringProjectDeleteWorker' => 3,
         'ServiceDeskEmailReceiverWorker' => 3,
         'SetUserStatusBasedOnUserCapSettingWorker' => 3,
         'SnippetScheduleBulkRepositoryShardMovesWorker' => 3,

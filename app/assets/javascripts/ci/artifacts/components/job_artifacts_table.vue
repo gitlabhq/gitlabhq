@@ -42,6 +42,7 @@ import {
   I18N_BULK_DELETE_ERROR,
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
+  SELECTED_ARTIFACTS_MAX_COUNT,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
@@ -151,6 +152,9 @@ export default {
     anyArtifactsSelected() {
       return Boolean(this.selectedArtifacts.length);
     },
+    isSelectedArtifactsLimitReached() {
+      return this.selectedArtifacts.length >= SELECTED_ARTIFACTS_MAX_COUNT;
+    },
     canBulkDestroyArtifacts() {
       return this.glFeatures[BULK_DELETE_FEATURE_FLAG] && this.canDestroyArtifacts;
     },
@@ -202,7 +206,9 @@ export default {
     },
     selectArtifact(artifactNode, checked) {
       if (checked) {
-        this.selectedArtifacts.push(artifactNode.id);
+        if (!this.isSelectedArtifactsLimitReached) {
+          this.selectedArtifacts.push(artifactNode.id);
+        }
       } else {
         this.selectedArtifacts.splice(this.selectedArtifacts.indexOf(artifactNode.id), 1);
       }
@@ -340,6 +346,7 @@ export default {
     <artifacts-bulk-delete
       v-if="canBulkDestroyArtifacts"
       :selected-artifacts="selectedArtifacts"
+      :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
       @clearSelectedArtifacts="clearSelectedArtifacts"
       @showBulkDeleteModal="handleBulkDeleteModalShow"
     />
@@ -380,6 +387,7 @@ export default {
           :unselected-artifacts="
             artifacts.nodes.filter((node) => !selectedArtifacts.includes(node.id))
           "
+          :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
           @selectArtifact="selectArtifact"
         />
       </template>
@@ -482,6 +490,7 @@ export default {
           :artifacts="artifacts"
           :selected-artifacts="selectedArtifacts"
           :query-variables="queryVariables"
+          :is-selected-artifacts-limit-reached="isSelectedArtifactsLimitReached"
           @refetch="refetchArtifacts"
           @selectArtifact="selectArtifact"
         />

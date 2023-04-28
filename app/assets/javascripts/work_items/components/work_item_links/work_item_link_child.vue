@@ -264,7 +264,7 @@ export default {
     >
       <gl-button
         v-if="hasChildren"
-        v-gl-tooltip.viewport
+        v-gl-tooltip.hover
         :title="chevronTooltip"
         :aria-label="chevronTooltip"
         :icon="chevronType"

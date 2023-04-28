@@ -28,6 +28,12 @@ Fields removed in GitLab 16.0.
 |----------------------|--------------------------|---------------|----------------------------|
 | `confidence`         | `GraphQL::Types::String` | 15.4          | None                       |
 
+### GraphQL Mutations
+
+| Argument name        | Mutation                 | Deprecated in | Use instead                |
+| -------------------- | --------------------     | ------------- | -------------------------- |
+| -                    | `vulnerabilityFindingDismiss` | [15.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99170) | `vulnerabilityDismiss` or `securityFindingDismiss` |
+
 ## GitLab 15.0
 
 Fields removed in GitLab 15.0.

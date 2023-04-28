@@ -90,7 +90,11 @@ export default {
       class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
       :class="{ 'board-column-highlighted': highlighted }"
     >
-      <board-list-header :list="list" :filter-params="filtersToUse" />
+      <board-list-header
+        :list="list"
+        :filter-params="filtersToUse"
+        @setActiveList="$emit('setActiveList', $event)"
+      />
       <board-list
         ref="board-list"
         :board-id="boardId"

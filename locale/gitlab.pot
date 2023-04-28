@@ -5869,6 +5869,9 @@ msgstr ""
 msgid "Artifacts|Help us improve this page"
 msgstr ""
 
+msgid "Artifacts|Maximum selected artifacts limit reached"
+msgstr ""
+
 msgid "Artifacts|Something went wrong while deleting. Please refresh the page to try again."
 msgstr ""
 
@@ -52555,9 +52558,6 @@ msgid "failed"
 msgstr ""
 
 msgid "failed to dismiss associated finding(id=%{finding_id}): %{message}"
-msgstr ""
-
-msgid "failed to dismiss finding: %{message}"
 msgstr ""
 
 msgid "failed to dismiss security finding: %{message}"

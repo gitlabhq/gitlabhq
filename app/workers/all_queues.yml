@@ -3405,24 +3405,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: self_monitoring_project_create
-  :worker_name: SelfMonitoringProjectCreateWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: false
-  :tags: []
-- :name: self_monitoring_project_delete
-  :worker_name: SelfMonitoringProjectDeleteWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: false
-  :tags: []
 - :name: service_desk_email_receiver
   :worker_name: ServiceDeskEmailReceiverWorker
   :feature_category: :service_desk

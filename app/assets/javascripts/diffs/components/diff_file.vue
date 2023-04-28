@@ -250,11 +250,11 @@ export default {
     async postRender() {
       const eventsForThisFile = [];
 
-      if (this.isFirstFile) {
+      if (this.isFirstFile || this.viewDiffsFileByFile) {
         eventsForThisFile.push(EVT_PERF_MARK_FIRST_DIFF_FILE_SHOWN);
       }
 
-      if (this.isLastFile) {
+      if (this.isLastFile || this.viewDiffsFileByFile) {
         eventsForThisFile.push(EVT_PERF_MARK_DIFF_FILES_END);
       }
 

@@ -871,7 +871,6 @@ Layout/ArgumentAlignment:
     - 'ee/app/graphql/mutations/vulnerabilities/create_external_issue_link.rb'
     - 'ee/app/graphql/mutations/vulnerabilities/destroy_external_issue_link.rb'
     - 'ee/app/graphql/mutations/vulnerabilities/dismiss.rb'
-    - 'ee/app/graphql/mutations/vulnerabilities/finding/dismiss.rb'
     - 'ee/app/graphql/mutations/vulnerabilities/resolve.rb'
     - 'ee/app/graphql/mutations/vulnerabilities/revert_to_detected.rb'
     - 'ee/app/graphql/resolvers/alert_management/payload_alert_field_resolver.rb'

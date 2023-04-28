@@ -18,6 +18,7 @@ import Tracking from '~/tracking';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
+import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
 import eventHub from '../eventhub';
@@ -63,6 +64,9 @@ export default {
     },
     disabled: {
       default: true,
+    },
+    isApolloBoard: {
+      default: false,
     },
   },
   props: {
@@ -247,7 +251,15 @@ export default {
         sidebarEventHub.$emit('sidebar.closeAll');
       }
 
-      this.setActiveId({ id: this.list.id, sidebarType: LIST });
+      if (this.isApolloBoard) {
+        this.$apollo.mutate({
+          mutation: setActiveBoardItemMutation,
+          variables: { boardItem: null },
+        });
+        this.$emit('setActiveList', this.list.id);
+      } else {
+        this.setActiveId({ id: this.list.id, sidebarType: LIST });
+      }
 
       this.track('click_button', { label: 'list_settings' });
 

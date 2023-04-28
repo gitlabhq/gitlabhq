@@ -1,7 +1,6 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -508,43 +507,6 @@ export const mockIssuesMore = [
   mockIssue7,
 ];
 
-export const BoardsMockData = {
-  GET: {
-    '/test/-/boards/1/lists/300/issues?id=300&page=1': {
-      issues: [
-        {
-          title: 'Testing',
-          id: 1,
-          iid: 1,
-          confidential: false,
-          labels: [],
-          assignees: [],
-        },
-      ],
-    },
-    '/test/issue-boards/-/milestones.json': [
-      {
-        id: 1,
-        title: 'test',
-      },
-    ],
-  },
-  POST: {
-    '/test/-/boards/1/lists': listObj,
-  },
-  PUT: {
-    '/test/issue-boards/-/board/1/lists{/id}': {},
-  },
-  DELETE: {
-    '/test/issue-boards/-/board/1/lists{/id}': {},
-  },
-};
-
-export const boardsMockInterceptor = (config) => {
-  const body = BoardsMockData[config.method.toUpperCase()][config.url];
-  return [HTTP_STATUS_OK, body];
-};
-
 export const mockList = {
   id: 'gid://gitlab/List/1',
   title: 'Open',
@@ -636,23 +598,6 @@ export const issues = {
   [mockIssue4.id]: mockIssue4,
 };
 
-// The response from group project REST API
-export const mockRawGroupProjects = [
-  {
-    id: 0,
-    name: 'Example Project',
-    name_with_namespace: 'Awesome Group / Example Project',
-    path_with_namespace: 'awesome-group/example-project',
-  },
-  {
-    id: 1,
-    name: 'Foobar Project',
-    name_with_namespace: 'Awesome Group / Foobar Project',
-    path_with_namespace: 'awesome-group/foobar-project',
-  },
-];
-
-// The response from GraphQL endpoint
 export const mockGroupProject1 = {
   id: 0,
   name: 'Example Project',
@@ -975,6 +920,22 @@ export const boardListsQueryResponse = {
         hideBacklogList: false,
         lists: {
           nodes: mockLists,
+        },
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const issueBoardListsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      board: {
+        id: 'gid://gitlab/Board/1',
+        hideBacklogList: false,
+        lists: {
+          nodes: [mockLabelList],
         },
       },
       __typename: 'Group',

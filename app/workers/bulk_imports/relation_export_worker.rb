@@ -18,7 +18,9 @@ module BulkImports
       portable = portable(portable_id, portable_class)
       config = BulkImports::FileTransfer.config_for(portable)
 
-      if Gitlab::Utils.to_boolean(batched) && config.batchable_relation?(relation)
+      if Feature.enabled?(:bulk_imports_batched_import_export) &&
+          Gitlab::Utils.to_boolean(batched) &&
+          config.batchable_relation?(relation)
         BatchedRelationExportService.new(user, portable, relation, jid).execute
       else
         RelationExportService.new(user, portable, relation, jid).execute

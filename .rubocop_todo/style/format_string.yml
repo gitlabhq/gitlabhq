@@ -215,7 +215,6 @@ Style/FormatString:
     - 'ee/app/services/timebox_report_service.rb'
     - 'ee/app/services/vulnerabilities/destroy_dismissal_feedback_service.rb'
     - 'ee/app/services/vulnerabilities/dismiss_service.rb'
-    - 'ee/app/services/vulnerabilities/finding_dismiss_service.rb'
     - 'ee/app/services/vulnerabilities/historical_statistics/adjustment_service.rb'
     - 'ee/app/services/vulnerabilities/statistics/adjustment_service.rb'
     - 'ee/app/services/vulnerability_external_issue_links/create_service.rb'

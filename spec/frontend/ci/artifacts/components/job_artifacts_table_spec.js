@@ -7,7 +7,7 @@ import {
   GlModal,
   GlFormCheckbox,
 } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -18,6 +18,7 @@ import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_
 import ArtifactDeleteModal from '~/ci/artifacts/components/artifact_delete_modal.vue';
 import ArtifactsBulkDelete from '~/ci/artifacts/components/artifacts_bulk_delete.vue';
 import BulkDeleteModal from '~/ci/artifacts/components/bulk_delete_modal.vue';
+import JobCheckbox from '~/ci/artifacts/components/job_checkbox.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import getJobArtifactsQuery from '~/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql';
@@ -31,6 +32,7 @@ import {
   INITIAL_CURRENT_PAGE,
   BULK_DELETE_FEATURE_FLAG,
   I18N_BULK_DELETE_ERROR,
+  SELECTED_ARTIFACTS_MAX_COUNT,
 } from '~/ci/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/ci/artifacts/utils';
 import { createAlert } from '~/alert';
@@ -122,6 +124,8 @@ describe('JobArtifactsTable component', () => {
       bulkDestroyJobArtifacts: { errors: [], destroyedCount, destroyedIds },
     },
   });
+
+  const maxSelectedArtifacts = new Array(SELECTED_ARTIFACTS_MAX_COUNT).fill({});
 
   const createComponent = ({
     handlers = {
@@ -236,12 +240,12 @@ describe('JobArtifactsTable component', () => {
         expect(findDetailsRows().length).toBe(0);
 
         findCount().trigger('click');
-        await waitForPromises();
+        await nextTick();
 
         expect(findDetailsRows().length).toBe(1);
 
         findCount().trigger('click');
-        await waitForPromises();
+        await nextTick();
 
         expect(findDetailsRows().length).toBe(0);
       });
@@ -252,7 +256,7 @@ describe('JobArtifactsTable component', () => {
         expect(findDetailsInRow(1).exists()).toBe(false);
 
         findCountAt(0).trigger('click');
-        await waitForPromises();
+        await nextTick();
 
         // first job is expanded, second row has its details
         expect(findDetailsInRow(0).exists()).toBe(false);
@@ -260,7 +264,7 @@ describe('JobArtifactsTable component', () => {
         expect(findDetailsInRow(2).exists()).toBe(false);
 
         findCountAt(1).trigger('click');
-        await waitForPromises();
+        await nextTick();
 
         // both jobs are expanded, each has details below it
         expect(findDetailsInRow(0).exists()).toBe(false);
@@ -269,7 +273,7 @@ describe('JobArtifactsTable component', () => {
         expect(findDetailsInRow(3).exists()).toBe(true);
 
         findCountAt(0).trigger('click');
-        await waitForPromises();
+        await nextTick();
 
         // first job collapsed, second job expanded
         expect(findDetailsInRow(0).exists()).toBe(false);
@@ -285,7 +289,7 @@ describe('JobArtifactsTable component', () => {
         expect(findDetailsInRow(1).exists()).toBe(true);
 
         findArtifactDeleteButton().vm.$emit('click');
-        await waitForPromises();
+        await nextTick();
 
         expect(findDeleteModal().findComponent(GlModal).props('visible')).toBe(true);
 
@@ -510,7 +514,7 @@ describe('JobArtifactsTable component', () => {
         findJobCheckbox().vm.$emit('input', true);
         findBulkDelete().vm.$emit('showBulkDeleteModal');
 
-        await waitForPromises();
+        await nextTick();
 
         expect(findBulkDeleteModal().props('visible')).toBe(true);
       });
@@ -540,6 +544,35 @@ describe('JobArtifactsTable component', () => {
         await waitForPromises();
 
         expect(findBulkDelete().props('selectedArtifacts')).toStrictEqual([]);
+      });
+    });
+
+    describe('when the selected artifacts limit is reached', () => {
+      beforeEach(async () => {
+        createComponent({
+          canDestroyArtifacts: true,
+          glFeatures: { [BULK_DELETE_FEATURE_FLAG]: true },
+          data: { selectedArtifacts: maxSelectedArtifacts },
+        });
+
+        await nextTick();
+      });
+
+      it('passes isSelectedArtifactsLimitReached to bulk delete', () => {
+        expect(findBulkDelete().props('isSelectedArtifactsLimitReached')).toBe(true);
+      });
+
+      it('passes isSelectedArtifactsLimitReached to job checkbox', () => {
+        expect(wrapper.findComponent(JobCheckbox).props('isSelectedArtifactsLimitReached')).toBe(
+          true,
+        );
+      });
+
+      it('passes isSelectedArtifactsLimitReached to table row details', async () => {
+        findCount().trigger('click');
+        await nextTick();
+
+        expect(findDetailsInRow(1).props('isSelectedArtifactsLimitReached')).toBe(true);
       });
     });
 
@@ -604,7 +637,7 @@ describe('JobArtifactsTable component', () => {
         data: { pageInfo },
       });
 
-      await waitForPromises();
+      await nextTick();
     });
 
     it('renders pagination and passes page props', () => {

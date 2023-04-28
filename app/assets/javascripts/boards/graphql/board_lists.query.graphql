@@ -3,6 +3,7 @@
 query BoardLists(
   $fullPath: ID!
   $boardId: BoardID!
+  $listId: ListID
   $filters: BoardIssueInput
   $isGroup: Boolean = false
   $isProject: Boolean = false
@@ -12,7 +13,7 @@ query BoardLists(
     board(id: $boardId) {
       id
       hideBacklogList
-      lists(issueFilters: $filters) {
+      lists(issueFilters: $filters, id: $listId) {
         nodes {
           ...BoardListFragment
         }
@@ -24,7 +25,7 @@ query BoardLists(
     board(id: $boardId) {
       id
       hideBacklogList
-      lists(issueFilters: $filters) {
+      lists(issueFilters: $filters, id: $listId) {
         nodes {
           ...BoardListFragment
         }
