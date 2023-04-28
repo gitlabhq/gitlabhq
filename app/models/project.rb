@@ -1393,7 +1393,7 @@ class Project < ApplicationRecord
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import? || jira_import? || bare_repository_import? || gitlab_project_migration?
+    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration?
   end
 
   def external_import?
@@ -1402,10 +1402,6 @@ class Project < ApplicationRecord
 
   def safe_import_url
     Gitlab::UrlSanitizer.new(import_url).masked_url
-  end
-
-  def bare_repository_import?
-    import_type == 'bare_repository'
   end
 
   def jira_import?

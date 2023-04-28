@@ -746,8 +746,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/background_migration/fix_vulnerability_occurrences_with_hashes_as_raw_metadata.rb'
     - 'lib/gitlab/background_migration/project_namespaces/backfill_project_namespaces.rb'
     - 'lib/gitlab/background_migration/reset_duplicate_ci_runners_token_encrypted_values_on_projects.rb'
-    - 'lib/gitlab/bare_repository_import/importer.rb'
-    - 'lib/gitlab/bare_repository_import/repository.rb'
     - 'lib/gitlab/bullet/exclusions.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
     - 'lib/gitlab/changelog/config.rb'

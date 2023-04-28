@@ -226,3 +226,8 @@ For example in [`spec/tooling/danger/specs_spec.rb`](https://gitlab.com/gitlab-o
 
 For features that support developers and they are not specific to a product group we use `feature_category: :shared`
 For example [`spec/lib/gitlab/job_waiter_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/job_waiter_spec.rb)
+
+### Admin section
+
+Adding feature categories is equally important when adding new parts to the Admin section. Historically, Admin sections were often marked as `not_owned` in the code. Now
+you must ensure each new addition to the Admin section is properly annotated using `feature_category` notation.

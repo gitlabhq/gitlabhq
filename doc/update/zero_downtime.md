@@ -116,7 +116,7 @@ continue to accept connections but mark their respective health check
 endpoints to be unhealthy. On seeing this, the load balancer should disconnect
 them gracefully.
 
-Puma restarts only after completing all the currently processing requests.
+Puma restarts only after completing all the currently-processing requests.
 This ensures data and service integrity. Once they have restarted, the health
 check end points are marked healthy.
 
@@ -179,6 +179,9 @@ Before you update the main GitLab application you must (in order):
 
 1. Upgrade the Gitaly nodes that reside on separate servers.
 1. Upgrade Praefect if using Gitaly Cluster.
+
+Because of a [known issue](https://gitlab.com/groups/gitlab-org/-/epics/10328), Gitaly and Gitaly Cluster upgrades
+cause some downtime.
 
 #### Upgrade Gitaly nodes
 
@@ -465,7 +468,8 @@ Log in to your **primary** node, executing the following:
    sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site to the secondary site if they're different. The file must be the same on all of a site’s nodes.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site to the secondary site if they're different.
+   The file must be the same on all of a site's nodes.
 
 ### Update the Geo secondary site
 
@@ -667,7 +671,8 @@ sudo gitlab-ctl hup puma
 sudo gitlab-ctl restart sidekiq
 ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site to the secondary site if they're different. The file must be the same on all of a site’s nodes.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site to the secondary site if they're different. The
+   file must be the same on all of a site's nodes.
 
 ### Step 3: Update each Geo secondary multi-node deployment
 

@@ -145,8 +145,8 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
       expect(Gitlab::ErrorTracking)
         .to receive(:track_and_raise_for_dev_exception)
         .with(::Gitlab::Ci::Trace::ArchiveError,
-              issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
-              job_id: job.id).once
+          issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
+          job_id: job.id).once
 
       expect(Sidekiq.logger).to receive(:warn).with(
         class: Ci::ArchiveTraceWorker.name,

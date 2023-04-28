@@ -546,7 +546,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/auth/otp/strategies/forti_token_cloud.rb'
     - 'lib/gitlab/auth/request_authenticator.rb'
     - 'lib/gitlab/background_migration/legacy_upload_mover.rb'
-    - 'lib/gitlab/bare_repository_import/repository.rb'
     - 'lib/gitlab/blob_helper.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
     - 'lib/gitlab/chat/command.rb'

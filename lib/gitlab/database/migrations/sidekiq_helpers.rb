@@ -25,8 +25,13 @@ module Gitlab
           times_in_a_row: DEFAULT_TIMES_IN_A_ROW,
           max_attempts: DEFAULT_MAX_ATTEMPTS
         )
-
           kwargs = { times_in_a_row: times_in_a_row, max_attempts: max_attempts }
+
+          if transaction_open?
+            raise 'sidekiq_remove_jobs can not be run inside a transaction, ' \
+                  'you can disable transactions by calling disable_ddl_transaction! ' \
+                  'in the body of your migration class'
+          end
 
           job_klasses_queues = job_klasses
             .select { |job_klass| job_klass.to_s.safe_constantize.present? }

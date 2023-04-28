@@ -3160,8 +3160,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url_spec.rb'
     - 'spec/lib/gitlab/background_migration_spec.rb'
     - 'spec/lib/gitlab/backtrace_cleaner_spec.rb'
-    - 'spec/lib/gitlab/bare_repository_import/importer_spec.rb'
-    - 'spec/lib/gitlab/bare_repository_import/repository_spec.rb'
     - 'spec/lib/gitlab/batch_worker_context_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/project_creator_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/wiki_formatter_spec.rb'

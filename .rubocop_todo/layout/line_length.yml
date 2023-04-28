@@ -3882,7 +3882,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/background_migration/remove_occurrence_pipelines_and_duplicate_vulnerabilities_findings_spec.rb'
     - 'spec/lib/gitlab/background_migration/remove_vulnerability_finding_links_spec.rb'
     - 'spec/lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url_spec.rb'
-    - 'spec/lib/gitlab/bare_repository_import/importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_server_import/importer_spec.rb'
     - 'spec/lib/gitlab/buffered_io_spec.rb'

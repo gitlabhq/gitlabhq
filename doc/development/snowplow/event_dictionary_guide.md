@@ -36,7 +36,6 @@ Each event is defined in a separate YAML file consisting of the following fields
 | `product_section`      | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml).                                                                                                |
 | `product_stage`        | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the event.                                                                                        |
 | `product_group`        | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the event.                                                                                  |
-| `product_category`     | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the event.                                                                         |
 | `milestone`            | no       | The milestone when the event is introduced.                                                                                                                                                 |
 | `introduced_by_url`    | no       | The URL to the merge request that introduced the event.                                                                                                                                     |
 | `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.  |
@@ -64,7 +63,6 @@ identifiers:
 product_section: dev
 product_stage: plan
 product_group: group::product planning
-product_category: epics
 milestone: "11.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10537
 distributions:

@@ -9,7 +9,6 @@ module Gitlab
   module ImportSources
     ImportSource = Struct.new(:name, :title, :importer)
 
-    # We exclude `bare_repository` here as it has no import class associated
     IMPORT_TABLE = [
       ImportSource.new('github',           'GitHub',            Gitlab::GithubImport::ParallelImporter),
       ImportSource.new('bitbucket',        'Bitbucket Cloud',   Gitlab::BitbucketImport::Importer),

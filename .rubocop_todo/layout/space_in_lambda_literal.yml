@@ -35,7 +35,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/mentionable.rb'
     - 'app/models/concerns/milestoneable.rb'
-    - 'app/models/concerns/protected_ref_access.rb'
     - 'app/models/concerns/reactive_caching.rb'
     - 'app/models/concerns/shardable.rb'
     - 'app/models/concerns/timebox.rb'

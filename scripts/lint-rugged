@@ -5,9 +5,6 @@ ALLOWED = [
   # https://gitlab.com/gitlab-org/gitaly/issues/760
   'lib/elasticsearch/git/repository.rb',
 
-  # Needed to handle repositories that are not in any storage
-  'lib/gitlab/bare_repository_import/repository.rb',
-
   # Needed to avoid using the git binary to validate a branch name
   'lib/gitlab/git_ref_validator.rb',
 

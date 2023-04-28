@@ -5,7 +5,7 @@ module Projects
     include ValidatesClassificationLabel
 
     ImportSourceDisabledError = Class.new(StandardError)
-    INTERNAL_IMPORT_SOURCES = %w[bare_repository gitlab_custom_project_template gitlab_project_migration].freeze
+    INTERNAL_IMPORT_SOURCES = %w[gitlab_custom_project_template gitlab_project_migration].freeze
 
     def initialize(user, params)
       @current_user = user
@@ -299,7 +299,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_state.schedule if @project.import? && !@project.bare_repository_import? && !@project.gitlab_project_migration?
+        @project.import_state.schedule if @project.import? && !@project.gitlab_project_migration?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

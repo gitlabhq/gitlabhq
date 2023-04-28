@@ -1656,8 +1656,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/background_migration/cleanup_draft_data_from_faulty_regex_spec.rb'
     - 'spec/lib/gitlab/background_migration/copy_column_using_background_migration_job_spec.rb'
     - 'spec/lib/gitlab/background_migration/project_namespaces/backfill_project_namespaces_spec.rb'
-    - 'spec/lib/gitlab/bare_repository_import/importer_spec.rb'
-    - 'spec/lib/gitlab/bare_repository_import/repository_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_server_import/importer_spec.rb'
     - 'spec/lib/gitlab/blame_spec.rb'
