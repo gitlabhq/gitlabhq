@@ -292,6 +292,7 @@ Dockerfiles
 Dockerize
 Dockerized
 Dockerizing
+Docusaurus
 dogfood
 dogfooding
 dogfoods
@@ -436,6 +437,7 @@ hotfixed
 hotfixes
 hotfixing
 hotspots
+HTMLHint
 http
 https
 hyperparameter

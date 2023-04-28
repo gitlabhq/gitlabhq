@@ -9,7 +9,17 @@ export const acceptedMimes = {
     ext: 'drawio.svg',
   },
   image: {
-    mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'],
+    mimes: [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/svg+xml',
+      'image/webp',
+      'image/tiff',
+      'image/bmp',
+      'image/vnd.microsoft.icon',
+      'image/x-icon',
+    ],
   },
   audio: {
     mimes: [

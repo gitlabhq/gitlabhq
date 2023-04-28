@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics do
+  let_it_be(:project) { create(:project) }
+
+  subject { described_class.for_project(project) }
+
   describe 'config settings' do
     context 'when configured' do
       before do
@@ -10,7 +14,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       end
 
       it 'will be configured' do
-        expect(described_class.configured?).to be_truthy
+        expect(subject.configured?).to be_truthy
       end
     end
 
@@ -20,7 +24,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       end
 
       it 'will not be configured' do
-        expect(described_class.configured?).to be_falsey
+        expect(subject.configured?).to be_falsey
       end
     end
 
@@ -32,7 +36,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       end
 
       it 'will not be configured' do
-        expect(described_class.configured?).to be_falsey
+        expect(subject.configured?).to be_falsey
       end
     end
 
@@ -40,14 +44,30 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       it "can read #{key}" do
         expect(::Gitlab::CurrentSettings).to receive(key).and_return('test')
 
-        expect(described_class.send(key)).to eq('test')
+        expect(subject.send(key)).to eq('test')
+      end
+
+      context 'with project' do
+        it "will override when provided a project #{key}" do
+          expect(::Gitlab::CurrentSettings).not_to receive(key)
+          expect(project.project_setting).to receive(key).and_return('test')
+
+          expect(subject.send(key)).to eq('test')
+        end
+
+        it "will will not override when provided a blank project #{key}" do
+          expect(::Gitlab::CurrentSettings).to receive(key).and_return('test')
+          expect(project.project_setting).to receive(key).and_return('')
+
+          expect(subject.send(key)).to eq('test')
+        end
       end
     end
   end
 
   describe '.enabled?' do
     before do
-      allow(described_class).to receive(:configured?).and_return(true)
+      allow(subject).to receive(:configured?).and_return(true)
     end
 
     context 'when enabled' do
@@ -56,7 +76,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       end
 
       it 'will be enabled' do
-        expect(described_class.enabled?).to be_truthy
+        expect(subject.enabled?).to be_truthy
       end
     end
 
@@ -66,7 +86,7 @@ RSpec.describe ProductAnalytics::Settings, feature_category: :product_analytics 
       end
 
       it 'will be enabled' do
-        expect(described_class.enabled?).to be_falsey
+        expect(subject.enabled?).to be_falsey
       end
     end
   end

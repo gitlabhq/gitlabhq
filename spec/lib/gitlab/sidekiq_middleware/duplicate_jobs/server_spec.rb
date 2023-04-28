@@ -40,10 +40,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Server, :clean_gitlab_r
     describe '#call' do
       it 'removes the stored job from redis before execution' do
         bare_job = { 'class' => 'TestDeduplicationWorker', 'args' => ['hello'] }
-        job_definition = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new(bare_job.dup, 'test_deduplication')
+        job_definition = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new(bare_job.dup, 'default')
 
         expect(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob)
-          .to receive(:new).with(a_hash_including(bare_job), 'test_deduplication')
+          .to receive(:new).with(a_hash_including(bare_job), 'default')
                 .and_return(job_definition).twice # once in client middleware
 
         expect(job_definition).to receive(:delete!).ordered.and_call_original
@@ -59,10 +59,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Server, :clean_gitlab_r
 
     it 'removes the stored job from redis after execution' do
       bare_job = { 'class' => 'TestDeduplicationWorker', 'args' => ['hello'] }
-      job_definition = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new(bare_job.dup, 'test_deduplication')
+      job_definition = Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob.new(bare_job.dup, 'default')
 
       expect(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob)
-        .to receive(:new).with(a_hash_including(bare_job), 'test_deduplication')
+        .to receive(:new).with(a_hash_including(bare_job), 'default')
               .and_return(job_definition).twice # once in client middleware
 
       expect(TestDeduplicationWorker).to receive(:work).ordered.and_call_original

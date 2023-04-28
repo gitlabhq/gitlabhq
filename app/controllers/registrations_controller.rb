@@ -190,6 +190,7 @@ class RegistrationsController < Devise::RegistrationsController
     flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
     flash.delete :recaptcha_error
     add_gon_variables
+    set_minimum_password_length
     render action: 'new'
   end
 

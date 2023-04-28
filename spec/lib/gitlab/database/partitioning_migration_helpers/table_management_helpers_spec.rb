@@ -43,15 +43,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   context 'list partitioning conversion helpers' do
-    shared_examples_for 'delegates to ConvertTableToFirstListPartition' do
+    shared_examples_for 'delegates to ConvertTable' do
       let(:extra_options) { {} }
       it 'throws an error if in a transaction' do
         allow(migration).to receive(:transaction_open?).and_return(true)
         expect { migrate }.to raise_error(/cannot be run inside a transaction/)
       end
 
-      it 'delegates to a method on ConvertTableToFirstListPartition' do
-        expect_next_instance_of(Gitlab::Database::Partitioning::ConvertTableToFirstListPartition,
+      it 'delegates to a method on List::ConvertTable' do
+        expect_next_instance_of(Gitlab::Database::Partitioning::List::ConvertTable,
                                 migration_context: migration,
                                 table_name: source_table,
                                 parent_table_name: partitioned_table,
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#convert_table_to_first_list_partition' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:lock_tables) { [source_table] }
         let(:extra_options) { { lock_tables: lock_tables } }
         let(:expected_method) { :partition }
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#revert_converting_table_to_first_list_partition' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :revert_partitioning }
         let(:migrate) do
           migration.revert_converting_table_to_first_list_partition(table_name: source_table,
@@ -93,7 +93,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#prepare_constraint_for_list_partitioning' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :prepare_for_partitioning }
         let(:migrate) do
           migration.prepare_constraint_for_list_partitioning(table_name: source_table,
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
 
     describe '#revert_preparing_constraint_for_list_partitioning' do
-      it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+      it_behaves_like 'delegates to ConvertTable' do
         let(:expected_method) { :revert_preparation_for_partitioning }
         let(:migrate) do
           migration.revert_preparing_constraint_for_list_partitioning(table_name: source_table,

@@ -21,6 +21,12 @@ class ProtectedBranch::PushAccessLevel < ApplicationRecord
     end
   end
 
+  def humanize
+    return "Deploy key" if deploy_key.present?
+
+    super
+  end
+
   def check_access(user)
     if user && deploy_key.present?
       return user.can?(:read_project, project) && enabled_deploy_key_for_user?(deploy_key, user)

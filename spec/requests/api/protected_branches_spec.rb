@@ -110,6 +110,21 @@ RSpec.describe API::ProtectedBranches, feature_category: :source_code_management
 
         it_behaves_like 'protected branch'
       end
+
+      context 'when a deploy key is present' do
+        let(:deploy_key) do
+          create(:deploy_key, deploy_keys_projects: [create(:deploy_keys_project, :write_access, project: project)])
+        end
+
+        it 'returns deploy key information' do
+          create(:protected_branch_push_access_level, protected_branch: protected_branch, deploy_key: deploy_key)
+          get api(route, user)
+
+          expect(json_response['push_access_levels']).to include(
+            a_hash_including('access_level_description' => 'Deploy key', 'deploy_key_id' => deploy_key.id)
+          )
+        end
+      end
     end
 
     context 'when authenticated as a developer' do

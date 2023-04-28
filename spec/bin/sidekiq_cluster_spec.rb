@@ -12,7 +12,8 @@ RSpec.describe 'bin/sidekiq-cluster', :aggregate_failures do
   context 'when selecting some queues and excluding others' do
     where(:args, :included, :excluded) do
       %w[--negate cronjob] | '-qdefault,1' | '-qcronjob,1'
-      %w[--queue-selector resource_boundary=cpu] | '-qupdate_merge_requests,1' | '-qdefault,1'
+      %w[--queue-selector resource_boundary=cpu] | %w[-qupdate_merge_requests,1 -qdefault,1 -qmailers,1] |
+        '-qauthorized_keys_worker,1'
     end
 
     with_them do
@@ -23,8 +24,8 @@ RSpec.describe 'bin/sidekiq-cluster', :aggregate_failures do
 
         expect(status).to be(0)
         expect(output).to include('bundle exec sidekiq')
-        expect(Shellwords.split(output)).to include(included)
-        expect(Shellwords.split(output)).not_to include(excluded)
+        expect(Shellwords.split(output)).to include(*included)
+        expect(Shellwords.split(output)).not_to include(*excluded)
       end
     end
   end

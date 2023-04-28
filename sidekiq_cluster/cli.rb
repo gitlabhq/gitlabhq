@@ -28,6 +28,11 @@ module Gitlab
       # The signals that should simply be forwarded to the workers.
       FORWARD_SIGNALS = %i(TTIN USR1 USR2 HUP).freeze
 
+      # The default queues that each Sidekiq process always listens to if routing rules are not customized:
+      # - `default` queue comes from config initializer's Settings.build_sidekiq_routing_rules
+      # - `mailers` queue comes from Gitlab::Application.config.action_mailer.deliver_later_queue_name
+      DEFAULT_QUEUES = %w[default mailers].freeze
+
       CommandError = Class.new(StandardError)
 
       def initialize(log_output = $stderr)
@@ -91,6 +96,26 @@ module Gitlab
         if queue_groups.all?(&:empty?)
           raise CommandError,
             'No queues found, you must select at least one queue'
+        end
+
+        begin
+          routing_rules = ::Gitlab.config.sidekiq.routing_rules
+        rescue StandardError
+          routing_rules = []
+        end
+
+        # Routing rules are defaulted to [['*', 'default']] if not specified.
+        # This means all jobs go to 'default' queue and mailer jobs go to 'mailers' queue.
+        # See config/initializers/1_settings.rb and Settings.build_sidekiq_routing_rules.
+        #
+        # Now, in case queue_selector is used, we ensure all Sidekiq processes are still processing jobs
+        # from default and mailers queues.
+        # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1491
+        if routing_rules.empty?
+          queue_groups.each do |queues|
+            queues.concat(DEFAULT_QUEUES)
+            queues.uniq!
+          end
         end
 
         if @list_queues

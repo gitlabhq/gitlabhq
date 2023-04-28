@@ -9,6 +9,9 @@ type: reference
 
 This tutorial shows you how to configure and run your first CI/CD pipeline in GitLab.
 
+If you are already familiar with basic CI/CD concepts, you can learn about
+common keywords in [Tutorial: Create a complex pipeline](tutorial.md).
+
 ## Prerequisites
 
 Before you start, make sure you have:

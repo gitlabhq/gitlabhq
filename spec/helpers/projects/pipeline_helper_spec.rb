@@ -20,7 +20,6 @@ RSpec.describe Projects::PipelineHelper do
     it 'returns pipeline tabs data' do
       expect(pipeline_tabs_data).to include({
         failed_jobs_count: pipeline.failed_builds.count,
-        failed_jobs_summary: prepare_failed_jobs_summary_data(pipeline.failed_builds),
         project_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: project.namespace, project_id: project, format: :json),

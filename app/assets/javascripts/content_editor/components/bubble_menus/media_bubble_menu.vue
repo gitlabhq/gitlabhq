@@ -212,7 +212,7 @@ export default {
     @show="updateMediaInfoToState"
     @hidden="resetMediaInfo"
   >
-    <editor-state-observer @transaction="updateMediaInfoToState">
+    <editor-state-observer :debounce="0" @transaction="updateMediaInfoToState">
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
         <gl-loading-icon v-if="showProgressIndicator" class="gl-pl-4 gl-pr-3" />
         <input

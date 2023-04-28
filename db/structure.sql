@@ -21153,6 +21153,17 @@ CREATE TABLE project_settings (
     pages_unique_domain text,
     runner_registration_enabled boolean DEFAULT true,
     product_analytics_instrumentation_key text,
+    jitsu_host text,
+    jitsu_project_xid text,
+    jitsu_administrator_email text,
+    encrypted_jitsu_administrator_password bytea,
+    encrypted_jitsu_administrator_password_iv bytea,
+    product_analytics_data_collector_host text,
+    encrypted_product_analytics_clickhouse_connection_string bytea,
+    encrypted_product_analytics_clickhouse_connection_string_iv bytea,
+    cube_api_base_url text,
+    encrypted_cube_api_key bytea,
+    encrypted_cube_api_key_iv bytea,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
@@ -21161,7 +21172,12 @@ CREATE TABLE project_settings (
     CONSTRAINT check_acb7fad2f9 CHECK ((char_length(product_analytics_instrumentation_key) <= 255)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
-    CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500))
+    CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500)),
+    CONSTRAINT check_4b142e71f3 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),
+    CONSTRAINT check_ea15225016 CHECK ((char_length(jitsu_project_xid) <= 255)),
+    CONSTRAINT check_f4499c0fa4 CHECK ((char_length(jitsu_host) <= 255)),
+    CONSTRAINT check_f5495015f5 CHECK ((char_length(jitsu_administrator_email) <= 255)),
+    CONSTRAINT check_f9df7bcee2 CHECK ((char_length(cube_api_base_url) <= 512))
 );
 
 CREATE TABLE project_states (

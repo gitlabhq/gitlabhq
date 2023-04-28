@@ -661,25 +661,9 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe.each`
-      event | params
-      ${'next-page'} | ${{
-  page_after: 'endcursor',
-  page_before: undefined,
-  first_page_size: 20,
-  last_page_size: undefined,
-  search: undefined,
-  sort: 'created_date',
-  state: 'opened',
-}}
-      ${'previous-page'} | ${{
-  page_after: undefined,
-  page_before: 'startcursor',
-  first_page_size: undefined,
-  last_page_size: 20,
-  search: undefined,
-  sort: 'created_date',
-  state: 'opened',
-}}
+      event              | params
+      ${'next-page'}     | ${{ page_after: 'endcursor', page_before: undefined, first_page_size: 20, last_page_size: undefined }}
+      ${'previous-page'} | ${{ page_after: undefined, page_before: 'startcursor', first_page_size: undefined, last_page_size: 20 }}
     `('when "$event" event is emitted by IssuableList', ({ event, params }) => {
       beforeEach(async () => {
         wrapper = mountComponent({

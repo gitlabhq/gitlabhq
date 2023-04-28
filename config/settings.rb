@@ -171,11 +171,12 @@ Settings = GitlabSettings.load(file, section) do
     cron_jobs['gitlab_service_ping_worker']['cron'] ||= cron_for_service_ping
   end
 
-  # Route jobs to queue based on worker name.
+  # Route all jobs to 'default' queue. This setting is meant for self-managed instances use to keep things simple.
+  # See https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1491
   def build_sidekiq_routing_rules(rules)
     return rules unless rules.nil? || rules&.empty?
 
-    [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, nil]]
+    [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, 'default']]
   end
 
   private

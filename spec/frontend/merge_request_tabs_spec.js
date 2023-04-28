@@ -41,6 +41,10 @@ describe('MergeRequestTabs', () => {
     gl.mrWidget = {};
   });
 
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
   describe('clickTab', () => {
     let params;
 
@@ -269,32 +273,32 @@ describe('MergeRequestTabs', () => {
 
   describe('expandViewContainer', () => {
     beforeEach(() => {
-      $('body').append(
-        '<div class="content-wrapper"><div class="container-fluid container-limited"></div></div>',
-      );
+      $('.content-wrapper .container-fluid').addClass('container-limited');
     });
 
-    afterEach(() => {
-      $('.content-wrapper').remove();
-    });
-
-    it('removes container-limited from containers', () => {
+    it('removes `container-limited` class from content container', () => {
+      expect($('.content-wrapper .container-limited')).toHaveLength(1);
       testContext.class.expandViewContainer();
+      expect($('.content-wrapper .container-limited')).toHaveLength(0);
+    });
+  });
+
+  describe('resetViewContainer', () => {
+    it('does not add `container-limited` CSS class when fluid layout is preferred', () => {
+      testContext.class.resetViewContainer();
 
       expect($('.content-wrapper .container-limited')).toHaveLength(0);
     });
 
-    it('does not add container-limited when fluid layout is prefered', () => {
+    it('adds `container-limited` CSS class back when fixed layout is preferred', () => {
+      document.body.innerHTML = '';
+      initMrPage();
+      $('.content-wrapper .container-fluid').addClass('container-limited');
+      // recreate the instance so that `isFixedLayoutPreferred` is re-evaluated
+      testContext.class = new MergeRequestTabs({ stubLocation });
       $('.content-wrapper .container-fluid').removeClass('container-limited');
 
-      testContext.class.expandViewContainer(false);
-
-      expect($('.content-wrapper .container-limited')).toHaveLength(0);
-    });
-
-    it('does remove container-limited from breadcrumbs', () => {
-      $('.container-limited').addClass('breadcrumbs');
-      testContext.class.expandViewContainer();
+      testContext.class.resetViewContainer();
 
       expect($('.content-wrapper .container-limited')).toHaveLength(1);
     });

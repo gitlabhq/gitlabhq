@@ -11,8 +11,8 @@ import RetryFailedJobMutation from '~/pipelines/graphql/mutations/retry_failed_j
 import {
   successRetryMutationResponse,
   failedRetryMutationResponse,
-  mockPreparedFailedJobsData,
-  mockPreparedFailedJobsDataNoPermission,
+  mockFailedJobsData,
+  mockFailedJobsDataNoPermission,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -30,13 +30,15 @@ describe('Failed Jobs Table', () => {
   const findRetryButton = () => wrapper.findComponent(GlButton);
   const findJobLink = () => wrapper.findComponent(GlLink);
   const findJobLog = () => wrapper.findByTestId('job-log');
+  const findSummary = (index) => wrapper.findAllByTestId('job-trace-summary').at(index);
+  const findFirstFailureMessage = () => wrapper.findAllByTestId('job-failure-message').at(0);
 
   const createMockApolloProvider = (resolver) => {
     const requestHandlers = [[RetryFailedJobMutation, resolver]];
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (resolver, failedJobsData = mockPreparedFailedJobsData) => {
+  const createComponent = (resolver, failedJobsData = mockFailedJobsData) => {
     wrapper = mountExtended(FailedJobsTable, {
       propsData: {
         failedJobs: failedJobsData,
@@ -51,13 +53,31 @@ describe('Failed Jobs Table', () => {
     expect(findJobsTable().exists()).toBe(true);
   });
 
+  it('displays failed job summary', () => {
+    createComponent();
+
+    expect(findSummary(0).text()).toBe('Html Summary');
+  });
+
+  it('displays no job log when no trace', () => {
+    createComponent();
+
+    expect(findSummary(1).text()).toBe('No job log');
+  });
+
+  it('displays failure reason', () => {
+    createComponent();
+
+    expect(findFirstFailureMessage().text()).toBe('Job failed');
+  });
+
   it('calls the retry failed job mutation correctly', () => {
     createComponent(successRetryMutationHandler);
 
     findRetryButton().trigger('click');
 
     expect(successRetryMutationHandler).toHaveBeenCalledWith({
-      id: mockPreparedFailedJobsData[0].id,
+      id: mockFailedJobsData[0].id,
     });
   });
 
@@ -90,7 +110,7 @@ describe('Failed Jobs Table', () => {
   });
 
   it('hides the job log and retry button if a user does not have permission', () => {
-    createComponent([[]], mockPreparedFailedJobsDataNoPermission);
+    createComponent([[]], mockFailedJobsDataNoPermission);
 
     expect(findJobLog().exists()).toBe(false);
     expect(findRetryButton().exists()).toBe(false);
@@ -106,8 +126,6 @@ describe('Failed Jobs Table', () => {
   it('job name links to the correct job', () => {
     createComponent();
 
-    expect(findJobLink().attributes('href')).toBe(
-      mockPreparedFailedJobsData[0].detailedStatus.detailsPath,
-    );
+    expect(findJobLink().attributes('href')).toBe(mockFailedJobsData[0].detailedStatus.detailsPath);
   });
 });

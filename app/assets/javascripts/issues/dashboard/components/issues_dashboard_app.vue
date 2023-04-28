@@ -187,7 +187,6 @@ export default {
       return {
         hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
         isSignedIn: this.isSignedIn,
-        search: this.searchQuery,
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,
@@ -332,7 +331,6 @@ export default {
     },
     urlParams() {
       return {
-        search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,
         ...this.urlFilterParams,

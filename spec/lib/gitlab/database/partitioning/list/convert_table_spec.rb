@@ -2,29 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition, feature_category: :database do
+RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_category: :database do
   include Gitlab::Database::DynamicModelHelpers
   include Database::TableSchemaHelpers
+  include Database::InjectFailureHelpers
 
-  let(:migration_context) do
-    Gitlab::Database::Migration[2.0].new.tap do |migration|
-      migration.extend Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
-    end
-  end
-
-  let(:connection) { migration_context.connection }
-  let(:table_name) { '_test_table_to_partition' }
-  let(:table_identifier) { "#{connection.current_schema}.#{table_name}" }
-  let(:partitioning_column) { :partition_number }
-  let(:partitioning_default) { 1 }
-  let(:referenced_table_name) { '_test_referenced_table' }
-  let(:other_referenced_table_name) { '_test_other_referenced_table' }
-  let(:parent_table_name) { "#{table_name}_parent" }
-  let(:lock_tables) { [] }
-
-  let(:model) { define_batchable_model(table_name, connection: connection) }
-
-  let(:parent_model) { define_batchable_model(parent_table_name, connection: connection) }
+  include_context 'with a table structure for converting a table to a list partition'
 
   let(:converter) do
     described_class.new(
@@ -35,45 +18,6 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition,
       zero_partition_value: partitioning_default,
       lock_tables: lock_tables
     )
-  end
-
-  before do
-    # Suppress printing migration progress
-    allow(migration_context).to receive(:puts)
-    allow(migration_context.connection).to receive(:transaction_open?).and_return(false)
-
-    connection.execute(<<~SQL)
-        create table #{referenced_table_name} (
-          id bigserial primary key not null
-        )
-    SQL
-
-    connection.execute(<<~SQL)
-        create table #{other_referenced_table_name} (
-          id bigserial primary key not null
-        )
-    SQL
-
-    connection.execute(<<~SQL)
-        insert into #{referenced_table_name} default values;
-        insert into #{other_referenced_table_name} default values;
-    SQL
-
-    connection.execute(<<~SQL)
-        create table #{table_name} (
-          id bigserial not null,
-          #{partitioning_column} bigint not null default #{partitioning_default},
-          referenced_id bigint not null references #{referenced_table_name} (id) on delete cascade,
-          other_referenced_id bigint not null references #{other_referenced_table_name} (id) on delete set null,
-          primary key (id, #{partitioning_column})
-        )
-    SQL
-
-    connection.execute(<<~SQL)
-        insert into #{table_name} (referenced_id, other_referenced_id)
-        select #{referenced_table_name}.id, #{other_referenced_table_name}.id
-        from #{referenced_table_name}, #{other_referenced_table_name};
-    SQL
   end
 
   describe "#prepare_for_partitioning" do
@@ -211,6 +155,8 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition,
     context 'when the primary key is incorrect' do
       before do
         connection.execute(<<~SQL)
+          alter table #{referencing_table_name} drop constraint fk_referencing; -- this depends on the primary key
+          alter table #{other_referencing_table_name} drop constraint fk_referencing_other; -- this does too
           alter table #{table_name} drop constraint #{table_name}_pkey;
           alter table #{table_name} add constraint #{table_name}_pkey PRIMARY KEY (id);
         SQL
@@ -260,6 +206,8 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition,
 
       parent_model.create!(partitioning_column => 2, :referenced_id => 1, :other_referenced_id => 1)
       expect(parent_model.pluck(:id)).to match_array([1, 2, 3])
+
+      expect { referencing_model.create!(partitioning_column => 1, :ref_id => 1) }.not_to raise_error
     end
 
     context 'when the existing table is owned by a different user' do
@@ -288,53 +236,37 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition,
     end
 
     context 'when an error occurs during the conversion' do
-      def fail_first_time
-        # We can't directly use a boolean here, as we need something that will be passed by-reference to the proc
-        fault_status = { faulted: false }
-        proc do |m, *args, **kwargs|
-          next m.call(*args, **kwargs) if fault_status[:faulted]
-
-          fault_status[:faulted] = true
-          raise 'fault!'
-        end
-      end
-
-      def fail_sql_matching(regex)
-        proc do
-          allow(migration_context.connection).to receive(:execute).and_call_original
-          allow(migration_context.connection).to receive(:execute).with(regex).and_wrap_original(&fail_first_time)
-        end
-      end
-
-      def fail_adding_fk(from_table, to_table)
-        proc do
-          allow(migration_context.connection).to receive(:add_foreign_key).and_call_original
-          expect(migration_context.connection).to receive(:add_foreign_key).with(from_table, to_table, any_args)
-                                                                          .and_wrap_original(&fail_first_time)
-        end
-      end
-
-      where(:case_name, :fault) do
-        [
-          ["creating parent table", lazy { fail_sql_matching(/CREATE/i) }],
-          ["adding the first foreign key", lazy { fail_adding_fk(parent_table_name, referenced_table_name) }],
-          ["adding the second foreign key", lazy { fail_adding_fk(parent_table_name, other_referenced_table_name) }],
-          ["attaching table", lazy { fail_sql_matching(/ATTACH/i) }]
-        ]
-      end
-
       before do
         # Set up the fault that we'd like to inject
         fault.call
       end
 
-      with_them do
-        it 'recovers from a fault', :aggregate_failures do
-          expect { converter.partition }.to raise_error(/fault/)
-          expect(Gitlab::Database::PostgresPartition.for_parent_table(parent_table_name).count).to eq(0)
+      let(:old_fks) do
+        Gitlab::Database::PostgresForeignKey.by_referenced_table_identifier(table_identifier).not_inherited
+      end
 
-          expect { converter.partition }.not_to raise_error
-          expect(Gitlab::Database::PostgresPartition.for_parent_table(parent_table_name).count).to eq(1)
+      let(:new_fks) do
+        Gitlab::Database::PostgresForeignKey.by_referenced_table_identifier(parent_table_identifier).not_inherited
+      end
+
+      context 'when partitioning fails the first time' do
+        where(:case_name, :fault) do
+          [
+            ["creating parent table", lazy { fail_sql_matching(/CREATE/i) }],
+            ["adding the first foreign key", lazy { fail_adding_fk(parent_table_name, referenced_table_name) }],
+            ["adding the second foreign key", lazy { fail_adding_fk(parent_table_name, other_referenced_table_name) }],
+            ["attaching table", lazy { fail_sql_matching(/ATTACH/i) }]
+          ]
+        end
+
+        with_them do
+          it 'recovers from a fault', :aggregate_failures do
+            expect { converter.partition }.to raise_error(/fault/)
+            expect(Gitlab::Database::PostgresPartition.for_parent_table(parent_table_name).count).to eq(0)
+
+            expect { converter.partition }.not_to raise_error
+            expect(Gitlab::Database::PostgresPartition.for_parent_table(parent_table_name).count).to eq(1)
+          end
         end
       end
     end

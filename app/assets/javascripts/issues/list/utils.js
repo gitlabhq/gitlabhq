@@ -1,4 +1,3 @@
-import { createTerm } from '@gitlab/ui/src/components/base/filtered_search/filtered_search_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -28,7 +27,7 @@ import {
   CREATED_DESC,
   DUE_DATE_ASC,
   DUE_DATE_DESC,
-  filters,
+  filtersMap,
   HEALTH_STATUS_ASC,
   HEALTH_STATUS_DESC,
   LABEL_PRIORITY_ASC,
@@ -196,10 +195,10 @@ export const getSortOptions = ({
   return sortOptions;
 };
 
-const tokenTypes = Object.keys(filters);
+const tokenTypes = Object.keys(filtersMap);
 
 const getUrlParams = (tokenType) =>
-  Object.values(filters[tokenType][URL_PARAM]).flatMap((filterObj) => Object.values(filterObj));
+  Object.values(filtersMap[tokenType][URL_PARAM]).flatMap((filterObj) => Object.values(filterObj));
 
 const urlParamKeys = tokenTypes.flatMap(getUrlParams);
 
@@ -207,11 +206,11 @@ const getTokenTypeFromUrlParamKey = (urlParamKey) =>
   tokenTypes.find((tokenType) => getUrlParams(tokenType).includes(urlParamKey));
 
 const getOperatorFromUrlParamKey = (tokenType, urlParamKey) =>
-  Object.entries(filters[tokenType][URL_PARAM]).find(([, filterObj]) =>
+  Object.entries(filtersMap[tokenType][URL_PARAM]).find(([, filterObj]) =>
     Object.values(filterObj).includes(urlParamKey),
   )[0];
 
-const convertToFilteredTokens = (locationSearch) =>
+export const getFilterTokens = (locationSearch) =>
   Array.from(new URLSearchParams(locationSearch).entries())
     .filter(([key]) => urlParamKeys.includes(key))
     .map(([key, data]) => {
@@ -223,26 +222,8 @@ const convertToFilteredTokens = (locationSearch) =>
       };
     });
 
-const convertToFilteredSearchTerms = (locationSearch) =>
-  new URLSearchParams(locationSearch)
-    .get('search')
-    ?.split(' ')
-    .map((word) => ({
-      type: FILTERED_SEARCH_TERM,
-      value: {
-        data: word,
-      },
-    })) || [];
-
-export const getFilterTokens = (locationSearch) => {
-  if (!locationSearch) {
-    return [createTerm()];
-  }
-  const filterTokens = convertToFilteredTokens(locationSearch);
-  const searchTokens = convertToFilteredSearchTerms(locationSearch);
-  const tokens = filterTokens.concat(searchTokens);
-  return tokens.length ? tokens : [createTerm()];
-};
+const isNotEmptySearchToken = (token) =>
+  !(token.type === FILTERED_SEARCH_TERM && !token.value.data);
 
 const isSpecialFilter = (type, data) => {
   const isAssigneeIdParam =
@@ -293,22 +274,20 @@ export const convertToApiParams = (filterTokens) => {
   const not = new Map();
   const or = new Map();
 
-  filterTokens
-    .filter((token) => token.type !== FILTERED_SEARCH_TERM)
-    .forEach((token) => {
-      const filterType = getFilterType(token);
-      const apiField = filters[token.type][API_PARAM][filterType];
-      let obj;
-      if (token.value.operator === OPERATOR_NOT) {
-        obj = not;
-      } else if (token.value.operator === OPERATOR_OR) {
-        obj = or;
-      } else {
-        obj = params;
-      }
-      const data = formatData(token);
-      obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
-    });
+  filterTokens.filter(isNotEmptySearchToken).forEach((token) => {
+    const filterType = getFilterType(token);
+    const apiField = filtersMap[token.type][API_PARAM][filterType];
+    let obj;
+    if (token.value.operator === OPERATOR_NOT) {
+      obj = not;
+    } else if (token.value.operator === OPERATOR_OR) {
+      obj = or;
+    } else {
+      obj = params;
+    }
+    const data = formatData(token);
+    obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
+  });
 
   if (not.size) {
     params.set('not', Object.fromEntries(not));
@@ -322,16 +301,14 @@ export const convertToApiParams = (filterTokens) => {
 };
 
 export const convertToUrlParams = (filterTokens) => {
-  const urlParamsMap = filterTokens
-    .filter((token) => token.type !== FILTERED_SEARCH_TERM)
-    .reduce((acc, token) => {
-      const filterType = getFilterType(token);
-      const urlParam = filters[token.type][URL_PARAM][token.value.operator]?.[filterType];
-      return acc.set(
-        urlParam,
-        acc.has(urlParam) ? [acc.get(urlParam), token.value.data].flat() : token.value.data,
-      );
-    }, new Map());
+  const urlParamsMap = filterTokens.filter(isNotEmptySearchToken).reduce((acc, token) => {
+    const filterType = getFilterType(token);
+    const urlParam = filtersMap[token.type][URL_PARAM][token.value.operator]?.[filterType];
+    return acc.set(
+      urlParam,
+      acc.has(urlParam) ? [acc.get(urlParam), token.value.data].flat() : token.value.data,
+    );
+  }, new Map());
 
   return Object.fromEntries(urlParamsMap);
 };

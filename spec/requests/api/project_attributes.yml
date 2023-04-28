@@ -167,6 +167,20 @@ project_setting:
     - pages_unique_domain
     - runner_registration_enabled
     - product_analytics_instrumentation_key
+    - jitsu_host
+    - jitsu_project_xid
+    - jitsu_administrator_email
+    - jitsu_administrator_password
+    - encrypted_jitsu_administrator_password
+    - encrypted_jitsu_administrator_password_iv
+    - product_analytics_data_collector_host
+    - product_analytics_clickhouse_connection_string
+    - encrypted_product_analytics_clickhouse_connection_string
+    - encrypted_product_analytics_clickhouse_connection_string_iv
+    - cube_api_base_url
+    - cube_api_key
+    - encrypted_cube_api_key
+    - encrypted_cube_api_key_iv
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

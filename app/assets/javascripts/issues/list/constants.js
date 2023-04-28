@@ -5,6 +5,7 @@ import {
   FILTER_NONE,
   FILTER_STARTED,
   FILTER_UPCOMING,
+  FILTERED_SEARCH_TERM,
   OPERATOR_IS,
   OPERATOR_NOT,
   OPERATOR_OR,
@@ -155,13 +156,13 @@ export const specialFilterValues = [
 
 export const TYPE_TOKEN_OBJECTIVE_OPTION = {
   icon: 'issue-type-objective',
-  title: 'objective',
+  title: s__('WorkItem|Objective'),
   value: 'objective',
 };
 
 export const TYPE_TOKEN_KEY_RESULT_OPTION = {
   icon: 'issue-type-keyresult',
-  title: 'key_result',
+  title: s__('WorkItem|Key Result'),
   value: 'key_result',
 };
 
@@ -175,13 +176,23 @@ export const defaultWorkItemTypes = [
 ];
 
 export const defaultTypeTokenOptions = [
-  { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
-  { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
-  { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
-  { icon: 'issue-type-task', title: 'task', value: 'task' },
+  { icon: 'issue-type-issue', title: s__('WorkItem|Issue'), value: 'issue' },
+  { icon: 'issue-type-incident', title: s__('WorkItem|Incident'), value: 'incident' },
+  { icon: 'issue-type-test-case', title: s__('WorkItem|Test case'), value: 'test_case' },
+  { icon: 'issue-type-task', title: s__('WorkItem|Task'), value: 'task' },
 ];
 
-export const filters = {
+export const filtersMap = {
+  [FILTERED_SEARCH_TERM]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'search',
+    },
+    [URL_PARAM]: {
+      [undefined]: {
+        [NORMAL_FILTER]: 'search',
+      },
+    },
+  },
   [TOKEN_TYPE_AUTHOR]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'authorUsername',

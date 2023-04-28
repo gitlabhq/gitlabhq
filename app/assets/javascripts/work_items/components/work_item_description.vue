@@ -10,9 +10,10 @@ import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { getWorkItemQuery, autocompleteDataSources, markdownPreviewPath } from '../utils';
+import { autocompleteDataSources, markdownPreviewPath } from '../utils';
 import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 
@@ -35,11 +36,6 @@ export default {
     fullPath: {
       type: String,
       required: true,
-    },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     queryVariables: {
       type: Object,
@@ -66,17 +62,15 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
         return this.queryVariables;
       },
       update(data) {
-        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+        return data.workspace.workItems.nodes[0];
       },
       skip() {
-        return !this.queryVariables.id && !this.queryVariables.iid;
+        return !this.queryVariables.iid;
       },
       result() {
         if (this.isEditing) {

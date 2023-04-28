@@ -34,6 +34,10 @@ query getFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
             readBuild
             updateBuild
           }
+          trace {
+            htmlSummary
+          }
+          failureMessage
         }
       }
     }

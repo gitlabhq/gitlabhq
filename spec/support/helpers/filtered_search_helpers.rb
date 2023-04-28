@@ -213,7 +213,7 @@ module FilteredSearchHelpers
 
   def submit_search_term(value)
     click_filtered_search_bar
-    send_keys(value, :enter)
+    send_keys(value, :enter, :enter)
   end
 
   def click_filtered_search_bar

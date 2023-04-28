@@ -14,6 +14,7 @@ import eventHubFactory from '~/helpers/event_hub_factory';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
+  PROJECT_WIKI_ATTACHMENT_IMAGE_SVG_HTML,
   PROJECT_WIKI_ATTACHMENT_AUDIO_HTML,
   PROJECT_WIKI_ATTACHMENT_VIDEO_HTML,
   PROJECT_WIKI_ATTACHMENT_LINK_HTML,
@@ -36,6 +37,7 @@ describe('content_editor/extensions/attachment', () => {
 
   const uploadsPath = '/uploads/';
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
+  const imageFileSvg = new File(['foo'], 'test-file.svg', { type: 'image/svg+xml' });
   const audioFile = new File(['foo'], 'test-file.mp3', { type: 'audio/mpeg' });
   const videoFile = new File(['foo'], 'test-file.mp4', { type: 'video/mp4' });
   const drawioDiagramFile = new File(['foo'], 'test-file.drawio.svg', { type: 'image/svg+xml' });
@@ -120,7 +122,8 @@ describe('content_editor/extensions/attachment', () => {
 
     describe.each`
       nodeType           | mimeType           | html                                           | file                 | mediaType
-      ${'image'}         | ${'image/png'}     | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${imageFile}         | ${(attrs) => image(attrs)}
+      ${'image (png)'}   | ${'image/png'}     | ${PROJECT_WIKI_ATTACHMENT_IMAGE_HTML}          | ${imageFile}         | ${(attrs) => image(attrs)}
+      ${'image (svg)'}   | ${'image/svg+xml'} | ${PROJECT_WIKI_ATTACHMENT_IMAGE_SVG_HTML}      | ${imageFileSvg}      | ${(attrs) => image(attrs)}
       ${'audio'}         | ${'audio/mpeg'}    | ${PROJECT_WIKI_ATTACHMENT_AUDIO_HTML}          | ${audioFile}         | ${(attrs) => audio(attrs)}
       ${'video'}         | ${'video/mp4'}     | ${PROJECT_WIKI_ATTACHMENT_VIDEO_HTML}          | ${videoFile}         | ${(attrs) => video(attrs)}
       ${'drawioDiagram'} | ${'image/svg+xml'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${drawioDiagramFile} | ${(attrs) => drawioDiagram(attrs)}

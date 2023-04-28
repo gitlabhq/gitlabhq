@@ -12,17 +12,15 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemDescriptionSubscription from '~/work_items/graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
   updateWorkItemMutationResponse,
+  workItemByIidResponseFactory,
   workItemDescriptionSubscriptionResponse,
-  workItemResponseFactory,
   workItemQueryResponse,
-  projectWorkItemResponse,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -37,7 +35,6 @@ describe('WorkItemDescription', () => {
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const subscriptionHandler = jest.fn().mockResolvedValue(workItemDescriptionSubscriptionResponse);
-  const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
   let workItemsMvc;
 
@@ -59,26 +56,23 @@ describe('WorkItemDescription', () => {
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
-    workItemResponse = workItemResponseFactory({ canUpdate }),
+    workItemResponse = workItemByIidResponseFactory({ canUpdate }),
     isEditing = false,
-    queryVariables = { id: workItemId },
-    fetchByIid = false,
+    queryVariables = { iid: '1' },
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
 
     const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemDescription, {
       apolloProvider: createMockApollo([
-        [workItemQuery, workItemResponseHandler],
+        [workItemByIidQuery, workItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemDescriptionSubscription, subscriptionHandler],
-        [workItemByIidQuery, workItemByIidResponseHandler],
       ]),
       propsData: {
         workItemId: id,
         fullPath: 'test-project-path',
         queryVariables,
-        fetchByIid,
       },
       provide: {
         glFeatures: {
@@ -152,9 +146,7 @@ describe('WorkItemDescription', () => {
       });
 
       it('has a subscription', async () => {
-        createComponent();
-
-        await waitForPromises();
+        await createComponent();
 
         expect(subscriptionHandler).toHaveBeenCalledWith({
           issuableId: workItemQueryResponse.data.workItem.id,
@@ -170,10 +162,7 @@ describe('WorkItemDescription', () => {
           };
 
           await createComponent({
-            workItemResponse: workItemResponseFactory({
-              lastEditedAt,
-              lastEditedBy,
-            }),
+            workItemResponse: workItemByIidResponseFactory({ lastEditedAt, lastEditedBy }),
           });
 
           expect(findEditedAt().props()).toMatchObject({
@@ -309,25 +298,14 @@ describe('WorkItemDescription', () => {
         });
       });
 
-      it('calls the global ID work item query when `fetchByIid` prop is false', async () => {
-        createComponent({ fetchByIid: false });
-        await waitForPromises();
+      it('calls the work item query', async () => {
+        await createComponent();
 
         expect(workItemResponseHandler).toHaveBeenCalled();
-        expect(workItemByIidResponseHandler).not.toHaveBeenCalled();
       });
 
-      it('calls the IID work item query when when `fetchByIid` prop is true', async () => {
-        createComponent({ fetchByIid: true });
-        await waitForPromises();
-
-        expect(workItemResponseHandler).not.toHaveBeenCalled();
-        expect(workItemByIidResponseHandler).toHaveBeenCalled();
-      });
-
-      it('skips calling the handlers when missing the needed queryVariables', async () => {
-        createComponent({ queryVariables: {}, fetchByIid: false });
-        await waitForPromises();
+      it('skips calling the work item query when missing queryVariables', async () => {
+        await createComponent({ queryVariables: {} });
 
         expect(workItemResponseHandler).not.toHaveBeenCalled();
       });

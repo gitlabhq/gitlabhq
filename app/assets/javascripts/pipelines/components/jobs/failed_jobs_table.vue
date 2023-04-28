@@ -52,6 +52,9 @@ export default {
     showErrorMessage() {
       createAlert({ message: s__('Job|There was a problem retrying the failed job.') });
     },
+    failureSummary(trace) {
+      return trace ? trace.htmlSummary : s__('Job|No job log');
+    },
   },
 };
 </script>
@@ -90,8 +93,8 @@ export default {
       </div>
     </template>
 
-    <template #cell(failure)="{ item }">
-      <span>{{ item.failure }}</span>
+    <template #cell(failureMessage)="{ item }">
+      <span data-testid="job-failure-message">{{ item.failureMessage }}</span>
     </template>
 
     <template #cell(actions)="{ item }">
@@ -110,7 +113,7 @@ export default {
         class="gl-w-full gl-text-left gl-border-none"
         data-testid="job-log"
       >
-        <code v-safe-html="item.failureSummary" class="gl-reset-bg gl-p-0" >
+        <code v-safe-html="failureSummary(item.trace)" class="gl-reset-bg gl-p-0" data-testid="job-trace-summary">
         </code>
       </pre>
     </template>

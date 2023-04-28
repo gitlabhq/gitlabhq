@@ -10,6 +10,27 @@ class ProjectSetting < ApplicationRecord
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
 
+  attr_encrypted :cube_api_key,
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    encode: false,
+    encode_iv: false
+
+  attr_encrypted :jitsu_administrator_password,
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    encode: false,
+    encode_iv: false
+
+  attr_encrypted :product_analytics_clickhouse_connection_string,
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    encode: false,
+    encode_iv: false
+
   enum squash_option: {
     never: 0,
     always: 1,

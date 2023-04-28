@@ -183,6 +183,8 @@ const pageBundles = {
 
 export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
+    const containers = document.querySelectorAll('.content-wrapper .container-fluid');
+    this.contentWrapper = containers[containers.length - 1];
     this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
     this.mergeRequestTabsAll =
       this.mergeRequestTabs && this.mergeRequestTabs.querySelectorAll
@@ -208,7 +210,7 @@ export default class MergeRequestTabs {
     this.diffsLoaded = false;
     this.diffsClass = null;
     this.commitsLoaded = false;
-    this.fixedLayoutPref = null;
+    this.isFixedLayoutPreferred = this.contentWrapper.classList.contains('container-limited');
     this.eventHub = createEventHub();
     this.loadedPages = { [action]: true };
 
@@ -561,22 +563,12 @@ export default class MergeRequestTabs {
     return action === 'diffs' || action === 'new/diffs';
   }
 
-  expandViewContainer(removeLimited = true) {
-    const $wrapper = $('.content-wrapper .container-fluid').not('.breadcrumbs');
-    if (this.fixedLayoutPref === null) {
-      this.fixedLayoutPref = $wrapper.hasClass('container-limited');
-    }
-    if (this.diffViewType() === 'parallel' || removeLimited) {
-      $wrapper.removeClass('container-limited');
-    } else {
-      $wrapper.toggleClass('container-limited', this.fixedLayoutPref);
-    }
+  expandViewContainer() {
+    this.contentWrapper.classList.remove('container-limited');
   }
 
   resetViewContainer() {
-    if (this.fixedLayoutPref !== null) {
-      $('.content-wrapper .container-fluid').toggleClass('container-limited', this.fixedLayoutPref);
-    }
+    this.contentWrapper.classList.toggle('container-limited', this.isFixedLayoutPreferred);
   }
 
   // Expand the issuable sidebar unless the user explicitly collapsed it

@@ -19,6 +19,12 @@ class ProtectedTag::CreateAccessLevel < ApplicationRecord
     end
   end
 
+  def humanize
+    return "Deploy key" if deploy_key.present?
+
+    super
+  end
+
   def check_access(user)
     return false if access_level == Gitlab::Access::NO_ACCESS
 

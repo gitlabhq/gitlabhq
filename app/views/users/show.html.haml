@@ -122,9 +122,12 @@
                 - if display_public_email?(@user)
                   = render 'middle_dot_divider', stacking: true do
                     = link_to @user.public_email, "mailto:#{@user.public_email}", itemprop: 'email'
-                - if @user.bio.present? && @user.confirmed? && !@user.blocked?
-                  %p.profile-user-bio.gl-mb-3
-                    = @user.bio
+
+              -# Ensure this stays indented one level less than the social links
+              -# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118314
+              - if @user.bio.present? && @user.confirmed? && !@user.blocked?
+                %p.profile-user-bio.gl-mb-3
+                  = @user.bio
 
       - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
         .scrolling-tabs-container{ class: [('gl-display-none' if show_super_sidebar?)] }

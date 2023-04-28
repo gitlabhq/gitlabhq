@@ -31,13 +31,7 @@ export default {
     GlTab,
     GlTabs,
   },
-  inject: [
-    'defaultTabValue',
-    'failedJobsCount',
-    'failedJobsSummary',
-    'totalJobCount',
-    'testsCount',
-  ],
+  inject: ['defaultTabValue', 'failedJobsCount', 'totalJobCount', 'testsCount'],
   data() {
     return {
       activeTab: this.defaultTabValue,
@@ -110,7 +104,7 @@ export default {
         <span class="gl-mr-2">{{ $options.i18n.tabs.failedJobsTitle }}</span>
         <gl-badge size="sm" data-testid="failed-builds-counter">{{ failedJobsCount }}</gl-badge>
       </template>
-      <router-view :failed-jobs-summary="failedJobsSummary" />
+      <router-view />
     </gl-tab>
     <gl-tab
       :active="isActive($options.tabNames.tests)"

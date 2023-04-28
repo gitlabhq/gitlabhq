@@ -22,9 +22,11 @@ as you type. Depending on the cursor position, the extension either:
 
 To accept a suggestion, press <kbd>Tab</kbd>.
 
-Code Suggestions are supported in Visual Studio Code with the GitLab Workflow extension.
+Code Suggestions are available in Visual Studio Code when you have the GitLab Workflow extension installed.
 
-Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). Beta users should read about the [known limitations](#known-limitations). The best results from Code Suggestions are expected for these six languages:
+## Supported languages
+
+Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). The best results from Code Suggestions are expected for these six languages:
 
 - C
 - C++
@@ -38,10 +40,6 @@ Suggestions may be mixed for other languages. Using natural language code commen
 GitLab is continuously improving the model and expects to support an additional seven languages soon, as well as natural language code comments.
 
 Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/). Learn about [data usage when using Code Suggestions](#code-suggestions-data-usage).
-
-## Group level setting
-
-[Group owners](../../permissions.md#group-members-permissions) can enable Code Suggestions for all projects in a group by using the [group level Code Suggestions setting](../../group/manage.md#group-code-suggestions).
 
 ## Enable Code Suggestions in VS Code
 
@@ -73,41 +71,43 @@ Start typing and receive suggestions for your GitLab projects.
   <iframe src="https://www.youtube-nocookie.com/embed/WnxBYxN2-p4" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-## Code Suggestions Data Usage
+## Code Suggestions data usage
 
-### Overview
+Code Suggestions is a generative artificial intelligence (AI) model hosted on GitLab.com.
 
-Code Suggestions is a generative artificial intelligence (AI) model hosted on GitLab.com that can empower your developers to code more efficiently by suggesting code as they type.
+Your personal access token enables a secure API connection to GitLab.com. This API connection securely transmits a context window from VS Code to the Code Suggestions ML model for inference, and the generated suggestion is transmitted back to VS Code.
 
-The personal access token enables a secure API connection to GitLab.com. This API connection securely transmits a context window from VS Code to the Code Suggestions ML model for inference, and the generated suggestion is transmitted back to VS Code.
-
-#### Progressive enhancement
-
-This feature is designed as a progressive enhancement to the existing VS Code GitLab Workflow plugin. Code Suggestions offer a completion if the machine learning engine can generate a recommendation. In the event of a connection issue or model inference failure, the feature gracefully degrades. Code Suggestions do not prevent you from writing code in VS Code.
-
-#### Off by default
-
-Code Suggestions are off by default and require a group owner to enable the feature with a [group-level setting](#group-level-setting).
-
-After the group level setting is enabled, Developers using Visual Studio Code with the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) can connect to GitLab.com via a GitLab [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) with the `read_api` and `read_user` scopes.
-
-#### Generating suggestions
-
-Once configured by a developer in VS Code. The personal access token enables a secure API connection to GitLab.com. This API connection securely transmits a context window from VS Code to the Code Suggestions ML model for inference, and the generated suggestion is transmitted back to VS Code.
-
-Code Suggestions only work when you have internet connectivity and can access GitLab.com. Code Suggestions are not available for self-managed customers, nor customers operating within an air-gapped environment.
-
-### Stability and performance
-
-This feature is currently in [Beta](/ee/policy/alpha-beta-support.md#beta). While the Code Suggestions inference API operates completely within GitLab.com's enterprise infrastructure, we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
-
-## Data privacy
+### Data privacy
 
 Code Suggestions operate completely in the GitLab.com infrastructure, providing the same level of [security](https://about.gitlab.com/security/) as any other feature of GitLab.com, and processing any personal data in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/).
 
 No new additional data is collected to enable this feature. The content of your GitLab hosted source code is not used as training data. Source code inference against the Code Suggestions model is not used to re-train the model. Your data also never leaves GitLab.com. All training and inference is done in GitLab.com infrastructure.
 
 [Read more about the security of GitLab.com](https://about.gitlab.com/security/faq/).
+
+### Training data
+
+Code Suggestions uses open source pre-trained base models from the [CodeGen family](https://openreview.net/forum?id=iaYcJKpY2B_) including CodeGen-MULTI and CodeGen-NL. We then re-train and fine-tune these base models with a customized open source dataset to enable multi-language support and additional use cases. This customized dataset contains non-preprocessed open source code in 13 programming languages from [The Pile](https://pile.eleuther.ai/) and the [Google BigQuery source code dataset](https://cloud.google.com/blog/topics/public-datasets/github-on-bigquery-analyze-all-the-open-source-code). We then process this raw dataset against heuristics that aim to increase the quality of the dataset.
+
+The Code Suggestions model is not trained on GitLab customer data.
+
+### Off by default
+
+Code Suggestions are off by default and require a group owner to enable the feature with a group-level setting.
+
+After the group-level setting is enabled, developers using Visual Studio Code with the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) can connect to GitLab.com by using a GitLab [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) with the `read_api` and `read_user` scopes.
+
+## Progressive enhancement
+
+This feature is designed as a progressive enhancement to the existing VS Code GitLab Workflow plugin. Code Suggestions offer a completion if the machine learning engine can generate a recommendation. In the event of a connection issue or model inference failure, the feature gracefully degrades. Code Suggestions do not prevent you from writing code in VS Code.
+
+### Internet connectivity
+
+Code Suggestions only work when you have internet connectivity and can access GitLab.com. Code Suggestions are not available for self-managed customers, nor customers operating within an air-gapped environment.
+
+### Stability and performance
+
+This feature is currently in [Beta](/ee/policy/alpha-beta-support.md#beta). While the Code Suggestions inference API operates completely within the GitLab.com enterprise infrastructure, we expect a high demand for this Beta feature, which may cause degraded performance or unexpected downtime of the feature. We have built this feature to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
 ### Model accuracy and quality
 
@@ -116,12 +116,6 @@ While in Beta, Code Suggestions can generate low-quality, incomplete, and possib
 GitLab uses a customized open source dataset to fine-tune the model to support multiple languages. Based on the languages you code in, GitLab routes the request to a targeted inference and prompt engine to get relevant suggestions.
 
 GitLab is actively refining these models to improve the quality of recommendations, add support for more languages, and add protections to limit personal data, insecure code, and other unwanted behavior that the model may have learned from training data.
-
-### Training data
-
-Code Suggestions uses open source pre-trained base models from the [CodeGen family](https://openreview.net/forum?id=iaYcJKpY2B_) including CodeGen-MULTI and CodeGen-NL. We then re-train and fine-tune these base models with a customized open source dataset to enable multi-language support and additional use cases. This customized dataset contains non-preprocessed open source code in 13 programming languages from [The Pile](https://pile.eleuther.ai/) and [Google's BigQuery source code dataset](https://cloud.google.com/blog/topics/public-datasets/github-on-bigquery-analyze-all-the-open-source-code). We then process this raw dataset against heuristics that aim to increase the quality of the dataset.
-
-The Code Suggestions model is not trained on GitLab customer data.
 
 ## Known limitations
 

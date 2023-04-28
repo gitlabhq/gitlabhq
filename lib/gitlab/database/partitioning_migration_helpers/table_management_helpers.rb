@@ -258,7 +258,7 @@ module Gitlab
         def prepare_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, async: false)
           validate_not_in_transaction!(:prepare_constraint_for_list_partitioning)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
@@ -270,7 +270,7 @@ module Gitlab
         def revert_preparing_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
           validate_not_in_transaction!(:revert_preparing_constraint_for_list_partitioning)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
@@ -282,7 +282,7 @@ module Gitlab
         def convert_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, lock_tables: [])
           validate_not_in_transaction!(:convert_table_to_first_list_partition)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,
@@ -295,7 +295,7 @@ module Gitlab
         def revert_converting_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
           validate_not_in_transaction!(:revert_converting_table_to_first_list_partition)
 
-          Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
+          Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
                  table_name: table_name,
                  parent_table_name: parent_table_name,

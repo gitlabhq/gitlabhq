@@ -203,8 +203,8 @@ RSpec.describe Settings, feature_category: :system_access do
     using RSpec::Parameterized::TableSyntax
 
     where(:input_rules, :result) do
-      nil                         | [['*', nil]]
-      []                          | [['*', nil]]
+      nil                         | [['*', 'default']]
+      []                          | [['*', 'default']]
       [['name=foobar', 'foobar']] | [['name=foobar', 'foobar']]
     end
 

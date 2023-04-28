@@ -148,6 +148,49 @@ Make sure the newly-created data is either migrated, or
 saved in both the old and new version upon creation. Removals in
 turn can be handled by defining foreign keys with cascading deletes.
 
+### Job retry mechanism
+
+The batched background migrations retry mechanism ensures that a job is executed again in case of failure.
+The following diagram shows the different stages of our retry mechanism:
+
+```plantuml
+@startuml
+hide empty description
+note as N1
+  can_split?:
+  the failure is due to a query timeout
+end note
+[*] --> Running
+Running --> Failed
+note on link
+  if number of retries <= MAX_ATTEMPTS
+end note
+Running --> Succeeded
+Failed --> Running
+note on link
+  if number of retries > MAX_ATTEMPTS
+  and can_split? == true
+  then two jobs with smaller
+  batch size will be created
+end note
+Failed --> [*]
+Succeeded --> [*]
+@enduml
+```
+
+- `MAX_ATTEMPTS` is defined in the [`Gitlab::Database::BackgroundMigration`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_job.rb)
+class.
+- `can_split?` is defined in the [`Gitlab::Database::BatchedJob`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/background_migration/batched_job.rb) class.
+
+### Failed batched background migrations
+
+The whole batched background migration is marked as `failed`
+(`/chatops run batched_background_migrations status MIGRATION_ID` will show
+the migration as `failed`) if any of the following are true:
+
+- There are no more jobs to consume, and there are failed jobs.
+- More than [half of the jobs failed since the background migration was started](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_migration.rb).
+
 ### Requeuing batched background migrations
 
 If one of the batched background migrations contains a bug that is fixed in a patch

@@ -75,6 +75,25 @@ module API
           destroy_conditionally!(current_runner) { ::Ci::Runners::UnregisterRunnerService.new(current_runner, params[:token]).execute }
         end
 
+        desc 'Delete a registered runner manager' do
+          summary 'Internal endpoint that deletes a runner manager by authentication token and system ID.'
+          failure [[400, 'Bad Request'], [403, 'Forbidden']]
+        end
+        params do
+          requires :token, type: String, desc: %q(The runner's authentication token)
+          requires :system_id, type: String, desc: %q(The runner's system identifier.)
+        end
+        delete '/managers', urgency: :low, feature_category: :runner_fleet do
+          authenticate_runner!
+
+          destroy_conditionally!(current_runner) do
+            ::Ci::Runners::UnregisterRunnerManagerService.new(
+              current_runner,
+              params[:token],
+              system_id: params[:system_id]).execute
+          end
+        end
+
         desc 'Validate authentication credentials' do
           summary "Verify authentication for a registered runner"
           success Entities::Ci::RunnerRegistrationDetails

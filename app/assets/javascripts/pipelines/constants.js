@@ -93,7 +93,7 @@ export const DEFAULT_FIELDS = [
     columnClass: 'gl-w-20p',
   },
   {
-    key: 'failure',
+    key: 'failureMessage',
     label: __('Failure'),
     columnClass: 'gl-w-40p',
   },

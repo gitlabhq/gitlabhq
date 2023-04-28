@@ -61,6 +61,8 @@
 
 = render 'projects/service_desk_settings'
 
+= render_if_exists 'product_analytics/project_settings', expanded: expanded
+
 %section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')

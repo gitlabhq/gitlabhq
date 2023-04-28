@@ -99,6 +99,11 @@ export default {
       required: false,
       default: false,
     },
+    termsAsTokens: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -356,7 +361,9 @@ export default {
       :close-button-title="__('Close')"
       :clear-recent-searches-text="__('Clear recent searches')"
       :no-recent-searches-text="__(`You don't have any recent searches`)"
+      :search-text-option-label="__('Search for this text')"
       :show-friendly-text="showFriendlyText"
+      :terms-as-tokens="termsAsTokens"
       class="flex-grow-1"
       @history-item-selected="handleHistoryItemSelected"
       @clear="onClear"

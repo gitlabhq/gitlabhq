@@ -317,6 +317,7 @@ export default {
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
+      terms-as-tokens
       class="gl-flex-grow-1 gl-border-t-none row-content-block"
       data-qa-selector="issuable_search_container"
       @checked-input="handleAllIssuablesCheckedInput"

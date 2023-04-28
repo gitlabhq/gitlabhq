@@ -75,6 +75,9 @@ msgstr ""
 msgid "##### ERROR ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). %{namespace_name} is now read-only. Projects under this namespace are locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
 msgstr ""
 
+msgid "##### WARNING ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
+msgstr ""
+
 msgid "#%{issueIid} (closed)"
 msgstr ""
 
@@ -22088,9 +22091,6 @@ msgstr ""
 msgid "Identity|Provider ID"
 msgstr ""
 
-msgid "If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
-msgstr ""
-
 msgid "If any indexed field exceeds this limit, it is truncated to this number of characters. The rest of the content is neither indexed nor searchable. This does not apply to repository and wiki indexing. For unlimited characters, set this to 0."
 msgstr ""
 
@@ -25279,6 +25279,9 @@ msgid "Job|Keep"
 msgstr ""
 
 msgid "Job|Manual"
+msgstr ""
+
+msgid "Job|No job log"
 msgstr ""
 
 msgid "Job|No search results found"
@@ -28786,25 +28789,19 @@ msgid_plural "NamespaceStorageSize|%{namespace_name} contains %{locked_project_c
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Projects under this namespace are locked and actions are restricted."
+msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Projects under this namespace are locked and actions are restricted. %{actions_restricted_link}"
 msgstr ""
 
-msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted."
+msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, all projects in the namespace will be locked and actions will be restricted. %{actions_restricted_link}"
 msgstr ""
 
 msgid "NamespaceStorageSize|If you reach 100%% storage capacity, you will not be able to: %{repository_limits_description}"
 msgstr ""
 
-msgid "NamespaceStorageSize|Manage your storage usage or, if you are a namespace Owner, purchase additional storage."
+msgid "NamespaceStorageSize|Manage your storage usage or, if you are a namespace Owner, purchase additional storage. %{learn_more_link}."
 msgstr ""
 
 msgid "NamespaceStorageSize|Please purchase additional storage to unlock your projects over the free %{free_size_limit} project limit. You can't %{repository_limits_description}"
-msgstr ""
-
-msgid "NamespaceStorageSize|Which actions are restricted?"
-msgstr ""
-
-msgid "NamespaceStorageSize|Which actions become restricted?"
 msgstr ""
 
 msgid "NamespaceStorageSize|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{free_size_limit} limit. You can't %{repository_limits_description}"
@@ -28816,7 +28813,7 @@ msgstr ""
 msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name} (%{used_storage} of %{storage_limit})"
 msgstr ""
 
-msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines."
+msgid "NamespaceStorageSize|push to your repository, create pipelines, create issues or add comments. To reduce storage capacity, delete unused repositories, artifacts, wikis, issues, and pipelines. %{learn_more_link}."
 msgstr ""
 
 msgid "NamespaceStorage|%{name_with_link} is now read-only. Projects under this namespace are locked and actions are restricted."
@@ -29443,9 +29440,6 @@ msgid "No issues found"
 msgstr ""
 
 msgid "No iteration"
-msgstr ""
-
-msgid "No job log"
 msgstr ""
 
 msgid "No label"
@@ -34811,7 +34805,16 @@ msgstr ""
 msgid "ProjectSettings|Choose your merge method, options, checks, and squash options."
 msgstr ""
 
+msgid "ProjectSettings|Clickhouse URL"
+msgstr ""
+
+msgid "ProjectSettings|Collector host"
+msgstr ""
+
 msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
+msgstr ""
+
+msgid "ProjectSettings|Configure product analytics to track events within your project applications."
 msgstr ""
 
 msgid "ProjectSettings|Configure your infrastructure."
@@ -34821,6 +34824,12 @@ msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
 msgid "ProjectSettings|Container registry"
+msgstr ""
+
+msgid "ProjectSettings|Cube API URL"
+msgstr ""
+
+msgid "ProjectSettings|Cube API key"
 msgstr ""
 
 msgid "ProjectSettings|Customize this project's badges."
@@ -34914,6 +34923,18 @@ msgid "ProjectSettings|Internal"
 msgstr ""
 
 msgid "ProjectSettings|Issues"
+msgstr ""
+
+msgid "ProjectSettings|Jitsu administrator email"
+msgstr ""
+
+msgid "ProjectSettings|Jitsu administrator password"
+msgstr ""
+
+msgid "ProjectSettings|Jitsu host"
+msgstr ""
+
+msgid "ProjectSettings|Jitsu project ID"
 msgstr ""
 
 msgid "ProjectSettings|LFS objects from this repository are available to forks. %{linkStart}How do I remove them?%{linkEnd}"
@@ -35087,6 +35108,12 @@ msgstr ""
 msgid "ProjectSettings|Target project"
 msgstr ""
 
+msgid "ProjectSettings|The ID of the project in Jitsu. The project contains all analytics instances."
+msgstr ""
+
+msgid "ProjectSettings|The URL of your Cube instance."
+msgstr ""
+
 msgid "ProjectSettings|The commit message used when applying merge request suggestions."
 msgstr ""
 
@@ -35100,6 +35127,12 @@ msgid "ProjectSettings|The default target project for merge requests created in 
 msgstr ""
 
 msgid "ProjectSettings|The default template will be applied on save."
+msgstr ""
+
+msgid "ProjectSettings|The host of your Jitsu instance."
+msgstr ""
+
+msgid "ProjectSettings|The host of your data collector instance."
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."
@@ -35130,6 +35163,15 @@ msgid "ProjectSettings|Upstream project"
 msgstr ""
 
 msgid "ProjectSettings|Used for every new merge request."
+msgstr ""
+
+msgid "ProjectSettings|Used to connect Jitsu to the Clickhouse instance."
+msgstr ""
+
+msgid "ProjectSettings|Used to generate short-lived API access tokens."
+msgstr ""
+
+msgid "ProjectSettings|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
 msgid "ProjectSettings|Users can copy the repository to a new project."
@@ -48762,9 +48804,6 @@ msgstr ""
 msgid "View job currently using resource"
 msgstr ""
 
-msgid "View job log"
-msgstr ""
-
 msgid "View jobs"
 msgstr ""
 
@@ -49887,6 +49926,12 @@ msgid "When:"
 msgstr ""
 
 msgid "Which API requests are affected?"
+msgstr ""
+
+msgid "Which actions are restricted?"
+msgstr ""
+
+msgid "Which actions become restricted?"
 msgstr ""
 
 msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."

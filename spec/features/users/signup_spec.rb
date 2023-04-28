@@ -337,6 +337,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
           expect { click_button 'Register' }.not_to change { User.count }
           expect(page).to have_content(_('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'))
+          expect(page).to have_content("Minimum length is #{Gitlab::CurrentSettings.minimum_password_length} characters")
         end
       end
 
