@@ -4,7 +4,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import store from '~/mr_notes/stores';
 
-export const initReviewBar = () => {
+export const initReviewBar = ({ editorAiActions = [] } = {}) => {
   const el = document.getElementById('js-review-bar');
 
   if (!el) return;
@@ -21,6 +21,7 @@ export const initReviewBar = () => {
     },
     provide: {
       newCommentTemplatePath: el.dataset.newCommentTemplatePath,
+      editorAiActions,
     },
     computed: {
       ...mapGetters('batchComments', ['draftsCount']),

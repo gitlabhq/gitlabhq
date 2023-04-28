@@ -29,8 +29,7 @@ export default {
     GlTab,
     DrawioToolbarButton,
     CommentTemplatesDropdown,
-    AiActionsDropdown: () =>
-      import('ee_component/vue_shared/components/markdown/ai_actions_dropdown.vue'),
+    AiActionsDropdown: () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

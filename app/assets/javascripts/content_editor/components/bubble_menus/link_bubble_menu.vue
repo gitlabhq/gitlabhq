@@ -177,6 +177,8 @@ export default {
       this.linkText = undefined;
       this.linkHref = undefined;
       this.linkCanonicalSrc = undefined;
+
+      this.isEditing = false;
     },
   },
   tippyOptions: {
@@ -250,7 +252,12 @@ export default {
           <gl-form-input id="link-text" v-model="linkText" data-testid="link-text" />
         </gl-form-group>
         <gl-form-group :label="__('URL')" label-for="link-href">
-          <gl-form-input id="link-href" v-model="linkCanonicalSrc" data-testid="link-href" />
+          <gl-form-input
+            id="link-href"
+            v-model="linkCanonicalSrc"
+            autofocus
+            data-testid="link-href"
+          />
         </gl-form-group>
         <div class="gl-display-flex gl-justify-content-end">
           <gl-button class="gl-mr-3" data-testid="cancel-link" @click="cancelEditingLink">

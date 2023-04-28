@@ -177,7 +177,7 @@ function getActionFromHref(href) {
 }
 
 const pageBundles = {
-  show: () => import(/* webpackPrefetch: true */ '~/mr_notes/init_notes'),
+  show: () => import(/* webpackPrefetch: true */ 'ee_else_ce/mr_notes/mount_app'),
   diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
 };
 

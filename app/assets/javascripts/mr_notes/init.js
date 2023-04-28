@@ -22,7 +22,7 @@ function setupMrNotesState(notesDataset) {
   store.dispatch('setEndpoints', endpoints);
 }
 
-export function initMrStateLazyLoad() {
+export function initMrStateLazyLoad({ reviewBarParams } = {}) {
   store.dispatch('setActiveTab', window.mrTabs.getCurrentAction());
   window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) =>
     store.dispatch('setActiveTab', value),
@@ -42,7 +42,7 @@ export function initMrStateLazyLoad() {
         eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
 
         requestIdleCallback(() => {
-          initReviewBar();
+          initReviewBar(reviewBarParams);
           initOverviewTabCounter();
           initDiscussionCounter();
         });

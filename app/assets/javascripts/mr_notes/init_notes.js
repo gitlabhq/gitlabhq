@@ -12,7 +12,7 @@ import NotesApp from '../notes/components/notes_app.vue';
 import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
 import initWidget from '../vue_merge_request_widget';
 
-export default () => {
+export default ({ editorAiActions = [] } = {}) => {
   requestIdleCallback(
     () => {
       renderGFM(document.getElementById('diff-notes-app'));
@@ -42,6 +42,7 @@ export default () => {
     provide: {
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
+      editorAiActions,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);
