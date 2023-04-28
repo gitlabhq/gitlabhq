@@ -187,7 +187,7 @@ class MergeRequestsFinder < IssuableFinder
 
   def by_approved(items)
     approved_param = Gitlab::Utils.to_boolean(params.fetch(:approved, nil))
-    return items if approved_param.nil?
+    return items if approved_param.nil? || Feature.disabled?(:mr_approved_filter, type: :ops)
 
     if approved_param
       items.with_approvals

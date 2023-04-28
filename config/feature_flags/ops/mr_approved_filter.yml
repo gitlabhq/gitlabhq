@@ -1,0 +1,8 @@
+---
+name: mr_approved_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118087
+rollout_issue_url: 
+milestone: '16.0'
+type: ops
+group: group::code review
+default_enabled: false

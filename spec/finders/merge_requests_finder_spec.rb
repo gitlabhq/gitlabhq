@@ -498,16 +498,40 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           create(:approval, merge_request: merge_request3, user: user2)
         end
 
-        it 'for approved' do
-          merge_requests = described_class.new(user, { approved: true }).execute
+        context 'when flag `mr_approved_filter` is disabled' do
+          before do
+            stub_feature_flags(mr_approved_filter: false)
+          end
 
-          expect(merge_requests).to contain_exactly(merge_request3)
+          it 'for approved' do
+            merge_requests = described_class.new(user, { approved: true }).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5)
+          end
+
+          it 'for not approved' do
+            merge_requests = described_class.new(user, { approved: false }).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5)
+          end
         end
 
-        it 'for not approved' do
-          merge_requests = described_class.new(user, { approved: false }).execute
+        context 'when flag `mr_approved_filter` is enabled' do
+          before do
+            stub_feature_flags(mr_approved_filter: true)
+          end
 
-          expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request4, merge_request5)
+          it 'for approved' do
+            merge_requests = described_class.new(user, { approved: true }).execute
+
+            expect(merge_requests).to contain_exactly(merge_request3)
+          end
+
+          it 'for not approved' do
+            merge_requests = described_class.new(user, { approved: false }).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request4, merge_request5)
+          end
         end
       end
 
