@@ -10014,6 +10014,7 @@
 - './spec/workers/ci/build_schedule_worker_spec.rb'
 - './spec/workers/ci/build_trace_chunk_flush_worker_spec.rb'
 - './spec/workers/ci/cancel_pipeline_worker_spec.rb'
+- './spec/workers/ci/create_cross_project_pipeline_worker_spec.rb'
 - './spec/workers/ci/create_downstream_pipeline_worker_spec.rb'
 - './spec/workers/ci/daily_build_group_report_results_worker_spec.rb'
 - './spec/workers/ci/delete_objects_worker_spec.rb'

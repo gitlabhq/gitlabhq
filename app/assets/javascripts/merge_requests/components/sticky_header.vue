@@ -106,7 +106,7 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-pt-3 gl-display-none gl-md-display-block"
+      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-pt-3 gl-display-none gl-md-display-block"
       :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
     >
       <div

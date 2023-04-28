@@ -174,20 +174,24 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
         context 'noteable highlight cache clearing' do
           let(:position) do
-            Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                                       new_path: "files/ruby/popen.rb",
-                                       old_line: nil,
-                                       new_line: 14,
-                                       diff_refs: merge_request.diff_refs)
+            Gitlab::Diff::Position.new(
+              old_path: "files/ruby/popen.rb",
+              new_path: "files/ruby/popen.rb",
+              old_line: nil,
+              new_line: 14,
+              diff_refs: merge_request.diff_refs
+            )
           end
 
           let(:new_opts) do
-            opts.merge(in_reply_to_discussion_id: nil,
-                       type: 'DiffNote',
-                       noteable_type: 'MergeRequest',
-                       noteable_id: merge_request.id,
-                       position: position.to_h,
-                       confidential: false)
+            opts.merge(
+              in_reply_to_discussion_id: nil,
+              type: 'DiffNote',
+              noteable_type: 'MergeRequest',
+              noteable_id: merge_request.id,
+              position: position.to_h,
+              confidential: false
+            )
           end
 
           before do
@@ -217,12 +221,14 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
             prev_note =
               create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
             reply_opts =
-              opts.merge(in_reply_to_discussion_id: prev_note.discussion_id,
-                         type: 'DiffNote',
-                         noteable_type: 'MergeRequest',
-                         noteable_id: merge_request.id,
-                         position: position.to_h,
-                         confidential: false)
+              opts.merge(
+                in_reply_to_discussion_id: prev_note.discussion_id,
+                type: 'DiffNote',
+                noteable_type: 'MergeRequest',
+                noteable_id: merge_request.id,
+                position: position.to_h,
+                confidential: false
+              )
 
             expect(merge_request).not_to receive(:diffs)
 
@@ -233,11 +239,13 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         context 'note diff file' do
           let(:line_number) { 14 }
           let(:position) do
-            Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                                       new_path: "files/ruby/popen.rb",
-                                       old_line: nil,
-                                       new_line: line_number,
-                                       diff_refs: merge_request.diff_refs)
+            Gitlab::Diff::Position.new(
+              old_path: "files/ruby/popen.rb",
+              new_path: "files/ruby/popen.rb",
+              old_line: nil,
+              new_line: line_number,
+              diff_refs: merge_request.diff_refs
+            )
           end
 
           let(:previous_note) do
@@ -249,12 +257,14 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           end
           context 'when eligible to have a note diff file' do
             let(:new_opts) do
-              opts.merge(in_reply_to_discussion_id: nil,
-                         type: 'DiffNote',
-                         noteable_type: 'MergeRequest',
-                         noteable_id: merge_request.id,
-                         position: position.to_h,
-                         confidential: false)
+              opts.merge(
+                in_reply_to_discussion_id: nil,
+                type: 'DiffNote',
+                noteable_type: 'MergeRequest',
+                noteable_id: merge_request.id,
+                position: position.to_h,
+                confidential: false
+              )
             end
 
             it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
@@ -325,12 +335,14 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
           context 'when DiffNote is a reply' do
             let(:new_opts) do
-              opts.merge(in_reply_to_discussion_id: previous_note.discussion_id,
-                         type: 'DiffNote',
-                         noteable_type: 'MergeRequest',
-                         noteable_id: merge_request.id,
-                         position: position.to_h,
-                         confidential: false)
+              opts.merge(
+                in_reply_to_discussion_id: previous_note.discussion_id,
+                type: 'DiffNote',
+                noteable_type: 'MergeRequest',
+                noteable_id: merge_request.id,
+                position: position.to_h,
+                confidential: false
+              )
             end
 
             it 'note is not associated with a note diff file' do
@@ -344,23 +356,27 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
 
             context 'when DiffNote from an image' do
               let(:image_position) do
-                Gitlab::Diff::Position.new(old_path: "files/images/6049019_460s.jpg",
-                                           new_path: "files/images/6049019_460s.jpg",
-                                           width: 100,
-                                           height: 100,
-                                           x: 1,
-                                           y: 100,
-                                           diff_refs: merge_request.diff_refs,
-                                           position_type: 'image')
+                Gitlab::Diff::Position.new(
+                  old_path: "files/images/6049019_460s.jpg",
+                  new_path: "files/images/6049019_460s.jpg",
+                  width: 100,
+                  height: 100,
+                  x: 1,
+                  y: 100,
+                  diff_refs: merge_request.diff_refs,
+                  position_type: 'image'
+                )
               end
 
               let(:new_opts) do
-                opts.merge(in_reply_to_discussion_id: nil,
-                           type: 'DiffNote',
-                           noteable_type: 'MergeRequest',
-                           noteable_id: merge_request.id,
-                           position: image_position.to_h,
-                           confidential: false)
+                opts.merge(
+                  in_reply_to_discussion_id: nil,
+                  type: 'DiffNote',
+                  noteable_type: 'MergeRequest',
+                  noteable_id: merge_request.id,
+                  position: image_position.to_h,
+                  confidential: false
+                )
               end
 
               it 'note is not associated with a note diff file' do

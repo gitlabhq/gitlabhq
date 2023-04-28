@@ -11,7 +11,7 @@ module Gitlab
       class MigrationIssue < ApplicationRecord
         self.table_name = 'issues'
 
-        scope :base_query, ->(base_type) { where(work_item_type_id: nil, issue_type: base_type) }
+        scope :base_query, ->(base_type) { where(issue_type: base_type) }
       end
 
       MAX_UPDATE_RETRIES = 3
@@ -24,9 +24,7 @@ module Gitlab
       operation_name :update_all
 
       def perform
-        each_sub_batch(
-          batching_scope: -> (relation) { relation.where(work_item_type_id: nil) }
-        ) do |sub_batch|
+        each_sub_batch do |sub_batch|
           first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))
 
           # The query need to be reconstructed because .each_batch modifies the default scope

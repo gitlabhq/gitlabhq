@@ -187,8 +187,10 @@ module Notes
     end
 
     def track_note_creation_usage_for_issues(note)
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_added_action(author: note.author,
-                                                                                             project: project)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_added_action(
+        author: note.author,
+        project: project
+      )
     end
 
     def track_note_creation_usage_for_merge_requests(note)

@@ -1929,6 +1929,15 @@
   :weight: 4
   :idempotent: true
   :tags: []
+- :name: pipeline_default:ci_create_cross_project_pipeline
+  :worker_name: Ci::CreateCrossProjectPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 3
+  :idempotent: false
+  :tags: []
 - :name: pipeline_default:ci_create_downstream_pipeline
   :worker_name: Ci::CreateDownstreamPipelineWorker
   :feature_category: :continuous_integration

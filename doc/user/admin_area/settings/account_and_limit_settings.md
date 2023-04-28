@@ -36,7 +36,9 @@ can create in their personal namespace:
 
 ## Max attachment size
 
-The maximum file size for attachments in GitLab comments and replies is 10 MB.
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/20061) from 10 MB to 100 MB in GitLab 15.7.
+
+The maximum file size for attachments in GitLab comments and replies is 100 MB.
 To change the maximum attachment size:
 
 1. On the top bar, select **Main menu > Admin**.

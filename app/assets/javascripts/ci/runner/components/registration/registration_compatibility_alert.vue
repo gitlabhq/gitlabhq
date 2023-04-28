@@ -1,14 +1,26 @@
 <script>
-import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
+import DismissibleFeedbackAlert from '~/vue_shared/components/dismissible_feedback_alert.vue';
 import { s__ } from '~/locale';
 import { CHANGELOG_URL } from '../../constants';
 
 export default {
   name: 'RegistrationCompatibilityAlert',
   components: {
-    GlAlert,
     GlLink,
     GlSprintf,
+    DismissibleFeedbackAlert,
+  },
+  props: {
+    alertKey: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    alertFeatureName() {
+      return `new_runner_compatibility_${this.alertKey}`;
+    },
   },
   CHANGELOG_URL,
   i18n: {
@@ -23,11 +35,16 @@ export default {
 </script>
 
 <template>
-  <gl-alert class="gl-mb-4" variant="warning" :dismissible="false" :title="$options.i18n.title">
+  <dismissible-feedback-alert
+    :feature-name="alertFeatureName"
+    class="gl-mb-4"
+    variant="warning"
+    :title="$options.i18n.title"
+  >
     <gl-sprintf :message="$options.i18n.message">
       <template #link="{ content }">
         <gl-link :href="$options.CHANGELOG_URL" target="_blank">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
-  </gl-alert>
+  </dismissible-feedback-alert>
 </template>

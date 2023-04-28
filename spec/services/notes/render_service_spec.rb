@@ -27,12 +27,14 @@ RSpec.describe Notes::RenderService, feature_category: :team_planning do
         .to receive(:render)
         .with([note], :note)
 
-      described_class.new(user).execute([note],
-                                        requested_path: 'foo',
-                                        project_wiki: wiki,
-                                        ref: 'bar',
-                                        only_path: nil,
-                                        xhtml: false)
+      described_class.new(user).execute(
+        [note],
+        requested_path: 'foo',
+        project_wiki: wiki,
+        ref: 'bar',
+        only_path: nil,
+        xhtml: false
+      )
     end
   end
 end

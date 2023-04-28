@@ -1078,7 +1078,7 @@ $tabs-holder-z-index: 250;
 
 .merge-request-sticky-header {
   z-index: 204;
-  box-shadow: 0 1px 2px $issue-boards-card-shadow;
+  box-shadow: 0 1px 4px rgba($gray-300, 0.4);
 }
 
 .page-with-contextual-sidebar .merge-request-sticky-header {

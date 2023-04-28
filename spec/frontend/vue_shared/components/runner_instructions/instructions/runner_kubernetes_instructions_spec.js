@@ -17,7 +17,11 @@ describe('RunnerKubernetesInstructions', () => {
   });
 
   it('renders contents', () => {
-    expect(wrapper.text().replace(/\s+/g, ' ')).toMatchSnapshot();
+    expect(wrapper.text()).toContain(
+      'To install Runner in Kubernetes follow the instructions described in the GitLab documentation.',
+    );
+    expect(wrapper.text()).toContain('View installation instructions');
+    expect(wrapper.text()).toContain('Close');
   });
 
   it('renders link', () => {

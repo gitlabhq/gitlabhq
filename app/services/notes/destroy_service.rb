@@ -16,8 +16,10 @@ module Notes
     private
 
     def track_note_removal_usage_for_issues(note)
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_removed_action(author: note.author,
-                                                                                               project: project)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_comment_removed_action(
+        author: note.author,
+        project: project
+      )
     end
 
     def track_note_removal_usage_for_merge_requests(note)

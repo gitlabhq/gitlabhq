@@ -25,8 +25,10 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
       context 'simple notes' do
         let!(:notes) do
           [
-            create(:note, noteable: from_noteable, project: from_noteable.project,
-                          created_at: 2.weeks.ago, updated_at: 1.week.ago),
+            create(
+              :note, noteable: from_noteable, project: from_noteable.project,
+              created_at: 2.weeks.ago, updated_at: 1.week.ago
+            ),
             create(:note, noteable: from_noteable, project: from_noteable.project),
             create(:note, system: true, noteable: from_noteable, project: from_noteable.project)
           ]

@@ -1,0 +1,6 @@
+---
+migration_job_name: BackfillWorkItemTypeIdForIssues
+description: Backfills every record in the issues table with the appropriate work_item_type_id
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96591
+milestone: 15.4

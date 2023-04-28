@@ -50,7 +50,7 @@ export default {
   <div>
     <h1 class="gl-font-size-h2">{{ s__('Runners|New group runner') }}</h1>
 
-    <registration-compatibility-alert />
+    <registration-compatibility-alert :alert-key="groupId" />
 
     <p>
       {{

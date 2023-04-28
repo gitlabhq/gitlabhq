@@ -44,7 +44,7 @@ export default {
   <div>
     <h1 class="gl-font-size-h2">{{ s__('Runners|New instance runner') }}</h1>
 
-    <registration-compatibility-alert />
+    <registration-compatibility-alert :alert-key="$options.INSTANCE_TYPE" />
 
     <p>
       {{

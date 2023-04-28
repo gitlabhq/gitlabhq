@@ -94,8 +94,12 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
 
     it 'tracks design comment removal' do
       note = create(:note_on_design, project: project)
-      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_design_comment_removed_action).with(author: note.author,
-                                                                                                                                project: project)
+      expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(
+        :track_issue_design_comment_removed_action
+      ).with(
+        author: note.author,
+        project: project
+      )
 
       described_class.new(project, user).execute(note)
     end

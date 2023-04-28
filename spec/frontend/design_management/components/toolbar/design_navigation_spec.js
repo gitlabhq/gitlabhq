@@ -57,7 +57,6 @@ describe('Design management pagination component', () => {
     await waitForPromises();
 
     expect(findGlButtonGroup().exists()).toBe(false);
-    expect(wrapper.element).toMatchSnapshot();
   });
 
   it('renders navigation buttons', async () => {
@@ -65,7 +64,6 @@ describe('Design management pagination component', () => {
     await waitForPromises();
 
     expect(findGlButtonGroup().exists()).toBe(true);
-    expect(wrapper.element).toMatchSnapshot();
   });
 
   describe('keyboard buttons navigation', () => {

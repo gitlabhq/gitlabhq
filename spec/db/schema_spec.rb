@@ -126,6 +126,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
     # Fixes performance issues with the deletion of web-hooks with many log entries
     web_hook_logs: %w[web_hook_id],
+    webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
     ml_candidates: %w[internal_id]
 
   }.with_indifferent_access.freeze

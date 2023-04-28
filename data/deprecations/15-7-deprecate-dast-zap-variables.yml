@@ -1,11 +1,11 @@
 - title: "DAST ZAP advanced configuration variables deprecation"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
   announcement_milestone: "15.7"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: derekferguson  # (required) GitLab username of the person reporting the deprecation
   stage: Secure  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383467  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
+    With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 17.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
 
-    These three variables will be removed in GitLab 16.0.
+    These three variables will be removed in GitLab 17.0.

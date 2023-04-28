@@ -12,10 +12,11 @@ describe('Dismissible Feedback Alert', () => {
   const featureName = 'Dependency List';
   const STORAGE_DISMISSAL_KEY = 'dependency_list_feedback_dismissed';
 
-  const createComponent = ({ mountFn = shallowMount } = {}) => {
+  const createComponent = ({ props, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(Component, {
       propsData: {
         featureName,
+        ...props,
       },
       stubs: {
         GlSprintf,
@@ -37,6 +38,27 @@ describe('Dismissible Feedback Alert', () => {
 
     it('should have the storage key set', () => {
       expect(wrapper.vm.storageKey).toBe(STORAGE_DISMISSAL_KEY);
+    });
+  });
+
+  describe('with other attributes', () => {
+    const mockTitle = 'My title';
+    const mockVariant = 'warning';
+
+    beforeEach(() => {
+      createComponent({
+        props: {
+          title: mockTitle,
+          variant: mockVariant,
+        },
+      });
+    });
+
+    it('passes props to alert', () => {
+      expect(findAlert().props()).toMatchObject({
+        title: mockTitle,
+        variant: mockVariant,
+      });
     });
   });
 

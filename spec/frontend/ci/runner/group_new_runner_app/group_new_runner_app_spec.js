@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import GroupRunnerRunnerApp from '~/ci/runner/group_new_runner/group_new_runner_app.vue';
+import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import {
@@ -32,6 +33,8 @@ describe('GroupRunnerRunnerApp', () => {
   let wrapper;
 
   const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
+  const findRegistrationCompatibilityAlert = () =>
+    wrapper.findComponent(RegistrationCompatibilityAlert);
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
 
   const createComponent = () => {
@@ -47,6 +50,10 @@ describe('GroupRunnerRunnerApp', () => {
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('shows a registration compatibility alert', () => {
+    expect(findRegistrationCompatibilityAlert().props('alertKey')).toBe(mockGroupId);
   });
 
   describe('Platform', () => {

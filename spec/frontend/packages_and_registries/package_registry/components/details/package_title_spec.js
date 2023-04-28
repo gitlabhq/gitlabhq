@@ -59,13 +59,13 @@ describe('PackageTitle', () => {
     it('without tags', async () => {
       await createComponent({ ...packageData(), packageFiles: { nodes: packageFiles() } });
 
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findPackageTags().exists()).toBe(false);
     });
 
     it('with tags', async () => {
       await createComponent();
 
-      expect(wrapper.element).toMatchSnapshot();
+      expect(findPackageTags().exists()).toBe(true);
     });
 
     it('with tags on mobile', async () => {

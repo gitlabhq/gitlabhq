@@ -103,6 +103,21 @@ Due to limited customer usage, Browser Performance Testing is deprecated and wil
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### DAST ZAP advanced configuration variables deprecation
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.7</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 17.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
+
+These three variables will be removed in GitLab 17.0.
+
+</div>
+
 <div class="deprecation " data-milestone="17.0">
 
 ### Deprecate legacy shell escaping and quoting runner shell executor
@@ -745,21 +760,6 @@ With the switch to the new DAST API analyzer in GitLab 15.6, two legacy DAST API
 `DAST_API_SPECIFICATION` has been deprecated in favor of `DAST_API_OPENAPI`. To continue using an OpenAPI specification to guide the test, users must replace the `DAST_API_SPECIFICATION` variable with the `DAST_API_OPENAPI` variable. The value can remain the same, but the variable name must be replaced.
 
 These two variables will be removed in GitLab 16.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### DAST ZAP advanced configuration variables deprecation
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
-
-These three variables will be removed in GitLab 16.0.
 
 </div>
 
