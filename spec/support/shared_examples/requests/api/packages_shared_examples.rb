@@ -161,11 +161,11 @@ RSpec.shared_examples 'a package tracking event' do |category, action, service_p
   end
 end
 
-RSpec.shared_examples 'not a package tracking event' do
+RSpec.shared_examples 'not a package tracking event' do |category, action|
   it 'does not create a gitlab tracking event', :snowplow, :aggregate_failures do
     subject
 
-    expect_no_snowplow_event
+    expect_no_snowplow_event category: category, action: action
   end
 end
 
