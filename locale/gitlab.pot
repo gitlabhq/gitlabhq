@@ -5403,6 +5403,9 @@ msgstr ""
 msgid "ApprovalRule|Add approvers"
 msgstr ""
 
+msgid "ApprovalRule|Any"
+msgstr ""
+
 msgid "ApprovalRule|Approval rules"
 msgstr ""
 
@@ -5431,6 +5434,9 @@ msgid "ApprovalRule|Increase quality and maintain standards."
 msgstr ""
 
 msgid "ApprovalRule|Learn more about merge request approval rules."
+msgstr ""
+
+msgid "ApprovalRule|More than"
 msgstr ""
 
 msgid "ApprovalRule|Name"
@@ -39209,7 +39215,7 @@ msgstr ""
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} and match %{boldDescription} of the following criteria"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanners} runs against the %{branches} and find(s) more than %{vulnerabilitiesAllowed} %{boldDescription} of the following criteria:"
+msgid "ScanResultPolicy|When %{scanners} runs against the %{branches} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
 msgstr ""
 
 msgid "ScanResultPolicy|add an approver"
