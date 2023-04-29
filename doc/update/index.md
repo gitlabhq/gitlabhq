@@ -23,7 +23,7 @@ has additional information about upgrading, including:
 ## Upgrade based on installation method
 
 Depending on the installation method and your GitLab version, there are multiple
-official ways to update GitLab:
+official ways to upgrade GitLab:
 
 - [Linux packages (Omnibus GitLab)](#linux-packages-omnibus-gitlab)
 - [Source installations](#installation-from-source)
@@ -33,11 +33,11 @@ official ways to update GitLab:
 ### Linux packages (Omnibus GitLab)
 
 The [package upgrade guide](package/index.md)
-contains the steps needed to update a package installed by official GitLab
+contains the steps needed to upgrade a package installed by official GitLab
 repositories.
 
 There are also instructions when you want to
-[update to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
+[upgrade to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 ### Installation from source
 
@@ -63,7 +63,7 @@ editions, and they are based on the Omnibus package. See how to
 ### Installation using Helm
 
 GitLab can be deployed into a Kubernetes cluster using Helm.
-Instructions on how to update a cloud-native deployment are in
+Instructions on how to upgrade a cloud-native deployment are in
 [a separate document](https://docs.gitlab.com/charts/installation/upgrade.html).
 
 Use the [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html)
@@ -76,7 +76,7 @@ See the guide to [plan your GitLab upgrade](plan_your_upgrade.md).
 ## Check for background migrations before upgrading
 
 Certain releases may require different migrations to be
-finished before you update to the newer version.
+finished before you upgrade to the newer version.
 
 For more information, see [background migrations](background_migrations.md).
 
@@ -103,7 +103,7 @@ To address the above two scenarios, it is advised to do the following prior to u
 
 1. Wait until all jobs are finished.
 1. Upgrade GitLab.
-1. [Update GitLab Runner](https://docs.gitlab.com/runner/install/index.html) to the same version
+1. [Upgrade GitLab Runner](https://docs.gitlab.com/runner/install/index.html) to the same version
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 
@@ -218,16 +218,16 @@ The following guides are for subscribers of the Enterprise Edition only.
 If you wish to upgrade your GitLab installation from Community to Enterprise
 Edition, follow the guides below based on the installation method:
 
-- [Source CE to EE update guides](upgrading_from_ce_to_ee.md) - The steps are very similar
+- [Source CE to EE upgrade guides](upgrading_from_ce_to_ee.md) - The steps are very similar
   to a version upgrade: stop the server, get the code, update configuration files for
   the new functionality, install libraries and do migrations, update the init
   script, start the application and check its status.
-- [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to update your Omnibus
+- [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to upgrade your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 - [Docker CE to EE](../install/docker.md#convert-community-edition-to-enterprise-edition) -
-  Follow this guide to update your GitLab Community Edition container to an Enterprise Edition container.
+  Follow this guide to upgrade your GitLab Community Edition container to an Enterprise Edition container.
 - [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
-  Follow this guide to update your GitLab Community Edition Helm deployment to Enterprise Edition.
+  Follow this guide to upgrade your GitLab Community Edition Helm deployment to Enterprise Edition.
 
 ### Enterprise to Community Edition
 
@@ -358,7 +358,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.7.2
 
-- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
+- Geo: [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the upgrades. Secondary sites may contain out of date container images after a failover as a consequence. This impacts versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
 - Geo: We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Impacted versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
@@ -816,11 +816,11 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   These [batched background migrations](background_migrations.md#batched-background-migrations) update whole database tables to ensure corresponding
   records in `namespaces` table for each record in `projects` table.
 
-  After you update to 14.9.0 or a later 14.9 patch version,
+  After you upgrade to 14.9.0 or a later 14.9 patch version,
   [batched background migrations must finish](background_migrations.md#batched-background-migrations)
-  before you update to a later version.
+  before you upgrade to a later version.
 
-  If the migrations are not finished and you try to update to a later version,
+  If the migrations are not finished and you try to upgrade to a later version,
   you see errors like:
 
   ```plaintext
@@ -1238,9 +1238,9 @@ Long running batched background database migrations:
 
   After you update to 14.0.5 or a later 14.0 patch version,
   [batched background migrations must finish](background_migrations.md#batched-background-migrations)
-  before you update to a later version.
+  before you upgrade to a later version.
 
-  If the migrations are not finished and you try to update to a later version,
+  If the migrations are not finished and you try to upgrade to a later version,
   you see an error like:
 
   ```plaintext
@@ -1267,7 +1267,7 @@ Other issues:
      - 14.0.5 or a later 14.0.Z patch release.
      - 14.1.0 or a later 14.1.Z patch release.
   1. [Batched background migrations must finish](background_migrations.md#batched-background-migrations)
-     before you update to a later version [and may take longer than usual](#1400).
+     before you upgrade to a later version [and may take longer than usual](#1400).
 
 ### 13.12.0
 
@@ -1337,7 +1337,7 @@ See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-g
   DETAIL: trigger trigger_0d588df444c8 on table application_settings depends on column asset_proxy_whitelist of table application_settings
   ```
 
-  To work around this bug, follow the previous steps to complete the update.
+  To work around this bug, follow the previous steps to complete the upgrade.
   More details are available [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/324160).
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
