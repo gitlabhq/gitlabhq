@@ -195,7 +195,7 @@ export default {
     insertIntoTextarea(text) {
       const textArea = this.$el.closest('.md-area')?.querySelector('textarea');
       if (textArea) {
-        const generatedByText = `${text}\n***\n_${__('This comment was generated using OpenAI')}_`;
+        const generatedByText = `${text}\n***\n_${__('This comment was generated using AI')}_`;
         updateText({
           textArea,
           tag: generatedByText,

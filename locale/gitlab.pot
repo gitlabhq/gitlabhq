@@ -45278,7 +45278,7 @@ msgstr ""
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."
 msgstr ""
 
-msgid "This comment was generated using OpenAI"
+msgid "This comment was generated using AI"
 msgstr ""
 
 msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."

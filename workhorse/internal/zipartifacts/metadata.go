@@ -1,6 +1,7 @@
 package zipartifacts
 
 import (
+	"archive/zip"
 	"compress/gzip"
 	"encoding/binary"
 	"encoding/json"
@@ -8,8 +9,6 @@ import (
 	"path"
 	"sort"
 	"strconv"
-
-	zip "gitlab.com/gitlab-org/golang-archive-zip"
 )
 
 type metadata struct {
@@ -30,7 +29,6 @@ func newMetadata(file *zip.File) metadata {
 	}
 
 	return metadata{
-		//lint:ignore SA1019 Remove this once the minimum supported version is go 1.10 (go 1.9 and down do not support an alternative)
 		Modified: file.ModTime().Unix(),
 		Mode:     strconv.FormatUint(uint64(file.Mode().Perm()), 8),
 		CRC:      file.CRC32,

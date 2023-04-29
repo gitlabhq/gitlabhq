@@ -1,6 +1,7 @@
 package zipartifacts
 
 import (
+	"archive/zip"
 	"bytes"
 	"context"
 	"fmt"
@@ -12,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	zip "gitlab.com/gitlab-org/golang-archive-zip"
 )
 
 func createArchive(t *testing.T, dir string) (map[string][]byte, int64) {

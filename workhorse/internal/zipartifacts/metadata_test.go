@@ -1,6 +1,7 @@
 package zipartifacts
 
 import (
+	"archive/zip"
 	"bytes"
 	"compress/gzip"
 	"context"
@@ -10,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	zip "gitlab.com/gitlab-org/golang-archive-zip"
 )
 
 func generateTestArchive(w io.Writer) error {

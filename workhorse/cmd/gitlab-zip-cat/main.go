@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"context"
 	"errors"
 	"flag"
@@ -8,7 +9,6 @@ import (
 	"io"
 	"os"
 
-	zip "gitlab.com/gitlab-org/golang-archive-zip"
 	"gitlab.com/gitlab-org/labkit/mask"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
