@@ -31,21 +31,6 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
       end
     end
 
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(graphql_subs_lb: false)
-      end
-
-      it 'does not inject WAL locations' do
-        expect(action_cable).to receive(:broadcast) do |topic, payload|
-          expect(topic).to match(/^graphql-event/)
-          expect(Gitlab::Json.parse(payload)).to match({ '__gid__' => be_instance_of(String) })
-        end
-
-        subscriptions.execute_all(event, object)
-      end
-    end
-
     context 'when database load balancing is disabled' do
       let!(:expected_locations) { {} }
 
@@ -105,18 +90,6 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
         },
         'payload' => {}
       }), nil)
-    end
-
-    context 'when feature is disabled' do
-      before do
-        stub_feature_flags(graphql_subs_lb: false)
-      end
-
-      it 'uses the primary' do
-        expect(::Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary!)
-
-        handle_event!
-      end
     end
 
     context 'when WAL locations are not present' do

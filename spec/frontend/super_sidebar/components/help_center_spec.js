@@ -103,7 +103,7 @@ describe('HelpCenter component', () => {
         jest.spyOn(wrapper.vm.$refs.dropdown, 'close');
       });
 
-      it('shows Ask the GitLab Chat with the help items', () => {
+      it('shows Ask GitLab Chat with the help items', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           expect.objectContaining({
             icon: 'tanuki',
@@ -114,9 +114,9 @@ describe('HelpCenter component', () => {
         ]);
       });
 
-      describe('when Ask the GitLab Chat button is clicked', () => {
+      describe('when Ask GitLab Chat button is clicked', () => {
         beforeEach(() => {
-          findButton('Ask the GitLab Chat').click();
+          findButton('Ask GitLab Chat').click();
         });
 
         it('closes the dropdown', () => {

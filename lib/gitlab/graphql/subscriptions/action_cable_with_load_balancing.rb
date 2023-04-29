@@ -22,9 +22,7 @@ module Gitlab
         private
 
         def use_primary?
-          @serializer.wal_locations.blank? ||
-            Feature.disabled?(:graphql_subs_lb) ||
-            !databases_in_sync?(@serializer.wal_locations)
+          @serializer.wal_locations.blank? || !databases_in_sync?(@serializer.wal_locations)
         end
       end
 
@@ -37,8 +35,6 @@ module Gitlab
 
         # rubocop: disable GitlabSecurity/PublicSend
         def load(str)
-          return DEFAULT_SERIALIZER.load(str) unless Feature.enabled?(:graphql_subs_lb)
-
           value = Gitlab::Json.parse(str)
 
           @wal_locations = value['wal_locations']
@@ -47,8 +43,6 @@ module Gitlab
         end
 
         def dump(obj)
-          return DEFAULT_SERIALIZER.dump(obj) unless Feature.enabled?(:graphql_subs_lb)
-
           Gitlab::Json.dump({
             'wal_locations' => wal_locations_by_db_name,
             'payload' => DEFAULT_SERIALIZER.send(:dump_value, obj)

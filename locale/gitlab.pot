@@ -5919,9 +5919,6 @@ msgstr ""
 msgid "Ask someone with write access to resolve it."
 msgstr ""
 
-msgid "Ask the GitLab Chat"
-msgstr ""
-
 msgid "Ask your group owner to set up a group runner."
 msgstr ""
 
@@ -43776,10 +43773,13 @@ msgstr ""
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
+msgid "TanukiBot|Ask GitLab Chat"
+msgstr ""
+
 msgid "TanukiBot|Ask a question about GitLab"
 msgstr ""
 
-msgid "TanukiBot|For example, %{linkStart}what is a fork?%{linkEnd}"
+msgid "TanukiBot|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
 msgid "TanukiBot|GitLab Chat"
@@ -43791,7 +43791,7 @@ msgstr ""
 msgid "TanukiBot|Sources"
 msgstr ""
 
-msgid "TanukiBot|There was an error communicating with Tanuki Bot. Please reach out to GitLab support for more assistance or try again later."
+msgid "TanukiBot|There was an error communicating with GitLab Chat. Please reach out to GitLab support for more assistance or try again later."
 msgstr ""
 
 msgid "TanukiBot|What is a fork?"
