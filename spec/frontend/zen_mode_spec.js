@@ -2,8 +2,9 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { Mousetrap } from '~/lib/mousetrap';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GLForm from '~/gl_form';
 import * as utils from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -13,7 +14,6 @@ describe('ZenMode', () => {
   let mock;
   let zen;
   let dropzoneForElementSpy;
-  const fixtureName = 'snippets/show.html';
 
   const getTextarea = () => $('.notes-form textarea');
 
@@ -37,7 +37,7 @@ describe('ZenMode', () => {
     mock = new MockAdapter(axios);
     mock.onGet().reply(HTTP_STATUS_OK);
 
-    loadHTMLFixture(fixtureName);
+    setHTMLFixture(htmlSnippetsShow);
 
     const form = $('.js-new-note-form');
     new GLForm(form); // eslint-disable-line no-new

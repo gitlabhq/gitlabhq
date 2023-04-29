@@ -68,7 +68,7 @@ The steps can be summed up to:
    NOTE:
    If you want to use `dpkg`/`rpm` instead of `apt-get`/`yum`, go through the first
    step to find the current GitLab version, then follow
-   [Update using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
+   [Upgrade using a manually-downloaded package](index.md#upgrade-using-a-manually-downloaded-package),
    and then [add your license](../../user/admin_area/license.md).
 
 1. Install the `gitlab-ee` package. The install automatically
@@ -118,5 +118,5 @@ The steps can be summed up to:
 
 1. Optional. [Set up the Elasticsearch integration](../../integration/advanced_search/elasticsearch.md) to enable [advanced search](../../user/search/advanced_search.md).
 
-That's it! You can now use GitLab Enterprise Edition! To update to a newer
-version, follow [Update using the official repositories](index.md#upgrade-using-the-official-repositories).
+That's it! You can now use GitLab Enterprise Edition! To upgrade to a newer
+version, follow [Upgrade using the official repositories](index.md#upgrade-using-the-official-repositories).

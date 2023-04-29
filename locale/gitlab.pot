@@ -22520,6 +22520,9 @@ msgstr ""
 msgid "InProductMarketing|Actually, GitLab makes the team work (better)"
 msgstr ""
 
+msgid "InProductMarketing|Advanced security testing"
+msgstr ""
+
 msgid "InProductMarketing|And finally %{deploy_link} a Python application."
 msgstr ""
 
@@ -22599,6 +22602,9 @@ msgid "InProductMarketing|Follow our steps"
 msgstr ""
 
 msgid "InProductMarketing|Free 30-day trial"
+msgstr ""
+
+msgid "InProductMarketing|Free guest users"
 msgstr ""
 
 msgid "InProductMarketing|Get going with CI/CD quickly using our %{quick_start_link}. Start with an available runner and then create a CI .yml file – it's really that easy."
@@ -22688,6 +22694,9 @@ msgstr ""
 msgid "InProductMarketing|Invite them to help out."
 msgstr ""
 
+msgid "InProductMarketing|Invite unlimited colleagues"
+msgstr ""
+
 msgid "InProductMarketing|Invite your colleagues and start shipping code faster."
 msgstr ""
 
@@ -22739,10 +22748,16 @@ msgstr ""
 msgid "InProductMarketing|Our tool brings all the things together"
 msgstr ""
 
+msgid "InProductMarketing|Portfolio management"
+msgstr ""
+
 msgid "InProductMarketing|Rapid development, simplified"
 msgstr ""
 
 msgid "InProductMarketing|Reduce Security and Compliance Risk"
+msgstr ""
+
+msgid "InProductMarketing|Security risk mitigation"
 msgstr ""
 
 msgid "InProductMarketing|Security that's integrated into your development lifecycle"
@@ -22854,6 +22869,9 @@ msgid "InProductMarketing|Use our AWS cloudformation template to spin up your ru
 msgstr ""
 
 msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
+msgstr ""
+
+msgid "InProductMarketing|Value stream management"
 msgstr ""
 
 msgid "InProductMarketing|Want to get your iOS app up and running, including publishing all the way to TestFlight? Follow our guide to set up GitLab and fastlane to publish iOS apps to the App Store."
@@ -42565,6 +42583,9 @@ msgstr ""
 msgid "Start Date"
 msgstr ""
 
+msgid "Start GitLab Ultimate free trial"
+msgstr ""
+
 msgid "Start Time"
 msgstr ""
 
@@ -51410,6 +51431,9 @@ msgid "Your DevOps Reports give an overview of how you are using GitLab from a f
 msgstr ""
 
 msgid "Your GPG keys (%{count})"
+msgstr ""
+
+msgid "Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
 msgstr ""
 
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."

@@ -159,7 +159,7 @@ a manual installation.
 
 If for some reason you don't use the official repositories, you can
 download the package and install it manually. This method can be used to either
-install GitLab for the first time or update it.
+install GitLab for the first time or upgrade it.
 
 To download and install GitLab:
 
