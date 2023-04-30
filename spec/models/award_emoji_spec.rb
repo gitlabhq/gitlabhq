@@ -63,20 +63,41 @@ RSpec.describe AwardEmoji do
       let_it_be(:user) { create(:user) }
       let_it_be(:group) { create(:group) }
       let_it_be(:emoji) { create(:custom_emoji, name: 'partyparrot', namespace: group) }
+      let_it_be(:project) { create(:project, namespace: group) }
 
-      before do
+      before_all do
         group.add_maintainer(user)
       end
 
-      %i[issue merge_request note_on_issue snippet].each do |awardable_type|
-        let_it_be(:project) { create(:project, namespace: group) }
-        let(:awardable) { create(awardable_type, project: project) }
-
-        it "is accepted on #{awardable_type}" do
+      shared_examples 'awardable' do
+        it 'is accepted' do
           new_award = build(:award_emoji, user: user, awardable: awardable, name: emoji.name)
-
           expect(new_award).to be_valid
         end
+      end
+
+      context 'with issue' do
+        let(:awardable) { create(:issue, project: project) }
+
+        include_examples 'awardable'
+      end
+
+      context 'with merge_request' do
+        let(:awardable) { create(:merge_request, source_project: project) }
+
+        include_examples 'awardable'
+      end
+
+      context 'with note_on_issue' do
+        let(:awardable) { create(:note_on_issue, project: project) }
+
+        include_examples 'awardable'
+      end
+
+      context 'with snippet' do
+        let(:awardable) { create(:snippet, project: project) }
+
+        include_examples 'awardable'
       end
 
       it 'is accepted on subgroup issue' do

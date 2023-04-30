@@ -1,8 +1,9 @@
 mapping:
-  # EE code should map to respective spec
+  # EE app should map to respective spec
   - source: ee/app/(.+)\.rb
     test: ee/spec/%s_spec.rb
-  # FOSS code should map to respective spec
+
+  # FOSS app should map to respective spec
   - source: app/(.+)\.rb
     test: spec/%s_spec.rb
 
@@ -19,6 +20,10 @@ mapping:
   - source: ee/lib/(.+)\.rb
     test: ee/spec/lib/%s_spec.rb
 
+  # FOSS lib should map to respective spec
+  - source: lib/(.+)\.rb
+    test: spec/lib/%s_spec.rb
+
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/368628
   - source: lib/gitlab/usage_data_counters/(.+)\.rb
     test: spec/lib/gitlab/usage_data_spec.rb
@@ -31,9 +36,9 @@ mapping:
   - source: ee/lib/gitlab/ci/config/(.+)\.rb
     test: ee/spec/lib/gitlab/ci/yaml_processor_spec.rb
 
-  # FOSS lib & tooling should map to respective spec
-  - source: (tooling/)?lib/(.+)\.rb
-    test: spec/%slib/%s_spec.rb
+  # FOSS tooling should map to respective spec
+  - source: tooling/(.+)\.rb
+    test: spec/tooling/%s_spec.rb
 
   # Initializers should map to respective spec
   - source: config/initializers/(.+)\.rb

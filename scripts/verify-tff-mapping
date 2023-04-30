@@ -35,6 +35,12 @@ tests = [
   },
 
   {
+    explanation: 'FOSS lib should map to respective spec',
+    source: 'lib/gitaly/server.rb',
+    expected: ['spec/lib/gitaly/server_spec.rb']
+  },
+
+  {
     explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368628',
     source: 'lib/gitlab/usage_data_counters/foo.rb',
     expected: ['spec/lib/gitlab/usage_data_spec.rb']
@@ -53,15 +59,9 @@ tests = [
   },
 
   {
-    explanation: 'FOSS lib should map to respective spec',
-    source: 'lib/gitaly/server.rb',
-    expected: ['spec/lib/gitaly/server_spec.rb']
-  },
-
-  {
     explanation: 'Tooling should map to respective spec',
-    source: 'tooling/lib/tooling/helm3_client.rb',
-    expected: ['spec/tooling/lib/tooling/helm3_client_spec.rb']
+    source: 'tooling/danger/specs/project_factory_suggestion.rb',
+    expected: ['spec/tooling/danger/specs/project_factory_suggestion_spec.rb']
   },
 
   {

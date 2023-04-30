@@ -56,11 +56,12 @@ RSpec.describe PageLayoutHelper do
     end
 
     %w(project user group).each do |type|
-      let(:object) { build(type, trait) }
-      let(:trait) { :with_avatar }
-
       context "with @#{type} assigned" do
+        let(:object) { build(type, trait) }
+        let(:trait) { :with_avatar }
+
         before do
+          stub_application_setting(gravatar_enabled: false)
           assign(type, object)
         end
 
