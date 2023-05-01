@@ -23,8 +23,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
       # we have an existing N+1, one for each project for which user is not a member
       # in this spec, project_3, project_4, project_5
       # https://gitlab.com/gitlab-org/gitlab/-/issues/362890
-      ee_only_policy_check_queries = Gitlab.ee? ? 1 : 0
-      expect { query }.to make_queries(projects.size + 3 + ee_only_policy_check_queries)
+      expect { query }.to make_queries(projects.size + 3)
     end
   end
 
