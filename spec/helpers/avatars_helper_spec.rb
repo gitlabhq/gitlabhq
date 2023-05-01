@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AvatarsHelper do
+RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   include UploadHelpers
 
   let_it_be(:user) { create(:user) }
@@ -88,7 +88,7 @@ RSpec.describe AvatarsHelper do
   describe '#avatar_icon_for' do
     let!(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
     let(:email) { 'foo@example.com' }
-    let!(:another_user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: email) }
+    let!(:another_user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path), email: email) }
 
     it 'prefers the user to retrieve the avatar_url' do
       expect(helper.avatar_icon_for(user, email).to_s)
@@ -102,7 +102,7 @@ RSpec.describe AvatarsHelper do
   end
 
   describe '#avatar_icon_for_email', :clean_gitlab_redis_cache do
-    let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
+    let(:user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path)) }
 
     subject { helper.avatar_icon_for_email(user.email).to_s }
 
@@ -111,6 +111,14 @@ RSpec.describe AvatarsHelper do
         context 'when there is a matching user' do
           it 'returns a relative URL for the avatar' do
             expect(subject).to eq(user.avatar.url)
+          end
+        end
+
+        context 'when a private email is used' do
+          it 'calls gravatar_icon' do
+            expect(helper).to receive(:gravatar_icon).with(user.commit_email, 20, 2)
+
+            helper.avatar_icon_for_email(user.commit_email, 20, 2)
           end
         end
 
@@ -136,7 +144,7 @@ RSpec.describe AvatarsHelper do
     it_behaves_like "returns avatar for email"
 
     it "caches the request" do
-      expect(User).to receive(:find_by_any_email).once.and_call_original
+      expect(User).to receive(:with_public_email).once.and_call_original
 
       expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar.url)
       expect(helper.avatar_icon_for_email(user.email).to_s).to eq(user.avatar.url)
