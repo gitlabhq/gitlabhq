@@ -9,7 +9,7 @@ module Import
     end
 
     def authorized?
-      can?(current_user, :create_projects, target_namespace)
+      can?(current_user, :import_projects, target_namespace)
     end
 
     private

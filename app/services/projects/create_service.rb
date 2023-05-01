@@ -58,6 +58,7 @@ module Projects
       return @project if @project.errors.any?
 
       validate_create_permissions
+      validate_import_permissions
       return @project if @project.errors.any?
 
       @relations_block&.call(@project)
@@ -96,6 +97,13 @@ module Projects
       return if current_user.can?(:create_projects, parent_namespace)
 
       @project.errors.add(:namespace, "is not valid")
+    end
+
+    def validate_import_permissions
+      return unless @project.import?
+      return if current_user.can?(:import_projects, parent_namespace)
+
+      @project.errors.add(:user, 'is not allowed to import projects')
     end
 
     def after_create_actions

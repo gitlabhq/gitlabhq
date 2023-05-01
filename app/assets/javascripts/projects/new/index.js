@@ -19,6 +19,7 @@ export function initNewProjectCreation() {
     parentGroupName,
     projectsUrl,
     rootPath,
+    canImportProjects,
   } = el.dataset;
 
   const props = {
@@ -29,6 +30,7 @@ export function initNewProjectCreation() {
     parentGroupName,
     projectsUrl,
     rootPath,
+    canImportProjects: parseBoolean(canImportProjects),
   };
 
   const provide = {

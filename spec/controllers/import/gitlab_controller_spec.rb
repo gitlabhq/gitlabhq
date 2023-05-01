@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GitlabController do
+RSpec.describe Import::GitlabController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:user) { create(:user) }

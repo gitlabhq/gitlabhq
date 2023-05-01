@@ -1,0 +1,18 @@
+query searchNamespacesWhereUserCanImportProjects($search: String) {
+  currentUser {
+    id
+    groups(permissionScope: IMPORT_PROJECTS, search: $search) {
+      nodes {
+        id
+        fullPath
+        name
+        visibility
+        webUrl
+      }
+    }
+    namespace {
+      id
+      fullPath
+    }
+  }
+}

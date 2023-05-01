@@ -10,7 +10,7 @@ module Import
       end
 
       unless authorized?
-        return log_and_return_error("You don't have permissions to create this project", :unauthorized)
+        return log_and_return_error("You don't have permissions to import this project", :unauthorized)
       end
 
       unless repo
