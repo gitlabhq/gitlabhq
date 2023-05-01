@@ -2,7 +2,7 @@
   This service will be installed on the Mattermost instance at
   %strong= link_to Gitlab.config.mattermost.host, Gitlab.config.mattermost.host
 %hr
-= gitlab_ui_form_for(:mattermost, method: :post, url: project_mattermost_path(@project), html: { class: 'js-requires-input' }) do |f|
+= form_for(:mattermost, method: :post, url: project_mattermost_path(@project), html: { class: 'js-requires-input' }) do |f|
   %h4 Team
   %p
     = @teams.one? ? 'The team' : 'Select the team'
@@ -42,6 +42,5 @@
   %hr
   .clearfix
     .float-right
-      = render Pajamas::ButtonComponent.new(href: edit_project_settings_integration_path(@project, @integration)) do
-        = _('Cancel')
-      = f.submit s_('MattermostService|Install'), pajamas_button: true
+      = link_to _('Cancel'), edit_project_settings_integration_path(@project, @integration), class: 'gl-button btn btn-lg'
+      = f.submit 'Install', class: 'gl-button btn btn-confirm btn-lg'

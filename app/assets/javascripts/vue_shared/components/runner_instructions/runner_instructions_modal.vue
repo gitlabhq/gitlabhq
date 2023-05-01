@@ -155,7 +155,9 @@ export default {
       // get focused when setting a `defaultPlatformName`.
       // This method refocuses the expected button.
       // See more about this auto-focus: https://bootstrap-vue.org/docs/components/modal#auto-focus-on-open
-      this.$refs[this.selectedPlatform?.name]?.[0].$el.focus();
+      this.$nextTick(() => {
+        this.$refs[this.selectedPlatform?.name]?.[0]?.$el.focus();
+      });
     },
     selectPlatform(platform) {
       this.selectedPlatform = platform;

@@ -71,7 +71,6 @@ export default {
       return {
         id: runner.id,
         search: search.length >= SHORT_SEARCH_LENGTH ? search : '',
-        sort: 'ID_ASC',
         ...getPaginationVariables(this.pagination, RUNNER_DETAILS_PROJECTS_PAGE_SIZE),
       };
     },

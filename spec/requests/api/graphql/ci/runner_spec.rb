@@ -628,8 +628,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
           'projectCount' => 2,
           'projects' => {
             'nodes' => [
-              a_graphql_entity_for(project2),
-              a_graphql_entity_for(project1)
+              a_graphql_entity_for(project1),
+              a_graphql_entity_for(project2)
             ]
           })
         expect(runner2_data).to match a_hash_including(

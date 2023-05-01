@@ -21,4 +21,4 @@
     = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: @application, scopes: @scopes, f: f
 
   .gl-mt-3
-    = f.submit _('Save application'), pajamas_button: true
+    = f.submit _('Save application'), class: "gl-button btn btn-confirm"

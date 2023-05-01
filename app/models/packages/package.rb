@@ -433,3 +433,5 @@ class Packages::Package < ApplicationRecord
     end
   end
 end
+
+Packages::Package.prepend_mod

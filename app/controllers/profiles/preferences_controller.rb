@@ -48,7 +48,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :first_day_of_week,
       :preferred_language,
       :time_display_relative,
-      :time_format_in_24h,
       :show_whitespace_in_diffs,
       :view_diffs_file_by_file,
       :tab_width,

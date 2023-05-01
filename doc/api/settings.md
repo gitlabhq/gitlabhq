@@ -114,7 +114,8 @@ Example response:
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 the `group_owners_can_manage_default_branch_protection`, `file_template_project_id`, `delayed_project_deletion`,
-`delayed_group_deletion`, `default_project_deletion_protection`, `deletion_adjourned_period`, `disable_personal_access_tokens`, or the `geo_node_allowed_ips` parameters:
+`delayed_group_deletion`, `default_project_deletion_protection`, `deletion_adjourned_period`, `disable_personal_access_tokens`, `geo_node_allowed_ips`,
+or the `security_policy_global_group_approvers_enabled` parameters.
 
 From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled,
 the `delayed_project_deletion` and `delayed_group_deletion` attributes will not be exposed. These attributes will be removed in GitLab 16.0.
@@ -234,7 +235,8 @@ Example response:
   "jira_connect_proxy_url": "http://gitlab.example.com",
   "user_defaults_to_private_profile": true,
   "projects_api_rate_limit_unauthenticated": 400,
-  "silent_mode_enabled": false
+  "silent_mode_enabled": false,
+  "security_policy_global_group_approvers_enabled": true
 }
 ```
 
@@ -250,6 +252,7 @@ these parameters:
 - `default_project_deletion_protection`
 - `deletion_adjourned_period`
 - `disable_personal_access_tokens`
+- `security_policy_global_group_approvers_enabled`
 
 From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled,
 the `delayed_project_deletion` and `delayed_group_deletion` attributes will not be exposed. These attributes will be removed in GitLab 16.0.
@@ -472,6 +475,7 @@ listed in the descriptions of the relevant settings.
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |
+| `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up scan result policy approval groups globally or within project hierarchies. |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
 | `shared_runners_minutes` **(PREMIUM)**   | integer          | required by: `shared_runners_enabled` | Set the maximum number of CI/CD minutes that a group can use on shared runners per month. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |

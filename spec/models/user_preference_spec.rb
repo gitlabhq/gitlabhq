@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserPreference do
+RSpec.describe UserPreference, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   let(:user_preference) { create(:user_preference, user: user) }
@@ -223,47 +223,6 @@ RSpec.describe UserPreference do
       pref = described_class.new(time_display_relative: false)
 
       expect(pref.read_attribute(:time_display_relative)).to eq(false)
-    end
-  end
-
-  describe '#time_format_in_24h' do
-    it 'is set to false by default' do
-      pref = described_class.new
-
-      expect(pref.time_format_in_24h).to eq(false)
-    end
-
-    it 'returns default value when assigning nil' do
-      pref = described_class.new(time_format_in_24h: nil)
-
-      expect(pref.time_format_in_24h).to eq(false)
-    end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:time_format_in_24h, nil)
-
-      expect(pref.reload.time_format_in_24h).to eq(false)
-    end
-
-    it 'returns assigned value' do
-      pref = described_class.new(time_format_in_24h: true)
-
-      expect(pref.time_format_in_24h).to eq(true)
-    end
-  end
-
-  describe '#time_format_in_24h=' do
-    it 'sets to default value when nil' do
-      pref = described_class.new(time_format_in_24h: nil)
-
-      expect(pref.read_attribute(:time_format_in_24h)).to eq(false)
-    end
-
-    it 'sets user values' do
-      pref = described_class.new(time_format_in_24h: true)
-
-      expect(pref.read_attribute(:time_format_in_24h)).to eq(true)
     end
   end
 

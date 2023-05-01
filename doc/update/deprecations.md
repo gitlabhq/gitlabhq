@@ -107,6 +107,20 @@ Due to limited customer usage, Browser Performance Testing is deprecated and wil
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### CiRunner.projects default sort is changing to `id_desc`
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+The `CiRunner.projects`'s field default sort order value will change from `id_asc` to `id_desc`.
+If you rely on the order of the returned projects to be `id_asc`, change your scripts to make the choice explicit.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### DAST ZAP advanced configuration variables deprecation
 
 <div class="deprecation-notes">

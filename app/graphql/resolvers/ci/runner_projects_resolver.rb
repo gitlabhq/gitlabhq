@@ -13,6 +13,17 @@ module Resolvers
 
       alias_method :runner, :object
 
+      argument :sort, GraphQL::Types::String,
+               required: false,
+               default_value: 'id_asc', # TODO: Remove in %17.0 and move :sort to ProjectSearchArguments, see https://gitlab.com/gitlab-org/gitlab/-/issues/372117
+               deprecated: {
+                 reason: 'Default sort order will change in GitLab 17.0. ' \
+                   'Specify `"id_asc"` if you require the query results to be ordered by ascending IDs',
+                 milestone: '15.4'
+               },
+               description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
+                 "for example: `id_desc` or `name_asc`"
+
       def resolve_with_lookahead(**args)
         return unless runner.project_type?
 

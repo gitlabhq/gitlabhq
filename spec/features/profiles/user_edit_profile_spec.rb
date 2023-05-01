@@ -524,10 +524,6 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       let(:issue) { create(:issue, project: project) }
       let(:project) { create(:project) }
 
-      before do
-        stub_feature_flags(user_time_settings: true)
-      end
-
       it 'shows the user time preferences form' do
         expect(page).to have_content('Time settings')
       end

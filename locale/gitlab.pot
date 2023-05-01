@@ -11072,6 +11072,9 @@ msgstr ""
 msgid "ComplianceReport|Create a new framework"
 msgstr ""
 
+msgid "ComplianceReport|Do you want to refresh the filtered results to include your change?"
+msgstr ""
+
 msgid "ComplianceReport|Framework successfully applied"
 msgstr ""
 
@@ -11109,6 +11112,12 @@ msgid "ComplianceReport|Unable to load the compliance framework report. Refresh 
 msgstr ""
 
 msgid "ComplianceReport|Unable to load the compliance violations report. Refresh the page and try again."
+msgstr ""
+
+msgid "ComplianceReport|Update filtered results?"
+msgstr ""
+
+msgid "ComplianceReport|Update result"
 msgstr ""
 
 msgid "Component"
@@ -26886,9 +26895,6 @@ msgstr ""
 msgid "MattermostService|Fill in the word that works best for your team."
 msgstr ""
 
-msgid "MattermostService|Install"
-msgstr ""
-
 msgid "MattermostService|Request URL"
 msgstr ""
 
@@ -33414,9 +33420,6 @@ msgid "Preferences|Disable follow users"
 msgstr ""
 
 msgid "Preferences|Disable follow users feature"
-msgstr ""
-
-msgid "Preferences|Display time in 24-hour format"
 msgstr ""
 
 msgid "Preferences|Enable Gitpod integration"
@@ -43821,7 +43824,7 @@ msgstr ""
 msgid "TanukiBot|Sources"
 msgstr ""
 
-msgid "TanukiBot|There was an error communicating with GitLab Chat. Please reach out to GitLab support for more assistance or try again later."
+msgid "TanukiBot|There was an error communicating with GitLab Chat. Please try again later."
 msgstr ""
 
 msgid "TanukiBot|What is a fork?"

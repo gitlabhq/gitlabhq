@@ -67,7 +67,6 @@ describe('RunnerProjects', () => {
     expect(mockRunnerProjectsQuery).toHaveBeenCalledWith({
       id: mockRunner.id,
       search: '',
-      sort: 'ID_ASC',
       first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
     });
   });
@@ -109,6 +108,7 @@ describe('RunnerProjects', () => {
         name,
         fullName: nameWithNamespace,
         avatarUrl,
+        isOwner: true, // first project is always owner
       });
     });
 
@@ -124,7 +124,6 @@ describe('RunnerProjects', () => {
         expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
           id: mockRunner.id,
           search: '',
-          sort: 'ID_ASC',
           first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
           after: 'AFTER_CURSOR',
         });
@@ -139,7 +138,6 @@ describe('RunnerProjects', () => {
         expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
           id: mockRunner.id,
           search: '',
-          sort: 'ID_ASC',
           last: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
           before: 'BEFORE_CURSOR',
         });
@@ -153,7 +151,6 @@ describe('RunnerProjects', () => {
         expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
           id: mockRunner.id,
           search: 'my search',
-          sort: 'ID_ASC',
           first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
         });
       });
@@ -170,7 +167,6 @@ describe('RunnerProjects', () => {
         expect(mockRunnerProjectsQuery).toHaveBeenLastCalledWith({
           id: mockRunner.id,
           search: 'my search',
-          sort: 'ID_ASC',
           first: RUNNER_DETAILS_PROJECTS_PAGE_SIZE,
         });
       });

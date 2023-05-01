@@ -1,10 +1,10 @@
 import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { shallowMount, ErrorWrapper } from '@vue/test-utils';
+import { ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getRunnerPlatformsQuery from '~/vue_shared/components/runner_instructions/graphql/get_runner_platforms.query.graphql';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
@@ -14,6 +14,8 @@ import RunnerKubernetesInstructions from '~/vue_shared/components/runner_instruc
 import RunnerAwsInstructions from '~/vue_shared/components/runner_instructions/instructions/runner_aws_instructions.vue';
 
 import { mockRunnerPlatforms } from './mock_data';
+
+const mockPlatformList = mockRunnerPlatforms.data.runnerPlatforms.nodes;
 
 Vue.use(VueApollo);
 
@@ -52,22 +54,25 @@ describe('RunnerInstructionsModal component', () => {
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
   const findRunnerCliInstructions = () => wrapper.findComponent(RunnerCliInstructions);
 
-  const createComponent = ({ props, shown = true, ...options } = {}) => {
+  const createComponent = ({
+    props,
+    shown = true,
+    mountFn = shallowMountExtended,
+    ...options
+  } = {}) => {
     const requestHandlers = [[getRunnerPlatformsQuery, runnerPlatformsHandler]];
 
     fakeApollo = createMockApollo(requestHandlers);
 
-    wrapper = extendedWrapper(
-      shallowMount(RunnerInstructionsModal, {
-        propsData: {
-          modalId: 'runner-instructions-modal',
-          registrationToken: 'MY_TOKEN',
-          ...props,
-        },
-        apolloProvider: fakeApollo,
-        ...options,
-      }),
-    );
+    wrapper = mountFn(RunnerInstructionsModal, {
+      propsData: {
+        modalId: 'runner-instructions-modal',
+        registrationToken: 'MY_TOKEN',
+        ...props,
+      },
+      apolloProvider: fakeApollo,
+      ...options,
+    });
 
     // trigger open modal
     if (shown) {
@@ -98,15 +103,13 @@ describe('RunnerInstructionsModal component', () => {
 
       const buttons = findPlatformButtons();
 
-      expect(buttons).toHaveLength(mockRunnerPlatforms.data.runnerPlatforms.nodes.length);
+      expect(buttons).toHaveLength(mockPlatformList.length);
     });
 
     it('should display architecture options', () => {
       const { architectures } = findRunnerCliInstructions().props('platform');
 
-      expect(architectures).toEqual(
-        mockRunnerPlatforms.data.runnerPlatforms.nodes[0].architectures.nodes,
-      );
+      expect(architectures).toEqual(mockPlatformList[0].architectures.nodes);
     });
 
     describe.each`
@@ -138,6 +141,14 @@ describe('RunnerInstructionsModal component', () => {
 
         expect(findPlatformButtonGroup().props('vertical')).toBeUndefined();
       });
+    });
+
+    it('should focus platform button', async () => {
+      createComponent({ shown: true, mountFn: mountExtended, attachTo: document.body });
+      wrapper.vm.show();
+      await waitForPromises();
+
+      expect(document.activeElement.textContent.trim()).toBe(mockPlatformList[0].humanReadableName);
     });
   });
 

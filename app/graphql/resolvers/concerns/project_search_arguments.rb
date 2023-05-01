@@ -19,12 +19,6 @@ module ProjectSearchArguments
     argument :topics, type: [GraphQL::Types::String],
                       required: false,
                       description: 'Filter projects by topics.'
-
-    argument :sort, GraphQL::Types::String,
-             required: false,
-             default_value: 'id_desc',
-             description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
-                          "for example: `id_desc` or `name_asc`"
   end
 
   private

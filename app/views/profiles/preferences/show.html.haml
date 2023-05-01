@@ -167,9 +167,6 @@
         = f.gitlab_ui_checkbox_component :time_display_relative,
           s_('Preferences|Use relative times'),
           help_text: s_('Preferences|For example: 30 minutes ago.')
-      - if Feature.enabled?(:user_time_settings)
-        .form-group
-          = f.gitlab_ui_checkbox_component :time_format_in_24h, s_('Preferences|Display time in 24-hour format')
   - if Feature.enabled?(:disable_follow_users, @user)
     .row.js-preferences-form.js-search-settings-section
       .col-sm-12

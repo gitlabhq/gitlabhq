@@ -1,8 +1,0 @@
----
-name: user_time_settings
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/25381
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/29669
-milestone: '11.11'
-type: development
-group: group::tenant scale
-default_enabled: false

@@ -12,20 +12,9 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
 
   before do
     stub_languages_translation_percentage(language_percentage_levels)
-    stub_feature_flags(user_time_settings: true)
     stub_feature_flags(vscode_web_ide: vscode_web_ide)
     sign_in(user)
     visit(profile_preferences_path)
-  end
-
-  it 'allows the user to toggle their time format preference' do
-    field = page.find_field("user[time_format_in_24h]")
-
-    expect(field).not_to be_checked
-
-    field.click
-
-    expect(field).to be_checked
   end
 
   it 'allows the user to toggle their time display preference' do
