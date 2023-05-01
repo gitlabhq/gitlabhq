@@ -80,6 +80,15 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :team_plannin
       expect(doc.at_css('img')['data-canonical-src']).to eq src
     end
 
+    it 'replaces invalid URLs' do
+      src     = '///example.com/test.png'
+      new_src = 'https://assets.example.com/3368d2c7b9bed775bdd1e811f36a4b80a0dcd8ab/2f2f2f6578616d706c652e636f6d2f746573742e706e67'
+      doc     = filter(image(src), @context)
+
+      expect(doc.at_css('img')['src']).to eq new_src
+      expect(doc.at_css('img')['data-canonical-src']).to eq src
+    end
+
     it 'skips internal images' do
       src      = "#{Gitlab.config.gitlab.url}/test.png"
       doc      = filter(image(src), @context)
