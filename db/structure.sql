@@ -603,6 +603,15 @@ CREATE TABLE security_findings (
 )
 PARTITION BY LIST (partition_number);
 
+CREATE TABLE value_stream_dashboard_counts (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    count bigint NOT NULL,
+    recorded_at timestamp with time zone NOT NULL,
+    metric smallint NOT NULL
+)
+PARTITION BY RANGE (recorded_at);
+
 CREATE TABLE verification_codes (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     visitor_id_code text NOT NULL,
@@ -21168,13 +21177,13 @@ CREATE TABLE project_settings (
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
+    CONSTRAINT check_4b142e71f3 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),
     CONSTRAINT check_67292e4b99 CHECK ((char_length(mirror_branch_regex) <= 255)),
     CONSTRAINT check_acb7fad2f9 CHECK ((char_length(product_analytics_instrumentation_key) <= 255)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
-    CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500)),
-    CONSTRAINT check_4b142e71f3 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),
     CONSTRAINT check_ea15225016 CHECK ((char_length(jitsu_project_xid) <= 255)),
+    CONSTRAINT check_eaf7cfb6a7 CHECK ((char_length(merge_commit_template) <= 500)),
     CONSTRAINT check_f4499c0fa4 CHECK ((char_length(jitsu_host) <= 255)),
     CONSTRAINT check_f5495015f5 CHECK ((char_length(jitsu_administrator_email) <= 255)),
     CONSTRAINT check_f9df7bcee2 CHECK ((char_length(cube_api_base_url) <= 512))
@@ -22334,6 +22343,7 @@ CREATE TABLE security_orchestration_policy_configurations (
     updated_at timestamp with time zone NOT NULL,
     configured_at timestamp with time zone,
     namespace_id bigint,
+    bot_user_id integer,
     CONSTRAINT cop_configs_project_or_namespace_existence CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))
 );
 
@@ -23773,6 +23783,15 @@ CREATE SEQUENCE users_statistics_id_seq
     CACHE 1;
 
 ALTER SEQUENCE users_statistics_id_seq OWNED BY users_statistics.id;
+
+CREATE SEQUENCE value_stream_dashboard_counts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
 CREATE TABLE vulnerabilities (
     id bigint NOT NULL,
@@ -25714,6 +25733,8 @@ ALTER TABLE ONLY users_ops_dashboard_projects ALTER COLUMN id SET DEFAULT nextva
 ALTER TABLE ONLY users_star_projects ALTER COLUMN id SET DEFAULT nextval('users_star_projects_id_seq'::regclass);
 
 ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_statistics_id_seq'::regclass);
+
+ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
 
@@ -28224,6 +28245,9 @@ ALTER TABLE ONLY users_star_projects
 
 ALTER TABLE ONLY users_statistics
     ADD CONSTRAINT users_statistics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY value_stream_dashboard_counts
+    ADD CONSTRAINT value_stream_dashboard_counts_pkey PRIMARY KEY (namespace_id, metric, recorded_at, count, id);
 
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
@@ -32307,6 +32331,8 @@ CREATE INDEX index_secure_ci_builds_on_user_id_name_created_at ON ci_builds USIN
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
+CREATE INDEX index_security_policy_configurations_on_bot_user_id ON security_orchestration_policy_configurations USING btree (bot_user_id) WHERE (bot_user_id IS NOT NULL);
+
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
@@ -34543,6 +34569,9 @@ ALTER TABLE ONLY epics
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_01a033a308 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY security_orchestration_policy_configurations
+    ADD CONSTRAINT fk_0247484b90 FOREIGN KEY (bot_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

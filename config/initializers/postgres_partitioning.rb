@@ -14,7 +14,8 @@ if Gitlab.ee?
     [
       IncidentManagement::PendingEscalations::Alert,
       IncidentManagement::PendingEscalations::Issue,
-      Security::Finding
+      Security::Finding,
+      Analytics::ValueStreamDashboard::Count
     ])
 else
   Gitlab::Database::Partitioning.register_tables(

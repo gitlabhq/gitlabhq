@@ -561,9 +561,8 @@ To include formatting in the translated string, you can do the following:
 - In Ruby/HAML:
 
   ```ruby
-    html_escape(_('Some %{strongOpen}bold%{strongClose} text.')) % { strongOpen: '<strong>'.html_safe, strongClose: '</strong>'.html_safe }
-
-    # => 'Some <strong>bold</strong> text.'
+  safe_format(_('Some %{strongOpen}bold%{strongClose} text.'), strongOpen: '<strong>'.html_safe, strongClose: '</strong>'.html_safe)
+  # => 'Some <strong>bold</strong> text.'
   ```
 
 - In JavaScript:
@@ -801,8 +800,8 @@ translatable in certain languages.
 
   ```haml
   - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
-  - zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
-  = html_escape(s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}')) % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+  - zones_link_start = safe_format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: zones_link_url)
+  = safe_format(s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}'), zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe)
   ```
 
 - In Vue, instead of:

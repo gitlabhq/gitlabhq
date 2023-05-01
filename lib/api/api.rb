@@ -337,7 +337,7 @@ module API
       mount ::API::Todos
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
-      mount ::API::Ml::Mlflow
+      mount ::API::Ml::Mlflow::Entrypoint
     end
 
     mount ::API::Internal::Base

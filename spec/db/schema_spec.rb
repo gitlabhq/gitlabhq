@@ -127,8 +127,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     # Fixes performance issues with the deletion of web-hooks with many log entries
     web_hook_logs: %w[web_hook_id],
     webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
-    ml_candidates: %w[internal_id]
-
+    ml_candidates: %w[internal_id],
+    value_stream_dashboard_counts: %w[namespace_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do

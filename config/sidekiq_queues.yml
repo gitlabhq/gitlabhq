@@ -511,6 +511,8 @@
   - 1
 - - security_auto_fix
   - 1
+- - security_orchestration_configuration_create_bot
+  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_process_scan_result_policy

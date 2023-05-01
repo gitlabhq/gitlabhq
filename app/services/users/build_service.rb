@@ -2,6 +2,8 @@
 
 module Users
   class BuildService < BaseService
+    ALLOWED_USER_TYPES = %i[project_bot security_policy_bot].freeze
+
     delegate :user_default_internal_regex_enabled?,
              :user_default_internal_regex_instance,
              to: :'Gitlab::CurrentSettings.current_application_settings'
@@ -82,7 +84,7 @@ module Users
     end
 
     def allowed_user_type?
-      user_params[:user_type]&.to_sym == :project_bot
+      ALLOWED_USER_TYPES.include?(user_params[:user_type]&.to_sym)
     end
 
     def password_reset
