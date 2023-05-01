@@ -17,18 +17,16 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
 
   describe 'GET /projects/:id/cluster_agents/:agent_id/tokens' do
     context 'with authorized user' do
-      it 'returns tokens regardless of status' do
+      it 'only returns active agent tokens' do
         get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens", user)
 
         aggregate_failures "testing response" do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(response).to match_response_schema('public_api/v4/agent_tokens')
-          expect(json_response.count).to eq(2)
+          expect(json_response.count).to eq(1)
           expect(json_response.first['name']).to eq(agent_token_one.name)
           expect(json_response.first['agent_id']).to eq(agent.id)
-          expect(json_response.second['name']).to eq(revoked_agent_token.name)
-          expect(json_response.second['agent_id']).to eq(agent.id)
         end
       end
 
@@ -80,17 +78,10 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
         end
       end
 
-      it 'returns an agent token that is revoked' do
+      it 'returns a 404 if agent token is revoked' do
         get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{revoked_agent_token.id}", user)
 
-        aggregate_failures "testing response" do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('public_api/v4/agent_token')
-          expect(json_response['id']).to eq(revoked_agent_token.id)
-          expect(json_response['name']).to eq(revoked_agent_token.name)
-          expect(json_response['agent_id']).to eq(agent.id)
-          expect(json_response['status']).to eq('revoked')
-        end
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'returns a 404 if agent does not exist' do

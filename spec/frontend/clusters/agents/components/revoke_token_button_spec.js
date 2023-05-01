@@ -8,7 +8,7 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import RevokeTokenButton from '~/clusters/agents/components/revoke_token_button.vue';
 import getClusterAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
 import revokeTokenMutation from '~/clusters/agents/graphql/mutations/revoke_token.mutation.graphql';
-import { TOKEN_STATUS_ACTIVE, MAX_LIST_COUNT } from '~/clusters/agents/constants';
+import { MAX_LIST_COUNT } from '~/clusters/agents/constants';
 import { getTokenResponse, mockRevokeResponse, mockErrorRevokeResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -59,7 +59,6 @@ describe('RevokeTokenButton', () => {
       variables: {
         agentName,
         projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         ...cursor,
       },
       data: getTokenResponse.data,

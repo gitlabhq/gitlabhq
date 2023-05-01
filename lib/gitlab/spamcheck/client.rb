@@ -48,15 +48,16 @@ module Gitlab
         when Snippet
           [::Spamcheck::Snippet, grpc_client.method(:check_for_spam_snippet)]
         else
-          raise ArgumentError, "Not a spammable type: #{spammable.class.name}"
+          [::Spamcheck::Generic, grpc_client.method(:check_for_spam_generic)]
         end
       end
 
       def build_protobuf(spammable:, user:, context:, extra_features:)
         protobuf_class, grpc_method = get_spammable_mappings(spammable)
         pb = protobuf_class.new(**extra_features)
-        pb.title = spammable.spam_title || ''
-        pb.description = spammable.spam_description || ''
+        pb.title = spammable.spam_title || '' if pb.respond_to?(:title)
+        pb.description = spammable.spam_description || '' if pb.respond_to?(:description)
+        pb.text = spammable.spammable_text || '' if pb.respond_to?(:text)
         pb.created_at = convert_to_pb_timestamp(spammable.created_at) if spammable.created_at
         pb.updated_at = convert_to_pb_timestamp(spammable.updated_at) if spammable.updated_at
         pb.action = ACTION_MAPPING.fetch(context.fetch(:action)) if context.has_key?(:action)

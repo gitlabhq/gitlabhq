@@ -126,7 +126,7 @@ Quality because:
 
 This alternative configuration uses socket binding to share the Runner's Docker daemon
 with the job environment. Before implementing this configuration, consider its
-[limitations](../docker/using_docker_build.md#use-docker-socket-binding).
+[limitations](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding).
 
 To use private runners:
 

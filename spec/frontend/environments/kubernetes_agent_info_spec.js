@@ -5,7 +5,6 @@ import { GlIcon, GlLink, GlSprintf, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
-import { TOKEN_STATUS_ACTIVE } from '~/clusters/agents/constants';
 import { AGENT_STATUSES, ACTIVE_CONNECTION_TIME } from '~/clusters_list/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -73,7 +72,6 @@ describe('~/environments/components/kubernetes_agent_info.vue', () => {
       const variables = {
         agentName: propsData.agentName,
         projectPath: propsData.agentProjectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
       };
 
       expect(agentQueryResponse).toHaveBeenCalledWith(variables);

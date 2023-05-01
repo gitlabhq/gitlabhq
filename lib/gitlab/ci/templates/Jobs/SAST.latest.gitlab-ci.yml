@@ -48,7 +48,7 @@ brakeman-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/brakeman:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -80,7 +80,7 @@ flawfinder-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/flawfinder:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -120,7 +120,7 @@ kubesec-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -141,7 +141,7 @@ kubesec-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/mobsf:$SAST_ANALYZER_IMAGE_TAG"
 
 mobsf-android-sast:
@@ -193,7 +193,7 @@ nodejs-scan-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -214,7 +214,7 @@ phpcs-security-audit-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/phpcs-security-audit:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -235,7 +235,7 @@ pmd-apex-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -280,7 +280,7 @@ semgrep-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -323,7 +323,7 @@ sobelow-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
@@ -344,7 +344,7 @@ spotbugs-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
+    SAST_ANALYZER_IMAGE_TAG: 4
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/

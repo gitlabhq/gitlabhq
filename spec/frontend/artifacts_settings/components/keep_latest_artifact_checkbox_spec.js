@@ -29,7 +29,9 @@ const keepLatestArtifactApplicationMock = {
 };
 
 const keepLatestArtifactMockResponse = {
-  data: { ciCdSettingsUpdate: { errors: [], __typename: 'CiCdSettingsUpdatePayload' } },
+  data: {
+    projectCiCdSettingsUpdate: { errors: [], __typename: 'ProjectCiCdSettingsUpdatePayload' },
+  },
 };
 
 describe('Keep latest artifact checkbox', () => {

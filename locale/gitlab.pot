@@ -21696,6 +21696,9 @@ msgstr ""
 msgid "Hide shared projects"
 msgstr ""
 
+msgid "Hide sidebar"
+msgstr ""
+
 msgid "Hide thread"
 msgstr ""
 
@@ -29029,7 +29032,7 @@ msgstr ""
 msgid "Navigation|Secure"
 msgstr ""
 
-msgid "Navigation|Switch to..."
+msgid "Navigation|Switch context"
 msgstr ""
 
 msgid "Navigation|There was an error fetching search results."
@@ -39461,6 +39464,12 @@ msgstr ""
 msgid "Search your projects"
 msgstr ""
 
+msgid "Search your%{visibility}projects"
+msgstr ""
+
+msgid "Search%{visibility}projects"
+msgstr ""
+
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
@@ -41451,6 +41460,9 @@ msgid "Show password"
 msgstr ""
 
 msgid "Show project milestones"
+msgstr ""
+
+msgid "Show sidebar"
 msgstr ""
 
 msgid "Show sub-group milestones"
@@ -50608,7 +50620,7 @@ msgstr ""
 msgid "Workspaces|Workspaces"
 msgstr ""
 
-msgid "Workspaces|You can create a workspace for Premium projects only."
+msgid "Workspaces|You can create a workspace for public Premium projects only."
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"

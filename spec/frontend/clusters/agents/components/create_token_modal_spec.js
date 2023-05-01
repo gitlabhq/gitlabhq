@@ -9,7 +9,6 @@ import {
   EVENT_LABEL_MODAL,
   EVENT_ACTIONS_OPEN,
   TOKEN_NAME_LIMIT,
-  TOKEN_STATUS_ACTIVE,
   MAX_LIST_COUNT,
   CREATE_TOKEN_MODAL,
 } from '~/clusters/agents/constants';
@@ -81,7 +80,6 @@ describe('CreateTokenModal', () => {
       variables: {
         agentName,
         projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         ...cursor,
       },
     });

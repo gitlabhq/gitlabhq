@@ -14,7 +14,7 @@ import ContextSwitcherToggle from './context_switcher_toggle.vue';
 export default {
   i18n: {
     contextNavigation: s__('Navigation|Context navigation'),
-    switchTo: s__('Navigation|Switch to...'),
+    switchTo: s__('Navigation|Switch context'),
     searchPlaceholder: s__('Navigation|Search your projects or groups'),
     searchingLabel: s__('Navigation|Retrieving search results'),
     searchError: s__('Navigation|There was an error fetching search results.'),
@@ -160,7 +160,10 @@ export default {
     <template #toggle>
       <context-switcher-toggle :context="contextHeader" :expanded="isOpen" />
     </template>
-    <div class="gl-p-1 gl-border-b gl-border-gray-50 gl-bg-white">
+    <div aria-hidden="true" class="gl-font-sm gl-font-weight-bold gl-px-4 gl-pt-3 gl-pb-4">
+      {{ $options.i18n.switchTo }}
+    </div>
+    <div class="gl-p-1 gl-border-t gl-border-b gl-border-gray-50 gl-bg-white">
       <gl-search-box-by-type
         ref="search-box"
         v-model="searchString"
@@ -182,10 +185,10 @@ export default {
     <nav v-else :aria-label="$options.i18n.contextNavigation" data-qa-selector="context_navigation">
       <ul class="gl-p-0 gl-m-0 gl-list-style-none">
         <li v-if="!isSearch">
-          <div aria-hidden="true" class="gl-font-weight-bold gl-px-3 gl-py-3">
-            {{ $options.i18n.switchTo }}
-          </div>
-          <ul :aria-label="$options.i18n.switchTo" class="gl-p-0">
+          <ul
+            :aria-label="$options.i18n.switchTo"
+            class="gl-border-b gl-border-gray-50 gl-px-0 gl-py-2"
+          >
             <nav-item
               v-for="item in persistentLinks"
               :key="item.link"
@@ -201,6 +204,7 @@ export default {
           :search-results="projects"
         />
         <groups-list
+          class="gl-border-t gl-border-gray-50"
           :username="username"
           :view-all-link="groupsPath"
           :is-search="isSearch"

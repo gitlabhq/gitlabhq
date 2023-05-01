@@ -12343,27 +12343,10 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentid"></a>`id` | [`ID!`](#id) | ID of the cluster agent. |
 | <a id="clusteragentname"></a>`name` | [`String`](#string) | Name of the cluster agent. |
 | <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project this cluster agent is associated with. |
+| <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragentvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the agent vulnerabilities. (see [Connections](#connections)) |
 | <a id="clusteragentwebpath"></a>`webPath` | [`String`](#string) | Web path of the cluster agent. |
-
-#### Fields with arguments
-
-##### `ClusterAgent.tokens`
-
-Tokens associated with the cluster agent.
-
-Returns [`ClusterAgentTokenConnection`](#clusteragenttokenconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="clusteragenttokensstatus"></a>`status` | [`AgentTokenStatus`](#agenttokenstatus) | Status of the token. |
 
 ### `ClusterAgentActivityEvent`
 

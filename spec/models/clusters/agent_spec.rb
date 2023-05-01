@@ -8,6 +8,7 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:project).class_name('::Project') }
   it { is_expected.to have_many(:agent_tokens).class_name('Clusters::AgentToken').order(Clusters::AgentToken.arel_table[:last_used_at].desc.nulls_last) }
+  it { is_expected.to have_many(:active_agent_tokens).class_name('Clusters::AgentToken').conditions(status: 0).order(Clusters::AgentToken.arel_table[:last_used_at].desc.nulls_last) }
   it { is_expected.to have_many(:ci_access_group_authorizations).class_name('Clusters::Agents::Authorizations::CiAccess::GroupAuthorization') }
   it { is_expected.to have_many(:ci_access_authorized_groups).through(:ci_access_group_authorizations) }
   it { is_expected.to have_many(:ci_access_project_authorizations).class_name('Clusters::Agents::Authorizations::CiAccess::ProjectAuthorization') }

@@ -2,7 +2,6 @@
 import { GlIcon, GlLink, GlSprintf, GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { getAgentLastContact, getAgentStatus } from '~/clusters_list/clusters_util';
-import { TOKEN_STATUS_ACTIVE } from '~/clusters/agents/constants';
 import { AGENT_STATUSES } from '~/clusters_list/constants';
 import { s__ } from '~/locale';
 import getK8sClusterAgentQuery from '../graphql/queries/k8s_cluster_agent.query.graphql';
@@ -37,7 +36,6 @@ export default {
         return {
           agentName: this.agentName,
           projectPath: this.agentProjectPath,
-          tokenStatus: TOKEN_STATUS_ACTIVE,
         };
       },
       update: (data) => data?.project?.clusterAgent,

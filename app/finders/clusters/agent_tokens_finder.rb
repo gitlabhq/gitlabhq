@@ -13,15 +13,25 @@ module Clusters
     def execute
       return ::Clusters::AgentToken.none unless can_read_cluster_agent?
 
-      agent.agent_tokens.then { |agent_tokens| by_status(agent_tokens) }
+      agent_tokens_by_status
     end
 
     private
 
     attr_reader :agent, :current_user, :params
 
-    def by_status(agent_tokens)
-      params[:status].present? ? agent_tokens.with_status(params[:status]) : agent_tokens
+    def agent_tokens_by_status
+      # If the `status` parameter is set to `active`, we use the `active_agent_tokens` scope
+      # in case this called from GraphQL's AgentTokensResolver. This prevents a repeat query
+      # to the database, because `active_agent_tokens` is already preloaded in the AgentsResolver
+      return agent.active_agent_tokens if active_tokens_only?
+
+      # Else, we use the `agent_tokens` scope combined with `with_status` if necessary
+      params[:status].present? ? agent.agent_tokens.with_status(params[:status]) : agent.agent_tokens
+    end
+
+    def active_tokens_only?
+      params[:status].present? && params[:status].to_sym == :active
     end
 
     def can_read_cluster_agent?

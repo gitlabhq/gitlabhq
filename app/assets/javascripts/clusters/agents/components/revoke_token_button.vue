@@ -9,7 +9,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
-import { REVOKE_TOKEN_MODAL_ID, TOKEN_STATUS_ACTIVE } from '../constants';
+import { REVOKE_TOKEN_MODAL_ID } from '../constants';
 import revokeAgentToken from '../graphql/mutations/revoke_token.mutation.graphql';
 import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.graphql';
 import { removeTokenFromStore } from '../graphql/cache_update';
@@ -61,7 +61,6 @@ export default {
       variables: {
         agentName: this.agentName,
         projectPath: this.projectPath,
-        tokenStatus: TOKEN_STATUS_ACTIVE,
         ...this.cursor,
       },
     };

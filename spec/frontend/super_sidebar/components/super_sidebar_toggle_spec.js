@@ -64,20 +64,20 @@ describe('SuperSidebarToggle component', () => {
   describe('toolip', () => {
     it('displays collapse when expanded', () => {
       createWrapper();
-      expect(getTooltip().title).toBe(__('Collapse sidebar'));
+      expect(getTooltip().title).toBe(__('Hide sidebar'));
     });
 
     it('displays expand when collapsed', () => {
       createWrapper({ sidebarState: { isCollapsed: true } });
-      expect(getTooltip().title).toBe(__('Expand sidebar'));
+      expect(getTooltip().title).toBe(__('Show sidebar'));
     });
   });
 
   describe('toggle', () => {
     beforeEach(() => {
       setHTMLFixture(`
-        <button class="${JS_TOGGLE_COLLAPSE_CLASS}">Collapse</button>
-        <button class="${JS_TOGGLE_EXPAND_CLASS}">Expand</button>
+        <button class="${JS_TOGGLE_COLLAPSE_CLASS}">Hide</button>
+        <button class="${JS_TOGGLE_EXPAND_CLASS}">Show</button>
       `);
     });
 

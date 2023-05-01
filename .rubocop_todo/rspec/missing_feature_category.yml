@@ -713,7 +713,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/lib/ee/gitlab/metrics/samplers/database_sampler_spec.rb'
     - 'ee/spec/lib/ee/gitlab/middleware/read_only_spec.rb'
     - 'ee/spec/lib/ee/gitlab/namespace_storage_size_error_message_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/namespaces/storage/enforcement_spec.rb'
     - 'ee/spec/lib/ee/gitlab/omniauth_initializer_spec.rb'
     - 'ee/spec/lib/ee/gitlab/pages/deployment_update_spec.rb'
     - 'ee/spec/lib/ee/gitlab/prometheus/metric_group_spec.rb'

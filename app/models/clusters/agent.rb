@@ -13,6 +13,7 @@ module Clusters
     belongs_to :project, class_name: '::Project' # Otherwise, it will load ::Clusters::Project
 
     has_many :agent_tokens, -> { order_last_used_at_desc }, class_name: 'Clusters::AgentToken', inverse_of: :agent
+    has_many :active_agent_tokens, -> { active.order_last_used_at_desc }, class_name: 'Clusters::AgentToken', inverse_of: :agent
 
     has_many :ci_access_group_authorizations, class_name: 'Clusters::Agents::Authorizations::CiAccess::GroupAuthorization'
     has_many :ci_access_authorized_groups, class_name: '::Group', through: :ci_access_group_authorizations, source: :group

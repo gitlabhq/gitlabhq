@@ -28,7 +28,7 @@ module API
             end
             get do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-              agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user).execute
+              agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).execute
 
               present paginate(agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end
@@ -43,7 +43,7 @@ module API
             end
             get ':token_id' do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-              token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
+              token = ::Clusters::AgentTokensFinder.new(agent, current_user, status: :active).find(params[:token_id])
 
               present token, with: Entities::Clusters::AgentToken
             end

@@ -242,7 +242,7 @@ curl --request DELETE --header "Private-Token: <your_access_token>" "https://git
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
 
-Returns a list of tokens for an agent.
+Returns a list of active tokens for an agent.
 
 You must have at least the Developer role to use this endpoint.
 
@@ -312,6 +312,8 @@ The `last_used_at` field for a token is only returned when getting a single agen
 Gets a single agent token.
 
 You must have at least the Developer role to use this endpoint.
+
+Returns a `404` if the agent token has been revoked.
 
 ```plaintext
 GET /projects/:id/cluster_agents/:agent_id/tokens/:token_id

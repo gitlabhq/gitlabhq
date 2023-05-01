@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { MAX_LIST_COUNT, TOKEN_STATUS_ACTIVE } from '../constants';
+import { MAX_LIST_COUNT } from '../constants';
 import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.graphql';
 import TokenTable from './token_table.vue';
 import ActivityEvents from './activity_events_list.vue';
@@ -31,7 +31,6 @@ export default {
         return {
           agentName: this.agentName,
           projectPath: this.projectPath,
-          tokenStatus: TOKEN_STATUS_ACTIVE,
           ...this.cursor,
         };
       },

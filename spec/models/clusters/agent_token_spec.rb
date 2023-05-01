@@ -24,13 +24,29 @@ RSpec.describe Clusters::AgentToken do
       end
     end
 
-    describe '.with_status' do
+    describe 'status-related scopes' do
       let!(:active_token) { create(:cluster_agent_token) }
       let!(:revoked_token) { create(:cluster_agent_token, :revoked) }
 
-      subject { described_class.with_status(:active) }
+      describe '.with_status' do
+        context 'when filtering by active status' do
+          subject { described_class.with_status(:active) }
 
-      it { is_expected.to contain_exactly(active_token) }
+          it { is_expected.to contain_exactly(active_token) }
+        end
+
+        context 'when filtering by revoked status' do
+          subject { described_class.with_status(:revoked) }
+
+          it { is_expected.to contain_exactly(revoked_token) }
+        end
+      end
+
+      describe '.active' do
+        subject { described_class.active }
+
+        it { is_expected.to contain_exactly(active_token) }
+      end
     end
   end
 

@@ -24,8 +24,8 @@ export default {
     },
   },
   i18n: {
-    collapseSidebar: __('Collapse sidebar'),
-    expandSidebar: __('Expand sidebar'),
+    collapseSidebar: __('Hide sidebar'),
+    expandSidebar: __('Show sidebar'),
     navigationSidebar: __('Navigation sidebar'),
   },
   data() {

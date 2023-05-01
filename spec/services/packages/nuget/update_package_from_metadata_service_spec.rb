@@ -259,11 +259,13 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       ]
 
       invalid_names.each do |invalid_name|
-        before do
-          allow(service).to receive(:package_name).and_return(invalid_name)
-        end
+        context "with #{invalid_name}" do
+          before do
+            allow(service).to receive(:package_name).and_return(invalid_name)
+          end
 
-        it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+          it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+        end
       end
     end
 
@@ -271,18 +273,19 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       invalid_versions = [
         '',
         '555',
-        '1.2',
         '1./2.3',
         '../../../../../1.2.3',
         '%2e%2e%2f1.2.3'
       ]
 
       invalid_versions.each do |invalid_version|
-        before do
-          allow(service).to receive(:package_version).and_return(invalid_version)
-        end
+        context "with #{invalid_version}" do
+          before do
+            allow(service).to receive(:package_version).and_return(invalid_version)
+          end
 
-        it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+          it_behaves_like 'raising an', ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError
+        end
       end
     end
   end

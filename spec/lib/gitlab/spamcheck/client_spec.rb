@@ -101,6 +101,19 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   end
 
   describe "#build_protobuf", :aggregate_failures do
+    let_it_be(:generic_spammable) { Object }
+    let_it_be(:generic_created_at) { issue.created_at }
+    let_it_be(:generic_updated_at) { issue.updated_at }
+
+    before do
+      allow(generic_spammable).to receive_messages(
+        spammable_text: 'generic spam',
+        created_at: generic_created_at,
+        updated_at: generic_updated_at,
+        project: nil
+      )
+    end
+
     it 'builds the expected issue protobuf object' do
       cxt = { action: :create }
       issue_pb, _ = described_class.new.send(:build_protobuf,
@@ -127,9 +140,19 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
       expect(snippet_pb.updated_at).to eq timestamp_to_protobuf_timestamp(snippet.updated_at)
       expect(snippet_pb.action).to be ::Spamcheck::Action.lookup(::Spamcheck::Action::CREATE)
       expect(snippet_pb.user.username).to eq user.username
-      expect(snippet_pb.user.username).to eq user.username
       expect(snippet_pb.files.first.path).to eq 'first.rb'
       expect(snippet_pb.files.last.path).to eq 'second.rb'
+    end
+
+    it 'builds the expected generic protobuf object' do
+      cxt = { action: :create }
+      generic_pb, _ = described_class.new.send(:build_protobuf, spammable: generic_spammable, user: user, context: cxt, extra_features: {})
+
+      expect(generic_pb.text).to eq 'generic spam'
+      expect(generic_pb.created_at).to eq timestamp_to_protobuf_timestamp(generic_created_at)
+      expect(generic_pb.updated_at).to eq timestamp_to_protobuf_timestamp(generic_updated_at)
+      expect(generic_pb.action).to be ::Spamcheck::Action.lookup(::Spamcheck::Action::CREATE)
+      expect(generic_pb.user.username).to eq user.username
     end
   end
 
@@ -171,15 +194,14 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   end
 
   describe "#get_spammable_mappings", :aggregate_failures do
-    it 'is an expected spammable' do
+    it 'is a defined spammable' do
       protobuf_class, _ = described_class.new.send(:get_spammable_mappings, issue)
       expect(protobuf_class).to eq ::Spamcheck::Issue
     end
 
-    it 'is an unexpected spammable' do
-      expect { described_class.new.send(:get_spammable_mappings, 'spam') }.to raise_error(
-        ArgumentError, 'Not a spammable type: String'
-      )
+    it 'is a generic spammable' do
+      protobuf_class, _ = described_class.new.send(:get_spammable_mappings, Object)
+      expect(protobuf_class).to eq ::Spamcheck::Generic
     end
   end
 

@@ -53,10 +53,11 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
     let_it_be(:token_1) { create(:cluster_agent_token, agent: agents.second) }
     let_it_be(:token_2) { create(:cluster_agent_token, agent: agents.second, last_used_at: 3.days.ago) }
     let_it_be(:token_3) { create(:cluster_agent_token, agent: agents.second, last_used_at: 2.days.ago) }
+    let_it_be(:revoked_token) { create(:cluster_agent_token, :revoked, agent: agents.second) }
 
     let(:cluster_agents_fields) { [:id, query_nodes(:tokens, of: 'ClusterAgentToken')] }
 
-    it 'can select tokens in last_used_at order' do
+    it 'can select active tokens in last_used_at order' do
       post_graphql(query, current_user: current_user)
 
       tokens = graphql_data_at(:project, :cluster_agents, :nodes, :tokens, :nodes)

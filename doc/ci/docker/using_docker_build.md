@@ -23,7 +23,7 @@ To enable Docker commands for your CI/CD jobs, you can use:
 
 - [The shell executor](#use-the-shell-executor)
 - [Docker-in-Docker](#use-docker-in-docker)
-- [Docker socket binding](#use-docker-socket-binding)
+- [Docker socket binding](#use-the-docker-executor-with-docker-socket-binding)
 
 ### Use the shell executor
 
@@ -347,7 +347,7 @@ Docker-in-Docker is the recommended configuration, but you should be aware of th
     - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
   ```
 
-### Use Docker socket binding
+### Use the Docker executor with Docker socket binding
 
 To use Docker commands in your CI/CD jobs, you can bind-mount `/var/run/docker.sock` into the
 container. Docker is then available in the context of the image.
@@ -357,8 +357,6 @@ If you bind the Docker socket and you are
 [using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
 you can no longer use `docker:20.10.16-dind` as a service. Volume bindings
 also affect services, making them incompatible.
-
-#### Use the Docker executor with Docker socket binding
 
 To make Docker available in the context of the image, you need to mount
 `/var/run/docker.sock` into the launched containers. To do this with the Docker
@@ -394,14 +392,14 @@ sudo gitlab-runner register -n \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
-##### Enable registry mirror for `docker:dind` service
+#### Enable registry mirror for `docker:dind` service
 
 When the Docker daemon starts inside the service container, it uses
 the default configuration. You might want to configure a
 [registry mirror](https://docs.docker.com/registry/recipes/mirror/) for
 performance improvements and to ensure you do not exceed Docker Hub rate limits.
 
-###### The service in the `.gitlab-ci.yml` file
+##### The service in the `.gitlab-ci.yml` file
 
 You can append extra CLI flags to the `dind` service to set the registry
 mirror:
@@ -412,7 +410,7 @@ services:
     command: ["--registry-mirror", "https://registry-mirror.example.com"]  # Specify the registry mirror to use
 ```
 
-###### The service in the GitLab Runner configuration file
+##### The service in the GitLab Runner configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
 
@@ -449,7 +447,7 @@ Kubernetes:
       command = ["--registry-mirror", "https://registry-mirror.example.com"]
 ```
 
-###### The Docker executor in the GitLab Runner configuration file
+##### The Docker executor in the GitLab Runner configuration file
 
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the
@@ -482,7 +480,7 @@ detected by the `dind` service.
     volumes = ["/opt/docker/daemon.json:/etc/docker/daemon.json:ro"]
 ```
 
-###### The Kubernetes executor in the GitLab Runner configuration file
+##### The Kubernetes executor in the GitLab Runner configuration file
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
 
@@ -530,7 +528,7 @@ The `dind` service detects this configuration.
       sub_path = "daemon.json"
 ```
 
-##### Known issues with Docker socket binding
+#### Known issues with Docker socket binding
 
 When you use Docker socket binding, you avoid running Docker in privileged mode. However,
 the implications of this method are:

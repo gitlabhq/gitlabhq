@@ -52,7 +52,7 @@ export default {
     'gl-text-left',
     'gl-text-transform-uppercase',
     'gl-text-secondary',
-    'gl-font-weight-bold',
+    'gl-font-weight-semibold',
     'gl-font-xs',
     'gl-line-height-12',
     'gl-letter-spacing-06em',
@@ -62,7 +62,6 @@ export default {
     // Spacing
     'gl-my-3',
     'gl-pt-2',
-    'gl-w-full',
     // Layout
     'gl-display-flex',
     'gl-justify-content-space-between',
@@ -72,17 +71,22 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-t gl-border-gray-50 gl-mx-3">
+  <li class="gl-border-t gl-border-gray-50">
     <button
       v-collapse-toggle="collapseId"
       :class="$options.buttonClasses"
+      class="gl-mx-3"
       data-testid="search-results-toggle"
     >
       {{ title }}
       <gl-icon :name="collapseIcon" :size="16" />
     </button>
     <gl-collapse :id="collapseId" v-model="expanded">
-      <div v-if="isEmpty" data-testid="empty-text" class="gl-text-gray-500 gl-font-sm gl-mb-3">
+      <div
+        v-if="isEmpty"
+        data-testid="empty-text"
+        class="gl-text-gray-500 gl-font-sm gl-mb-3 gl-mx-4"
+      >
         {{ noResultsText }}
       </div>
       <items-list :aria-label="title" :items="searchResults">

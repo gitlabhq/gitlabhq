@@ -4,7 +4,6 @@
 query getClusterAgent(
   $projectPath: ID!
   $agentName: String!
-  $tokenStatus: AgentTokenStatus!
   $first: Int
   $last: Int
   $afterToken: String
@@ -21,13 +20,7 @@ query getClusterAgent(
         name
       }
 
-      tokens(
-        status: $tokenStatus
-        first: $first
-        last: $last
-        before: $beforeToken
-        after: $afterToken
-      ) {
+      tokens(first: $first, last: $last, before: $beforeToken, after: $afterToken) {
         count
 
         nodes {

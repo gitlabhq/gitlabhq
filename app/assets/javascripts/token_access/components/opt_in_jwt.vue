@@ -63,7 +63,7 @@ export default {
       try {
         const {
           data: {
-            ciCdSettingsUpdate: { errors },
+            projectCiCdSettingsUpdate: { errors },
           },
         } = await this.$apollo.mutate({
           mutation: updateOptInJwtMutation,

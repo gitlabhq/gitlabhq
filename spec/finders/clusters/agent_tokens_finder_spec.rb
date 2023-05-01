@@ -44,6 +44,15 @@ RSpec.describe Clusters::AgentTokensFinder do
       it { is_expected.to match_array(revoked_agent_tokens) }
     end
 
+    context 'when filtering by an unrecognised status' do
+      subject(:execute) { described_class.new(agent, user, status: 'dummy').execute }
+
+      it 'raises an error' do
+        # 'dummy' is not a valid status as defined in the AgentToken status enum
+        expect { execute.count }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+    end
+
     context 'when user does not have permission' do
       let(:user) { create(:user) }
 

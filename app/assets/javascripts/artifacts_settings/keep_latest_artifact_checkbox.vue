@@ -75,7 +75,7 @@ export default {
           },
         });
 
-        if (data.ciCdSettingsUpdate.errors.length) {
+        if (data.projectCiCdSettingsUpdate.errors.length) {
           this.reportError(this.$options.errors.updateError);
         }
       } catch (error) {
