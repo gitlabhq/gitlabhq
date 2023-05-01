@@ -58,8 +58,7 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
         list_service_response = IssueLinks::ListService.new(issue, user).execute
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq('message' => nil,
-                                    'issuables' => list_service_response.as_json)
+        expect(json_response).to eq('message' => nil, 'issuables' => list_service_response.as_json)
       end
     end
 
@@ -162,9 +161,6 @@ RSpec.describe Projects::IssueLinksController, feature_category: :team_planning 
   end
 
   def issue_links_params(opts = {})
-    opts.reverse_merge(namespace_id: issue.project.namespace,
-                       project_id: issue.project,
-                       issue_id: issue,
-                       format: :json)
+    opts.reverse_merge(namespace_id: issue.project.namespace, project_id: issue.project, issue_id: issue, format: :json)
   end
 end

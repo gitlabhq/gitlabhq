@@ -26,6 +26,7 @@ describe('RelatedIssuableItem', () => {
 
   const defaultProps = {
     idKey: 1,
+    iid: 1,
     displayReference: 'gitlab-org/gitlab-test#1',
     pathIdSeparator: '#',
     path: `${TEST_HOST}/path`,
@@ -221,12 +222,15 @@ describe('RelatedIssuableItem', () => {
   });
 
   describe('work item modal', () => {
-    const workItem = 'gid://gitlab/WorkItem/1';
+    const workItemId = 'gid://gitlab/WorkItem/1';
 
     it('renders', () => {
       mountComponent();
 
-      expect(findWorkItemDetailModal().props('workItemId')).toBe(workItem);
+      expect(findWorkItemDetailModal().props()).toMatchObject({
+        workItemId,
+        workItemIid: '1',
+      });
     });
 
     describe('when work item is issue and the related issue title is clicked', () => {
@@ -253,7 +257,7 @@ describe('RelatedIssuableItem', () => {
 
       it('updates the url params with the work item id', () => {
         expect(updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?work_item_id=1`,
+          url: `${TEST_HOST}/?work_item_iid=1`,
           replace: true,
         });
       });
@@ -263,9 +267,9 @@ describe('RelatedIssuableItem', () => {
       it('emits "relatedIssueRemoveRequest" event', () => {
         mountComponent();
 
-        findWorkItemDetailModal().vm.$emit('workItemDeleted', workItem);
+        findWorkItemDetailModal().vm.$emit('workItemDeleted', workItemId);
 
-        expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[workItem]]);
+        expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[workItemId]]);
       });
     });
 

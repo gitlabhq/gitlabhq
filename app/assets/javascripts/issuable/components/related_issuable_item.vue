@@ -85,6 +85,9 @@ export default {
     workItemId() {
       return convertToGraphQLId(TYPENAME_WORK_ITEM, this.idKey);
     },
+    workItemIid() {
+      return String(this.iid);
+    },
   },
   methods: {
     handleTitleClick(event) {
@@ -94,15 +97,15 @@ export default {
         }
         event.preventDefault();
         this.$refs.modal.show();
-        this.updateWorkItemIdUrlQuery(this.idKey);
+        this.updateWorkItemIidUrlQuery(this.iid);
       }
     },
     handleWorkItemDeleted(workItemId) {
       this.$emit('relatedIssueRemoveRequest', workItemId);
     },
-    updateWorkItemIdUrlQuery(workItemId) {
+    updateWorkItemIidUrlQuery(iid) {
       updateHistory({
-        url: setUrlParams({ work_item_id: workItemId }),
+        url: setUrlParams({ work_item_iid: iid }),
         replace: true,
       });
     },
@@ -253,7 +256,8 @@ export default {
     <work-item-detail-modal
       ref="modal"
       :work-item-id="workItemId"
-      @close="updateWorkItemIdUrlQuery"
+      :work-item-iid="workItemIid"
+      @close="updateWorkItemIidUrlQuery"
       @workItemDeleted="handleWorkItemDeleted"
       @openReportAbuse="openReportAbuseDrawer"
     />

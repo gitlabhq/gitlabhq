@@ -6,7 +6,6 @@ class Projects::HooksController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!, except: :destroy
   before_action :authorize_destroy_project_hook!, only: :destroy
-  before_action :hook_logs, only: :edit
   before_action -> { check_rate_limit!(:project_testing_hook, scope: [@project, current_user]) }, only: :test
 
   respond_to :html
@@ -33,10 +32,6 @@ class Projects::HooksController < Projects::ApplicationController
 
   def hook
     @hook ||= @project.hooks.find(params[:id])
-  end
-
-  def hook_logs
-    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
   end
 
   def trigger_values

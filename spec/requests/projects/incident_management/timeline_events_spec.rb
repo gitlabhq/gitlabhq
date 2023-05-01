@@ -34,7 +34,7 @@ RSpec.describe 'Timeline Events', feature_category: :incident_management do
 
       it 'renders JSON in a correct format' do
         post preview_markdown_project_incident_management_timeline_events_path(project, format: :json),
-             params: { text: timeline_text }
+          params: { text: timeline_text }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq({
@@ -51,7 +51,7 @@ RSpec.describe 'Timeline Events', feature_category: :incident_management do
     context 'when not authorized' do
       it 'returns 302' do
         post preview_markdown_project_incident_management_timeline_events_path(project, format: :json),
-             params: { text: timeline_text }
+          params: { text: timeline_text }
 
         expect(response).to have_gitlab_http_status(:found)
       end

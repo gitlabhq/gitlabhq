@@ -15,6 +15,11 @@ const mixins = {
       type: Number,
       required: true,
     },
+    iid: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
     displayReference: {
       type: String,
       required: true,

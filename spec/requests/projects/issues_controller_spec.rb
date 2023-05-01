@@ -114,8 +114,9 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     context 'when private project' do
       let_it_be(:private_project) { create(:project, :private) }
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false,
-ignore_metrics: true do
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom',
+        public_resource: false,
+        ignore_metrics: true do
         let(:url) { project_issues_url(private_project, format: :atom) }
 
         before do
@@ -123,8 +124,9 @@ ignore_metrics: true do
         end
       end
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'calendar ics', public_resource: false,
-ignore_metrics: true do
+      it_behaves_like 'authenticates sessionless user for the request spec', 'calendar ics',
+        public_resource: false,
+        ignore_metrics: true do
         let(:url) { project_issues_url(private_project, format: :ics) }
 
         before do

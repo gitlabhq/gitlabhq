@@ -7,7 +7,7 @@ class LinkedIssueEntity < Grape::Entity
     item.try(:upcase)
   end
 
-  expose :id, :confidential, :title
+  expose :id, :iid, :confidential, :title
 
   expose :assignees, using: UserEntity
 

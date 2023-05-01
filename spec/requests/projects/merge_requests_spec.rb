@@ -6,10 +6,13 @@ RSpec.describe 'merge requests actions', feature_category: :source_code_manageme
   let_it_be(:project) { create(:project, :repository) }
 
   let(:merge_request) do
-    create(:merge_request_with_diffs, target_project: project,
-                                      source_project: project,
-                                      assignees: [user],
-                                      reviewers: [user2])
+    create(
+      :merge_request_with_diffs,
+      target_project: project,
+      source_project: project,
+      assignees: [user],
+      reviewers: [user2]
+    )
   end
 
   let(:user) { project.first_owner }

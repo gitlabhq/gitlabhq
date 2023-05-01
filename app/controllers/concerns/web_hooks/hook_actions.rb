@@ -7,6 +7,8 @@ module WebHooks
 
     included do
       attr_writer :hooks, :hook
+
+      before_action :hook_logs, only: :edit
     end
 
     def index
@@ -79,6 +81,10 @@ module WebHooks
       else
         flash[:alert] = result[:message]
       end
+    end
+
+    def hook_logs
+      @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
     end
   end
 end

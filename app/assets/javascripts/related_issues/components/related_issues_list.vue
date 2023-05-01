@@ -127,6 +127,7 @@ export default {
         >
           <related-issuable-item
             :id-key="issue.id"
+            :iid="issue.iid"
             :display-reference="issue.reference"
             :confidential="issue.confidential"
             :title="issue.title"

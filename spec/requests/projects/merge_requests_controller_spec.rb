@@ -120,8 +120,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     context 'when private project' do
       let_it_be(:private_project) { create(:project, :private) }
 
-      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom', public_resource: false,
-                                                                                           ignore_metrics: true do
+      it_behaves_like 'authenticates sessionless user for the request spec', 'index atom',
+        public_resource: false,
+        ignore_metrics: true do
         let(:url) { project_merge_requests_url(private_project, format: :atom) }
 
         before do
