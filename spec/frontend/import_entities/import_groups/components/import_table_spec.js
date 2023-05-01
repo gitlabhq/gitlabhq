@@ -15,7 +15,7 @@ import ImportTable from '~/import_entities/import_groups/components/import_table
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
-import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 
 import {
   AVAILABLE_NAMESPACES,
@@ -74,7 +74,7 @@ describe('import table', () => {
     apolloProvider = createMockApollo(
       [
         [
-          searchNamespacesWhereUserCanCreateProjectsQuery,
+          searchNamespacesWhereUserCanImportProjectsQuery,
           () => Promise.resolve(availableNamespacesFixture),
         ],
       ],

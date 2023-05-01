@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::UserGroupsFinder do
+RSpec.describe Groups::UserGroupsFinder, feature_category: :subgroups do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:root_group) { create(:group, name: 'Root group', path: 'root-group') }
@@ -94,6 +94,24 @@ RSpec.describe Groups::UserGroupsFinder do
             public_maintainer_group,
             public_developer_group
           ]
+        end
+      end
+    end
+
+    context 'when permission is :import_projects' do
+      let(:arguments) { { permission_scope: :import_projects } }
+
+      specify do
+        is_expected.to contain_exactly(
+          public_maintainer_group,
+          public_owner_group,
+          private_maintainer_group
+        )
+      end
+
+      it_behaves_like 'user group finder searching by name or path' do
+        let(:keyword_search_expected_groups) do
+          [public_maintainer_group]
         end
       end
     end

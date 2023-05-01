@@ -93,7 +93,7 @@ RSpec.describe Import::BitbucketServerService, feature_category: :importers do
       result = subject.execute(credentials)
 
       expect(result).to include(
-        message: "You don't have permissions to create this project",
+        message: "You don't have permissions to import this project",
         status: :error,
         http_status: :unauthorized
       )

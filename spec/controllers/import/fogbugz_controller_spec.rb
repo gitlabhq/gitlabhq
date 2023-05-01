@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::FogbugzController do
+RSpec.describe Import::FogbugzController, feature_category: :importers do
   include ImportSpecHelper
 
   let(:user) { create(:user) }

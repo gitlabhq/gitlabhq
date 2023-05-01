@@ -670,6 +670,124 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  context 'import_projects' do
+    before do
+      group.update!(project_creation_level: project_creation_level)
+    end
+
+    context 'when group has no project creation level set' do
+      let(:project_creation_level) { nil }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to no one' do
+      let(:project_creation_level) { ::Gitlab::Access::NO_ONE_PROJECT_ACCESS }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to maintainer only' do
+      let(:project_creation_level) { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to developers + maintainer' do
+      let(:project_creation_level) { ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:import_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:import_projects) }
+      end
+    end
+  end
+
   context 'create_subgroup' do
     context 'when group has subgroup creation level set to owner' do
       before do

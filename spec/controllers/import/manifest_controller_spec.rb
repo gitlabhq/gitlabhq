@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state do
+RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include ImportSpecHelper
 
   let_it_be(:user) { create(:user) }
@@ -45,7 +45,7 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'when the user cannot create projects in the group' do
+    context 'when the user cannot import projects in the group' do
       it 'displays an error' do
         sign_in(create(:user))
 

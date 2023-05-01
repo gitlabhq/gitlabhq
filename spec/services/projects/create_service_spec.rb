@@ -254,6 +254,23 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     end
 
     it_behaves_like 'has sync-ed traversal_ids'
+
+    context 'when project is an import' do
+      context 'when user is not allowed to import projects' do
+        let(:group) do
+          create(:group).tap do |group|
+            group.add_developer(user)
+          end
+        end
+
+        it 'does not create the project' do
+          project = create_project(user, opts.merge!(namespace_id: group.id, import_type: 'gitlab_project'))
+
+          expect(project).not_to be_persisted
+          expect(project.errors.messages[:user].first).to eq('is not allowed to import projects')
+        end
+      end
+    end
   end
 
   context 'group sharing', :sidekiq_inline do

@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import GroupDropdown from '~/import_entities/components/group_dropdown.vue';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -49,7 +49,7 @@ describe('Import entities group dropdown component', () => {
 
   const createComponent = (propsData) => {
     const apolloProvider = createMockApollo([
-      [searchNamespacesWhereUserCanCreateProjectsQuery, () => SEARCH_NAMESPACES_MOCK],
+      [searchNamespacesWhereUserCanImportProjectsQuery, () => SEARCH_NAMESPACES_MOCK],
     ]);
 
     namespacesTracker = jest.fn();

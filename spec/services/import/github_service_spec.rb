@@ -291,7 +291,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: 'This namespace has already been taken. Choose a different one.'
+      message: 'You are not allowed to import projects in this namespace.'
     }
   end
 end
