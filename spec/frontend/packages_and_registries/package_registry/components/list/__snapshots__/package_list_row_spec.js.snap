@@ -66,11 +66,12 @@ exports[`packages_list_row renders 1`] = `
              
             <!---->
              
-            <package-icon-and-name-stub>
-              
-        npm
-      
-            </package-icon-and-name-stub>
+            <span
+              class="gl-ml-2"
+              data-testid="package-type"
+            >
+              · npm
+            </span>
              
             <!---->
           </div>

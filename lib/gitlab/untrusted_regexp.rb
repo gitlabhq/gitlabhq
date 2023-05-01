@@ -10,6 +10,9 @@ module Gitlab
   # Not all regular expression features are available in untrusted regexes, and
   # there is a strict limit on total execution time. See the RE2 documentation
   # at https://github.com/google/re2/wiki/Syntax for more details.
+  #
+  # This class doesn't change any instance variables, which allows it to be frozen
+  # and setup in constants.
   class UntrustedRegexp
     require_dependency 're2'
 
@@ -21,6 +24,7 @@ module Gitlab
       end
 
       @regexp = RE2::Regexp.new(pattern, log_errors: false)
+      @scan_regexp = initialize_scan_regexp
 
       raise RegexpError, regexp.error unless regexp.ok?
     end
@@ -108,17 +112,16 @@ module Gitlab
 
     private
 
-    attr_reader :regexp
+    attr_reader :regexp, :scan_regexp
 
     # RE2 scan operates differently to Ruby scan when there are no capture
     # groups, so work around it
-    def scan_regexp
-      @scan_regexp ||=
-        if regexp.number_of_capturing_groups == 0
-          RE2::Regexp.new('(' + regexp.source + ')')
-        else
-          regexp
-        end
+    def initialize_scan_regexp
+      if regexp.number_of_capturing_groups == 0
+        RE2::Regexp.new('(' + regexp.source + ')')
+      else
+        regexp
+      end
     end
   end
 end
