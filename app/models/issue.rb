@@ -642,7 +642,7 @@ class Issue < ApplicationRecord
   end
 
   def supports_assignee?
-    issue_type_supports?(:assignee)
+    work_item_type_with_default.supports_assignee?
   end
 
   def supports_time_tracking?

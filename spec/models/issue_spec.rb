@@ -1816,6 +1816,17 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '#supports_assignee?' do
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+      specify do
+        issue = build(:issue, base_type)
+        supports_assignee = widgets.include?(:assignees)
+
+        expect(issue.supports_assignee?).to eq(supports_assignee)
+      end
+    end
+  end
+
   describe '#supports_time_tracking?' do
     let_it_be(:project) { create(:project) }
     let_it_be_with_refind(:issue) { create(:incident, project: project) }
@@ -1830,7 +1841,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue.update!(issue_type: issue_type, work_item_type: WorkItems::Type.default_by_type(issue_type))
       end
 
-      it do
+      specify do
         expect(issue.supports_time_tracking?).to eq(supports_time_tracking)
       end
     end
@@ -1850,7 +1861,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue.update!(issue_type: issue_type, work_item_type: WorkItems::Type.default_by_type(issue_type))
       end
 
-      it do
+      specify do
         expect(issue.supports_move_and_clone?).to eq(supports_move_and_clone)
       end
     end

@@ -287,6 +287,7 @@ class Project < ApplicationRecord
   has_many :merge_request_metrics, foreign_key: 'target_project', class_name: 'MergeRequest::Metrics', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :work_items # the issues relation will handle any destroys
   has_many :incident_management_issuable_escalation_statuses, through: :issues, inverse_of: :project, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_many :incident_management_timeline_event_tags, inverse_of: :project, class_name: 'IncidentManagement::TimelineEventTag'
   has_many :labels, class_name: 'ProjectLabel', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

@@ -58,6 +58,7 @@ module Gitlab
           job_id: build.id.to_s,
           ref: source_ref,
           ref_type: ref_type,
+          ref_path: source_ref_path,
           ref_protected: build.protected.to_s
         }
 
@@ -102,8 +103,16 @@ module Gitlab
         build.user
       end
 
+      def pipeline
+        build.pipeline
+      end
+
       def source_ref
-        build.pipeline.source_ref
+        pipeline.source_ref
+      end
+
+      def source_ref_path
+        pipeline.source_ref_path
       end
 
       def ref_type

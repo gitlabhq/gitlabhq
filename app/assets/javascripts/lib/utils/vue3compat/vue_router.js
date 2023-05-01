@@ -63,9 +63,9 @@ const transformers = {
   scrollBehavior,
 };
 
-const transformOptions = (options) => {
+const transformOptions = (options = {}) => {
   const defaultConfig = {
-    routes: null,
+    routes: [],
     history: createWebHashHistory(),
   };
   return Object.keys(options).reduce((acc, key) => {

@@ -50,6 +50,10 @@ tier. Users can continue to access the features in a paid tier without sharing u
 - [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit).
 - [Group access restriction by IP address](../../group/access_and_permissions.md#restrict-group-access-by-ip-address).
 
+### Features available in 16.0 and later
+
+- [Maintenance mode](../../../administration/maintenance_mode/index.md).
+
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.
 

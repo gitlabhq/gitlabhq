@@ -1,8 +1,0 @@
----
-name: legacy_merge_request_state_check_for_merged_result_pipelines
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367019
-milestone: '15.2'
-type: development
-group: group::pipeline execution
-default_enabled: false

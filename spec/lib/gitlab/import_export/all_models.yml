@@ -585,6 +585,7 @@ project:
 - merge_requests
 - fork_merge_requests
 - issues
+- work_items
 - labels
 - events
 - milestones

@@ -307,10 +307,6 @@ RSpec.configure do |config|
       # most cases. We do test the email verification flow in the appropriate specs.
       stub_feature_flags(require_email_verification: false)
 
-      # This feature flag is for selectively disabling by actor, therefore we don't enable it by default.
-      # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
-      stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
-
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags

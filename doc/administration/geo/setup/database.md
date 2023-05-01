@@ -29,10 +29,10 @@ testing or production environments.
 ## Single instance database replication
 
 A single instance database replication is easier to set up and still provides the same Geo capabilities
-as a clusterized alternative. It's useful for setups running on a single machine
-or trying to evaluate Geo for a future clusterized installation.
+as a clustered alternative. It's useful for setups running on a single machine
+or trying to evaluate Geo for a future clustered installation.
 
-A single instance can be expanded to a clusterized version using Patroni, which is recommended for a
+A single instance can be expanded to a clustered version using Patroni, which is recommended for a
 highly available architecture.
 
 Follow the instructions below on how to set up PostgreSQL replication as a single instance database.

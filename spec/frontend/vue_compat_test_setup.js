@@ -3,6 +3,25 @@ const Vue = require('vue');
 const VTU = require('@vue/test-utils');
 const { installCompat: installVTUCompat, fullCompatConfig } = require('vue-test-utils-compat');
 
+function getComponentName(component) {
+  if (!component) {
+    return undefined;
+  }
+
+  return (
+    component.name ||
+    getComponentName(component.extends) ||
+    component.mixins?.find((mixin) => getComponentName(mixin))
+  );
+}
+
+function isLegacyExtendedComponent(component) {
+  return Reflect.has(component, 'super') && component.super.extend({}).super === component.super;
+}
+function unwrapLegacyVueExtendComponent(selector) {
+  return isLegacyExtendedComponent(selector) ? selector.options : selector;
+}
+
 if (global.document) {
   const compatConfig = {
     MODE: 2,
@@ -26,6 +45,7 @@ if (global.document) {
     GLOBAL_SET: 'suppress-warning',
     COMPONENT_FUNCTIONAL: 'suppress-warning',
     COMPONENT_V_MODEL: 'suppress-warning',
+    COMPONENT_ASYNC: 'suppress-warning',
     CUSTOM_DIR: 'suppress-warning',
     OPTIONS_BEFORE_DESTROY: 'suppress-warning',
     OPTIONS_DATA_MERGE: 'suppress-warning',
@@ -57,4 +77,66 @@ if (global.document) {
   Vue.configureCompat(compatConfig);
   installVTUCompat(VTU, fullCompatConfig, compatH);
   VTU.config.global.renderStubDefaultSlot = true;
+
+  const noop = () => {};
+
+  VTU.config.plugins.createStubs = ({ name, component: rawComponent, registerStub }) => {
+    const component = unwrapLegacyVueExtendComponent(rawComponent);
+    const hyphenatedName = name.replace(/\B([A-Z])/g, '-$1').toLowerCase();
+
+    const stub = Vue.defineComponent({
+      name: getComponentName(component),
+      props: component.props,
+      model: component.model,
+      methods: Object.fromEntries(
+        Object.entries(component.methods ?? {}).map(([key]) => [key, noop]),
+      ),
+      render() {
+        const {
+          $slots: slots = {},
+          $scopedSlots: scopedSlots = {},
+          $parent: parent,
+          $vnode: { children },
+        } = this;
+
+        const hasDefaultSlot = 'default' in slots || 'default' in scopedSlots;
+        const isTheOnlyChild = parent && parent.$.subTree.children === children;
+
+        // this condition should be altered when https://github.com/vuejs/vue-test-utils/pull/2068 is merged
+        // and our codebase will be updated to include it (@vue/test-utils@1.3.6 I assume)
+        const shouldRenderAllSlots = !hasDefaultSlot && isTheOnlyChild;
+
+        const renderSlotByName = (slotName) => {
+          const slot = scopedSlots[slotName] || slots[slotName];
+          let result;
+          if (typeof slot === 'function') {
+            try {
+              result = slot({});
+            } catch {
+              // intentionally blank
+            }
+          } else {
+            result = slot;
+          }
+          return result;
+        };
+
+        const slotContents = shouldRenderAllSlots
+          ? [...new Set([...Object.keys(slots), ...Object.keys(scopedSlots)])]
+              .map(renderSlotByName)
+              .filter(Boolean)
+          : renderSlotByName('default');
+
+        return Vue.h(`${hyphenatedName || 'anonymous'}-stub`, this.$props, slotContents);
+      },
+    });
+
+    if (typeof component === 'function') {
+      component()?.then?.((resolvedComponent) => {
+        registerStub({ source: resolvedComponent.default, stub });
+      });
+    }
+
+    return stub;
+  };
 }

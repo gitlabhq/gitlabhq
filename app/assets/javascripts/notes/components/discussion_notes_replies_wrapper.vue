@@ -1,4 +1,5 @@
 <script>
+import { normalizeChildren } from '~/lib/utils/vue3compat/normalize_children';
 /**
  * Wrapper for discussion notes replies section.
  *
@@ -26,7 +27,7 @@ export default {
       );
     }
 
-    return children;
+    return normalizeChildren(children);
   },
 };
 </script>

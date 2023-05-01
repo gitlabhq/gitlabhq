@@ -126,6 +126,13 @@ If you are running a self-managed instance of GitLab,
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=dD8c7WNcc6s) about how to get started with GitLab Pages administration.
 
+### Configure GitLab Pages in a Helm Chart (Kubernetes) instance
+
+To configure GitLab Pages on instances deployed via Helm chart (Kubernetes), use either:
+ 
+- [The `gitlab-pages` subchart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/). 
+- [An external GitLab Pages instance](https://docs.gitlab.com/charts/advanced/external-gitlab-pages/). 
+
 ## Security for GitLab Pages
 
 If your username is `example`, your GitLab Pages website is located at `example.gitlab.io`.

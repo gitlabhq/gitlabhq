@@ -23,8 +23,6 @@ class WorkItem < Issue
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
-  delegate :supports_assignee?, to: :work_item_type
-
   class << self
     def assignee_association_name
       'issue'

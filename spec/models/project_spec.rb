@@ -27,6 +27,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
     it { is_expected.to have_many(:issues) }
+    it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many(:incident_management_issuable_escalation_statuses).through(:issues).inverse_of(:project).class_name('IncidentManagement::IssuableEscalationStatus') }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }

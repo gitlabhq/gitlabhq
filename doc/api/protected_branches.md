@@ -19,6 +19,8 @@ The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` 
 
 ## List protected branches
 
+> Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+
 Gets a list of protected branches from a project as they are defined [in the UI](../user/project/protected_branches.md#configure-a-protected-branch). If a wildcard is set, it is returned instead of the exact name of the branches that match that wildcard.
 
 ```plaintext
@@ -46,6 +48,12 @@ Example response:
         "id":  1,
         "access_level": 40,
         "access_level_description": "Maintainers"
+      },
+      {
+        "id": 2,
+        "access_level": 40,
+        "access_level_description": "Deploy key",
+        "deploy_key_id": 1
       }
     ],
     "merge_access_levels": [
@@ -100,6 +108,14 @@ Example response:
         "user_id": null,
         "group_id": null,
         "access_level_description": "Maintainers"
+      },
+      {
+        "id": 2,
+        "access_level": 40,
+        "access_level_description": "Deploy key",
+        "deploy_key_id": 1,
+        "user_id": null,
+        "group_id": null
       }
     ],
     "merge_access_levels": [

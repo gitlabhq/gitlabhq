@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItem, feature_category: :portfolio_management do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:reusable_project) { create(:project) }
 
   describe 'associations' do
@@ -114,14 +116,13 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#supports_assignee?' do
-    let(:work_item) { build(:work_item, :task) }
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+      specify do
+        work_item = build(:work_item, base_type)
+        supports_assignee = widgets.include?(:assignees)
 
-    before do
-      allow(work_item.work_item_type).to receive(:supports_assignee?).and_return(false)
-    end
-
-    it 'delegates the call to its work item type' do
-      expect(work_item.supports_assignee?).to be(false)
+        expect(work_item.supports_assignee?).to eq(supports_assignee)
+      end
     end
   end
 
