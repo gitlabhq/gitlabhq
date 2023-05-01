@@ -51,13 +51,13 @@ func TestSetProperContentTypeAndDisposition(t *testing.T) {
 		{
 			desc:               "HTML type",
 			contentType:        "text/plain; charset=utf-8",
-			contentDisposition: "inline",
+			contentDisposition: "inline; filename=blob",
 			body:               "<html><body>Hello world!</body></html>",
 		},
 		{
 			desc:               "Javascript within HTML type",
 			contentType:        "text/plain; charset=utf-8",
-			contentDisposition: "inline",
+			contentDisposition: "inline; filename=blob",
 			body:               "<script>alert(\"foo\")</script>",
 		},
 		{
