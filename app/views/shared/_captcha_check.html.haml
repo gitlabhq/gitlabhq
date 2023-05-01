@@ -10,7 +10,7 @@
 %p
   = _("We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed.") % { humanized_resource_name: humanized_resource_name }
 
-= form_for resource_name, method: method, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
+= gitlab_ui_form_for resource_name, method: method, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
   .recaptcha
     -# Create a hidden field for each param of the resource
     - params[resource_name].each do |field, value|
@@ -34,4 +34,4 @@
     = yield
 
   .row-content-block.footer-block
-    = f.submit _("Create %{humanized_resource_name}") % { humanized_resource_name: humanized_resource_name }, class: 'gl-button btn btn-confirm'
+    = f.submit _("Create %{humanized_resource_name}") % { humanized_resource_name: humanized_resource_name }, pajamas_button: true

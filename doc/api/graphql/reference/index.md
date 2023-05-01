@@ -22686,6 +22686,7 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionsadminworkitem"></a>`adminWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `admin_work_item` on this resource. |
 | <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `delete_work_item` on this resource. |
 | <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `read_work_item` on this resource. |
+| <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | Indicates the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | Indicates the user can perform `update_work_item` on this resource. |
 
 ### `WorkItemType`

@@ -60,7 +60,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'updateWorkItem' => true,
           'deleteWorkItem' => false,
           'adminWorkItem' => true,
-          'adminParentLink' => true
+          'adminParentLink' => true,
+          'setWorkItemMetadata' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )
@@ -551,6 +552,25 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       expect(work_item_data).to be_nil
       expect(graphql_errors).to contain_exactly(
         hash_including('message' => ::Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)
+      )
+    end
+  end
+
+  context 'when the user cannot set work item metadata' do
+    let(:current_user) { guest }
+
+    before do
+      project.add_guest(guest)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns correct user permission' do
+      expect(work_item_data).to include(
+        'id' => work_item.to_gid.to_s,
+        'userPermissions' =>
+          hash_including(
+            'setWorkItemMetadata' => false
+          )
       )
     end
   end

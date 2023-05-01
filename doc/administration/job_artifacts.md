@@ -233,7 +233,7 @@ processing is done in a background worker and requires **no downtime**.
 
       ::EndTabs
 
-   1. Verify that all packages migrated to object storage with the following
+   1. Verify that all artifacts migrated to object storage with the following
       SQL query. The number of `objectstg` should be the same as `total`:
 
       ```shell

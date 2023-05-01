@@ -28,9 +28,19 @@ NOTE:
 In GitLab 14.7.x to 14.9.x, you can add the license file with the UI.
 In GitLab 14.1.x to 14.7, if you have already activated your subscription with an activation code, you cannot access **Add License** from the Admin Area. You must access **Add License** directly from the URL, `<YourGitLabURL>/admin/license/new`.
 
-## Add your license file during installation
+## Activate subscription during installation
 
-You can import a license file when you install GitLab.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
+
+To activate your subscription during installation, set the `GITLAB_ACTIVATION_CODE` environment variable with the activation code:
+
+```shell
+export GITLAB_ACTIVATION_CODE=your_activation_code
+```
+
+## Add license file during installation
+
+If you have a license, you can also import it when you install GitLab.
 
 - **For installations from source**
   - Place the `Gitlab.gitlab-license` file in the `config/` directory.

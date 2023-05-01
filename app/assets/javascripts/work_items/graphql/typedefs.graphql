@@ -15,10 +15,6 @@ extend type WorkItem {
   mockWidgets: [LocalWorkItemWidget]
 }
 
-extend type WorkItemPermissions {
-  setWorkItemMetadata: Boolean
-}
-
 input LocalUserInput {
   id: ID!
   name: String
