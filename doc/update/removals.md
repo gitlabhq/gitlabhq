@@ -64,6 +64,16 @@ is removed in favor of more specialized fields like:
 - `infrastructure_access_level`
 - `monitor_access_level`
 
+### Vulnerability confidence field
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 15.3, [security report schemas below version 15 were deprecated](https://docs.gitlab.com/ee/update/deprecations.html#security-report-schemas-version-14xx).
+The `confidence` attribute on vulnerability findings exists only in schema versions before `15-0-0` and in GitLab prior to 15.4.  To maintain consistency
+between the reports and our public APIs, the `confidence` attribute on any vulnerability-related components of our GraphQL API is now removed.
+
 ## Removed in 15.11
 
 ### Exporting and importing projects in JSON format not supported

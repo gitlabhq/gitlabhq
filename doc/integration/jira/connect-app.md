@@ -255,7 +255,13 @@ To resolve this issue, set up [OAuth authentication](#set-up-oauth-authenticatio
 
 ### Manual installation fails
 
-You might get an error if you have installed the GitLab for Jira Cloud app from the official marketplace listing and replaced it with manual installation. To resolve this issue, disable the **Jira Connect Proxy URL** setting.
+You might get an error if you have installed the GitLab for Jira Cloud app from the official marketplace listing and replaced it with manual installation:
+
+```plaintext
+The app "gitlab-jira-connect-gitlab.com" could not be installed as a local app as it has previously been installed from Atlassian Marketplace
+```
+
+To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.7:
 

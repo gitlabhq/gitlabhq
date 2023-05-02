@@ -17,6 +17,14 @@ module QA
             def go_to_requirements
               open_plan_submenu("Requirements")
             end
+
+            def go_to_jira_issues
+              open_plan_submenu("Jira issues")
+            end
+
+            def go_to_open_jira
+              open_plan_submenu("Open Jira")
+            end
           end
         end
       end

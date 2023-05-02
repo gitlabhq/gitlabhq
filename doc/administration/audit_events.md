@@ -363,26 +363,31 @@ GitLab generates audit events when a cluster agent token is created or revoked.
 
 The following user actions on a GitLab instance generate instance audit events:
 
+#### Authentication
+
 - Sign-in events and the authentication type such as standard, LDAP, or OmniAuth.
 - Failed sign-ins.
+- Ask for password reset.
+- Grant OAuth access.
+- Failed second-factor authentication attempt.
+- A user's personal access token was successfully or unsuccessfully created or revoked.
+- A user's two-factor authentication was disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
+  GitLab 15.1.
+
+#### User management
+
 - Added SSH key.
 - Added or removed email.
 - Changed password.
-- Ask for password reset.
-- Grant OAuth access.
 - Started or stopped user impersonation.
 - Changed username.
 - User was added or deleted.
 - User requests access to an instance.
 - User was approved, rejected, or blocked using the Admin Area.
 - User was blocked using the API.
-- Failed second-factor authentication attempt.
-- A user's personal access token was successfully or unsuccessfully created or revoked.
 - Administrator added or removed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) in GitLab 14.1.
 - Removed SSH key. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1.
 - Added or removed GPG key. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1.
-- A user's two-factor authentication was disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in
-  GitLab 15.1.
 - Enabled Admin Mode. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) in GitLab 15.7.
 - All [group events](#group-events) and [project events](#project-events).
 - User was unblocked using the Admin Area or API. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115727) in GitLab 15.11.

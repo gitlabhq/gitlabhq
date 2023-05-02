@@ -14,13 +14,13 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is available.
 This feature is ready for production use.
 
-To use custom emojis in comments and descriptions, you can add them to a group using the GraphQL API.
+To use custom emojis in comments and descriptions, you can add them to a top-level group using the GraphQL API.
 
 Parameters:
 
 | Attribute    | Type           | Required               | Description                                                               |
 | :----------- | :------------- | :--------------------- | :------------------------------------------------------------------------ |
-| `group_path` | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) |
+| `group_path` | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the top-level group](../rest/index.md#namespaced-path-encoding) |
 | `name`       | string         | **{check-circle}** Yes | Name of the custom emoji.                                                 |
 | `file`       | string         | **{check-circle}** Yes | URL of the custom emoji image.                                            |
 

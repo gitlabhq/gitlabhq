@@ -184,6 +184,8 @@ module QA
           within_user_menu do
             has_element?(:user_profile_link, text: /#{user.username}/)
           end
+          # we need to close user menu because plain user link check will leave it open
+          click_element :user_avatar_content if has_element?(:user_profile_link, wait: 0)
         end
 
         def not_signed_in?

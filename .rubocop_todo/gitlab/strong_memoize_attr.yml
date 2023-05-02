@@ -356,7 +356,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/models/gitlab_subscription.rb'
     - 'ee/app/models/issuables_analytics.rb'
     - 'ee/app/models/license.rb'
-    - 'ee/app/models/namespaces/storage/root_excess_size.rb'
     - 'ee/app/models/sca/license_compliance.rb'
     - 'ee/app/models/security/orchestration_policy_configuration.rb'
     - 'ee/app/models/security/orchestration_policy_rule_schedule.rb'
