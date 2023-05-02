@@ -769,7 +769,6 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - <<: *if-ruby2-branch
-    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
     - <<: *if-default-refs
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
