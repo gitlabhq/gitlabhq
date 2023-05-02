@@ -4,8 +4,13 @@ import VueApollo from 'vue-apollo';
 import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { boardListQueryResponse, mockLabelList } from 'jest/boards/mock_data';
+import {
+  boardListQueryResponse,
+  mockLabelList,
+  updateBoardListResponse,
+} from 'jest/boards/mock_data';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
+import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import { ListType } from '~/boards/constants';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 
@@ -19,6 +24,8 @@ describe('Board List Header Component', () => {
 
   const updateListSpy = jest.fn();
   const toggleListCollapsedSpy = jest.fn();
+  const mockClientToggleListCollapsedResolver = jest.fn();
+  const updateListHandler = jest.fn().mockResolvedValue(updateBoardListResponse);
 
   afterEach(() => {
     fakeApollo = null;
@@ -34,7 +41,7 @@ describe('Board List Header Component', () => {
     listQueryHandler = jest.fn().mockResolvedValue(boardListQueryResponse()),
     injectedProps = {},
   } = {}) => {
-    const boardId = '1';
+    const boardId = 'gid://gitlab/Board/1';
 
     const listMock = {
       ...mockLabelList,
@@ -58,8 +65,17 @@ describe('Board List Header Component', () => {
       state: {},
       actions: { updateList: updateListSpy, toggleListCollapsed: toggleListCollapsedSpy },
     });
-
-    fakeApollo = createMockApollo([[listQuery, listQueryHandler]]);
+    fakeApollo = createMockApollo(
+      [
+        [listQuery, listQueryHandler],
+        [updateBoardListMutation, updateListHandler],
+      ],
+      {
+        Mutation: {
+          clientToggleListCollapsed: mockClientToggleListCollapsedResolver,
+        },
+      },
+    );
 
     wrapper = shallowMountExtended(BoardListHeader, {
       apolloProvider: fakeApollo,
@@ -67,9 +83,9 @@ describe('Board List Header Component', () => {
       propsData: {
         list: listMock,
         filterParams: {},
+        boardId,
       },
       provide: {
-        boardId,
         weightFeatureAvailable: false,
         currentUserId,
         isEpicBoard: false,
@@ -191,7 +207,9 @@ describe('Board List Header Component', () => {
       await nextTick();
 
       expect(updateListSpy).not.toHaveBeenCalled();
-      expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.collapsed`)).toBe(String(isCollapsed()));
+      expect(localStorage.getItem(`${wrapper.vm.uniqueKey}.collapsed`)).toBe(
+        String(!isCollapsed()),
+      );
     });
   });
 
@@ -212,6 +230,46 @@ describe('Board List Header Component', () => {
       createComponent({ listType });
 
       expect(findTitle().classes()).toContain('gl-cursor-grab');
+    });
+  });
+
+  describe('Apollo boards', () => {
+    beforeEach(async () => {
+      createComponent({ listType: ListType.label, injectedProps: { isApolloBoard: true } });
+      await nextTick();
+    });
+
+    it('set active board item on client when clicking on card', async () => {
+      findCaret().vm.$emit('click');
+      await nextTick();
+
+      expect(mockClientToggleListCollapsedResolver).toHaveBeenCalledWith(
+        {},
+        {
+          list: mockLabelList,
+          collapsed: true,
+        },
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it('does not call update list mutation when user is not logged in', async () => {
+      createComponent({ currentUserId: null, injectedProps: { isApolloBoard: true } });
+
+      findCaret().vm.$emit('click');
+      await nextTick();
+
+      expect(updateListHandler).not.toHaveBeenCalled();
+    });
+
+    it('calls update list mutation when user is logged in', async () => {
+      createComponent({ currentUserId: 1, injectedProps: { isApolloBoard: true } });
+
+      findCaret().vm.$emit('click');
+      await nextTick();
+
+      expect(updateListHandler).toHaveBeenCalledWith({ listId: mockLabelList.id, collapsed: true });
     });
   });
 });

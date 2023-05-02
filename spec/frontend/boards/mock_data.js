@@ -989,4 +989,12 @@ export const updateEpicTitleResponse = {
   },
 };
 
+export const updateBoardListResponse = {
+  data: {
+    updateBoardList: {
+      list: mockList,
+    },
+  },
+};
+
 export const DEFAULT_COLOR = '#1068bf';

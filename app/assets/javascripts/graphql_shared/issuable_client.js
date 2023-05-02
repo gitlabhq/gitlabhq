@@ -217,6 +217,22 @@ export const resolvers = {
       });
       return boardItem;
     },
+    clientToggleListCollapsed(_, { list = {}, collapsed = false }) {
+      return {
+        list: {
+          ...list,
+          collapsed,
+        },
+      };
+    },
+    clientToggleEpicListCollapsed(_, { list = {}, collapsed = false }) {
+      return {
+        list: {
+          ...list,
+          collapsed,
+        },
+      };
+    },
   },
 };
 

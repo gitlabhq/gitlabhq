@@ -388,9 +388,10 @@ export const formatTimeAsSummary = ({ seconds, hours, days, minutes, weeks, mont
 };
 
 export const durationTimeFormatted = (duration) => {
-  const date = new Date(duration * 1000);
+  const date = new Date(Math.abs(duration) * 1000);
 
-  let hh = date.getUTCHours();
+  const days = date.getUTCDate() - 1;
+  let hh = 24 * days + date.getUTCHours();
   let mm = date.getUTCMinutes();
   let ss = date.getSeconds();
 
@@ -404,7 +405,7 @@ export const durationTimeFormatted = (duration) => {
     ss = `0${ss}`;
   }
 
-  return `${hh}:${mm}:${ss}`;
+  return `${duration < 0 ? '-' : ''}${hh}:${mm}:${ss}`;
 };
 
 /**

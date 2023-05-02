@@ -15,12 +15,20 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__ } from '~/locale';
 import sidebarEventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
+import { TYPE_ISSUE } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import AccessorUtilities from '~/lib/utils/accessor';
-import { inactiveId, LIST, ListType, toggleFormEventPrefix } from '../constants';
+import {
+  inactiveId,
+  LIST,
+  ListType,
+  toggleFormEventPrefix,
+  updateListQueries,
+  toggleCollapsedMutations,
+} from 'ee_else_ce/boards/constants';
 import eventHub from '../eventhub';
 import ItemCount from './item_count.vue';
 
@@ -65,6 +73,9 @@ export default {
     disabled: {
       default: true,
     },
+    issuableType: {
+      default: TYPE_ISSUE,
+    },
     isApolloBoard: {
       default: false,
     },
@@ -84,9 +95,13 @@ export default {
       type: Object,
       required: true,
     },
+    boardId: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
-    ...mapState(['activeId', 'boardId']),
+    ...mapState(['activeId']),
     isLoggedIn() {
       return Boolean(this.currentUserId);
     },
@@ -238,7 +253,7 @@ export default {
   created() {
     const localCollapsed = parseBoolean(localStorage.getItem(`${this.uniqueKey}.collapsed`));
     if ((!this.isLoggedIn || this.isEpicBoard) && localCollapsed) {
-      this.toggleListCollapsed({ listId: this.list.id, collapsed: true });
+      this.updateLocalCollapsedStatus(true);
     }
   },
   methods: {
@@ -287,12 +302,12 @@ export default {
     },
     toggleExpanded() {
       const collapsed = !this.list.collapsed;
-      this.toggleListCollapsed({ listId: this.list.id, collapsed });
+      this.updateLocalCollapsedStatus(collapsed);
 
       if (!this.isLoggedIn) {
-        this.addToLocalStorage();
+        this.addToLocalStorage(collapsed);
       } else {
-        this.updateListFunction();
+        this.updateListFunction(collapsed);
       }
 
       // When expanding/collapsing, the tooltip on the caret button sometimes stays open.
@@ -304,13 +319,37 @@ export default {
         property: collapsed ? 'closed' : 'open',
       });
     },
-    addToLocalStorage() {
+    addToLocalStorage(collapsed) {
       if (AccessorUtilities.canUseLocalStorage()) {
-        localStorage.setItem(`${this.uniqueKey}.collapsed`, this.list.collapsed);
+        localStorage.setItem(`${this.uniqueKey}.collapsed`, collapsed);
       }
     },
-    updateListFunction() {
-      this.updateList({ listId: this.list.id, collapsed: this.list.collapsed });
+    async updateListFunction(collapsed) {
+      if (this.isApolloBoard) {
+        try {
+          await this.$apollo.mutate({
+            mutation: updateListQueries[this.issuableType].mutation,
+            variables: {
+              listId: this.list.id,
+              collapsed,
+            },
+            optimisticResponse: {
+              updateBoardList: {
+                __typename: 'UpdateBoardListPayload',
+                errors: [],
+                list: {
+                  ...this.list,
+                  collapsed,
+                },
+              },
+            },
+          });
+        } catch {
+          this.$emit('error');
+        }
+      } else {
+        this.updateList({ listId: this.list.id, collapsed });
+      }
     },
     /**
      * TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/344619
@@ -321,6 +360,19 @@ export default {
       const start = formatDate(startDate, 'mmm d, yyyy', true);
       const due = formatDate(dueDate, 'mmm d, yyyy', true);
       return `${start} - ${due}`;
+    },
+    updateLocalCollapsedStatus(collapsed) {
+      if (this.isApolloBoard) {
+        this.$apollo.mutate({
+          mutation: toggleCollapsedMutations[this.issuableType].mutation,
+          variables: {
+            list: this.list,
+            collapsed,
+          },
+        });
+      } else {
+        this.toggleListCollapsed({ listId: this.list.id, collapsed });
+      }
     },
   },
 };

@@ -66,7 +66,7 @@ export default {
 <template>
   <component :is="tag">
     <button
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
+      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
       data-qa-selector="menu_section_button"
       :data-qa-section-name="item.title"
@@ -88,7 +88,7 @@ export default {
         {{ item.title }}
       </span>
 
-      <span class="gl-flex-grow-1 gl-text-right gl-mr-3">
+      <span class="gl-flex-grow-1 gl-text-right gl-mr-3 gl-text-gray-400">
         <gl-icon :name="collapseIcon" />
       </span>
     </button>

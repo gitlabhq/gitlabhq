@@ -39885,7 +39885,10 @@ msgstr ""
 msgid "SecurityOrchestration|After enabling a group-level policy, this policy automatically applies to all projects and sub-groups in this group."
 msgstr ""
 
-msgid "SecurityOrchestration|All policies"
+msgid "SecurityOrchestration|All sources"
+msgstr ""
+
+msgid "SecurityOrchestration|All types"
 msgstr ""
 
 msgid "SecurityOrchestration|An error occurred assigning your security policy project"

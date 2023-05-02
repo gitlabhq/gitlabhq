@@ -18194,6 +18194,26 @@ CREATE TABLE merge_request_diff_files (
     external_diff_size integer
 );
 
+CREATE TABLE merge_request_diff_llm_summaries (
+    id bigint NOT NULL,
+    user_id bigint,
+    merge_request_diff_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    provider smallint NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_93955f22ad CHECK ((char_length(content) <= 2056))
+);
+
+CREATE SEQUENCE merge_request_diff_llm_summaries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_diff_llm_summaries_id_seq OWNED BY merge_request_diff_llm_summaries.id;
+
 CREATE TABLE merge_request_diffs (
     id integer NOT NULL,
     state character varying,
@@ -25298,6 +25318,8 @@ ALTER TABLE ONLY merge_request_diff_commit_users ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY merge_request_diff_details ALTER COLUMN merge_request_diff_id SET DEFAULT nextval('merge_request_diff_details_merge_request_diff_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_diff_llm_summaries ALTER COLUMN id SET DEFAULT nextval('merge_request_diff_llm_summaries_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('merge_request_diffs_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('merge_request_metrics_id_seq'::regclass);
@@ -27457,6 +27479,9 @@ ALTER TABLE ONLY merge_request_diff_details
 
 ALTER TABLE ONLY merge_request_diff_files
     ADD CONSTRAINT merge_request_diff_files_pkey PRIMARY KEY (merge_request_diff_id, relative_order);
+
+ALTER TABLE ONLY merge_request_diff_llm_summaries
+    ADD CONSTRAINT merge_request_diff_llm_summaries_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT merge_request_diffs_pkey PRIMARY KEY (id);
@@ -31275,6 +31300,10 @@ CREATE INDEX index_merge_request_diff_details_on_verification_state ON merge_req
 
 CREATE INDEX index_merge_request_diff_details_pending_verification ON merge_request_diff_details USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
+
+CREATE INDEX index_merge_request_diff_llm_summaries_on_user_id ON merge_request_diff_llm_summaries USING btree (user_id);
+
 CREATE INDEX index_merge_request_diffs_by_id_partial ON merge_request_diffs USING btree (id) WHERE ((files_count > 0) AND ((NOT stored_externally) OR (stored_externally IS NULL)));
 
 CREATE INDEX index_merge_request_diffs_on_external_diff ON merge_request_diffs USING btree (external_diff);
@@ -34826,6 +34855,9 @@ ALTER TABLE ONLY protected_environment_approval_rules
 ALTER TABLE ONLY ci_pipeline_schedule_variables
     ADD CONSTRAINT fk_41c35fda51 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_request_diff_llm_summaries
+    ADD CONSTRAINT fk_42551b9fea FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespace_bans
     ADD CONSTRAINT fk_4275fbb1d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -35473,6 +35505,9 @@ ALTER TABLE ONLY fork_networks
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_e8fe908a34 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_diff_llm_summaries
+    ADD CONSTRAINT fk_e98931c3cb FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT fk_ea2f6dfc6f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

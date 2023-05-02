@@ -6,6 +6,7 @@ import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutatio
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
 import updateBoardListMutation from './graphql/board_list_update.mutation.graphql';
 
+import toggleListCollapsedMutation from './graphql/client/board_toggle_collapsed.mutation.graphql';
 import issueSetSubscriptionMutation from './graphql/issue_set_subscription.mutation.graphql';
 import issueSetTitleMutation from './graphql/issue_set_title.mutation.graphql';
 import groupBoardQuery from './graphql/group_board.query.graphql';
@@ -73,6 +74,12 @@ export const listsQuery = {
 export const updateListQueries = {
   [TYPE_ISSUE]: {
     mutation: updateBoardListMutation,
+  },
+};
+
+export const toggleCollapsedMutations = {
+  [TYPE_ISSUE]: {
+    mutation: toggleListCollapsedMutation,
   },
 };
 

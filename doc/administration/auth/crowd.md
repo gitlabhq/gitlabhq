@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369117) in GitLab 15.3 and is planned for
-removal in 16.0.
+removal in 17.0.
 
 Authenticate to GitLab using the Atlassian Crowd OmniAuth provider. Enabling
 this provider also allows Crowd authentication for Git-over-https requests.

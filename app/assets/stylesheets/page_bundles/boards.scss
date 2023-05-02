@@ -40,6 +40,7 @@
       // We do this because the flow of elements isn't affected by the rotate transform, so we must ensure that a
       // rotated element has square dimensions so it won't overlap with its siblings.
       margin: calc(50% - 8px) 0;
+      max-width: 50vh;
 
       transform-origin: center;
     }

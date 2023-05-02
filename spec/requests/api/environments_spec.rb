@@ -229,15 +229,22 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   end
 
   describe 'PUT /projects/:id/environments/:environment_id' do
-    it 'returns a 200 if name and external_url are changed' do
+    it 'returns a 200 if external_url is changed' do
       url = 'https://mepmep.whatever.ninja'
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          params: { name: 'Mepmep', external_url: url }
+          params: { external_url: url }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/environment')
-      expect(json_response['name']).to eq('Mepmep')
       expect(json_response['external_url']).to eq(url)
+    end
+
+    it 'returns a 400 if name is changed' do
+      put api("/projects/#{project.id}/environments/#{environment.id}", user),
+        params: { name: 'Mepmep' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq(described_class::ENVIRONMENT_NAME_UPDATE_ERROR)
     end
 
     it 'returns a 200 if tier is changed' do
@@ -258,20 +265,37 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       expect(json_response["error"]).to eq("slug is automatically generated and cannot be changed")
     end
 
-    it "won't update the external_url if only the name is passed" do
-      url = environment.external_url
-      put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          params: { name: 'Mepmep' }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['name']).to eq('Mepmep')
-      expect(json_response['external_url']).to eq(url)
-    end
-
     it 'returns a 404 if the environment does not exist' do
       put api("/projects/#{project.id}/environments/#{non_existing_record_id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when disallow_environment_name_update feature flag is disabled' do
+      before do
+        stub_feature_flags(disallow_environment_name_update: false)
+      end
+
+      it 'returns a 200 if name and external_url are changed' do
+        url = 'https://mepmep.whatever.ninja'
+        put api("/projects/#{project.id}/environments/#{environment.id}", user),
+            params: { name: 'Mepmep', external_url: url }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(json_response['name']).to eq('Mepmep')
+        expect(json_response['external_url']).to eq(url)
+      end
+
+      it "won't update the external_url if only the name is passed" do
+        url = environment.external_url
+        put api("/projects/#{project.id}/environments/#{environment.id}", user),
+            params: { name: 'Mepmep' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['name']).to eq('Mepmep')
+        expect(json_response['external_url']).to eq(url)
+      end
     end
   end
 

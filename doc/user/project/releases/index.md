@@ -25,7 +25,7 @@ When you [create a release](#create-a-release):
 
 - GitLab automatically archives source code and associates it with the release.
 - GitLab automatically creates a JSON file that lists everything in the release,
-  so you can compare and audit releases. This file is called [release evidence](#release-evidence).
+  so you can compare and audit releases. This file is called [release evidence](release_evidence.md).
 
 When you create a release, or after, you can:
 
@@ -63,7 +63,7 @@ You can create a release:
 - [In the Releases page](#create-a-release-in-the-releases-page).
 - Using the [Releases API](../../../api/releases/index.md#create-a-release).
 
-We recommend creating a release as one of the last steps in your CI/CD pipeline.
+You should create a release as one of the last steps in your CI/CD pipeline.
 
 ### Create a release in the Releases page
 
@@ -180,7 +180,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 You can create a release in the past using either the
 [Releases API](../../../api/releases/index.md#historical-releases) or the UI. When you set
 a past `released_at` date, an **Historical release** badge is displayed next to
-the release tag. Due to being released in the past, [release evidence](#release-evidence)
+the release tag. Due to being released in the past, [release evidence](release_evidence.md)
 is not available.
 
 ## Edit a release
@@ -254,7 +254,7 @@ Here is an example of milestones with no releases, one release, and two releases
 ![Milestones with and without Release associations](img/milestone_list_with_releases_v12_5.png)
 
 NOTE:
-A subgroup's project releases cannot be associated with a supergroup's milestone. To learn
+A subgroup's project releases cannot be associated with a parent group's milestone. To learn
 more, read issue #328054,
 [Releases cannot be associated with a supergroup milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/328054).
 
@@ -284,7 +284,7 @@ Deploy freezes help reduce uncertainty and risk when automating deployments.
 A maintainer can set a deploy freeze window in the user interface or by using the [Freeze Periods API](../../../api/freeze_periods.md) to set a `freeze_start` and a `freeze_end`, which
 are defined as [crontab](https://crontab.guru/) entries.
 
-If the job that's executing is within a freeze period, GitLab CI/CD creates an environment
+If the job that's executing is in a freeze period, GitLab CI/CD creates an environment
 variable named `$CI_DEPLOY_FREEZE`.
 
 To prevent the deployment job from executing, create a `rules` entry in your
@@ -317,141 +317,6 @@ complete overlapping period.
 
 For more information, see [Deployment safety](../../../ci/environments/deployment_safety.md).
 
-## Release evidence
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
-
-Each time a release is created, GitLab takes a snapshot of data that's related to it.
-This data is saved in a JSON file and called *release evidence*. The feature
-includes test artifacts and linked milestones to facilitate
-internal processes, like external audits.
-
-To access the release evidence, on the Releases page, select the link to the JSON file that's listed
-under the **Evidence collection** heading.
-
-You can also [use the API](../../../api/releases/index.md#collect-release-evidence) to
-generate release evidence for an existing release. Because of this, each release
-can have multiple release evidence snapshots. You can view the release evidence and
-its details on the Releases page.
-
-When the issue tracker is disabled, release evidence [can't be downloaded](https://gitlab.com/gitlab-org/gitlab/-/issues/208397).
-
-Here is an example of a release evidence object:
-
-```json
-{
-  "release": {
-    "id": 5,
-    "tag_name": "v4.0",
-    "name": "New release",
-    "project": {
-      "id": 20,
-      "name": "Project name",
-      "created_at": "2019-04-14T11:12:13.940Z",
-      "description": "Project description"
-    },
-    "created_at": "2019-06-28 13:23:40 UTC",
-    "description": "Release description",
-    "milestones": [
-      {
-        "id": 11,
-        "title": "v4.0-rc1",
-        "state": "closed",
-        "due_date": "2019-05-12 12:00:00 UTC",
-        "created_at": "2019-04-17 15:45:12 UTC",
-        "issues": [
-          {
-            "id": 82,
-            "title": "The top-right popup is broken",
-            "author_name": "John Doe",
-            "author_email": "john@doe.com",
-            "state": "closed",
-            "due_date": "2019-05-10 12:00:00 UTC"
-          },
-          {
-            "id": 89,
-            "title": "The title of this page is misleading",
-            "author_name": "Jane Smith",
-            "author_email": "jane@smith.com",
-            "state": "closed",
-            "due_date": "nil"
-          }
-        ]
-      },
-      {
-        "id": 12,
-        "title": "v4.0-rc2",
-        "state": "closed",
-        "due_date": "2019-05-30 18:30:00 UTC",
-        "created_at": "2019-04-17 15:45:12 UTC",
-        "issues": []
-      }
-    ],
-    "report_artifacts": [
-      {
-        "url":"https://gitlab.example.com/root/project-name/-/jobs/111/artifacts/download"
-      }
-    ]
-  }
-}
-```
-
-### Collect release evidence **(PREMIUM SELF)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
-
-When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence). You can collect release evidence multiple times for one release.
-
-Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
-
-### Include report artifacts as release evidence **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
-
-When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
-
-Although job artifacts normally expire, artifacts included in release evidence do not expire.
-
-To enable job artifact collection you must specify both:
-
-1. [`artifacts:paths`](../../../ci/yaml/index.md#artifactspaths)
-1. [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)
-
-```yaml
-ruby:
-  script:
-    - gem install bundler
-    - bundle install
-    - bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
-  artifacts:
-    paths:
-      - rspec.xml
-    reports:
-      junit: rspec.xml
-```
-
-If the pipeline ran successfully, when you create your release, the `rspec.xml` file is saved as
-release evidence.
-
-If you [schedule release evidence collection](#schedule-release-evidence-collection),
-some artifacts may already be expired by the time of evidence collection. To avoid this you can use
-the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
-keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
-
-### Schedule release evidence collection
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23697) in GitLab 12.8.
-
-In the API:
-
-- If you specify a future `released_at` date, the release becomes an **Upcoming release**
-  and the evidence is collected on the date of the release. You cannot collect
-  release evidence before then.
-- If you specify a past `released_at` date, the release becomes an **Historical
-  release** and no evidence is collected.
-- If you do not specify a `released_at` date, release evidence is collected on the
-  date the release is created.
-
 ## Release permissions
 
 > Fixes to the permission model for create, update and delete actions [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
@@ -465,14 +330,15 @@ In the API:
 - Users with the Guest role
   have read and download access to the project releases.
   This includes associated Git-tag-names, release description, author information of the releases.
-  However, other repository-related information, such as [source code](release_fields.md#source-code), [release evidence](#release-evidence) are redacted.
+  However, other repository-related information, such as [source code](release_fields.md#source-code) and
+  [release evidence](release_evidence.md) are redacted.
 
 ### Publish releases without giving access to source code
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
 
 Releases can be made accessible to non-project members while keeping repository-related information such as
-[source code](release_fields.md#source-code) and [release evidence](#release-evidence) private. This is useful for
+[source code](release_fields.md#source-code) and [release evidence](release_evidence.md) private. Use this for
 projects that use releases as a way to give access to new versions of software but do not want the source code to
 be public.
 

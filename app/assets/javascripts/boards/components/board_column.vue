@@ -93,6 +93,7 @@ export default {
       <board-list-header
         :list="list"
         :filter-params="filtersToUse"
+        :board-id="boardId"
         @setActiveList="$emit('setActiveList', $event)"
       />
       <board-list

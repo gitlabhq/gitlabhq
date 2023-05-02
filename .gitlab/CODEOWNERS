@@ -952,6 +952,7 @@ lib/gitlab/checks/**
 /doc/user/project/push_options.md @aqualls
 /doc/user/project/quick_actions.md @msedlakjakubowski
 /doc/user/project/releases/ @phillipwells
+/doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/ @aqualls
 /doc/user/project/repository/file_finder.md @ashrafkhamis

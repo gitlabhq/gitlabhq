@@ -16,8 +16,15 @@ require 'benchmark/ips'
 # or
 #   rake benchmark:banzai
 #
+# A specific filter can also be benchmarked by using the `FILTER`
+# environment variable.
+#
+#   BENCHMARK=1 FILTER=MathFilter rspec spec/benchmarks/banzai_benchmark.rb --tag specific_filter
+# or
+#   FILTER=MathFilter rake benchmark:banzai
+#
 # rubocop: disable RSpec/TopLevelDescribePath
-RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
+RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_category: :team_planning do
   include MarkupHelper
 
   let_it_be(:feature)       { MarkdownFeature.new }
@@ -83,9 +90,15 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
       benchmark_pipeline_filters(:plain_markdown)
     end
 
-    it 'benchmarks specified filters in the FullPipeline' do
-      filter_klass_list = [Banzai::Filter::MathFilter]
-      benchmark_pipeline_filters(:full, filter_klass_list)
+    it 'benchmarks specified filters in the FullPipeline', :specific_filter do
+      begin
+        filter = ENV['FILTER'] || 'MarkdownFilter'
+        filter_klass = "Banzai::Filter::#{filter}".constantize
+      rescue NameError
+        raise 'Incorrect filter specified. Correct example: FILTER=MathFilter'
+      end
+
+      benchmark_pipeline_filters(:full, [filter_klass])
     end
   end
 
@@ -114,7 +127,8 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures do
     pipeline      = Banzai::Pipeline[pipeline_type]
     filter_source = build_filter_text(pipeline, markdown_text)
 
-    puts "\n--> Benchmarking #{pipeline.name.demodulize} filters\n"
+    filter_msg = filter_klass_list ? filter_klass_list.first.name.demodulize : 'all filters'
+    puts "\n--> Benchmarking #{filter_msg} for #{pipeline.name.demodulize}\n"
 
     Benchmark.ips do |x|
       x.config(time: 10, warmup: 2)

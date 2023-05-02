@@ -1,0 +1,28 @@
+---
+Gettext/StaticIdentifier:
+  Details: grace period
+  Exclude:
+    - 'app/graphql/types/project_type.rb'
+    - 'app/models/integrations/apple_app_store.rb'
+    - 'app/models/integrations/confluence.rb'
+    - 'app/models/integrations/google_play.rb'
+    - 'app/services/import/fogbugz_service.rb'
+    - 'app/services/issuable_links/create_service.rb'
+    - 'app/services/issues/set_crm_contacts_service.rb'
+    - 'app/services/projects/create_from_template_service.rb'
+    - 'app/services/security/ci_configuration/base_create_service.rb'
+    - 'app/services/users/banned_user_base_service.rb'
+    - 'app/services/work_items/widgets/hierarchy_service/base_service.rb'
+    - 'ee/app/controllers/admin/licenses_controller.rb'
+    - 'ee/app/controllers/subscriptions/groups_controller.rb'
+    - 'ee/app/mailers/ee/emails/admin_notification.rb'
+    - 'ee/app/mailers/emails/namespace_storage_usage_mailer.rb'
+    - 'ee/app/models/ee/member.rb'
+    - 'ee/app/models/integrations/github.rb'
+    - 'ee/app/services/ee/projects/create_from_template_service.rb'
+    - 'ee/app/services/security/security_orchestration_policies/policy_configuration_validation_service.rb'
+    - 'ee/app/services/timebox/rollup_report_service.rb'
+    - 'ee/app/services/timebox_report_service.rb'
+    - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
+    - 'ee/spec/features/registrations/identity_verification_spec.rb'
+    - 'lib/gitlab/github_import/settings.rb'
