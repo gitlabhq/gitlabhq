@@ -1,8 +1,0 @@
----
-name: read_fingerprints_from_uploaded_file_in_maven_upload
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116236
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404988
-milestone: '15.11'
-type: development
-group: group::package registry
-default_enabled: false

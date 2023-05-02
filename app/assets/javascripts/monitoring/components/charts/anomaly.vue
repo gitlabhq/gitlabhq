@@ -1,8 +1,9 @@
 <script>
 import { GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
+import { hexToRgba } from '@gitlab/ui/dist/utils/utils';
+
 import produce from 'immer';
 import { flattenDeep, isNumber } from 'lodash';
-import { hexToRgb } from '~/lib/utils/color_utils';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { areaOpacityValues, symbolSizes, colorValues, panelTypes } from '../../constants';
 import { graphDataValidatorForAnomalyValues } from '../../utils';
@@ -20,7 +21,7 @@ const LOWER = 2;
  */
 const AREA_COLOR = colorValues.anomalyAreaColor;
 const AREA_OPACITY = areaOpacityValues.default;
-const AREA_COLOR_RGBA = `rgba(${hexToRgb(AREA_COLOR).join(',')},${AREA_OPACITY})`;
+const AREA_COLOR_RGBA = hexToRgba(AREA_COLOR, AREA_OPACITY);
 
 /**
  * The anomaly component highlights when a metric shows

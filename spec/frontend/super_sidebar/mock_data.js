@@ -147,10 +147,6 @@ export const userMenuMockData = {
   has_link_to_profile: true,
   link_to_profile: '/thefox',
   status: userMenuMockStatus,
-  trial: {
-    has_start_trial: false,
-    url: invalidUrl,
-  },
   settings: {
     profile_path: invalidUrl,
     profile_preferences_path: invalidUrl,

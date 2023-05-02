@@ -125,7 +125,7 @@ job1:
 If you define the cache globally, each job uses the
 same definition. You can override this behavior for each job.
 
-To disable it completely for a job, use an empty hash:
+To disable it completely for a job, use an empty list:
 
 ```yaml
 job:

@@ -104,10 +104,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           message: user.status&.message_html&.html_safe,
           clear_after: nil
         },
-        trial: {
-          has_start_trial: helper.current_user_menu?(:start_trial),
-          url: helper.trials_link_url
-        },
         settings: {
           has_settings: helper.current_user_menu?(:settings),
           profile_path: profile_path,

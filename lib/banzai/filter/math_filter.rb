@@ -12,7 +12,7 @@ module Banzai
       # Handle the $`...`$ and ```math syntax in this filter.
       # Also add necessary classes any existing math blocks.
 
-      CSS_MATH   = 'pre[lang="math"] > code'
+      CSS_MATH   = 'pre[data-canonical-lang="math"] > code'
       XPATH_MATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH).freeze
       CSS_CODE   = 'code'
       XPATH_CODE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_CODE).freeze

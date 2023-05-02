@@ -319,7 +319,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
       put ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
-        unprocessable_entity! if Gitlab::FIPS.enabled? && params['file.md5']
+        unprocessable_entity! if Gitlab::FIPS.enabled? && params[:file].md5
         authorize_upload!
         bad_request!('File is too large') if user_project.actual_limits.exceeded?(:maven_max_file_size, params[:file].size)
 
@@ -347,15 +347,11 @@ module API
           else
             file_params = {
               file: params[:file],
-              size: params['file.size'],
+              size: params[:file].size,
               file_name: file_name,
-              file_sha1: params['file.sha1'],
-              file_md5: params['file.md5']
+              file_sha1: params[:file].sha1,
+              file_md5: params[:file].md5
             }
-
-            if Feature.enabled?(:read_fingerprints_from_uploaded_file_in_maven_upload, user_project)
-              file_params.merge!(size: params[:file].size, file_sha1: params[:file].sha1, file_md5: params[:file].md5)
-            end
 
             ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job)).execute
             track_package_event('push_package', :maven, project: user_project, namespace: user_project.namespace) if jar_file?(format)

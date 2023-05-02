@@ -53,10 +53,6 @@ module SidebarsHelper
       link_to_profile: user_url(user),
       logo_url: current_appearance&.header_logo_path,
       status: user_status_menu_data(user),
-      trial: {
-        has_start_trial: current_user_menu?(:start_trial),
-        url: trials_link_url
-      },
       settings: {
         has_settings: current_user_menu?(:settings),
         profile_path: profile_path,

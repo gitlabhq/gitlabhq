@@ -13,7 +13,7 @@ This guide describes the event dictionary and how it's implemented.
 
 ## Event definition and validation
 
-This process is meant to document all Snowplow events and ensure consistency. Event definitions must comply with the [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/events/schema.json).
+This process is meant to document all Snowplow events and ensure consistency. Every Snowplow event needs to have such a definition. Event definitions must comply with the [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/events/schema.json).
 
 All event definitions are stored in the following directories:
 

@@ -6,11 +6,12 @@ RSpec.describe Users::EmailVerification::ValidateTokenService, :clean_gitlab_red
   using RSpec::Parameterized::TableSyntax
 
   let(:service) { described_class.new(attr: attr, user: user, token: token) }
+  let(:email) { build_stubbed(:user).email }
   let(:token) { 'token' }
-  let(:encrypted_token) { Devise.token_generator.digest(User, attr, token) }
+  let(:encrypted_token) { Devise.token_generator.digest(User, email, token) }
   let(:generated_at_attr) { attr == :unlock_token ? :locked_at : :confirmation_sent_at }
   let(:token_generated_at) { 1.minute.ago }
-  let(:user) { build(:user, attr => encrypted_token, generated_at_attr => token_generated_at) }
+  let(:user) { build(:user, email: email, attr => encrypted_token, generated_at_attr => token_generated_at) }
 
   describe '#execute' do
     context 'with a valid attribute' do

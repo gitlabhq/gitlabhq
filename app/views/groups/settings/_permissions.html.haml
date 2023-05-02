@@ -39,6 +39,7 @@
       = render_if_exists 'groups/settings/wiki', f: f, group: @group
     = render 'groups/settings/lfs', f: f
     = render_if_exists 'groups/settings/code_suggestions', f: f, group: @group
+    = render_if_exists 'groups/settings/ai_related_settings', f: f, group: @group
     = render 'groups/settings/git_access_protocols', f: f, group: @group
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group

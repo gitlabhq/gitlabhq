@@ -60,9 +60,12 @@ describe('DiffsColors component', () => {
     });
 
     it.each([
-      [{}, '--diff-deletion-color: rgba(255,0,0,0.2); --diff-addition-color: rgba(0,255,0,0.2);'],
-      [{ addition: null }, '--diff-deletion-color: rgba(255,0,0,0.2);'],
-      [{ deletion: null }, '--diff-addition-color: rgba(0,255,0,0.2);'],
+      [
+        {},
+        '--diff-deletion-color: rgba(255, 0, 0, 0.2); --diff-addition-color: rgba(0, 255, 0, 0.2);',
+      ],
+      [{ addition: null }, '--diff-deletion-color: rgba(255, 0, 0, 0.2);'],
+      [{ deletion: null }, '--diff-addition-color: rgba(0, 255, 0, 0.2);'],
     ])('should set correct CSS variables', (provide, expectedStyle) => {
       createComponent(provide);
 

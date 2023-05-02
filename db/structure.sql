@@ -318,6 +318,15 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_b2d852e1e2cb() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_bfc6e47be8cc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13667,6 +13676,7 @@ CREATE TABLE ci_pipelines (
     ci_ref_id bigint,
     locked smallint DEFAULT 1 NOT NULL,
     partition_id bigint DEFAULT 100 NOT NULL,
+    id_convert_to_bigint bigint DEFAULT 0 NOT NULL,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 
@@ -18815,6 +18825,8 @@ CREATE TABLE namespace_settings (
     unique_project_download_limit_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     emails_enabled boolean DEFAULT true NOT NULL,
     code_suggestions boolean DEFAULT false NOT NULL,
+    experiment_features_enabled boolean DEFAULT false NOT NULL,
+    third_party_ai_features_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -24531,7 +24543,10 @@ CREATE TABLE work_item_progresses (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     issue_id bigint NOT NULL,
-    progress smallint DEFAULT 0 NOT NULL
+    progress smallint DEFAULT 0 NOT NULL,
+    start_value double precision DEFAULT 0.0 NOT NULL,
+    end_value double precision DEFAULT 100.0 NOT NULL,
+    current_value double precision DEFAULT 0.0 NOT NULL
 );
 
 CREATE TABLE work_item_types (
@@ -34529,6 +34544,8 @@ CREATE TRIGGER trigger_482bac5ec48a BEFORE INSERT OR UPDATE ON system_note_metad
 CREATE TRIGGER trigger_775287b6d67a BEFORE INSERT OR UPDATE ON note_diff_files FOR EACH ROW EXECUTE FUNCTION trigger_775287b6d67a();
 
 CREATE TRIGGER trigger_909cf0a06094 BEFORE INSERT OR UPDATE ON award_emoji FOR EACH ROW EXECUTE FUNCTION trigger_909cf0a06094();
+
+CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
 CREATE TRIGGER trigger_bfc6e47be8cc BEFORE INSERT OR UPDATE ON snippet_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_bfc6e47be8cc();
 

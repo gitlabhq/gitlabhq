@@ -1842,16 +1842,31 @@ msgstr ""
 msgid "AI actions"
 msgstr ""
 
+msgid "AI| %{link_start}How is my data used?%{link_end}"
+msgstr ""
+
+msgid "AI| %{link_start}What are experiment features?%{link_end}"
+msgstr ""
+
 msgid "AI|Close the Code Explanation"
 msgstr ""
 
 msgid "AI|Code Explanation"
 msgstr ""
 
+msgid "AI|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
+msgstr ""
+
 msgid "AI|Experiment"
 msgstr ""
 
+msgid "AI|Experiment features"
+msgstr ""
+
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`"
+msgstr ""
+
+msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
 msgstr ""
 
 msgid "AI|Helpful"
@@ -1869,7 +1884,19 @@ msgstr ""
 msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr ""
 
+msgid "AI|These features could cause performance and stability issues and may change over time."
+msgstr ""
+
+msgid "AI|Third-party AI services"
+msgstr ""
+
 msgid "AI|Unhelpful"
+msgstr ""
+
+msgid "AI|Use experiment features"
+msgstr ""
+
+msgid "AI|Use third-party AI services"
 msgstr ""
 
 msgid "AI|What does the selected code mean?"
@@ -2679,6 +2706,9 @@ msgstr ""
 msgid "Admin Area"
 msgstr ""
 
+msgid "Admin Area / Dashboard"
+msgstr ""
+
 msgid "Admin Mode"
 msgstr ""
 
@@ -2686,9 +2716,6 @@ msgid "Admin Note"
 msgstr ""
 
 msgid "Admin Notifications"
-msgstr ""
-
-msgid "Admin Section"
 msgstr ""
 
 msgid "Admin mode already enabled"
@@ -12137,16 +12164,10 @@ msgstr ""
 msgid "Could not create Wiki Repository at this time. Please try again later."
 msgstr ""
 
-msgid "Could not create environment"
-msgstr ""
-
 msgid "Could not create group"
 msgstr ""
 
 msgid "Could not create issue"
-msgstr ""
-
-msgid "Could not create project"
 msgstr ""
 
 msgid "Could not create wiki page"
@@ -12204,12 +12225,6 @@ msgid "Could not save configuration. Please refresh the page, or try again later
 msgstr ""
 
 msgid "Could not save group ID"
-msgstr ""
-
-msgid "Could not save project ID"
-msgstr ""
-
-msgid "Could not save prometheus manual configuration"
 msgstr ""
 
 msgid "Could not update the LDAP settings"
@@ -16936,9 +16951,6 @@ msgstr ""
 msgid "Error creating vulnerability finding: %{errors}"
 msgstr ""
 
-msgid "Error deleting project. Check logs for error details."
-msgstr ""
-
 msgid "Error fetching branches"
 msgstr ""
 
@@ -17593,6 +17605,9 @@ msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
 msgid "Experiment"
+msgstr ""
+
+msgid "Experiment features' settings not allowed."
 msgstr ""
 
 msgid "Experiments"
@@ -40890,9 +40905,6 @@ msgstr ""
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
-msgid "Self-monitoring project does not exist"
-msgstr ""
-
 msgid "Self-monitoring was %{deprecation}deprecated%{link_end} in GitLab 14.9, and is %{removal}scheduled for removal%{link_end} in GitLab 16.0. For information on a possible replacement, %{opstrace}learn more about Opstrace%{link_end}."
 msgstr ""
 
@@ -45222,6 +45234,9 @@ msgid "Things to be aware of before transferring:"
 msgstr ""
 
 msgid "Third Party Advisory Link"
+msgstr ""
+
+msgid "Third party AI settings not allowed."
 msgstr ""
 
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."

@@ -123,10 +123,6 @@ RSpec.describe UsersHelper do
       allow(helper).to receive(:can?).and_return(false)
     end
 
-    after do
-      expect(items).not_to include(:start_trial)
-    end
-
     it 'includes all default items' do
       expect(items).to include(:help, :sign_out)
     end
@@ -495,16 +491,6 @@ RSpec.describe UsersHelper do
 
     it 'paths matches the schema' do
       expect(data[:paths]).to match_schema('entities/admin_users_data_attributes_paths')
-    end
-  end
-
-  describe '#trials_link_url' do
-    it 'returns the correct URL' do
-      if Gitlab.ee?
-        expect(trials_link_url).to eq('/-/trial_registrations/new?glm_content=top-right-dropdown&glm_source=gitlab.com')
-      else
-        expect(trials_link_url).to eq('https://about.gitlab.com/free-trial/')
-      end
     end
   end
 

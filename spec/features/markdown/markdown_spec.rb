@@ -68,7 +68,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
       end
 
       aggregate_failures 'parses mermaid code block' do
-        expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
+        expect(doc).to have_selector('pre[data-canonical-lang=mermaid] > code.js-render-mermaid')
       end
 
       aggregate_failures 'parses strikethroughs' do

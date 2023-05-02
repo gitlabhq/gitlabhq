@@ -18,7 +18,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
   end
 
   shared_examples 'display math' do
-    let_it_be(:template_prefix_with_pre) { '<pre lang="math" data-math-style="display" class="js-render-math"><code>' }
+    let_it_be(:template_prefix_with_pre) { '<pre data-canonical-lang="math" data-math-style="display" class="js-render-math"><code>' }
     let_it_be(:template_prefix_with_code) { '<code data-math-style="display" class="code math js-render-math">' }
     let(:use_pre_tags) { false }
 
@@ -165,11 +165,11 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
       input = "```plaintext\n2+2\n```"
       doc = pipeline_filter(input)
 
-      expect(doc.to_s).to eq "<pre lang=\"plaintext\"><code>2+2\n</code></pre>"
+      expect(doc.to_s).to eq "<pre data-canonical-lang=\"plaintext\"><code>2+2\n</code></pre>"
     end
 
     it 'requires the pre to contain both code and math' do
-      input = '<pre lang="math">something</pre>'
+      input = '<pre data-canonical-lang="math">something</pre>'
       doc = pipeline_filter(input)
 
       expect(doc.to_s).to eq input
@@ -217,9 +217,11 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
 
   def pipeline_filter(text)
     context = { project: nil, no_sourcepos: true }
+
     doc = Banzai::Pipeline::PreProcessPipeline.call(text, {})
     doc = Banzai::Pipeline::PlainMarkdownPipeline.call(doc[:output], context)
-    doc = Banzai::Filter::SanitizationFilter.call(doc[:output], context, nil)
+    doc = Banzai::Filter::CodeLanguageFilter.call(doc[:output], context, nil)
+    doc = Banzai::Filter::SanitizationFilter.call(doc, context, nil)
 
     filter(doc)
   end

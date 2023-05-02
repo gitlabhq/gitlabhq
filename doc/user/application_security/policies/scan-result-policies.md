@@ -113,7 +113,7 @@ the defined policy.
 | `user_approvers_ids` | `array` of `integer` | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
 | `group_approvers` | `array` of `string` | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 | `group_approvers_ids` | `array` of `integer` | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `role_approvers` | `array` of `string` | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers. |
+| `role_approvers` | `array` of `string` | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers that are eligible to approve. |
 
 Requirements and limitations:
 

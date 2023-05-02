@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407762
 milestone: '16.0'
 type: development
 group: group::threat insights
-default_enabled: false
+default_enabled: true

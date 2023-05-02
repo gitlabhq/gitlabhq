@@ -82,6 +82,9 @@ export default {
         },
       };
     },
+    showTrialItem() {
+      return this.data.trial?.has_start_trial;
+    },
     editProfileItem() {
       return {
         text: this.$options.i18n.editProfile,
@@ -271,7 +274,7 @@ export default {
         />
 
         <gl-disclosure-dropdown-item
-          v-if="data.trial.has_start_trial"
+          v-if="showTrialItem"
           :item="trialItem"
           data-testid="start-trial-item"
         >

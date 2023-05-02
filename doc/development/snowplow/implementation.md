@@ -11,6 +11,11 @@ This page describes how to:
 - Implement Snowplow frontend and backend tracking
 - Test Snowplow events
 
+## Event definitions
+
+Every Snowplow event, regardless of frontend or backend, requires a corresponding event definition. These definitions document the event and its properties to make it easier to maintain and analyze.
+These defintions can be browsed in the [event dictionary](https://metrics.gitlab.com/snowplow). The [event dictionary guide](event_dictionary_guide.md) provides instructions for setting up an event definition.
+
 ## Snowplow JavaScript frontend tracking
 
 GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/)

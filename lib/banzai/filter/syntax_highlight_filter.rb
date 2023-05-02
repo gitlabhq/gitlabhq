@@ -12,8 +12,6 @@ module Banzai
     class SyntaxHighlightFilter < TimeoutHtmlPipelineFilter
       include OutputSafety
 
-      LANG_PARAMS_DELIMITER = ':'
-      LANG_PARAMS_ATTR = 'data-lang-params'
       CSS_CLASSES = 'code highlight js-syntax-highlight'
 
       CSS   = 'pre:not([data-kroki-style]) > code:only-child'
@@ -27,10 +25,13 @@ module Banzai
         doc
       end
 
-      def highlight_node(node)
-        return if node.parent&.parent.nil?
+      def highlight_node(code_node)
+        return if code_node.parent&.parent.nil?
 
-        lang, lang_params = parse_lang_params(node)
+        # maintain existing attributes already added. e.g math and mermaid nodes
+        pre_node = code_node.parent
+
+        lang = pre_node['data-canonical-lang']
         retried = false
 
         if use_rouge?(lang)
@@ -42,7 +43,7 @@ module Banzai
         end
 
         begin
-          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, node.text), tag: language)
+          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, code_node.text), tag: language)
         rescue StandardError
           # Gracefully handle syntax highlighter bugs/errors to ensure users can
           # still access an issue/comment/etc. First, retry with the plain text
@@ -57,21 +58,16 @@ module Banzai
           retry
         end
 
-        # maintain existing attributes already added. e.g math and mermaid nodes
-        node.children = code
-        pre_node = node.parent
+        code_node.children = code
 
         # ensure there are no extra children, such as a text node that might
         # show up from an XSS attack
-        pre_node.children = node
+        pre_node.children = code_node
 
-        pre_node[:lang] = language
         pre_node.add_class(CSS_CLASSES)
         pre_node.add_class("language-#{language}") if language
-        pre_node.set_attribute('data-canonical-lang', escape_once(lang)) if lang != language
-        pre_node.set_attribute(LANG_PARAMS_ATTR, escape_once(lang_params)) if lang_params.present?
+        pre_node.set_attribute('lang', language)
         pre_node.set_attribute('v-pre', 'true')
-        pre_node.remove_attribute('data-meta')
         copy_code_btn = "<copy-code></copy-code>" unless language == 'suggestion'
 
         highlighted = %(<div class="gl-relative markdown-code-block js-markdown-code">#{pre_node.to_html}#{copy_code_btn}</div>)
@@ -81,33 +77,6 @@ module Banzai
       end
 
       private
-
-      def parse_lang_params(node)
-        node = node.parent
-
-        # Commonmarker's FULL_INFO_STRING render option works with the space delimiter.
-        # But the current behavior of GitLab's markdown renderer is different - it grabs everything as the single
-        # line, including language and its options. To keep backward compatibility, we have to parse the old format and
-        # merge with the new one.
-        #
-        # Behaviors before separating language and its parameters:
-        # Old ones:
-        # "```ruby with options```" -> '<pre><code lang="ruby with options">'.
-        # "```ruby:with:options```" -> '<pre><code lang="ruby:with:options">'.
-        #
-        # New ones:
-        # "```ruby with options```" -> '<pre><code lang="ruby" data-meta="with options">'.
-        # "```ruby:with:options```" -> '<pre><code lang="ruby:with:options">'.
-
-        language = node.attr('lang')
-
-        return unless language
-
-        language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
-        language_params = [node.attr('data-meta'), language_params].compact.join(' ')
-
-        [language, language_params]
-      end
 
       # Separate method so it can be instrumented.
       def lex(lexer, code)

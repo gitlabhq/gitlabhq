@@ -120,6 +120,12 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
         let(:before_pipeline) { pipeline }
 
         it 'produces the expected SQL string' do
+          # To be removed when the ignored column id_convert_to_bigint for ci_pipelines is removed
+          # see https://gitlab.com/gitlab-org/gitlab/-/issues/397000
+          selected_columns =
+            Ci::Pipeline.column_names.map do |field|
+              Ci::Pipeline.connection.quote_table_name("#{Ci::Pipeline.table_name}.#{field}")
+            end.join(', ')
           expect(subject.squish).to eq <<~SQL.squish
             UPDATE
                 "ci_pipelines"
@@ -140,14 +146,14 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
                                 "base_and_descendants"
                             AS
                                 ((SELECT
-                                    "ci_pipelines".*
+                                    #{selected_columns}
                                 FROM
                                     "ci_pipelines"
                                 WHERE
                                     "ci_pipelines"."id" = #{before_pipeline.id})
                             UNION
                                 (SELECT
-                                    "ci_pipelines".*
+                                    #{selected_columns}
                                 FROM
                                     "ci_pipelines",
                                     "base_and_descendants",

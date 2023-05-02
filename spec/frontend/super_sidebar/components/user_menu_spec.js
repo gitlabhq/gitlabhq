@@ -206,6 +206,14 @@ describe('UserMenu component', () => {
         'data-track-label': 'start_trial',
       });
     });
+
+    describe('When trial info is not provided', () => {
+      it('does not render the start trial menu item', () => {
+        createWrapper();
+
+        expect(wrapper.findByTestId('start-trial-item').exists()).toBe(false);
+      });
+    });
   });
 
   describe('Buy Pipeline Minutes item', () => {

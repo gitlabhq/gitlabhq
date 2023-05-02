@@ -42,6 +42,7 @@ A vulnerability's status can be:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 with a feature flag named `dismissal_reason`.
 > - Enabled on GitLab.com in GitLab 15.11. For self-managed customers, [contact Support](https://about.gitlab.com/support/) if you would like to use this feature in GitLab 15.11.
+> - Enabled by default in GitLab 16.0.
 
 When dismissing a vulnerability, one of the following reasons must be chosen to clarify why it is being dismissed:
 

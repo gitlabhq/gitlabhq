@@ -18,6 +18,9 @@ module Ci
     include EachBatch
     include FastDestroyAll::Helpers
 
+    include IgnorableColumns
+    ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
+
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {

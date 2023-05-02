@@ -18,8 +18,8 @@ module Banzai
 
         diagram_selectors = ::Gitlab::Kroki.formats(settings)
                                 .map do |diagram_type|
-                                  %(pre[lang="#{diagram_type}"] > code,
-                                  pre > code[lang="#{diagram_type}"])
+                                  %(pre[data-canonical-lang="#{diagram_type}"] > code,
+                                  pre > code[data-canonical-lang="#{diagram_type}"])
                                 end
                                 .join(', ')
 
@@ -28,7 +28,7 @@ module Banzai
 
         diagram_format = "svg"
         doc.xpath(xpath).each do |node|
-          diagram_type = node.parent['lang'] || node['lang']
+          diagram_type = node.parent['data-canonical-lang'] || node['data-canonical-lang']
           next unless diagram_selectors.include?(diagram_type)
 
           diagram_src = node.content
