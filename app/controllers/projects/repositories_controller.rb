@@ -27,9 +27,8 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def archive
-    return render_404 if html_request?
-
     set_cache_headers
+
     return if archive_not_modified?
 
     send_git_archive @repository, **repo_params

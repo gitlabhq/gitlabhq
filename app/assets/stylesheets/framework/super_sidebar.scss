@@ -128,7 +128,7 @@
     @include gl-font-sm;
   }
 
-  .context-switcher-toggle {
+  .gl-new-dropdown-custom-toggle .context-switcher-toggle {
     &[aria-expanded='true'] {
       background-color: $t-gray-a-08;
     }

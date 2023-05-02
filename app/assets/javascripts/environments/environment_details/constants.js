@@ -1,6 +1,7 @@
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
+export const ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL = 3000;
 export const ENVIRONMENT_DETAILS_PAGE_SIZE = 20;
 export const ENVIRONMENT_DETAILS_TABLE_FIELDS = [
   {

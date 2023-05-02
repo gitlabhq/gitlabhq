@@ -12,6 +12,8 @@ RSpec.describe Gitlab::GlRepository::RepoType do
   let(:personal_snippet_path) { "snippets/#{personal_snippet.id}" }
   let(:project_snippet_path) { "#{project.full_path}/snippets/#{project_snippet.id}" }
 
+  let(:expected_repository_resolver) { expected_container }
+
   describe Gitlab::GlRepository::PROJECT do
     it_behaves_like 'a repo type' do
       let(:expected_id) { project.id }
@@ -133,11 +135,12 @@ RSpec.describe Gitlab::GlRepository::RepoType do
 
   describe Gitlab::GlRepository::DESIGN do
     it_behaves_like 'a repo type' do
-      let(:expected_identifier) { "design-#{project.id}" }
-      let(:expected_id) { project.id }
+      let(:expected_repository) { project.design_repository }
+      let(:expected_container) { project.design_management_repository }
+      let(:expected_id) { expected_container.id }
+      let(:expected_identifier) { "design-#{expected_id}" }
       let(:expected_suffix) { '.design' }
-      let(:expected_repository) { project.design_management_repository }
-      let(:expected_container) { project }
+      let(:expected_repository_resolver) { project }
     end
 
     it 'uses the design access checker' do
@@ -160,6 +163,18 @@ RSpec.describe Gitlab::GlRepository::RepoType do
         expect(described_class.valid?(wiki_path)).to be_falsey
         expect(described_class.valid?(personal_snippet_path)).to be_falsey
         expect(described_class.valid?(project_snippet_path)).to be_falsey
+      end
+    end
+
+    describe '.project_for' do
+      it 'returns a project' do
+        expect(described_class.project_for(project.design_repository.container)).to be_instance_of(Project)
+      end
+    end
+
+    describe '.repository_for' do
+      it 'returns a DesignManagement::GitRepository when a project is passed' do
+        expect(described_class.repository_for(project)).to be_instance_of(DesignManagement::GitRepository)
       end
     end
   end

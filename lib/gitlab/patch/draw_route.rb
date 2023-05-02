@@ -27,7 +27,7 @@ module Gitlab
 
       def draw_route(path)
         if File.exist?(path)
-          instance_eval(File.read(path))
+          instance_eval(File.read(path), path.to_s)
           true
         else
           false

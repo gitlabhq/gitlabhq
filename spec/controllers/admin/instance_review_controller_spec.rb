@@ -6,7 +6,7 @@ RSpec.describe Admin::InstanceReviewController, feature_category: :service_ping 
   include UsageDataHelpers
 
   let(:admin) { create(:admin) }
-  let(:subscriptions_instance_review_url) { Gitlab::SubscriptionPortal.subscriptions_instance_review_url }
+  let(:subscriptions_instance_review_url) { ::Gitlab::Routing.url_helpers.subscription_portal_instance_review_url }
 
   before do
     sign_in(admin)

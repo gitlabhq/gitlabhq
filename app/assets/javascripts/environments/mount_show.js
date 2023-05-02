@@ -94,6 +94,7 @@ export const initPage = async () => {
     router,
     provide: {
       projectPath: dataSet.projectFullPath,
+      graphqlEtagKey: dataSet.graphqlEtagPath,
     },
     render(createElement) {
       return createElement('router-view');

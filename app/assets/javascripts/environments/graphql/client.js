@@ -13,6 +13,7 @@ import typeDefs from './typedefs.graphql';
 export const apolloProvider = (endpoint) => {
   const defaultClient = createDefaultClient(resolvers(endpoint), {
     typeDefs,
+    useGet: true,
   });
   const { cache } = defaultClient;
 

@@ -1,4 +1,5 @@
 <script>
+import { kebabCase } from 'lodash';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import NavItem from './nav_item.vue';
 
@@ -27,7 +28,7 @@ export default {
     tag: {
       type: String,
       required: false,
-      default: 'section',
+      default: 'div',
     },
   },
   data() {
@@ -36,6 +37,13 @@ export default {
     };
   },
   computed: {
+    buttonProps() {
+      return {
+        'aria-controls': this.itemId,
+        'aria-expanded': String(this.isExpanded),
+        'data-qa-menu-item': this.item.title,
+      };
+    },
     collapseIcon() {
       return this.isExpanded ? 'chevron-up' : 'chevron-down';
     },
@@ -44,15 +52,11 @@ export default {
         'gl-bg-t-gray-a-08': this.isActive,
       };
     },
-    linkProps() {
-      return {
-        'aria-controls': this.itemId,
-        'aria-expanded': String(this.isExpanded),
-        'data-qa-menu-item': this.item.title,
-      };
-    },
     isActive() {
       return !this.isExpanded && this.item.is_active;
+    },
+    itemId() {
+      return kebabCase(this.item.title);
     },
   },
   watch: {
@@ -66,10 +70,11 @@ export default {
 <template>
   <component :is="tag">
     <button
-      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
+      class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-py-3 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
       data-qa-selector="menu_section_button"
       :data-qa-section-name="item.title"
+      v-bind="buttonProps"
       @click="isExpanded = !isExpanded"
     >
       <span
@@ -94,21 +99,22 @@ export default {
     </button>
 
     <gl-collapse
+      :id="itemId"
       v-model="isExpanded"
       :aria-label="item.title"
+      class="gl-list-style-none gl-p-0 gl-m-0"
       data-qa-selector="menu_section"
       :data-qa-section-name="item.title"
+      tag="ul"
     >
       <slot>
-        <ul class="gl-list-style-none gl-p-0 gl-m-0">
-          <nav-item
-            v-for="subItem of item.items"
-            :key="`${item.title}-${subItem.title}`"
-            :item="subItem"
-            @pin-add="(itemId) => $emit('pin-add', itemId)"
-            @pin-remove="(itemId) => $emit('pin-remove', itemId)"
-          />
-        </ul>
+        <nav-item
+          v-for="subItem of item.items"
+          :key="`${item.title}-${subItem.title}`"
+          :item="subItem"
+          @pin-add="(itemId) => $emit('pin-add', itemId)"
+          @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+        />
       </slot>
     </gl-collapse>
     <hr v-if="separated" aria-hidden="true" class="gl-mx-4 gl-my-2" />

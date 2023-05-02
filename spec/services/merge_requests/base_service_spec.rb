@@ -15,6 +15,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
 
   let_it_be(:project) { create(:project, :repository) }
 
+  let(:user) { project.first_owner }
   let(:title) { 'Awesome merge_request' }
   let(:params) do
     {
@@ -25,14 +26,14 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
     }
   end
 
-  subject { MergeRequests::CreateService.new(project: project, current_user: project.first_owner, params: params) }
-
   describe '#execute_hooks' do
+    subject { MergeRequests::CreateService.new(project: project, current_user: user, params: params).execute }
+
     shared_examples 'enqueues Jira sync worker' do
       specify :aggregate_failures do
         expect(JiraConnect::SyncMergeRequestWorker).to receive(:perform_async).with(kind_of(Numeric), kind_of(Numeric)).and_call_original
         Sidekiq::Testing.fake! do
-          expect { subject.execute }.to change(JiraConnect::SyncMergeRequestWorker.jobs, :size).by(1)
+          expect { subject }.to change(JiraConnect::SyncMergeRequestWorker.jobs, :size).by(1)
         end
       end
     end
@@ -40,7 +41,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
     shared_examples 'does not enqueue Jira sync worker' do
       it do
         Sidekiq::Testing.fake! do
-          expect { subject.execute }.not_to change(JiraConnect::SyncMergeRequestWorker.jobs, :size)
+          expect { subject }.not_to change(JiraConnect::SyncMergeRequestWorker.jobs, :size)
         end
       end
     end
@@ -53,7 +54,20 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       context 'MR contains Jira issue key' do
         let(:title) { 'Awesome merge_request with issue JIRA-123' }
 
-        it_behaves_like 'enqueues Jira sync worker'
+        it_behaves_like 'does not enqueue Jira sync worker'
+
+        context 'for UpdateService' do
+          subject { MergeRequests::UpdateService.new(project: project, current_user: user, params: params).execute(merge_request) }
+
+          let(:merge_request) do
+            create(:merge_request, :simple, title: 'Old title',
+              assignee_ids: [user.id],
+              source_project: project,
+              author: user)
+          end
+
+          it_behaves_like 'enqueues Jira sync worker'
+        end
       end
 
       context 'MR does not contain Jira issue key' do
@@ -69,13 +83,13 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
   describe `#create_pipeline_for` do
     let_it_be(:merge_request) { create(:merge_request) }
 
-    subject { MergeRequests::ExampleService.new(project: project, current_user: project.first_owner, params: params) }
+    subject { MergeRequests::ExampleService.new(project: project, current_user: user, params: params) }
 
     context 'async: false' do
       it 'creates a pipeline directly' do
         expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
-          .with(hash_including(project: project, current_user: project.first_owner, params: { allow_duplicate: false }))
+          .with(hash_including(project: project, current_user: user, params: { allow_duplicate: false }))
           .and_call_original
         expect(MergeRequests::CreatePipelineWorker).not_to receive(:perform_async)
 
@@ -86,7 +100,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
         it 'passes :allow_duplicate as true' do
           expect(MergeRequests::CreatePipelineService)
           .to receive(:new)
-          .with(hash_including(project: project, current_user: project.first_owner, params: { allow_duplicate: true }))
+          .with(hash_including(project: project, current_user: user, params: { allow_duplicate: true }))
           .and_call_original
           expect(MergeRequests::CreatePipelineWorker).not_to receive(:perform_async)
 
@@ -100,7 +114,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
         expect(MergeRequests::CreatePipelineService).not_to receive(:new)
         expect(MergeRequests::CreatePipelineWorker)
           .to receive(:perform_async)
-          .with(project.id, project.first_owner.id, merge_request.id, { "allow_duplicate" => false })
+          .with(project.id, user.id, merge_request.id, { "allow_duplicate" => false })
           .and_call_original
 
         Sidekiq::Testing.fake! do
@@ -113,7 +127,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
           expect(MergeRequests::CreatePipelineService).not_to receive(:new)
           expect(MergeRequests::CreatePipelineWorker)
             .to receive(:perform_async)
-            .with(project.id, project.first_owner.id, merge_request.id, { "allow_duplicate" => true })
+            .with(project.id, user.id, merge_request.id, { "allow_duplicate" => true })
             .and_call_original
 
           Sidekiq::Testing.fake! do

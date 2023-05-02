@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { logError } from '~/lib/logger';
+import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import environmentDetailsQuery from '../graphql/queries/environment_details.query.graphql';
 import environmentToRollbackQuery from '../graphql/queries/environment_to_rollback.query.graphql';
@@ -8,7 +9,10 @@ import { convertToDeploymentTableRow } from '../helpers/deployment_data_transfor
 import EmptyState from './empty_state.vue';
 import DeploymentsTable from './deployments_table.vue';
 import Pagination from './pagination.vue';
-import { ENVIRONMENT_DETAILS_PAGE_SIZE } from './constants';
+import {
+  ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL,
+  ENVIRONMENT_DETAILS_PAGE_SIZE,
+} from './constants';
 
 export default {
   components: {
@@ -18,6 +22,7 @@ export default {
     EmptyState,
     GlLoadingIcon,
   },
+  inject: { graphqlEtagKey: { default: '' } },
   props: {
     projectFullPath: {
       type: String,
@@ -50,6 +55,12 @@ export default {
           after: this.after,
           before: this.before,
         };
+      },
+      pollInterval() {
+        return this.graphqlEtagKey ? ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL : null;
+      },
+      context() {
+        return etagQueryHeaders('environment_details', this.graphqlEtagKey);
       },
     },
     environmentToRollback: {
@@ -136,6 +147,19 @@ export default {
       this.isPrefetchingPages = false;
     },
   },
+  mounted() {
+    if (this.graphqlEtagKey) {
+      toggleQueryPollingByVisibility(
+        this.$apollo.queries.project,
+        ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL,
+      );
+    }
+  },
+  methods: {
+    resetPage() {
+      this.$router.push({ query: {} });
+    },
+  },
 };
 </script>
 <template>
@@ -150,6 +174,6 @@ export default {
       <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
     </div>
     <empty-state v-if="!isDeploymentTableShown && !isLoading" />
-    <confirm-rollback-modal :environment="environmentToRollback" graphql />
+    <confirm-rollback-modal :environment="environmentToRollback" graphql @rollback="resetPage" />
   </div>
 </template>

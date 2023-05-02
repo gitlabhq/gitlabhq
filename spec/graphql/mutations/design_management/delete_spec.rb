@@ -86,7 +86,7 @@ RSpec.describe Mutations::DesignManagement::Delete do
           end
         end
 
-        it 'runs no more than 30 queries' do
+        it 'runs no more than 31 queries' do
           allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
 
           filenames.each(&:present?) # ignore setup
@@ -107,22 +107,23 @@ RSpec.describe Mutations::DesignManagement::Delete do
           # 14. project.authorizations for user (same query as 5)
           # 15. current designs by filename and issue
           # 16, 17 project.authorizations for user (same query as 5)
-          # 18. find route by id and source_type
-          # 19. find plan for standard context
+          # 18. find design_management_repository for project
+          # 19. find route by id and source_type
+          # 20. find plan for standard context
           # ------------- our queries are below:
-          # 20. start transaction 1
-          # 21.   start transaction 2
-          # 22.     find version by sha and issue
-          # 23.     exists version with sha and issue?
-          # 24.   leave transaction 2
-          # 25.   create version with sha and issue
-          # 26.   create design-version links
-          # 27.   validate version.actions.present?
-          # 28.   validate version.issue.present?
-          # 29.   validate version.sha is unique
-          # 30. leave transaction 1
+          # 21. start transaction 1
+          # 22.   start transaction 2
+          # 23.     find version by sha and issue
+          # 24.     exists version with sha and issue?
+          # 25.   leave transaction 2
+          # 26.   create version with sha and issue
+          # 27.   create design-version links
+          # 28.   validate version.actions.present?
+          # 29.   validate version.issue.present?
+          # 30.   validate version.sha is unique
+          # 31. leave transaction 1
           #
-          expect { run_mutation }.not_to exceed_query_limit(30)
+          expect { run_mutation }.not_to exceed_query_limit(31)
         end
       end
 

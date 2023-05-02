@@ -1,0 +1,8 @@
+---
+name: delay_delete_own_user
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118887
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409025
+milestone: '16.0'
+type: development
+group: group::anti-abuse
+default_enabled: false

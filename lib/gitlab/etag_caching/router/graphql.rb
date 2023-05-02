@@ -22,6 +22,11 @@ module Gitlab
             %r(\Aon_demand_scan/counts/),
             'on_demand_scans',
             'dynamic_application_security_testing'
+          ],
+          [
+            %r(\A/projects/.+/-/environments.json\z),
+            'environment_details',
+            'continuous_delivery'
           ]
         ].map { |attrs| build_graphql_route(*attrs) }.freeze
 

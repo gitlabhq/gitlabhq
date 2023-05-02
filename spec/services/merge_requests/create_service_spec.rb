@@ -28,7 +28,6 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
       before do
         project.add_maintainer(user)
         project.add_developer(user2)
-        allow(service).to receive(:execute_hooks)
       end
 
       it 'creates an MR' do
@@ -39,8 +38,10 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
       end
 
-      it 'executes hooks with default action' do
-        expect(service).to have_received(:execute_hooks).with(merge_request)
+      it 'does not execute hooks' do
+        expect(project).not_to receive(:execute_hooks)
+
+        service.execute
       end
 
       it 'refreshes the number of open merge requests', :use_clean_rails_memory_store_caching do

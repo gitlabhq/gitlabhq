@@ -11,8 +11,13 @@ class DeleteUserWorker # rubocop:disable Scalability/IdempotentWorker
   loggable_arguments 2
 
   def perform(current_user_id, delete_user_id, options = {})
-    delete_user  = User.find(delete_user_id)
-    current_user = User.find(current_user_id)
+    delete_user = User.find_by_id(delete_user_id)
+    return unless delete_user.present?
+
+    return if delete_user.banned? && ::Feature.enabled?(:delay_delete_own_user)
+
+    current_user = User.find_by_id(current_user_id)
+    return unless current_user.present?
 
     Users::DestroyService.new(current_user).execute(delete_user, options.symbolize_keys)
   rescue Gitlab::Access::AccessDeniedError => e

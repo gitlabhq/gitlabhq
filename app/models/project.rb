@@ -1202,6 +1202,10 @@ class Project < ApplicationRecord
     @repository ||= Gitlab::GlRepository::PROJECT.repository_for(self)
   end
 
+  def design_management_repository
+    super || create_design_management_repository
+  end
+
   def design_repository
     strong_memoize(:design_repository) do
       Gitlab::GlRepository::DESIGN.repository_for(self)

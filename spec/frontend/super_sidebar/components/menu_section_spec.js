@@ -7,6 +7,7 @@ import { stubComponent } from 'helpers/stub_component';
 describe('MenuSection component', () => {
   let wrapper;
 
+  const findButton = () => wrapper.find('button');
   const findCollapse = () => wrapper.getComponent(GlCollapse);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const createWrapper = (item, otherProps) => {
@@ -22,7 +23,7 @@ describe('MenuSection component', () => {
 
   it('renders its title', () => {
     createWrapper({ title: 'Asdf' });
-    expect(wrapper.find('button').text()).toBe('Asdf');
+    expect(findButton().text()).toBe('Asdf');
   });
 
   it('renders all its subitems', () => {
@@ -36,6 +37,12 @@ describe('MenuSection component', () => {
     expect(findNavItems().length).toBe(2);
   });
 
+  it('associates button with list with aria-controls', () => {
+    createWrapper({ title: 'Asdf' });
+    expect(findButton().attributes('aria-controls')).toBe('asdf');
+    expect(findCollapse().attributes('id')).toBe('asdf');
+  });
+
   describe('collapse behavior', () => {
     describe('when active', () => {
       it('is expanded', () => {
@@ -47,6 +54,7 @@ describe('MenuSection component', () => {
     describe('when set to expanded', () => {
       it('is expanded', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true });
+        expect(findButton().attributes('aria-expanded')).toBe('true');
         expect(findCollapse().props('visible')).toBe(true);
       });
     });
@@ -54,6 +62,7 @@ describe('MenuSection component', () => {
     describe('when not active nor set to expanded', () => {
       it('is not expanded', () => {
         createWrapper({ title: 'Asdf' });
+        expect(findButton().attributes('aria-expanded')).toBe('false');
         expect(findCollapse().props('visible')).toBe(false);
       });
     });
@@ -77,9 +86,9 @@ describe('MenuSection component', () => {
 
   describe('`tag` prop', () => {
     describe('by default', () => {
-      it('renders as <section> tag', () => {
+      it('renders as <div> tag', () => {
         createWrapper({ title: 'Asdf' });
-        expect(wrapper.element.tagName).toBe('SECTION');
+        expect(wrapper.element.tagName).toBe('DIV');
       });
     });
 

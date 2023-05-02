@@ -1,5 +1,4 @@
 <script>
-import { kebabCase } from 'lodash';
 import { GlButton, GlIcon, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
@@ -47,9 +46,6 @@ export default {
     },
   },
   computed: {
-    itemId() {
-      return kebabCase(this.item.title);
-    },
     pillData() {
       return this.item.pill_count;
     },

@@ -29,3 +29,5 @@ module Ci
     end
   end
 end
+
+Ci::JobTokenScope::AddProjectService.prepend_mod_with('Ci::JobTokenScope::AddProjectService')

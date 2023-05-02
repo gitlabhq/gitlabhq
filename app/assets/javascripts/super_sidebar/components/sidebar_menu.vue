@@ -132,20 +132,18 @@ export default {
 
 <template>
   <nav class="gl-p-2 gl-relative">
-    <section v-if="staticItems.length > 0">
+    <template v-if="staticItems.length > 0">
       <ul class="gl-p-0 gl-m-0">
         <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
       </ul>
       <hr aria-hidden="true" class="gl-my-2 gl-mx-4" />
-    </section>
-
+    </template>
     <pinned-section
       v-if="supportsPins"
       :items="pinnedItems"
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
-
     <ul class="gl-p-0 gl-list-style-none">
       <component
         :is="item.items && item.items.length ? 'MenuSection' : 'NavItem'"

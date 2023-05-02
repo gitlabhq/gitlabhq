@@ -5784,6 +5784,34 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user).not_to be_blocked
     end
+
+    context 'when target user is the same as deleted_by' do
+      let(:deleted_by) { user }
+
+      it 'blocks the user and schedules the record for deletion with the correct delay' do
+        freeze_time do
+          expect(DeleteUserWorker).to receive(:perform_in).with(7.days, user.id, user.id, {})
+
+          user.delete_async(deleted_by: deleted_by)
+
+          expect(user).to be_blocked
+        end
+      end
+
+      context 'when delay_delete_own_user feature flag is disabled' do
+        before do
+          stub_feature_flags(delay_delete_own_user: false)
+        end
+
+        it 'schedules user for deletion without blocking them' do
+          expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id, {})
+
+          user.delete_async(deleted_by: deleted_by)
+
+          expect(user).not_to be_blocked
+        end
+      end
+    end
   end
 
   describe '#max_member_access_for_project_ids' do

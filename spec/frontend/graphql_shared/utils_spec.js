@@ -1,3 +1,5 @@
+import Visibility from 'visibilityjs';
+
 import {
   isGid,
   getIdFromGraphQLId,
@@ -6,6 +8,8 @@ import {
   convertFromGraphQLIds,
   convertNodeIdsFromGraphQLIds,
   getNodesOrDefault,
+  toggleQueryPollingByVisibility,
+  etagQueryHeaders,
 } from '~/graphql_shared/utils';
 
 const mockType = 'Group';
@@ -158,5 +162,54 @@ describe('getNodesOrDefault', () => {
     const result = getNodesOrDefault(...input);
 
     expect(result).toEqual(expected);
+  });
+});
+
+describe('toggleQueryPollingByVisibility', () => {
+  let query;
+  let changeFn;
+  let interval;
+  let hidden;
+
+  beforeEach(() => {
+    hidden = jest.spyOn(Visibility, 'hidden').mockReturnValue(true);
+    jest.spyOn(Visibility, 'change').mockImplementation((fn) => {
+      changeFn = fn;
+    });
+
+    query = { startPolling: jest.fn(), stopPolling: jest.fn() };
+    interval = 5000;
+
+    toggleQueryPollingByVisibility(query, 5000);
+  });
+
+  it('starts polling not hidden', () => {
+    hidden.mockReturnValue(false);
+
+    changeFn();
+    expect(query.startPolling).toHaveBeenCalledWith(interval);
+  });
+
+  it('stops polling when hidden', () => {
+    query.stopPolling.mockReset();
+    hidden.mockReturnValue(true);
+
+    changeFn();
+    expect(query.stopPolling).toHaveBeenCalled();
+  });
+});
+
+describe('etagQueryHeaders', () => {
+  it('returns headers necessary for etag caching', () => {
+    expect(etagQueryHeaders('myFeature', 'myResource')).toEqual({
+      fetchOptions: {
+        method: 'GET',
+      },
+      headers: {
+        'X-GITLAB-GRAPHQL-FEATURE-CORRELATION': 'myFeature',
+        'X-GITLAB-GRAPHQL-RESOURCE-ETAG': 'myResource',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
   });
 });

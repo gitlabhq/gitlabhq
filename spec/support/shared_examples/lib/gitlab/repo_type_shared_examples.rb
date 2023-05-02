@@ -15,7 +15,7 @@ RSpec.shared_examples 'a repo type' do
 
   describe '#repository_for' do
     it 'finds the repository for the repo type' do
-      expect(described_class.repository_for(expected_container)).to eq(expected_repository)
+      expect(described_class.repository_for(expected_repository_resolver)).to eq(expected_repository)
     end
 
     it 'returns nil when container is nil' do

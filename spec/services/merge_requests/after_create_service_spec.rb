@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review_workflow do
   let_it_be(:merge_request) { create(:merge_request) }
+  let(:project) { merge_request.project }
 
   subject(:after_create_service) do
     described_class.new(project: merge_request.target_project, current_user: merge_request.author)
@@ -64,6 +65,12 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       expect(after_create_service)
         .to receive(:create_pipeline_for).with(merge_request, merge_request.author)
       expect(merge_request).to receive(:update_head_pipeline)
+
+      execute_service
+    end
+
+    it 'executes hooks with default action' do
+      expect(project).to receive(:execute_hooks)
 
       execute_service
     end

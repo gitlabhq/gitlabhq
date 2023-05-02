@@ -89,8 +89,8 @@ export default {
         @pin-remove="(itemId) => $emit('pin-remove', itemId)"
       />
     </draggable>
-    <div v-else class="gl-text-secondary gl-font-sm gl-py-3" style="margin-left: 2.5rem">
+    <li v-else class="gl-text-secondary gl-font-sm gl-py-3" style="margin-left: 2.5rem">
       {{ $options.i18n.emptyHint }}
-    </div>
+    </li>
   </menu-section>
 </template>

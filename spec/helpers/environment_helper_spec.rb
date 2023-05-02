@@ -65,7 +65,8 @@ RSpec.describe EnvironmentHelper do
         environment_terminal_path: terminal_project_environment_path(project, environment),
         has_terminals: false,
         is_environment_available: true,
-        auto_stop_at: auto_stop_at
+        auto_stop_at: auto_stop_at,
+        graphql_etag_key: environment.etag_cache_key
       }.to_json)
     end
   end

@@ -106,19 +106,11 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
         end
       end
 
-      context "when the request format is HTML" do
-        it "renders 404" do
-          get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: "html"
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       describe 'rate limiting' do
         it 'rate limits user when thresholds hit' do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
-          get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: "html"
+          get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: "zip"
 
           expect(response).to have_gitlab_http_status(:too_many_requests)
         end

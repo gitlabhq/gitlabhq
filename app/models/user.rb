@@ -1647,9 +1647,19 @@ class User < ApplicationRecord
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  DELETION_DELAY_IN_DAYS = 7.days
+
   def delete_async(deleted_by:, params: {})
-    block if params[:hard_delete]
-    DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
+    is_deleting_own_record = deleted_by.id == id
+
+    if is_deleting_own_record && ::Feature.enabled?(:delay_delete_own_user)
+      block
+      DeleteUserWorker.perform_in(DELETION_DELAY_IN_DAYS, deleted_by.id, id, params.to_h)
+    else
+      block if params[:hard_delete]
+
+      DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass

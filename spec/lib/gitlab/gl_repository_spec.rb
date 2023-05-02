@@ -6,6 +6,7 @@ RSpec.describe ::Gitlab::GlRepository do
   describe '.parse' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:snippet) { create(:personal_snippet) }
+    let(:design_repository_container) { project.design_repository.container }
 
     it 'parses a project gl_repository' do
       expect(described_class.parse("project-#{project.id}")).to eq([project, project, Gitlab::GlRepository::PROJECT])
@@ -20,7 +21,13 @@ RSpec.describe ::Gitlab::GlRepository do
     end
 
     it 'parses a design gl_repository' do
-      expect(described_class.parse("design-#{project.id}")).to eq([project, project, Gitlab::GlRepository::DESIGN])
+      expect(described_class.parse("design-#{design_repository_container.id}")).to eq(
+        [
+          design_repository_container,
+          project,
+          Gitlab::GlRepository::DESIGN
+        ]
+      )
     end
 
     it 'throws an argument error on an invalid gl_repository type' do

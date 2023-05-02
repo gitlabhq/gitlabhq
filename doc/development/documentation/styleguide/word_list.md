@@ -57,6 +57,7 @@ Instead of:
 
 - In GitLab 14.4 and above...
 - In GitLab 14.4 and higher...
+- In GitLab 14.4 and newer...
 
 ## access level
 
@@ -423,6 +424,7 @@ Use:
 Instead of:
 
 - In GitLab 14.1 and lower.
+- In GitLab 14.1 and older.
 
 ## easily
 
@@ -766,6 +768,7 @@ Instead of:
 
 - In GitLab 14.1 and higher...
 - In GitLab 14.1 and above...
+- In GitLab 14.1 and newer...
 
 ## list
 
@@ -814,6 +817,7 @@ Use:
 Instead of:
 
 - In GitLab 14.1 and lower.
+- In GitLab 14.1 and older.
 
 ## Maintainer
 
@@ -919,6 +923,20 @@ When the variable is **optional**:
 
 - You can set the variable.
 
+## newer
+
+Do not use **newer** when talking about version numbers.
+
+Use:
+
+- In GitLab 14.4 and later...
+
+Instead of:
+
+- In GitLab 14.4 and higher...
+- In GitLab 14.4 and above...
+- In GitLab 14.4 and newer...
+
 ## normal, normally
 
 Don't use **normal** to mean the usual, typical, or standard way of doing something.
@@ -948,6 +966,19 @@ Use:
 Instead of:
 
 - Note that you can change the settings.
+
+## older
+
+Do not use **older** when talking about version numbers.
+
+Use:
+
+- In GitLab 14.1 and earlier.
+
+Instead of:
+
+- In GitLab 14.1 and lower.
+- In GitLab 14.1 and older.
 
 ## Omnibus GitLab
 

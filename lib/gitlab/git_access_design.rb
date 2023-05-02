@@ -4,6 +4,23 @@ module Gitlab
   class GitAccessDesign < GitAccess
     extend ::Gitlab::Utils::Override
 
+    # TODO Re-factor so that correct container is passed to the constructor
+    # and this method can be removed from here
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/409454
+    def initialize(
+      actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil,
+      auth_result_type: nil)
+      super(
+        actor,
+        select_container(container),
+        protocol,
+        authentication_abilities: authentication_abilities,
+        repository_path: repository_path,
+        redirected_path: redirected_path,
+        auth_result_type: auth_result_type
+      )
+    end
+
     def check(_cmd, _changes)
       check_protocol!
       check_can_create_design!
@@ -17,6 +34,10 @@ module Gitlab
     end
 
     private
+
+    def select_container(container)
+      container.is_a?(::DesignManagement::Repository) ? container.project : container
+    end
 
     def check_protocol!
       if protocol != 'web'

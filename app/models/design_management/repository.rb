@@ -3,22 +3,34 @@
 module DesignManagement
   class Repository < ApplicationRecord
     include ::Gitlab::Utils::StrongMemoize
+    include HasRepository
 
     belongs_to :project, inverse_of: :design_management_repository
     validates :project, presence: true, uniqueness: true
 
-    # This is so that git_repo is initialized once `project` has been
-    # set. If it is not set after intialization and saving the record
-    # fails for some reason, the first call to `git_repo`` (initiated by
-    # `delegate_missing_to`) will throw an error because project would
-    # be missing.
-    after_initialize :git_repo
+    delegate :lfs_enabled?, :storage, :repository_storage, to: :project
 
-    delegate_missing_to :git_repo
-
-    def git_repo
-      project ? GitRepository.new(project) : nil
+    def repository
+      ::DesignManagement::GitRepository.new(
+        full_path,
+        self,
+        shard: repository_storage,
+        disk_path: disk_path,
+        repo_type: repo_type
+      )
     end
-    strong_memoize_attr :git_repo
+    strong_memoize_attr :repository
+
+    def full_path
+      project.full_path + repo_type.path_suffix
+    end
+
+    def disk_path
+      project.disk_path + repo_type.path_suffix
+    end
+
+    def repo_type
+      Gitlab::GlRepository::DESIGN
+    end
   end
 end

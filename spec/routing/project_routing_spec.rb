@@ -128,6 +128,18 @@ RSpec.describe 'project routing' do
     it 'to #archive with "/" in route' do
       expect(get('/gitlab/gitlabhq/-/archive/improve/awesome/gitlabhq-improve-awesome.tar.gz')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.gz', id: 'improve/awesome/gitlabhq-improve-awesome')
     end
+
+    it 'to #archive format:html' do
+      expect(get('/gitlab/gitlabhq/-/archive/master.html')).to route_to_route_not_found
+    end
+
+    it 'to #archive format:yaml' do
+      expect(get('/gitlab/gitlabhq/-/archive/master.yaml')).to route_to_route_not_found
+    end
+
+    it 'to #archive format:yml' do
+      expect(get('/gitlab/gitlabhq/-/archive/master.yml')).to route_to_route_not_found
+    end
   end
 
   describe Projects::BranchesController, 'routing' do

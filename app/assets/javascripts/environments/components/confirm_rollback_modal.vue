@@ -3,6 +3,7 @@
  * Render modal to confirm rollback/redeploy.
  */
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { escape } from 'lodash';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
@@ -125,10 +126,17 @@ export default {
     },
     onOk() {
       if (this.graphql) {
-        this.$apollo.mutate({
-          mutation: rollbackEnvironment,
-          variables: { environment: this.environment },
-        });
+        this.$apollo
+          .mutate({
+            mutation: rollbackEnvironment,
+            variables: { environment: this.environment },
+          })
+          .then(() => {
+            this.$emit('rollback');
+          })
+          .catch((e) => {
+            Sentry.captureException(e);
+          });
       } else {
         eventHub.$emit('rollbackEnvironment', this.environment);
       }

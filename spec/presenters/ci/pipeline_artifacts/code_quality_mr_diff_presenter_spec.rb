@@ -36,24 +36,8 @@ RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_catego
             expect(quality_data).to match(
               files: {
                 "file_a.rb" => [
-                  { line: 10,
-                    description: "Avoid parameter lists longer than 5 parameters. [12/5]",
-                    severity: "major",
-                    engine_name: "structure",
-                    categories: ["Complexity"],
-                    content: { "body" => "" },
-                    location: { "lines" => { "begin" => 10, "end" => 10 }, "path" => "file_a.rb" },
-                    other_locations: [],
-                    type: "issue" },
-                  { line: 10,
-                    description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-                    severity: "minor",
-                    engine_name: "structure",
-                    categories: ["Complexity"],
-                    content: { "body" => "" },
-                    location: { "lines" => { "begin" => 10, "end" => 10 }, "path" => "file_a.rb" },
-                    other_locations: [],
-                    type: "issue" }
+                  { line: 10, description: "Avoid parameter lists longer than 5 parameters. [12/5]", severity: "major" },
+                  { line: 10, description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.", severity: "minor" }
                 ]
               }
             )
@@ -67,34 +51,11 @@ RSpec.describe Ci::PipelineArtifacts::CodeQualityMrDiffPresenter, feature_catego
             expect(quality_data).to match(
               files: {
                 "file_a.rb" => [
-                  { line: 10,
-                    description: "Avoid parameter lists longer than 5 parameters. [12/5]",
-                    severity: "major",
-                    engine_name: "structure",
-                    categories: ["Complexity"],
-                    content: { "body" => "" },
-                    location: { "lines" => { "begin" => 10, "end" => 10 }, "path" => "file_a.rb" },
-                    other_locations: [],
-                    type: "issue" },
-                  { line: 10,
-                    description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-                    severity: "minor",
-                    engine_name: "structure",
-                    categories: ["Complexity"],
-                    content: { "body" => "" },
-                    location: { "lines" => { "begin" => 10, "end" => 10 }, "path" => "file_a.rb" },
-                    other_locations: [],
-                    type: "issue" }
+                  { line: 10, description: "Avoid parameter lists longer than 5 parameters. [12/5]", severity: "major" },
+                  { line: 10, description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.", severity: "minor" }
                 ],
                 "file_b.rb" => [
-                  { line: 10,
-                    description: "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count.",
-                    severity: "minor",
-                    engine_name: "rubocop",
-                    categories: ["Complexity"],
-                    content: { "body" => "" },
-                    location: { "positions" => { "begin" => { "column" => 14, "line" => 10 }, "end" => { "column" => 39, "line" => 10 } }, "path" => "file_b.rb" },
-                    type: "Issue" }
+                  { line: 10, description: "This cop checks for methods with too many parameters.\nThe maximum number of parameters is configurable.\nKeyword arguments can optionally be excluded from the total count.", severity: "minor" }
                 ]
               }
             )

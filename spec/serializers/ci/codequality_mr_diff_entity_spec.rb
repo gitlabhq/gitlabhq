@@ -19,17 +19,8 @@ RSpec.describe Ci::CodequalityMrDiffEntity, feature_category: :code_quality do
       end
 
       it 'contains correct codequality mr diff report', :aggregate_failures do
-        expect(report[:files].keys).to match_array(["file_a.rb"])
-        expect(report[:files]["file_a.rb"].first).to include(
-          :line,
-          :description,
-          :severity,
-          :engine_name,
-          :categories,
-          :content,
-          :location,
-          :other_locations,
-          :type)
+        expect(report[:files].keys).to eq(["file_a.rb"])
+        expect(report[:files]["file_a.rb"].first).to include(:line, :description, :severity)
       end
     end
   end

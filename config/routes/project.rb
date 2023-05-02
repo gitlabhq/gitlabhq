@@ -28,7 +28,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # Begin of the /-/ scope.
       # Use this scope for all new project routes.
       scope '-' do
-        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+        get 'archive/*id', format: true, constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
         get 'metrics(/:dashboard_path)', constraints: { dashboard_path: /.+\.yml/ },
           to: 'metrics_dashboard#show', as: :metrics_dashboard, format: false
         get 'metrics(/:dashboard_path)/panel/new', constraints: { dashboard_path: /.+\.yml/ },

@@ -12,7 +12,7 @@ import {
   PIPELINE_STATUS_FETCH_ERROR,
 } from '~/projects/commit_box/info/constants';
 import getLatestPipelineStatusQuery from '~/projects/commit_box/info/graphql/queries/get_latest_pipeline_status.query.graphql';
-import * as graphQlUtils from '~/pipelines/components/graph/utils';
+import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 import { mockPipelineStatusResponse } from '../mock_data';
 
 const mockProvide = {
@@ -132,13 +132,13 @@ describe('Commit box pipeline status', () => {
     });
 
     it('toggles pipelineStatus polling with visibility check', async () => {
-      jest.spyOn(graphQlUtils, 'toggleQueryPollingByVisibility');
+      jest.spyOn(sharedGraphQlUtils, 'toggleQueryPollingByVisibility');
 
       createComponent();
 
       await waitForPromises();
 
-      expect(graphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledWith(
+      expect(sharedGraphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledWith(
         wrapper.vm.$apollo.queries.pipelineStatus,
       );
     });

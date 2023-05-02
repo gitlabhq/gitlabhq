@@ -5,15 +5,19 @@ import resolvedEnvironmentDetails from 'test_fixtures/graphql/environments/graph
 import emptyEnvironmentDetails from 'test_fixtures/graphql/environments/graphql/queries/environment_details.query.graphql.empty.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EnvironmentsDetailPage from '~/environments/environment_details/index.vue';
+import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
 import EmptyState from '~/environments/environment_details/empty_state.vue';
 import getEnvironmentDetails from '~/environments/graphql/queries/environment_details.query.graphql';
-import createMockApollo from '../../__helpers__/mock_apollo_helper';
-import waitForPromises from '../../__helpers__/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
-describe('~/environments/environment_details/page.vue', () => {
+const GRAPHQL_ETAG_KEY = '/graphql/environments';
+
+describe('~/environments/environment_details/index.vue', () => {
   Vue.use(VueApollo);
 
   let wrapper;
+  let routerMock;
 
   const emptyEnvironmentToRollbackData = { id: '', name: '', lastDeployment: null, retryUrl: '' };
   const environmentToRollbackMock = jest.fn();
@@ -41,15 +45,22 @@ describe('~/environments/environment_details/page.vue', () => {
       environmentToRollbackData || emptyEnvironmentToRollbackData,
     );
     const projectFullPath = 'gitlab-group/test-project';
+    routerMock = {
+      push: jest.fn(),
+    };
 
     return mountExtended(EnvironmentsDetailPage, {
       apolloProvider: mockApollo,
       provide: {
         projectPath: projectFullPath,
+        graphqlEtagKey: GRAPHQL_ETAG_KEY,
       },
       propsData: {
         projectFullPath,
         environmentName: 'test-environment-name',
+      },
+      mocks: {
+        $router: routerMock,
       },
     });
   };
@@ -72,6 +83,14 @@ describe('~/environments/environment_details/page.vue', () => {
       it('should render a table when query is loaded', () => {
         expect(wrapper.findComponent(GlLoadingIcon).exists()).not.toBe(true);
         expect(wrapper.findComponent(GlTableLite).exists()).toBe(true);
+      });
+
+      describe('on rollback', () => {
+        it('sets the page back to default', () => {
+          wrapper.findComponent(ConfirmRollbackModal).vm.$emit('rollback');
+
+          expect(routerMock.push).toHaveBeenCalledWith({ query: {} });
+        });
       });
     });
 
