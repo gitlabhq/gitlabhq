@@ -1,6 +1,7 @@
 package headers
 
 import (
+	"mime"
 	"net/http"
 	"regexp"
 
@@ -13,8 +14,9 @@ var (
 	imageTypeRegex   = regexp.MustCompile(`^image/*`)
 	svgMimeTypeRegex = regexp.MustCompile(`^image/svg\+xml$`)
 
-	textTypeRegex = regexp.MustCompile(`^text/*`)
-
+	textTypeRegex  = regexp.MustCompile(`^text/*`)
+	xmlTypeRegex   = regexp.MustCompile(`^text/xml`)
+	xhtmlTypeRegex = regexp.MustCompile(`^text/html`)
 	videoTypeRegex = regexp.MustCompile(`^video/*`)
 
 	pdfTypeRegex = regexp.MustCompile(`application\/pdf`)
@@ -25,6 +27,8 @@ var (
 
 // Mime types that can't be inlined. Usually subtypes of main types
 var forbiddenInlineTypes = []*regexp.Regexp{svgMimeTypeRegex}
+
+var htmlRenderingTypes = []*regexp.Regexp{xmlTypeRegex, xhtmlTypeRegex}
 
 // Mime types that can be inlined. We can add global types like "image/" or
 // specific types like "text/plain". If there is a specific type inside a global
@@ -38,11 +42,27 @@ const (
 	textPlainContentType      = "text/plain; charset=utf-8"
 	attachmentDispositionText = "attachment"
 	inlineDispositionText     = "inline"
+	dummyFilename             = "blob"
 )
 
 func SafeContentHeaders(data []byte, contentDisposition string) (string, string) {
-	contentType := safeContentType(data)
+	detectedContentType := detectContentType(data)
+
+	contentType := safeContentType(detectedContentType)
 	contentDisposition = safeContentDisposition(contentType, contentDisposition)
+
+	// Some browsers will render XML inline unless a filename directive is provided with a non-xml file extension
+	// This overrides the filename directive in the case of XML data
+	for _, element := range htmlRenderingTypes {
+		if isType(detectedContentType, element) {
+			disposition, directives, err := mime.ParseMediaType(contentDisposition)
+			if err == nil {
+				directives["filename"] = dummyFilename
+				contentDisposition = mime.FormatMediaType(disposition, directives)
+				break
+			}
+		}
+	}
 
 	// Set attachments to application/octet-stream since browsers can do
 	// a better job distinguishing certain types (for example: ZIP files
@@ -56,15 +76,17 @@ func SafeContentHeaders(data []byte, contentDisposition string) (string, string)
 	return contentType, contentDisposition
 }
 
-func safeContentType(data []byte) string {
+func detectContentType(data []byte) string {
 	// Special case for svg because DetectContentType detects it as text
 	if svg.Is(data) {
 		return svgContentType
 	}
 
 	// Override any existing Content-Type header from other ResponseWriters
-	contentType := http.DetectContentType(data)
+	return http.DetectContentType(data)
+}
 
+func safeContentType(contentType string) string {
 	// http.DetectContentType does not support JavaScript and would only
 	// return text/plain. But for cautionary measures, just in case they start supporting
 	// it down the road and start returning application/javascript, we want to handle it now

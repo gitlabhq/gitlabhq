@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.9.6 (2023-05-01)
+
+### Security (8 changes)
+
+- [Resolve ambiguous references for archive metadata](gitlab-org/security/gitlab@233b0f78baf8eb9adcfd77e4d1aa606d54472d34) ([merge request](gitlab-org/security/gitlab!3203))
+- [Commit trailers now only match public user email addresses](gitlab-org/security/gitlab@e360774721bb9b5f6a2da9908ef08d92ad5a79cd) ([merge request](gitlab-org/security/gitlab!3209))
+- [Handle invalid URLs in asset proxy](gitlab-org/security/gitlab@ee6df7196b14014b5416f090a684e3b6ba600b5a) ([merge request](gitlab-org/security/gitlab!3213))
+- [Relay state to check for only allowing sub paths](gitlab-org/security/gitlab@c690eec0a2f8aa506b8ff3ffadf306aa91501648) ([merge request](gitlab-org/security/gitlab!3221))
+- [Prohibit 40 character hex sets at beginning of path-based branch name](gitlab-org/security/gitlab@889683b6b1884bfc36208dfae899d0fb9437246c) ([merge request](gitlab-org/security/gitlab!3195))
+- [Update policy to prevent banned members from accessing public projects](gitlab-org/security/gitlab@1abcbdc23881dab5f675e858afa31be87d5d47ce) ([merge request](gitlab-org/security/gitlab!3187))
+- [Use dummy filename as filename when viewing raw xml files](gitlab-org/security/gitlab@33563159bcc7d46c95f013bf089ed94128f10379) ([merge request](gitlab-org/security/gitlab!3193))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@4b0825f79b0a27eeddabaee0b3a7f627b2487706) ([merge request](gitlab-org/security/gitlab!3181))
+
 ## 15.9.5 (2023-04-21)
 
 ### Fixed (1 change)
