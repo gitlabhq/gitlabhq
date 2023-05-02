@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Registrations::WelcomeController, feature_category: :system_access do
   let(:user) { create(:user) }
 
-  describe '#welcome' do
+  describe '#show' do
     subject(:show) { get :show }
 
     context 'without a signed in user' do
@@ -27,6 +27,14 @@ RSpec.describe Registrations::WelcomeController, feature_category: :system_acces
       end
 
       it { is_expected.to render_template(:show) }
+
+      render_views
+
+      it 'has the expected submission url' do
+        show
+
+        expect(response.body).to include("action=\"#{users_sign_up_welcome_path}\"")
+      end
     end
 
     context 'when role and setup_for_company is set' do

@@ -2,19 +2,19 @@
 stage: Manage
 group: Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
-description: AwesomeCo test data harness created by the Test Data Working Group https://about.gitlab.com/company/team/structure/working-groups/demo-test-data/
+description: Data Seeder test data harness created by the Test Data Working Group https://about.gitlab.com/company/team/structure/working-groups/demo-test-data/
 ---
 
-# AwesomeCo
+# GitLab Data Seeder
 
-AwesomeCo is a test data seeding harness, that can seed test data into a user or group namespace.
+GitLab Data Seeder (GDS) is a test data seeding harness, that can seed test data into a user or group namespace.
 
-AwesomeCo uses FactoryBot in the backend which makes maintenance extremely easy. When a Model is changed,
+The Data Seeder uses FactoryBot in the backend which makes maintenance extremely easy. When a Model is changed,
 FactoryBot will already be reflected to account for the change.
 
 ## Docker Setup
 
-See [AwesomeCo Docker Demo](https://gitlab.com/-/snippets/2390362)
+See [Data Seeder Docker Demo](https://gitlab.com/-/snippets/2390362)
 
 ## GDK Setup
 
@@ -31,16 +31,16 @@ ci: migrated
 
 ### Run
 
-The `ee:gitlab:seed:awesome_co` Rake task takes two arguments. `:name` and `:namespace_id`.
+The `ee:gitlab:seed:data_seeder` Rake task takes two arguments. `:name` and `:namespace_id`.
 
 ```shell
-$ bundle exec rake "ee:gitlab:seed:awesome_co[awesome_co,1]"
-Seeding AwesomeCo for Administrator
+$ bundle exec rake "ee:gitlab:seed:data_seeder[data_seeder,1]"
+Seeding Data for Administrator
 ```
 
 #### `:name`
 
-Where `:name` is the name of the AwesomeCo. (This will reflect .rb files located in db/seeds/awesome_co/*.rb)
+Where `:name` is the file name. (This will reflect relative `.rb`, `.yml`, or `.json` files located in `ee/db/seeds/data_seeder`, or absolute paths to seed files)
 
 #### `:namespace_id`
 
@@ -48,7 +48,7 @@ Where `:namespace_id` is the ID of the User or Group Namespace
 
 ## Develop
 
-AwesomeCo seeding uses FactoryBot definitions from `spec/factories` which ...
+The Data Seeder uses FactoryBot definitions from `spec/factories` which ...
 
 1. Saves time on development
 1. Are easy-to-read

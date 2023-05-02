@@ -37,7 +37,6 @@ Lint/UnusedBlockArgument:
     - 'app/models/customer_relations/organization.rb'
     - 'app/models/integration.rb'
     - 'app/models/merge_request.rb'
-    - 'app/models/namespace/root_storage_statistics.rb'
     - 'app/models/project.rb'
     - 'app/models/projects/build_artifacts_size_refresh.rb'
     - 'app/models/service_desk_setting.rb'

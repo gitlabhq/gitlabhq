@@ -482,7 +482,7 @@ gem 'gitlab-mail_room', '~> 0.0.23', require: 'mail_room'
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
-gem 'stackprof', '~> 0.2.23', require: false
+gem 'stackprof', '~> 0.2.25', require: false
 gem 'rbtrace', '~> 0.4', require: false
 gem 'memory_profiler', '~> 1.0', require: false
 gem 'activerecord-explain-analyze', '~> 0.1', require: false

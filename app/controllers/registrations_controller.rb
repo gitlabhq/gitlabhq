@@ -9,7 +9,6 @@ class RegistrationsController < Devise::RegistrationsController
   include BizibleCSP
   include GoogleAnalyticsCSP
   include PreferredLanguageSwitcher
-  include RegistrationsTracking
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
   layout 'devise'
@@ -30,6 +29,7 @@ class RegistrationsController < Devise::RegistrationsController
   feature_category :user_management
 
   helper_method :arkose_labs_enabled?
+  helper_method :registration_path_params
 
   def new
     @resource = build_resource
@@ -150,7 +150,12 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def after_sign_up_path
-    users_sign_up_welcome_path(glm_tracking_params)
+    users_sign_up_welcome_path
+  end
+
+  # overridden in EE
+  def registration_path_params
+    {}
   end
 
   def track_creation(user:)

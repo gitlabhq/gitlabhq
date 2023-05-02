@@ -9,7 +9,7 @@
 
 .signup-page
   = render signup_box_template,
-    url: registration_path(resource_name, glm_tracking_params.to_hash),
+    url: registration_path(resource_name, registration_path_params),
     button_text: _('Register'),
     borderless: Feature.enabled?(:restyle_login_page, @project),
     show_omniauth_providers: omniauth_enabled? && button_based_providers_enabled?

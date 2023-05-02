@@ -18,7 +18,7 @@
       - else
         %p.gl-text-center= html_escape(_('%{gitlab_experience_text}. Don\'t worry, this information isn\'t shared outside of your self-managed GitLab instance.')) % { gitlab_experience_text: gitlab_experience_text }
       = gitlab_ui_form_for(current_user,
-        url: users_sign_up_welcome_path(glm_tracking_params),
+        url: users_sign_up_welcome_path(welcome_update_params),
         html: { class: 'gl-w-full! gl-p-5 js-users-signup-welcome',
                 'aria-live' => 'assertive',
                 data: { testid: 'welcome-form' } }) do |f|

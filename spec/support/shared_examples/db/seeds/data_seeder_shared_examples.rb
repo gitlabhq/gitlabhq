@@ -56,7 +56,7 @@ end
 
 RSpec.shared_examples 'passes traits' do
   it 'passes traits' do
-    expect_next_instance_of(AwesomeCo::FactoryDefinitions::FactoryDefinition) do |instance|
+    expect_next_instance_of(Gitlab::DataSeeder::FactoryDefinitions::FactoryDefinition) do |instance|
       # `described` trait will automaticaly generate a description
       expect(instance.build(binding).description).to eq('Description of Test Label')
     end

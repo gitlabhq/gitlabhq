@@ -607,7 +607,7 @@
 {"name":"sqlite3","version":"1.6.0","platform":"x86_64-linux","checksum":"a2488dcf0e72928bab2b15b934113ce8d7a3b4031277e362d66e40956d5c709e"},
 {"name":"ssh_data","version":"1.3.0","platform":"ruby","checksum":"ec7c1e95a3aebeee412147998f4c147b4b05da6ed0aafda6083f9449318eaac0"},
 {"name":"ssrf_filter","version":"1.0.8","platform":"ruby","checksum":"03f49f54837e407d43ee93ec733a8a94dc1bcf8185647ac61606e63aaedaa0db"},
-{"name":"stackprof","version":"0.2.23","platform":"ruby","checksum":"5c930b229c27bc64a2a0eb5e7203d76756ba0567bad7bf5290921ee1ed50230b"},
+{"name":"stackprof","version":"0.2.25","platform":"ruby","checksum":"28db0e2d22b817ae35def7163822505a04a026b02ef119b6aa89d70b967b0d2e"},
 {"name":"state_machines","version":"0.5.0","platform":"ruby","checksum":"23e6249d374a920b528dccade403518b4abbd83841a3e2c9ef13e6f1a009b102"},
 {"name":"state_machines-activemodel","version":"0.8.0","platform":"ruby","checksum":"e932dab190d4be044fb5f9cab01a3ea0b092c5f113d4676c6c0a0d49bf738d2c"},
 {"name":"state_machines-activerecord","version":"0.8.0","platform":"ruby","checksum":"072fb701b8ab03de0608297f6c55dc34ed096e556fa8f77e556f3c461c71aab6"},

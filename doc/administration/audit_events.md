@@ -237,98 +237,116 @@ The following actions on groups generate group audit events:
 
 The following actions on projects generate project audit events:
 
-- Added or removed deploy keys
-- Project created, deleted, renamed, moved (transferred), changed path
-- Project changed visibility level
-- User was added to project and with which [permissions](../user/permissions.md)
-- Permission changes of a user assigned to a project
-- User was removed from project
-- Project export was downloaded
-- Project repository was downloaded
-- Project was archived
-- Project was unarchived
-- Branch protection was added, removed, or updated
-- Release was added to a project
-- Release was updated
-- Release was deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 15.3.
-- Release milestone associations changed
-- Permission to approve merge requests by committers was updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
-- Permission to approve merge requests by committers was updated.
-  - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
-  - Message for event [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72623/diffs) in GitLab 14.6.
-- Permission to approve merge requests by authors was updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
-- Number of required approvals was updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
-- Added or removed users and groups from project approval groups.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2.
-- Project CI/CD variable added, removed, or protected status changed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4.
-- Project access token was successfully created or revoked.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230007) in GitLab 13.9.
-- Failed attempt to create or revoke a project access token.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230007) in GitLab 13.9.
-- When default branch changes for a project.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/52339) in GitLab 13.9.
-- Created, updated, or deleted DAST profiles, DAST scanner profiles, and DAST site profiles.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
-- Changed a project's compliance framework.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329362) in GitLab 14.1.
-- User password required for approvals was updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2.
-- Permission to modify merge requests approval rules in merge requests was updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2.
-- New approvals requirement when new commits are added to an MR was updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2.
-- When [strategies for feature flags](../operations/feature_flags.md#feature-flag-strategies) are changed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68408) in GitLab 14.3.
-- Allowing force push to protected branch changed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3.
-- Code owner approval requirement on merge requests targeting protected branch changed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3.
-- Users and groups allowed to merge and push to protected branch added or removed.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3.
+#### Project management
+
+- Added or removed deploy keys.
+- Project created, deleted, renamed, moved (transferred), changed path.
+- Project changed visibility level.
+- Project export was downloaded.
+- Project repository was downloaded.
+- Project was archived.
+- Project was unarchived.
+- Project had a security policy project linked, changed, or unlinked.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
+- Project was scheduled for deletion due to inactivity.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0.
 - Project deploy token was successfully created, revoked or deleted.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9.
 - Failed attempt to create a project deploy token.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9.
-- When merge method is updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Merged results pipelines enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Merge trains enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Automatically resolve merge request diff discussions enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Show link to create or view a merge request when pushing from the command line enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Delete source branch option by default enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Squash commits when merging is updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Pipelines must succeed enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Skipped pipelines are considered successful enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- All discussions must be resolved enabled or disabled.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Commit message suggestion is updated.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
-- Status check is added, edited, or deleted.
+- When [strategies for feature flags](../operations/feature_flags.md#feature-flag-strategies) are changed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68408) in GitLab 14.3.
+
+#### User management
+
+- User was added to project and with which [permissions](../user/permissions.md).
+- Permission changes of a user assigned to a project.
+- User was removed from project.
+- Users and groups allowed to merge and push to protected branch added or removed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3.
+
+#### Access control
+
+- Branch protection was added, removed, or updated.
+- Failed attempt to create or revoke a project access token.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230007) in GitLab 13.9.
+- Allowing force push to protected branch changed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3.
+- An environment is protected or unprotected.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
+- User password required for approvals was updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2.
+- Project access token was successfully created or revoked.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230007) in GitLab 13.9.
+
+#### Code collaboration
+
+- Default description template for merge requests is updated.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0.
 - Merge commit message template is updated.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0.
 - Squash commit message template is updated.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0.
-- Default description template for merge requests is updated.
+- Delete source branch option by default enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Squash commits when merging is updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- All discussions must be resolved enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Commit message suggestion is updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Automatically resolve merge request diff discussions enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Show link to create or view a merge request when pushing from the command line enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- When merge method is updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Merge trains enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Code owner approval requirement on merge requests targeting protected branch changed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338873) in GitLab 14.3.
+- Permission to modify merge requests approval rules in merge requests was updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2.
+- New approvals requirement when new commits are added to an MR was updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) in GitLab 14.2.
+- Added or removed users and groups from project approval groups.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213603) in GitLab 13.2.
+- Permission to approve merge requests by committers was updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
+  - Message for event [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72623/diffs) in GitLab 14.6.
+- Permission to approve merge requests by authors was updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
+- Number of required approvals was updated.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7531) in GitLab 12.9.
+
+#### Release management
+
+- Release was added to a project.
+- Release was updated.
+- Release was deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94793/) in GitLab 15.3.
+- Release milestone associations changed.
+
+#### CI/CD
+
+- Project CI/CD variable added, removed, or protected status changed.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30857) in GitLab 13.4.
+- When default branch changes for a project.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/52339) in GitLab 13.9.
+- Pipelines must succeed enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Skipped pipelines are considered successful enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+- Status check is added, edited, or deleted.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0.
-- Project was scheduled for deletion due to inactivity.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0.
-- Project had a security policy project linked, changed, or unlinked.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
-- An environment is protected or unprotected.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) in GitLab 15.8.
+- Merged results pipelines enabled or disabled.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) in GitLab 14.9.
+
+#### Compliance and security
+
+- Created, updated, or deleted DAST profiles, DAST scanner profiles, and DAST site profiles.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
+- Changed a project's compliance framework.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329362) in GitLab 14.1.
 
 ### GitLab agent for Kubernetes events
 

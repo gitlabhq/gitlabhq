@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlOauthRememberMe from 'test_fixtures_static/oauth_remember_me.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {
@@ -8,7 +9,7 @@ describe('OAuthRememberMe', () => {
   };
 
   beforeEach(() => {
-    loadHTMLFixture('static/oauth_remember_me.html');
+    setHTMLFixture(htmlOauthRememberMe);
 
     new OAuthRememberMe({ container: $('#oauth-container') }).bindEvents();
   });

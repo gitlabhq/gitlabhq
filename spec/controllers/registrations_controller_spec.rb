@@ -12,15 +12,23 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
   end
 
   describe '#new' do
-    subject { get :new }
+    subject(:new) { get :new }
 
     it 'renders new template and sets the resource variable' do
-      expect(subject).to render_template(:new)
+      expect(new).to render_template(:new)
       expect(response).to have_gitlab_http_status(:ok)
       expect(assigns(:resource)).to be_a(User)
     end
 
     it_behaves_like "switches to user preferred language", 'Sign up'
+
+    render_views
+
+    it 'has the expected registration url' do
+      new
+
+      expect(response.body).to include("action=\"#{user_registration_path}\"")
+    end
   end
 
   describe '#create' do

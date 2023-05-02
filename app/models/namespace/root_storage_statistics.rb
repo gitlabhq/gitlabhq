@@ -47,7 +47,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
       attributes_from_namespace_statistics,
       attributes_for_container_registry_size,
       attributes_for_forks_statistics
-    ) { |key, v1, v2| v1 + v2 }
+    ) { |_, v1, v2| v1 + v2 }
   end
 
   def attributes_for_container_registry_size

@@ -4,11 +4,12 @@ module Registrations
   class WelcomeController < ApplicationController
     include OneTrustCSP
     include GoogleAnalyticsCSP
-    include RegistrationsTracking
 
     layout 'minimal'
     skip_before_action :authenticate_user!, :required_signup_info, :check_two_factor_requirement, only: [:show, :update]
     before_action :require_current_user
+
+    helper_method :welcome_update_params
 
     feature_category :user_management
 
@@ -98,6 +99,11 @@ module Registrations
 
     # overridden in EE
     def track_event(action); end
+
+    # overridden in EE
+    def welcome_update_params
+      {}
+    end
   end
 end
 
