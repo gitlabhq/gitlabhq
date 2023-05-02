@@ -65,7 +65,7 @@ class Import::GithubController < Import::BaseController
         if params[:namespace_id].present?
           @namespace = Namespace.find_by_id(params[:namespace_id])
 
-          render_404 unless current_user.can?(:create_projects, @namespace)
+          render_404 unless current_user.can?(:import_projects, @namespace)
         end
       end
     end

@@ -24,7 +24,7 @@ import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 import { STATUSES } from '../../constants';
@@ -118,7 +118,7 @@ export default {
       },
     },
     availableNamespaces: {
-      query: searchNamespacesWhereUserCanCreateProjectsQuery,
+      query: searchNamespacesWhereUserCanImportProjectsQuery,
       update(data) {
         return data.currentUser.groups.nodes;
       },

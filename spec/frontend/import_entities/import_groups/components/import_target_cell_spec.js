@@ -8,7 +8,7 @@ import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue
 import { STATUSES } from '~/import_entities/constants';
 import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+import searchNamespacesWhereUserCanImportProjectsQuery from '~/import_entities/import_projects/graphql/queries/search_namespaces_where_user_can_import_projects.query.graphql';
 
 import {
   generateFakeEntry,
@@ -42,7 +42,7 @@ describe('import target cell', () => {
   const createComponent = (props) => {
     apolloProvider = createMockApollo([
       [
-        searchNamespacesWhereUserCanCreateProjectsQuery,
+        searchNamespacesWhereUserCanImportProjectsQuery,
         () => Promise.resolve(availableNamespacesFixture),
       ],
     ]);

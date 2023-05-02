@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.1 (2023-05-01)
+
+### Fixed (2 changes)
+
+- [Fix search cron worker when indexing is disabled](gitlab-org/security/gitlab@e543d1c8e0bb5d9e498beb51cd264c8bc6825cc0) **GitLab Enterprise Edition**
+- [Fix Web IDE Beta icons not loading in Safari](gitlab-org/security/gitlab@f11e5b37c05f314efe5a6895d385bc4ed284d217)
+
+### Security (9 changes)
+
+- [Set minimum role for importing projects to Maintainer](gitlab-org/security/gitlab@bd6bd7340736767a9dc7589ab798c75dbea607d5) ([merge request](gitlab-org/security/gitlab!3214))
+- [Commit trailers now only match public user email addresses](gitlab-org/security/gitlab@2c307a557ac7b3e32c4201b639d684fa1389351c) ([merge request](gitlab-org/security/gitlab!3207))
+- [Handle invalid URLs in asset proxy](gitlab-org/security/gitlab@2748c81f96539de154b3fb89ca2e72658bda617b) ([merge request](gitlab-org/security/gitlab!3211))
+- [Relay state to check for only allowing sub paths](gitlab-org/security/gitlab@be654790e2844dcc246e3cbf9d06280360e2a134) ([merge request](gitlab-org/security/gitlab!3218))
+- [Prohibit 40 character hex sets at beginning of path-based branch name](gitlab-org/security/gitlab@5bb78addd26b3c53750aaeeb575e1f2d46728260) ([merge request](gitlab-org/security/gitlab!3198))
+- [Add specs for external users flag](gitlab-org/security/gitlab@b45c2e236f530558cd850fa53ef08cd2ee58d79a) ([merge request](gitlab-org/security/gitlab!3206))
+- [Update policy to prevent banned members from accessing public projects](gitlab-org/security/gitlab@e8848b32fd03c0bc4b46f3fa9efb73550bacf615) ([merge request](gitlab-org/security/gitlab!3217))
+- [Use dummy filename as filename when viewing raw xml files](gitlab-org/security/gitlab@ac38e0600b5dedd616ae653a17ad838f009f25f0) ([merge request](gitlab-org/security/gitlab!3199))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@70264a8cc4e10e635ac4c1ebed15a01b1201c688) ([merge request](gitlab-org/security/gitlab!3222))
+
 ## 15.11.0 (2023-04-21)
 
 ### Added (175 changes)

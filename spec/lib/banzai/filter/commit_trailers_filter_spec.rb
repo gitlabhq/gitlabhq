@@ -218,7 +218,7 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       # any path-only link will automatically be prefixed
       # with the path of its repository.
       # See: "build_relative_path" in "lib/banzai/filter/relative_link_filter.rb"
-      let(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
+      let(:user_with_avatar) { create(:user, :public_email, :with_avatar, username: 'foobar') }
 
       it 'returns a full path for avatar urls' do
         _, message_html = build_commit_message(

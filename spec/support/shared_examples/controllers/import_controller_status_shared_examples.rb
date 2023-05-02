@@ -19,4 +19,26 @@ RSpec.shared_examples 'import controller status' do
     expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
     expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_id)
   end
+
+  context 'when format is html' do
+    context 'when namespace_id is present' do
+      let!(:developer_group) { create(:group).tap { |g| g.add_developer(user) } }
+
+      context 'when user cannot import projects' do
+        it 'returns 404' do
+          get :status, params: { namespace_id: developer_group.id }, format: :html
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user can import projects' do
+        it 'returns 200' do
+          get :status, params: { namespace_id: group.id }, format: :html
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+  end
 end
