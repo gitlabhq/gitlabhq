@@ -1,6 +1,6 @@
 .text-center
   .svg-content{ data: { qa_selector: 'label_svg_content' } }
-    = image_tag 'illustrations/priority_labels.svg'
+    = image_tag 'illustrations/empty-state/empty-labels-starred-md.svg'
   - if can?(current_user, :admin_label, @project)
     %p
       = _("Star labels to start sorting by priority")

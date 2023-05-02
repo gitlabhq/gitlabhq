@@ -370,7 +370,7 @@ gem 'prometheus-client-mmap', '~> 0.21', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.3.11', require: false
+  gem 'lefthook', '~> 1.3.12', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 
@@ -378,7 +378,7 @@ group :development do
   gem 'lookbook', '~> 1.5', '>= 1.5.5'
 
   # Better errors handler
-  gem 'better_errors', '~> 2.9.1'
+  gem 'better_errors', '~> 2.10.0'
 
   gem 'sprite-factory', '~> 1.7'
 

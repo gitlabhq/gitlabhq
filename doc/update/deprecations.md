@@ -1780,23 +1780,6 @@ To use the full state name, including the period, [migrate to the full state fil
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Support for third party registries
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-Support for third-party container registries is deprecated in GitLab 15.8 and will be [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/376217) in GitLab 16.0. Supporting both GitLab's Container Registry and third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency).
-
-Since we released the new [GitLab Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab Container Registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
-
-Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab Container Registry.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Test system hook endpoint
 
 <div class="deprecation-notes">
@@ -1905,6 +1888,24 @@ Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. U
 </div>
 
 You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status of a vulnerability finding to `Dismissed`. Previously, this mutation used the `id` field to identify findings uniquely. However, this did not work for dismissing findings from the pipeline security tab. Therefore, using the `id` field as an identifier has been dropped in favor of the `uuid` field. Using the 'uuid' field as an identifier allows you to dismiss the finding from the pipeline security tab.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
+### Use of third party container registries is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.8</span>
+- End of Support: GitLab <span class="milestone">16.0</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+Using third-party container registries is deprecated in GitLab 15.8 and the end of support is scheduled for GitLab 16.0. Supporting both GitLab's Container Registry and third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency).
+
+Since we released the new [GitLab Container Registry](https://gitlab.com/groups/gitlab-org/-/epics/5523) version for GitLab.com, we've started to implement additional features that are not available in third-party container registries. These new features have allowed us to achieve significant performance improvements, such as [cleanup policies](https://gitlab.com/groups/gitlab-org/-/epics/8379). We are focusing on delivering [new features](https://gitlab.com/groups/gitlab-org/-/epics/5136), most of which will require functionalities only available on the GitLab Container Registry. This deprecation allows us to reduce fragmentation and user frustration in the long term by focusing on delivering a more robust integrated registry experience and feature set.
+
+Moving forward, we'll continue to invest in developing and releasing new features that will only be available in the GitLab Container Registry.
 
 </div>
 

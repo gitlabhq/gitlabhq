@@ -767,7 +767,11 @@ project, you can [disable it from your project's settings](../../user/project/se
 
 ## Use an external container registry with GitLab as an auth endpoint
 
-> Support for external container registries in GitLab is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217) in GitLab 15.8 and will be removed in GitLab 16.0.
+WARNING:
+Using external container registries in GitLab is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
+in GitLab 15.8 and the end of support is scheduled for GitLab 16.0.
+If you need to use external container registries instead of the GitLab Container Registry, 
+please tell us about your use cases in [the feedback issue](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
 
 If you use an external container registry, some features associated with the
 container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries).
