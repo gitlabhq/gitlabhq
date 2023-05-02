@@ -384,12 +384,12 @@ describe('MergeRequestTabs', () => {
         });
       });
 
-      it('scrolls to 0, if no position is stored', () => {
+      it('does not scroll if no position is stored', () => {
         testContext.class.tabShown('unknownTab');
 
         jest.advanceTimersByTime(250);
 
-        expect(window.scrollTo.mock.calls[0][0]).toEqual({ top: 0, left: 0, behavior: 'auto' });
+        expect(window.scrollTo).not.toHaveBeenCalled();
       });
     });
   });

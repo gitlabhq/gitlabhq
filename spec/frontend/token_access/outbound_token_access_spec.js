@@ -44,15 +44,26 @@ describe('TokenAccess component', () => {
   const findAddProjectBtn = () => wrapper.findByRole('button', { name: 'Add project' });
   const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
   const findTokenDisabledAlert = () => wrapper.findByTestId('token-disabled-alert');
+  const findDeprecationAlert = () => wrapper.findByTestId('deprecation-alert');
+  const findProjectPathInput = () => wrapper.findByTestId('project-path-input');
 
   const createMockApolloProvider = (requestHandlers) => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {
+  const createComponent = (
+    requestHandlers,
+    mountFn = shallowMountExtended,
+    frozenOutboundJobTokenScopes = false,
+    frozenOutboundJobTokenScopesOverride = false,
+  ) => {
     wrapper = mountFn(OutboundTokenAccess, {
       provide: {
         fullPath: projectPath,
+        glFeatures: {
+          frozenOutboundJobTokenScopes,
+          frozenOutboundJobTokenScopesOverride,
+        },
       },
       apolloProvider: createMockApolloProvider(requestHandlers),
       data() {
@@ -270,6 +281,61 @@ describe('TokenAccess component', () => {
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({ message });
+    });
+  });
+
+  describe('with the frozenOutboundJobTokenScopes feature flag enabled', () => {
+    describe('toggle', () => {
+      it('the toggle is off and the deprecation alert is visible', async () => {
+        createComponent(
+          [
+            [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
+            [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+          ],
+          shallowMountExtended,
+          true,
+        );
+
+        await waitForPromises();
+
+        expect(findToggle().props('value')).toBe(false);
+        expect(findToggle().props('disabled')).toBe(true);
+        expect(findDeprecationAlert().exists()).toBe(true);
+        expect(findTokenDisabledAlert().exists()).toBe(false);
+      });
+
+      it('contains a warning message about disabling the current configuration', async () => {
+        createComponent(
+          [
+            [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
+            [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+          ],
+          mountExtended,
+          true,
+        );
+
+        await waitForPromises();
+
+        expect(findToggle().text()).toContain('Disabling this feature is a permanent change.');
+      });
+    });
+
+    describe('adding a new project', () => {
+      it('disables the input to add new projects', async () => {
+        createComponent(
+          [
+            [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
+            [getProjectsWithCIJobTokenScopeQuery, getProjectsWithScopeHandler],
+          ],
+          mountExtended,
+          true,
+          false,
+        );
+
+        await waitForPromises();
+
+        expect(findProjectPathInput().attributes('disabled')).toBe('disabled');
+      });
     });
   });
 });

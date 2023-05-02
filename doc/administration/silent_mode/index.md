@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Silent Mode (Alpha) **(FREE SELF)**
+# GitLab Silent Mode (Experiment) **(FREE SELF)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/alpha-beta-support.md#experiment).
 

@@ -425,7 +425,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/services/wikis/create_attachment_service_spec.rb'
     - 'ee/spec/support/helpers/board_helpers.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'
-    - 'ee/spec/workers/integrations/slack_event_worker_spec.rb'
     - 'ee/spec/workers/namespaces/free_user_cap/backfill_notification_jobs_worker_spec.rb'
     - 'lib/api/commits.rb'
     - 'lib/api/concerns/packages/nuget_endpoints.rb'

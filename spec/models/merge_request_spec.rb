@@ -4259,10 +4259,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     subject { create(:merge_request, source_project: project) }
 
-    it 'fetches the ref correctly' do
+    it 'fetches the ref and expires the ancestor cache' do
       expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
 
+      expect(project.repository).to receive(:expire_ancestor_cache).with(subject.target_branch_sha, subject.diff_head_sha).and_call_original
+      expect(subject).to receive(:expire_ancestor_cache).and_call_original
+
       subject.fetch_ref!
+
       expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
     end
   end
@@ -4273,7 +4277,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     # We use build instead of create to test that an IID is allocated
     subject { build(:merge_request, source_project: project) }
 
-    it 'fetches the ref correctly' do
+    it 'fetches the ref and expires the ancestor cache' do
+      expect(subject).to receive(:expire_ancestor_cache).and_call_original
       expect(subject.iid).to be_nil
 
       expect { subject.eager_fetch_ref! }.to change { subject.iid.to_i }.by(1)

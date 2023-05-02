@@ -240,13 +240,21 @@ To change the namespace linked to a subscription:
    [linked](../customers_portal.md#link-a-gitlabcom-account) GitLab.com account.
 1. Go to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
-1. Select the desired group from the **This subscription is for** dropdown list. For a group to appear here, you must have the Owner role for that group.
-1. Select **Proceed to checkout**.
+1. Select the desired group from the **New Namespace** dropdown list. For a group to appear here, you must have the Owner role for that group.
+1. If the [total number of users](#view-seat-usage) in your group exceeds the number of seats in your subscription,
+   you are prompted to pay for the additional users. Subscription charges are calculated based on
+   the total number of users in a group, including its subgroups and nested projects.
+
+   If you purchased your subscription through an authorized reseller, you are unable to pay for additional users.
+   You can either:
+
+   - Remove additional users, so that no overage is detected.
+   - Contact the partner to purchase additional seats now or at the end of your subscription term.
+
+1. Select **Confirm changes**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/qAq8pyFP-a0).
-
-Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace.
 
 Only one namespace can be linked to a subscription.
 

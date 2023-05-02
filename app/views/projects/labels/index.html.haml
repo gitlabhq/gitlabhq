@@ -9,18 +9,20 @@
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .labels-container.gl-mt-5
-    - if can_admin_label && search.blank?
-      %p.text-muted
-        = _('Labels can be applied to issues and merge requests. Star a label to make it a priority label.')
+  - if can_admin_label && search.blank?
+    %p.text-muted.gl-mt-5
+      = _('Labels can be applied to issues and merge requests. Star a label to make it a priority label.')
 
+  .labels-container
     -# Only show it in the first page
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-    .prioritized-labels.gl-mb-7{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
-      %h4.gl-mt-3= _('Prioritized Labels')
-      %p.text-muted
-        = _('Drag to reorder prioritized labels and change their relative priority.')
-      .manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
+    .prioritized-labels.gl-rounded-base.gl-border.gl-bg-gray-10.gl-mt-4{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
+      .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-base.gl-border-b{ class: 'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!' }
+        %h3.card-title.h5.gl-m-0.gl-relative.gl-line-height-24
+          = _('Prioritized labels')
+        .gl-font-sm.gl-font-weight-semibold.gl-text-gray-500
+          = _('Drag to reorder prioritized labels and change their relative priority.')
+      .js-prioritized-labels.gl-px-3.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
         #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
           = render 'shared/empty_states/priority_labels'
         - if @prioritized_labels.any?
@@ -30,16 +32,18 @@
             = _('No prioritized labels with such name or description')
 
     - if @labels.any?
-      .other-labels
-        %h4{ class: ('hide' if hide) }= _('Other Labels')
-        .manage-labels-list.js-other-labels
+      .other-labels.gl-rounded-base.gl-border.gl-bg-gray-10.gl-mt-4
+        .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-base.gl-border-b{ class: 'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!' }
+          %h3.card-title.h5.gl-m-0.gl-relative.gl-line-height-24{ class: ('hide' if hide) }= _('Other labels')
+        .js-other-labels.gl-px-3.gl-rounded-base.manage-labels-list
           = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
           = paginate @labels, theme: 'gitlab'
+
     - elsif search.present?
       .other-labels
         - if @available_labels.any?
           %h4
-            = _('Other Labels')
+            = _('Other labels')
           .nothing-here-block
             = _('No other labels with such name or description')
         - else
@@ -53,5 +57,5 @@
   = render 'shared/empty_states/labels'
 
 %template#js-badge-item-template
-  %li.js-priority-badge.inline.gl-ml-3
-    .label-badge.gl-bg-blue-50= _('Prioritized label')
+  %li.js-priority-badge.inline.gl-mr-3
+    .label-badge.gl-bg-blue-50= _('Prioritized')

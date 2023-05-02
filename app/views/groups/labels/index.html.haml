@@ -12,9 +12,11 @@
     - if @labels.any?
       .text-muted.gl-mb-5
         = labels_function_introduction
-      .other-labels
-        %h4= _('Labels')
-        %ul.manage-labels-list.js-other-labels
+      .other-labels.gl-rounded-base.gl-border.gl-bg-gray-10
+        .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-base.gl-border-b{ class: 'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!' }
+          %h3.card-title.h5.gl-m-0.gl-relative.gl-line-height-24
+            = _('Labels')
+        %ul.manage-labels-list.js-other-labels.gl-px-3.gl-rounded-base
           = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
           = paginate @labels, theme: 'gitlab'
     - elsif search.present?
@@ -27,5 +29,5 @@
   = render 'shared/empty_states/labels'
 
 %template#js-badge-item-template
-  %li.js-priority-badge.inline.gl-ml-3
-    .label-badge.gl-bg-blue-50= _('Prioritized label')
+  %li.js-priority-badge.inline.gl-mr-3
+    .label-badge.gl-bg-blue-50= _('Prioritized')

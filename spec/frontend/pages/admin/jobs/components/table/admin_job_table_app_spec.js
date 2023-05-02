@@ -129,6 +129,16 @@ describe('Job table app', () => {
       expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(1);
     });
 
+    it('avoids refetch jobs query when scope has not changed', async () => {
+      jest.spyOn(wrapper.vm.$apollo.queries.jobs, 'refetch').mockImplementation(jest.fn());
+
+      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+
+      await findTabs().vm.$emit('fetchJobsByStatus', null);
+
+      expect(wrapper.vm.$apollo.queries.jobs.refetch).toHaveBeenCalledTimes(0);
+    });
+
     describe('when infinite scrolling is triggered', () => {
       it('does not display a skeleton loader', () => {
         triggerInfiniteScroll();

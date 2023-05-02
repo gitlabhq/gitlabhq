@@ -1483,6 +1483,7 @@ class MergeRequest < ApplicationRecord
 
   def fetch_ref!
     target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
+    expire_ancestor_cache
   end
 
   # Returns the current merge-ref HEAD commit.
@@ -2040,6 +2041,10 @@ class MergeRequest < ApplicationRecord
 
   def set_draft_status
     self.draft = draft?
+  end
+
+  def expire_ancestor_cache
+    project.repository.expire_ancestor_cache(target_branch_sha, diff_head_sha)
   end
 
   def missing_report_error(report_type)

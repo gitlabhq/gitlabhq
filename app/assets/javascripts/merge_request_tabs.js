@@ -252,10 +252,11 @@ export default class MergeRequestTabs {
   }
   recallScroll(action) {
     const storedPosition = this.scrollPositions[action];
+    if (storedPosition == null) return;
 
     setTimeout(() => {
       window.scrollTo({
-        top: storedPosition && storedPosition > 0 ? storedPosition : 0,
+        top: storedPosition > 0 ? storedPosition : 0,
         left: 0,
         behavior: 'auto',
       });
@@ -308,7 +309,7 @@ export default class MergeRequestTabs {
       const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
       if (tab) tab.classList.add('active');
 
-      if (!this.loadedPages[action] && action in pageBundles) {
+      if (isInVueNoteablePage() && !this.loadedPages[action] && action in pageBundles) {
         toggleLoader(true);
         pageBundles[action]()
           .then(({ default: init }) => {

@@ -67,6 +67,7 @@ export const pipelineEditorTrackingOptions = {
   actions: {
     browseTemplates: 'browse_templates',
     closeHelpDrawer: 'close_help_drawer',
+    commitCiConfig: 'commit_ci_config',
     helpDrawerLinks: {
       [CI_EXAMPLES_LINK]: 'visit_help_drawer_link_ci_examples',
       [CI_HELP_LINK]: 'visit_help_drawer_link_ci_help',

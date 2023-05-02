@@ -22976,13 +22976,13 @@ ALTER SEQUENCE suggestions_id_seq OWNED BY suggestions.id;
 
 CREATE TABLE system_note_metadata (
     id integer NOT NULL,
-    note_id integer NOT NULL,
+    note_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     commit_count integer,
     action character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     description_version_id bigint,
-    note_id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    note_id bigint NOT NULL
 );
 
 CREATE SEQUENCE system_note_metadata_id_seq
@@ -23163,11 +23163,11 @@ CREATE TABLE todos (
     state character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    note_id integer,
+    note_id_convert_to_bigint integer,
     commit_id character varying,
     group_id integer,
     resolved_by_action smallint,
-    note_id_convert_to_bigint bigint
+    note_id bigint
 );
 
 CREATE SEQUENCE todos_id_seq
@@ -32535,8 +32535,6 @@ CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON syst
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
 
-CREATE UNIQUE INDEX index_system_note_metadata_on_note_id_convert_to_bigint ON system_note_metadata USING btree (note_id_convert_to_bigint);
-
 CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);
@@ -32594,8 +32592,6 @@ CREATE INDEX index_todos_on_commit_id ON todos USING btree (commit_id);
 CREATE INDEX index_todos_on_group_id ON todos USING btree (group_id);
 
 CREATE INDEX index_todos_on_note_id ON todos USING btree (note_id);
-
-CREATE INDEX index_todos_on_note_id_convert_to_bigint ON todos USING btree (note_id_convert_to_bigint);
 
 CREATE INDEX index_todos_on_project_id_and_id ON todos USING btree (project_id, id);
 
@@ -37338,9 +37334,6 @@ ALTER TABLE ONLY integrations
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_source_project FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY system_note_metadata
-    ADD CONSTRAINT fk_system_note_metadata_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
-
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_issues_issue_id FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -37349,9 +37342,6 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_note_id FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY todos
-    ADD CONSTRAINT fk_todos_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY u2f_registrations
     ADD CONSTRAINT fk_u2f_registrations_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

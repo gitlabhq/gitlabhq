@@ -1,11 +1,13 @@
 <script>
 import { __, s__, sprintf } from '~/locale';
+import Tracking from '~/tracking';
 import {
   COMMIT_ACTION_CREATE,
   COMMIT_ACTION_UPDATE,
   COMMIT_FAILURE,
   COMMIT_SUCCESS,
   COMMIT_SUCCESS_WITH_REDIRECT,
+  pipelineEditorTrackingOptions,
 } from '../../constants';
 import commitCIFile from '../../graphql/mutations/commit_ci_file.mutation.graphql';
 import updateCurrentBranchMutation from '../../graphql/mutations/client/update_current_branch.mutation.graphql';
@@ -26,6 +28,7 @@ export default {
   components: {
     CommitForm,
   },
+  mixins: [Tracking.mixin()],
   inject: ['projectFullPath', 'ciConfigPath'],
   props: {
     ciFileContent: {
@@ -77,6 +80,8 @@ export default {
   methods: {
     async onCommitSubmit({ message, sourceBranch, openMergeRequest }) {
       this.isSaving = true;
+
+      this.trackCommitEvent();
 
       try {
         const {
@@ -130,6 +135,10 @@ export default {
       } finally {
         this.isSaving = false;
       }
+    },
+    trackCommitEvent() {
+      const { label, actions } = pipelineEditorTrackingOptions;
+      this.track(actions.commitCiConfig, { label, property: this.action });
     },
     updateCurrentBranch(currentBranch) {
       this.$apollo.mutate({

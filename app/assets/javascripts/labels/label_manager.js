@@ -106,7 +106,7 @@ export default class LabelManager {
     if (action === 'remove') {
       $('.js-priority-badge', $label).remove();
     } else {
-      $('.label-links', $label).append(this.$badgeItemTemplate.clone().html());
+      $('.label-links', $label).prepend(this.$badgeItemTemplate.clone().html());
     }
   }
 

@@ -1145,7 +1145,6 @@ Layout/ArgumentAlignment:
     - 'ee/lib/gitlab/status_page/pipeline/post_process_pipeline.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/graphql.rb'
     - 'ee/lib/gitlab/zoekt/search_results.rb'
-    - 'ee/lib/slack/block_kit/app_home_opened.rb'
     - 'ee/spec/components/billing/plan_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/pre_enforcement_alert_component_spec.rb'
     - 'ee/spec/elastic/migrate/20220119120500_populate_commit_permissions_in_main_index_spec.rb'

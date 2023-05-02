@@ -1,6 +1,8 @@
-.text-center
+.text-center.gl-mt-1.gl-mb-6
   .svg-content{ data: { qa_selector: 'label_svg_content' } }
     = image_tag 'illustrations/empty-state/empty-labels-starred-md.svg'
   - if can?(current_user, :admin_label, @project)
-    %p
-      = _("Star labels to start sorting by priority")
+    %div
+      = _("No prioritized labels yet!")
+    %div
+      = _("Star labels to start sorting by priority.")

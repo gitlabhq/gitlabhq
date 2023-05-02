@@ -21,7 +21,7 @@ From the pipeline editor page you can:
   added with the [`include`](../yaml/index.md#include) keyword.
 - View a [list of the CI/CD configuration added with the `include` keyword](#view-included-cicd-configuration).
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
-- View an [expanded](#view-expanded-configuration) version of your configuration.
+- View the [full configuration](#view-full-configuration), which displays the configuration with any configuration from `include` added.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
 
 In GitLab 13.9 and earlier, you must already have [a `.gitlab-ci.yml` file](../quick_start/index.md#create-a-gitlab-ciyml-file)
@@ -95,13 +95,14 @@ Hover over a job to highlight its `needs` relationships:
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.
 
-## View expanded configuration
+## View full configuration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246801) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/301103) in GitLab 13.12.
+> - **View merged YAML** tab [renamed to **Full configuration**](https://gitlab.com/gitlab-org/gitlab/-/issues/377404) in GitLab 16.0.
 
 To view the fully expanded CI/CD configuration as one combined file, go to the
-pipeline editor's **View merged YAML** tab. This tab displays an expanded configuration
+pipeline editor's **Full configuration** tab. This tab displays an expanded configuration
 where:
 
 - Configuration imported with [`include`](../yaml/index.md#include) is copied into the view.
@@ -130,7 +131,7 @@ fully expanded version are both valid:
       - pyflakes python/
   ```
 
-- Expanded configuration in **View merged YAML** tab:
+- Expanded configuration in **Full configuration** tab:
 
   ```yaml
   ".python-req":
@@ -169,7 +170,7 @@ It can happen when:
   - The syntax status on the **Edit** tab (valid or invalid).
   - The **Visualize** tab.
   - The **Lint** tab.
-  - The **View merged YAML** tab.
+  - The **Full configuration** tab.
 
   You can still work on your CI/CD configuration and commit the changes you made without
   any issues. As soon as the service becomes available again, the syntax validation

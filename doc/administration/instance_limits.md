@@ -157,16 +157,17 @@ Set the limit to `0` to disable it.
 ### Search rate limit
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80631) in GitLab 14.9.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) to include issue, merge request, and epic searches to the rate limit in GitLab 15.9.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/index.md#global-search-scopes) for authenticated requests.
 
 This setting limits search requests as follows:
 
 | Limit                   | Default (requests per minute) |
 |-------------------------|-------------------------------|
-| Authenticated user      | 30 |
-| Unauthenticated user    | 10 |
+| Authenticated user      | 300 |
+| Unauthenticated user    | 100 |
 
-Depending on the number of enabled [scopes](../user/search/index.md#global-search-scopes), a global search request can consume two to seven requests per minute. You may want to disable one or more scopes to use fewer requests. Search requests that exceed the search rate limit per minute return the following error:
+Search requests that exceed the search rate limit per minute return the following error:
 
 ```plaintext
 This endpoint has been requested too many times. Try again later.

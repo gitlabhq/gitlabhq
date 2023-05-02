@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.1 (2023-05-01)
+
+### Fixed (2 changes)
+
+- [Fix search cron worker when indexing is disabled](gitlab-org/security/gitlab@e543d1c8e0bb5d9e498beb51cd264c8bc6825cc0) **GitLab Enterprise Edition**
+- [Fix Web IDE Beta icons not loading in Safari](gitlab-org/security/gitlab@f11e5b37c05f314efe5a6895d385bc4ed284d217)
+
+### Security (9 changes)
+
+- [Set minimum role for importing projects to Maintainer](gitlab-org/security/gitlab@bd6bd7340736767a9dc7589ab798c75dbea607d5) ([merge request](gitlab-org/security/gitlab!3214))
+- [Commit trailers now only match public user email addresses](gitlab-org/security/gitlab@2c307a557ac7b3e32c4201b639d684fa1389351c) ([merge request](gitlab-org/security/gitlab!3207))
+- [Handle invalid URLs in asset proxy](gitlab-org/security/gitlab@2748c81f96539de154b3fb89ca2e72658bda617b) ([merge request](gitlab-org/security/gitlab!3211))
+- [Relay state to check for only allowing sub paths](gitlab-org/security/gitlab@be654790e2844dcc246e3cbf9d06280360e2a134) ([merge request](gitlab-org/security/gitlab!3218))
+- [Prohibit 40 character hex sets at beginning of path-based branch name](gitlab-org/security/gitlab@5bb78addd26b3c53750aaeeb575e1f2d46728260) ([merge request](gitlab-org/security/gitlab!3198))
+- [Add specs for external users flag](gitlab-org/security/gitlab@b45c2e236f530558cd850fa53ef08cd2ee58d79a) ([merge request](gitlab-org/security/gitlab!3206))
+- [Update policy to prevent banned members from accessing public projects](gitlab-org/security/gitlab@e8848b32fd03c0bc4b46f3fa9efb73550bacf615) ([merge request](gitlab-org/security/gitlab!3217))
+- [Use dummy filename as filename when viewing raw xml files](gitlab-org/security/gitlab@ac38e0600b5dedd616ae653a17ad838f009f25f0) ([merge request](gitlab-org/security/gitlab!3199))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@70264a8cc4e10e635ac4c1ebed15a01b1201c688) ([merge request](gitlab-org/security/gitlab!3222))
+
 ## 15.11.0 (2023-04-21)
 
 ### Added (175 changes)
@@ -817,6 +836,20 @@ entry.
 - [Update header section](gitlab-org/gitlab@cf4ab283267d84fa1c0dc90fefb1b6ddd2617b5c) ([merge request](gitlab-org/gitlab!114102)) **GitLab Enterprise Edition**
 - [Swap merge_request_user_mentions.note_id to bigint](gitlab-org/gitlab@96baed47326db4f0cc9f60b2e74215211effd814) ([merge request](gitlab-org/gitlab!113928))
 
+## 15.10.5 (2023-05-01)
+
+### Security (9 changes)
+
+- [Set minimum role for importing projects to Maintainer](gitlab-org/security/gitlab@d4cff7e53961d819b30ae748a38e4c8e4d856b32) ([merge request](gitlab-org/security/gitlab!3215))
+- [Commit trailers now only match public user email addresses](gitlab-org/security/gitlab@4948acdb39ba6ae9a71ef133e38ec47327d14f97) ([merge request](gitlab-org/security/gitlab!3208))
+- [Handle invalid URLs in asset proxy](gitlab-org/security/gitlab@b22e923ab3d48d9389311192d92dd89e2bfc24aa) ([merge request](gitlab-org/security/gitlab!3212))
+- [Relay state to check for only allowing sub paths](gitlab-org/security/gitlab@24f84fafd65dfedf36e859d305dd46bf3e71c8dc) ([merge request](gitlab-org/security/gitlab!3220))
+- [Prohibit 40 character hex sets at beginning of path-based branch name](gitlab-org/security/gitlab@71d30b6537f6853fef45acba16ab26b6f32718f7) ([merge request](gitlab-org/security/gitlab!3194))
+- [Add specs for external users flag](gitlab-org/security/gitlab@dfdb540285e573bd55a8647db4de8370ba6b3286) ([merge request](gitlab-org/security/gitlab!3190))
+- [Update policy to prevent banned members from accessing public projects](gitlab-org/security/gitlab@bc211b8be25e56f35c80d2331447f251c7a7dd56) ([merge request](gitlab-org/security/gitlab!3186))
+- [Use dummy filename as filename when viewing raw xml files](gitlab-org/security/gitlab@6d871f56d7a343d705f8c849d24a94b3528c3a97) ([merge request](gitlab-org/security/gitlab!3192))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@888c187aab7c7062ea43b61a282c4dea8c6a47be) ([merge request](gitlab-org/security/gitlab!3180))
+
 ## 15.10.4 (2023-04-21)
 
 ### Fixed (1 change)
@@ -1595,6 +1628,19 @@ entry.
 ### change (1 change)
 
 - [Update submit buttons to use Pajamas component](gitlab-org/gitlab@4ffb92755e6be3268c78f02e471f5c2a21f437be) ([merge request](gitlab-org/gitlab!114246))
+
+## 15.9.6 (2023-05-01)
+
+### Security (8 changes)
+
+- [Resolve ambiguous references for archive metadata](gitlab-org/security/gitlab@233b0f78baf8eb9adcfd77e4d1aa606d54472d34) ([merge request](gitlab-org/security/gitlab!3203))
+- [Commit trailers now only match public user email addresses](gitlab-org/security/gitlab@e360774721bb9b5f6a2da9908ef08d92ad5a79cd) ([merge request](gitlab-org/security/gitlab!3209))
+- [Handle invalid URLs in asset proxy](gitlab-org/security/gitlab@ee6df7196b14014b5416f090a684e3b6ba600b5a) ([merge request](gitlab-org/security/gitlab!3213))
+- [Relay state to check for only allowing sub paths](gitlab-org/security/gitlab@c690eec0a2f8aa506b8ff3ffadf306aa91501648) ([merge request](gitlab-org/security/gitlab!3221))
+- [Prohibit 40 character hex sets at beginning of path-based branch name](gitlab-org/security/gitlab@889683b6b1884bfc36208dfae899d0fb9437246c) ([merge request](gitlab-org/security/gitlab!3195))
+- [Update policy to prevent banned members from accessing public projects](gitlab-org/security/gitlab@1abcbdc23881dab5f675e858afa31be87d5d47ce) ([merge request](gitlab-org/security/gitlab!3187))
+- [Use dummy filename as filename when viewing raw xml files](gitlab-org/security/gitlab@33563159bcc7d46c95f013bf089ed94128f10379) ([merge request](gitlab-org/security/gitlab!3193))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@4b0825f79b0a27eeddabaee0b3a7f627b2487706) ([merge request](gitlab-org/security/gitlab!3181))
 
 ## 15.9.5 (2023-04-21)
 

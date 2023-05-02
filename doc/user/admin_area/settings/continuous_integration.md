@@ -279,7 +279,7 @@ use a template from:
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
 added the project configuration with the [`include` keyword](../../../ci/yaml/index.md#include).
-To view a project's full merged configuration, [View the merged YAML](../../../ci/pipeline_editor/index.md#view-expanded-configuration)
+To view a project's full merged configuration, [View full configuration](../../../ci/pipeline_editor/index.md#view-full-configuration)
 in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:

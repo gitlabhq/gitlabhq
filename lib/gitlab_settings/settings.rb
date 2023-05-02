@@ -10,8 +10,7 @@ module GitlabSettings
 
       @source = source
       @section = section
-
-      reload!
+      @loaded = false
     end
 
     def reload!
@@ -19,10 +18,14 @@ module GitlabSettings
       all_configs = yaml.deep_stringify_keys
       configs = all_configs[section]
 
-      @config = Options.build(configs)
+      @config = Options.build(configs).tap do
+        @loaded = true
+      end
     end
 
     def method_missing(name, *args)
+      reload! unless @loaded
+
       config.public_send(name, *args) # rubocop: disable GitlabSecurity/PublicSend
     end
 

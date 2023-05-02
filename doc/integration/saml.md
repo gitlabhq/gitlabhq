@@ -3120,7 +3120,7 @@ such as the following:
 | Encrypt SAML assertion | Optional | Uses TLS between your identity provider, the user's browser, and GitLab. |
 | Sign SAML assertion | Optional | Validates the integrity of a SAML assertion. When active, signs the whole response. |
 | Check SAML request signature | Optional | Checks the signature on the SAML response. |
-| Default RelayState | Optional | Specifies the URL users should end up on after successfully signing in through SAML at your IdP. |
+| Default RelayState | Optional | Specifies the sub-paths of the base URL that users should end up on after successfully signing in through SAML at your IdP. |
 | NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#manage-user-saml-identity). |
 | Additional URLs | Optional | May include the issuer, identifier, or assertion consumer service URL in other fields on some providers. |
 

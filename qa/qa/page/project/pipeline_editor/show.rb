@@ -122,8 +122,8 @@ module QA
             go_to_tab('Visualize')
           end
 
-          def go_to_view_merged_yaml_tab
-            go_to_tab('View merged YAML')
+          def go_to_full_configuration_tab
+            go_to_tab('Full configuration')
           end
 
           def go_to_validate_tab

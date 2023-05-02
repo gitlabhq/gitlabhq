@@ -4,6 +4,7 @@ import InboundTokenAccess from './inbound_token_access.vue';
 import OptInJwt from './opt_in_jwt.vue';
 
 export default {
+  name: 'TokenAccessApp',
   components: {
     OutboundTokenAccess,
     InboundTokenAccess,

@@ -1,20 +1,15 @@
 <script>
-import { GlSprintf, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { __, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { SORT_UPDATED_AT } from '../constants';
-import AbuseReportActions from './abuse_report_actions.vue';
-import AbuseReportDetails from './abuse_report_details.vue';
 
 export default {
   name: 'AbuseReportRow',
   components: {
-    AbuseReportDetails,
     GlLink,
-    GlSprintf,
-    AbuseReportActions,
     ListItem,
   },
   props: {
@@ -33,22 +28,14 @@ export default {
 
       return sprintf(template, { timeAgo: getTimeago().format(timeAgo) });
     },
-    reported() {
-      const { reportedUser } = this.report;
-      return sprintf('%{userLinkStart}%{reported}%{userLinkEnd}', {
-        reported: reportedUser.name,
-      });
-    },
-    reporter() {
-      const { reporter } = this.report;
-      return sprintf('%{reporterLinkStart}%{reporter}%{reporterLinkEnd}', {
-        reporter: reporter.name,
-      });
-    },
     title() {
-      const { category } = this.report;
-      const template = __('%{reported} reported for %{category} by %{reporter}');
-      return sprintf(template, { reported: this.reported, reporter: this.reporter, category });
+      const { reportedUser, category, reporter } = this.report;
+      const template = s__('AbuseReports|%{reportedUser} reported for %{category} by %{reporter}');
+      return sprintf(template, {
+        reportedUser: reportedUser?.name || s__('AbuseReports|Deleted user'),
+        reporter: reporter?.name || s__('AbuseReports|Deleted user'),
+        category,
+      });
     },
   },
 };
@@ -57,25 +44,13 @@ export default {
 <template>
   <list-item data-testid="abuse-report-row">
     <template #left-primary>
-      <div class="gl-font-weight-normal gl-mb-2" data-testid="title">
-        <gl-sprintf :message="title">
-          <template #userLink="{ content }">
-            <gl-link :href="report.reportedUserPath">{{ content }}</gl-link>
-          </template>
-          <template #reporterLink="{ content }">
-            <gl-link :href="report.reporterPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </div>
-    </template>
-
-    <template #left-secondary>
-      <abuse-report-details :report="report" />
+      <gl-link :href="report.reportPath" class="gl-font-weight-normal gl-mb-2" data-testid="title">
+        {{ title }}
+      </gl-link>
     </template>
 
     <template #right-secondary>
       <div data-testid="abuse-report-date">{{ displayDate }}</div>
-      <abuse-report-actions :report="report" />
     </template>
   </list-item>
 </template>

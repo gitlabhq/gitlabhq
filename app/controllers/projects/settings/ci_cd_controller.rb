@@ -16,6 +16,8 @@ module Projects
         push_frontend_feature_flag(:ci_variables_pages, current_user)
         push_frontend_feature_flag(:ci_limit_environment_scope, @project)
         push_frontend_feature_flag(:create_runner_workflow_for_namespace, @project.namespace)
+        push_frontend_feature_flag(:frozen_outbound_job_token_scopes, @project)
+        push_frontend_feature_flag(:frozen_outbound_job_token_scopes_override, @project)
       end
 
       helper_method :highlight_badge

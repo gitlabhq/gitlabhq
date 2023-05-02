@@ -21,18 +21,16 @@ RSpec.describe GitlabSettings::Settings, :aggregate_failures, feature_category: 
 
   subject(:settings) { described_class.new(source.path, 'section1') }
 
-  it 'requires a source' do
-    expect { described_class.new('', '') }
-      .to raise_error(ArgumentError, 'config source is required')
-  end
+  describe '#initialize' do
+    it 'requires a source' do
+      expect { described_class.new('', '') }
+        .to raise_error(ArgumentError, 'config source is required')
+    end
 
-  it 'requires a section' do
-    expect { described_class.new(source, '') }
-      .to raise_error(ArgumentError, 'config section is required')
-  end
-
-  it 'loads the given section config' do
-    expect(settings.config1.value1).to eq(1)
+    it 'requires a section' do
+      expect { described_class.new(source, '') }
+        .to raise_error(ArgumentError, 'config section is required')
+    end
   end
 
   describe '#reload!' do
@@ -48,6 +46,22 @@ RSpec.describe GitlabSettings::Settings, :aggregate_failures, feature_category: 
 
       # config changes after reload! if source changed
       expect(settings.config1.value1).to eq(2)
+    end
+  end
+
+  it 'loads the given section config' do
+    expect(settings.config1.value1).to eq(1)
+  end
+
+  context 'on lazy loading' do
+    it 'does not raise exception on initialization if source does not exists' do
+      settings = nil
+
+      expect { settings = described_class.new('/tmp/any/inexisting/file.yml', 'section1') }
+        .not_to raise_error
+
+      expect { settings['any key'] }
+        .to raise_error(Errno::ENOENT)
     end
   end
 end

@@ -116,6 +116,8 @@ Adding a delay in API or controller could help reproducing the issue.
   time before throwing an `element not found` error.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101728/diffs): A CSS selector
   only appears after a GraphQL requests has finished, and the UI has updated.
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/408215): A false-positive test, Capybara imediatly returns true after
+page visit and page is not fully loaded, or if the element is not detectable by webdriver (such as being rendered outside the viewport or behind other elements).
 
 ### Datetime-sensitive
 

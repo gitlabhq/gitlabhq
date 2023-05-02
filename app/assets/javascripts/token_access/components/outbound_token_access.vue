@@ -12,6 +12,7 @@ import {
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
 import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
@@ -19,6 +20,8 @@ import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.q
 import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
 import TokenProjectsTable from './token_projects_table.vue';
 
+// Note: This component will be removed in 17.0, as the outbound access token is getting deprecated
+// Some warnings are behind the `frozen_outbound_job_token_scopes` feature flag
 export default {
   i18n: {
     toggleLabelTitle: s__('CICD|Limit CI_JOB_TOKEN access'),
@@ -34,7 +37,14 @@ export default {
     addProjectPlaceholder: __('Paste project path (i.e. gitlab-org/gitlab)'),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
+    outboundTokenAlertDeprecationMessage: s__(
+      `CICD|The %{boldStart}Limit CI_JOB_TOKEN%{boldEnd} scope is deprecated and will be removed the 17.0 milestone. Configure the %{boldStart}CI_JOB_TOKEN%{boldEnd} allowlist instead. %{linkStart}How do I do this?%{linkEnd}`,
+    ),
+    disableToggleWarning: s__('CICD|Disabling this feature is a permanent change.'),
   },
+  deprecationDocumentationLink: helpPagePath('ci/jobs/ci_job_token', {
+    anchor: 'limit-your-projects-job-token-access',
+  }),
   fields: [
     {
       key: 'project',
@@ -67,6 +77,7 @@ export default {
     GlToggle,
     TokenProjectsTable,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     fullPath: {
       default: '',
@@ -115,6 +126,15 @@ export default {
     },
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access');
+    },
+    disableOutboundToken() {
+      return (
+        this.glFeatures?.frozenOutboundJobTokenScopes &&
+        !this.glFeatures?.frozenOutboundJobTokenScopesOverride
+      );
+    },
+    disableTokenToggle() {
+      return !this.jobTokenScopeEnabled && this.disableOutboundToken;
     },
   },
   methods: {
@@ -205,9 +225,33 @@ export default {
   <div>
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
+      <gl-alert
+        v-if="disableOutboundToken"
+        class="gl-mb-3"
+        variant="warning"
+        :dismissible="false"
+        :show-icon="false"
+        data-testid="deprecation-alert"
+      >
+        <gl-sprintf :message="$options.i18n.outboundTokenAlertDeprecationMessage">
+          <template #bold="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+          <template #link="{ content }">
+            <gl-link
+              :href="$options.deprecationDocumentationLink"
+              class="inline-link"
+              target="_blank"
+            >
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </gl-alert>
       <gl-toggle
         v-model="jobTokenScopeEnabled"
         :label="$options.i18n.toggleLabelTitle"
+        :disabled="disableTokenToggle"
         @change="updateCIJobTokenScope"
       >
         <template #help>
@@ -216,6 +260,7 @@ export default {
               <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">
                 {{ content }}
               </gl-link>
+              <strong v-if="disableOutboundToken">{{ $options.i18n.disableToggleWarning }} </strong>
             </template>
           </gl-sprintf>
         </template>
@@ -229,7 +274,9 @@ export default {
           <template #default>
             <gl-form-input
               v-model="targetProjectPath"
+              :disabled="disableOutboundToken"
               :placeholder="$options.i18n.addProjectPlaceholder"
+              data-testid="project-path-input"
             />
           </template>
           <template #footer>
@@ -240,7 +287,7 @@ export default {
           </template>
         </gl-card>
         <gl-alert
-          v-if="!jobTokenScopeEnabled"
+          v-if="!jobTokenScopeEnabled && !disableOutboundToken"
           class="gl-mb-3"
           variant="warning"
           :dismissible="false"

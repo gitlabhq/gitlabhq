@@ -16,17 +16,11 @@ Fields removed in GitLab 16.0.
 
 ### GraphQL Fields
 
-[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111750) in GitLab 16.0:
-
-| Field name           | GraphQL type             | Deprecated in | Use instead                |
-|----------------------|--------------------------|---------------|----------------------------|
-| `external`           | `GraphQL::Types::Boolean`| 15.9          | None                       |
-
-[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118617) in GitLab 16.0:
-
-| Field name           | GraphQL type             | Deprecated in | Use instead                |
-|----------------------|--------------------------|---------------|----------------------------|
-| `confidence`         | `GraphQL::Types::String` | 15.4          | None                       |
+| Field name | GraphQL type | Deprecated in | Removal MR | Use instead |
+|---|---|---|---|---|
+| `name` | `PipelineSecurityReportFinding` | [15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89571) | [!119055](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119055) | `title` |
+| `external` | `ReleaseAssetLink` | 15.9 | [!111750](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111750) | None |
+| `confidence` | `PipelineSecurityReportFinding` | 15.4 | [!118617](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118617) | None |
 
 ### GraphQL Mutations
 

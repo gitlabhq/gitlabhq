@@ -59,11 +59,20 @@ export default {
     item() {
       return { text: this.displayText };
     },
+    isButtonTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_BUTTON;
+    },
+    isWithEmojiTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_WITH_EMOJI;
+    },
+    isDropdownWithEmojiTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI;
+    },
+    isDisclosureTrigger() {
+      return this.triggerElement === TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN;
+    },
   },
   methods: {
-    checkTrigger(targetTriggerElement) {
-      return this.triggerElement === targetTriggerElement;
-    },
     openModal() {
       eventHub.$emit('openModal', { source: this.triggerSource });
     },
@@ -72,16 +81,12 @@ export default {
       this.$emit('modal-opened');
     },
   },
-  TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_ELEMENT_WITH_EMOJI,
-  TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
-  TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 };
 </script>
 
 <template>
   <gl-button
-    v-if="checkTrigger($options.TRIGGER_ELEMENT_BUTTON)"
+    v-if="isButtonTrigger"
     v-bind="componentAttributes"
     :variant="variant"
     :icon="icon"
@@ -89,16 +94,12 @@ export default {
   >
     {{ displayText }}
   </gl-button>
-  <gl-link
-    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_WITH_EMOJI)"
-    v-bind="componentAttributes"
-    @click="openModal"
-  >
+  <gl-link v-else-if="isWithEmojiTrigger" v-bind="componentAttributes" @click="openModal">
     {{ displayText }}
     <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
   </gl-link>
   <gl-dropdown-item
-    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI)"
+    v-else-if="isDropdownWithEmojiTrigger"
     v-bind="componentAttributes"
     button-class="top-nav-menu-item"
     @click="openModal"
@@ -107,7 +108,7 @@ export default {
     <gl-emoji class="gl-vertical-align-baseline gl-reset-font-size gl-mr-1" :data-name="icon" />
   </gl-dropdown-item>
   <gl-disclosure-dropdown-item
-    v-else-if="checkTrigger($options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN)"
+    v-else-if="isDisclosureTrigger"
     v-bind="componentAttributes"
     :item="item"
     @action="handleDisclosureDropdownAction"

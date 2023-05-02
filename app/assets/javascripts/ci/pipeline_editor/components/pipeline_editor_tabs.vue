@@ -31,7 +31,7 @@ export default {
     tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
-    tabMergedYaml: s__('Pipelines|View merged YAML'),
+    tabMergedYaml: s__('Pipelines|Full configuration'),
     tabValidate: s__('Pipelines|Validate'),
     empty: {
       visualization: s__(
@@ -41,12 +41,12 @@ export default {
         'PipelineEditor|The CI/CD configuration is continuously validated. Errors and warnings are displayed when the CI/CD configuration file is not empty.',
       ),
       merge: s__(
-        'PipelineEditor|The merged YAML view is displayed when the CI/CD configuration file has valid syntax.',
+        'PipelineEditor|The full configuration view is displayed when the CI/CD configuration file has valid syntax.',
       ),
     },
   },
   errorTexts: {
-    loadMergedYaml: s__('Pipelines|Could not load merged YAML content'),
+    loadMergedYaml: s__('Pipelines|Could not load full configuration content'),
   },
   query: {
     TAB_QUERY_PARAM,

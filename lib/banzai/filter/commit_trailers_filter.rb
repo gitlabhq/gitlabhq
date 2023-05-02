@@ -70,7 +70,7 @@ module Banzai
       #
       # Returns a String with a link to the user.
       def link_to_user_or_email(name, email, trailer)
-        link_to_user User.find_by_any_email(email),
+        link_to_user User.with_public_email(email).first,
           name: name,
           email: email,
           trailer: trailer

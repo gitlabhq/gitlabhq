@@ -49,6 +49,21 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
         expect { |b| each_batch_size.call(&b) }
           .to yield_successive_args(1, 1)
       end
+
+      context 'when a column to be batched over is specified' do
+        let(:projects) { Project.order(project_namespace_id: :asc) }
+
+        it 'iterates table in batches using the given column' do
+          each_batch_ids = ->(&block) do
+            subject.each_batch(table_name, connection: connection, of: 1, column: :project_namespace_id) do |batch|
+              block.call(batch.pluck(:project_namespace_id))
+            end
+          end
+
+          expect { |b| each_batch_ids.call(&b) }
+            .to yield_successive_args([projects.first.project_namespace_id], [projects.last.project_namespace_id])
+        end
+      end
     end
 
     context 'when transaction is open' do
@@ -94,6 +109,35 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers do
 
         expect { |b| each_batch_limited.call(&b) }
           .to yield_successive_args([first_project.id, first_project.id])
+      end
+
+      context 'when primary key is not named id' do
+        let(:namespace_settings1) { create(:namespace_settings) }
+        let(:namespace_settings2) { create(:namespace_settings) }
+        let(:table_name) { NamespaceSetting.table_name }
+        let(:connection) { NamespaceSetting.connection }
+        let(:primary_key) { subject.define_batchable_model(table_name, connection: connection).primary_key }
+
+        it 'iterates table in batch ranges using the correct primary key' do
+          expect(primary_key).to eq("namespace_id") # Sanity check the primary key is not id
+          expect { |b| subject.each_batch_range(table_name, connection: connection, of: 1, &b) }
+            .to yield_successive_args(
+              [namespace_settings1.namespace_id, namespace_settings1.namespace_id],
+              [namespace_settings2.namespace_id, namespace_settings2.namespace_id]
+            )
+        end
+      end
+
+      context 'when a column to be batched over is specified' do
+        it 'iterates table in batch ranges using the given column' do
+          expect do |b|
+            subject.each_batch_range(table_name, connection: connection, of: 1, column: :project_namespace_id, &b)
+          end
+            .to yield_successive_args(
+              [first_project.project_namespace_id, first_project.project_namespace_id],
+              [second_project.project_namespace_id, second_project.project_namespace_id]
+            )
+        end
       end
     end
 

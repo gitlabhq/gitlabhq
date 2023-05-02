@@ -85,13 +85,19 @@
   padding: 0;
   margin-bottom: 0;
 
-  > li:not(.empty-message):not(.no-border) {
-    background-color: $white;
+  > li:not(.empty-message):not(.no-border) .label-content {
     display: flex;
     justify-content: space-between;
 
     .prioritized-labels:not(.is-not-draggable) & {
       cursor: grab;
+      border: 1px solid transparent;
+
+      &:hover,
+      &:focus-within {
+        background-color: $white;
+        border-color: $gray-50;
+      }
 
       &:active {
         cursor: grabbing;
@@ -103,6 +109,10 @@
     vertical-align: top;
     line-height: 24px;
   }
+}
+
+.label-list-item:not(:last-of-type) {
+  border-bottom: 1px solid $border-color;
 }
 
 .prioritized-labels .add-priority,
@@ -133,7 +143,7 @@
   font-size: $label-font-size;
 }
 
-.label-list-item {
+.label-content {
   .label-name {
     width: 200px;
 
@@ -158,7 +168,7 @@
 
 @media (max-width: map-get($grid-breakpoints, md)-1) {
   .manage-labels-list {
-    > li:not(.empty-message):not(.no-border) {
+    > li:not(.empty-message):not(.no-border) .label-content {
       flex-wrap: wrap;
     }
 

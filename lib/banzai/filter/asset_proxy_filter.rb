@@ -6,9 +6,33 @@ module Banzai
     # as well as hiding the customer's IP address when requesting images.
     # Copies the original img `src` to `data-canonical-src` then replaces the
     # `src` with a new url to the proxy server.
-    class AssetProxyFilter < HTML::Pipeline::CamoFilter
+    #
+    # Based on https://github.com/gjtorikian/html-pipeline/blob/v2.14.3/lib/html/pipeline/camo_filter.rb
+    class AssetProxyFilter < HTML::Pipeline::Filter
       def initialize(text, context = nil, result = nil)
         super
+      end
+
+      def call
+        return doc unless asset_proxy_enabled?
+
+        doc.search('img').each do |element|
+          original_src = element['src']
+          next unless original_src
+
+          begin
+            uri = URI.parse(original_src)
+          rescue StandardError
+            next
+          end
+
+          next if uri.host.nil? && !original_src.start_with?('///')
+          next if asset_host_allowed?(uri.host)
+
+          element['src'] = asset_proxy_url(original_src)
+          element['data-canonical-src'] = original_src
+        end
+        doc
       end
 
       def validate
@@ -62,6 +86,24 @@ module Banzai
         application_settings.try(:asset_proxy_allowlist).presence ||
           application_settings.try(:asset_proxy_whitelist).presence ||
           [Gitlab.config.gitlab.host]
+      end
+
+      private
+
+      def asset_proxy_enabled?
+        !context[:disable_asset_proxy]
+      end
+
+      def asset_proxy_url(url)
+        "#{context[:asset_proxy]}/#{asset_url_hash(url)}/#{hexencode(url)}"
+      end
+
+      def asset_url_hash(url)
+        OpenSSL::HMAC.hexdigest('sha1', context[:asset_proxy_secret_key], url)
+      end
+
+      def hexencode(str)
+        str.unpack1('H*')
       end
     end
   end

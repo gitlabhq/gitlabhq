@@ -6,7 +6,7 @@ import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 export default {
   i18n: {
-    viewOnlyMessage: s__('Pipelines|Merged YAML is view only'),
+    viewOnlyMessage: s__('Pipelines|Full configuration is view only'),
   },
   components: {
     SourceEditor,

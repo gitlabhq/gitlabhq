@@ -11,7 +11,7 @@ GitLab provides many different ways to create a merge request.
 
 NOTE:
 GitLab enforces [branch naming rules](../repository/branches/index.md#name-your-branch)
-to prevent problems, and provides 
+to prevent problems, and provides
 [branch naming patterns](../repository/branches/index.md#prefix-branch-names-with-issue-numbers)
 to streamline merge request creation.
 

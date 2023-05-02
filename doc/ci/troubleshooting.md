@@ -313,7 +313,7 @@ likely to hit the default memory limit.
 To reduce the configuration size, you can:
 
 - Check the length of the expanded CI/CD configuration in the pipeline editor's
-  [merged YAML](pipeline_editor/index.md#view-expanded-configuration) tab. Look for
+  [Full configuration](pipeline_editor/index.md#view-full-configuration) tab. Look for
   duplicated configuration that can be removed or simplified.
 - Move long or repeated `script` sections into standalone scripts in the project.
 - Use [parent and child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines) to move some

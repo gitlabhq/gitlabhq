@@ -20,6 +20,7 @@ export const initTokenAccess = (containerId = 'js-ci-token-access-app') => {
 
   return new Vue({
     el: containerEl,
+    name: 'TokenAccessAppsRoot',
     apolloProvider,
     provide: {
       fullPath,

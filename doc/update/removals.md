@@ -49,6 +49,16 @@ change supports production deployments that require more robust database managem
 If you want Auto DevOps to provision an in-cluster database,
 set the `POSTGRES_ENABLED` CI/CD variable to `true`.
 
+### Azure Storage Driver defaults to the correct root prefix
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Azure Storage Driver used to write to `//` as the default root directory. This default root directory appeared in some places in the Azure UI as `/<no-name>/`. We maintained this legacy behavior to support older deployments using this storage driver. However, when moving to Azure from another storage driver, this behavior hides all your data until you configure the storage driver with `trimlegacyrootprefix: true` to build root paths without an extra leading slash.
+
+In GitLab 16.0, the new default configuration for the storage driver uses `trimlegacyrootprefix: true`, and `/` is the default root directory. You can set your configuration to `trimlegacyrootprefix: false` if needed, to revert to the previous behavior.
+
 ### Project REST API field `operations_access_level` removed
 
 WARNING:

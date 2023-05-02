@@ -1004,12 +1004,18 @@ class Repository
   def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
-    cache_key = "ancestor:#{ancestor_id}:#{descendant_id}"
+    cache_key = ancestor_cache_key(ancestor_id, descendant_id)
     request_store_cache.fetch(cache_key) do
       cache.fetch(cache_key) do
         raw_repository.ancestor?(ancestor_id, descendant_id)
       end
     end
+  end
+
+  def expire_ancestor_cache(ancestor_id, descendant_id)
+    cache_key = ancestor_cache_key(ancestor_id, descendant_id)
+    request_store_cache.expire(cache_key)
+    cache.expire(cache_key)
   end
 
   def clone_as_mirror(url, http_authorization_header: "", resolved_address: "")
@@ -1231,6 +1237,10 @@ class Repository
   end
 
   private
+
+  def ancestor_cache_key(ancestor_id, descendant_id)
+    "ancestor:#{ancestor_id}:#{descendant_id}"
+  end
 
   # TODO Genericize finder, later split this on finders by Ref or Oid
   # https://gitlab.com/gitlab-org/gitlab/issues/19877

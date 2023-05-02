@@ -153,6 +153,8 @@ export default {
     fetchJobsByStatus(scope) {
       this.infiniteScrollingTriggered = false;
 
+      if (this.scope === scope) return;
+
       this.scope = scope;
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });

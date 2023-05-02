@@ -1006,7 +1006,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/lib/quality/seeders/vulnerabilities_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/security_compliance_menu_spec.rb'
-    - 'ee/spec/lib/slack/block_kit/app_home_opened_spec.rb'
     - 'ee/spec/lib/system_check/app/search_check_spec.rb'
     - 'ee/spec/mailers/ci_minutes_usage_mailer_spec.rb'
     - 'ee/spec/mailers/credentials_inventory_mailer_spec.rb'

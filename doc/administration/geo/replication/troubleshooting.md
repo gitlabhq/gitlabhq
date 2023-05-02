@@ -718,6 +718,8 @@ To solve this:
 
 ### Very large repositories never successfully synchronize on the **secondary** site
 
+#### GitLab 10.1 and earlier
+
 GitLab places a timeout on all repository clones, including project imports
 and Geo synchronization operations. If a fresh `git clone` of a repository
 on the **primary** takes more than the default three hours, you may be affected by this.
@@ -739,6 +741,10 @@ add the following line to `/etc/gitlab/gitlab.rb`:
 
 This increases the timeout to four hours (14400 seconds). Choose a time
 long enough to accommodate a full clone of your largest repositories.
+
+#### GitLab 10.2 and later
+
+Geo [replicates Git repositories over HTTPS](../index.md#how-it-works). GitLab does not place a timeout on these requests. If a Git repository is failing to replicate, with a consistent job execution time, then you should check for timeouts applied by external components such as load balancers.
 
 ### New LFS objects are never replicated
 

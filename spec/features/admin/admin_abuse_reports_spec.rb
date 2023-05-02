@@ -91,51 +91,6 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
         expect(report_rows[1].text).to include(report_text(open_report2))
       end
 
-      it 'can be actioned on' do
-        open_actions_dropdown(report_rows[0])
-
-        expect(page).to have_content('Remove user & report')
-        expect(page).to have_content('Block user')
-        expect(page).to have_content('Remove report')
-
-        # Remove a report
-        click_button('Remove report')
-        wait_for_requests
-
-        expect_displayed_reports_count(1)
-        expect_report_shown(open_report)
-
-        # Block reported user
-        open_actions_dropdown(report_rows[0])
-
-        click_button('Block user')
-        expect(page).to have_content('USER WILL BE BLOCKED! Are you sure?')
-
-        click_button('OK')
-        wait_for_requests
-
-        expect(page).to have_content('Successfully blocked')
-        expect(open_report.user.reload.blocked?).to eq true
-
-        open_actions_dropdown(report_rows[0])
-
-        expect(page).to have_content('Already blocked')
-        expect(page).not_to have_content('Block user')
-
-        # Remove user & report
-        click_button('Remove user & report')
-        expect(page).to have_content("USER #{open_report.user.name} WILL BE REMOVED! Are you sure?")
-
-        click_button('OK')
-        expect_displayed_reports_count(0)
-      end
-
-      def open_actions_dropdown(report_row)
-        within(report_row) do
-          find('[data-testid="base-dropdown-toggle"]').click
-        end
-      end
-
       def report_rows
         page.all(abuse_report_row_selector)
       end

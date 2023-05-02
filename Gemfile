@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-if ENV['BUNDLER_CHECKSUM_VERIFICATION_OPT_IN'] # this verification is still experimental
+if ENV.fetch('BUNDLER_CHECKSUM_VERIFICATION_OPT_IN', 'false') != 'false' # this verification is still experimental
   $LOAD_PATH.unshift(File.expand_path("vendor/gems/bundler-checksum/lib", __dir__))
   require 'bundler-checksum'
   BundlerChecksum.patch!

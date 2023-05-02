@@ -31,6 +31,13 @@ export BUNDLER_CHECKSUM_VERIFICATION_OPT_IN=1
 bundle install
 ```
 
+Setting it to `false` can also disable it:
+
+```shell
+export BUNDLER_CHECKSUM_VERIFICATION_OPT_IN=false
+bundle install
+```
+
 ### Updating the checksum file
 
 This needs to be done for any new, or updated gems.

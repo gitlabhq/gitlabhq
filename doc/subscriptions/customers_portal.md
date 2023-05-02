@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 For some management tasks for your subscription and account, you use the Customers Portal.
 
-The Customers Portal is available to customers who purchased their
-subscription from GitLab. If you made your purchase through a partner or
-reseller, contact them directly for assistance with your subscription.
+If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription (your subscriptions are read-only).
 
 You can also specifically manage your [GitLab SaaS subscription](gitlab_com/index.md)
 or [self-managed subscription](self_managed/index.md).
@@ -87,9 +85,6 @@ To link a GitLab.com account to your Customers Portal account:
 Customers are required to use their GitLab.com account to register for a new Customers Portal account.
 
 If you have a legacy Customers Portal account that is not linked to a GitLab.com account, you may still [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using an email and password. However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](#change-the-linked-account) to ensure continued access to the Customers Portal.
-
-Customers of resellers do not have access to this portal and should contact their reseller for any
-changes to their subscription.
 
 To change the GitLab.com account linked to your Customers Portal account:
 

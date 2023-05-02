@@ -1012,9 +1012,6 @@ msgstr ""
 msgid "%{reportType} detected no new vulnerabilities."
 msgstr ""
 
-msgid "%{reported} reported for %{category} by %{reporter}"
-msgstr ""
-
 msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
 msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
 msgstr[0] ""
@@ -2070,6 +2067,12 @@ msgid "Abuse reports"
 msgstr ""
 
 msgid "Abuse reports notification email"
+msgstr ""
+
+msgid "AbuseReports|%{reportedUser} reported for %{category} by %{reporter}"
+msgstr ""
+
+msgid "AbuseReports|Deleted user"
 msgstr ""
 
 msgid "AbuseReports|No reports found"
@@ -6911,7 +6914,13 @@ msgstr ""
 msgid "BillingPlans|10,000 CI/CD minutes per month"
 msgstr ""
 
+msgid "BillingPlans|10000 CI/CD minutes"
+msgstr ""
+
 msgid "BillingPlans|10GB transfer per month"
+msgstr ""
+
+msgid "BillingPlans|400 CI/CD minutes"
 msgstr ""
 
 msgid "BillingPlans|400 CI/CD minutes per month"
@@ -6923,6 +6932,9 @@ msgstr ""
 msgid "BillingPlans|50,000 CI/CD minutes per month"
 msgstr ""
 
+msgid "BillingPlans|50000 CI/CD minutes"
+msgstr ""
+
 msgid "BillingPlans|5GB storage"
 msgstr ""
 
@@ -6932,7 +6944,19 @@ msgstr ""
 msgid "BillingPlans|Advanced CI/CD"
 msgstr ""
 
+msgid "BillingPlans|Advanced application security"
+msgstr ""
+
 msgid "BillingPlans|All plans have unlimited (private) repositories."
+msgstr ""
+
+msgid "BillingPlans|All stages of the DevOps lifecycle"
+msgstr ""
+
+msgid "BillingPlans|All the benefits of Free +"
+msgstr ""
+
+msgid "BillingPlans|All the benefits of Premium +"
 msgstr ""
 
 msgid "BillingPlans|All the features from Free"
@@ -6944,13 +6968,28 @@ msgstr ""
 msgid "BillingPlans|Billed annually at %{price_per_year} USD"
 msgstr ""
 
+msgid "BillingPlans|Bring your own CI runners"
+msgstr ""
+
+msgid "BillingPlans|Bring your own production environment"
+msgstr ""
+
 msgid "BillingPlans|Check out all groups"
+msgstr ""
+
+msgid "BillingPlans|Company wide portfolio management"
 msgstr ""
 
 msgid "BillingPlans|Compliance"
 msgstr ""
 
+msgid "BillingPlans|Compliance automation"
+msgstr ""
+
 msgid "BillingPlans|Congratulations, your free trial is activated."
+msgstr ""
+
+msgid "BillingPlans|Cross-team project management"
 msgstr ""
 
 msgid "BillingPlans|End of availability for the Bronze Plan"
@@ -6960,6 +6999,9 @@ msgid "BillingPlans|Enhance team productivity and collaboration"
 msgstr ""
 
 msgid "BillingPlans|Enterprise agile planning"
+msgstr ""
+
+msgid "BillingPlans|Executive level insights"
 msgstr ""
 
 msgid "BillingPlans|Faster code reviews"
@@ -6980,6 +7022,9 @@ msgstr ""
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
 msgstr ""
 
+msgid "BillingPlans|Includes"
+msgstr ""
+
 msgid "BillingPlans|Includes free static websites"
 msgstr ""
 
@@ -6998,6 +7043,12 @@ msgstr ""
 msgid "BillingPlans|Manage plan"
 msgstr ""
 
+msgid "BillingPlans|Multi-region support"
+msgstr ""
+
+msgid "BillingPlans|Multiple approval rules"
+msgstr ""
+
 msgid "BillingPlans|Not the group you're looking for? %{all_groups_link}."
 msgstr ""
 
@@ -7014,6 +7065,9 @@ msgid "BillingPlans|Premium"
 msgstr ""
 
 msgid "BillingPlans|Pricing page"
+msgstr ""
+
+msgid "BillingPlans|Priority support"
 msgstr ""
 
 msgid "BillingPlans|Ready to explore the value of the paid features today? Start a trial, no credit card required."
@@ -8376,6 +8430,9 @@ msgstr ""
 msgid "CICD|Deployment strategy"
 msgstr ""
 
+msgid "CICD|Disabling this feature is a permanent change."
+msgstr ""
+
 msgid "CICD|Enable feature to allow job token access by the following projects."
 msgstr ""
 
@@ -8398,6 +8455,9 @@ msgid "CICD|Manage which projects can use their CI_JOB_TOKEN to access this proj
 msgstr ""
 
 msgid "CICD|Select the projects that can be accessed by API requests authenticated with this project's CI_JOB_TOKEN CI/CD variable. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "CICD|The %{boldStart}Limit CI_JOB_TOKEN%{boldEnd} scope is deprecated and will be removed the 17.0 milestone. Configure the %{boldStart}CI_JOB_TOKEN%{boldEnd} allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}"
@@ -29657,6 +29717,9 @@ msgstr ""
 msgid "No prioritized labels with such name or description"
 msgstr ""
 
+msgid "No prioritized labels yet!"
+msgstr ""
+
 msgid "No project subscribes to the pipelines in this project."
 msgstr ""
 
@@ -31141,13 +31204,13 @@ msgstr ""
 msgid "Orphaned member"
 msgstr ""
 
-msgid "Other Labels"
-msgstr ""
-
 msgid "Other available runners"
 msgstr ""
 
 msgid "Other information"
+msgstr ""
+
+msgid "Other labels"
 msgstr ""
 
 msgid "Other merge requests block this MR"
@@ -32380,7 +32443,7 @@ msgstr ""
 msgid "PipelineEditor|The CI/CD configuration is continuously validated. Errors and warnings are displayed when the CI/CD configuration file is not empty."
 msgstr ""
 
-msgid "PipelineEditor|The merged YAML view is displayed when the CI/CD configuration file has valid syntax."
+msgid "PipelineEditor|The full configuration view is displayed when the CI/CD configuration file has valid syntax."
 msgstr ""
 
 msgid "PipelineEditor|The pipeline visualization is displayed when the CI/CD configuration file has valid syntax."
@@ -32695,7 +32758,7 @@ msgstr ""
 msgid "Pipelines|Could not load artifacts."
 msgstr ""
 
-msgid "Pipelines|Could not load merged YAML content"
+msgid "Pipelines|Could not load full configuration content"
 msgstr ""
 
 msgid "Pipelines|Description"
@@ -32711,6 +32774,12 @@ msgid "Pipelines|Editor"
 msgstr ""
 
 msgid "Pipelines|Follow these instructions to install GitLab Runner on macOS."
+msgstr ""
+
+msgid "Pipelines|Full configuration"
+msgstr ""
+
+msgid "Pipelines|Full configuration is view only"
 msgstr ""
 
 msgid "Pipelines|Get familiar with GitLab CI syntax by  setting up a simple pipeline running a  \"Hello world\" script to see how it runs, explore how CI/CD works."
@@ -32753,9 +32822,6 @@ msgid "Pipelines|Loading Pipelines"
 msgstr ""
 
 msgid "Pipelines|Loading pipelines"
-msgstr ""
-
-msgid "Pipelines|Merged YAML is view only"
 msgstr ""
 
 msgid "Pipelines|More Information"
@@ -32876,9 +32942,6 @@ msgid "Pipelines|Validate"
 msgstr ""
 
 msgid "Pipelines|Validating GitLab CI configuration…"
-msgstr ""
-
-msgid "Pipelines|View merged YAML"
 msgstr ""
 
 msgid "Pipelines|Visualize"
@@ -33700,10 +33763,10 @@ msgstr ""
 msgid "Prioritize label"
 msgstr ""
 
-msgid "Prioritized Labels"
+msgid "Prioritized"
 msgstr ""
 
-msgid "Prioritized label"
+msgid "Prioritized labels"
 msgstr ""
 
 msgid "Priority"
@@ -42690,7 +42753,7 @@ msgstr ""
 msgid "Standard"
 msgstr ""
 
-msgid "Star labels to start sorting by priority"
+msgid "Star labels to start sorting by priority."
 msgstr ""
 
 msgid "Star toggle failed. Try again later."
@@ -48224,9 +48287,6 @@ msgid "User is blocked"
 msgstr ""
 
 msgid "User is not allowed to resolve thread"
-msgstr ""
-
-msgid "User joined %{timeAgo}"
 msgstr ""
 
 msgid "User key"

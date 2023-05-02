@@ -81,7 +81,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/ee/gitlab/namespace_storage_size_error_message.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
-    - 'ee/lib/slack/block_kit/app_home_opened.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'ee/spec/controllers/admin/licenses_controller_spec.rb'
     - 'ee/spec/controllers/groups/group_members_controller_spec.rb'

@@ -8,16 +8,15 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
   include CommitTrailersSpecHelper
 
   let(:secondary_email)     { create(:email, :confirmed) }
-  let(:user)                { create(:user) }
+  let(:user)                { create(:user, :public_email) }
+  let(:email)               { FFaker::Internet.email }
 
   let(:trailer)             { "#{FFaker::Lorem.word}-by:" }
 
-  let(:commit_message)      { trailer_line(trailer, user.name, user.email) }
+  let(:commit_message)      { trailer_line(trailer, user.name, user.public_email) }
   let(:commit_message_html) { commit_html(commit_message) }
 
   context 'detects' do
-    let(:email) { FFaker::Internet.email }
-
     context 'trailers in the form of *-by' do
       where(:commit_trailer) do
         ["#{FFaker::Lorem.word}-by:", "#{FFaker::Lorem.word}-BY:", "#{FFaker::Lorem.word}-By:"]
@@ -42,7 +41,7 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
     end
 
-    it 'GitLab users via a secondary email' do
+    it 'does not detect GitLab users via a secondary email' do
       _, message_html = build_commit_message(
         trailer: trailer,
         name: secondary_email.user.name,
@@ -51,9 +50,8 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
 
       doc = filter(message_html)
 
-      expect_to_have_user_link_with_avatar(
+      expect_to_have_mailto_link_with_avatar(
         doc,
-        user: secondary_email.user,
         trailer: trailer,
         email: secondary_email.email
       )
@@ -185,17 +183,16 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
     it 'preserves the original email used in the commit message' do
       message, message_html = build_commit_message(
         trailer: trailer,
-        name: secondary_email.user.name,
-        email: secondary_email.email
+        name: user.name,
+        email: email
       )
 
       doc = filter(message_html)
 
-      expect_to_have_user_link_with_avatar(
+      expect_to_have_mailto_link_with_avatar(
         doc,
-        user: secondary_email.user,
         trailer: trailer,
-        email: secondary_email.email
+        email: email
       )
       expect(doc.text).to match Regexp.escape(message)
     end
@@ -218,7 +215,7 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       # any path-only link will automatically be prefixed
       # with the path of its repository.
       # See: "build_relative_path" in "lib/banzai/filter/relative_link_filter.rb"
-      let(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
+      let(:user_with_avatar) { create(:user, :public_email, :with_avatar, username: 'foobar') }
 
       it 'returns a full path for avatar urls' do
         _, message_html = build_commit_message(

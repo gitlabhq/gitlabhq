@@ -6,55 +6,59 @@
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - tooltip_title = label_status_tooltip(label, status) if status
 
-%li.label-list-item{ id: label_css_id, class: "gl-p-5 gl-border-b", data: { id: label.id } }
-  = render "shared/label_row", label: label, force_priority: force_priority
-  %ul.label-actions-list
-    - if can?(current_user, :admin_label, @project)
-      %li.gl-display-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
-        dom_id: dom_id(label), type: label.type } }
-        = render Pajamas::ButtonComponent.new(category: :tertiary,
-          icon: 'star',
-          button_options: { class: 'remove-priority has-tooltip', 'title': _('Remove priority'), 'aria_label': _('Deprioritize label'), data: { placement: 'bottom' } })
-        = render Pajamas::ButtonComponent.new(category: :tertiary,
-          icon: 'star-o',
-          button_options: { class: 'add-priority has-tooltip', title: _('Prioritize'), aria_label: _('Prioritize label'), data: { placement: 'bottom' } })
-    - if current_user
-      %li.gl-display-inline-block.label-subscription.js-label-subscription.gl-ml-3
-        - if label.can_subscribe_to_label_in_different_levels?
-          = render Pajamas::ButtonComponent.new(button_options: { class: "js-unsubscribe-button #{'hidden' if status.unsubscribed?}", data: { url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
-            = _('Unsubscribe')
-          .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
-            = render Pajamas::ButtonComponent.new(button_options: { data: { toggle: 'dropdown' } }) do
-              = _('Subscribe')
-              = sprite_icon('chevron-down')
+%li.label-list-item.gl-list-style-none.gl-py-3{ id: label_css_id, data: { id: label.id } }
+  .label-content.gl-px-3.gl-py-2.gl-rounded-base{ class: "#{ 'gl-py-3' if force_priority }" }
+    = render "shared/label_row", label: label, force_priority: force_priority
+    %ul.label-actions-list
+      - if can?(current_user, :admin_label, @project)
+        %li.gl-display-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
+          dom_id: dom_id(label), type: label.type } }
+          = render Pajamas::ButtonComponent.new(category: :tertiary,
+            size: :small,
+            icon: 'star',
+            button_options: { class: 'remove-priority has-tooltip', 'title': _('Remove priority'), 'aria_label': _('Deprioritize label'), data: { placement: 'bottom' } })
+          = render Pajamas::ButtonComponent.new(category: :tertiary,
+            size: :small,
+            icon: 'star-o',
+            button_options: { class: 'add-priority has-tooltip', title: _('Prioritize'), aria_label: _('Prioritize label'), data: { placement: 'bottom' } })
+      - if current_user
+        %li.gl-display-inline-block.label-subscription.js-label-subscription.gl-ml-3.gl-mt-1
+          - if label.can_subscribe_to_label_in_different_levels?
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-unsubscribe-button gl-w-full #{'hidden' if status.unsubscribed?}", data: { url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
+              = _('Unsubscribe')
+            .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
+              = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "gl-w-full", data: { toggle: 'dropdown' } }) do
+                = _('Subscribe')
+                = sprite_icon('chevron-down')
+              .dropdown-menu.dropdown-menu-right
+                %ul
+                  %li
+                    = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button #{'hidden' unless status.unsubscribed?}", data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }) do
+                      = _('Subscribe at project level')
+                  %li
+                    = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button js-group-level #{'hidden' unless status.unsubscribed?}", data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }) do
+                      = _('Subscribe at group level')
+          - else
+            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-subscribe-button gl-w-full', data: { status: status, url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
+              = label_subscription_toggle_button_text(label, @project)
+      - if can?(current_user, :admin_label, label)
+        %li.gl-display-inline-block
+          .dropdown
+            = render Pajamas::ButtonComponent.new(category: :tertiary,
+              size: :small,
+              icon: 'ellipsis_v',
+              button_options: { class: 'js-label-options-dropdown gl-ml-3', 'aria_label': _('Label actions dropdown'), title: _('Label actions dropdown'), data: { toggle: 'dropdown' } })
             .dropdown-menu.dropdown-menu-right
               %ul
                 %li
-                  = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button #{'hidden' unless status.unsubscribed?}", data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }) do
-                    = _('Subscribe at project level')
-                %li
-                  = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: "js-subscribe-button js-group-level #{'hidden' unless status.unsubscribed?}", data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }) do
-                    = _('Subscribe at group level')
-        - else
-          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-subscribe-button gl-w-full', data: { status: status, url: toggle_subscription_path, toggle: 'tooltip', container: 'body' }, title: tooltip_title }) do
-            = label_subscription_toggle_button_text(label, @project)
-    - if can?(current_user, :admin_label, label)
-      %li.gl-display-inline-block
-        .dropdown
-          = render Pajamas::ButtonComponent.new(category: :tertiary,
-            icon: 'ellipsis_v',
-            button_options: { class: 'js-label-options-dropdown gl-ml-3', 'aria_label': _('Label actions dropdown'), title: _('Label actions dropdown'), data: { toggle: 'dropdown' } })
-          .dropdown-menu.dropdown-menu-right
-            %ul
-              %li
-                = render Pajamas::ButtonComponent.new(category: :tertiary, href: label.edit_path, variant: :link) do
-                  = _('Edit')
-              - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
+                  = render Pajamas::ButtonComponent.new(category: :tertiary, href: label.edit_path, variant: :link) do
+                    = _('Edit')
+                - if label.project_label? && label.project.group && can?(current_user, :admin_label, label.project.group)
+                  %li
+                    = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
+                      button_options: { class: 'js-promote-project-label-button', data: { url: promote_project_label_path(label.project, label), label_title: label.title, label_color: label.color, label_text_color: label.text_color, group_name: label.project.group.name } }) do
+                      = _('Promote to group label')
                 %li
                   = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
-                    button_options: { class: 'js-promote-project-label-button', data: { url: promote_project_label_path(label.project, label), label_title: label.title, label_color: label.color, label_text_color: label.text_color, group_name: label.project.group.name } }) do
-                    = _('Promote to group label')
-              %li
-                = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
-                  button_options: { class: 'text-danger js-delete-label-modal-button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }) do
-                  = _('Delete')
+                    button_options: { class: 'text-danger js-delete-label-modal-button', data: { label_name: label.name, subject_name: label.subject_name, destroy_path: label.destroy_path } }) do
+                    = _('Delete')

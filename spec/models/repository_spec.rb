@@ -3132,6 +3132,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
         2.times { repository.ancestor?(commit.id, ancestor.id) }
       end
 
+      it 'calls out to Gitaly again after expiration' do
+        expect(repository.raw_repository).to receive(:ancestor?).once
+
+        repository.ancestor?(commit.id, ancestor.id)
+
+        repository.expire_ancestor_cache(commit.id, ancestor.id)
+
+        expect(repository.raw_repository).to receive(:ancestor?).once
+
+        2.times { repository.ancestor?(commit.id, ancestor.id) }
+      end
+
       it 'returns the value from the request store' do
         repository.__send__(:request_store_cache).write(cache_key, "it's apparent")
 

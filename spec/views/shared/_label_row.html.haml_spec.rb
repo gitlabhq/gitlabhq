@@ -38,7 +38,7 @@ RSpec.describe 'shared/_label_row.html.haml' do
     end
 
     it 'shows the path from where the label was created' do
-      expect(rendered).to have_css('.label-badge', text: project.full_name)
+      expect(rendered).to have_text(project.full_name)
     end
   end
 
@@ -70,7 +70,7 @@ RSpec.describe 'shared/_label_row.html.haml' do
     end
 
     it 'shows the path from where the label was created' do
-      expect(rendered).to have_css('.label-badge', text: subgroup.full_name)
+      expect(rendered).to have_text(subgroup.full_name)
     end
   end
 

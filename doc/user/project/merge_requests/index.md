@@ -26,6 +26,22 @@ view [this GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE).
 
 Learn the various ways to [create a merge request](creating_merge_requests.md).
 
+### Use merge request templates
+
+When you create a merge request, GitLab checks for the existence of a
+[description template](../description_templates.md) to add data to your merge request.
+GitLab checks these locations in order from 1 to 5, and applies the first template
+found to your merge request:
+
+| Name | Project UI<br>setting | Group<br>`default.md` | Instance<br>`default.md` | Project<br>`default.md` | No template |
+| :-- | :--: | :--: | :--: | :--: | :--: |
+| Standard commit message | 1 | 2 | 3 | 4 | 5 |
+| Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
+| Branch name [prefixed with an issue ID](../repository/branches/index.md#prefix-branch-names-with-issue-numbers), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
+
+NOTE:
+Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
+
 ## View merge requests
 
 You can view merge requests for your project, group, or yourself.
