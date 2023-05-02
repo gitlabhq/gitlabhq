@@ -116,7 +116,7 @@ module AvatarsHelper
   private
 
   def avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path:)
-    user = User.find_by_any_email(email)
+    user = User.with_public_email(email).first
 
     if user
       avatar_icon_for_user(user, size, scale, only_path: only_path)

@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.10.5 (2023-05-01)
+
+### Security (9 changes)
+
+- [Set minimum role for importing projects to Maintainer](gitlab-org/security/gitlab@d4cff7e53961d819b30ae748a38e4c8e4d856b32) ([merge request](gitlab-org/security/gitlab!3215))
+- [Commit trailers now only match public user email addresses](gitlab-org/security/gitlab@4948acdb39ba6ae9a71ef133e38ec47327d14f97) ([merge request](gitlab-org/security/gitlab!3208))
+- [Handle invalid URLs in asset proxy](gitlab-org/security/gitlab@b22e923ab3d48d9389311192d92dd89e2bfc24aa) ([merge request](gitlab-org/security/gitlab!3212))
+- [Relay state to check for only allowing sub paths](gitlab-org/security/gitlab@24f84fafd65dfedf36e859d305dd46bf3e71c8dc) ([merge request](gitlab-org/security/gitlab!3220))
+- [Prohibit 40 character hex sets at beginning of path-based branch name](gitlab-org/security/gitlab@71d30b6537f6853fef45acba16ab26b6f32718f7) ([merge request](gitlab-org/security/gitlab!3194))
+- [Add specs for external users flag](gitlab-org/security/gitlab@dfdb540285e573bd55a8647db4de8370ba6b3286) ([merge request](gitlab-org/security/gitlab!3190))
+- [Update policy to prevent banned members from accessing public projects](gitlab-org/security/gitlab@bc211b8be25e56f35c80d2331447f251c7a7dd56) ([merge request](gitlab-org/security/gitlab!3186))
+- [Use dummy filename as filename when viewing raw xml files](gitlab-org/security/gitlab@6d871f56d7a343d705f8c849d24a94b3528c3a97) ([merge request](gitlab-org/security/gitlab!3192))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@888c187aab7c7062ea43b61a282c4dea8c6a47be) ([merge request](gitlab-org/security/gitlab!3180))
+
 ## 15.10.4 (2023-04-21)
 
 ### Fixed (1 change)

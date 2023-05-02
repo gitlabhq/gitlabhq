@@ -190,6 +190,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_package
     enable :admin_package
     enable :create_projects
+    enable :import_projects
     enable :admin_pipeline
     enable :admin_build
     enable :add_cluster
@@ -260,14 +261,20 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end.enable :change_share_with_group_lock
 
   rule { developer & developer_maintainer_access }.enable :create_projects
-  rule { create_projects_disabled }.prevent :create_projects
+  rule { create_projects_disabled }.policy do
+    prevent :create_projects
+    prevent :import_projects
+  end
 
   rule { owner | admin }.policy do
     enable :owner_access
     enable :read_statistics
   end
 
-  rule { maintainer & can?(:create_projects) }.enable :transfer_projects
+  rule { maintainer & can?(:create_projects) }.policy do
+    enable :transfer_projects
+    enable :import_projects
+  end
 
   rule { read_package_registry_deploy_token }.policy do
     enable :read_package

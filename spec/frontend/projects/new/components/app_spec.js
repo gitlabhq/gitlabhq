@@ -41,6 +41,22 @@ describe('Experimental new project creation app', () => {
     ).toBe(isCiCdAvailable);
   });
 
+  it.each`
+    canImportProjects | outcome
+    ${false}          | ${'do not show Import panel'}
+    ${true}           | ${'show Import panel'}
+  `('$outcome when canImportProjects is $canImportProjects', ({ canImportProjects }) => {
+    createComponent({
+      canImportProjects,
+    });
+
+    expect(
+      findNewNamespacePage()
+        .props()
+        .panels.some((p) => p.name === 'import_project'),
+    ).toBe(canImportProjects);
+  });
+
   it('creates correct breadcrumbs for top-level projects', () => {
     createComponent();
 

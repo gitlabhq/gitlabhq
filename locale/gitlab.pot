@@ -44806,9 +44806,6 @@ msgstr ""
 msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
-msgid "This namespace has already been taken. Choose a different one."
-msgstr ""
-
 msgid "This only applies to repository indexing operations."
 msgstr ""
 
@@ -49706,6 +49703,9 @@ msgstr ""
 msgid "You are not allowed to download code from this project."
 msgstr ""
 
+msgid "You are not allowed to import projects in this namespace."
+msgstr ""
+
 msgid "You are not allowed to log in using password"
 msgstr ""
 
@@ -50018,7 +50018,7 @@ msgstr ""
 msgid "You don't have permission to view this epic"
 msgstr ""
 
-msgid "You don't have permissions to create this project"
+msgid "You don't have permissions to import this project"
 msgstr ""
 
 msgid "You don't have sufficient permission to perform this action."
