@@ -117,6 +117,16 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       expect(result[:text]).to eq 'Please do it'
     end
 
+    context 'when render_quick_actions' do
+      it 'keeps quick actions' do
+        params[:render_quick_actions] = true
+
+        result = service.execute
+
+        expect(result[:text]).to eq "Please do it\n\n/assign #{user.to_reference}"
+      end
+    end
+
     it 'explains quick actions effect' do
       result = service.execute
 

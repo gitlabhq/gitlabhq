@@ -157,13 +157,30 @@ To view the **Branch rules overview** list:
 
 ## Name your branch
 
-If you follow GitLab standards for [naming branches](#prefix-branch-names-with-issue-numbers),
-and configure branch names that follow these standards, GitLab can streamline your workflow:
+Git enforces [branch name rules](https://git-scm.com/docs/git-check-ref-format)
+to help ensure branch names remain compatible with other tools. GitLab
+adds extra requirements for branch names, and provides benefits for well-structured branch names.
 
-- Connect a merge request to its parent issue.
-- Connect a branch to an issue.
-- [Close the issue](../../issues/managing_issues.md#closing-issues-automatically)
-  when the connected merge request closes, and the connected branch merges.
+GitLab enforces these additional rules on all branches:
+
+- No spaces are allowed in branch names.
+- Branch names with 40 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
+
+Common software packages, like Docker, may enforce
+[additional branch naming restrictions](../../../../administration/packages/container_registry.md#docker-connection-error).
+
+For best compatibility with other software packages, use only numbers, hyphens (`-`),
+underscores (`_`), and lower-case letters from the ASCII standard table. You
+can use forward slashes (`/`) and emoji in branch names, but compatibility with other
+software packages cannot be guaranteed.
+
+Branch names with specific formatting offer extra benefits:
+
+- Streamline your merge request workflow by
+  [prefixing branch names with issue numbers](#prefix-branch-names-with-issue-numbers).
+- Automate [branch protections](../../protected_branches.md) based on branch name.
+- Test branch names with [push rules](../push_rules.md) before branches are pushed up to GitLab.
+- Define which [CI/CD jobs](../../../../ci/jobs/index.md) to run on merge requests.
 
 ### Configure default pattern for branch names from issues
 
@@ -188,12 +205,14 @@ To change the default pattern for branches created from issues:
 To streamline the creation of merge requests, start your branch name with an
 issue number. GitLab uses the issue number to import data into the merge request:
 
-- The issue is marked as related. The issue and merge request display links to each other.
+- The issue is marked as related to the merge request. The issue and merge request
+  display links to each other.
+- The branch is connected to the issue.
 - If your project is configured with a
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
   merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
   the related issue.
-- The issue milestone and labels are copied to the merge request.
+- Issue milestone and labels are copied to the merge request.
 
 ## Compare branches
 

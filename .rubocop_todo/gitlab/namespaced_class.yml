@@ -353,6 +353,7 @@ Gitlab/NamespacedClass:
     - 'app/models/x509_certificate.rb'
     - 'app/models/x509_issuer.rb'
     - 'app/models/zoom_meeting.rb'
+    - 'app/policies/abuse_report_policy.rb'
     - 'app/policies/application_setting/term_policy.rb'
     - 'app/policies/award_emoji_policy.rb'
     - 'app/policies/base_policy.rb'

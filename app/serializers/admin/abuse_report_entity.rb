@@ -37,6 +37,10 @@ module Admin
       admin_abuse_report_path(report)
     end
 
+    expose :report_path do |report|
+      admin_abuse_report_path(report)
+    end
+
     expose :remove_user_and_report_path do |report|
       admin_abuse_report_path(report, remove_user: true)
     end

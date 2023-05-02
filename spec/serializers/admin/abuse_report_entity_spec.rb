@@ -33,7 +33,8 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
         :block_user_path,
         :remove_report_path,
         :remove_user_and_report_path,
-        :message
+        :message,
+        :report_path
       )
     end
 
@@ -79,6 +80,10 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
 
     it 'correctly exposes :remove_report_path' do
       expect(entity_hash[:remove_report_path]).to eq admin_abuse_report_path(abuse_report)
+    end
+
+    it 'correctly exposes :report_path' do
+      expect(entity_hash[:report_path]).to eq admin_abuse_report_path(abuse_report)
     end
 
     it 'correctly exposes :remove_user_and_report_path' do

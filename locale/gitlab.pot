@@ -404,6 +404,11 @@ msgid_plural "%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d snippet"
+msgid_plural "%d snippets"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d stage"
 msgid_plural "%d stages"
 msgstr[0] ""
@@ -2068,6 +2073,102 @@ msgid "Abuse reports notification email"
 msgstr ""
 
 msgid "AbuseReports|No reports found"
+msgstr ""
+
+msgid "AbuseReport|%{reportLinkStart}Reported%{reportLinkEnd} for %{category} %{timeAgo}."
+msgstr ""
+
+msgid "AbuseReport|Abuse reports"
+msgstr ""
+
+msgid "AbuseReport|Activity"
+msgstr ""
+
+msgid "AbuseReport|Admin profile"
+msgstr ""
+
+msgid "AbuseReport|Card matches %{cardMatchesLinkStart}%{count} accounts%{cardMatchesLinkEnd}"
+msgstr ""
+
+msgid "AbuseReport|Comments"
+msgstr ""
+
+msgid "AbuseReport|Credit card"
+msgstr ""
+
+msgid "AbuseReport|Email"
+msgstr ""
+
+msgid "AbuseReport|Go to comment"
+msgstr ""
+
+msgid "AbuseReport|Go to content"
+msgstr ""
+
+msgid "AbuseReport|Go to issue"
+msgstr ""
+
+msgid "AbuseReport|Go to merge request"
+msgstr ""
+
+msgid "AbuseReport|Go to profile"
+msgstr ""
+
+msgid "AbuseReport|Groups"
+msgstr ""
+
+msgid "AbuseReport|Last login"
+msgstr ""
+
+msgid "AbuseReport|Member since"
+msgstr ""
+
+msgid "AbuseReport|No user found"
+msgstr ""
+
+msgid "AbuseReport|Normal location"
+msgstr ""
+
+msgid "AbuseReport|Phone"
+msgstr ""
+
+msgid "AbuseReport|Registered with name %{name}."
+msgstr ""
+
+msgid "AbuseReport|Reported by"
+msgstr ""
+
+msgid "AbuseReport|Reported by %{name} for %{category}."
+msgstr ""
+
+msgid "AbuseReport|Reported comment"
+msgstr ""
+
+msgid "AbuseReport|Reported content"
+msgstr ""
+
+msgid "AbuseReport|Reported issue"
+msgstr ""
+
+msgid "AbuseReport|Reported merge request"
+msgstr ""
+
+msgid "AbuseReport|Reported profile"
+msgstr ""
+
+msgid "AbuseReport|Screenshot of reported abuse"
+msgstr ""
+
+msgid "AbuseReport|Snippets"
+msgstr ""
+
+msgid "AbuseReport|Tier"
+msgstr ""
+
+msgid "AbuseReport|Verification"
+msgstr ""
+
+msgid "AbuseReport|View screenshot"
 msgstr ""
 
 msgid "Accept invitation"

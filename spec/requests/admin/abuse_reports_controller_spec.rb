@@ -42,4 +42,14 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
       end
     end
   end
+
+  describe 'GET #show' do
+    let!(:report) { create(:abuse_report) }
+
+    it 'returns the requested report' do
+      get admin_abuse_report_path(report)
+
+      expect(assigns(:abuse_report)).to eq report
+    end
+  end
 end

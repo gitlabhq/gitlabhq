@@ -15,5 +15,11 @@ module Admin
         }.to_json
       }
     end
+
+    def abuse_report_data(report)
+      {
+        abuse_report_data: Admin::AbuseReportDetailsSerializer.new.represent(report).to_json
+      }
+    end
   end
 end

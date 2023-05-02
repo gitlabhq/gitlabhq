@@ -3,15 +3,16 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { sprintf } from '~/locale';
 import { ACTIONS_I18N } from '~/admin/abuse_reports/constants';
 import { mockAbuseReports } from '../mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility');
 
 describe('AbuseReportActions', () => {
   let wrapper;
@@ -69,8 +70,6 @@ describe('AbuseReportActions', () => {
   describe('actions', () => {
     let axiosMock;
 
-    useMockLocationHelper();
-
     beforeEach(() => {
       axiosMock = new MockAdapter(axios);
 
@@ -99,7 +98,25 @@ describe('AbuseReportActions', () => {
         findConfirmationModal().vm.$emit('primary');
         await axios.waitForAll();
 
-        expect(window.location.reload).toHaveBeenCalled();
+        expect(refreshCurrentPage).toHaveBeenCalled();
+      });
+
+      describe('when a redirect path is present', () => {
+        beforeEach(() => {
+          createComponent({ report: { ...report, redirectPath: '/redirect_path' } });
+        });
+
+        it('redirects to the given path', async () => {
+          findRemoveUserAndReportButton().trigger('click');
+          await nextTick();
+
+          axiosMock.onDelete(report.removeUserAndReportPath).reply(HTTP_STATUS_OK);
+
+          findConfirmationModal().vm.$emit('primary');
+          await axios.waitForAll();
+
+          expect(redirectTo).toHaveBeenCalledWith('/redirect_path');
+        });
       });
     });
 
@@ -162,7 +179,23 @@ describe('AbuseReportActions', () => {
 
         await axios.waitForAll();
 
-        expect(window.location.reload).toHaveBeenCalled();
+        expect(refreshCurrentPage).toHaveBeenCalled();
+      });
+
+      describe('when a redirect path is present', () => {
+        beforeEach(() => {
+          createComponent({ report: { ...report, redirectPath: '/redirect_path' } });
+        });
+
+        it('redirects to the given path', async () => {
+          axiosMock.onDelete(report.removeReportPath).reply(HTTP_STATUS_OK);
+
+          findRemoveReportButton().trigger('click');
+
+          await axios.waitForAll();
+
+          expect(redirectTo).toHaveBeenCalledWith('/redirect_path');
+        });
       });
     });
   });

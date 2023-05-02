@@ -770,6 +770,17 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(response.body).to eq(expected_json)
         end
       end
+
+      context 'when a project has the same name as a desired username' do
+        let_it_be(:project) { create(:project, name: 'project-name') }
+
+        it 'returns JSON indicating a user by that username does not exist' do
+          get user_exists_url 'project-name'
+
+          expected_json = { exists: false }.to_json
+          expect(response.body).to eq(expected_json)
+        end
+      end
     end
 
     context 'when the rate limit has been reached' do

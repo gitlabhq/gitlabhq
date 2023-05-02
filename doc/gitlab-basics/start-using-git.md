@@ -275,8 +275,10 @@ To create a feature branch:
 git checkout -b <name-of-branch>
 ```
 
-Branch names cannot contain empty spaces and special characters. Use only lowercase letters, numbers,
-hyphens (`-`), and underscores (`_`).
+GitLab enforces [branch naming rules](../user/project/repository/branches/index.md#name-your-branch)
+to prevent problems, and provides 
+[branch naming patterns](../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+to streamline merge request creation.
 
 ### Switch to a branch
 

@@ -106,6 +106,19 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  it.each`
+    desc                                                                                              | supportsQuickActions
+    ${'passes render_quick_actions param to renderMarkdownPath if quick actions are enabled'}         | ${true}
+    ${'does not pass render_quick_actions param to renderMarkdownPath if quick actions are disabled'} | ${false}
+  `('$desc', async ({ supportsQuickActions }) => {
+    buildWrapper({ propsData: { supportsQuickActions } });
+
+    await enableContentEditor();
+
+    expect(mock.history.post).toHaveLength(1);
+    expect(mock.history.post[0].url).toContain(`render_quick_actions=${supportsQuickActions}`);
+  });
+
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
     buildWrapper({ propsData: { enableContentEditor: true } });
 

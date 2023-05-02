@@ -182,7 +182,7 @@ class UsersController < ApplicationController
 
   def exists
     if Gitlab::CurrentSettings.signup_enabled? || current_user
-      render json: { exists: !!Namespace.find_by_path_or_name(params[:username]) }
+      render json: { exists: !!Namespace.without_project_namespaces.find_by_path_or_name(params[:username]) }
     else
       render json: { error: _('You must be authenticated to access this path.') }, status: :unauthorized
     end

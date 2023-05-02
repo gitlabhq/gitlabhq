@@ -2517,8 +2517,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:content) { '/close' }
 
       it 'includes issuable name' do
-        _, explanations = service.explain(content, issue)
+        content_result, explanations = service.explain(content, issue)
 
+        expect(content_result).to eq('')
         expect(explanations).to eq(['Closes this issue.'])
       end
     end
@@ -2944,6 +2945,24 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             expect(explanations).to contain_exactly("Remove customer relation contact(s).")
           end
         end
+      end
+    end
+
+    context 'with keep_actions' do
+      let(:content) { '/close' }
+
+      it 'keeps quick actions' do
+        content_result, explanations = service.explain(content, issue, keep_actions: true)
+
+        expect(content_result).to eq("\n/close")
+        expect(explanations).to eq(['Closes this issue.'])
+      end
+
+      it 'removes the quick action' do
+        content_result, explanations = service.explain(content, issue, keep_actions: false)
+
+        expect(content_result).to eq('')
+        expect(explanations).to eq(['Closes this issue.'])
       end
     end
   end

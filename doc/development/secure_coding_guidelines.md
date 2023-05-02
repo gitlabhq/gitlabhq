@@ -1309,7 +1309,10 @@ In the event of credential leak through an MR, issue, or any other medium, [reac
 
 ### Examples
 
-Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved and used later:
+Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
+and used later. Use a binary column to store `attr_encrypted` attributes in the database,
+and then set both `encode` and `encode_iv` to `false`. For recommended algorithms, see
+the [GitLab Cryptography Standard](https://about.gitlab.com/handbook/security/cryptographic-standard.html#algorithmic-standards).
 
 ```ruby
 module AlertManagement
@@ -1318,7 +1321,9 @@ module AlertManagement
     attr_encrypted :token,
       mode: :per_attribute_iv,
       key: Settings.attr_encrypted_db_key_base_32,
-      algorithm: 'aes-256-gcm'
+      algorithm: 'aes-256-gcm',
+      encode: false,
+      encode_iv: false
 ```
 
 Hashing a sensitive value with `CryptoHelper` so that it can be compared in future, but the plaintext is irretrievable:

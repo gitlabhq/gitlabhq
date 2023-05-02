@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe AbuseReport, feature_category: :insider_threat do
+  include Gitlab::Routing.url_helpers
+
   let_it_be(:report, reload: true) { create(:abuse_report) }
   let_it_be(:user, reload: true) { create(:admin) }
 
@@ -177,6 +179,144 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
       it 'returns a full URL with the base url and system path' do
         expect(report.screenshot_path).to eq("#{base_url}#{report.screenshot.url}")
       end
+    end
+  end
+
+  describe '#report_type' do
+    let(:report) { build_stubbed(:abuse_report, reported_from_url: url) }
+    let_it_be(:issue) { create(:issue) }
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:user) { create(:user) }
+
+    subject { report.report_type }
+
+    context 'when reported from an issue' do
+      let(:url) { project_issue_url(issue.project, issue) }
+
+      it { is_expected.to eq :issue }
+    end
+
+    context 'when reported from a merge request' do
+      let(:url) { project_merge_request_url(merge_request.project, merge_request) }
+
+      it { is_expected.to eq :merge_request }
+    end
+
+    context 'when reported from a profile' do
+      let(:url) { user_url(user) }
+
+      it { is_expected.to eq :profile }
+    end
+
+    describe 'comment type' do
+      context 'when reported from an issue comment' do
+        let(:url) { project_issue_url(issue.project, issue, anchor: 'note_123') }
+
+        it { is_expected.to eq :comment }
+      end
+
+      context 'when reported from a merge request comment' do
+        let(:url) { project_merge_request_url(merge_request.project, merge_request, anchor: 'note_123') }
+
+        it { is_expected.to eq :comment }
+      end
+
+      context 'when anchor exists not from an issue or merge request URL' do
+        let(:url) { user_url(user, anchor: 'note_123') }
+
+        it { is_expected.to eq :profile }
+      end
+
+      context 'when note id is invalid' do
+        let(:url) { project_merge_request_url(merge_request.project, merge_request, anchor: 'note_12x') }
+
+        it { is_expected.to eq :merge_request }
+      end
+    end
+
+    context 'when URL cannot be matched' do
+      let(:url) { '/xxx' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#reported_content' do
+    let(:report) { build_stubbed(:abuse_report, reported_from_url: url) }
+    let_it_be(:issue) { create(:issue, description: 'issue description') }
+    let_it_be(:merge_request) { create(:merge_request, description: 'mr description') }
+    let_it_be(:user) { create(:user) }
+
+    subject { report.reported_content }
+
+    context 'when reported from an issue' do
+      let(:url) { project_issue_url(issue.project, issue) }
+
+      it { is_expected.to eq issue.description_html }
+    end
+
+    context 'when reported from a merge request' do
+      let(:url) { project_merge_request_url(merge_request.project, merge_request) }
+
+      it { is_expected.to eq merge_request.description_html }
+    end
+
+    context 'when reported from a merge request with an invalid note ID' do
+      let(:url) do
+        "#{project_merge_request_url(merge_request.project, merge_request)}#note_[]"
+      end
+
+      it { is_expected.to eq merge_request.description_html }
+    end
+
+    context 'when reported from a profile' do
+      let(:url) { user_url(user) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when reported from an unknown URL' do
+      let(:url) { '/xxx' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when reported from an invalid URL' do
+      let(:url) { 'http://example.com/[]' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when reported from an issue comment' do
+      let(:note) { create(:note, noteable: issue, project: issue.project, note: 'comment in issue') }
+      let(:url) { project_issue_url(issue.project, issue, anchor: "note_#{note.id}") }
+
+      it { is_expected.to eq note.note_html }
+    end
+
+    context 'when reported from a merge request comment' do
+      let(:note) { create(:note, noteable: merge_request, project: merge_request.project, note: 'comment in mr') }
+      let(:url) { project_merge_request_url(merge_request.project, merge_request, anchor: "note_#{note.id}") }
+
+      it { is_expected.to eq note.note_html }
+    end
+
+    context 'when report type cannot be determined, because the comment does not exist' do
+      let(:url) do
+        project_merge_request_url(merge_request.project, merge_request, anchor: "note_#{non_existing_record_id}")
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#other_reports_for_user' do
+    let(:report) { create(:abuse_report) }
+    let(:another_user_report) { create(:abuse_report, user: report.user) }
+    let(:another_report) { create(:abuse_report) }
+
+    it 'returns other reports for the same user' do
+      expect(report.other_reports_for_user).to match_array(another_user_report)
     end
   end
 

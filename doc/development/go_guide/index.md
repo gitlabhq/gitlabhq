@@ -438,7 +438,7 @@ up to run `goimports -local gitlab.com/gitlab-org` so that it's applied to every
 
 ### Naming branches
 
-Only use the characters `a-z`, `0-9` or `-` in branch names. This restriction is due to the fact that `go get` doesn't work as expected when a branch name contains certain characters, such as a slash `/`:
+In addition to the GitLab [branch name rules](../../user/project/repository/branches/index.md#name-your-branch), use only the characters `a-z`, `0-9` or `-` in branch names. This restriction is because `go get` doesn't work as expected when a branch name contains certain characters, such as a slash `/`:
 
 ```shell
 $ go get -u gitlab.com/gitlab-org/security-products/analyzers/report/v3@some-user/some-feature

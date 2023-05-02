@@ -16,11 +16,11 @@ module Gitlab
         def write_multiple(mapping)
           with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.multi do |multi|
+              redis.pipelined do |pipelined|
                 mapping.each do |raw_key, value|
                   key = cache_key_for(raw_key)
 
-                  multi.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
+                  pipelined.set(key, gzip_compress(value.to_json), ex: EXPIRATION)
                 end
               end
             end

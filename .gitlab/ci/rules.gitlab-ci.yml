@@ -1417,6 +1417,12 @@
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
       allow_failure: true
+    - <<: *if-force-ci
+      when: manual
+      allow_failure: true
+
+.qa:rules:package-and-test-schedule:
+  rules:
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
       variables:
@@ -1426,13 +1432,11 @@
         UPDATE_QA_CACHE: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
 
 .qa:rules:package-and-test-ee:
   rules:
     - !reference [".qa:rules:package-and-test-common", rules]
+    - !reference [".qa:rules:package-and-test-schedule", rules]
     - <<: *if-merge-request
       changes: *code-patterns
       when: manual
@@ -1460,6 +1464,7 @@
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
       when: never
     - !reference [".qa:rules:package-and-test-common", rules]
+    - !reference [".qa:rules:package-and-test-schedule", rules]
     - <<: *if-merge-request
       changes: *code-patterns
       allow_failure: true

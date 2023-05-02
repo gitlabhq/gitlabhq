@@ -9,6 +9,10 @@ class Admin::AbuseReportsController < Admin::ApplicationController
     @abuse_reports = AbuseReportsFinder.new(params).execute
   end
 
+  def show
+    @abuse_report = AbuseReport.find(params[:id])
+  end
+
   def destroy
     abuse_report = AbuseReport.find(params[:id])
 

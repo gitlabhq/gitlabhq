@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::QuickActions::Extractor do
+RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning do
   let(:definitions) do
     Class.new do
       include Gitlab::QuickActions::Dsl
@@ -19,7 +19,8 @@ RSpec.describe Gitlab::QuickActions::Extractor do
     end.command_definitions
   end
 
-  let(:extractor) { described_class.new(definitions) }
+  let(:extractor) { described_class.new(definitions, keep_actions: keep_actions) }
+  let(:keep_actions) { false }
 
   shared_examples 'command with no argument' do
     it 'extracts command' do
@@ -176,6 +177,31 @@ RSpec.describe Gitlab::QuickActions::Extractor do
       end
     end
 
+    describe 'command with keep_actions' do
+      let(:keep_actions) { true }
+
+      context 'at the start of content' do
+        it_behaves_like 'command with a single argument' do
+          let(:original_msg) { "/assign @joe\nworld" }
+          let(:final_msg) { "\n/assign @joe\n\nworld" }
+        end
+      end
+
+      context 'in the middle of content' do
+        it_behaves_like 'command with a single argument' do
+          let(:original_msg) { "hello\n/assign @joe\nworld" }
+          let(:final_msg) { "hello\n\n/assign @joe\n\nworld" }
+        end
+      end
+
+      context 'at the end of content' do
+        it_behaves_like 'command with a single argument' do
+          let(:original_msg) { "hello\n/assign @joe" }
+          let(:final_msg) { "hello\n\n/assign @joe" }
+        end
+      end
+    end
+
     it 'extracts command with multiple arguments and various prefixes' do
       msg = %(hello\n/power @user.name %9.10 ~"bar baz.2"\nworld)
       msg, commands = extractor.extract_commands(msg)
@@ -244,8 +270,17 @@ RSpec.describe Gitlab::QuickActions::Extractor do
       msg = %(hello\nworld\n/reopen\n/substitution wow this is a thing.)
       msg, commands = extractor.extract_commands(msg)
 
-      expect(commands).to eq [['reopen'], ['substitution', 'wow this is a thing.']]
+      expect(commands).to match_array [['reopen'], ['substitution', 'wow this is a thing.']]
       expect(msg).to eq "hello\nworld\nfoo"
+    end
+
+    it 'extracts and performs substitution commands with keep_actions' do
+      extractor = described_class.new(definitions, keep_actions: true)
+      msg = %(hello\nworld\n/reopen\n/substitution wow this is a thing.)
+      msg, commands = extractor.extract_commands(msg)
+
+      expect(commands).to match_array [['reopen'], ['substitution', 'wow this is a thing.']]
+      expect(msg).to eq "hello\nworld\n\n/reopen\n\nfoo"
     end
 
     it 'extracts multiple commands' do

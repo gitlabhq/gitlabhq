@@ -1031,36 +1031,6 @@ Input type: `AlertTodoCreateInput`
 | <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 | <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
-### `Mutation.apiFuzzingCiConfigurationCreate`
-
-WARNING:
-**Deprecated** in 15.1.
-The configuration snippet is now generated client-side.
-
-Input type: `ApiFuzzingCiConfigurationCreateInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationapifuzzingciconfigurationcreateapispecificationfile"></a>`apiSpecificationFile` | [`String!`](#string) | File path or URL to the file that defines the API surface for scanning. Must be in the format specified by the `scanMode` argument. |
-| <a id="mutationapifuzzingciconfigurationcreateauthpassword"></a>`authPassword` | [`String`](#string) | CI variable containing the password for authenticating with the target API. |
-| <a id="mutationapifuzzingciconfigurationcreateauthusername"></a>`authUsername` | [`String`](#string) | CI variable containing the username for authenticating with the target API. |
-| <a id="mutationapifuzzingciconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationapifuzzingciconfigurationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="mutationapifuzzingciconfigurationcreatescanmode"></a>`scanMode` | [`ApiFuzzingScanMode!`](#apifuzzingscanmode) | Mode for API fuzzing scans. |
-| <a id="mutationapifuzzingciconfigurationcreatescanprofile"></a>`scanProfile` | [`String`](#string) | Name of a default profile to use for scanning. Ex: Quick-10. |
-| <a id="mutationapifuzzingciconfigurationcreatetarget"></a>`target` | [`String!`](#string) | URL for the target of API fuzzing scans. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationapifuzzingciconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationapifuzzingciconfigurationcreateconfigurationyaml"></a>`configurationYaml` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
-| <a id="mutationapifuzzingciconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationapifuzzingciconfigurationcreategitlabciyamleditpath"></a>`gitlabCiYamlEditPath` **{warning-solid}** | [`String`](#string) | **Deprecated:** The configuration snippet is now generated client-side. Deprecated in 14.6. |
-
 ### `Mutation.approveDeployment`
 
 Input type: `ApproveDeploymentInput`

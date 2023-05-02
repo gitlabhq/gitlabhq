@@ -7,10 +7,13 @@ description: "How to create merge requests in GitLab."
 
 # Creating merge requests **(FREE)**
 
-There are many different ways to create a merge request.
+GitLab provides many different ways to create a merge request.
 
 NOTE:
-Use [branch naming patterns](../repository/branches/index.md#prefix-branch-names-with-issue-numbers) to streamline merge request creation.
+GitLab enforces [branch naming rules](../repository/branches/index.md#name-your-branch)
+to prevent problems, and provides 
+[branch naming patterns](../repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+to streamline merge request creation.
 
 ## From the merge request list
 

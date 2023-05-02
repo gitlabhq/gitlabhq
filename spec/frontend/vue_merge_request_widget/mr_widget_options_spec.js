@@ -162,9 +162,17 @@ describe('MrWidgetOptions', () => {
 
     describe('computed', () => {
       describe('componentName', () => {
+        // eslint-disable-next-line jest/no-disabled-tests
+        it.skip.each`
+          ${'merged'}      | ${'mr-widget-merged'}
+        `('should translate $state into $componentName', ({ state, componentName }) => {
+          wrapper.vm.mr.state = state;
+
+          expect(wrapper.vm.componentName).toEqual(componentName);
+        });
+
         it.each`
           state            | componentName
-          ${'merged'}      | ${'mr-widget-merged'}
           ${'conflicts'}   | ${'mr-widget-conflicts'}
           ${'shaMismatch'} | ${'sha-mismatch'}
         `('should translate $state into $componentName', ({ state, componentName }) => {

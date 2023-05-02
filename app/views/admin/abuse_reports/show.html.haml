@@ -1,0 +1,6 @@
+- add_to_breadcrumbs _('Abuse Reports'), admin_abuse_reports_path
+- breadcrumb_title @abuse_report.user&.name
+- page_title @abuse_report.user&.name, _('Abuse Reports')
+
+#js-abuse-reports-detail-view{ data: abuse_report_data(@abuse_report) }
+  = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

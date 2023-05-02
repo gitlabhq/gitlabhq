@@ -213,36 +213,41 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           end
         end
 
-        context 'when host url is local or not http' do
-          %w[https://localhost:3000 http://192.168.0.1 ftp://testing].each do |url|
-            before do
-              stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
+        shared_examples 'unacceptable url' do |url, expected_error|
+          before do
+            stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
 
-              session[:bulk_import_gitlab_access_token] = 'test'
-              session[:bulk_import_gitlab_url] = url
-            end
-
-            it 'denies network request' do
-              get :status
-
-              expect(controller).to redirect_to(new_group_path(anchor: 'import-group-pane'))
-              expect(flash[:alert]).to eq('Specified URL cannot be used: "Only allowed schemes are http, https"')
-            end
+            session[:bulk_import_gitlab_access_token] = 'test'
+            session[:bulk_import_gitlab_url] = url
           end
+
+          it 'denies network request' do
+            get :status
+            expect(controller).to redirect_to(new_group_path(anchor: 'import-group-pane'))
+            expect(flash[:alert]).to eq("Specified URL cannot be used: \"#{expected_error}\"")
+          end
+        end
+
+        context 'when host url is local or not http' do
+          include_examples 'unacceptable url', 'https://localhost:3000', "Only allowed schemes are http, https"
+          include_examples 'unacceptable url', 'http://192.168.0.1', "Only allowed schemes are http, https"
+          include_examples 'unacceptable url', 'ftp://testing', "Only allowed schemes are http, https"
 
           context 'when local requests are allowed' do
             %w[https://localhost:3000 http://192.168.0.1].each do |url|
-              before do
-                stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+              context "with #{url}" do
+                before do
+                  stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
 
-                session[:bulk_import_gitlab_access_token] = 'test'
-                session[:bulk_import_gitlab_url] = url
-              end
+                  session[:bulk_import_gitlab_access_token] = 'test'
+                  session[:bulk_import_gitlab_url] = url
+                end
 
-              it 'allows network request' do
-                get :status
+                it 'allows network request' do
+                  get :status
 
-                expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to have_gitlab_http_status(:ok)
+                end
               end
             end
           end

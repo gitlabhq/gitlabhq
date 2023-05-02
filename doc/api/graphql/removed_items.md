@@ -30,9 +30,10 @@ Fields removed in GitLab 16.0.
 
 ### GraphQL Mutations
 
-| Argument name        | Mutation                 | Deprecated in | Use instead                |
-| -------------------- | --------------------     | ------------- | -------------------------- |
+| Argument name        | Mutation                 | Deprecated in                                                       | Use instead                                    |
+| -------------------- | --------------------     |---------------------------------------------------------------------|------------------------------------------------|
 | -                    | `vulnerabilityFindingDismiss` | [15.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99170) | `vulnerabilityDismiss` or `securityFindingDismiss` |
+| -                    | `apiFuzzingCiConfigurationCreate` | [15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87241) | `todos`                                        |
 
 ## GitLab 15.0
 

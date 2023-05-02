@@ -21,4 +21,14 @@ RSpec.describe Admin::AbuseReportsHelper, feature_category: :insider_threat do
       expect(data['categories']).to match_array(AbuseReport.categories.keys)
     end
   end
+
+  describe '#abuse_report_data' do
+    let(:report) { build_stubbed(:abuse_report) }
+
+    subject(:data) { helper.abuse_report_data(report)[:abuse_report_data] }
+
+    it 'has the expected attributes' do
+      expect(data).to include('user', 'reporter', 'report', 'actions')
+    end
+  end
 end

@@ -12,6 +12,7 @@ export const mockAbuseReports = [
     removeUserAndReportPath: '/remove/user/mr_abuser/and/report/path',
     removeReportPath: '/remove/report/path',
     message: 'message 1',
+    reportPath: '/admin/abuse_reports/1',
   },
   {
     category: 'phishing',
@@ -26,5 +27,6 @@ export const mockAbuseReports = [
     removeUserAndReportPath: '/remove/user/mr_phisher/and/report/path',
     removeReportPath: '/remove/report/path',
     message: 'message 2',
+    reportPath: '/admin/abuse_reports/2',
   },
 ];

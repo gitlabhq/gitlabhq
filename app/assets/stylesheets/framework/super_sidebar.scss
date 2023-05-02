@@ -100,7 +100,6 @@
   .counter[aria-expanded='true'] {
     background-color: $gray-50;
     border-color: transparent;
-    box-shadow: none;
     mix-blend-mode: multiply;
 
     .gl-dark & {
@@ -110,6 +109,11 @@
     .gl-icon {
       color: var(--gray-700, $gray-700);
     }
+  }
+
+  .counter:hover,
+  .counter[aria-expanded='true'] {
+    box-shadow: none;
   }
 
   .context-switcher .gl-new-dropdown-custom-toggle {

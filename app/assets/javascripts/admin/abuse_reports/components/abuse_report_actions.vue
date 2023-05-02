@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlModal } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
+import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { ACTIONS_I18N } from '../constants';
 
@@ -125,7 +126,8 @@ export default {
         .catch(this.handleError);
     },
     handleRemoveReportResponse() {
-      window.location.reload();
+      if (this.report.redirectPath) redirectTo(this.report.redirectPath);
+      else refreshCurrentPage();
     },
     handleBlockUserResponse({ data }) {
       const message = data?.error || data?.notice;

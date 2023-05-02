@@ -3,6 +3,7 @@ import Autosize from 'autosize';
 import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
+import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import { EDITING_MODE_MARKDOWN_FIELD, EDITING_MODE_CONTENT_EDITOR } from '../../constants';
 import MarkdownField from './field.vue';
 
@@ -150,7 +151,11 @@ export default {
       this.autosizeTextarea();
     },
     renderMarkdown(markdown) {
-      return axios.post(this.renderMarkdownPath, { text: markdown }).then(({ data }) => data.body);
+      const url = setUrlParams(
+        { render_quick_actions: this.supportsQuickActions },
+        joinPaths(window.location.origin, gon.relative_url_root, this.renderMarkdownPath),
+      );
+      return axios.post(url, { text: markdown }).then(({ data }) => data.body);
     },
     onEditingModeChange(editingMode) {
       this.editingMode = editingMode;

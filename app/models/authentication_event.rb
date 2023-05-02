@@ -30,4 +30,8 @@ class AuthenticationEvent < ApplicationRecord
     !where(user_id: user).exists? ||
       where(user_id: user, ip_address: ip_address).success.exists?
   end
+
+  def self.most_used_ip_address_for_user(user)
+    select('mode() within group (order by ip_address) as ip_address').find_by(user: user).ip_address
+  end
 end

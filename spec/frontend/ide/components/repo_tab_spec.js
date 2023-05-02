@@ -1,11 +1,10 @@
 import { GlTab } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { stubComponent } from 'helpers/stub_component';
 import RepoTab from '~/ide/components/repo_tab.vue';
-import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { file } from '../helpers';
 
 Vue.use(Vuex);
@@ -17,36 +16,40 @@ const GlTabStub = stubComponent(GlTab, {
 describe('RepoTab', () => {
   let wrapper;
   let store;
-  let router;
 
+  const pushMock = jest.fn();
   const findTab = () => wrapper.findComponent(GlTabStub);
+  const findCloseButton = () => wrapper.findByTestId('close-button');
 
   function createComponent(propsData) {
-    wrapper = mount(RepoTab, {
+    wrapper = mountExtended(RepoTab, {
       store,
       propsData,
       stubs: {
         GlTab: GlTabStub,
+      },
+      mocks: {
+        $router: {
+          push: pushMock,
+        },
       },
     });
   }
 
   beforeEach(() => {
     store = createStore();
-    router = createRouter(store);
-    jest.spyOn(router, 'push').mockImplementation(() => {});
   });
 
   it('renders a close link and a name link', () => {
+    const tab = file();
     createComponent({
-      tab: file(),
+      tab,
     });
-    wrapper.vm.$store.state.openFiles.push(wrapper.vm.tab);
-    const close = wrapper.find('.multi-file-tab-close');
+    store.state.openFiles.push(tab);
     const name = wrapper.find(`[title]`);
 
-    expect(close.html()).toContain('#close');
-    expect(name.text().trim()).toEqual(wrapper.vm.tab.name);
+    expect(findCloseButton().html()).toContain('#close');
+    expect(name.text()).toBe(tab.name);
   });
 
   it('does not call openPendingTab when tab is active', async () => {
@@ -58,35 +61,33 @@ describe('RepoTab', () => {
       },
     });
 
-    jest.spyOn(wrapper.vm, 'openPendingTab').mockImplementation(() => {});
+    jest.spyOn(store, 'dispatch');
 
     await findTab().vm.$emit('click');
 
-    expect(wrapper.vm.openPendingTab).not.toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalledWith('openPendingTab');
   });
 
-  it('fires clickFile when the link is clicked', () => {
-    createComponent({
-      tab: file(),
-    });
+  it('fires clickFile when the link is clicked', async () => {
+    const { getters } = store;
+    const tab = file();
+    createComponent({ tab });
 
-    jest.spyOn(wrapper.vm, 'clickFile').mockImplementation(() => {});
+    await findTab().vm.$emit('click', tab);
 
-    findTab().vm.$emit('click');
-
-    expect(wrapper.vm.clickFile).toHaveBeenCalledWith(wrapper.vm.tab);
+    expect(pushMock).toHaveBeenCalledWith(getters.getUrlForPath(tab.path));
   });
 
-  it('calls closeFile when clicking close button', () => {
-    createComponent({
-      tab: file(),
-    });
+  it('calls closeFile when clicking close button', async () => {
+    const tab = file();
+    createComponent({ tab });
+    store.state.entries[tab.path] = tab;
 
-    jest.spyOn(wrapper.vm, 'closeFile').mockImplementation(() => {});
+    jest.spyOn(store, 'dispatch');
 
-    wrapper.find('.multi-file-tab-close').trigger('click');
+    await findCloseButton().trigger('click');
 
-    expect(wrapper.vm.closeFile).toHaveBeenCalledWith(wrapper.vm.tab);
+    expect(store.dispatch).toHaveBeenCalledWith('closeFile', tab);
   });
 
   it('changes icon on hover', async () => {
@@ -114,7 +115,7 @@ describe('RepoTab', () => {
 
     createComponent({ tab });
 
-    expect(wrapper.find('button').attributes('aria-label')).toBe(closeLabel);
+    expect(findCloseButton().attributes('aria-label')).toBe(closeLabel);
   });
 
   describe('locked file', () => {
@@ -152,15 +153,15 @@ describe('RepoTab', () => {
         createComponent({
           tab,
         });
-        wrapper.vm.$store.state.openFiles.push(tab);
-        wrapper.vm.$store.state.changedFiles.push(tab);
-        wrapper.vm.$store.state.entries[tab.path] = tab;
-        wrapper.vm.$store.dispatch('setFileActive', tab.path);
+        store.state.openFiles.push(tab);
+        store.state.changedFiles.push(tab);
+        store.state.entries[tab.path] = tab;
+        store.dispatch('setFileActive', tab.path);
 
-        await wrapper.find('.multi-file-tab-close').trigger('click');
+        await findCloseButton().trigger('click');
 
         expect(tab.opened).toBe(false);
-        expect(wrapper.vm.$store.state.changedFiles).toHaveLength(1);
+        expect(store.state.changedFiles).toHaveLength(1);
       });
 
       it('closes tab when clicking close btn', async () => {
@@ -169,11 +170,11 @@ describe('RepoTab', () => {
         createComponent({
           tab,
         });
-        wrapper.vm.$store.state.openFiles.push(tab);
-        wrapper.vm.$store.state.entries[tab.path] = tab;
-        wrapper.vm.$store.dispatch('setFileActive', tab.path);
+        store.state.openFiles.push(tab);
+        store.state.entries[tab.path] = tab;
+        store.dispatch('setFileActive', tab.path);
 
-        await wrapper.find('.multi-file-tab-close').trigger('click');
+        await findCloseButton().trigger('click');
 
         expect(tab.opened).toBe(false);
       });

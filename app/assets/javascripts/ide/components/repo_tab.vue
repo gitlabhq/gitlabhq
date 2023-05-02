@@ -91,6 +91,7 @@ export default {
         :disabled="tab.pending"
         type="button"
         class="multi-file-tab-close"
+        data-testid="close-button"
         @click.stop.prevent="closeFile(tab)"
       >
         <gl-icon v-if="!showChangedIcon" :size="12" name="close" />

@@ -5,6 +5,7 @@ class AbuseReport < ApplicationRecord
   include Sortable
   include Gitlab::FileTypeDetection
   include WithUploads
+  include Gitlab::Utils::StrongMemoize
 
   MAX_CHAR_LIMIT_URL = 512
   MAX_FILE_SIZE = 1.megabyte
@@ -77,6 +78,12 @@ class AbuseReport < ApplicationRecord
     reported_from_url: "Reported from"
   }.freeze
 
+  CONTROLLER_TO_REPORT_TYPE = {
+    'users' => :profile,
+    'projects/issues' => :issue,
+    'projects/merge_requests' => :merge_request
+  }.freeze
+
   def self.human_attribute_name(attr, options = {})
     HUMANIZED_ATTRIBUTES[attr.to_sym] || super
   end
@@ -105,7 +112,51 @@ class AbuseReport < ApplicationRecord
     Gitlab::Utils.append_path(asset_host, local_path)
   end
 
+  def report_type
+    type = CONTROLLER_TO_REPORT_TYPE[route_hash[:controller]]
+    type = :comment if type.in?([:issue, :merge_request]) && note_id_from_url.present?
+
+    type
+  end
+
+  def reported_content
+    case report_type
+    when :issue
+      project.issues.iid_in(route_hash[:id]).pick(:description_html)
+    when :merge_request
+      project.merge_requests.iid_in(route_hash[:id]).pick(:description_html)
+    when :comment
+      project.notes.id_in(note_id_from_url).pick(:note_html)
+    end
+  end
+
+  def other_reports_for_user
+    user.abuse_reports.id_not_in(id)
+  end
+
   private
+
+  def project
+    Project.find_by_full_path(route_hash.values_at(:namespace_id, :project_id).join('/'))
+  end
+
+  def route_hash
+    match = Rails.application.routes.recognize_path(reported_from_url)
+    return {} if match[:unmatched_route].present?
+
+    match
+  rescue ActionController::RoutingError
+    {}
+  end
+  strong_memoize_attr :route_hash
+
+  def note_id_from_url
+    fragment = URI(reported_from_url).fragment
+    Gitlab::UntrustedRegexp.new('^note_(\d+)$').match(fragment).to_a.second if fragment
+  rescue URI::InvalidURIError
+    nil
+  end
+  strong_memoize_attr :note_id_from_url
 
   def filter_empty_strings_from_links_to_spam
     return if links_to_spam.blank?

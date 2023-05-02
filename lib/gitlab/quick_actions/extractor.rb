@@ -63,11 +63,12 @@ module Gitlab
         #{CODE_REGEX} | #{INLINE_CODE_REGEX} | #{HTML_BLOCK_REGEX} | #{QUOTE_BLOCK_REGEX}
       }mix.freeze
 
-      attr_reader :command_definitions
+      attr_reader :command_definitions, :keep_actions
 
-      def initialize(command_definitions)
+      def initialize(command_definitions, keep_actions: false)
         @command_definitions = command_definitions
         @commands_regex = {}
+        @keep_actions = keep_actions
       end
 
       # Extracts commands from content and return an array of commands.
@@ -76,8 +77,8 @@ module Gitlab
       #   ['command1'],
       #   ['command3', 'arg1 arg2'],
       # ]
-      # The command and the arguments are stripped.
-      # The original command text is removed from the given `content`.
+      # The original command text and arguments are removed from the given `content`,
+      # unless `keep_actions` is true.
       #
       # Usage:
       # ```
@@ -85,6 +86,11 @@ module Gitlab
       # msg = %(hello\n/labels ~foo ~"bar baz"\nworld)
       # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
       # msg #=> "hello\nworld"
+      #
+      # extractor = Gitlab::QuickActions::Extractor.new([:open, :assign, :labels], keep_actions: true)
+      # msg = %(hello\n/labels ~foo ~"bar baz"\nworld)
+      # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
+      # msg #=> "hello\n/labels ~foo ~"bar baz"\n\nworld"
       # ```
       def extract_commands(content, only: nil)
         return [content, []] unless content
@@ -138,6 +144,10 @@ module Gitlab
           if redact
             output = "`/#{matched_text[:cmd]}#{" " + matched_text[:arg] if matched_text[:arg]}`"
             output += "\n" if matched_text[0].include?("\n")
+          elsif keep_actions
+            # requires an additional newline so that when rendered, it appears
+            # on its own line, rather than all on the same line
+            output = "\n#{matched_text[0]}\n"
           end
         end
 
