@@ -309,7 +309,7 @@ describe('Release edit/new component', () => {
       });
 
       it('renders the submit button as disabled', () => {
-        expect(findSubmitButton().attributes('disabled')).toBe('disabled');
+        expect(findSubmitButton().attributes('disabled')).toBeDefined();
       });
 
       it('does not allow the form to be submitted', () => {

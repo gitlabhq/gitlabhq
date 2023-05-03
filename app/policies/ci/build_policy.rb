@@ -81,7 +81,7 @@ module Ci
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | protected_ref | protected_environment) }.policy do
+    rule { ~can?(:jailbreak) & (archived | (protected_ref & ~admin) | protected_environment) }.policy do
       prevent :update_build
       prevent :update_commit_status
       prevent :erase_build

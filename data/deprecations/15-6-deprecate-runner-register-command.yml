@@ -7,11 +7,17 @@
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/380872  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The support for registration tokens and certain configuration arguments in the command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
-    We plan to implement a new method to bind runners to a GitLab instance
-    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
-    The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-    The new method will involve creating the runner in the GitLab UI and passing the
-    [runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
-    to the `gitlab-runner register` command.
+    Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
+    Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
+    will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for authentication tokens are:
+
+    - `--locked`
+    - `--access-level`
+    - `--run-untagged`
+    - `--maximum-timeout`
+    - `--paused`
+    - `--tag-list`
+    - `--maintenance-note`
+
+    This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
   end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

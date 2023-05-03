@@ -69,7 +69,7 @@ describe('EditFormButtons', () => {
       });
 
       it('disables the toggle button', () => {
-        expect(findLockToggle().attributes('disabled')).toBe('disabled');
+        expect(findLockToggle().attributes('disabled')).toBeDefined();
       });
 
       it('sets loading on the toggle button', () => {

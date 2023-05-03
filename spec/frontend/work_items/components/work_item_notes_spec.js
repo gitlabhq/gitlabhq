@@ -208,7 +208,7 @@ describe('WorkItemNotes component', () => {
         await nextTick();
 
         expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
-          pageSize: 45,
+          pageSize: DEFAULT_PAGE_SIZE_NOTES,
           id: 'gid://gitlab/WorkItem/1',
           after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
         });

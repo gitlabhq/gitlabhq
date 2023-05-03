@@ -119,8 +119,8 @@ describe('IDE jobs detail view', () => {
 
       await findBuildJobLog().trigger('scroll');
 
-      expect(findScrollToBottomButton().attributes('disabled')).toBe('disabled');
-      expect(findScrollToTopButton().attributes('disabled')).not.toBe('disabled');
+      expect(findScrollToBottomButton().attributes('disabled')).toBeDefined();
+      expect(findScrollToTopButton().attributes('disabled')).toBeUndefined();
     });
 
     it('keeps scroll at top when already at top', async () => {
@@ -128,8 +128,8 @@ describe('IDE jobs detail view', () => {
 
       await findBuildJobLog().trigger('scroll');
 
-      expect(findScrollToBottomButton().attributes('disabled')).not.toBe('disabled');
-      expect(findScrollToTopButton().attributes('disabled')).toBe('disabled');
+      expect(findScrollToBottomButton().attributes('disabled')).toBeUndefined();
+      expect(findScrollToTopButton().attributes('disabled')).toBeDefined();
     });
 
     it('resets scroll when not at top or bottom', async () => {
@@ -137,8 +137,8 @@ describe('IDE jobs detail view', () => {
 
       await findBuildJobLog().trigger('scroll');
 
-      expect(findScrollToBottomButton().attributes('disabled')).not.toBe('disabled');
-      expect(findScrollToTopButton().attributes('disabled')).not.toBe('disabled');
+      expect(findScrollToBottomButton().attributes('disabled')).toBeUndefined();
+      expect(findScrollToTopButton().attributes('disabled')).toBeUndefined();
     });
   });
 });

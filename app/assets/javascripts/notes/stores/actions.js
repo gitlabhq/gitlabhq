@@ -897,3 +897,6 @@ export const updateAssignees = ({ commit }, assignees) => {
 export const updateDiscussionPosition = ({ commit }, updatedPosition) => {
   commit(types.UPDATE_DISCUSSION_POSITION, updatedPosition);
 };
+
+export const updateMergeRequestFilters = ({ commit }, newFilters) =>
+  commit(types.SET_MERGE_REQUEST_FILTERS, newFilters);

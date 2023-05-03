@@ -117,7 +117,7 @@ describe('UpdateUsername component', () => {
       const { input, openModalBtn, modal } = findElements();
 
       axiosMock.onPut(actionUrl).replyOnce(() => {
-        expect(input.attributes('disabled')).toBe('disabled');
+        expect(input.attributes('disabled')).toBeDefined();
         expect(openModalBtn.props('disabled')).toBe(false);
         expect(openModalBtn.props('loading')).toBe(true);
 
@@ -136,7 +136,7 @@ describe('UpdateUsername component', () => {
       const { input, openModalBtn } = findElements();
 
       axiosMock.onPut(actionUrl).replyOnce(() => {
-        expect(input.attributes('disabled')).toBe('disabled');
+        expect(input.attributes('disabled')).toBeDefined();
         expect(openModalBtn.props('disabled')).toBe(false);
         expect(openModalBtn.props('loading')).toBe(true);
 

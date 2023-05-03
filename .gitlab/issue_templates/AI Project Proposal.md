@@ -50,6 +50,7 @@ _What job to be done will this solve?_
 
 ### Problem validation
 _What validation exists that customers have this problem?_
+<!-- Refer to https://about.gitlab.com/handbook/product/ux/ux-research/research-in-the-AI-space/#guideline-1-problem-validation --- to help identify and understand user needs -->
 
 ### Business objective
 _What business objective will be achieved with this proposal?_
@@ -110,6 +111,7 @@ _What tasks or actions should the user be capable of performing with this featur
 <details> <summary> Technical needs </summary>
 
 - [ ] Please consider the operational aspects of the feature you are creating. A list of things to think about is in: https://gitlab.com/gitlab-org/gitlab/-/issues/403859. We will be improving this process in the future: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117637#note_1353253349. 
+- [ ] @ mention your [AppSec Stable Counterpart](https://about.gitlab.com/handbook/product/categories/) and read the [AI secure coding guidelines](https://docs.gitlab.com/ee/development/secure_coding_guidelines.html#artificial-intelligence-ai-features)
 
 1. Work estimate and skills needs to build an ML viable feature: To build any ML feature depending on the work, there are many personas that contribute including, Data Scientist, NLP engineer, ML Engineer, MLOps Engineer, ML Infra engineers, and Fullstack engineer to integrate the ML Services with Gitlab. Post-prototype we would assess the skills needed to build a production-grade ML feature for the prototype.
 2. Data Limitation: We would like to upfront validate if we have viable data for the feature including whether we can use the DataOps pipeline of ModelOps or create a custom one. We would want to understand the training data, test data, and feedback data to dial up the accuracy and the limitations of the data.

@@ -28,11 +28,11 @@ rules:
   import/no-unresolved:
     - error
     - ignore:
-      # In FOSS, these import paths are rewritten using
-      # NormalModuleReplacementPlugin, which import/no-unresolved doesn't
-      # consider. See
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89831.
-      - '^(ee|jh)_component/'
+        # In FOSS, these import paths are rewritten using
+        # NormalModuleReplacementPlugin, which import/no-unresolved doesn't
+        # consider. See
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89831.
+        - '^(ee|jh)_component/'
   # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
   no-else-return:
     - error
@@ -48,12 +48,12 @@ rules:
   '@gitlab/vue-no-new-non-primitive-in-template':
     - error
     - allowNames:
-      - 'class(es)?$'
-      - '^style$'
-      - '^to$'
-      - '^$'
-      - '^variables$'
-      - 'attrs?$'
+        - 'class(es)?$'
+        - '^style$'
+        - '^to$'
+        - '^$'
+        - '^variables$'
+        - 'attrs?$'
   no-param-reassign:
     - error
     - props: true
@@ -120,8 +120,8 @@ rules:
   no-restricted-imports:
     - error
     - paths:
-      - name: mousetrap
-        message: "Import { Mousetrap } from ~/lib/mousetrap instead."
+        - name: mousetrap
+          message: 'Import { Mousetrap } from ~/lib/mousetrap instead.'
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
   vue/multi-word-component-names: off
   unicorn/prefer-dom-node-dataset:
@@ -136,7 +136,7 @@ rules:
         methods: 'sanitize'
 overrides:
   - files:
-    - '{,ee/,jh/}spec/frontend*/**/*'
+      - '{,ee/,jh/}spec/frontend*/**/*'
     rules:
       '@gitlab/require-i18n-strings': off
       '@gitlab/no-runtime-template-compiler': off
@@ -153,6 +153,8 @@ overrides:
           message: 'Prefer explicit waitForPromises (or equivalent), or jest.runAllTimers (or equivalent) to vague setImmediate calls.'
         - selector: ImportSpecifier[imported.name='GlSkeletonLoading']
           message: 'Migrate to GlSkeletonLoader, or import GlDeprecatedSkeletonLoading.'
+        - selector: CallExpression[arguments.length=1][arguments.0.type='Literal'] CallExpression[callee.property.name='toBe'] CallExpression[callee.property.name='attributes'][arguments.length=1][arguments.0.value='disabled']
+          message: Avoid asserting disabled attribute exact value, because Vue.js 2 and Vue.js 3 renders it differently. Use toBeDefined / toBeUndefined instead
       no-unsanitized/method: off
       no-unsanitized/property: off
   - files:
@@ -198,6 +200,6 @@ overrides:
       '@graphql-eslint/no-unused-fragments': error
       '@graphql-eslint/no-duplicate-fields': error
   - files:
-    - '{,ee/}spec/contracts/consumer/**/*'
+      - '{,ee/}spec/contracts/consumer/**/*'
     rules:
       '@gitlab/require-i18n-strings': off

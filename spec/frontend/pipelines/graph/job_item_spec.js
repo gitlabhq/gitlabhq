@@ -121,7 +121,7 @@ describe('pipeline graph job item', () => {
 
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('retry');
-      expect(actionComponent.attributes('disabled')).not.toBe('disabled');
+      expect(actionComponent.attributes('disabled')).toBeUndefined();
     });
 
     it('should render disabled action icon when user cannot run the action', () => {
@@ -135,7 +135,7 @@ describe('pipeline graph job item', () => {
 
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('stop');
-      expect(actionComponent.attributes('disabled')).toBe('disabled');
+      expect(actionComponent.attributes('disabled')).toBeDefined();
     });
 
     it('action icon tooltip text when job has passed but can be ran again', () => {

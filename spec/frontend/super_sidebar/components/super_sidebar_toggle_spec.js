@@ -57,7 +57,7 @@ describe('SuperSidebarToggle component', () => {
 
     it('is disabled when isPeek is true', () => {
       createWrapper({ sidebarState: { isPeek: true } });
-      expect(findButton().attributes('disabled')).toBe('true');
+      expect(findButton().attributes('disabled')).toBeDefined();
     });
   });
 

@@ -56,7 +56,7 @@ describe('Deployment target select', () => {
 
   it('renders a select with the disabled default option', () => {
     expect(findSelect().find('option').text()).toBe('Select the deployment target');
-    expect(findSelect().find('option').attributes('disabled')).toBe('disabled');
+    expect(findSelect().find('option').attributes('disabled')).toBeDefined();
   });
 
   describe.each`

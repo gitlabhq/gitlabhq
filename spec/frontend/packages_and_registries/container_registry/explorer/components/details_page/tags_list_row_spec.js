@@ -153,7 +153,7 @@ describe('tags list row', () => {
     it('is disabled when the component is disabled', () => {
       mountComponent({ ...defaultProps, disabled: true });
 
-      expect(findClipboardButton().attributes('disabled')).toBe('true');
+      expect(findClipboardButton().attributes('disabled')).toBeDefined();
     });
   });
 

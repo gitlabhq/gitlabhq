@@ -187,7 +187,7 @@ describe('JiraTriggerFields', () => {
       );
 
       wrapper.findAll('[type=text], [type=checkbox], [type=radio]').wrappers.forEach((input) => {
-        expect(input.attributes('disabled')).toBe('disabled');
+        expect(input.attributes('disabled')).toBeDefined();
       });
     });
   });

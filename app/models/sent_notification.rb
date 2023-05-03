@@ -103,9 +103,18 @@ class SentNotification < ApplicationRecord
     self.reply_key
   end
 
-  def create_reply(message, dryrun: false)
+  def create_reply(message, external_author = nil, dryrun: false)
     klass = dryrun ? Notes::BuildService : Notes::CreateService
-    klass.new(self.project, self.recipient, reply_params.merge(note: message)).execute
+    params = reply_params.merge(
+      note: message
+    )
+
+    params[:external_author] = external_author if external_author.present?
+
+    klass.new(self.project,
+      self.recipient,
+      params
+    ).execute
   end
 
   private

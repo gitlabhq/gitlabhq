@@ -87,6 +87,11 @@ Note:
 - confidential
 - last_edited_at
 - internal
+Notes::NoteMetadata:
+- note_id
+- email_participant
+- created_at
+- updated_at
 LabelLink:
 - id
 - target_type

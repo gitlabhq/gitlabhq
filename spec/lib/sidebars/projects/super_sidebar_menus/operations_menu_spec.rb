@@ -20,7 +20,6 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::OperationsMenu, feature_ca
       :kubernetes,
       :terraform_states,
       :infrastructure_registry,
-      :activity,
       :google_cloud,
       :aws
     ])

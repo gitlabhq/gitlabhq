@@ -279,7 +279,7 @@ describe('IssuableMoveDropdown', () => {
         const moveButtonEl = findFooter().findComponent(GlButton);
 
         expect(moveButtonEl.text()).toBe('Move');
-        expect(moveButtonEl.attributes('disabled')).toBe('true');
+        expect(moveButtonEl.attributes('disabled')).toBeDefined();
 
         findDropdownEl().vm.$emit('shown');
         await waitForPromises();

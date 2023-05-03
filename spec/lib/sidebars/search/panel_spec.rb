@@ -11,6 +11,8 @@ RSpec.describe Sidebars::Search::Panel, feature_category: :navigation do
 
   subject { described_class.new(context) }
 
+  it_behaves_like 'a panel with uniquely identifiable menu items'
+
   describe '#aria_label' do
     it 'returns the correct aria label' do
       expect(panel.aria_label).to eq(_('Search'))

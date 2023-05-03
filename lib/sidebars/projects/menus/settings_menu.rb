@@ -168,7 +168,7 @@ module Sidebars
             title: _('Merge requests'),
             link: project_settings_merge_requests_path(context.project),
             active_routes: { path: 'projects/settings/merge_requests#show' },
-            item_id: :merge_requests
+            item_id: context.is_super_sidebar ? :merge_request_settings : :merge_requests
           )
         end
       end

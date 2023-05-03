@@ -18,7 +18,8 @@ RSpec.shared_examples 'note entity' do
         :noteable_note_url,
         :report_abuse_path,
         :resolvable,
-        :type
+        :type,
+        :external_author
       )
     end
 

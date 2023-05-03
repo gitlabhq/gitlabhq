@@ -43,6 +43,7 @@ export default ({ editorAiActions = [] } = {}) => {
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
       editorAiActions,
+      mrFilter: true,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

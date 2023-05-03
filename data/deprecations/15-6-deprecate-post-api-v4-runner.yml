@@ -9,15 +9,18 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
     This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
-    with a GitLab instance at the instance, group, or project level through the API. We plan to remove the support for
-    registration tokens and certain configuration arguments in this endpoint in GitLab 17.0.
+    with a GitLab instance at the instance, group, or project level through the API. Registration tokens, and support for certain configuration arguments,
+    will be disabled behind a feature flag in GitLab 16.6 and removed in GitLab 17.0. The configuration arguments disabled for authentication tokens are:
 
-    We plan to implement a new method to bind runners to a GitLab instance
-    as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
-    The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-    This new architecture introduces a new method for registering runners and will eliminate the legacy
-    [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-    From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+    - `--locked`
+    - `--access-level`
+    - `--run-untagged`
+    - `--maximum-timeout`
+    - `--paused`
+    - `--tag-list`
+    - `--maintenance-note`
+
+    This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
   end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner  # (optional) This is a link to the current documentation page

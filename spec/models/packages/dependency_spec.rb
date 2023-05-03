@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Dependency, type: :model do
+RSpec.describe Packages::Dependency, type: :model, feature_category: :package_registry do
+  describe 'included modules' do
+    it { is_expected.to include_module(EachBatch) }
+  end
+
   describe 'relationships' do
     it { is_expected.to have_many(:dependency_links) }
   end
@@ -107,6 +111,19 @@ RSpec.describe Packages::Dependency, type: :model do
       let(:names_and_version_patterns) { { 'foo' => '~1.0.0beta' } }
 
       it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.orphaned' do
+    let_it_be(:orphaned_dependencies) { create_list(:packages_dependency, 2) }
+    let_it_be(:linked_dependency) do
+      create(:packages_dependency).tap do |dependency|
+        create(:packages_dependency_link, dependency: dependency)
+      end
+    end
+
+    it 'returns orphaned dependency records' do
+      expect(described_class.orphaned).to contain_exactly(*orphaned_dependencies)
     end
   end
 

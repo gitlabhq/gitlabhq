@@ -93,7 +93,7 @@ describe('Pipeline Editor | Commit Form', () => {
         createComponent({ props: { hasUnsavedChanges, isNewCiConfigFile } });
 
         if (isDisabled) {
-          expect(findSubmitBtn().attributes('disabled')).toBe('true');
+          expect(findSubmitBtn().attributes('disabled')).toBeDefined();
         } else {
           expect(findSubmitBtn().attributes('disabled')).toBeUndefined();
         }
@@ -132,7 +132,7 @@ describe('Pipeline Editor | Commit Form', () => {
     it('when the commit message is empty, submit button is disabled', async () => {
       await findCommitTextarea().setValue('');
 
-      expect(findSubmitBtn().attributes('disabled')).toBe('disabled');
+      expect(findSubmitBtn().attributes('disabled')).toBeDefined();
     });
   });
 

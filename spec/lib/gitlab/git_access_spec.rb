@@ -869,11 +869,13 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
               check = -> { push_changes(changes[action]) }
 
               if allowed
-                expect(&check).not_to raise_error,
-                  -> { "expected #{action} to be allowed" }
+                expect(&check).not_to raise_error, -> do
+                  "expected #{action} for #{role} to be allowed while #{who_can_action}"
+                end
               else
-                expect(&check).to raise_error(Gitlab::GitAccess::ForbiddenError),
-                  -> { "expected #{action} to be disallowed" }
+                expect(&check).to raise_error(Gitlab::GitAccess::ForbiddenError), -> do
+                  "expected #{action} for #{role} to be disallowed while #{who_can_action}"
+                end
               end
             end
           end
@@ -886,12 +888,12 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         any: true,
         push_new_branch: true,
         push_master: true,
-        push_protected_branch: true,
+        push_protected_branch: false,
         push_remove_protected_branch: false,
         push_tag: true,
         push_new_tag: true,
-        push_all: true,
-        merge_into_protected_branch: true
+        push_all: false,
+        merge_into_protected_branch: false
       },
 
       admin_without_admin_mode: {
@@ -957,19 +959,22 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
     [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
-        let(:protected_branch) { create(:protected_branch, :maintainers_can_push, name: protected_branch_name, project: project) }
+        let(:who_can_action) { :maintainers_can_push }
+        let(:protected_branch) { create(:protected_branch, who_can_action, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix)
       end
 
       context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
-        let(:protected_branch) { create(:protected_branch, :developers_can_push, name: protected_branch_name, project: project) }
+        let(:who_can_action) { :developers_can_push }
+        let(:protected_branch) { create(:protected_branch, who_can_action, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
-      context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
-        let(:protected_branch) { create(:protected_branch, :developers_can_merge, name: protected_branch_name, project: project) }
+      context "when developers are allowed to merge into the #{protected_branch_type} protected branch" do
+        let(:who_can_action) { :developers_can_merge }
+        let(:protected_branch) { create(:protected_branch, who_can_action, name: protected_branch_name, project: project) }
 
         context "when a merge request exists for the given source/target branch" do
           context "when the merge request is in progress" do
@@ -996,6 +1001,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       end
 
       context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
+        let(:who_can_action) { :developers_can_push_and_merge }
         let(:protected_branch) { create(:protected_branch, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))

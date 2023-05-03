@@ -177,7 +177,7 @@ describe('issue_note_form component', () => {
 
           await nextTick();
 
-          expect(textarea.attributes('disabled')).toBe('disabled');
+          expect(textarea.attributes('disabled')).toBeDefined();
         });
       });
     });

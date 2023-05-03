@@ -98,7 +98,7 @@ describe('Exceptions Input', () => {
     });
 
     it('disables the form input', () => {
-      expect(findInput().attributes('disabled')).toBe('true');
+      expect(findInput().attributes('disabled')).toBeDefined();
     });
   });
 });

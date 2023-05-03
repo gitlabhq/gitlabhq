@@ -5,50 +5,49 @@ module Gitlab
     module Subscriptions
       class ActionCableWithLoadBalancing < ::GraphQL::Subscriptions::ActionCableSubscriptions
         extend ::Gitlab::Utils::Override
+        include Gitlab::Database::LoadBalancing::WalTrackingSender
         include Gitlab::Database::LoadBalancing::WalTrackingReceiver
 
-        def initialize(**options)
-          super(serializer: WalInjectingSerializer.new, **options)
+        KEY_PAYLOAD = 'gql_payload'
+        KEY_WAL_LOCATIONS = 'wal_locations'
+
+        override :execute_all
+        def execute_all(event, object)
+          super(event, {
+            KEY_WAL_LOCATIONS => current_wal_locations,
+            KEY_PAYLOAD => object
+          })
         end
 
         # We fall back to the primary in case no replica is sufficiently caught up.
         override :execute_update
         def execute_update(subscription_id, event, object)
-          ::Gitlab::Database::LoadBalancing::Session.current.use_primary! if use_primary?
+          # Make sure we do not accidentally try to unwrap messages that are not wrapped.
+          # This could in theory happen if workers roll over where some send wrapped payload
+          # and others expect the original payload.
+          return super(subscription_id, event, object) unless wrapped_payload?(object)
 
-          super
+          wal_locations = object[KEY_WAL_LOCATIONS]
+          ::Gitlab::Database::LoadBalancing::Session.current.use_primary! if use_primary?(wal_locations)
+
+          super(subscription_id, event, object[KEY_PAYLOAD])
         end
 
         private
 
-        def use_primary?
-          @serializer.wal_locations.blank? || !databases_in_sync?(@serializer.wal_locations)
-        end
-      end
-
-      class WalInjectingSerializer
-        include Gitlab::Database::LoadBalancing::WalTrackingSender
-
-        DEFAULT_SERIALIZER = GraphQL::Subscriptions::Serialize
-
-        attr_reader :wal_locations
-
-        # rubocop: disable GitlabSecurity/PublicSend
-        def load(str)
-          value = Gitlab::Json.parse(str)
-
-          @wal_locations = value['wal_locations']
-
-          DEFAULT_SERIALIZER.send(:load_value, value['payload'])
+        def wrapped_payload?(object)
+          object.try(:key?, KEY_PAYLOAD)
         end
 
-        def dump(obj)
-          Gitlab::Json.dump({
-            'wal_locations' => wal_locations_by_db_name,
-            'payload' => DEFAULT_SERIALIZER.send(:dump_value, obj)
-          })
+        def use_primary?(wal_locations)
+          wal_locations.blank? || !databases_in_sync?(wal_locations)
         end
-        # rubocop: enable GitlabSecurity/PublicSend
+
+        # We stringify keys since otherwise the graphql-ruby serializer will inject additional metadata
+        # to keep track of which keys used to be symbols.
+        def current_wal_locations
+          wal_locations_by_db_name&.stringify_keys
+        end
       end
     end
   end

@@ -95,7 +95,7 @@ describe('Ci variable modal', () => {
       });
 
       it('shows the submit button as disabled', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBe('true');
+        expect(findAddorUpdateButton().attributes('disabled')).toBeDefined();
       });
     });
 
@@ -507,7 +507,7 @@ describe('Ci variable modal', () => {
       });
 
       it('disables the submit button', () => {
-        expect(findAddorUpdateButton().attributes('disabled')).toBe('disabled');
+        expect(findAddorUpdateButton().attributes('disabled')).toBeDefined();
       });
 
       it('shows the correct error text', () => {

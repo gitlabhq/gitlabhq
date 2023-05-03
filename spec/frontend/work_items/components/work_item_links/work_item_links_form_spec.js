@@ -150,7 +150,7 @@ describe('WorkItemLinksForm', () => {
         const confidentialCheckbox = findConfidentialCheckbox();
         const confidentialTooltip = wrapper.findComponent(GlTooltip);
 
-        expect(confidentialCheckbox.attributes('disabled')).toBe('true');
+        expect(confidentialCheckbox.attributes('disabled')).toBeDefined();
         expect(confidentialCheckbox.attributes('checked')).toBe('true');
         expect(confidentialTooltip.exists()).toBe(true);
         expect(confidentialTooltip.text()).toBe(

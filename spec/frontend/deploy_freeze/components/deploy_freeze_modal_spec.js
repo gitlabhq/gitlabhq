@@ -48,7 +48,7 @@ describe('Deploy freeze modal', () => {
 
   describe('Basic interactions', () => {
     it('button is disabled when freeze period is invalid', () => {
-      expect(submitDeployFreezeButton().attributes('disabled')).toBe('true');
+      expect(submitDeployFreezeButton().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -88,7 +88,7 @@ describe('Deploy freeze modal', () => {
       });
 
       it('disables the add deploy freeze button', () => {
-        expect(submitDeployFreezeButton().attributes('disabled')).toBe('true');
+        expect(submitDeployFreezeButton().attributes('disabled')).toBeDefined();
       });
     });
 

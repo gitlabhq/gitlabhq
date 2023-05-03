@@ -194,7 +194,7 @@ describe('RunnerProjects', () => {
       expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(false);
       expect(findRunnerAssignedItems().length).toBe(0);
 
-      expect(findRunnerPagination().attributes('disabled')).toBe('true');
+      expect(findRunnerPagination().attributes('disabled')).toBeDefined();
       expect(findGlSearchBoxByType().props('isLoading')).toBe(true);
     });
   });

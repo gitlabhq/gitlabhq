@@ -92,7 +92,7 @@ describe('error tracking settings app', () => {
       store.state.settingsLoading = true;
 
       await nextTick();
-      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBe('true');
+      expect(wrapper.find('.js-error-tracking-button').attributes('disabled')).toBeDefined();
     });
   });
 

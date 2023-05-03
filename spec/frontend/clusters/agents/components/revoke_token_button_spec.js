@@ -119,7 +119,7 @@ describe('RevokeTokenButton', () => {
       });
 
       it('disabled the button', () => {
-        expect(findRevokeBtn().attributes('disabled')).toBe('true');
+        expect(findRevokeBtn().attributes('disabled')).toBeDefined();
       });
 
       it('shows a disabled tooltip', () => {
@@ -217,7 +217,7 @@ describe('RevokeTokenButton', () => {
 
       it('reenables the button', async () => {
         expect(findPrimaryActionAttributes('loading')).toBe(true);
-        expect(findRevokeBtn().attributes('disabled')).toBe('true');
+        expect(findRevokeBtn().attributes('disabled')).toBeDefined();
 
         await findModal().vm.$emit('hide');
 

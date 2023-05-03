@@ -33,7 +33,7 @@ describe('JobCheckbox component', () => {
   it('is disabled when the job has no artifacts', () => {
     createComponent({ hasArtifacts: false });
 
-    expect(findCheckbox().attributes('disabled')).toBe('true');
+    expect(findCheckbox().attributes('disabled')).toBeDefined();
   });
 
   describe('when some artifacts from this job are selected', () => {
@@ -124,7 +124,7 @@ describe('JobCheckbox component', () => {
 
       it('is disabled when the selected artifacts limit has been reached', () => {
         // job checkbox is disabled to block further selection
-        expect(findCheckbox().attributes('disabled')).toBe('true');
+        expect(findCheckbox().attributes('disabled')).toBeDefined();
         expect(findCheckbox().attributes('title')).toBe(I18N_BULK_DELETE_MAX_SELECTED);
       });
     });

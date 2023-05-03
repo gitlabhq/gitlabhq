@@ -1,4 +1,4 @@
-import { ASC } from '../../constants';
+import { ASC, MR_FILTER_OPTIONS } from '../../constants';
 import * as actions from '../actions';
 import * as getters from '../getters';
 import mutations from '../mutations';
@@ -51,6 +51,7 @@ export default () => ({
     isTimelineEnabled: false,
     isFetching: false,
     isPollingInitialized: false,
+    mergeRequestFilters: MR_FILTER_OPTIONS.map((f) => f.value),
   },
   actions,
   getters,

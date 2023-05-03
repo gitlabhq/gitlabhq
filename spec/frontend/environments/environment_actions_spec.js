@@ -84,7 +84,7 @@ describe('EnvironmentActions Component', () => {
     it("should render a disabled action when it's not playable", () => {
       const dropdownItems = findDropdownItems();
       const lastDropdownItem = dropdownItems.at(dropdownItems.length - 1);
-      expect(lastDropdownItem.find('button').attributes('disabled')).toBe('disabled');
+      expect(lastDropdownItem.find('button').attributes('disabled')).toBeDefined();
     });
   });
 

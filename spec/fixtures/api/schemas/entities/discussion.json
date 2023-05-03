@@ -194,6 +194,12 @@
               "boolean",
               "null"
             ]
+          },
+          "external_author": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [

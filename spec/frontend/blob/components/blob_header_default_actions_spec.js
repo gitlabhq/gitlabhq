@@ -67,7 +67,7 @@ describe('Blob Header Default Actions', () => {
       });
       buttons = wrapper.findAllComponents(GlButton);
 
-      expect(buttons.at(0).attributes('disabled')).toBe('true');
+      expect(buttons.at(0).attributes('disabled')).toBeDefined();
     });
 
     it('does not render the copy button if a rendering error is set', () => {

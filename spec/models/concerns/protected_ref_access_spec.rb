@@ -12,10 +12,10 @@ RSpec.describe ProtectedRefAccess do
   let(:project) { protected_ref_access.project }
 
   describe '#check_access' do
-    it 'is always true for admins' do
+    it 'is not bypassed for admins' do
       admin = create(:admin)
 
-      expect(protected_ref_access.check_access(admin)).to be_truthy
+      expect(protected_ref_access.check_access(admin)).to be_falsey
     end
 
     it 'is true for maintainers' do

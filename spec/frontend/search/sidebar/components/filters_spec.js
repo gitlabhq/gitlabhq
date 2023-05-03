@@ -66,7 +66,7 @@ describe('GlobalSearchSidebarFilters', () => {
       });
 
       it('disables the button', () => {
-        expect(findApplyButton().attributes('disabled')).toBe('true');
+        expect(findApplyButton().attributes('disabled')).toBeDefined();
       });
     });
 

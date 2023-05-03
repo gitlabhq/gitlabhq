@@ -324,7 +324,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findDownloadButton().attributes('disabled')).toBe('disabled');
+      expect(findDownloadButton().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -350,7 +350,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+      expect(findBrowseButton().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -463,7 +463,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findDeleteButton().attributes('disabled')).toBe('disabled');
+      expect(findDeleteButton().attributes('disabled')).toBeDefined();
     });
 
     it('is hidden when user does not have delete permission', async () => {

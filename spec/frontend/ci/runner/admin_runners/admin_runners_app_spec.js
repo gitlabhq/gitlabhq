@@ -388,7 +388,7 @@ describe('AdminRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
-    expect(findRunnerPagination().attributes('disabled')).toBe('true');
+    expect(findRunnerPagination().attributes('disabled')).toBeDefined();
   });
 
   describe('Bulk delete', () => {

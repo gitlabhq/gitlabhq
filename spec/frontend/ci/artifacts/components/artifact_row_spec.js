@@ -106,7 +106,7 @@ describe('ArtifactRow component', () => {
             props: { isSelected: false, isSelectedArtifactsLimitReached: true },
           });
 
-          expect(findCheckbox().attributes('disabled')).toBe('true');
+          expect(findCheckbox().attributes('disabled')).toBeDefined();
           expect(findCheckbox().attributes('title')).toBe(I18N_BULK_DELETE_MAX_SELECTED);
         });
       });

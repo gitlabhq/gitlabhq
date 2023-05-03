@@ -87,6 +87,7 @@ class Note < ApplicationRecord
     inverse_of: :note, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
+  has_one :note_metadata, inverse_of: :note, class_name: 'Notes::NoteMetadata'
   has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
   has_many :diff_note_positions
 
@@ -94,6 +95,8 @@ class Note < ApplicationRecord
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
   delegate :title, to: :noteable, allow_nil: true
+
+  accepts_nested_attributes_for :note_metadata
 
   validates :note, presence: true
   validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }

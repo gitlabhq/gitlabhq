@@ -44,7 +44,7 @@ module Sidebars
             title: _('Background Migrations'),
             link: admin_background_migrations_path,
             active_routes: { controller: 'background_migrations' },
-            item_id: :usage_trends
+            item_id: :background_migrations
           )
         end
 

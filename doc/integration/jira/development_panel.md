@@ -45,9 +45,9 @@ The Jira development panel connects a Jira instance with all its projects to the
 
 ## Information displayed in the development panel
 
-You can [view GitLab activity for a Jira issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/) in the Jira development panel by referring to the Jira issue by ID in GitLab.
-
-The information displayed in the development panel depends on where you mention the Jira issue ID in GitLab.
+You can [view GitLab activity for a Jira issue](https://support.atlassian.com/jira-software-cloud/docs/view-development-information-for-an-issue/)
+in the Jira development panel by referring to the Jira issue by ID in GitLab. The information displayed in the development panel
+depends on where you mention the Jira issue ID in GitLab.
 
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
@@ -70,8 +70,6 @@ Jira Smart Commits are special commands to process a Jira issue. With these comm
 - Log time against a Jira issue.
 - Transition a Jira issue to any status defined in the project workflow.
 
-### Smart Commit syntax
-
 Smart Commits must follow this syntax:
 
 ```plaintext
@@ -79,6 +77,8 @@ Smart Commits must follow this syntax:
 ```
 
 You can execute one or more commands in a single commit.
+
+### Smart Commit syntax
 
 | Commands                                        | Syntax                                                       |
 |-------------------------------------------------|--------------------------------------------------------------|

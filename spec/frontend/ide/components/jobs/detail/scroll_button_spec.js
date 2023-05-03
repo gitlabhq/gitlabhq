@@ -41,6 +41,6 @@ describe('IDE job log scroll button', () => {
   it('disables button when disabled is true', () => {
     createComponent({ disabled: true });
 
-    expect(wrapper.find('button').attributes('disabled')).toBe('disabled');
+    expect(wrapper.find('button').attributes('disabled')).toBeDefined();
   });
 });

@@ -432,4 +432,7 @@ export default {
   [types.SET_IS_POLLING_INITIALIZED](state, value) {
     state.isPollingInitialized = value;
   },
+  [types.SET_MERGE_REQUEST_FILTERS](state, value) {
+    state.mergeRequestFilters = value;
+  },
 };

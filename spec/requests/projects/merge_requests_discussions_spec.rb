@@ -27,6 +27,21 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
     end
     # rubocop:enable RSpec/InstanceVariable
 
+    shared_examples 'N+1 queries' do
+      it 'avoids N+1 DB queries', :request_store do
+        send_request # warm up
+
+        create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+        control = ActiveRecord::QueryRecorder.new { send_request }
+
+        create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+
+        expect do
+          send_request
+        end.not_to exceed_query_limit(control).with_threshold(notes_metadata_threshold)
+      end
+    end
+
     it 'returns 200' do
       send_request
 
@@ -34,17 +49,20 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
     end
 
     # https://docs.gitlab.com/ee/development/query_recorder.html#use-request-specs-instead-of-controller-specs
-    it 'avoids N+1 DB queries', :request_store do
-      send_request # warm up
+    context 'with notes_metadata_threshold' do
+      let(:notes_metadata_threshold) { 1 }
 
-      create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
-      control = ActiveRecord::QueryRecorder.new { send_request }
+      it_behaves_like 'N+1 queries'
 
-      create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+      context 'when external_note_author_service_desk feature flag is disabled' do
+        let(:notes_metadata_threshold) { 0 }
 
-      expect do
-        send_request
-      end.not_to exceed_query_limit(control)
+        before do
+          stub_feature_flags(external_note_author_service_desk: false)
+        end
+
+        it_behaves_like 'N+1 queries'
+      end
     end
 
     it 'limits Gitaly queries', :request_store do

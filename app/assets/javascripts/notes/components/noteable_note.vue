@@ -477,6 +477,7 @@ export default {
           :note-id="note.id"
           :is-internal-note="note.internal"
           :noteable-type="noteableType"
+          :email-participant="note.external_author"
         >
           <template #note-header-info>
             <slot name="note-header-info"></slot>

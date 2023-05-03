@@ -37,7 +37,7 @@ describe('TriggerField', () => {
     it('when isInheriting is true, renders disabled GlFormCheckbox', () => {
       createComponent({ isInheriting: true });
 
-      expect(findGlFormCheckbox().attributes('disabled')).toBe('true');
+      expect(findGlFormCheckbox().attributes('disabled')).toBeDefined();
     });
 
     it('renders correct title', () => {

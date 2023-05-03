@@ -155,7 +155,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     it('disables markdown field when disabled prop is true', () => {
       buildWrapper({ propsData: { disabled: true } });
 
-      expect(findMarkdownField().find('textarea').attributes('disabled')).toBe('disabled');
+      expect(findMarkdownField().find('textarea').attributes('disabled')).toBeDefined();
     });
 
     it('enables markdown field when disabled prop is false', () => {

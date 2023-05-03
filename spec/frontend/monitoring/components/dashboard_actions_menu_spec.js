@@ -319,7 +319,7 @@ describe('Actions menu', () => {
 
       await nextTick();
       expect(findStarDashboardItem().exists()).toBe(true);
-      expect(findStarDashboardItem().attributes('disabled')).toBe('true');
+      expect(findStarDashboardItem().attributes('disabled')).toBeDefined();
     });
 
     it('on click it dispatches a toggle star action', async () => {
@@ -365,7 +365,7 @@ describe('Actions menu', () => {
     });
 
     it('is rendered by default but it is disabled', () => {
-      expect(findCreateDashboardItem().attributes('disabled')).toBe('true');
+      expect(findCreateDashboardItem().attributes('disabled')).toBeDefined();
     });
 
     describe('when project path is set', () => {
@@ -410,7 +410,7 @@ describe('Actions menu', () => {
       });
 
       it('is disabled', () => {
-        expect(findCreateDashboardItem().attributes('disabled')).toBe('true');
+        expect(findCreateDashboardItem().attributes('disabled')).toBeDefined();
       });
 
       it('does not render a modal for creating a dashboard', () => {

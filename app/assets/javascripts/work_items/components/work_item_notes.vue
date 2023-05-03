@@ -97,7 +97,6 @@ export default {
   data() {
     return {
       isLoadingMore: false,
-      perPage: DEFAULT_PAGE_SIZE_NOTES,
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
@@ -116,9 +115,6 @@ export default {
     },
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
-    },
-    showLoadingMoreSkeleton() {
-      return this.isLoadingMore && !this.changeNotesSortOrderAfterLoading;
     },
     disableActivityFilterSort() {
       return this.initialLoading || this.isLoadingMore;
@@ -204,8 +200,6 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
       result() {
-        this.updateSortingOrderIfApplicable();
-
         if (this.hasNextPage) {
           this.fetchMoreNotes();
         } else if (this.targetNoteHash) {
@@ -268,17 +262,6 @@ export default {
     isSystemNote(note) {
       return note.notes.nodes[0].system;
     },
-    updateSortingOrderIfApplicable() {
-      // when the sort order is DESC in local storage and there is only a single page, call
-      // changeSortOrder manually
-      if (
-        this.changeNotesSortOrderAfterLoading &&
-        this.perPage === DEFAULT_PAGE_SIZE_NOTES &&
-        !this.hasNextPage
-      ) {
-        this.changeNotesSortOrder(DESC);
-      }
-    },
     changeNotesSortOrder(direction) {
       this.sortOrder = direction;
     },
@@ -293,14 +276,10 @@ export default {
     },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
-      // copied from discussions batch logic - every fetchMore call has a higher
-      // amount of page size than the previous one with the limit being 100
-      this.perPage = Math.min(Math.round(this.perPage * 1.5), 100);
       await this.$apollo.queries.workItemNotes
         .fetchMore({
           variables: {
             ...this.queryVariables,
-            pageSize: this.perPage,
             after: this.pageInfo?.endCursor,
           },
         })
@@ -429,7 +408,7 @@ export default {
         </div>
       </template>
 
-      <template v-if="showLoadingMoreSkeleton">
+      <template v-if="isLoadingMore">
         <gl-skeleton-loader
           v-for="index in $options.loader.repeat"
           :key="index"

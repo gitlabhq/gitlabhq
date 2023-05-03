@@ -22,7 +22,6 @@ module Sidebars
             :kubernetes,
             :terraform_states,
             :infrastructure_registry,
-            :activity,
             :google_cloud,
             :aws
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }

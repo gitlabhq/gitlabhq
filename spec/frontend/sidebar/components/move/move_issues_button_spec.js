@@ -166,7 +166,7 @@ describe('MoveIssuesButton', () => {
     it('renders disabled by default', () => {
       createComponent();
       expect(findDropdown().exists()).toBe(true);
-      expect(findDropdown().attributes('disabled')).toBe('true');
+      expect(findDropdown().attributes('disabled')).toBeDefined();
     });
 
     it.each`
@@ -185,7 +185,7 @@ describe('MoveIssuesButton', () => {
       await nextTick();
 
       if (disabled) {
-        expect(findDropdown().attributes('disabled')).toBe('true');
+        expect(findDropdown().attributes('disabled')).toBeDefined();
       } else {
         expect(findDropdown().attributes('disabled')).toBeUndefined();
       }

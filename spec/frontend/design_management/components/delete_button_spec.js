@@ -30,7 +30,7 @@ describe('Batch delete button component', () => {
 
   it('renders disabled button when design is deleting', () => {
     createComponent({ isDeleting: true });
-    expect(findButton().attributes('disabled')).toBe('true');
+    expect(findButton().attributes('disabled')).toBeDefined();
   });
 
   it('emits `delete-selected-designs` event on modal ok click', async () => {

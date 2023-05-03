@@ -1,32 +1,31 @@
 import { mount } from '@vue/test-utils';
 import Upload from '~/ide/components/new_dropdown/upload.vue';
+import waitForPromises from 'helpers/wait_for_promises';
 
 describe('new dropdown upload', () => {
   let wrapper;
 
-  beforeEach(() => {
+  function createComponent() {
     wrapper = mount(Upload, {
       propsData: {
         path: '',
       },
     });
-  });
+  }
 
-  describe('openFile', () => {
-    it('calls for each file', () => {
-      const files = ['test', 'test2', 'test3'];
+  const uploadFile = (file) => {
+    const input = wrapper.find('input[type="file"]');
+    Object.defineProperty(input.element, 'files', { value: [file] });
+    input.trigger('change', file);
+  };
 
-      jest.spyOn(wrapper.vm, 'readFile').mockImplementation(() => {});
-      jest.spyOn(wrapper.vm.$refs.fileUpload, 'files', 'get').mockReturnValue(files);
+  const waitForFileToLoad = async () => {
+    await waitForPromises();
+    return waitForPromises();
+  };
 
-      wrapper.vm.openFile();
-
-      expect(wrapper.vm.readFile.mock.calls.length).toBe(3);
-
-      files.forEach((file, i) => {
-        expect(wrapper.vm.readFile.mock.calls[i]).toEqual([file]);
-      });
-    });
+  beforeEach(() => {
+    createComponent();
   });
 
   describe('readFile', () => {
@@ -39,20 +38,13 @@ describe('new dropdown upload', () => {
         type: 'images/png',
       };
 
-      wrapper.vm.readFile(file);
+      uploadFile(file);
 
       expect(FileReader.prototype.readAsDataURL).toHaveBeenCalledWith(file);
     });
   });
 
   describe('createFile', () => {
-    const textTarget = {
-      result: 'base64,cGxhaW4gdGV4dA==',
-    };
-    const binaryTarget = {
-      result: 'base64,8PDw8A==', // ðððð
-    };
-
     const textFile = new File(['plain text'], 'textFile', { type: 'test/mime-text' });
     const binaryFile = new File(['😺'], 'binaryFile', { type: 'test/mime-binary' });
 
@@ -61,15 +53,13 @@ describe('new dropdown upload', () => {
     });
 
     it('calls readAsText and creates file in plain text (without encoding) if the file content is plain text', async () => {
-      const waitForCreate = new Promise((resolve) => {
-        wrapper.vm.$on('create', resolve);
-      });
+      uploadFile(textFile);
 
-      wrapper.vm.createFile(textTarget, textFile);
+      // Text file has an additional load, so need to wait twice
+      await waitForFileToLoad();
+      await waitForFileToLoad();
 
       expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(textFile);
-
-      await waitForCreate;
       expect(wrapper.emitted('create')[0]).toStrictEqual([
         {
           name: textFile.name,
@@ -81,8 +71,10 @@ describe('new dropdown upload', () => {
       ]);
     });
 
-    it('creates a blob URL for the content if binary', () => {
-      wrapper.vm.createFile(binaryTarget, binaryFile);
+    it('creates a blob URL for the content if binary', async () => {
+      uploadFile(binaryFile);
+
+      await waitForFileToLoad();
 
       expect(FileReader.prototype.readAsText).not.toHaveBeenCalled();
 
@@ -90,7 +82,7 @@ describe('new dropdown upload', () => {
         {
           name: binaryFile.name,
           type: 'blob',
-          content: 'ðððð',
+          content: 'ðº', // '😺'
           rawPath: 'blob:https://gitlab.com/048c7ac1-98de-4a37-ab1b-0206d0ea7e1b',
           mimeType: 'test/mime-binary',
         },

@@ -140,7 +140,7 @@ describe('DeleteAgentButton', () => {
       });
 
       it('disables the button', () => {
-        expect(findDeleteBtn().attributes('disabled')).toBe('true');
+        expect(findDeleteBtn().attributes('disabled')).toBeDefined();
       });
 
       it('shows a disabled tooltip', () => {
@@ -230,7 +230,7 @@ describe('DeleteAgentButton', () => {
 
     it('reenables the button', async () => {
       expect(findPrimaryActionAttributes('loading')).toBe(true);
-      expect(findDeleteBtn().attributes('disabled')).toBe('true');
+      expect(findDeleteBtn().attributes('disabled')).toBeDefined();
 
       await findModal().vm.$emit('hide');
 

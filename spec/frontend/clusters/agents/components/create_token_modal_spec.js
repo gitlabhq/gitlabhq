@@ -61,7 +61,7 @@ describe('CreateTokenModal', () => {
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
-      expect(element.attributes('disabled')).toBe('true');
+      expect(element.attributes('disabled')).toBeDefined();
     } else {
       expect(element.attributes('disabled')).toBeUndefined();
     }

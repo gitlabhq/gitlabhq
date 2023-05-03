@@ -391,7 +391,7 @@ describe('GroupRunnersApp', () => {
   it('when runners have not loaded, shows a loading state', () => {
     createComponent();
     expect(findRunnerList().props('loading')).toBe(true);
-    expect(findRunnerPagination().attributes('disabled')).toBe('true');
+    expect(findRunnerPagination().attributes('disabled')).toBeDefined();
   });
 
   it('runners can be deleted in bulk', () => {

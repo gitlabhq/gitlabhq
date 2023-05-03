@@ -18969,6 +18969,23 @@ CREATE SEQUENCE note_diff_files_id_seq
 
 ALTER SEQUENCE note_diff_files_id_seq OWNED BY note_diff_files.id;
 
+CREATE TABLE note_metadata (
+    note_id bigint NOT NULL,
+    email_participant text,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
+    CONSTRAINT check_40aa5ff1c6 CHECK ((char_length(email_participant) <= 255))
+);
+
+CREATE SEQUENCE note_metadata_note_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE note_metadata_note_id_seq OWNED BY note_metadata.note_id;
+
 CREATE TABLE notes (
     id integer NOT NULL,
     note text,
@@ -25448,6 +25465,8 @@ ALTER TABLE ONLY namespaces_sync_events ALTER COLUMN id SET DEFAULT nextval('nam
 
 ALTER TABLE ONLY note_diff_files ALTER COLUMN id SET DEFAULT nextval('note_diff_files_id_seq'::regclass);
 
+ALTER TABLE ONLY note_metadata ALTER COLUMN note_id SET DEFAULT nextval('note_metadata_note_id_seq'::regclass);
+
 ALTER TABLE ONLY notes ALTER COLUMN id SET DEFAULT nextval('notes_id_seq'::regclass);
 
 ALTER TABLE ONLY notification_settings ALTER COLUMN id SET DEFAULT nextval('notification_settings_id_seq'::regclass);
@@ -27667,6 +27686,9 @@ ALTER TABLE ONLY namespaces_sync_events
 
 ALTER TABLE ONLY note_diff_files
     ADD CONSTRAINT note_diff_files_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY note_metadata
+    ADD CONSTRAINT note_metadata_pkey PRIMARY KEY (note_id);
 
 ALTER TABLE ONLY notes
     ADD CONSTRAINT notes_pkey PRIMARY KEY (id);
@@ -31629,6 +31651,8 @@ CREATE INDEX index_next_over_limit_check_at_asc_order ON namespace_details USING
 CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON note_diff_files USING btree (diff_note_id);
+
+CREATE INDEX index_note_metadata_on_note_id ON note_metadata USING btree (note_id);
 
 CREATE INDEX index_notes_for_cherry_picked_merge_requests ON notes USING btree (project_id, commit_id) WHERE ((noteable_type)::text = 'MergeRequest'::text);
 
@@ -37133,6 +37157,9 @@ ALTER TABLE ONLY packages_rpm_repository_files
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY note_metadata
+    ADD CONSTRAINT fk_rails_d853224d37 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

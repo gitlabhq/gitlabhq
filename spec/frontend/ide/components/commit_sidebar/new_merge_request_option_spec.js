@@ -66,7 +66,7 @@ describe('NewMergeRequestOption component', () => {
       });
 
       it('disables the new MR checkbox', () => {
-        expect(findCheckbox().attributes('disabled')).toBe('true');
+        expect(findCheckbox().attributes('disabled')).toBeDefined();
       });
 
       it('adds `is-disabled` class to the fieldset', () => {

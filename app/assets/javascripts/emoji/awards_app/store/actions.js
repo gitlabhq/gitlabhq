@@ -2,8 +2,6 @@ import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
-import showToast from '~/vue_shared/plugins/global_toast';
 import {
   SET_INITIAL_DATA,
   FETCH_AWARDS_SUCCESS,
@@ -62,8 +60,6 @@ export const toggleAward = async ({ commit, state }, name) => {
 
           throw err;
         });
-
-      showToast(__('Award removed'));
     } else {
       const optimisticAward = newOptimisticAward(name, state);
 
@@ -78,8 +74,6 @@ export const toggleAward = async ({ commit, state }, name) => {
         });
 
       commit(ADD_NEW_AWARD, data);
-
-      showToast(__('Award added'));
     }
   } catch (error) {
     Sentry.captureException(error);

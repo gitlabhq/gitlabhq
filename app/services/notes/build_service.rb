@@ -4,7 +4,14 @@ module Notes
   class BuildService < ::BaseService
     def execute
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
+      external_author = params.delete(:external_author)
+
       discussion = nil
+
+      if external_author.present?
+        note_metadata = Notes::NoteMetadata.new(email_participant: external_author)
+        params[:note_metadata] = note_metadata
+      end
 
       if in_reply_to_discussion_id.present?
         discussion = find_discussion(in_reply_to_discussion_id)

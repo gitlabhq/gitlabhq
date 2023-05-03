@@ -133,7 +133,7 @@ describe('Job log controllers', () => {
         });
 
         it('renders disabled scroll top button', () => {
-          expect(findScrollTop().attributes('disabled')).toBe('disabled');
+          expect(findScrollTop().attributes('disabled')).toBeDefined();
         });
 
         it('does not emit scrollJobLogTop event on click', async () => {

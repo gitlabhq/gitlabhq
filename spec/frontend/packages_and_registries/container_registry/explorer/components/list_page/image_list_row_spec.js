@@ -145,7 +145,7 @@ describe('Image List Row', () => {
       });
 
       it('the clipboard button is disabled', () => {
-        expect(findClipboardButton().attributes('disabled')).toBe('true');
+        expect(findClipboardButton().attributes('disabled')).toBeDefined();
       });
     });
   });

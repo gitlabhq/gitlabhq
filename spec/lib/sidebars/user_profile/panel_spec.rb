@@ -10,6 +10,8 @@ RSpec.describe Sidebars::UserProfile::Panel, feature_category: :navigation do
 
   subject { described_class.new(context) }
 
+  it_behaves_like 'a panel with uniquely identifiable menu items'
+
   it 'implements #aria_label' do
     expect(subject.aria_label).to eq(s_('UserProfile|User profile navigation'))
   end

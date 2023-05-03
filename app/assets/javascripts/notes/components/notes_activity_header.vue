@@ -8,6 +8,7 @@ export default {
     DiscussionFilter,
     AiSummarizeNotes: () =>
       import('ee_component/notes/components/note_actions/ai_summarize_notes.vue'),
+    MrDiscussionFilter: () => import('./mr_discussion_filter.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -15,6 +16,9 @@ export default {
       default: false,
     },
     resourceGlobalId: { default: null },
+    mrFilter: {
+      default: false,
+    },
   },
   props: {
     notesFilters: {
@@ -52,7 +56,8 @@ export default {
         :loading="aiLoading"
       />
       <timeline-toggle v-if="showTimelineViewToggle" />
-      <discussion-filter :filters="notesFilters" :selected-value="notesFilterValue" />
+      <mr-discussion-filter v-if="mrFilter && glFeatures.mrActivityFilters" />
+      <discussion-filter v-else :filters="notesFilters" :selected-value="notesFilterValue" />
     </div>
   </div>
 </template>

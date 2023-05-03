@@ -3,12 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigation do
-  let_it_be(:group) { create(:group) }
-
-  let(:user) { group.first_owner }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group).tap { |group| group.add_owner(user) } }
 
   let(:context) do
-    double("Stubbed context", current_user: user, container: group, group: group).as_null_object # rubocop:disable RSpec/VerifiedDoubles
+    Sidebars::Groups::Context.new(
+      current_user: user,
+      container: group,
+      is_super_sidebar: true,
+      # Turn features off that do not add/remove menu items
+      show_promotions: false,
+      show_discover_group_security: false
+    )
   end
 
   subject { described_class.new(context) }
@@ -42,4 +48,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
       expect(subject.instance_variable_get(:@menus).map(&:class)).to eq(category_menu)
     end
   end
+
+  it_behaves_like 'a panel with uniquely identifiable menu items'
+  it_behaves_like 'a panel with all menu_items categorized'
 end

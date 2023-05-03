@@ -49,7 +49,7 @@ describe('Transfer project form', () => {
   it('disables the confirm button by default', () => {
     createComponent();
 
-    expect(findConfirmDanger().attributes('disabled')).toBe('true');
+    expect(findConfirmDanger().attributes('disabled')).toBeDefined();
   });
 
   describe('with a selected namespace', () => {

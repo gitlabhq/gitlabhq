@@ -972,11 +972,11 @@ Supported attributes:
 | Attribute              | Type              | Required               | Description                                                                   |
 |------------------------|-------------------|------------------------|-------------------------------------------------------------------------------|
 | `id`                   | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
-| `approvals_required`   | integer           | **{check-circle}** Yes | The number of required approvals for this rule.                               |
 | `approval_rule_id`     | integer           | **{check-circle}** Yes | The ID of an approval rule.                                                   |
 | `merge_request_iid`    | integer           | **{check-circle}** Yes | The IID of a merge request.                                                   |
-| `name`                 | string            | **{check-circle}** Yes | The name of the approval rule.                                                |
+| `approvals_required`   | integer           | **{check-circle}**  No | The number of required approvals for this rule.                               |
 | `group_ids`            | Array             | **{dotted-circle}** No | The IDs of groups as approvers.                                               |
+| `name`                 | string            | **{check-circle}**  No | The name of the approval rule.                                                |
 | `remove_hidden_groups` | boolean           | **{dotted-circle}** No | Whether hidden groups should be removed.                                      |
 | `user_ids`             | Array             | **{dotted-circle}** No | The IDs of users as approvers.                                                |
 | `usernames`            | string array      | **{dotted-circle}** No | The usernames for this rule.                                                  |

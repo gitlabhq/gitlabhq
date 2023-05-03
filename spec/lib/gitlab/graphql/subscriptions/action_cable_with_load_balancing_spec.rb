@@ -22,8 +22,8 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
         expect(action_cable).to receive(:broadcast) do |topic, payload|
           expect(topic).to match(/^graphql-event/)
           expect(Gitlab::Json.parse(payload)).to match({
-            'wal_locations' => expected_locations,
-            'payload' => { '__gid__' => be_instance_of(String) }
+            described_class::KEY_WAL_LOCATIONS => expected_locations,
+            described_class::KEY_PAYLOAD => { '__gid__' => 'Z2lkOi8vZ2l0bGFiL1Byb2plY3QvMQ' }
           })
         end
 
@@ -77,28 +77,32 @@ RSpec.describe Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing, fea
   end
 
   context 'when handling event' do
-    def handle_event!
-      subscriptions.execute_update('sub:123', event, object)
+    def handle_event!(wal_locations: nil)
+      subscriptions.execute_update('sub:123', event, {
+        described_class::KEY_WAL_LOCATIONS => wal_locations || {
+          'main' => current_location
+        },
+        described_class::KEY_PAYLOAD => { '__gid__' => 'Z2lkOi8vZ2l0bGFiL1Byb2plY3QvMQ' }
+      })
     end
 
     before do
       allow(action_cable).to receive(:broadcast)
+    end
 
-      subscriptions.load_action_cable_message(Gitlab::Json.dump({
-        'wal_locations' => {
-          'main' => current_location
-        },
-        'payload' => {}
-      }), nil)
+    context 'when event payload is not wrapped' do
+      it 'does not attempt to unwrap it' do
+        expect(object).not_to receive(:[]).with(described_class::KEY_PAYLOAD)
+
+        subscriptions.execute_update('sub:123', event, object)
+      end
     end
 
     context 'when WAL locations are not present' do
       it 'uses the primary' do
-        subscriptions.load_action_cable_message(Gitlab::Json.dump({}), nil)
-
         expect(::Gitlab::Database::LoadBalancing::Session.current).to receive(:use_primary!)
 
-        handle_event!
+        handle_event!(wal_locations: {})
       end
     end
 

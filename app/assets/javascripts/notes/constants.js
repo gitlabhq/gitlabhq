@@ -1,5 +1,5 @@
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const DISCUSSION_NOTE = 'DiscussionNote';
 export const DIFF_NOTE = 'DiffNote';
@@ -56,3 +56,63 @@ export const toggleStateErrorMessage = {
     ),
   },
 };
+
+export const MR_FILTER_OPTIONS = [
+  {
+    text: __('Approvals'),
+    value: 'approval',
+    systemNoteIcons: ['approval', 'unapproval'],
+  },
+  {
+    text: __('Commits & branches'),
+    value: 'commit_branches',
+    systemNoteIcons: ['commit', 'fork'],
+  },
+  {
+    text: __('Merge request status'),
+    value: 'status',
+    systemNoteIcons: ['git-merge', 'issue-close', 'issues'],
+  },
+  {
+    text: __('Assignees & reviewers'),
+    value: 'assignees_reviewers',
+    noteText: [
+      s__('IssuableEvents|requested review from'),
+      s__('IssuableEvents|removed review request for'),
+      s__('IssuableEvents|assigned to'),
+      s__('IssuableEvents|unassigned'),
+    ],
+  },
+  {
+    text: __('Edits'),
+    value: 'edits',
+    systemNoteIcons: ['pencil', 'task-done'],
+  },
+  {
+    text: __('Labels'),
+    value: 'labels',
+    systemNoteIcons: ['label'],
+  },
+  {
+    text: __('Mentions'),
+    value: 'mentions',
+    systemNoteIcons: ['comment-dots'],
+  },
+  {
+    text: __('Tracking'),
+    value: 'tracking',
+    noteType: ['MilestoneNote'],
+    systemNoteIcons: ['timer'],
+  },
+  {
+    text: __('Comments'),
+    value: 'comments',
+    noteType: ['DiscussionNote', 'DiffNote'],
+    individualNote: true,
+  },
+  {
+    text: __('Lock status'),
+    value: 'lock_status',
+    systemNoteIcons: ['lock', 'lock-open'],
+  },
+];

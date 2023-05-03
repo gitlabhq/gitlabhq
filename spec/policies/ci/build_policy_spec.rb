@@ -258,6 +258,8 @@ RSpec.describe Ci::BuildPolicy do
         context 'when the build was created for a protected tag' do
           before do
             create(:protected_tag, :developers_can_create, name: build.ref, project: project)
+
+            build.update!(tag: true)
           end
 
           it { expect(policy).to be_allowed :erase_build }

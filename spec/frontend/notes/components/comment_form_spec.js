@@ -303,7 +303,7 @@ describe('issue_comment_form component', () => {
 
           await findCommentButton().trigger('click');
 
-          expect(findMarkdownEditor().find('textarea').attributes('disabled')).toBe('disabled');
+          expect(findMarkdownEditor().find('textarea').attributes('disabled')).toBeDefined();
         });
 
         it('should support quick actions', () => {

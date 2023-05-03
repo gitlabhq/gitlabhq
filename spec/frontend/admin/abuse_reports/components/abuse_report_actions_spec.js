@@ -63,7 +63,7 @@ describe('AbuseReportActions', () => {
 
       const button = findBlockUserButton();
       expect(button.text()).toBe(ACTIONS_I18N.alreadyBlocked);
-      expect(button.attributes('disabled')).toBe('disabled');
+      expect(button.attributes('disabled')).toBeDefined();
     });
   });
 

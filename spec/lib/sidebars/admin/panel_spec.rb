@@ -12,4 +12,6 @@ RSpec.describe Sidebars::Admin::Panel, feature_category: :navigation do
   it 'implements #super_sidebar_context_header' do
     expect(subject.super_sidebar_context_header).to eq({ title: 'Admin Area' })
   end
+
+  it_behaves_like 'a panel with uniquely identifiable menu items'
 end

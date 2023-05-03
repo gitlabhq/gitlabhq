@@ -570,6 +570,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:packages_cleanup_delete_orphaned_dependencies
+  :worker_name: Packages::Cleanup::DeleteOrphanedDependenciesWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:packages_cleanup_package_registry
   :worker_name: Packages::CleanupPackageRegistryWorker
   :feature_category: :package_registry

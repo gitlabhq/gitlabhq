@@ -158,7 +158,7 @@ describe('Settings Panel', () => {
     it('should disable the visibility level dropdown', () => {
       wrapper = mountComponent({ canChangeVisibilityLevel: false });
 
-      expect(findProjectVisibilityLevelInput().attributes('disabled')).toBe('disabled');
+      expect(findProjectVisibilityLevelInput().attributes('disabled')).toBeDefined();
     });
 
     it.each`

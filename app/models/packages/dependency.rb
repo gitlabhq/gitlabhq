@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 class Packages::Dependency < ApplicationRecord
+  include EachBatch
+
   has_many :dependency_links, class_name: 'Packages::DependencyLink'
 
   validates :name, :version_pattern, presence: true
@@ -39,6 +41,11 @@ class Packages::Dependency < ApplicationRecord
 
   def self.pluck_ids_and_names
     pluck(:id, :name)
+  end
+
+  def self.orphaned
+    subquery = Packages::DependencyLink.where(Packages::DependencyLink.arel_table[:dependency_id].eq(Packages::Dependency.arel_table[:id]))
+    where_not_exists(subquery)
   end
 
   def orphaned?

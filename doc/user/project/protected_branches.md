@@ -27,7 +27,7 @@ When a branch is protected, the default behavior enforces these restrictions on 
 | Action                   | Who can do it                                                     |
 |:-------------------------|:------------------------------------------------------------------|
 | Protect a branch         | At least the Maintainer role.                                     |
-| Push to the branch       | GitLab administrators and anyone with **Allowed** permission. (1) |
+| Push to the branch       | Anyone with **Allowed** permission. (1) |
 | Force push to the branch | No one.                                                           |
 | Delete the branch        | No one. (2)                                                       |
 

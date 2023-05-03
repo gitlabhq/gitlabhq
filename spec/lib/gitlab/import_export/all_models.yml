@@ -93,6 +93,10 @@ notes:
 - suggestions
 - diff_note_positions
 - review
+- note_metadata
+note_metadata:
+  - note
+  - email_participant
 commit_notes:
 - award_emoji
 - noteable
@@ -107,6 +111,7 @@ commit_notes:
 - suggestions
 - diff_note_positions
 - review
+- note_metadata
 label_links:
 - target
 - label

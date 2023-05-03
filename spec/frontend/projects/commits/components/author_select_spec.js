@@ -81,7 +81,7 @@ describe('Author Select', () => {
     });
 
     it('disables dropdown', () => {
-      expect(findDropdown().attributes('disabled')).toBe('true');
+      expect(findDropdown().attributes('disabled')).toBeDefined();
     });
   });
 

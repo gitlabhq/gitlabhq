@@ -6,9 +6,20 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
   let_it_be(:project) { create(:project, :repository) }
 
   let(:user) { project.first_owner }
-
   let(:context) do
-    double("Stubbed context", current_user: user, container: project, project: project, current_ref: 'master').as_null_object # rubocop:disable RSpec/VerifiedDoubles
+    Sidebars::Projects::Context.new(
+      current_user: user,
+      container: project,
+      current_ref: project.repository.root_ref,
+      is_super_sidebar: true,
+      # Turn features on that impact the list of items rendered
+      can_view_pipeline_editor: true,
+      learn_gitlab_enabled: true,
+      show_discover_project_security: true,
+      # Turn features off that do not add/remove items
+      show_cluster_hint: false,
+      show_promotions: false
+    )
   end
 
   subject { described_class.new(context) }
@@ -43,4 +54,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
       expect(subject.instance_variable_get(:@menus).map(&:class)).to eq(category_menu)
     end
   end
+
+  it_behaves_like 'a panel with uniquely identifiable menu items'
+  it_behaves_like 'a panel with all menu_items categorized'
 end

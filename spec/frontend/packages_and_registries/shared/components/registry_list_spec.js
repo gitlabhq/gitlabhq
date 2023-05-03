@@ -58,7 +58,7 @@ describe('Registry List', () => {
       it('sets disabled prop to true when items length is 0', () => {
         mountComponent({ propsData: { ...defaultPropsData, items: [] } });
 
-        expect(findSelectAll().attributes('disabled')).toBe('true');
+        expect(findSelectAll().attributes('disabled')).toBeDefined();
       });
 
       it('when few are selected, sets indeterminate prop to true', async () => {

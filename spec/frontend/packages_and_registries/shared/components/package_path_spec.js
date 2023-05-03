@@ -86,12 +86,12 @@ describe('PackagePath', () => {
       });
 
       it('root link is disabled', () => {
-        expect(findItem(ROOT_LINK).attributes('disabled')).toBe('true');
+        expect(findItem(ROOT_LINK).attributes('disabled')).toBeDefined();
       });
 
       if (shouldExist.includes(LEAF_LINK)) {
         it('the last link is disabled', () => {
-          expect(findItem(LEAF_LINK).attributes('disabled')).toBe('true');
+          expect(findItem(LEAF_LINK).attributes('disabled')).toBeDefined();
         });
       }
     });

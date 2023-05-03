@@ -99,7 +99,7 @@ describe('RunnerJobs', () => {
 
       expect(findGlSkeletonLoading().exists()).toBe(true);
       expect(findRunnerJobsTable().exists()).toBe(false);
-      expect(findRunnerPagination().attributes('disabled')).toBe('true');
+      expect(findRunnerPagination().attributes('disabled')).toBeDefined();
     });
   });
 

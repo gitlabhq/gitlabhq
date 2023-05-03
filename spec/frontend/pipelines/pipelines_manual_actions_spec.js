@@ -101,7 +101,7 @@ describe('Pipeline manual actions', () => {
     });
 
     it("displays a disabled action when it's not playable", () => {
-      expect(findAllDropdownItems().at(0).attributes('disabled')).toBe('true');
+      expect(findAllDropdownItems().at(0).attributes('disabled')).toBeDefined();
     });
 
     describe('on action click', () => {

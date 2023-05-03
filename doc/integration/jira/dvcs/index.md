@@ -26,15 +26,14 @@ If you're on Jira Cloud, migrate to the GitLab for Jira Cloud app. For more info
 
 ### Create a GitLab application for DVCS
 
-For projects in a single group, you should create a [group application](../../oauth_provider.md#create-a-group-owned-application).
+- **For projects in a single group**, you should create a [group application](../../oauth_provider.md#create-a-group-owned-application).
+- **For projects across multiple groups**, you should create a separate GitLab user account for Jira integration work only.
+  This account ensures regular maintenance does not affect your integration.
+- **If you cannot create a group application or separate user account**, you can create instead:
+  - [An instance-wide application](../../oauth_provider.md#create-an-instance-wide-application)
+  - [A user-owned application](../../oauth_provider.md#create-a-user-owned-application)
 
-For projects across multiple groups, you should create a new user account in GitLab for Jira integration work only.
-A separate account ensures regular account maintenance does not affect your integration.
-
-If it's not possible to create a separate user account or group application, you can set up this integration by creating:
-
-- [An instance-wide application](../../oauth_provider.md#create-an-instance-wide-application)
-- [A user-owned application](../../oauth_provider.md#create-a-user-owned-application)
+To create a GitLab application for DVCS:
 
 1. Go to the [appropriate **Applications** section](../../oauth_provider.md).
 1. In the **Name** text box, enter a descriptive name for the integration (for example, `Jira`).
@@ -48,14 +47,14 @@ If it's not possible to create a separate user account or group application, you
 
 ### Configure Jira for DVCS
 
-1. Go to your DVCS account:
-   - **For Jira Server**, select **Settings (gear) > Applications > DVCS accounts**.
+To configure Jira for DVCS:
+
+1. Go to your DVCS account. **For Jira Server**, select **Settings (gear) > Applications > DVCS accounts**.
 1. To create a new integration, for **Host**, select **GitLab** or **GitLab Self-Managed**.
 1. For **Team or User Account**, enter the relative path of a top-level GitLab group that [the GitLab user](#create-a-gitlab-application-for-dvcs) can access.
 1. In the **Host URL** text box, enter the appropriate URL.
    Replace `<gitlab.example.com>` with your GitLab instance domain.
    Use `https://<gitlab.example.com>`.
-
 1. For **Client ID**, use the [**Application ID** value](#create-a-gitlab-application-for-dvcs).
 1. For **Client Secret**, use the [**Secret** value](#create-a-gitlab-application-for-dvcs).
 1. Ensure that all other checkboxes are selected.

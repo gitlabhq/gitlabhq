@@ -141,7 +141,7 @@ describe('import target cell', () => {
     });
 
     it('renders namespace dropdown as disabled', () => {
-      expect(findNamespaceDropdown().attributes('disabled')).toBe('true');
+      expect(findNamespaceDropdown().attributes('disabled')).toBeDefined();
     });
   });
 

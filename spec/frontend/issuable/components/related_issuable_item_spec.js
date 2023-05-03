@@ -195,7 +195,7 @@ describe('RelatedIssuableItem', () => {
     });
 
     it('renders disabled button when removeDisabled', () => {
-      expect(findRemoveButton().attributes('disabled')).toBe('true');
+      expect(findRemoveButton().attributes('disabled')).toBeDefined();
     });
 
     it('triggers onRemoveRequest when clicked', () => {
