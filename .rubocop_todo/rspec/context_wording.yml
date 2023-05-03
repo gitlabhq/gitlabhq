@@ -826,7 +826,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/security/store_grouped_scans_service_spec.rb'
     - 'ee/spec/services/security/track_scan_service_spec.rb'
     - 'ee/spec/services/security/vulnerability_counting_service_spec.rb'
-    - 'ee/spec/services/slash_commands/global_slack_handler_spec.rb'
     - 'ee/spec/services/software_license_policies/update_service_spec.rb'
     - 'ee/spec/services/status_page/publish_attachments_service_spec.rb'
     - 'ee/spec/services/status_page/publish_details_service_spec.rb'

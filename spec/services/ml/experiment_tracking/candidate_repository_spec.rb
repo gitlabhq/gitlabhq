@@ -166,6 +166,14 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
         expect { repository.add_tag!(candidate, 'new', props[:value]) }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
+
+    context 'when tag starts with gitlab.' do
+      it 'calls HandleCandidateGitlabMetadataService' do
+        expect(Ml::ExperimentTracking::HandleCandidateGitlabMetadataService).to receive(:new).and_call_original
+
+        repository.add_tag!(candidate, 'gitlab.CI_USER_ID', user.id)
+      end
+    end
   end
 
   describe "#add_params" do

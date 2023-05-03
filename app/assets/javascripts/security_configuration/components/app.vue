@@ -10,7 +10,6 @@ import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
 import FeatureCard from './feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
-import UpgradeBanner from './upgrade_banner.vue';
 
 export const i18n = {
   compliance: s__('SecurityConfiguration|Compliance'),
@@ -48,7 +47,8 @@ export default {
     GlTabs,
     LocalStorageSync,
     SectionLayout,
-    UpgradeBanner,
+    UpgradeBanner: () =>
+      import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
     TrainingProviderList,
   },

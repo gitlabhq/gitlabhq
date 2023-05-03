@@ -27,7 +27,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
     }
   end
 
-  let(:mutation) { graphql_mutation(:ci_cd_settings_update, variables) }
+  let(:mutation) { graphql_mutation(:project_ci_cd_settings_update, variables) }
 
   context 'when unauthorized' do
     let(:user) { create(:user) }
@@ -63,6 +63,35 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
       expect(response).to have_gitlab_http_status(:success)
       expect(project.keep_latest_artifact).to eq(false)
+    end
+
+    describe 'ci_cd_settings_update deprecated mutation' do
+      let(:mutation) { graphql_mutation(:ci_cd_settings_update, variables) }
+
+      it 'returns error' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(graphql_errors).to(
+          include(
+            hash_including('message' => '`remove_cicd_settings_update` feature flag is enabled.')
+          )
+        )
+      end
+
+      context 'when remove_cicd_settings_update FF is disabled' do
+        before do
+          stub_feature_flags(remove_cicd_settings_update: false)
+        end
+
+        it 'updates ci cd settings' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          project.reload
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(project.keep_latest_artifact).to eq(false)
+        end
+      end
     end
 
     it 'allows setting job_token_scope_enabled to false' do

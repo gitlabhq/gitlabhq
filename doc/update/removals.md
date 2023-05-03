@@ -59,6 +59,17 @@ The Azure Storage Driver used to write to `//` as the default root directory. Th
 
 In GitLab 16.0, the new default configuration for the storage driver uses `trimlegacyrootprefix: true`, and `/` is the default root directory. You can set your configuration to `trimlegacyrootprefix: false` if needed, to revert to the previous behavior.
 
+### CiCdSettingsUpdate mutation renamed to ProjectCiCdSettingsUpdate
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `CiCdSettingsUpdate` mutation was renamed to `ProjectCiCdSettingsUpdate` in GitLab 15.0.
+The `CiCdSettingsUpdate` mutation will be removed in GitLab 16.0.
+Any user scripts that use the `CiCdSettingsUpdate` mutation must be updated to use `ProjectCiCdSettingsUpdate`
+instead.
+
 ### Container Registry pull-through cache is removed
 
 WARNING:

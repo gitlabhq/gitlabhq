@@ -118,6 +118,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
 
+          context 'with unknown system_id' do
+            let(:delete_params) { { token: runner.token, system_id: 'unknown_system_id' } }
+
+            it 'returns 404 error' do
+              delete_request
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+
           context 'without system_id' do
             let(:delete_params) { { token: runner.token } }
 

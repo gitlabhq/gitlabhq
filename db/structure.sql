@@ -18606,6 +18606,7 @@ CREATE TABLE ml_candidates (
     eid uuid,
     project_id bigint,
     internal_id bigint,
+    ci_build_id bigint,
     CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd160587d4 CHECK ((eid IS NOT NULL))
 );
@@ -31523,6 +31524,8 @@ CREATE INDEX index_ml_candidate_metrics_on_candidate_id ON ml_candidate_metrics 
 CREATE INDEX index_ml_candidate_params_on_candidate_id ON ml_candidate_params USING btree (candidate_id);
 
 CREATE UNIQUE INDEX index_ml_candidate_params_on_candidate_id_on_name ON ml_candidate_params USING btree (candidate_id, name);
+
+CREATE INDEX index_ml_candidates_on_ci_build_id ON ml_candidates USING btree (ci_build_id);
 
 CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_eid ON ml_candidates USING btree (experiment_id, eid);
 

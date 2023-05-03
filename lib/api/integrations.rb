@@ -37,7 +37,7 @@ module API
       end
     end
 
-    TRIGGER_INTEGRATIONS = {
+    SLASH_COMMAND_INTEGRATIONS = {
       'mattermost-slash-commands' => [
         {
           name: :token,
@@ -173,7 +173,7 @@ module API
         end
       end
 
-      TRIGGER_INTEGRATIONS.each do |integration_slug, settings|
+      SLASH_COMMAND_INTEGRATIONS.each do |integration_slug, settings|
         helpers do
           def slash_command_integration(project, integration_slug, params)
             project.integrations.active.find do |integration|
@@ -218,7 +218,23 @@ module API
         end
       end
     end
+
+    desc "Trigger a global slack command" do
+      detail 'Added in GitLab 9.4'
+      failure [
+        { code: 401, message: 'Unauthorized' }
+      ]
+    end
+    params do
+      requires :text, type: String, desc: 'Text of the slack command'
+    end
+    post 'slack/trigger' do
+      if result = Gitlab::SlashCommands::GlobalSlackHandler.new(params).trigger
+        status result[:status] || 200
+        present result
+      else
+        not_found!
+      end
+    end
   end
 end
-
-API::Integrations.prepend_mod_with('API::Integrations')

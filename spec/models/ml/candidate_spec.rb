@@ -15,6 +15,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:package) }
+    it { is_expected.to belong_to(:ci_build).class_name('Ci::Build') }
     it { is_expected.to have_many(:params) }
     it { is_expected.to have_many(:metrics) }
     it { is_expected.to have_many(:metadata) }
@@ -207,6 +208,13 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       it 'orders correctly' do
         expect(subject).to eq([candidate, candidate2])
       end
+    end
+  end
+
+  context 'with loose foreign key on ml_candidates.ci_build_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:ci_build) }
+      let!(:model) { create(:ml_candidates, ci_build: parent) }
     end
   end
 end

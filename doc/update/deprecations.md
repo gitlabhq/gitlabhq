@@ -659,22 +659,6 @@ Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/mer
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### CiCdSettingsUpdate mutation renamed to ProjectCiCdSettingsUpdate
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-The `CiCdSettingsUpdate` mutation was renamed to `ProjectCiCdSettingsUpdate` in GitLab 15.0.
-The `CiCdSettingsUpdate` mutation will be removed in GitLab 16.0.
-Any user scripts that use the `CiCdSettingsUpdate` mutation must be updated to use `ProjectCiCdSettingsUpdate`
-instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Conan project-level search endpoint returns project-specific results
 
 <div class="deprecation-notes">

@@ -548,7 +548,6 @@ Style/IfUnlessModifier:
     - 'ee/app/services/security/security_orchestration_policies/process_policy_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/project_create_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
-    - 'ee/app/services/slash_commands/global_slack_handler.rb'
     - 'ee/app/services/start_pull_mirroring_service.rb'
     - 'ee/app/services/system_notes/epics_service.rb'
     - 'ee/app/services/timebox_report_service.rb'

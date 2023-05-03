@@ -169,7 +169,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/services/security/ingestion/ingest_report_slice_service_spec.rb'
     - 'ee/spec/services/security/orchestration/assign_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/on_demand_scan_pipeline_configuration_service_spec.rb'
-    - 'ee/spec/services/slash_commands/global_slack_handler_spec.rb'
     - 'ee/spec/services/status_page/publish_details_service_spec.rb'
     - 'ee/spec/services/status_page/publish_service_spec.rb'
     - 'ee/spec/services/status_page/trigger_publish_service_spec.rb'

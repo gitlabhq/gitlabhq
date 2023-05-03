@@ -77,14 +77,14 @@ module API
 
         desc 'Delete a registered runner manager' do
           summary 'Internal endpoint that deletes a runner manager by authentication token and system ID.'
-          failure [[400, 'Bad Request'], [403, 'Forbidden']]
+          http_codes [[204, 'Runner manager was deleted'], [400, 'Bad Request'], [403, 'Forbidden'], [404, 'Not Found']]
         end
         params do
           requires :token, type: String, desc: %q(The runner's authentication token)
           requires :system_id, type: String, desc: %q(The runner's system identifier.)
         end
         delete '/managers', urgency: :low, feature_category: :runner_fleet do
-          authenticate_runner!
+          authenticate_runner!(ensure_runner_manager: false)
 
           destroy_conditionally!(current_runner) do
             ::Ci::Runners::UnregisterRunnerManagerService.new(

@@ -127,10 +127,12 @@ describe('note_app', () => {
     });
 
     it('should render notes activity header', () => {
-      expect(wrapper.findComponent(NotesActivityHeader).props()).toEqual({
-        notesFilterValue: TEST_NOTES_FILTER_VALUE,
-        notesFilters: mockData.notesFilters,
-      });
+      expect(wrapper.findComponent(NotesActivityHeader).props().notesFilterValue).toEqual(
+        TEST_NOTES_FILTER_VALUE,
+      );
+      expect(wrapper.findComponent(NotesActivityHeader).props().notesFilters).toEqual(
+        mockData.notesFilters,
+      );
     });
   });
 

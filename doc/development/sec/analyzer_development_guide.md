@@ -138,18 +138,50 @@ For more information, refer to the [project README](https://gitlab.com/gitlab-or
 
 ## Versioning and release process
 
-Analyzers are independent projects that follow their own versioning. `Patch` version bumps tend to correspond to a `Minor` version bump of the underlying tools (i.e. [`bandit`](https://wiki.openstack.org/wiki/Security/Projects/Bandit)), allowing us greater flexibility in reserving `Minor` bumps for more significant changes to our scanners. In case of breaking changes imposed by the wrapped scanner, creating a new analyzer on a separate repository must be considered.
+GitLab Security Products use an independent versioning system from GitLab Rails' `MAJOR.MINOR`. All products use a variation of [Semantic Versioning](https://semver.org) and are available as Docker images.
+
+`Patch` version bumps tend to correspond to a `Minor` version bump of the underlying tools (i.e. [`bandit`](https://wiki.openstack.org/wiki/Security/Projects/Bandit)), allowing us greater flexibility in reserving `Minor` bumps for more significant changes to our scanners. In case of breaking changes imposed by the wrapped scanner, creating a new analyzer on a separate repository must be considered.
 
 The analyzers are released as Docker images following this scheme:
 
-- each push to the `master` branch will override the `edge` image tag
+- each push to the default branch will override the `edge` image tag
 - each push to any `awesome-feature` branch will generate a matching `awesome-feature` image tag
 - each Git tag will generate the corresponding `Major.Minor.Patch` image tag. A manual job allows to override the corresponding `Major` and the `latest` image tags to point to this `Major.Minor.Patch`.
 
+In most circumstances it is preferred to rely on the `MAJOR` image,
+which is automatically kept up to date with the latest advisories or patches to our tools.
+Our [included CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Security) pin to major version but if preferred, users can override their version directly.
+
 To release a new analyzer Docker image, there are two different options:
 
-- Manual release process
-- Automatic release process
+- [Manual release process](#manual-release-process)
+- [Automatic release process](#automatic-release-process)
+
+The following diagram describes the Docker tags that are created when a new analyzer version is released:
+
+```mermaid
+graph LR
+
+A1[git tag v1.1.0]--> B1(run CI pipeline)
+B1 -->|build and tag patch| D1[1.1.0]
+B1 -->|tag minor| E1[1.1]
+B1 -->|retag major| F1[1]
+B1 -->|retag latest| G1[latest]
+
+A2[git tag v1.1.1]--> B2(run CI pipeline)
+B2 -->|build and tag patch| D2[1.1.1]
+B2 -->|retag minor| E2[1.1]
+B2 -->|retag major| F2[1]
+B2 -->|retag latest| G2[latest]
+
+A3[push to default branch]--> B3(run CI pipeline)
+B3 -->|build and tag edge| D3[edge]
+```
+
+Per our Continuous Deployment flow, for new components that do not have a counterpart in the GitLab
+Rails application, the component can be released at any time. Until the components
+are integrated with the existing application, iteration should not be blocked by
+[our standard release cycle and process](https://about.gitlab.com/product-process).
 
 ### Manual release process
 
@@ -201,3 +233,131 @@ After the above steps have been completed, the automatic release process execute
 
 **Never delete a Git tag that has been pushed** as there is a good
 chance that the tag will be used and/or cached by the Go package registry.
+
+## Location of Container Images
+
+In order to
+[restrict the number of people who have write access to the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/297525),
+all images are to be published to the location below.
+
+- Group: [`https://gitlab.com/security-products/`](https://gitlab.com/security-products/)
+- Project path: `https://gitlab.com/security-products/<NAME>` ([example](https://gitlab.com/security-products/container-scanning))
+- Registry address: `registry.gitlab.com/security-products/<NAME>[/<IMAGE_NAME>]:[TAG]`
+- Permissions
+  - Top-level group
+    - Maintainer: `@gitlab-org/secure/managers`, `@gitlab-org/govern/managers`
+  - Project level
+    - A deploy token with `read_registry` and `write_registry` access is used to push images.
+    - The token will be entered by its creator as a [**protected** and **masked** variable](../../ci/variables/index.md#for-a-project) on the
+      originating project (i.e. the project under [`security-products` namespace](https://gitlab.com/gitlab-org/security-products/))
+- Project Settings
+  - Visibility, project features, permissions.
+    - Project visibility: Public. Uncheck "Users can request access".
+    - Issues: disable.
+    - Repository: set to "Only Project Members". Disable: Merge requests, Forks, Git LFS, Packages, CI/CD.
+    - Disable remaining items: Analytics, Requirements, Wiki, Snippets, Pages, Operations.
+  - Service Desk: disable
+
+Each group in the Sec Section is responsible for:
+
+1. Managing the deprecation and removal schedule for their artifacts, and creating issues for this purpose.
+1. Creating and configuring projects under the new location.
+1. Configuring builds to push release artifacts to the new location.
+1. Removing or keeping images in old locations according to their own support agreements.
+
+## Security and Build fixes of Go
+
+The `Dockerfile` of the Secure analyzers implemented in Go must reference a `MAJOR` release of Go, and not a `MINOR` revision.
+This ensures that the version of Go used to compile the analyzer includes all the security fixes available at a given time.
+For example, the multi-stage Dockerfile of an analyzer must use the `golang:1.15-alpine` image
+to build the analyzer CLI, but not `golang:1.15.4-alpine`.
+
+When a `MINOR` revision of Go is released, and when it includes security fixes,
+project maintainers must check whether the Secure analyzers need to be re-built.
+The version of Go used for the build should appear in the log of the `build` job corresponding to the release,
+and it can also be extracted from the Go binary using the [strings](https://en.wikipedia.org/wiki/Strings_(Unix)) command.
+
+If the latest image of the analyzer was built with the affected version of Go, then it needs to be rebuilt.
+To rebuild the image, maintainers can either:
+
+- trigger a new pipeline for the Git tag that corresponds to the stable release
+- create a new Git tag where the `BUILD` number is incremented
+- trigger a pipeline for the default branch, and where the `PUBLISH_IMAGES` variable is set to a non-empty value
+
+Either way a new Docker image is built, and it's published with the same image tags: `MAJOR.MINOR.PATCH` and `MAJOR`.
+
+This workflow assumes full compatibility between `MINOR` revisions of the same `MAJOR` release of Go.
+If there's a compatibility issue, the project pipeline will fail when running the tests.
+In that case, it might be necessary to reference a `MINOR` revision of Go in the Dockerfile
+and document that exception until the compatibility issue has been resolved.
+
+Since it is NOT referenced in the `Dockerfile`, the `MINOR` revision of Go is NOT mentioned in the project changelog.
+
+There may be times where it makes sense to use a build tag as the changes made are build related and don't
+require a changelog entry. For example, pushing Docker images to a new registry location.
+
+### Git tag to rebuild
+
+When creating a new Git tag to rebuild the analyzer,
+the new tag has the same `MAJOR.MINOR.PATCH` version as before,
+but the `BUILD` number (as defined in [semver](https://semver.org/)) is incremented.
+
+For instance, if the latest release of the analyzer is `v1.2.3`,
+and if the corresponding Docker image was built using an affected version of Go,
+then maintainers create the Git tag `v1.2.3+1` to rebuild the image.
+If the latest release is `v1.2.3+1`, then they create `v1.2.3+2`.
+
+The build number is automatically removed from the image tag.
+To illustrate, creating a Git tag `v1.2.3+1` in the `gemnasium` project
+makes the pipeline rebuild the image, and push it as `gemnasium:1.2.3`.
+
+The Git tag created to rebuild has a simple message that explains why the new build is needed.
+Example: `Rebuild with Go 1.15.6`.
+The tag has no release notes, and no release is created.
+
+To create a new Git tag to rebuild the analyzer, follow these steps:
+
+1. Create a new Git tag and provide a message
+
+   ```shell
+   git tag -a v1.2.3+1 -m "Rebuild with Go 1.15.6"
+   ```
+
+1. Push the tags to the repo
+
+   ```shell
+   git push origin --tags
+   ```
+
+1. A new pipeline for the Git tag will be triggered and a new image will be built and tagged.
+1. Run a new pipeline for the `master` branch in order to run the full suite of tests and generate a new vulnerability report for the newly tagged image. This is necessary because the release pipeline triggered in step `3.` above runs only a subset of tests, for example, it does not perform a `Container Scanning` analysis.
+
+### Monthly release process
+
+This should be done on the **18th of each month**. Though, this is a soft deadline and there is no harm in doing it within a few days after.
+
+First, create an new issue for a release with a script from this repo: `./scripts/release_issue.rb MAJOR.MINOR`.
+This issue will guide you through the whole release process. In general, you have to perform the following tasks:
+
+- Check the list of supported technologies in GitLab documentation.
+  - [Supported languages in SAST](../../user/application_security/sast/index.md#supported-languages-and-frameworks)
+  - [Supported languages in DS](../../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
+  - [Supported languages in LM](../../user/compliance/license_compliance/index.md#supported-languages-and-package-managers)
+
+- Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
+
+  - [SAST vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
+  - [Dependency Scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+  - [License Scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
+  - [Container Scanning CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+
+  If needed, go to the pipeline corresponding to the last Git tag,
+  and trigger the manual job that controls the build of this image.
+
+- Current bot accounts used in the pipeline
+  - Account name: [`@group_2452873_bot`](https://gitlab.com/group_2452873_bot)
+    - Use: Used for creating releases/tags
+    - Member of: Group [`gitlab-org/security-products`](https://gitlab.com/groups/gitlab-org/security-products/-/group_members?search=group_2452873_bot)
+    - Max role: `Developer`
+    - Scope of the associated `GITLAB_TOKEN`:
+    - Expiry Date of the associated `GITLAB_TOKEN`:

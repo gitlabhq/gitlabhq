@@ -1,3 +1,18 @@
+import {
+  SAST_NAME,
+  SAST_SHORT_NAME,
+  SAST_DESCRIPTION,
+  SAST_HELP_PATH,
+  SAST_CONFIG_HELP_PATH,
+  LICENSE_COMPLIANCE_NAME,
+  LICENSE_COMPLIANCE_DESCRIPTION,
+  LICENSE_COMPLIANCE_HELP_PATH,
+} from '~/security_configuration/components/constants';
+import {
+  REPORT_TYPE_LICENSE_COMPLIANCE,
+  REPORT_TYPE_SAST,
+} from '~/vue_shared/security_reports/constants';
+
 export const testProjectPath = 'foo/bar';
 export const testProviderIds = [101, 102, 103];
 export const testProviderName = ['Kontra', 'Secure Code Warrior', 'Other Vendor'];
@@ -99,4 +114,34 @@ export const updateSecurityTrainingProvidersErrorResponse = {
       training: null,
     },
   },
+};
+
+export const securityFeaturesMock = [
+  {
+    name: SAST_NAME,
+    shortName: SAST_SHORT_NAME,
+    description: SAST_DESCRIPTION,
+    helpPath: SAST_HELP_PATH,
+    configurationHelpPath: SAST_CONFIG_HELP_PATH,
+    type: REPORT_TYPE_SAST,
+    available: true,
+  },
+];
+
+export const complianceFeaturesMock = [
+  {
+    name: LICENSE_COMPLIANCE_NAME,
+    description: LICENSE_COMPLIANCE_DESCRIPTION,
+    helpPath: LICENSE_COMPLIANCE_HELP_PATH,
+    type: REPORT_TYPE_LICENSE_COMPLIANCE,
+    configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
+  },
+];
+
+export const provideMock = {
+  upgradePath: '/upgrade',
+  autoDevopsHelpPagePath: '/autoDevopsHelpPagePath',
+  autoDevopsPath: '/autoDevopsPath',
+  projectFullPath: 'namespace/project',
+  vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/index',
 };

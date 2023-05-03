@@ -1844,6 +1844,15 @@ msgstr ""
 msgid "AI actions"
 msgstr ""
 
+msgid "AISummary|Experiment"
+msgstr ""
+
+msgid "AISummary|Generates a summary of all public comments"
+msgstr ""
+
+msgid "AISummary|See summary"
+msgstr ""
+
 msgid "AI| %{link_start}How is my data used?%{link_end}"
 msgstr ""
 
@@ -31079,6 +31088,9 @@ msgid "Only use lowercase letters, numbers, and underscores."
 msgstr ""
 
 msgid "Only verified users with an email address in any of these domains can be added to the group. Multiple domains are supported."
+msgstr ""
+
+msgid "Only visible to you"
 msgstr ""
 
 msgid "Only ‘Reporter’ roles and above on tiers Premium and above can see Productivity Analytics."

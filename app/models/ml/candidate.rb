@@ -17,6 +17,7 @@ module Ml
     belongs_to :user
     belongs_to :package, class_name: 'Packages::Package'
     belongs_to :project
+    belongs_to :ci_build, class_name: 'Ci::Build', optional: true
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
     has_many :metadata, class_name: 'Ml::CandidateMetadata'

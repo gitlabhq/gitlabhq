@@ -36,12 +36,25 @@ RSpec.describe ::Ci::Runners::UnregisterRunnerManagerService, '#execute', featur
       end
     end
 
+    context 'with unknown system_id' do
+      let(:system_id) { 'unknown_system_id' }
+
+      it 'raises RecordNotFound error', :aggregate_failures do
+        expect do
+          execute
+        end.to raise_error(ActiveRecord::RecordNotFound)
+           .and not_change { Ci::Runner.count }
+           .and not_change { Ci::RunnerManager.count }
+      end
+    end
+
     context 'with system_id missing' do
       let(:system_id) { nil }
 
       it 'returns error and leaves runner_manager1', :aggregate_failures do
         expect do
           expect(execute).to be_error
+          expect(execute.message).to eq('`system_id` needs to be specified for runners created in the UI.')
         end.to not_change { Ci::Runner.count }
            .and not_change { Ci::RunnerManager.count }
       end

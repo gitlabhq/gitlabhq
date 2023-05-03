@@ -428,4 +428,28 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       expect(response_keys).not_to include(*integration.secret_fields)
     end
   end
+
+  describe 'POST /slack/trigger' do
+    before_all do
+      create(:gitlab_slack_application_integration, project: project)
+    end
+
+    before do
+      stub_application_setting(slack_app_verification_token: 'token')
+    end
+
+    it 'returns status 200' do
+      post api('/slack/trigger'), params: { token: 'token', text: 'help' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['response_type']).to eq("ephemeral")
+    end
+
+    it 'returns status 404 when token is invalid' do
+      post api('/slack/trigger'), params: { token: 'invalid', text: 'foo' }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['response_type']).to be_blank
+    end
+  end
 end

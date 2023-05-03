@@ -35,6 +35,7 @@ export default {
     SidebarSubscription,
     DraftNote,
     TimelineEntryItem,
+    AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -70,6 +71,8 @@ export default {
     return {
       currentFilter: null,
       renderSkeleton: !this.shouldShow,
+      aiLoading: null,
+      isInitialEventTriggered: false,
     };
   },
   computed: {
@@ -211,6 +214,9 @@ export default {
         .then(this.$nextTick)
         .then(() => eventHub.$emit('startReplying', discussionId));
     },
+    setAiLoading(loading) {
+      this.aiLoading = loading;
+    },
   },
   systemNote: constants.SYSTEM_NOTE,
 };
@@ -219,7 +225,13 @@ export default {
 <template>
   <div v-show="shouldShow" id="notes">
     <sidebar-subscription :iid="noteableData.iid" :noteable-data="noteableData" />
-    <notes-activity-header :notes-filters="notesFilters" :notes-filter-value="notesFilterValue" />
+    <notes-activity-header
+      :notes-filters="notesFilters"
+      :notes-filter-value="notesFilterValue"
+      :ai-loading="aiLoading"
+      @set-ai-loading="setAiLoading"
+    />
+    <ai-summary v-if="aiLoading !== null" @set-ai-loading="setAiLoading" />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form
