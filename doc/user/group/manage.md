@@ -697,6 +697,43 @@ To enable Code Suggestions for a group:
 1. Find the **Code Suggestions** settings.
 1. Select **Save changes**.
 
+## Group Experiment features setting **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+
+These are [Experiment features](/ee/policy/alpha-beta-support.md#experiment) and may produce unexpected results (e.g., low-quality, incomplete, failed pipelines, incoherent, insecure code, offensive or insensitive).
+
+This setting enables users in the group to access Experiment features.
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable Experiment features for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Experiment features** settings.
+1. Select **Save changes**.
+
+## Group third-party AI features setting **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
+
+WARNING:
+These Artifical Intelligence (AI) features use [third-party services](../../user/ai_features.md#data-usage) and require transmission of data, including personal data.
+
+This setting enables users in the group to access third-party AI features.
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+that belong to the group.
+
+To enable third-party AI features for a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Find the **Third-party Artificial Intelligence (AI) features** settings.
+1. Select **Save changes**.
+
 ## Group activity analytics **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/alpha-beta-support.md#beta).

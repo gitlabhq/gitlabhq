@@ -39,9 +39,9 @@ module Tooling
         %r{\Adata/deprecations/} => :none,
         %r{\Adata/removals/} => :none,
 
-        %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:integrations_be, :database, :backend],
-        [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:integrations_be, :database, :migration],
-        [%r{\A((ee|jh)/)?(app|lib)/.+\.rb}, %r{\b(Integrations::|\.execute_(integrations|hooks))\b}] => [:integrations_be, :backend],
+        %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:import_integrate_be, :database, :backend],
+        [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:import_integrate_be, :database, :migration],
+        [%r{\A((ee|jh)/)?(app|lib)/.+\.rb}, %r{\b(Integrations::|\.execute_(integrations|hooks))\b}] => [:import_integrate_be, :backend],
         %r{\A(
           ((ee|jh)/)?app/((?!.*clusters)(?!.*alert_management)(?!.*views)(?!.*assets).+/)?integration.+ |
           ((ee|jh)/)?app/((?!.*search).+/)?project_service.+ |
@@ -53,13 +53,13 @@ module Tooling
           ((ee|jh)/)?lib/(.+/)?.*integration.+ |
           ((ee|jh)/)?lib/(.+/)?api/v3/github\.rb |
           ((ee|jh)/)?lib/(.+/)?api/github/entities\.rb
-        )\z}x => [:integrations_be, :backend],
+        )\z}x => [:import_integrate_be, :backend],
 
         %r{\A(
           ((ee|jh)/)?app/(views|assets)/((?!.*clusters)(?!.*alerts_settings).+/)?integration.+ |
           ((ee|jh)/)?app/(views|assets)/(.+/)?jira_connect.+ |
           ((ee|jh)/)?app/(views|assets)/((?!.*filtered_search).+/)?hooks?.+
-        )\z}x => [:integrations_fe, :frontend],
+        )\z}x => [:import_integrate_fe, :frontend],
 
         %r{\A(
           app/assets/javascripts/tracking/.*\.js |

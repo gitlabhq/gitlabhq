@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'set'
+require 'test_file_finder'
 
 # These tests run a sanity check on the mapping file `tests.yml`
 # used with the `test_file_finder` gem (`tff`) to identify matching test files.
@@ -211,10 +212,10 @@ tests = [
 ]
 
 class MappingTest
-  def initialize(explanation:, source:, expected:, mapping: 'tests.yml')
+  def initialize(explanation:, source:, expected:, strategy:)
     @explanation = explanation
     @source = source
-    @mapping = mapping
+    @strategy = strategy
     @expected_set = Set.new(expected)
     @actual_set = Set.new(actual)
   end
@@ -236,11 +237,14 @@ class MappingTest
   attr_reader :explanation, :source, :expected_set, :actual_set, :mapping
 
   def actual
-    `tff -f #{mapping} #{source}`.split(' ')
+    tff = TestFileFinder::FileFinder.new(paths: [source])
+    tff.use @strategy
+    tff.test_files
   end
 end
 
-results = tests.map { |test| MappingTest.new(**test) }
+strategy = TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
+results = tests.map { |test| MappingTest.new(strategy: strategy, **test) }
 
 failed_tests = results.select(&:failed?)
 if failed_tests.any?

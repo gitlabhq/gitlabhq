@@ -56,8 +56,8 @@ OPTIONAL_REVIEW_TEMPLATE = '%{role} review is optional for %{category}'
 NOT_AVAILABLE_TEMPLATES = {
   default: 'No %{role} available',
   product_intelligence: group_not_available_template('#g_product_intelligence', '@gitlab-org/analytics-section/product-intelligence/engineers'),
-  integrations_be: group_not_available_template('#g_manage_integrations', '@gitlab-org/manage/integrations'),
-  integrations_fe: group_not_available_template('#g_manage_integrations', '@gitlab-org/manage/integrations')
+  import_integrate_be: group_not_available_template('#g_manage_import_and_integrate', '@gitlab-org/manage/import-and-integrate'),
+  import_integrate_fe: group_not_available_template('#g_manage_import_and_integrate', '@gitlab-org/manage/import-and-integrate')
 }.freeze
 
 def note_for_spin_role(spin, role, category)

@@ -1778,21 +1778,6 @@ To use the full state name, including the period, [migrate to the full state fil
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Test system hook endpoint
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.8</span>
-- End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-The [test system hook](https://docs.gitlab.com/ee/api/system_hooks.html#test-system-hook) endpoint returns dummy data.
-This endpoint is now deprecated and will be removed from the GitLab codebase.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### The API no longer returns revoked tokens for the agent for Kubernetes
 
 <div class="deprecation-notes">

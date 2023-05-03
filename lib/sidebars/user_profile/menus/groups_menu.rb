@@ -14,6 +14,11 @@ module Sidebars
           s_('UserProfile|Groups')
         end
 
+        override :sprite_icon
+        def sprite_icon
+          'group'
+        end
+
         override :active_routes
         def active_routes
           { path: 'users#groups' }

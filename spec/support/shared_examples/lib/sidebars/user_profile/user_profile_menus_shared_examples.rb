@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'User profile menu' do |title:, active_route:|
+RSpec.shared_examples 'User profile menu' do |title:, icon:, active_route:|
   let_it_be(:current_user) { build(:user) }
   let_it_be(:user) { build(:user) }
 
@@ -18,6 +18,10 @@ RSpec.shared_examples 'User profile menu' do |title:, active_route:|
 
   it 'renders the correct title' do
     expect(subject.title).to eq title
+  end
+
+  it 'renders the correct icon' do
+    expect(subject.sprite_icon).to eq icon
   end
 
   it 'defines correct active route' do

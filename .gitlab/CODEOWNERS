@@ -2,7 +2,7 @@
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
 # As described in https://docs.gitlab.com/ee/user/project/code_owners.html
 
-* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gl-quality/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @nolith @jacobvosmaer-gitlab @gitlab-org/tw-leadership
+* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gl-quality/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @nolith @gitlab-org/tw-leadership
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
@@ -62,19 +62,19 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 [Engineering Productivity] @gl-quality/eng-prod
 /.gitlab-ci.yml
 /.gitlab/ci/
-/.gitlab/ci/docs.gitlab-ci.yml @gl-docsteam
-/.gitlab/ci/package-and-test/ @gl-quality/qe-maintainers
-/.gitlab/ci/qa.gitlab-ci.yml @gl-quality/qe-maintainers
-/.gitlab/ci/releases.gitlab-ci.yml @gitlab-org/delivery
-/.gitlab/ci/reports.gitlab-ci.yml @gitlab-com/gl-security/appsec
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/qe-maintainers
-/.gitlab/ci/test-on-gdk/ @gl-quality/qe-maintainers
+/.gitlab/ci/docs.gitlab-ci.yml @gl-quality/eng-prod @gl-docsteam
+/.gitlab/ci/package-and-test/ @gl-quality/eng-prod @gl-quality/qe-maintainers
+/.gitlab/ci/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
+/.gitlab/ci/releases.gitlab-ci.yml @gl-quality/eng-prod @gitlab-org/delivery
+/.gitlab/ci/reports.gitlab-ci.yml @gl-quality/eng-prod @gitlab-com/gl-security/appsec
+/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-quality/eng-prod @gl-quality/qe-maintainers
+/.gitlab/ci/test-on-gdk/ @gl-quality/eng-prod @gl-quality/qe-maintainers
 Dangerfile
 /danger/
 /tooling/danger/
 /scripts/
-/scripts/frontend/ @gitlab-org/maintainers/frontend
-/scripts/review_apps/seed-dast-test-data.sh @dappelt @ngeorge1
+/scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
+/scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
 .editorconfig
 
 ^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull @splattael
@@ -200,7 +200,7 @@ Dangerfile
 /app/finders/security/license_compliance_jobs_finder.rb
 /ee/app/controllers/projects/licenses_controller.rb
 /ee/app/finders/software_license_policies_finder.rb
-/ee/app/models/sca/license_compliance.rb @gitlab-org/secure/composition-analysis-be
+/ee/app/models/sca/license_compliance.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
 /ee/app/models/sca/license_policy.rb
 /ee/app/models/software_license_policy.rb
 /ee/app/models/software_license.rb
@@ -222,7 +222,7 @@ Dangerfile
 /ee/spec/factories/spdx_license.rb
 /ee/spec/finders/software_license_policies_finder_spec.rb
 /ee/spec/lib/gitlab/ci/parsers/license_compliance/**
-/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/secure/composition-analysis-be
+/ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/govern/security-policies-backend @gitlab-org/secure/composition-analysis-be
 /ee/spec/models/sca/license_policy_spec.rb
 /ee/spec/models/software_license_policy_spec.rb
 /ee/spec/models/software_license_spec.rb
@@ -241,18 +241,18 @@ Dangerfile
 
 ^[Merge Requests backend] @garyh @patrickbajao @marc_shaw @kerrizor
 /app/controllers/projects/merge_requests/
-/app/models/merge_request.rb @dskim_gitlab
-/app/services/merge_requests/ @dskim_gitlab
-/app/workers/merge_requests/ @dskim_gitlab
-/app/workers/merge_request_mergeability_check_worker.rb @dskim_gitlab
-/lib/gitlab/diff/ @dskim_gitlab
-/lib/gitlab/discussions_diff/ @dskim_gitlab
-/lib/gitlab/quick_actions/ @dskim_gitlab
+/app/models/merge_request.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/app/services/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/app/workers/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/app/workers/merge_request_mergeability_check_worker.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/lib/gitlab/diff/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/lib/gitlab/discussions_diff/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/lib/gitlab/quick_actions/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
 
-/ee/app/models/ee/merge_request.rb @dskim_gitlab
-/ee/app/services/merge_requests/ @dskim_gitlab
-/ee/app/workers/merge_requests/ @dskim_gitlab
-/ee/app/workers/merge_request_reset_approvals_worker.rb @dskim_gitlab
+/ee/app/models/ee/merge_request.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/ee/app/services/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/ee/app/workers/merge_requests/ @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
+/ee/app/workers/merge_request_reset_approvals_worker.rb @garyh @patrickbajao @marc_shaw @kerrizor @dskim_gitlab
 
 ^[Merge Requests frontend] @viktomas @jboyson @iamphill @thomasrandolph
 /app/assets/javascripts/diffs
@@ -359,7 +359,7 @@ Dangerfile
 ^[Legal] @gitlab-org/legal-reviewers
 /config/dependency_decisions.yml
 
-^[Workhorse] @jacobvosmaer-gitlab @nolith @patrickbajao @igor.drozdov
+^[Workhorse] @nolith @patrickbajao @igor.drozdov
 /workhorse/
 
 [Application Security] @gitlab-com/gl-security/appsec

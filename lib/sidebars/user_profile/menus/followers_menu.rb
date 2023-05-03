@@ -16,6 +16,11 @@ module Sidebars
           s_('UserProfile|Followers')
         end
 
+        override :sprite_icon
+        def sprite_icon
+          'users'
+        end
+
         override :active_routes
         def active_routes
           { path: 'users#followers' }

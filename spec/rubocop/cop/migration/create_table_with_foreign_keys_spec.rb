@@ -146,9 +146,11 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
             users
             web_hook_logs
           ].each do |table|
-            let(:table_name) { table }
+            context "with #{table}" do
+              let(:table_name) { table }
 
-            it_behaves_like 'target to high traffic table', dsl_method, table
+              it_behaves_like 'target to high traffic table', dsl_method, table
+            end
           end
         end
 

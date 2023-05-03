@@ -18,6 +18,30 @@ RSpec.shared_examples 'packages list' do |check_project_name: false|
   end
 end
 
+RSpec.shared_examples 'pipelines on packages list' do
+  let_it_be(:pipelines) do
+    %w[c83d6e391c22777fca1ed3012fce84f633d7fed0
+      d83d6e391c22777fca1ed3012fce84f633d7fed0].map do |sha|
+      create(:ci_pipeline, project: project, sha: sha)
+    end
+  end
+
+  before do
+    pipelines.each do |pipeline|
+      create(:package_build_info, package: package, pipeline: pipeline)
+    end
+  end
+
+  it 'shows the latest pipeline' do
+    # Test after reload
+    page.evaluate_script 'window.location.reload()'
+
+    wait_for_requests
+
+    expect(page).to have_content('d83d6e39')
+  end
+end
+
 RSpec.shared_examples 'package details link' do |property|
   before do
     stub_application_setting(npm_package_requests_forwarding: false)

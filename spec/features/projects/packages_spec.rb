@@ -31,7 +31,7 @@ RSpec.describe 'Packages', feature_category: :projects do
     end
 
     context 'when there are packages' do
-      let_it_be(:npm_package) { create(:npm_package, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
+      let_it_be(:npm_package) { create(:npm_package, :with_build, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
       let_it_be(:maven_package) { create(:maven_package, project: project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
       let_it_be(:packages) { [npm_package, maven_package] }
 
@@ -39,6 +39,8 @@ RSpec.describe 'Packages', feature_category: :projects do
       let(:package_details_path) { project_package_path(project, package) }
 
       it_behaves_like 'packages list'
+
+      it_behaves_like 'pipelines on packages list'
 
       it_behaves_like 'package details link'
 

@@ -4,6 +4,7 @@ module MergeRequests
   class CreateService < MergeRequests::BaseService
     def execute
       set_projects!
+      set_default_attributes!
 
       merge_request = MergeRequest.new
       merge_request.target_project = @project
@@ -60,6 +61,10 @@ module MergeRequests
 
         raise Gitlab::Access::AccessDeniedError
       end
+    end
+
+    def set_default_attributes!
+      # Implemented in EE
     end
   end
 end

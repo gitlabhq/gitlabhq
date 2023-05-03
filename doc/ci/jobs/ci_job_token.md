@@ -153,7 +153,7 @@ You can also add a target project to the allowlist [with the API](../../api/grap
 
 NOTE:
 This feature is disabled by default for all new projects and is [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/383084)
-in GitLab 16.0. Project maintainers or owners should enable the access control instead.
+in GitLab 17.0. Project maintainers or owners should enable the access control instead.
 
 Control your project's job token scope by creating an allowlist of projects which
 can be accessed by your project's job token.

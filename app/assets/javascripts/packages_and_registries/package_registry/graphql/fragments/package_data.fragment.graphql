@@ -12,7 +12,7 @@ fragment PackageData on Package {
       name
     }
   }
-  pipelines(last: 1) {
+  pipelines(first: 1) {
     nodes {
       id
       sha

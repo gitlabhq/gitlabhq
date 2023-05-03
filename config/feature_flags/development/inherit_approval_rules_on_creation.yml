@@ -1,0 +1,8 @@
+---
+name: inherit_approval_rules_on_creation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118235
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408218
+milestone: '16.0'
+type: development
+group: group::source code
+default_enabled: false

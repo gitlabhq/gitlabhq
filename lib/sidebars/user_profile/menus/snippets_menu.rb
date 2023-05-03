@@ -14,6 +14,11 @@ module Sidebars
           s_('UserProfile|Snippets')
         end
 
+        override :sprite_icon
+        def sprite_icon
+          'snippet'
+        end
+
         override :active_routes
         def active_routes
           { path: 'users#snippets' }

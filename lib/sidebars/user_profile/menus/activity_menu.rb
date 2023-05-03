@@ -14,6 +14,11 @@ module Sidebars
           s_('UserProfile|Activity')
         end
 
+        override :sprite_icon
+        def sprite_icon
+          'history'
+        end
+
         override :active_routes
         def active_routes
           { path: 'users#activity' }

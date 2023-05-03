@@ -14,6 +14,11 @@ module Sidebars
           s_('UserProfile|Personal projects')
         end
 
+        override :sprite_icon
+        def sprite_icon
+          'project'
+        end
+
         override :active_routes
         def active_routes
           { path: 'users#projects' }
