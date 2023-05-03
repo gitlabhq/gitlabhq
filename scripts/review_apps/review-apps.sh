@@ -128,8 +128,22 @@ function disable_sign_ups() {
     true
   fi
 
-  # Create the root token + Disable sign-ups
-  local disable_signup_rb="token = User.find_by_username('root').personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups'); token.set_token('${REVIEW_APPS_ROOT_TOKEN}'); begin; token.save!; rescue(ActiveRecord::RecordNotUnique); end; Gitlab::CurrentSettings.current_application_settings.update!(signup_enabled: false)"
+# Create the root token + Disable sign-ups
+#
+# We use this weird syntax because we need to pass a one-liner ruby command to a Kubernetes container via kubectl.
+read -r -d '' multiline_ruby_code <<RUBY
+user = User.find_by_username('root');
+puts 'Error: Could not find root user. Check that the database was properly seeded'; exit(1) unless user;
+token = user.personal_access_tokens.create(scopes: [:api], name: 'Token to disable sign-ups');
+token.set_token('${REVIEW_APPS_ROOT_TOKEN}');
+begin;
+token.save!;
+rescue(ActiveRecord::RecordNotUnique);
+end;
+Gitlab::CurrentSettings.current_application_settings.update!(signup_enabled: false);
+RUBY
+
+  local disable_signup_rb=$(echo $multiline_ruby_code | tr '\n' ' ')
   if (retry_exponential "run_task \"${disable_signup_rb}\""); then
     echoinfo "Sign-ups have been disabled successfully."
   else

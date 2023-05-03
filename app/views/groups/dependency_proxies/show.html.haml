@@ -3,4 +3,5 @@
 #js-dependency-proxy{ data: { group_path: @group.full_path,
   no_manifests_illustration: image_path('illustrations/docker-empty-state.svg'),
   group_id: @group.id,
+  settings_path: group_settings_packages_and_registries_path(@group),
   can_clear_cache: can?(current_user, :admin_group, @group).to_s } }

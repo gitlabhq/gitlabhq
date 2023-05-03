@@ -157,3 +157,14 @@ If you create a new page and then rename it before it's added to a release on th
 
 Instead of following that procedure, ask a Technical Writer to manually add the redirect
 to [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
+
+## Exceptions to creating a redirect
+
+In some cases you can skip adding the redirect and just delete the file. The page
+must have already been removed from (or never existed in) the navigation, and one
+of the following must be true:
+
+- The page was added and removed in the same release, so it was never included in
+  a self-managed release.
+- The page does not contain any content of value, like a placeholder page or a page
+  with extremely low usage statistics.

@@ -12,6 +12,7 @@ module Projects
             metrics: candidate.latest_metrics,
             info: {
               iid: candidate.iid,
+              eid: candidate.eid,
               path_to_artifact: link_to_artifact(candidate),
               experiment_name: candidate.experiment.name,
               path_to_experiment: link_to_experiment(candidate.project, candidate.experiment),

@@ -12,8 +12,8 @@ class Namespace::AggregationSchedule < ApplicationRecord
 
   after_create :schedule_root_storage_statistics
 
-  def self.default_lease_timeout
-    if Feature.enabled?(:reduce_aggregation_schedule_lease)
+  def default_lease_timeout
+    if Feature.enabled?(:reduce_aggregation_schedule_lease, namespace.root_ancestor)
       2.minutes.to_i
     else
       30.minutes.to_i
@@ -27,7 +27,7 @@ class Namespace::AggregationSchedule < ApplicationRecord
           .perform_async(namespace_id)
 
         Namespaces::RootStatisticsWorker
-          .perform_in(self.class.default_lease_timeout, namespace_id)
+          .perform_in(default_lease_timeout, namespace_id)
       end
     end
   end
@@ -36,7 +36,7 @@ class Namespace::AggregationSchedule < ApplicationRecord
 
   # Used by ExclusiveLeaseGuard
   def lease_timeout
-    self.class.default_lease_timeout
+    default_lease_timeout
   end
 
   # Used by ExclusiveLeaseGuard

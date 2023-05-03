@@ -111,6 +111,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     it 'generates the correct info' do
       expected_info = {
         'iid' => candidate.iid,
+        'eid' => candidate.eid,
         'path_to_artifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
         'experiment_name' => candidate.experiment.name,
         'path_to_experiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",

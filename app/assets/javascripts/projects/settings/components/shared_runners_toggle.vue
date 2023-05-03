@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlToggle, GlTooltip } from '@gitlab/ui';
+import { GlAlert, GlToggle } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
 import { CC_VALIDATION_REQUIRED_ERROR } from '../constants';
@@ -16,7 +16,6 @@ export default {
   components: {
     GlAlert,
     GlToggle,
-    GlTooltip,
     CcValidationRequiredAlert: () =>
       import('ee_component/billings/components/cc_validation_required_alert.vue'),
   },
@@ -94,8 +93,24 @@ export default {
         @dismiss="ccAlertDismissed = true"
       />
 
-      <gl-alert v-if="genericError" class="gl-mb-3" variant="danger" :dismissible="false">
+      <gl-alert
+        v-if="genericError"
+        data-testid="error-alert"
+        variant="danger"
+        :dismissible="false"
+        class="gl-mb-5"
+      >
         {{ errorMessage }}
+      </gl-alert>
+
+      <gl-alert
+        v-if="isDisabledAndUnoverridable"
+        data-testid="unoverridable-alert"
+        variant="warning"
+        :dismissible="false"
+        class="gl-mb-5"
+      >
+        {{ s__('Runners|Shared runners are disabled in the group settings') }}
       </gl-alert>
 
       <gl-toggle
@@ -107,10 +122,6 @@ export default {
         data-testid="toggle-shared-runners"
         @change="toggleSharedRunners"
       />
-
-      <gl-tooltip v-if="isDisabledAndUnoverridable" :target="() => $refs.sharedRunnersToggle">
-        {{ __('Shared runners are disabled on group level') }}
-      </gl-tooltip>
     </section>
   </div>
 </template>

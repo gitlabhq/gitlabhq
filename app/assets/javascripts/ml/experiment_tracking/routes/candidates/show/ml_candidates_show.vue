@@ -16,6 +16,7 @@ import {
   DELETE_CANDIDATE_CONFIRMATION_MESSAGE,
   DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
   DELETE_CANDIDATE_MODAL_TITLE,
+  MLFLOW_ID_LABEL,
 } from './translations';
 
 export default {
@@ -44,6 +45,7 @@ export default {
     DELETE_CANDIDATE_CONFIRMATION_MESSAGE,
     DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
     DELETE_CANDIDATE_MODAL_TITLE,
+    MLFLOW_ID_LABEL,
   },
   computed: {
     sections() {
@@ -98,6 +100,12 @@ export default {
           <td class="gl-text-secondary gl-font-weight-bold">{{ $options.i18n.INFO_LABEL }}</td>
           <td class="gl-font-weight-bold">{{ $options.i18n.ID_LABEL }}</td>
           <td>{{ candidate.info.iid }}</td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td class="gl-font-weight-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}</td>
+          <td>{{ candidate.info.eid }}</td>
         </tr>
 
         <tr>

@@ -3473,6 +3473,25 @@ Input type: `HttpIntegrationUpdateInput`
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
+### `Mutation.instanceExternalAuditEventDestinationCreate`
+
+Input type: `InstanceExternalAuditEventDestinationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceexternalauditeventdestinationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceexternalauditeventdestinationcreatedestinationurl"></a>`destinationUrl` | [`String!`](#string) | Destination URL. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceexternalauditeventdestinationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceexternalauditeventdestinationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstanceexternalauditeventdestinationcreateinstanceexternalauditeventdestination"></a>`instanceExternalAuditEventDestination` | [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination) | Destination created. |
+
 ### `Mutation.issuableResourceLinkCreate`
 
 Input type: `IssuableResourceLinkCreateInput`
@@ -15746,6 +15765,18 @@ A block of time for which a participant is on-call.
 | <a id="incidentmanagementoncallshiftparticipant"></a>`participant` | [`OncallParticipantType`](#oncallparticipanttype) | Participant assigned to the on-call shift. |
 | <a id="incidentmanagementoncallshiftstartsat"></a>`startsAt` | [`Time`](#time) | Start time of the on-call shift. |
 
+### `InstanceExternalAuditEventDestination`
+
+Represents an external resource to send instance audit events to.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceexternalauditeventdestinationdestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
+| <a id="instanceexternalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="instanceexternalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
+
 ### `InstanceSecurityDashboard`
 
 #### Fields
@@ -26172,6 +26203,21 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="eventableevents"></a>`events` | [`EventConnection`](#eventconnection) | List of events associated with the object. (see [Connections](#connections)) |
+
+#### `ExternalAuditEventDestinationInterface`
+
+Implementations:
+
+- [`ExternalAuditEventDestination`](#externalauditeventdestination)
+- [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="externalauditeventdestinationinterfacedestinationurl"></a>`destinationUrl` | [`String!`](#string) | External destination to send audit events to. |
+| <a id="externalauditeventdestinationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="externalauditeventdestinationinterfaceverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
 
 #### `MemberInterface`
 

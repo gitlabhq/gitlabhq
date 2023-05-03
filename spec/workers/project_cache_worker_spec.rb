@@ -13,10 +13,6 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
   let(:statistics) { [] }
 
   describe '#perform' do
-    before do
-      stub_exclusive_lease(lease_key, timeout: lease_timeout)
-    end
-
     context 'with a non-existing project' do
       it 'does nothing' do
         expect(worker).not_to receive(:update_statistics)
@@ -37,11 +33,6 @@ RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
     end
 
     context 'with an existing project' do
-      before do
-        lease_key = "namespace:namespaces_root_statistics:#{project.namespace_id}"
-        stub_exclusive_lease_taken(lease_key, timeout: Namespace::AggregationSchedule.default_lease_timeout)
-      end
-
       it 'refreshes the method caches' do
         expect_any_instance_of(Repository).to receive(:refresh_method_caches)
           .with(%i(readme))

@@ -6,7 +6,6 @@ RSpec.describe Namespaces::PruneAggregationSchedulesWorker, '#perform', :clean_g
   include ExclusiveLeaseHelpers
 
   let(:namespaces) { create_list(:namespace, 5, :with_aggregation_schedule) }
-  let(:timeout) { Namespace::AggregationSchedule.default_lease_timeout }
 
   subject(:worker) { described_class.new }
 
@@ -19,7 +18,7 @@ RSpec.describe Namespaces::PruneAggregationSchedulesWorker, '#perform', :clean_g
 
     namespaces.each do |namespace|
       lease_key = "namespace:namespaces_root_statistics:#{namespace.id}"
-      stub_exclusive_lease(lease_key, timeout: timeout)
+      stub_exclusive_lease(lease_key, timeout: namespace.aggregation_schedule.default_lease_timeout)
     end
   end
 

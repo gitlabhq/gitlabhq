@@ -80,7 +80,7 @@ Potential resolutions:
    [Jira DVCS connector setup](index.md#configure-jira-for-dvcs) includes `scope=api` in
    the query string.
 1. If `scope=api` is missing from the URL, edit the
-   [GitLab account configuration](index.md#configure-a-gitlab-application-for-dvcs). Review
+   [GitLab account configuration](index.md#create-a-gitlab-application-for-dvcs). Review
    the **Scopes** field and ensure the `api` checkbox is selected.
 
 ## Jira error adding account and no repositories listed

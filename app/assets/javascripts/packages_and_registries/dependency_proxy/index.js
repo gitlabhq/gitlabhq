@@ -11,7 +11,7 @@ export const initDependencyProxyApp = () => {
   if (!el) {
     return null;
   }
-  const { groupPath, groupId, noManifestsIllustration, canClearCache } = el.dataset;
+  const { groupPath, groupId, noManifestsIllustration, canClearCache, settingsPath } = el.dataset;
   return new Vue({
     el,
     apolloProvider,
@@ -20,6 +20,7 @@ export const initDependencyProxyApp = () => {
       groupId,
       noManifestsIllustration,
       canClearCache: parseBoolean(canClearCache),
+      settingsPath,
     },
     render(createElement) {
       return createElement(app);

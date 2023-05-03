@@ -5,27 +5,33 @@ require 'spec_helper'
 RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state, type: :model do
   include ExclusiveLeaseHelpers
 
-  let(:default_timeout) { described_class.default_lease_timeout }
+  let(:namespace) { create(:namespace) }
+  let(:aggregation_schedule) { namespace.build_aggregation_schedule }
+  let(:default_timeout) { aggregation_schedule.default_lease_timeout }
 
   it { is_expected.to belong_to :namespace }
 
   describe "#default_lease_timeout" do
-    subject(:default_lease_timeout) { default_timeout }
+    before do
+      aggregation_schedule.save!
+    end
 
-    it { is_expected.to eq 2.minutes.to_i }
+    context 'when reduce_aggregation_schedule_lease FF is enabled' do
+      it 'is 2 minutes' do
+        stub_feature_flags(reduce_aggregation_schedule_lease: true)
+        expect(aggregation_schedule.default_lease_timeout).to eq 2.minutes.to_i
+      end
+    end
 
     context 'when reduce_aggregation_schedule_lease FF is disabled' do
-      before do
+      it 'is 30 minutes' do
         stub_feature_flags(reduce_aggregation_schedule_lease: false)
+        expect(aggregation_schedule.default_lease_timeout).to eq 30.minutes.to_i
       end
-
-      it { is_expected.to eq 30.minutes.to_i }
     end
   end
 
   describe '#schedule_root_storage_statistics' do
-    let(:namespace) { create(:namespace) }
-    let(:aggregation_schedule) { namespace.build_aggregation_schedule }
     let(:lease_key) { "namespace:namespaces_root_statistics:#{namespace.id}" }
 
     context "when we can't obtain the lease" do

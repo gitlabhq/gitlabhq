@@ -40,6 +40,10 @@
     "BoardEpic",
     "Epic"
   ],
+  "ExternalAuditEventDestinationInterface": [
+    "ExternalAuditEventDestination",
+    "InstanceExternalAuditEventDestination"
+  ],
   "Issuable": [
     "Epic",
     "Issue",

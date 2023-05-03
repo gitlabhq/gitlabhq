@@ -6,7 +6,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab for Jira Cloud app **(FREE)**
 
-With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app, you can connect GitLab and Jira Cloud and use the Jira development panel.
+With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
+
+You can use the GitLab for Jira Cloud app to link top-level groups or subgroups. It's not possible to directly link projects or personal namespaces.
 
 - **For GitLab.com**:
   - [Install the GitLab for Jira Cloud app](#install-the-gitlab-for-jira-cloud-app).
@@ -14,14 +16,15 @@ With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/
   - [Connect the GitLab for Jira Cloud app for self-managed instances](#connect-the-gitlab-for-jira-cloud-app-for-self-managed-instances) (GitLab 15.7 and later).
   - [Install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-If you use Jira Server or Jira Data Center, use the [Jira DVCS connector](dvcs/index.md) instead.
+If you use Jira Data Center or Jira Server, use the [Jira DVCS connector](dvcs/index.md) instead.
 
 ## Install the GitLab for Jira Cloud app **(FREE SAAS)**
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the GitLab namespace.
+- You must have at least the Maintainer role for the GitLab group.
 - You must have administrator access to the Jira instance.
+- Your network must allow inbound and outbound connections between GitLab and Jira.
 
 To install the GitLab for Jira Cloud app:
 
@@ -32,14 +35,14 @@ To install the GitLab for Jira Cloud app:
 
 1. To go to the configurations page, select **Get started**.
    You can always access this page in **Jira Settings > Apps > Manage apps**.
-1. To open the list of available namespaces, select **Add namespace**.
-1. To link to a namespace, select **Link**.
+1. For a list of groups to link, select **Add namespace**.
+1. To link to a group, select **Link**.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see
 [Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
 
-After you add a namespace, the following data is synced to Jira for all projects in that namespace:
+After you add a group, the following data is synced to Jira for all projects in that group:
 
 - New merge requests, branches, and commits
 - Existing merge requests (GitLab 13.8 and later)
@@ -100,6 +103,7 @@ It's not possible to create branches from Jira for self-managed instances. For m
 - The instance must be publicly available.
 - The instance must be on GitLab version 15.7 or later.
 - You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
+- Your network must allow inbound and outbound connections between GitLab and Jira.
 
 ### Set up your instance
 
@@ -225,8 +229,8 @@ The OAuth application must have the `api` scope, which grants complete read and 
 This access includes all groups and projects, the container registry, and the package registry.
 However, the GitLab for Jira Cloud app only uses this access to:
 
-- Display namespaces to be linked.
-- Link namespaces.
+- Display groups to link.
+- Link groups.
 
 Access through OAuth is only needed for the time a user configures the GitLab for Jira Cloud app. For more information, see [Access token expiration](../oauth_provider.md#access-token-expiration).
 
@@ -248,7 +252,7 @@ when you're already signed in:
 You need to sign in or sign up before continuing.
 ```
 
-The GitLab for Jira Cloud app uses an iframe to add namespaces on the
+The GitLab for Jira Cloud app uses an iframe to add groups on the
 settings page. Some browsers block cross-site cookies, which can lead to this issue.
 
 To resolve this issue, set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
@@ -296,7 +300,7 @@ To resolve this issue on GitLab self-managed, follow one of the solutions below,
 - If you [installed the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually):
 
   - In GitLab 14.9 and later:
-    - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your namespace.
+    - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your group.
   - In all GitLab versions:
     - Re-install the GitLab for Jira Cloud app. This method might remove all synced data from the Jira development panel.
 

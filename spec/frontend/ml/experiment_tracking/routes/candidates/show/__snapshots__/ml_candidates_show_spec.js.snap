@@ -62,6 +62,20 @@ exports[`MlCandidatesShow renders correctly 1`] = `
         <td
           class="gl-font-weight-bold"
         >
+          MLflow run ID
+        </td>
+         
+        <td>
+          abcdefg
+        </td>
+      </tr>
+       
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
           Status
         </td>
          

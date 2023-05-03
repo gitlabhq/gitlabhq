@@ -22,6 +22,7 @@ describe('MlCandidatesShow', () => {
       ],
       info: {
         iid: 'candidate_iid',
+        eid: 'abcdefg',
         path_to_artifact: 'path_to_artifact',
         experiment_name: 'The Experiment',
         experiment_path: 'path/to/experiment',

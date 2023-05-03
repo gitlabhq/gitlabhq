@@ -12,6 +12,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
@@ -45,6 +46,7 @@ describe('DependencyProxyApp', () => {
     groupId: dummyGrouptId,
     noManifestsIllustration: 'noManifestsIllustration',
     canClearCache: true,
+    settingsPath: 'path',
   };
 
   function createComponent({ provide = provideDefaults } = {}) {
@@ -65,6 +67,9 @@ describe('DependencyProxyApp', () => {
         GlSprintf,
         TitleArea,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   }
 
@@ -77,6 +82,7 @@ describe('DependencyProxyApp', () => {
   const findClearCacheDropdownList = () => wrapper.findComponent(GlDropdown);
   const findClearCacheModal = () => wrapper.findComponent(GlModal);
   const findClearCacheAlert = () => wrapper.findComponent(GlAlert);
+  const findSettingsLink = () => wrapper.findByTestId('settings-link');
 
   beforeEach(() => {
     resolver = jest.fn().mockResolvedValue(proxyDetailsQuery());
@@ -131,6 +137,29 @@ describe('DependencyProxyApp', () => {
 
         it('form group has a description with proxy count', () => {
           expect(findProxyCountText().text()).toBe('Contains 2 blobs of images (1024 Bytes)');
+        });
+
+        describe('link to settings', () => {
+          it('is rendered', () => {
+            expect(findSettingsLink().exists()).toBe(true);
+          });
+
+          it('has the right icon', () => {
+            expect(findSettingsLink().props('icon')).toBe('settings');
+          });
+
+          it('has the right attributes', () => {
+            expect(findSettingsLink().attributes()).toMatchObject({
+              'aria-label': DependencyProxyApp.i18n.settingsText,
+              href: 'path',
+            });
+          });
+
+          it('sets tooltip with right label', () => {
+            const tooltip = getBinding(findSettingsLink().element, 'gl-tooltip');
+
+            expect(tooltip.value).toBe(DependencyProxyApp.i18n.settingsText);
+          });
         });
 
         describe('manifest lists', () => {
@@ -237,9 +266,7 @@ describe('DependencyProxyApp', () => {
               beforeEach(() => {
                 createComponent({
                   provide: {
-                    groupPath: 'gitlab-org',
-                    groupId: dummyGrouptId,
-                    noManifestsIllustration: 'noManifestsIllustration',
+                    ...provideDefaults,
                     canClearCache: false,
                   },
                 });
@@ -247,6 +274,10 @@ describe('DependencyProxyApp', () => {
 
               it('does not show the clear cache dropdown list', () => {
                 expect(findClearCacheDropdownList().exists()).toBe(false);
+              });
+
+              it('does not show link to settings', () => {
+                expect(findSettingsLink().exists()).toBe(false);
               });
             });
           });

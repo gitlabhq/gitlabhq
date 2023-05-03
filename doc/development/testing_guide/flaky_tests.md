@@ -81,6 +81,11 @@ difficult to achieve locally.
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
   start to fail.
+- [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/402915): State leakage can result from
+  data records created with `let_it_be` shared between test examples, while some test modifies the model
+  either deliberately or unwillingly causing out-of-sync data in test examples. This can result in `PG::QueryCanceled: ERROR` in the subsequent test examples or retries.
+  For more information about state leakages and resolution options,
+  see [GitLab testing best practices](best_practices.md#lets-talk-about-let).
 
 ### Random input
 

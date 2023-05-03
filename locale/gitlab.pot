@@ -11962,6 +11962,9 @@ msgstr ""
 msgid "ContainerRegistry|You can add an image to this registry with the following commands:"
 msgstr ""
 
+msgid "Containers"
+msgstr ""
+
 msgid "Content"
 msgstr ""
 
@@ -14578,6 +14581,9 @@ msgid "DependencyProxy|Clear cache"
 msgstr ""
 
 msgid "DependencyProxy|Clear the Dependency Proxy cache automatically"
+msgstr ""
+
+msgid "DependencyProxy|Configure in settings"
 msgstr ""
 
 msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
@@ -28690,6 +28696,9 @@ msgstr ""
 msgid "MlExperimentTracking|Logged candidates for experiment"
 msgstr ""
 
+msgid "MlExperimentTracking|MLflow run ID"
+msgstr ""
+
 msgid "MlExperimentTracking|Machine learning experiment tracking"
 msgstr ""
 
@@ -38939,6 +38948,9 @@ msgstr ""
 msgid "Runners|Select your preferred runner, then choose the capacity for the runner in the AWS CloudFormation console."
 msgstr ""
 
+msgid "Runners|Shared runners are disabled in the group settings"
+msgstr ""
+
 msgid "Runners|Show only inherited"
 msgstr ""
 
@@ -41522,9 +41534,6 @@ msgid "Shared runners"
 msgstr ""
 
 msgid "Shared runners are disabled for the parent group"
-msgstr ""
-
-msgid "Shared runners are disabled on group level"
 msgstr ""
 
 msgid "Shared runners details"
