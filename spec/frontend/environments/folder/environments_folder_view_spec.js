@@ -123,22 +123,4 @@ describe('Environments Folder View', () => {
       expect(tabTable.find('.badge').text()).toContain('0');
     });
   });
-
-  describe('methods', () => {
-    beforeEach(() => {
-      mockEnvironments([]);
-      createWrapper();
-      jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
-      return axios.waitForAll();
-    });
-
-    describe('updateContent', () => {
-      it('should set given parameters', () =>
-        wrapper.vm.updateContent({ scope: 'stopped', page: '4' }).then(() => {
-          expect(wrapper.vm.page).toEqual('4');
-          expect(wrapper.vm.scope).toEqual('stopped');
-          expect(wrapper.vm.requestData.page).toEqual('4');
-        }));
-    });
-  });
 });

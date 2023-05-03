@@ -30,18 +30,13 @@ export const DORA_METRICS = {
   CHANGE_FAILURE_RATE: 'change_failure_rate',
 };
 
-export const VSA_METRICS_GROUPS = [
-  {
-    key: 'key_metrics',
-    title: s__('ValueStreamAnalytics|Key metrics'),
-    keys: Object.values(KEY_METRICS),
-  },
-  {
-    key: 'dora_metrics',
-    title: s__('ValueStreamAnalytics|DORA metrics'),
-    keys: Object.values(DORA_METRICS),
-  },
-];
+const VSA_FLOW_METRICS_GROUP = {
+  key: 'key_metrics',
+  title: s__('ValueStreamAnalytics|Key metrics'),
+  keys: Object.values(KEY_METRICS),
+};
+
+export const VSA_METRICS_GROUPS = [VSA_FLOW_METRICS_GROUP];
 
 export const METRIC_TOOLTIPS = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {

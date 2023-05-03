@@ -2,7 +2,6 @@
 import {
   GlButton,
   GlFormInput,
-  GlLink,
   GlLoadingIcon,
   GlBadge,
   GlAlert,
@@ -10,7 +9,6 @@ import {
   GlDropdown,
   GlDropdownItem,
   GlDropdownDivider,
-  GlIcon,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_WARNING } from '~/alert';
@@ -18,16 +16,11 @@ import { __, sprintf, n__ } from '~/locale';
 import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
-import TrackEventDirective from '~/vue_shared/directives/track_event';
 import query from '../queries/details.query.graphql';
-import {
-  trackClickErrorLinkToSentryOptions,
-  trackErrorDetailsViewsOptions,
-  trackErrorStatusUpdateOptions,
-} from '../utils';
-
+import { trackErrorDetailsViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
 import { severityLevel, severityLevelVariant, errorStatus } from '../constants';
 import Stacktrace from './stacktrace.vue';
+import ErrorDetailsInfo from './error_details_info.vue';
 
 const SENTRY_TIMEOUT = 10000;
 
@@ -35,10 +28,8 @@ export default {
   components: {
     GlButton,
     GlFormInput,
-    GlLink,
     GlLoadingIcon,
     TooltipOnTruncate,
-    GlIcon,
     Stacktrace,
     GlBadge,
     GlAlert,
@@ -47,9 +38,7 @@ export default {
     GlDropdownItem,
     GlDropdownDivider,
     TimeAgoTooltip,
-  },
-  directives: {
-    TrackEvent: TrackEventDirective,
+    ErrorDetailsInfo,
   },
   props: {
     issueUpdatePath: {
@@ -122,18 +111,7 @@ export default {
       'errorStatus',
     ]),
     ...mapGetters('details', ['stacktrace']),
-    firstReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseVersion}`;
-    },
-    lastReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseVersion}`;
-    },
-    firstCommitLink() {
-      return `${this.error.externalBaseUrl}/-/commit/${this.error.firstReleaseVersion}`;
-    },
-    lastCommitLink() {
-      return `${this.error.externalBaseUrl}/-/commit/${this.error.lastReleaseVersion}`;
-    },
+
     showStacktrace() {
       return Boolean(this.stacktrace?.length);
     },
@@ -204,7 +182,6 @@ export default {
       'updateResolveStatus',
       'updateIgnoreStatus',
     ]),
-    trackClickErrorLinkToSentryOptions,
     createIssue() {
       this.issueCreationInProgress = true;
       this.$refs.sentryIssueForm.submit();
@@ -257,6 +234,7 @@ export default {
     <div v-if="errorLoading" class="py-3">
       <gl-loading-icon size="lg" />
     </div>
+
     <div v-else-if="error" class="error-details">
       <gl-alert v-if="isAlertVisible" @dismiss="isAlertVisible = false">
         <gl-sprintf
@@ -386,60 +364,8 @@ export default {
           </gl-badge>
           <gl-badge v-if="error.tags.logger" variant="muted">{{ error.tags.logger }} </gl-badge>
         </template>
-        <ul>
-          <li v-if="error.gitlabCommit">
-            <strong class="bold">{{ __('GitLab commit') }}:</strong>
-            <gl-link :href="error.gitlabCommitPath">
-              <span>{{ error.gitlabCommit.substr(0, 10) }}</span>
-            </gl-link>
-          </li>
-          <li v-if="error.gitlabIssuePath">
-            <strong class="bold">{{ __('GitLab Issue') }}:</strong>
-            <gl-link :href="error.gitlabIssuePath">
-              <span>{{ error.gitlabIssuePath }}</span>
-            </gl-link>
-          </li>
-          <li v-if="!error.integrated">
-            <strong class="bold">{{ __('Sentry event') }}:</strong>
-            <gl-link
-              v-track-event="trackClickErrorLinkToSentryOptions(error.externalUrl)"
-              :href="error.externalUrl"
-              target="_blank"
-              data-testid="external-url-link"
-            >
-              <span class="text-truncate">{{ error.externalUrl }}</span>
-              <gl-icon name="external-link" class="ml-1 flex-shrink-0" />
-            </gl-link>
-          </li>
-          <li v-if="error.firstReleaseVersion">
-            <strong class="bold">{{ __('First seen') }}:</strong>
-            <time-ago-tooltip :time="error.firstSeen" />
-            <gl-link v-if="error.integrated" :href="firstCommitLink">
-              {{ __('GitLab commit') }}: {{ error.firstReleaseVersion }}
-            </gl-link>
-            <gl-link v-else :href="firstReleaseLink" target="_blank">
-              {{ __('Release') }}: {{ error.firstReleaseVersion }}
-            </gl-link>
-          </li>
-          <li v-if="error.lastReleaseVersion">
-            <strong class="bold">{{ __('Last seen') }}:</strong>
-            <time-ago-tooltip :time="error.lastSeen" />
-            <gl-link v-if="error.integrated" :href="lastCommitLink">
-              {{ __('GitLab commit') }}: {{ error.lastReleaseVersion }}
-            </gl-link>
-            <gl-link v-else :href="lastReleaseLink" target="_blank">
-              {{ __('Release') }}: {{ error.lastReleaseVersion }}
-            </gl-link>
-          </li>
-          <li>
-            <strong class="bold">{{ __('Events') }}:</strong>
-            <span>{{ error.count }}</span>
-          </li>
-          <li>
-            <strong class="bold">{{ __('Users') }}:</strong>
-            <span>{{ error.userCount }}</span>
-          </li>
-        </ul>
+
+        <error-details-info :error="error" />
 
         <div v-if="loadingStacktrace" class="py-3">
           <gl-loading-icon size="lg" />

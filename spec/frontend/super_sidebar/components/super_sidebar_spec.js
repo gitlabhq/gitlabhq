@@ -6,6 +6,7 @@ import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
+import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import {
   SUPER_SIDEBAR_PEEK_OPEN_DELAY,
   SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
@@ -15,7 +16,7 @@ import {
   isCollapsed,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import { stubComponent } from 'helpers/stub_component';
-import { sidebarData } from '../mock_data';
+import { sidebarData as mockSidebarData } from '../mock_data';
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
 const closeContextSwitcherMock = jest.fn();
@@ -39,8 +40,13 @@ describe('SuperSidebar component', () => {
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
+  const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
 
-  const createWrapper = ({ provide = {}, sidebarState = {} } = {}) => {
+  const createWrapper = ({
+    provide = {},
+    sidebarData = mockSidebarData,
+    sidebarState = {},
+  } = {}) => {
     wrapper = shallowMountExtended(SuperSidebar, {
       data() {
         return {
@@ -77,12 +83,26 @@ describe('SuperSidebar component', () => {
 
     it('renders UserBar with sidebarData', () => {
       createWrapper();
-      expect(findUserBar().props('sidebarData')).toBe(sidebarData);
+      expect(findUserBar().props('sidebarData')).toBe(mockSidebarData);
     });
 
     it('renders HelpCenter with sidebarData', () => {
       createWrapper();
-      expect(findHelpCenter().props('sidebarData')).toBe(sidebarData);
+      expect(findHelpCenter().props('sidebarData')).toBe(mockSidebarData);
+    });
+
+    it('does not render SidebarMenu when items are empty', () => {
+      createWrapper();
+      expect(findSidebarMenu().exists()).toBe(false);
+    });
+
+    it('renders SidebarMenu with menu items', () => {
+      const menuItems = [
+        { id: 1, title: 'Menu item 1' },
+        { id: 2, title: 'Menu item 2' },
+      ];
+      createWrapper({ sidebarData: { ...mockSidebarData, current_menu_items: menuItems } });
+      expect(findSidebarMenu().props('items')).toBe(menuItems);
     });
 
     it('renders SidebarPortalTarget', () => {
@@ -98,7 +118,7 @@ describe('SuperSidebar component', () => {
 
     it('renders hidden shortcut links', () => {
       createWrapper();
-      const [linkAttrs] = sidebarData.shortcut_links;
+      const [linkAttrs] = mockSidebarData.shortcut_links;
       const link = wrapper.find(`.${linkAttrs.css_class}`);
 
       expect(link.exists()).toBe(true);

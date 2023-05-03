@@ -13,8 +13,8 @@ import Vuex from 'vuex';
 import { severityLevel, severityLevelVariant, errorStatus } from '~/error_tracking/constants';
 import ErrorDetails from '~/error_tracking/components/error_details.vue';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
+import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue';
 import {
-  trackClickErrorLinkToSentryOptions,
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
 } from '~/error_tracking/utils';
@@ -45,7 +45,6 @@ describe('ErrorDetails', () => {
     wrapper.find('[data-testid="update-ignore-status-btn"]');
   const findUpdateResolveStatusButton = () =>
     wrapper.find('[data-testid="update-resolve-status-btn"]');
-  const findExternalUrl = () => wrapper.find('[data-testid="external-url-link"]');
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   function mountComponent() {
@@ -187,14 +186,6 @@ describe('ErrorDetails', () => {
       });
     });
 
-    it('should show Sentry error details without stacktrace', () => {
-      expect(wrapper.findComponent(GlLink).exists()).toBe(true);
-      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.findComponent(Stacktrace).exists()).toBe(false);
-      expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
-      expect(wrapper.findAllComponents(GlButton)).toHaveLength(3);
-    });
-
     describe('unsafe chars for culprit field', () => {
       const findReportedText = () => wrapper.find('[data-qa-selector="reported_text"]');
       const culprit = '<script>console.log("surprise!")</script>';
@@ -273,6 +264,16 @@ describe('ErrorDetails', () => {
         expect(wrapper.findComponent(GlBadge).props('variant')).toEqual(
           severityLevelVariant[severityLevel.ERROR],
         );
+      });
+    });
+
+    describe('ErrorDetailsInfo', () => {
+      it('should show ErrorDetailsInfo', async () => {
+        store.state.details.loadingStacktrace = false;
+        await nextTick();
+        expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+        expect(wrapper.findComponent(ErrorDetailsInfo).exists()).toBe(true);
+        expect(findAlert().exists()).toBe(false);
       });
     });
 
@@ -477,91 +478,6 @@ describe('ErrorDetails', () => {
         });
       });
     });
-
-    describe('GitLab commit link', () => {
-      const gitlabCommit = '7975be0116940bf2ad4321f79d02a55c5f7779aa';
-      const gitlabCommitPath =
-        '/gitlab-org/gitlab-test/commit/7975be0116940bf2ad4321f79d02a55c5f7779aa';
-      const findGitLabCommitLink = () => wrapper.find(`[href$="${gitlabCommitPath}"]`);
-
-      it('should display a link', async () => {
-        mocks.$apollo.queries.error.loading = false;
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            gitlabCommit,
-            gitlabCommitPath,
-          },
-        });
-        await nextTick();
-        expect(findGitLabCommitLink().exists()).toBe(true);
-      });
-
-      it('should not display a link', async () => {
-        mocks.$apollo.queries.error.loading = false;
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        wrapper.setData({
-          error: {
-            gitlabCommit: null,
-          },
-        });
-        await nextTick();
-        expect(findGitLabCommitLink().exists()).toBe(false);
-      });
-    });
-
-    describe('Release links', () => {
-      const firstReleaseVersion = '7975be01';
-      const firstCommitLink = '/gitlab/-/commit/7975be01';
-      const firstReleaseLink = '/sentry/releases/7975be01';
-      const findFirstCommitLink = () => wrapper.find(`[href$="${firstCommitLink}"]`);
-      const findFirstReleaseLink = () => wrapper.find(`[href$="${firstReleaseLink}"]`);
-
-      const lastReleaseVersion = '6ca5a5c1';
-      const lastCommitLink = '/gitlab/-/commit/6ca5a5c1';
-      const lastReleaseLink = '/sentry/releases/6ca5a5c1';
-      const findLastCommitLink = () => wrapper.find(`[href$="${lastCommitLink}"]`);
-      const findLastReleaseLink = () => wrapper.find(`[href$="${lastReleaseLink}"]`);
-
-      it('should display links to Sentry', async () => {
-        mocks.$apollo.queries.error.loading = false;
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        await wrapper.setData({
-          error: {
-            firstReleaseVersion,
-            lastReleaseVersion,
-            externalBaseUrl: '/sentry',
-          },
-        });
-
-        expect(findFirstReleaseLink().exists()).toBe(true);
-        expect(findLastReleaseLink().exists()).toBe(true);
-        expect(findFirstCommitLink().exists()).toBe(false);
-        expect(findLastCommitLink().exists()).toBe(false);
-      });
-
-      it('should display links to GitLab when integrated', async () => {
-        mocks.$apollo.queries.error.loading = false;
-        // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-        // eslint-disable-next-line no-restricted-syntax
-        await wrapper.setData({
-          error: {
-            firstReleaseVersion,
-            lastReleaseVersion,
-            integrated: true,
-            externalBaseUrl: '/gitlab',
-          },
-        });
-
-        expect(findFirstCommitLink().exists()).toBe(true);
-        expect(findLastCommitLink().exists()).toBe(true);
-        expect(findFirstReleaseLink().exists()).toBe(false);
-        expect(findLastReleaseLink().exists()).toBe(false);
-      });
-    });
   });
 
   describe('Snowplow tracking', () => {
@@ -593,13 +509,6 @@ describe('ErrorDetails', () => {
       await findUpdateResolveStatusButton().trigger('click');
       const { category, action } = trackErrorStatusUpdateOptions('resolved');
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
-    });
-
-    it('should track external Sentry link views', async () => {
-      Tracking.event.mockClear();
-      await findExternalUrl().trigger('click');
-      const { category, action, label, property } = trackClickErrorLinkToSentryOptions(externalUrl);
-      expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property });
     });
   });
 });

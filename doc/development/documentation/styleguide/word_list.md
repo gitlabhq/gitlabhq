@@ -280,7 +280,7 @@ CI/CD is always uppercase. No need to spell it out on first use.
 
 ## CI/CD minutes
 
-Do not use **CI/CD minutes**. This term was renamed to [**compute credits**](#compute-credits).
+Do not use **CI/CD minutes**. This term was renamed to [**units of compute**](#units-of-compute).
 
 ## click
 
@@ -303,19 +303,6 @@ Use **collapse** instead of **close** when you are talking about expanding or co
 Use **From the command line** to introduce commands.
 
 Hyphenate when using as an adjective. For example, **a command-line tool**.
-
-## compute credits
-
-Use **compute credits** instead of these (or similar) terms:
-
-- **CI/CD minutes**
-- **CI minutes**
-- **pipeline minutes**
-- **CI pipeline minutes**
-- **pipeline minutes quota**
-
-This language is still being standardized in the documentation and UI beginning in March, 2023.
-For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## confirmation dialog
 
@@ -1456,6 +1443,19 @@ See also [**enter**](#enter).
 ## Ultimate
 
 Use **Ultimate**, in uppercase, for the subscription tier.
+
+## units of compute
+
+Use **units of compute** instead of these (or similar) terms:
+
+- **CI/CD minutes**
+- **CI minutes**
+- **pipeline minutes**
+- **CI pipeline minutes**
+- **pipeline minutes quota**
+
+This language is still being standardized in the documentation and UI beginning in March, 2023.
+For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
 
 ## units of measurement
 

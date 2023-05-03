@@ -44,8 +44,8 @@ For more assistance, use the `#database` Slack channel.
 NOTE:
 If you need only temporary access to a production replica, instead of a Database Lab
 clone, follow the runbook procedure for connecting to the
-[database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Database_Console_via_Teleport.md).
-This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
+[database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
+This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
 
 ### Query testing
 
@@ -95,7 +95,7 @@ Caveats:
   [`ci_builds`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/docs/ci_builds.yml#L14),
   use `gitlab-production-ci`.
 - Database Lab typically has a small delay of a few hours. If more up-to-date information
-  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Database_Console_via_Teleport.md)
+  is required, you can instead request access to a replica [via Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md)
 
 For example: `\d index_design_management_designs_on_project_id` produces:
 

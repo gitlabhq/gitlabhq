@@ -1,6 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import $ from 'jquery';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
 import { parseUrlPathname } from '~/lib/utils/url_utility';
@@ -15,6 +17,12 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __, s__ } from './locale';
 import syntaxHighlight from './syntax_highlight';
+
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 // MergeRequestTabs
 //
@@ -94,10 +102,13 @@ function mountPipelines() {
     components: {
       CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
     },
+    apolloProvider,
     provide: {
       artifactsEndpoint: pipelineTableViewEl.dataset.artifactsEndpoint,
       artifactsEndpointPlaceholder: pipelineTableViewEl.dataset.artifactsEndpointPlaceholder,
       targetProjectFullPath: mrWidgetData?.target_project_full_path || '',
+      fullPath: pipelineTableViewEl.dataset.fullPath,
+      manualActionsLimit: 50,
     },
     render(createElement) {
       return createElement('commit-pipelines-table', {

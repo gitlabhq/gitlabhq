@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue renders given data 1`] = `
-"<div class=\\"gl-w-full gl-display-flex gl-border-t gl-py-3 gl-pl-7 gl-align-items-baseline\\">
+"<div class=\\"gl-display-flex gl-border-t gl-py-3 gl-pl-7 gl-align-items-baseline\\">
   <!---->
-  <div class=\\"gl-w-full\\">
+  <div class=\\"gl-w-full gl-min-w-0\\">
     <div class=\\"gl-display-flex\\">
       <div class=\\"gl-mb-2\\"><strong class=\\"gl-display-block\\">This is a header</strong><span class=\\"gl-display-block\\">This is a subheader</span></div>
       <div class=\\"gl-ml-auto gl-display-flex gl-align-items-baseline\\">
@@ -14,7 +14,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         <!---->
       </div>
     </div>
-    <div class=\\"gl-display-flex gl-align-items-baseline gl-w-full\\">
+    <div class=\\"gl-display-flex gl-align-items-baseline\\">
       <status-icon-stub level=\\"2\\" name=\\"MyWidget\\" iconname=\\"success\\"></status-icon-stub>
       <div class=\\"gl-display-flex gl-flex-direction-column\\">
         <div>
@@ -29,16 +29,16 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         </div>
         <ul class=\\"gl-m-0 gl-p-0 gl-list-style-none\\">
           <li>
-            <div class=\\"gl-w-full gl-display-flex gl-align-items-center\\" data-qa-selector=\\"child_content\\">
+            <div class=\\"gl-display-flex gl-align-items-center\\" data-qa-selector=\\"child_content\\">
               <!---->
-              <div class=\\"gl-w-full\\">
+              <div class=\\"gl-w-full gl-min-w-0\\">
                 <div class=\\"gl-display-flex\\">
                   <div class=\\"gl-mb-2\\"><strong class=\\"gl-display-block\\">Child row header</strong>
                     <!---->
                   </div>
                   <!---->
                 </div>
-                <div class=\\"gl-display-flex gl-align-items-baseline gl-w-full\\">
+                <div class=\\"gl-display-flex gl-align-items-baseline\\">
                   <!---->
                   <div class=\\"gl-display-flex gl-flex-direction-column\\">
                     <div>

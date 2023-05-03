@@ -47,7 +47,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'displays metrics with relevant values' do
-        expect(metrics_values).to eq(['-'] * 4)
+        expect(metrics_values).to eq(['-'] * 3)
       end
 
       it 'shows active stage with empty message' do
@@ -98,7 +98,6 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         aggregate_failures 'with relevant values' do
           expect(metrics_tiles).to have_content('Commit')
           expect(metrics_tiles).to have_content('Deploy')
-          expect(metrics_tiles).to have_content('Deployment Frequency')
           expect(metrics_tiles).to have_content('New Issue')
         end
       end
@@ -132,11 +131,11 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       end
 
       it 'can filter the metrics by date' do
-        expect(metrics_values).to match_array(%w[21 2 1 0])
+        expect(metrics_values).to match_array(%w[21 2 1])
 
         set_daterange(from, to)
 
-        expect(metrics_values).to eq(['-'] * 4)
+        expect(metrics_values).to eq(['-'] * 3)
       end
 
       it 'can sort records', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338332' do

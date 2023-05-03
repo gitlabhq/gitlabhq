@@ -37,9 +37,19 @@ Do not include links to related tasks. The navigation provides links to tasks.
 
 ## Concept topic titles
 
-For the title text, use a noun. For example, `Widgets` or `GDK dependency management`.
+For the title text, use a noun. For example:
 
-If a noun is ambiguous, you can add a gerund. For example, `Documenting versions` instead of `Versions`.
+- `Widgets`
+- `GDK dependency management`
+
+If you need more descriptive words, use the `ion` version of the word, rather than `ing`. For example:
+
+- `Object migration` instead of `Migrating objects` or `Migrate objects`
+
+Words that end in `ing` are hard to translate and take up more space, and active verbs are used for task topics.
+For details, see [the Google style guide](https://developers.google.com/style/headings#heading-and-title-text).
+
+### Titles to avoid
 
 Avoid these topic titles:
 

@@ -79,7 +79,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-display-flex"
+    class="gl-display-flex"
     :class="{
       'gl-border-t gl-py-3 gl-pl-7 gl-align-items-baseline': level === 2,
       'gl-align-items-center': level === 3,
@@ -91,7 +91,7 @@ export default {
       :name="widgetName"
       :icon-name="statusIconName"
     />
-    <div class="gl-w-full">
+    <div class="gl-w-full gl-min-w-0">
       <div class="gl-display-flex">
         <slot name="header">
           <div v-if="header" class="gl-mb-2">
@@ -135,7 +135,7 @@ export default {
           />
         </div>
       </div>
-      <div class="gl-display-flex gl-align-items-baseline gl-w-full">
+      <div class="gl-display-flex gl-align-items-baseline">
         <status-icon
           v-if="statusIconName && header"
           :level="2"

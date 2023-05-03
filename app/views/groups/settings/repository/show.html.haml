@@ -1,5 +1,6 @@
 - breadcrumb_title _('Repository Settings')
 - page_title _('Repository')
+- @force_desktop_expanded_sidebar = true
 
 - if can?(current_user, :admin_group, @group)
   - deploy_token_description = s_('DeployTokens|Group deploy tokens allow access to the packages, repositories, and registry images within the group.')

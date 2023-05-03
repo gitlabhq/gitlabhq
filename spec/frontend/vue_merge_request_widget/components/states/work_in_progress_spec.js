@@ -23,7 +23,7 @@ const TEST_MR_TITLE = 'Test MR Title';
 const TEST_PROJECT_PATH = 'lorem/ipsum';
 
 jest.mock('~/alert');
-jest.mock('~/merge_request');
+jest.mock('~/merge_request', () => ({ toggleDraftStatus: jest.fn() }));
 
 describe('~/vue_merge_request_widget/components/states/work_in_progress.vue', () => {
   let wrapper;

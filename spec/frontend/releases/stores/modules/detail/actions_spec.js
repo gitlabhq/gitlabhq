@@ -13,17 +13,12 @@ import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.m
 import * as actions from '~/releases/stores/modules/edit_new/actions';
 import * as types from '~/releases/stores/modules/edit_new/mutation_types';
 import createState from '~/releases/stores/modules/edit_new/state';
-import {
-  gqClient,
-  convertOneReleaseGraphQLResponse,
-  deleteReleaseSessionKey,
-} from '~/releases/util';
+import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+import { deleteReleaseSessionKey } from '~/releases/release_notification_service';
 
 jest.mock('~/api/tags_api');
 
 jest.mock('~/alert');
-
-jest.mock('~/releases/release_notification_service');
 
 jest.mock('~/lib/utils/url_utility', () => ({
   redirectTo: jest.fn(),

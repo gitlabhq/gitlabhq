@@ -1310,9 +1310,29 @@ they apply to multiple type of specs.
 #### `be_like_time`
 
 Time returned from a database can differ in precision from time objects
-in Ruby, so we need flexible tolerances when comparing in specs. We can
-use `be_like_time` to compare that times are within one second of each
-other.
+in Ruby, so we need flexible tolerances when comparing in specs.
+
+The PostgreSQL time and timestamp types
+have [the resolution of 1 microsecond](https://www.postgresql.org/docs/current/datatype-datetime.html).
+However, the precision of Ruby `Time` can vary [depending on the OS.](https://blog.paulswartz.net/post/142749676062/ruby-time-precision-os-x-vs-linux)
+
+Consider the following snippet:
+
+```ruby
+project = create(:project)
+
+expect(project.created_at).to eq(Project.find(project.id).created_at)
+```
+
+On Linux, `Time` can have the maximum precision of 9 and
+`project.created_at` has a value (like `2023-04-28 05:53:30.808033064`) with the same precision.
+However, the actual value `created_at` (like `2023-04-28 05:53:30.808033`) stored to and loaded from the database
+doesn't have the same precision, and the match would fail.
+On macOS X, the precision of `Time` matches that of the PostgreSQL timestamp type
+ and the match could succeed.
+
+To avoid the issue, we can use `be_like_time` or `be_within` to compare
+that times are within one second of each other.
 
 Example:
 

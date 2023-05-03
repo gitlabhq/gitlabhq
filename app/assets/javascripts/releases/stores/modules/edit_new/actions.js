@@ -8,11 +8,8 @@ import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_
 import deleteReleaseAssetLinkMutation from '~/releases/graphql/mutations/delete_release_link.mutation.graphql';
 import updateReleaseMutation from '~/releases/graphql/mutations/update_release.mutation.graphql';
 import oneReleaseForEditingQuery from '~/releases/graphql/queries/one_release_for_editing.query.graphql';
-import {
-  gqClient,
-  convertOneReleaseGraphQLResponse,
-  deleteReleaseSessionKey,
-} from '~/releases/util';
+import { gqClient, convertOneReleaseGraphQLResponse } from '~/releases/util';
+import { putDeleteReleaseNotification } from '~/releases/release_notification_service';
 
 import * as types from './mutation_types';
 
@@ -261,10 +258,7 @@ export const deleteRelease = ({ commit, getters, dispatch, state }) => {
     })
     .then((response) => checkForErrorsAsData(response, 'releaseDelete'))
     .then(() => {
-      window.sessionStorage.setItem(
-        deleteReleaseSessionKey(state.projectPath),
-        state.originalRelease.name,
-      );
+      putDeleteReleaseNotification(state.projectPath, state.originalRelease.name);
       return dispatch('receiveSaveReleaseSuccess', state.releasesPagePath);
     })
     .catch((error) => {

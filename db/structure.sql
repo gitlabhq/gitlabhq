@@ -30482,8 +30482,6 @@ CREATE INDEX index_container_repositories_on_greatest_completed_at ON container_
 
 CREATE INDEX index_container_repositories_on_migration_state_import_done_at ON container_repositories USING btree (migration_state, migration_import_done_at);
 
-CREATE INDEX index_container_repositories_on_project_id ON container_repositories USING btree (project_id);
-
 CREATE INDEX index_container_repositories_on_project_id_and_id ON container_repositories USING btree (project_id, id);
 
 CREATE UNIQUE INDEX index_container_repositories_on_project_id_and_name ON container_repositories USING btree (project_id, name);

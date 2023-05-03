@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397011
 milestone: '15.11'
 type: development
 group: group::security policies
-default_enabled: false
+default_enabled: true

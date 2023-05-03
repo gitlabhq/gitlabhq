@@ -8,7 +8,7 @@ type: reference
 # CI/CD minutes quota **(PREMIUM)**
 
 NOTE:
-The term `CI/CD minutes` is being renamed to `compute credits`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, and `compute credits`. For more information, see [issue 5218](https://gitlab.com/gitlab-com/Product/-/issues/5218).
+The term `CI/CD minutes` is being renamed to `units of compute`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, and `units of compute`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
 Administrators can limit the amount of time that projects can use to run jobs on
 [shared runners](../runners/runners_scope.md#shared-runners) each month. This limit

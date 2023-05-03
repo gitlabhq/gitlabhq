@@ -15,27 +15,40 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
     context 'with pipelines' do
       let!(:pipeline) do
-        create(:ci_empty_pipeline,
+        create(:ci_pipeline,
+               :success,
                project: merge_request.source_project,
                ref: merge_request.source_branch,
                sha: merge_request.diff_head_sha)
       end
 
+      let!(:manual_job) { create(:ci_build, :manual, name: 'job1', stage: 'deploy', pipeline: pipeline) }
+
+      let!(:job) { create(:ci_build, :success, name: 'job2', stage: 'test', pipeline: pipeline) }
+
       before do
         merge_request.update_attribute(:head_pipeline_id, pipeline.id)
       end
 
-      it 'user visits merge request pipelines tab' do
+      it 'pipelines table displays correctly' do
         visit project_merge_request_path(project, merge_request)
 
-        expect(page.find('.ci-widget')).to have_content('pending')
+        expect(page.find('.ci-widget')).to have_content('passed')
 
         page.within('.merge-request-tabs') do
           click_link('Pipelines')
         end
+
         wait_for_requests
 
-        expect(page).to have_css('[data-testid="pipeline-mini-graph"]')
+        page.within('[data-testid="pipeline-table-row"]') do
+          expect(page).to have_selector('.ci-success')
+          expect(page).to have_content(pipeline.id)
+          expect(page).to have_content('API')
+          expect(page).to have_css('[data-testid="pipeline-mini-graph"]')
+          expect(page).to have_css('[data-testid="pipelines-manual-actions-dropdown"]')
+          expect(page).to have_css('[data-testid="pipeline-multi-actions-dropdown"]')
+        end
       end
 
       context 'with a detached merge request pipeline' do

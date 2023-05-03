@@ -405,8 +405,8 @@ To generate Service Ping, use [Teleport](https://goteleport.com/docs/) or a deta
 
 #### Trigger Service Ping with Teleport
 
-1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
-1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
+1. Request temporary [access](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to the required environment.
+1. After your approval is issued, [access the Rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#access-approval).
 1. Run `GitlabServicePingWorker.new.perform('triggered_from_cron' => false)`.
 
 #### Trigger Service Ping with a detached screen session
@@ -450,7 +450,7 @@ Search in Google Console logs for `time_elapsed`. [Query example](https://cloudl
 
 #### Verify with Teleport
 
-1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/Teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
+1. Follow [the steps](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console) to request a new access to the required environment and connect to the Rails console
 1. Check the last payload in `raw_usage_data` table: `RawUsageData.last.payload`
 1. Check the when the payload was sent: `RawUsageData.last.sent_at`
 

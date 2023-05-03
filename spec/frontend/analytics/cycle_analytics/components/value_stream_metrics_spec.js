@@ -168,7 +168,10 @@ describe('ValueStreamMetrics', () => {
 
   describe('Value Streams Dashboard Link', () => {
     it('will render when a dashboardsPath is set', async () => {
-      wrapper = createComponent({ groupBy: VSA_METRICS_GROUPS, dashboardsPath: 'fake-group-path' });
+      wrapper = createComponent({
+        groupBy: VSA_METRICS_GROUPS,
+        dashboardsPath: 'fake-group-path',
+      });
       await waitForPromises();
 
       const vsdLink = findVSDLink();

@@ -250,34 +250,6 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
     end
   end
 
-  describe '.noteable_update_service_class' do
-    include_context 'note on noteable'
-
-    it 'returns WorkItems::UpdateService for a note on a work item' do
-      note = create(:note_on_work_item, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(WorkItems::UpdateService)
-    end
-
-    it 'returns Issues::UpdateService for a note on an issue' do
-      note = create(:note_on_issue, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(Issues::UpdateService)
-    end
-
-    it 'returns MergeRequests::UpdateService for a note on a merge request' do
-      note = create(:note_on_merge_request, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(MergeRequests::UpdateService)
-    end
-
-    it 'returns Commits::TagService for a note on a commit' do
-      note = create(:note_on_commit, project: project)
-
-      expect(described_class.noteable_update_service_class(note)).to eq(Commits::TagService)
-    end
-  end
-
   describe '.supported?' do
     include_context 'note on noteable'
 

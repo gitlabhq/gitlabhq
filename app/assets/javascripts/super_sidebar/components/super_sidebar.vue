@@ -154,6 +154,7 @@ export default {
             @toggle="onContextSwitcherToggled"
           />
           <sidebar-menu
+            v-if="menuItems.length"
             :items="menuItems"
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"

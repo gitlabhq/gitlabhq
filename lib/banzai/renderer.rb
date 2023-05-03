@@ -21,10 +21,8 @@ module Banzai
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
       if cache_key
-        Gitlab::Metrics.measure(:banzai_cached_render) do
-          Rails.cache.fetch(cache_key) do
-            cacheless_render(text, context)
-          end
+        Rails.cache.fetch(cache_key) do
+          cacheless_render(text, context)
         end
       else
         cacheless_render(text, context)
@@ -160,40 +158,14 @@ module Banzai
     def self.cacheless_render(text, context = {})
       return text.to_s unless text.present?
 
-      real_start = Gitlab::Metrics::System.monotonic_time
-      cpu_start = Gitlab::Metrics::System.cpu_time
-
       result = render_result(text, context)
 
       output = result[:output]
-      rendered = if output.respond_to?(:to_html)
-                   output.to_html
-                 else
-                   output.to_s
-                 end
-
-      cpu_duration_histogram.observe({}, Gitlab::Metrics::System.cpu_time - cpu_start)
-      real_duration_histogram.observe({}, Gitlab::Metrics::System.monotonic_time - real_start)
-
-      rendered
-    end
-
-    def self.real_duration_histogram
-      Gitlab::Metrics.histogram(
-        :gitlab_banzai_cacheless_render_real_duration_seconds,
-        'Duration of Banzai pipeline rendering in real time',
-        {},
-        [0.01, 0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10.0, 50, 100]
-      )
-    end
-
-    def self.cpu_duration_histogram
-      Gitlab::Metrics.histogram(
-        :gitlab_banzai_cacheless_render_cpu_duration_seconds,
-        'Duration of Banzai pipeline rendering in cpu time',
-        {},
-        Gitlab::Metrics::EXECUTION_MEASUREMENT_BUCKETS
-      )
+      if output.respond_to?(:to_html)
+        output.to_html
+      else
+        output.to_s
+      end
     end
 
     def self.full_cache_key(cache_key, pipeline_name)

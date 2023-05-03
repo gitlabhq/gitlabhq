@@ -1,5 +1,6 @@
 - breadcrumb_title _("Projects")
 - page_title _("Projects")
+- @force_desktop_expanded_sidebar = true
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-3 js-search-settings-section' }, header_options: { class: 'gl-display-flex' }, body_options: { class: 'gl-py-0' }) do |c|
   - c.header do

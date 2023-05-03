@@ -4,9 +4,10 @@ import { createAlert } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import { PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
-import { convertAllReleasesGraphQLResponse, deleteReleaseSessionKey } from '~/releases/util';
+import { convertAllReleasesGraphQLResponse } from '~/releases/util';
+import { popDeleteReleaseNotification } from '~/releases/release_notification_service';
 import allReleasesQuery from '../graphql/queries/all_releases.query.graphql';
 import ReleaseBlock from './release_block.vue';
 import ReleaseSkeletonLoader from './release_skeleton_loader.vue';
@@ -173,18 +174,7 @@ export default {
     },
   },
   mounted() {
-    const key = deleteReleaseSessionKey(this.projectPath);
-    const deletedRelease = window.sessionStorage.getItem(key);
-
-    if (deletedRelease) {
-      this.$toast.show(
-        sprintf(__('Release %{deletedRelease} has been successfully deleted.'), {
-          deletedRelease,
-        }),
-      );
-    }
-
-    window.sessionStorage.removeItem(key);
+    popDeleteReleaseNotification(this.projectPath);
   },
   created() {
     this.updateQueryParamsFromUrl();

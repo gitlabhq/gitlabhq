@@ -185,6 +185,49 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
       end
     end
 
+    context 'when a project is missing' do
+      let_it_be(:included_project) { create(:project, :small_repo, namespace: project.namespace, creator: user) }
+
+      let(:files) do
+        [
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file1.yml', project: included_project.full_path }, context
+          ),
+          Gitlab::Ci::Config::External::File::Project.new(
+            { file: 'myfolder/file2.yml', project: 'invalid-project' }, context
+          )
+        ]
+      end
+
+      around do |example|
+        create_and_delete_files(included_project, project_files) do
+          example.run
+        end
+      end
+
+      it 'returns an array of valid file objects' do
+        expect(process.map(&:location)).to contain_exactly(
+          'myfolder/file1.yml', 'myfolder/file2.yml'
+        )
+
+        expect(process.all?(&:valid?)).to be_falsey
+      end
+
+      context 'when the FF ci_batch_project_includes_context is disabled' do
+        before do
+          stub_feature_flags(ci_batch_project_includes_context: false)
+        end
+
+        it 'returns an array of file objects' do
+          expect(process.map(&:location)).to contain_exactly(
+            'myfolder/file1.yml', 'myfolder/file2.yml'
+          )
+
+          expect(process.all?(&:valid?)).to be_falsey
+        end
+      end
+    end
+
     context 'when a file includes other files' do
       let(:files) do
         [

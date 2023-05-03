@@ -87,7 +87,10 @@ module Gitlab
                 return legacy_can_access_local_content?
               end
 
-              BatchLoader.for(project)
+              return if project.nil?
+
+              # with `itself`, we are force-loading the project
+              BatchLoader.for(project.itself)
                          .batch(key: context.user) do |projects, loader, args|
                 projects.uniq.each do |project|
                   context.logger.instrument(:config_file_project_validate_access) do
@@ -99,8 +102,10 @@ module Gitlab
 
             def sha
               return legacy_sha if ::Feature.disabled?(:ci_batch_project_includes_context, context.project)
+              return if project.nil?
 
-              BatchLoader.for([project, ref_name])
+              # with `itself`, we are force-loading the project
+              BatchLoader.for([project.itself, ref_name])
                          .batch do |project_ref_pairs, loader|
                 project_ref_pairs.uniq.each do |project, ref_name|
                   loader.call([project, ref_name], project.commit(ref_name).try(:sha))

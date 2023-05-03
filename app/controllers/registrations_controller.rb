@@ -53,8 +53,6 @@ class RegistrationsController < Devise::RegistrationsController
       end
 
       after_request_hook(new_user)
-
-      yield new_user if block_given?
     end
 
     # Devise sets a flash message on both successful & failed signups,

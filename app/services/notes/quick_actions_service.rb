@@ -13,26 +13,18 @@ module Notes
 
     delegate :commands_executed_count, to: :interpret_service, allow_nil: true
 
-    UPDATE_SERVICES = {
-      'WorkItem' => WorkItems::UpdateService,
-      'Issue' => Issues::UpdateService,
-      'MergeRequest' => MergeRequests::UpdateService,
-      'Commit' => Commits::TagService
-    }.freeze
-    private_constant :UPDATE_SERVICES
+    SUPPORTED_NOTEABLES = %w[WorkItem Issue MergeRequest Commit].freeze
 
-    def self.update_services
-      UPDATE_SERVICES
-    end
+    private_constant :SUPPORTED_NOTEABLES
 
-    def self.noteable_update_service_class(note)
-      return update_services['WorkItem'] if note.for_work_item?
-
-      update_services[note.noteable_type]
+    def self.supported_noteables
+      SUPPORTED_NOTEABLES
     end
 
     def self.supported?(note)
-      !!noteable_update_service_class(note)
+      return true if note.for_work_item?
+
+      supported_noteables.include? note.noteable_type
     end
 
     def supported?(note)
@@ -58,25 +50,28 @@ module Notes
         update_params[:spend_time][:note_id] = note.id
       end
 
-      noteable_update_service_class = self.class.noteable_update_service_class(note)
+      noteable_update_service(note, update_params).execute(note.noteable)
+    end
 
-      # TODO: This conditional is necessary because we have not fully converted all possible
-      #   noteable_update_service_class classes to use named arguments. See more details
-      #   on the partial conversion at https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59182
-      #   Follow-on issue to address this is here:
-      #   https://gitlab.com/gitlab-org/gitlab/-/issues/328734
-      service =
-        if noteable_update_service_class == WorkItems::UpdateService
-          parsed_params = note.noteable.transform_quick_action_params(update_params)
+    def noteable_update_service(note, update_params)
+      if note.for_work_item?
+        parsed_params = note.noteable.transform_quick_action_params(update_params)
 
-          noteable_update_service_class.new(container: note.resource_parent, current_user: current_user, params: parsed_params[:common], widget_params: parsed_params[:widgets])
-        elsif noteable_update_service_class.respond_to?(:constructor_container_arg)
-          noteable_update_service_class.new(**noteable_update_service_class.constructor_container_arg(note.resource_parent), current_user: current_user, params: update_params)
-        else
-          noteable_update_service_class.new(note.resource_parent, current_user, update_params)
-        end
-
-      service.execute(note.noteable)
+        WorkItems::UpdateService.new(
+          container: note.resource_parent,
+          current_user: current_user,
+          params: parsed_params[:common],
+          widget_params: parsed_params[:widgets]
+        )
+      elsif note.for_issue?
+        Issues::UpdateService.new(container: note.resource_parent, current_user: current_user, params: update_params)
+      elsif note.for_merge_request?
+        MergeRequests::UpdateService.new(
+          project: note.resource_parent, current_user: current_user, params: update_params
+        )
+      elsif note.for_commit?
+        Commits::TagService.new(note.resource_parent, current_user, update_params)
+      end
     end
   end
 end
