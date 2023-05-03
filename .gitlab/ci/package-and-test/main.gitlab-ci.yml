@@ -124,6 +124,8 @@ trigger-omnibus-env:
       echo "OMNIBUS_GITLAB_RUBY3_BUILD=${OMNIBUS_GITLAB_RUBY3_BUILD:-false}" >> $BUILD_ENV
       echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION:-GITLAB}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+      echo "TRIGGER_BRANCH=$([[ "$CI_COMMIT_REF_NAME" =~ ^[0-9-]+-stable(-ee)?$ ]] && echo ${CI_COMMIT_REF_NAME%-ee} || echo 'master')" >> $BUILD_ENV
       echo "Built environment file for omnibus build:"
       cat $BUILD_ENV
   artifacts:
@@ -155,9 +157,10 @@ trigger-omnibus:
     CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
     SKIP_QA_DOCKER: "true"
     SKIP_QA_TEST: "true"
-    ee: "true"
+    ee: $EE
   trigger:
     project: gitlab-org/build/omnibus-gitlab-mirror
+    branch: $TRIGGER_BRANCH
     strategy: depend
 
 download-knapsack-report:
