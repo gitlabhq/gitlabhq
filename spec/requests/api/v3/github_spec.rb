@@ -13,6 +13,13 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
   end
 
   describe 'GET /orgs/:namespace/repos' do
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject do
+        group = create(:group)
+        jira_get v3_api("/orgs/#{group.path}/repos", user)
+      end
+    end
+
     it 'returns an empty array' do
       group = create(:group)
 
@@ -32,6 +39,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
   end
 
   describe 'GET /user/repos' do
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject { jira_get v3_api('/user/repos', user) }
+    end
+
     it 'returns an empty array' do
       jira_get v3_api('/user/repos', user)
 
@@ -117,6 +128,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
     describe 'GET /users/:username' do
       let!(:user1) { create(:user, username: 'jane.porter') }
 
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api("/users/#{user.username}", user) }
+      end
+
       context 'user exists' do
         it 'responds with the expected user' do
           jira_get v3_api("/users/#{user.username}", user)
@@ -154,6 +169,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
       let(:group) { create(:group) }
       let(:project) { create(:project, :empty_repo, path: 'project.with.dot', group: group) }
       let(:events_path) { "/repos/#{group.path}/#{project.path}/events" }
+
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api(events_path, user) }
+      end
 
       context 'if there are no merge requests' do
         it 'returns an empty array' do
@@ -232,6 +251,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
     describe 'GET /-/jira/pulls' do
       let(:route) { '/repos/-/jira/pulls' }
 
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { perform_request }
+      end
+
       it 'returns an array of merge requests with github format' do
         perform_request
 
@@ -258,6 +281,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
     describe 'GET /repos/:namespace/:project/pulls' do
       let(:route) { "/repos/#{project.namespace.path}/#{project.path}/pulls" }
 
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { perform_request }
+      end
+
       it 'returns an array of merge requests for the proper project in github format' do
         perform_request
 
@@ -279,6 +306,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
     end
 
     describe 'GET /repos/:namespace/:project/pulls/:id' do
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", user) }
+      end
+
       context 'when user has access to the merge requests' do
         it 'returns the requested merge request in github format' do
           jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls/#{merge_request.id}", user)
@@ -329,6 +360,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
         expect(hash['owner']['login']).to eq(namespace.path)
       end
       expect(json_response.size).to eq(projects.size)
+    end
+
+    it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+      subject { jira_get v3_api("/users/#{user.namespace.path}/repos", user) }
     end
 
     context 'group namespace' do
@@ -423,6 +458,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
 
   describe 'GET /repos/:namespace/:project/branches' do
     context 'authenticated' do
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { jira_get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user) }
+      end
+
       context 'updating project feature usage' do
         it 'counts Jira Cloud integration as enabled' do
           user_agent = 'Jira DVCS Connector Vertigo/4.42.0'
@@ -516,6 +555,10 @@ RSpec.describe API::V3::Github, :aggregate_failures, feature_category: :integrat
     end
 
     context 'authenticated' do
+      it_behaves_like 'a GitHub Enterprise Jira DVCS reversible end of life endpoint' do
+        subject { call_api }
+      end
+
       it 'returns commit with github format' do
         call_api
 

@@ -10,21 +10,16 @@ import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
-import {
-  FORM_TYPES,
-  WIDGET_ICONS,
-  WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_STATUS_TEXT,
-} from '../../constants';
-import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
+import { FORM_TYPES, WIDGET_ICONS, WORK_ITEM_STATUS_TEXT } from '../../constants';
+import { findHierarchyWidgetChildren, getWorkItemQuery } from '../../utils';
 import addHierarchyChildMutation from '../../graphql/add_hierarchy_child.mutation.graphql';
 import removeHierarchyChildMutation from '../../graphql/remove_hierarchy_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
-import WorkItemLinkChild from './work_item_link_child.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
+import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
 export default {
   components: {
@@ -33,10 +28,10 @@ export default {
     GlIcon,
     GlLoadingIcon,
     WidgetWrapper,
-    WorkItemLinkChild,
     WorkItemLinksForm,
     WorkItemDetailModal,
     AbuseCategorySelector,
+    WorkItemChildrenWrapper,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -51,7 +46,9 @@ export default {
   },
   apollo: {
     workItem: {
-      query: getWorkItemLinksQuery,
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
       variables() {
         return {
           id: this.issuableGid,
@@ -103,6 +100,9 @@ export default {
     };
   },
   computed: {
+    fetchByIid() {
+      return false;
+    },
     confidential() {
       return this.parentIssue?.confidential || this.workItem?.confidential || false;
     },
@@ -113,10 +113,7 @@ export default {
       return this.parentIssue?.milestone;
     },
     children() {
-      return (
-        this.workItem?.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)?.children
-          .nodes ?? []
-      );
+      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
     },
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
@@ -153,11 +150,11 @@ export default {
     hideAddForm() {
       this.isShownAddForm = false;
     },
-    openChild(child, e) {
-      if (isMetaKey(e)) {
+    openChild({ event, child }) {
+      if (isMetaKey(event)) {
         return;
       }
-      e.preventDefault();
+      event.preventDefault();
       this.activeChild = child;
       this.$refs.modal.show();
       this.updateWorkItemIdUrlQuery(child);
@@ -333,17 +330,13 @@ export default {
           @cancel="hideAddForm"
           @addWorkItemChild="addHierarchyChild"
         />
-        <work-item-link-child
-          v-for="child in children"
-          :key="child.id"
+        <work-item-children-wrapper
+          :children="children"
           :project-path="projectPath"
           :can-update="canUpdate"
-          :issuable-gid="issuableGid"
-          :child-item="child"
-          @click="openChild(child, $event)"
-          @mouseover="prefetchWorkItem(child)"
-          @mouseout="clearPrefetching"
+          :work-item-id="issuableGid"
           @removeChild="removeChild"
+          @show-modal="openChild"
         />
         <work-item-detail-modal
           ref="modal"

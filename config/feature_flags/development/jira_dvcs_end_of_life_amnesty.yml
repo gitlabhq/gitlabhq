@@ -1,0 +1,8 @@
+---
+name: jira_dvcs_end_of_life_amnesty
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118126
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408148
+milestone: '16.0'
+type: development
+group: group::import and integrate
+default_enabled: true

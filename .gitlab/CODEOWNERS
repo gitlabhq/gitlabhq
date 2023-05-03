@@ -1385,7 +1385,7 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
 /lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
-[Manage::Workspace] @gitlab-org/manage/manage-workspace/backend-approvers
+[Data Stores::Tenant Scale] @abdwdd @alexpooley @manojmj
 lib/api/entities/basic_project_details.rb
 lib/api/entities/project_with_access.rb
 lib/api/entities/project_identity.rb

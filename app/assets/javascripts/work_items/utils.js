@@ -12,8 +12,11 @@ export function getWorkItemNotesQuery(isFetchedByIid) {
   return isFetchedByIid ? workItemNotesByIidQuery : workItemNotesIdQuery;
 }
 
+export const findHierarchyWidgets = (widgets) =>
+  widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+
 export const findHierarchyWidgetChildren = (workItem) =>
-  workItem.widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY).children.nodes;
+  findHierarchyWidgets(workItem.widgets).children.nodes;
 
 const autocompleteSourcesPath = (autocompleteType, fullPath, workItemIid) => {
   return `${

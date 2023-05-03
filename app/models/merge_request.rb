@@ -193,6 +193,7 @@ class MergeRequest < ApplicationRecord
 
     before_transition any => :merged do |merge_request|
       merge_request.merge_error = nil
+      merge_request.metrics.first_contribution = true if merge_request.first_contribution?
     end
 
     after_transition any => :opened do |merge_request|
@@ -1907,6 +1908,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def first_contribution?
+    return metrics&.first_contribution if merged? & metrics.present?
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     !project.merge_requests.merged.exists?(author_id: author_id)

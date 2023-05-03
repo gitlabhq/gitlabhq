@@ -676,7 +676,10 @@ describe('WorkItemDetail component', () => {
           preventDefault: jest.fn(),
         };
 
-        findHierarchyTree().vm.$emit('show-modal', event, { id: 'childWorkItemId' });
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem: { id: 'childWorkItemId' },
+        });
         await waitForPromises();
 
         expect(wrapper.findComponent(WorkItemDetailModal).props().workItemId).toBe(
@@ -705,7 +708,10 @@ describe('WorkItemDetail component', () => {
             preventDefault: jest.fn(),
           };
 
-          findHierarchyTree().vm.$emit('show-modal', event, { id: 'childWorkItemId' });
+          findHierarchyTree().vm.$emit('show-modal', {
+            event,
+            modalWorkItem: { id: 'childWorkItemId' },
+          });
           await waitForPromises();
 
           expect(wrapper.emitted('update-modal')).toBeDefined();

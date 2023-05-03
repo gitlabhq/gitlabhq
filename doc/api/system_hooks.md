@@ -126,6 +126,8 @@ Example response:
 
 ## Test system hook
 
+Executes the system hook with mock data.
+
 ```plaintext
 POST /hooks/:id
 ```
@@ -140,7 +142,7 @@ Example request:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/hooks/1"
 ```
 
-Example response:
+The response is always the mock data:
 
 ```json
 {

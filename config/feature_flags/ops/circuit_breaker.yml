@@ -1,7 +1,7 @@
 ---
 name: circuit_breaker
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117993
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409619
 milestone: '16.0'
 type: ops
 group: group::ai-enablement

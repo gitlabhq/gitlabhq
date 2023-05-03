@@ -38404,6 +38404,9 @@ msgstr ""
 msgid "Runners|Add tags for the types of jobs the runner processes to ensure that the runner only runs jobs that you intend it to. %{helpLinkStart}Learn more.%{helpLinkEnd}"
 msgstr ""
 
+msgid "Runners|Add your feedback to this issue"
+msgstr ""
+
 msgid "Runners|Admin area › Runners"
 msgstr ""
 
@@ -39092,6 +39095,12 @@ msgid "Runners|View installation instructions"
 msgstr ""
 
 msgid "Runners|View metrics"
+msgstr ""
+
+msgid "Runners|We've been making improvements to how you register runners so that it's more secure and efficient. Tell us how we're doing."
+msgstr ""
+
+msgid "Runners|We've made some changes and want your feedback"
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."

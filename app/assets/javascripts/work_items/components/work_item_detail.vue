@@ -46,7 +46,7 @@ import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscr
 import workItemMilestoneSubscription from '../graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
-import { getWorkItemQuery } from '../utils';
+import { findHierarchyWidgetChildren, getWorkItemQuery } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -330,10 +330,7 @@ export default {
           };
     },
     children() {
-      const widgetHierarchy = this.workItem.widgets.find(
-        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-      );
-      return widgetHierarchy.children?.nodes;
+      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
     },
     workItemBodyClass() {
       return {
@@ -343,7 +340,10 @@ export default {
   },
   mounted() {
     if (this.modalWorkItemId || this.modalWorkItemIid) {
-      this.openInModal(undefined, { id: this.modalWorkItemId, iid: this.modalWorkItemIid });
+      this.openInModal({
+        event: undefined,
+        modalWorkItem: { id: this.modalWorkItemId, iid: this.modalWorkItemIid },
+      });
     }
   },
   methods: {
@@ -423,7 +423,7 @@ export default {
         if (index >= 0) {
           widgetHierarchy.children.nodes.splice(index, 1);
         } else {
-          widgetHierarchy.children.nodes.unshift(workItem);
+          widgetHierarchy.children.nodes.push(workItem);
         }
       });
 
@@ -484,7 +484,7 @@ export default {
         replace: true,
       });
     },
-    openInModal(event, modalWorkItem) {
+    openInModal({ event, modalWorkItem }) {
       if (!this.workItemsMvc2Enabled) {
         return;
       }
@@ -550,7 +550,7 @@ export default {
                 category="tertiary"
                 :href="parentUrl"
                 :title="parentWorkItemReference"
-                @click="openInModal($event, parentWorkItem)"
+                @click="openInModal({ event: $event, modalWorkItem: parentWorkItem })"
                 >{{ parentWorkItemReference }}</gl-button
               >
               <gl-icon name="chevron-right" :size="16" class="gl-flex-shrink-0" />
@@ -717,10 +717,12 @@ export default {
           :work-item-type="workItemType"
           :parent-work-item-type="workItem.workItemType.name"
           :work-item-id="workItem.id"
+          :work-item-iid="workItemIid"
           :children="children"
           :can-update="canUpdate"
           :project-path="fullPath"
           :confidential="workItem.confidential"
+          :fetch-by-iid="fetchByIid"
           @addWorkItemChild="addChild"
           @removeChild="removeChild"
           @show-modal="openInModal"

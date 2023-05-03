@@ -65,7 +65,8 @@ module Users
       artifacts_management_page_feedback_banner: 62,
       vscode_web_ide: 63,
       vscode_web_ide_callout: 64,
-      branch_rules_info_callout: 65
+      branch_rules_info_callout: 65,
+      create_runner_workflow_banner: 66
     }
 
     validates :feature_name,

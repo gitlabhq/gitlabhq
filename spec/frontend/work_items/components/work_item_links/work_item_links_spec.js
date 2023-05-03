@@ -5,17 +5,16 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
-import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
+import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   getIssueDetailsResponse,
@@ -26,6 +25,7 @@ import {
   workItemByIidResponseFactory,
   workItemQueryResponse,
   mockWorkItemCommentNote,
+  childrenWorkItems,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -56,7 +56,7 @@ describe('WorkItemLinks', () => {
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [getWorkItemLinksQuery, fetchHandler],
+        [workItemQuery, fetchHandler],
         [changeWorkItemParentMutation, mutationHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
         [workItemByIidQuery, childWorkItemByIidHandler],
@@ -100,12 +100,11 @@ describe('WorkItemLinks', () => {
   const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
   const findToggleCreateFormButton = () => wrapper.findByTestId('toggle-create-form');
-  const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
-  const findFirstWorkItemLinkChild = () => findWorkItemLinkChildItems().at(0);
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
   const findChildrenCount = () => wrapper.findByTestId('children-count');
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
+  const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
 
   afterEach(() => {
     mockApollo = null;
@@ -153,12 +152,12 @@ describe('WorkItemLinks', () => {
       findToggleCreateFormButton().vm.$emit('click');
       await nextTick();
 
-      expect(findWorkItemLinkChildItems()).toHaveLength(4);
+      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
 
       findAddLinksForm().vm.$emit('addWorkItemChild', workItem);
       await waitForPromises();
 
-      expect(findWorkItemLinkChildItems()).toHaveLength(5);
+      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(5);
     });
   });
 
@@ -174,10 +173,11 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  it('renders all hierarchy widget children', async () => {
+  it('renders hierarchy widget children container', async () => {
     await createComponent();
 
-    expect(findWorkItemLinkChildItems()).toHaveLength(4);
+    expect(findWorkItemLinkChildrenWrapper().exists()).toBe(true);
+    expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
   });
 
   it('shows an alert when list loading fails', async () => {
@@ -208,7 +208,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('does not display link menu on children', () => {
-      expect(findWorkItemLinkChildItems().at(0).props('canUpdate')).toBe(false);
+      expect(findWorkItemLinkChildrenWrapper().props('canUpdate')).toBe(false);
     });
   });
 
@@ -218,11 +218,11 @@ describe('WorkItemLinks', () => {
     beforeEach(async () => {
       await createComponent({ mutationHandler: mutationChangeParentHandler });
 
-      firstChild = findFirstWorkItemLinkChild();
+      [firstChild] = childrenWorkItems;
     });
 
     it('calls correct mutation with correct variables', async () => {
-      firstChild.vm.$emit('removeChild', firstChild.vm.childItem.id);
+      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild.id);
 
       await waitForPromises();
 
@@ -237,7 +237,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('shows toast when mutation succeeds', async () => {
-      firstChild.vm.$emit('removeChild', firstChild.vm.childItem.id);
+      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild.id);
 
       await waitForPromises();
 
@@ -247,12 +247,12 @@ describe('WorkItemLinks', () => {
     });
 
     it('renders correct number of children after removal', async () => {
-      expect(findWorkItemLinkChildItems()).toHaveLength(4);
+      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
 
-      firstChild.vm.$emit('removeChild', firstChild.vm.childItem.id);
+      findWorkItemLinkChildrenWrapper().vm.$emit('removeChild', firstChild.id);
       await waitForPromises();
 
-      expect(findWorkItemLinkChildItems()).toHaveLength(3);
+      expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(3);
     });
   });
 
@@ -268,41 +268,6 @@ describe('WorkItemLinks', () => {
       await nextTick();
 
       expect(findAddLinksForm().props('parentConfidential')).toBe(true);
-    });
-  });
-
-  describe('prefetching child items', () => {
-    let firstChild;
-
-    beforeEach(async () => {
-      setWindowLocation('?iid_path=true');
-      await createComponent();
-
-      firstChild = findFirstWorkItemLinkChild();
-    });
-
-    it('does not fetch the child work item by iid before hovering work item links', () => {
-      expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
-    });
-
-    it('fetches the child work item by iid if link is hovered for 250+ ms', async () => {
-      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-      await waitForPromises();
-
-      expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
-        fullPath: 'project/path',
-        iid: '2',
-      });
-    });
-
-    it('does not fetch the child work item by iid if link is hovered for less than 250 ms', async () => {
-      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-      jest.advanceTimersByTime(200);
-      firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
-      await waitForPromises();
-
-      expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
     });
   });
 

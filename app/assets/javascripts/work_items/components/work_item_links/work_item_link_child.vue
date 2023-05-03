@@ -257,7 +257,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="tree-item">
     <div
       class="gl-display-flex gl-align-items-flex-start"
       :class="{ 'gl-ml-6': canHaveChildren && !hasChildren && hasIndirectChildren }"

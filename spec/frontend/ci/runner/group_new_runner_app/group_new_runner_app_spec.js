@@ -6,6 +6,7 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 import GroupRunnerRunnerApp from '~/ci/runner/group_new_runner/group_new_runner_app.vue';
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
+import RegistrationFeedbackBanner from '~/ci/runner/components/registration/registration_feedback_banner.vue';
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import {
@@ -33,6 +34,7 @@ describe('GroupRunnerRunnerApp', () => {
   let wrapper;
 
   const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
+  const findRegistrationFeedbackBanner = () => wrapper.findComponent(RegistrationFeedbackBanner);
   const findRegistrationCompatibilityAlert = () =>
     wrapper.findComponent(RegistrationCompatibilityAlert);
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
@@ -50,6 +52,10 @@ describe('GroupRunnerRunnerApp', () => {
 
   beforeEach(() => {
     createComponent();
+  });
+
+  it('shows a registration feedback banner', () => {
+    expect(findRegistrationFeedbackBanner().exists()).toBe(true);
   });
 
   it('shows a registration compatibility alert', () => {
