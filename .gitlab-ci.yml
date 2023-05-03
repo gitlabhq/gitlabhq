@@ -170,6 +170,7 @@ variables:
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
+  BUNDLER_CHECKSUM_VERIFICATION_OPT_IN: "1"
   CACHE_CLASSES: "true"
   CHECK_PRECOMPILED_ASSETS: "true"
   FF_USE_FASTZIP: "true"
@@ -186,6 +187,7 @@ variables:
   REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
   REVIEW_APPS_GCP_REGION: "us-central1"
 
+  CACHE_ASSETS_AS_PACKAGE: "true"
   BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
   SIMPLECOV: "true"
 
