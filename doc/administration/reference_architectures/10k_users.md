@@ -844,9 +844,9 @@ to be used with GitLab. The following IPs will be used as an example:
 
 Managed Redis from cloud providers (such as AWS ElastiCache) will work. If these
 services support high availability, be sure it _isn't_ of the Redis Cluster type.
-Redis version 5.0 or higher is required, which is included with Omnibus GitLab
-packages starting with GitLab 13.0. Older Redis versions don't support an
-optional count argument to SPOP, which is required for [Merge Trains](../../ci/pipelines/merge_trains.md).
+
+Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or higher is required. Older Redis versions have reached end-of-life.
+
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary later when configuring the [GitLab application servers](#configure-gitlab-rails).
 

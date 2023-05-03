@@ -172,6 +172,25 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           create(:merge_request, source_project: project_with_repo, target_project: project_with_repo)
         end
 
+        let(:new_opts) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
+
+        it 'calls MergeRequests::MarkReviewerReviewedService service' do
+          expect_next_instance_of(
+            MergeRequests::MarkReviewerReviewedService,
+            project: project_with_repo, current_user: user
+          ) do |service|
+            expect(service).to receive(:execute).with(merge_request)
+          end
+
+          described_class.new(project_with_repo, user, new_opts).execute
+        end
+
+        it 'does not call MergeRequests::MarkReviewerReviewedService service when skip_set_reviewed is true' do
+          expect(MergeRequests::MarkReviewerReviewedService).not_to receive(:new)
+
+          described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
+        end
+
         context 'noteable highlight cache clearing' do
           let(:position) do
             Gitlab::Diff::Position.new(

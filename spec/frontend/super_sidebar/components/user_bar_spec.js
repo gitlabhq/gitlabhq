@@ -10,13 +10,9 @@ import Counter from '~/super_sidebar/components/counter.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
-import { highCountTrim } from '~/lib/utils/text_utility';
+import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { sidebarData } from '../mock_data';
 import { MOCK_DEFAULT_SEARCH_OPTIONS } from './global_search/mock_data';
-
-jest.mock('~/lib/utils/text_utility', () => ({
-  highCountTrim: jest.fn().mockReturnValue('99+'),
-}));
 
 describe('UserBar component', () => {
   let wrapper;
@@ -78,7 +74,7 @@ describe('UserBar component', () => {
 
     it('renders issues counter', () => {
       const isuesCounter = findIssuesCounter();
-      expect(isuesCounter.props('count')).toBe(sidebarData.assigned_open_issues_count);
+      expect(isuesCounter.props('count')).toBe(userCounts.assigned_issues);
       expect(isuesCounter.props('href')).toBe(sidebarData.issues_dashboard_path);
       expect(isuesCounter.props('label')).toBe(__('Issues'));
       expect(isuesCounter.attributes('data-track-action')).toBe('click_link');
@@ -89,7 +85,9 @@ describe('UserBar component', () => {
 
     it('renders merge requests counter', () => {
       const mrsCounter = findMRsCounter();
-      expect(mrsCounter.props('count')).toBe(sidebarData.total_merge_requests_count);
+      expect(mrsCounter.props('count')).toBe(
+        userCounts.assigned_merge_requests + userCounts.review_requested_merge_requests,
+      );
       expect(mrsCounter.props('label')).toBe(__('Merge requests'));
       expect(mrsCounter.attributes('data-track-action')).toBe('click_dropdown');
       expect(mrsCounter.attributes('data-track-label')).toBe('merge_requests_menu');
@@ -107,13 +105,12 @@ describe('UserBar component', () => {
         expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
       });
 
-      it('should format and update todo counter when event is emitted', async () => {
+      it('should update todo counter when event is emitted', async () => {
         createWrapper();
         const count = 100;
         document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { count } }));
         await nextTick();
-        expect(highCountTrim).toHaveBeenCalledWith(count);
-        expect(findTodosCounter().props('count')).toBe('99+');
+        expect(findTodosCounter().props('count')).toBe(count);
       });
     });
 

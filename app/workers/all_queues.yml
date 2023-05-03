@@ -2937,6 +2937,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_set_reviewer_reviewed
+  :worker_name: MergeRequests::SetReviewerReviewedWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_update_head_pipeline
   :worker_name: MergeRequests::UpdateHeadPipelineWorker
   :feature_category: :code_review_workflow

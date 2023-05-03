@@ -73,6 +73,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
 
     before do
+      allow(Time).to receive(:now).and_return(Time.utc(2021, 1, 1))
       allow(helper).to receive(:current_user) { user }
       allow(helper).to receive(:can?).and_return(true)
       allow(helper).to receive(:header_search_context).and_return({ some: "search data" })
@@ -82,7 +83,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
       allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
       allow(user).to receive(:todos_pending_count).and_return(3)
-      allow(user).to receive(:total_merge_requests_count).and_return(4)
       allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
     end
 
@@ -109,12 +109,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           profile_path: profile_path,
           profile_preferences_path: profile_preferences_path
         },
+        user_counts: {
+          assigned_issues: 1,
+          assigned_merge_requests: 4,
+          review_requested_merge_requests: 0,
+          todos: 3,
+          last_update: 1609459200000
+        },
         can_sign_out: helper.current_user_menu?(:sign_out),
         sign_out_link: destroy_user_session_path,
-        assigned_open_issues_count: "1",
-        todos_pending_count: 3,
         issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
-        total_merge_requests_count: "4",
         projects_path: dashboard_projects_path,
         groups_path: dashboard_groups_path,
         support_path: helper.support_url,
@@ -209,6 +213,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
               text: _('Assigned'),
               href: merge_requests_dashboard_path(assignee_username: user.username),
               count: 4,
+              userCount: 'assigned_merge_requests',
               extraAttrs: {
                 'data-track-action': 'click_link',
                 'data-track-label': 'merge_requests_assigned',
@@ -220,6 +225,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
               text: _('Review requests'),
               href: merge_requests_dashboard_path(reviewer_username: user.username),
               count: 0,
+              userCount: 'review_requested_merge_requests',
               extraAttrs: {
                 'data-track-action': 'click_link',
                 'data-track-label': 'merge_requests_to_review',
@@ -305,21 +311,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           )
         )
       )
-    end
-
-    context 'when counts are high' do
-      before do
-        allow(user).to receive(:assigned_open_issues_count).and_return(1000)
-        allow(user).to receive(:assigned_open_merge_requests_count).and_return(50)
-        allow(user).to receive(:review_requested_open_merge_requests_count).and_return(50)
-      end
-
-      it 'caps counts to USER_BAR_COUNT_LIMIT and appends a "+" to them' do
-        expect(subject).to include(
-          assigned_open_issues_count: "99+",
-          total_merge_requests_count: "99+"
-        )
-      end
     end
 
     describe 'current context' do
@@ -448,7 +439,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
       Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
       Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
-      Rails.cache.write(['users', user.id, 'total_merge_requests_count'], 4)
     end
 
     it 'returns Project Panel for project nav' do

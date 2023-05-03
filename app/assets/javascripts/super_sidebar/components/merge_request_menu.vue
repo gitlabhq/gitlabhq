@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlDisclosureDropdown } from '@gitlab/ui';
+import { userCounts } from '~/super_sidebar/user_counts_manager';
 
 export default {
   components: {
@@ -10,6 +11,11 @@ export default {
     items: {
       type: Array,
       required: true,
+    },
+  },
+  methods: {
+    getCount(item) {
+      return userCounts[item.userCount] ?? item.count ?? 0;
     },
   },
 };
@@ -28,7 +34,7 @@ export default {
     <template #list-item="{ item }">
       <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         {{ item.text }}
-        <gl-badge pill size="sm" variant="neutral">{{ item.count || 0 }}</gl-badge>
+        <gl-badge pill size="sm" variant="neutral">{{ getCount(item) }}</gl-badge>
       </span>
     </template>
   </gl-disclosure-dropdown>

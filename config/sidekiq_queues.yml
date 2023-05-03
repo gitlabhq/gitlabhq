@@ -337,6 +337,8 @@
   - 1
 - - merge_requests_resolve_todos_after_approval
   - 1
+- - merge_requests_set_reviewer_reviewed
+  - 1
 - - merge_requests_stream_approval_audit_event
   - 1
 - - merge_requests_sync_code_owner_approval_rules

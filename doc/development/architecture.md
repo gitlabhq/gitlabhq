@@ -1145,3 +1145,7 @@ they don't always work in RHEL.
 The [GitLab.com architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
 is detailed for your reference, but this architecture is only useful if you have
 millions of users.
+
+### AI architecture
+
+A [SaaS model gateway](ai_architecture.md) is available to enable AI-powered features.

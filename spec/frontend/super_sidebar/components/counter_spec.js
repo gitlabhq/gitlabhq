@@ -49,4 +49,15 @@ describe('Counter component', () => {
       expect(findButton().exists()).toBe(false);
     });
   });
+
+  it.each([
+    ['99+', '99+'],
+    ['110%', '110%'],
+    [100, '99+'],
+    [10, '10'],
+    [0, ''],
+  ])('formats count %p as %p', (count, result) => {
+    createWrapper({ count });
+    expect(findButton().text()).toBe(result);
+  });
 });

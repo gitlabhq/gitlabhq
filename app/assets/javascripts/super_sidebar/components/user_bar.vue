@@ -2,7 +2,11 @@
 import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { highCountTrim } from '~/lib/utils/text_utility';
+import {
+  destroyUserCountsManager,
+  createUserCountsManager,
+  userCounts,
+} from '~/super_sidebar/user_counts_manager';
 import logo from '../../../../views/shared/_logo.svg';
 import { JS_TOGGLE_COLLAPSE_CLASS } from '../constants';
 import CreateMenu from './create_menu.vue';
@@ -66,24 +70,29 @@ export default {
   data() {
     return {
       mrMenuShown: false,
-      todoCount: this.sidebarData.todos_pending_count,
       searchTooltip: this.$options.i18n.searchKbdHelp,
+      userCounts,
     };
   },
   computed: {
-    formattedTodoCount() {
-      return highCountTrim(this.todoCount);
+    mergeRequestTotalCount() {
+      return userCounts.assigned_merge_requests + userCounts.review_requested_merge_requests;
     },
+  },
+  created() {
+    Object.assign(userCounts, this.sidebarData.user_counts);
+    createUserCountsManager();
   },
   mounted() {
     document.addEventListener('todo:toggle', this.updateTodos);
   },
   beforeDestroy() {
     document.removeEventListener('todo:toggle', this.updateTodos);
+    destroyUserCountsManager();
   },
   methods: {
     updateTodos(e) {
-      this.todoCount = e.detail.count || 0;
+      userCounts.todos = e.detail.count || 0;
     },
     hideSearchTooltip() {
       this.searchTooltip = '';
@@ -166,7 +175,7 @@ export default {
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.issues"
         class="gl-flex-basis-third dashboard-shortcuts-issues"
         icon="issues"
-        :count="sidebarData.assigned_open_issues_count"
+        :count="userCounts.assigned_issues"
         :href="sidebarData.issues_dashboard_path"
         :label="$options.i18n.issues"
         data-track-action="click_link"
@@ -183,7 +192,7 @@ export default {
           v-gl-tooltip:super-sidebar.hover.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
           class="gl-w-full"
           icon="merge-request-open"
-          :count="sidebarData.total_merge_requests_count"
+          :count="mergeRequestTotalCount"
           :label="$options.i18n.mergeRequests"
           data-track-action="click_dropdown"
           data-track-label="merge_requests_menu"
@@ -194,7 +203,7 @@ export default {
         v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.todoList"
         class="gl-flex-basis-third shortcuts-todos js-todos-count"
         icon="todo-done"
-        :count="formattedTodoCount"
+        :count="userCounts.todos"
         href="/dashboard/todos"
         :label="$options.i18n.todoList"
         data-qa-selector="todos_shortcut_button"

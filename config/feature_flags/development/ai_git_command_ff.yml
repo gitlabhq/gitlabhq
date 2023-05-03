@@ -1,0 +1,8 @@
+---
+name: ai_git_command_ff
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118120
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408675
+milestone: '16.0'
+type: development
+group: group::source code
+default_enabled: false

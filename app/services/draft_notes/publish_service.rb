@@ -59,7 +59,8 @@ module DraftNotes
       note_params = draft.publish_params.merge(skip_keep_around_commits: skip_keep_around_commits)
       note = Notes::CreateService.new(draft.project, draft.author, note_params).execute(
         skip_capture_diff_note_position: skip_capture_diff_note_position,
-        skip_merge_status_trigger: skip_merge_status_trigger
+        skip_merge_status_trigger: skip_merge_status_trigger,
+        skip_set_reviewed: true
       )
 
       set_discussion_resolve_status(note, draft)

@@ -16,7 +16,10 @@ describe('User Merge Requests', () => {
   let newBroadcastChannelMock;
 
   beforeEach(() => {
+    jest.spyOn(document, 'dispatchEvent').mockReturnValue(false);
+
     global.gon.current_user_id = 123;
+    global.gon.use_new_navigation = false;
 
     channelMock = {
       postMessage: jest.fn(),
@@ -73,6 +76,10 @@ describe('User Merge Requests', () => {
         expect(channelMock.postMessage).not.toHaveBeenCalled();
       });
     });
+
+    it('does not emit event to refetch counts', () => {
+      expect(document.dispatchEvent).not.toHaveBeenCalled();
+    });
   });
 
   describe('openUserCountsBroadcast', () => {
@@ -85,6 +92,7 @@ describe('User Merge Requests', () => {
 
       channelMock.onmessage({ data: TEST_COUNT });
 
+      expect(newBroadcastChannelMock).toHaveBeenCalled();
       expect(findMRCountText()).toEqual(TEST_COUNT.toLocaleString());
     });
 
@@ -93,6 +101,7 @@ describe('User Merge Requests', () => {
 
       openUserCountsBroadcast();
 
+      expect(newBroadcastChannelMock).toHaveBeenCalled();
       expect(channelMock.close).toHaveBeenCalled();
     });
   });
@@ -115,6 +124,30 @@ describe('User Merge Requests', () => {
         closeUserCountsBroadcast();
 
         expect(channelMock.close).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('if new navigation is enabled', () => {
+    beforeEach(() => {
+      global.gon.use_new_navigation = true;
+      jest.spyOn(UserApi, 'getUserCounts');
+    });
+
+    it('openUserCountsBroadcast is a noop', () => {
+      openUserCountsBroadcast();
+      expect(newBroadcastChannelMock).not.toHaveBeenCalled();
+    });
+
+    describe('refreshUserMergeRequestCounts', () => {
+      it('does not call api', async () => {
+        await refreshUserMergeRequestCounts();
+        expect(UserApi.getUserCounts).not.toHaveBeenCalled();
+      });
+
+      it('emits event to refetch counts', async () => {
+        await refreshUserMergeRequestCounts();
+        expect(document.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('todo:toggle'));
       });
     });
   });

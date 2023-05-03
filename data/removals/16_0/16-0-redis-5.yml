@@ -1,0 +1,14 @@
+- title: "Redis 5 compatibility"
+  announcement_milestone: "15.3"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: twk3
+  stage: Enablement
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/331468
+  body: |
+    In GitLab 13.9, we updated the Omnibus GitLab package and GitLab Helm chart 4.9 to Redis 6. Redis 5 reached end of life in April 2022 and is not supported.
+
+    GitLab 16.0, we have removed support for Redis 5. If you are using your own Redis 5.0 instance, you must upgrade it to Redis 6.0 or later before upgrading to GitLab 16.0
+    or later.
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/install/requirements.html

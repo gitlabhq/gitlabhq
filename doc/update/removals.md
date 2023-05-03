@@ -82,6 +82,17 @@ is removed in favor of more specialized fields like:
 - `infrastructure_access_level`
 - `monitor_access_level`
 
+### Redis 5 compatibility
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 13.9, we updated the Omnibus GitLab package and GitLab Helm chart 4.9 to Redis 6. Redis 5 reached end of life in April 2022 and is not supported.
+
+GitLab 16.0, we have removed support for Redis 5. If you are using your own Redis 5.0 instance, you must upgrade it to Redis 6.0 or later before upgrading to GitLab 16.0
+or later.
+
 ### Vulnerability confidence field
 
 WARNING:
