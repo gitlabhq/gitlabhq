@@ -46,10 +46,17 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_fleet do
       end
     end
 
-    context 'when user can update runner', :enable_admin_mode do
-      let_it_be(:admin_user) { create(:user, :admin) }
+    context 'when user can update runner' do
+      let_it_be(:user) { create(:user) }
 
-      let(:current_ctx) { { current_user: admin_user } }
+      let(:original_projects) { [project1, project2] }
+      let(:projects_with_maintainer_access) { original_projects }
+
+      let(:current_ctx) { { current_user: user } }
+
+      before do
+        projects_with_maintainer_access.each { |project| project.add_maintainer(user) }
+      end
 
       context 'with valid arguments' do
         let(:mutation_params) do
@@ -82,27 +89,22 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_fleet do
 
       context 'with associatedProjects argument' do
         let_it_be(:project3) { create(:project) }
+        let_it_be(:project4) { create(:project) }
+
+        let(:new_projects) { [project3, project4] }
+        let(:mutation_params) do
+          {
+            id: runner.to_global_id,
+            description: 'updated description',
+            associated_projects: new_projects.map { |project| project.to_global_id.to_s }
+          }
+        end
 
         context 'with id set to project runner' do
-          let(:mutation_params) do
-            {
-              id: runner.to_global_id,
-              description: 'updated description',
-              associated_projects: [project3.to_global_id.to_s]
-            }
-          end
+          let(:projects_with_maintainer_access) { original_projects + new_projects }
 
           it 'updates runner attributes and project relationships', :aggregate_failures do
-            expect_next_instance_of(
-              ::Ci::Runners::SetRunnerAssociatedProjectsService,
-              {
-                runner: runner,
-                current_user: admin_user,
-                project_ids: [project3.id]
-              }
-            ) do |service|
-              expect(service).to receive(:execute).and_call_original
-            end
+            setup_service_expectations
 
             expected_attributes = mutation_params.except(:id, :associated_projects)
 
@@ -112,57 +114,32 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_fleet do
             expect(response[:runner]).to be_an_instance_of(Ci::Runner)
             expect(response[:runner]).to have_attributes(expected_attributes)
             expect(runner.reload).to have_attributes(expected_attributes)
-            expect(runner.projects).to match_array([project1, project3])
+            expect(runner.projects).to match_array([project1] + new_projects)
           end
 
-          context 'with user not allowed to assign runner' do
-            before do
-              allow(admin_user).to receive(:can?).with(:assign_runner, runner).and_return(false)
-            end
+          context 'with missing permissions on one of the new projects' do
+            let(:projects_with_maintainer_access) { original_projects + [project3] }
 
             it 'does not update runner', :aggregate_failures do
-              expect_next_instance_of(
-                ::Ci::Runners::SetRunnerAssociatedProjectsService,
-                {
-                  runner: runner,
-                  current_user: admin_user,
-                  project_ids: [project3.id]
-                }
-              ) do |service|
-                expect(service).to receive(:execute).and_call_original
-              end
+              setup_service_expectations
 
               expected_attributes = mutation_params.except(:id, :associated_projects)
 
               response
 
-              expect(response[:errors]).to match_array(['user not allowed to assign runner'])
+              expect(response[:errors]).to match_array(['user is not authorized to add runners to project'])
               expect(response[:runner]).to be_nil
               expect(runner.reload).not_to have_attributes(expected_attributes)
-              expect(runner.projects).to match_array([project1, project2])
+              expect(runner.projects).to match_array(original_projects)
             end
           end
         end
 
         context 'with an empty list of projects' do
-          let(:mutation_params) do
-            {
-              id: runner.to_global_id,
-              associated_projects: []
-            }
-          end
+          let(:new_projects) { [] }
 
           it 'removes project relationships', :aggregate_failures do
-            expect_next_instance_of(
-              ::Ci::Runners::SetRunnerAssociatedProjectsService,
-              {
-                runner: runner,
-                current_user: admin_user,
-                project_ids: []
-              }
-            ) do |service|
-              expect(service).to receive(:execute).and_call_original
-            end
+            setup_service_expectations
 
             response
 
@@ -172,20 +149,27 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner_fleet do
           end
         end
 
-        context 'with id set to instance runner' do
-          let(:instance_runner) { create(:ci_runner, :instance) }
-          let(:mutation_params) do
-            {
-              id: instance_runner.to_global_id,
-              description: 'updated description',
-              associated_projects: [project2.to_global_id.to_s]
-            }
-          end
+        context 'with id set to instance runner', :enable_admin_mode do
+          let_it_be(:user) { create(:user, :admin) }
+          let_it_be(:runner) { create(:ci_runner, :instance) }
 
           it 'raises error', :aggregate_failures do
             expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
               response
             end
+          end
+        end
+
+        def setup_service_expectations
+          expect_next_instance_of(
+            ::Ci::Runners::SetRunnerAssociatedProjectsService,
+            {
+              runner: runner,
+              current_user: user,
+              project_ids: new_projects.map(&:id)
+            }
+          ) do |service|
+            expect(service).to receive(:execute).and_call_original
           end
         end
       end
