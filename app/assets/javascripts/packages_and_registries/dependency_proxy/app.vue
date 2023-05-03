@@ -114,8 +114,11 @@ export default {
     showDeleteDropdown() {
       return this.group.dependencyProxyManifests?.nodes.length > 0 && this.canClearCache;
     },
+    dependencyProxyImagePrefix() {
+      return this.group.dependencyProxyImagePrefix;
+    },
     showDependencyProxyImagePrefix() {
-      return this.group.dependencyProxyImagePrefix?.length > 0;
+      return this.dependencyProxyImagePrefix?.length > 0;
     },
   },
   methods: {
@@ -208,6 +211,7 @@ export default {
 
     <manifests-list
       v-if="manifests && manifests.length"
+      :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
       :loading="$apollo.queries.group.loading"
       :manifests="manifests"
       :pagination="pageInfo"

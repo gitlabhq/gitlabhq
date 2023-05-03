@@ -615,6 +615,7 @@ flags are added to the scanner's CLI options.
 | Analyzer                                                                     | CLI option         | Description |
 |------------------------------------------------------------------------------|--------------------|------------------------------------------------------------------------------|
 | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) | `--max-memory`     | Sets the maximum system memory to use when running a rule on a single file. Measured in MB. |
+| [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) | `--neverignore` | Never ignore security issues, even if they have an “ignore” directive in a comment. Adding this option is likely to result in the analyzer detecting additional vulnerability findings which cannot be automatically resolved. |
 
 #### Custom CI/CD variables
 

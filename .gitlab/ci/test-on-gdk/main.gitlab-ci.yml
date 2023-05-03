@@ -3,6 +3,27 @@ default:
 
 include:
   - local: .gitlab/ci/package-and-test/rules.gitlab-ci.yml
+  - local: .gitlab/ci/package-and-test/variables.gitlab-ci.yml
+  - project: 'gitlab-org/quality/pipeline-common'
+    ref: 3.1.3
+    file:
+      - /ci/base.gitlab-ci.yml
+      - /ci/allure-report.yml
+      - /ci/knapsack-report.yml
+
+stages:
+  - test
+  - report
+  - notify
+
+.qa-install:
+  variables:
+    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+    BUNDLE_SILENCE_ROOT_WARNING: "true"
+    RUN_WITH_BUNDLE: "true"  # instructs pipeline to install and run gitlab-qa gem via bundler
+    QA_PATH: qa  # sets the optional path for bundler to run from
+  extends:
+    - .gitlab-qa-install
 
 dont-interrupt-me:
   extends: .rules:dont-interrupt
@@ -10,6 +31,25 @@ dont-interrupt-me:
   interruptible: false
   script:
     - echo "This jobs makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ee/ci/yaml/#interruptible."
+
+download-knapsack-report:
+  extends:
+    - .gitlab-qa-image
+    - .rules:download-knapsack
+  stage: .pre
+  variables:
+    KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
+    GIT_STRATEGY: none
+  script:
+    # when using qa-image, code runs in /home/gitlab/qa folder
+    - bundle exec rake "knapsack:download[test]"
+    - mkdir -p "$KNAPSACK_DIR" && cp knapsack/*.json "${KNAPSACK_DIR}/"
+    - echo "$PROCESS_TEST_RESULTS"
+  allow_failure: true
+  artifacts:
+    paths:
+      - qa/knapsack/*.json
+    expire_in: 1 day
 
 .run-tests:
   stage: test
@@ -25,15 +65,15 @@ dont-interrupt-me:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     QA_GDK_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-qa-gdk:master"
-    QA_GENERATE_ALLURE_REPORT: "false"
+    QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "false"
-    QA_RUN_TYPE: e2e-test-on-gdk
     TEST_LICENSE_MODE: $QA_TEST_LICENSE_MODE
     EE_LICENSE: $QA_EE_LICENSE
     GITHUB_ACCESS_TOKEN: $QA_GITHUB_ACCESS_TOKEN
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     QA_KNAPSACK_REPORTS: qa-smoke,ee-instance-parallel
+    RSPEC_REPORT_OPTS: "--format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec-${CI_JOB_ID}.htm --color --format documentation"
   timeout: 2 hours
   artifacts:
     when: always
@@ -41,6 +81,8 @@ dont-interrupt-me:
       - test_output
       - logs
     expire_in: 7 days
+    reports:
+      junit: test_output/**/rspec-*.xml
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
     - docker pull ${QA_GDK_IMAGE}
@@ -57,8 +99,8 @@ dont-interrupt-me:
         --volume $CI_PROJECT_DIR/test_output:/home/gdk/gdk/gitlab/qa/tmp:z \
         --volume $CI_PROJECT_DIR/logs/gdk:/home/gdk/gdk/log \
         --volume $CI_PROJECT_DIR/logs/gitlab:/home/gdk/gdk/gitlab/log \
-        ${QA_GDK_IMAGE} "${CI_COMMIT_SHA}" "$TEST_GDK_TAGS --tag ~requires_praefect" || true
-    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk_and_tests\r\e[0K"
+        ${QA_GDK_IMAGE} "${CI_COMMIT_SHA}" "$RSPEC_REPORT_OPTS $TEST_GDK_TAGS --tag ~requires_praefect"
+    # The above image's launch script takes two arguments only - first one is the commit sha and the second one Rspec Args
   allow_failure: true
 
 test-on-gdk-smoke:
@@ -79,3 +121,98 @@ test-on-gdk-full:
     QA_KNAPSACK_REPORT_NAME: ee-instance-parallel
   rules:
     - when: manual
+
+# ==========================================
+# Post test stage
+# ==========================================
+e2e-test-report:
+  extends:
+    - .generate-allure-report-base
+    - .rules:report:allure-report
+  stage: report
+  variables:
+    ALLURE_JOB_NAME: e2e-test-on-gdk
+    ALLURE_RESULTS_GLOB: test_output/allure-results
+    GITLAB_AUTH_TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE
+    ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
+    ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
+
+upload-knapsack-report:
+  extends:
+    - .generate-knapsack-report-base
+    - .qa-install
+    - .ruby-qa-image
+    - .rules:report:process-results
+  variables:
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/test_output/knapsack/*/*.json
+  stage: report
+  when: always
+
+export-test-metrics:
+  extends:
+    - .qa-install
+    - .ruby-qa-image
+    - .rules:report:process-results
+  stage: report
+  when: always
+  script:
+    - pwd
+    - bundle exec rake "ci:export_test_metrics[$CI_PROJECT_DIR/test_output/test-metrics-*.json]"
+
+relate-test-failures:
+  extends:
+    - .qa-install
+    - .ruby-qa-image
+    - .rules:report:process-results
+  stage: report
+  variables:
+    QA_FAILURES_REPORTING_PROJECT: gitlab-org/gitlab
+    QA_FAILURES_MAX_DIFF_RATIO: "0.15"
+    GITLAB_QA_ACCESS_TOKEN: $QA_GITLAB_CI_TOKEN
+  when: on_failure
+  script:
+    - |
+      bundle exec gitlab-qa-report \
+        --relate-failure-issue "$CI_PROJECT_DIR/test_output/rspec-*.json" \
+        --project "$QA_FAILURES_REPORTING_PROJECT" \
+        --max-diff-ratio "$QA_FAILURES_MAX_DIFF_RATIO"
+
+generate-test-session:
+  extends:
+    - .qa-install
+    - .ruby-qa-image
+    - .rules:report:process-results
+  stage: report
+  variables:
+    QA_TESTCASE_SESSIONS_PROJECT: gitlab-org/quality/testcase-sessions
+    GITLAB_QA_ACCESS_TOKEN: $QA_TEST_SESSION_TOKEN
+    GITLAB_CI_API_TOKEN: $QA_GITLAB_CI_TOKEN
+  when: always
+  script:
+    - |
+      bundle exec gitlab-qa-report \
+        --generate-test-session "$CI_PROJECT_DIR/test_output/rspec-*.json" \
+        --project "$QA_TESTCASE_SESSIONS_PROJECT"
+  artifacts:
+    when: always
+    expire_in: 1d
+    paths:
+      - qa/REPORT_ISSUE_URL
+
+notify-slack:
+  extends:
+    - .notify-slack-qa
+    - .qa-install
+    - .ruby-qa-image
+    - .rules:report:process-results
+  stage: notify
+  variables:
+    ALLURE_JOB_NAME: e2e-test-on-gdk
+    SLACK_ICON_EMOJI: ci_failing
+    STATUS_SYM: ☠️
+    STATUS: failed
+    TYPE: "(e2e-test-on-gdk) "
+  when: on_failure
+  script:
+    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/test_output/rspec-*.xml"  # generate summary
+    - !reference [.notify-slack-qa, script]

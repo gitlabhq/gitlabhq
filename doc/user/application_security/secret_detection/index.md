@@ -460,6 +460,41 @@ For more information on the syntax of passthroughs, see the
 [passthroughs section on the SAST customize rulesets](../sast/customize_rulesets.md#the-analyzerpassthrough-section)
 page.
 
+#### Extending the default configuration
+
+You can extend the default configuration with additional changes by using [Gitleaks `extend` support](https://github.com/gitleaks/gitleaks#configuration).
+
+In the following `file` passthrough example, the string `glpat-1234567890abcdefghij` is ignored by Secret Detection. That GitLab personal access token (PAT) is used in test cases. Detection of it would be a false positive.
+
+The `secret-detection-ruleset.toml` file defines that the configuration in `extended-gitleaks-config.toml` file is to be included. The `extended-gitleaks-config.toml` file defines the custom Gitleaks configuration. The `allowlist` stanza defines a regular expression that matches the secret that is to be ignored ("allowed").
+
+```toml
+# .gitlab/secret-detection-ruleset.toml
+[secrets]
+  description = 'secrets custom rules configuration'
+
+  [[secrets.passthrough]]
+    type  = "file"
+    target = "gitleaks.toml"
+    value = "extended-gitleaks-config.toml"
+```
+
+```toml
+# extended-gitleaks-config.toml
+title = "extension of gitlab's default gitleaks config"
+
+[extend]
+# Extends default packaged path
+path = "/gitleaks.toml"
+
+[allowlist]
+  description = "allow list of test tokens to ignore in detection"
+  regexTarget = "match"
+  regexes = [
+    '''glpat-1234567890abcdefghij''',
+  ]
+```
+
 ## Running Secret Detection in an offline environment **(PREMIUM SELF)**
 
 An offline environment has limited, restricted, or intermittent access to external resources through

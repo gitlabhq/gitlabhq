@@ -14574,6 +14574,9 @@ msgstr ""
 msgid "DependencyProxy|Contains %{count} blobs of images (%{size})"
 msgstr ""
 
+msgid "DependencyProxy|Copy image path"
+msgstr ""
+
 msgid "DependencyProxy|Copy prefix"
 msgstr ""
 
@@ -14581,6 +14584,9 @@ msgid "DependencyProxy|Dependency Proxy"
 msgstr ""
 
 msgid "DependencyProxy|Dependency Proxy image prefix"
+msgstr ""
+
+msgid "DependencyProxy|Digest: %{shortDigest}"
 msgstr ""
 
 msgid "DependencyProxy|Enable Dependency Proxy"
@@ -21044,7 +21050,7 @@ msgstr ""
 msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr ""
 
-msgid "GroupSAML|Some todos may be hidden because your SAML session has expired. Click to reauthenticate with the following groups to view hidden todos:"
+msgid "GroupSAML|Some to-do items may be hidden because your SAML session has expired. Select the group’s path to reauthenticate and view the hidden to-do items."
 msgstr ""
 
 msgid "GroupSAML|The SCIM token is now hidden. To see the value of the token again, you need to %{linkStart}reset it%{linkEnd}."

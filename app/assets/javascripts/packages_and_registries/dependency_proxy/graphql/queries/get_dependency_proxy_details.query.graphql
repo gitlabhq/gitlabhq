@@ -19,6 +19,7 @@ query getDependencyProxyDetails(
       nodes {
         id
         createdAt
+        digest
         imageName
         status
       }

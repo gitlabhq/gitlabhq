@@ -165,6 +165,7 @@ describe('DependencyProxyApp', () => {
 
             it('shows list', () => {
               expect(findManifestList().props()).toMatchObject({
+                dependencyProxyImagePrefix: proxyData().dependencyProxyImagePrefix,
                 manifests: proxyManifests(),
                 pagination: pagination(),
               });

@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ManifestRow from '~/packages_and_registries/dependency_proxy/components/manifest_row.vue';
 import Component from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
 import {
+  proxyData,
   proxyManifests,
   pagination,
 } from 'jest/packages_and_registries/dependency_proxy/mock_data';
@@ -11,6 +12,7 @@ describe('Manifests List', () => {
   let wrapper;
 
   const defaultProps = {
+    dependencyProxyImagePrefix: proxyData().dependencyProxyImagePrefix,
     manifests: proxyManifests(),
     pagination: pagination(),
     loading: false,
@@ -42,9 +44,15 @@ describe('Manifests List', () => {
   it('binds a manifest to each row', () => {
     createComponent();
 
-    expect(findRows().at(0).props()).toMatchObject({
-      manifest: defaultProps.manifests[0],
-    });
+    expect(findRows().at(0).props('manifest')).toBe(defaultProps.manifests[0]);
+  });
+
+  it('binds a dependencyProxyImagePrefix to each row', () => {
+    createComponent();
+
+    expect(findRows().at(0).props('dependencyProxyImagePrefix')).toBe(
+      proxyData().dependencyProxyImagePrefix,
+    );
   });
 
   describe('loading', () => {

@@ -25,6 +25,11 @@ export default {
       required: false,
       default: () => false,
     },
+    dependencyProxyImagePrefix: {
+      type: String,
+      default: '',
+      required: false,
+    },
   },
   i18n: {
     listTitle: s__('DependencyProxy|Image list'),
@@ -45,7 +50,12 @@ export default {
       <div
         class="gl-border-t-1 gl-border-gray-100 gl-border-t-solid gl-display-flex gl-flex-direction-column"
       >
-        <manifest-row v-for="(manifest, index) in manifests" :key="index" :manifest="manifest" />
+        <manifest-row
+          v-for="(manifest, index) in manifests"
+          :key="index"
+          :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
+          :manifest="manifest"
+        />
       </div>
       <div class="gl-display-flex gl-justify-content-center">
         <gl-keyset-pagination

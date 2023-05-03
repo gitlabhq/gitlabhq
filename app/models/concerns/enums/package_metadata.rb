@@ -17,12 +17,21 @@ module Enums
       cbl_mariner: 12
     }.with_indifferent_access.freeze
 
+    ADVISORY_SOURCES = {
+      glad: 1, # gitlab advisory db
+      trivy: 2
+    }.with_indifferent_access.freeze
+
     def self.purl_types
       PURL_TYPES
     end
 
     def self.purl_types_numerical
       purl_types.invert
+    end
+
+    def self.advisory_sources
+      ADVISORY_SOURCES
     end
   end
 end

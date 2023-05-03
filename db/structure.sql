@@ -11844,6 +11844,7 @@ CREATE TABLE application_settings (
     encrypted_tofa_client_library_fetch_access_token_method_iv bytea,
     encrypted_tofa_access_token_expires_in bytea,
     encrypted_tofa_access_token_expires_in_iv bytea,
+    remember_me_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -20224,6 +20225,64 @@ CREATE SEQUENCE plans_id_seq
 
 ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
+CREATE TABLE pm_advisories (
+    id bigint NOT NULL,
+    advisory_xid text NOT NULL,
+    published_date date NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    source_xid smallint NOT NULL,
+    title text,
+    description text,
+    cvss_v2 text,
+    cvss_v3 text,
+    urls text[] DEFAULT '{}'::text[],
+    identifiers jsonb NOT NULL,
+    CONSTRAINT check_152def3868 CHECK ((char_length(cvss_v2) <= 128)),
+    CONSTRAINT check_19cbd06439 CHECK ((char_length(advisory_xid) <= 36)),
+    CONSTRAINT check_bed97fa77a CHECK ((char_length(cvss_v3) <= 128)),
+    CONSTRAINT check_e4bfd3ffbf CHECK ((char_length(title) <= 256)),
+    CONSTRAINT check_fee880f7aa CHECK ((char_length(description) <= 8192)),
+    CONSTRAINT chk_rails_e73af9de76 CHECK ((cardinality(urls) <= 10))
+);
+
+CREATE SEQUENCE pm_advisories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_advisories_id_seq OWNED BY pm_advisories.id;
+
+CREATE TABLE pm_affected_packages (
+    id bigint NOT NULL,
+    pm_advisory_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    purl_type smallint NOT NULL,
+    package_name text NOT NULL,
+    distro_version text,
+    solution text,
+    affected_range text NOT NULL,
+    fixed_versions text[] DEFAULT '{}'::text[],
+    overridden_advisory_fields jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_5dd528a2be CHECK ((char_length(package_name) <= 256)),
+    CONSTRAINT check_80dea16c7b CHECK ((char_length(affected_range) <= 512)),
+    CONSTRAINT check_d1d4646298 CHECK ((char_length(solution) <= 2048)),
+    CONSTRAINT check_ec4c8efb5e CHECK ((char_length(distro_version) <= 256)),
+    CONSTRAINT chk_rails_a0f80d74e0 CHECK ((cardinality(fixed_versions) <= 10))
+);
+
+CREATE SEQUENCE pm_affected_packages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_affected_packages_id_seq OWNED BY pm_affected_packages.id;
+
 CREATE TABLE pm_checkpoints (
     sequence integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25483,6 +25542,10 @@ ALTER TABLE ONLY plan_limits ALTER COLUMN id SET DEFAULT nextval('plan_limits_id
 
 ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
 
+ALTER TABLE ONLY pm_advisories ALTER COLUMN id SET DEFAULT nextval('pm_advisories_id_seq'::regclass);
+
+ALTER TABLE ONLY pm_affected_packages ALTER COLUMN id SET DEFAULT nextval('pm_affected_packages_id_seq'::regclass);
+
 ALTER TABLE ONLY pm_licenses ALTER COLUMN id SET DEFAULT nextval('pm_licenses_id_seq'::regclass);
 
 ALTER TABLE ONLY pm_package_version_licenses ALTER COLUMN id SET DEFAULT nextval('pm_package_version_licenses_id_seq'::regclass);
@@ -27777,6 +27840,12 @@ ALTER TABLE ONLY plan_limits
 ALTER TABLE ONLY plans
     ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY pm_advisories
+    ADD CONSTRAINT pm_advisories_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY pm_affected_packages
+    ADD CONSTRAINT pm_affected_packages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY pm_checkpoints
     ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (purl_type);
 
@@ -29386,6 +29455,8 @@ CREATE UNIQUE INDEX finding_link_name_url_idx ON vulnerability_finding_links USI
 CREATE UNIQUE INDEX finding_link_url_idx ON vulnerability_finding_links USING btree (vulnerability_occurrence_id, url) WHERE (name IS NULL);
 
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
+
+CREATE UNIQUE INDEX i_affected_packages_unique_for_upsert ON pm_affected_packages USING btree (pm_advisory_id, purl_type, package_name, distro_version);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
 
@@ -31862,6 +31933,10 @@ CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_text_pattern ON ci_pipe
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
+
+CREATE UNIQUE INDEX index_pm_advisories_on_advisory_xid_and_source_xid ON pm_advisories USING btree (advisory_xid, source_xid);
+
+CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_packages USING btree (pm_advisory_id);
 
 CREATE INDEX index_pm_package_version_licenses_on_pm_license_id ON pm_package_version_licenses USING btree (pm_license_id);
 
@@ -35734,6 +35809,9 @@ ALTER TABLE ONLY gpg_signatures
 
 ALTER TABLE ONLY project_authorizations
     ADD CONSTRAINT fk_rails_11e7aa3ed9 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pm_affected_packages
+    ADD CONSTRAINT fk_rails_1279c1b9a1 FOREIGN KEY (pm_advisory_id) REFERENCES pm_advisories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY description_versions
     ADD CONSTRAINT fk_rails_12b144011c FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

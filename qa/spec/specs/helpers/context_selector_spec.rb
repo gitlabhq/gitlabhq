@@ -132,6 +132,20 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
       end
     end
 
+    context 'with generic condition context matcher' do
+      it 'matches truthy lambda condition result' do
+        expect(described_class.context_matches?(condition: -> { true })).to be_truthy
+      end
+
+      it 'matches truthy condition result' do
+        expect(described_class.context_matches?(condition: true)).to be_truthy
+      end
+
+      it 'skips falsey condition result' do
+        expect(described_class.context_matches?(condition: false)).to be_falsey
+      end
+    end
+
     it 'returns false for mismatching' do
       QA::Runtime::Scenario.define(:gitlab_address, "https://staging.gitlab.com")
 

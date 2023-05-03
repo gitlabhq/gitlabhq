@@ -50,7 +50,8 @@ by default:
 |        Consul        |      No       |       Port       |      X      | 8300, 8301(UDP), 8500, 8600[^Consul-notes] |
 |       Patroni        |      No       |       Port       |      X      |                    8008                    |
 |      GitLab KAS      |      Yes       |       Port       |      X      |                    8150                    |
-|        Gitaly        |      No       |       Port       |      X      |                    8075                    |
+|        Gitaly        |      No       |       Port       |      X      |                8075 or 9999 (TLS)           |
+|       Praefect       |      No       |       Port       |      X      |                2305 or 3305 (TLS)           |
 
 Legend:
 

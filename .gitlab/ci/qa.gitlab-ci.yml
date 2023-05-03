@@ -128,6 +128,8 @@ e2e:test-on-gdk:
     # In MRs we assume the last scheduled master pipeline built the image already.
     - job: build-qa-on-gdk-master-image
       optional: true
+  variables:
+    QA_RUN_TYPE: e2e-test-on-gdk # Setting it here so that all the child pipeline reporting jobs inherit this variable
   allow_failure: true
   trigger:
     strategy: depend

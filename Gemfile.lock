@@ -1154,7 +1154,7 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (0.23.0)
+    prometheus-client-mmap (0.23.1)
       rb_sys (~> 0.9)
     pry (0.14.2)
       coderay (~> 1.1)
