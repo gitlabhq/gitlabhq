@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.9.7 (2023-05-03)
+
+### Security (1 change)
+
+- [Only maintainers of projects should be able to assign runners to them](gitlab-org/security/gitlab@695748314b758ca2d9992df7509025a6ac868000) ([merge request](gitlab-org/security/gitlab!3236))
+
 ## 15.9.6 (2023-05-01)
 
 ### Security (8 changes)
