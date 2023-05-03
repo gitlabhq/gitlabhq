@@ -33,15 +33,9 @@ module Ci
           current_project_ids = runner.projects.ids
           # rubocop:enable CodeReuse/ActiveRecord
 
-          unless associate_new_projects(new_project_ids, current_project_ids)
-            response = ServiceResponse.error(message: 'failed to assign projects to runner')
-            raise ActiveRecord::Rollback, response.errors
-          end
-
-          unless disassociate_old_projects(new_project_ids, current_project_ids)
-            response = ServiceResponse.error(message: 'failed to destroy runner project')
-            raise ActiveRecord::Rollback, response.errors
-          end
+          response = associate_new_projects(new_project_ids, current_project_ids)
+          response = disassociate_old_projects(new_project_ids, current_project_ids) if response.success?
+          raise ActiveRecord::Rollback, response.errors unless response.success?
         end
 
         response
@@ -49,16 +43,29 @@ module Ci
 
       def associate_new_projects(new_project_ids, current_project_ids)
         missing_projects = Project.id_in(new_project_ids - current_project_ids)
-        missing_projects.all? { |project| runner.assign_to(project, current_user) }
+
+        unless missing_projects.all? { |project| current_user.can?(:register_project_runners, project) }
+          return ServiceResponse.error(message: 'user is not authorized to add runners to project')
+        end
+
+        unless missing_projects.all? { |project| runner.assign_to(project, current_user) }
+          return ServiceResponse.error(message: 'failed to assign projects to runner')
+        end
+
+        ServiceResponse.success
       end
 
       def disassociate_old_projects(new_project_ids, current_project_ids)
         projects_to_be_deleted = current_project_ids - new_project_ids
-        return true if projects_to_be_deleted.empty?
+        return ServiceResponse.success if projects_to_be_deleted.empty?
 
-        Ci::RunnerProject
-          .destroy_by(project_id: projects_to_be_deleted)
-          .all?(&:destroyed?)
+        all_destroyed =
+          Ci::RunnerProject
+            .destroy_by(project_id: projects_to_be_deleted)
+            .all?(&:destroyed?)
+        return ServiceResponse.success if all_destroyed
+
+        ServiceResponse.error(message: 'failed to destroy runner project')
       end
 
       attr_reader :runner, :current_user, :project_ids
