@@ -150,12 +150,21 @@ export default {
     },
   },
   methods: {
+    updateHistoryAndFetchCount(status = null) {
+      this.$apollo.queries.jobsCount.refetch({ statuses: status });
+
+      updateHistory({
+        url: setUrlParams({ statuses: status }, window.location.href, true),
+      });
+    },
     fetchJobsByStatus(scope) {
       this.infiniteScrollingTriggered = false;
 
       if (this.scope === scope) return;
 
       this.scope = scope;
+
+      if (!this.scope) this.updateHistoryAndFetchCount();
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });
     },
@@ -178,12 +187,8 @@ export default {
       // all filters have been cleared reset query param
       // and refetch jobs/count with defaults
       if (!filters.length) {
-        updateHistory({
-          url: setUrlParams({ statuses: null }, window.location.href, true),
-        });
-
+        this.updateHistoryAndFetchCount();
         this.$apollo.queries.jobs.refetch({ statuses: null });
-        this.$apollo.queries.jobsCount.refetch({ statuses: null });
 
         return;
       }
@@ -202,12 +207,8 @@ export default {
         }
 
         if (filter.type === 'status') {
-          updateHistory({
-            url: setUrlParams({ statuses: filter.value.data }, window.location.href, true),
-          });
-
+          this.updateHistoryAndFetchCount(filter.value.data);
           this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
-          this.$apollo.queries.jobsCount.refetch({ statuses: filter.value.data });
         }
       });
     },

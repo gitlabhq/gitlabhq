@@ -21,12 +21,10 @@ export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 
 export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
-  clearTimeout(sidebarState.openPeekTimer);
-  clearTimeout(sidebarState.closePeekTimer);
-
   findPage().classList.toggle(SIDEBAR_COLLAPSED_CLASS, collapsed);
 
   sidebarState.isPeek = false;
+  sidebarState.isPeekable = Boolean(gon.features?.superSidebarPeek) && collapsed;
   sidebarState.isCollapsed = collapsed;
 
   if (saveCookie && isDesktopBreakpoint()) {
@@ -44,7 +42,7 @@ export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = fal
   toggleSuperSidebarCollapsed(collapsed, false);
 };
 
-export const bindSuperSidebarCollapsedEvents = () => {
+export const bindSuperSidebarCollapsedEvents = (forceDesktopExpandedSidebar = false) => {
   let previousWindowWidth = window.innerWidth;
 
   const callback = debounce(() => {
@@ -52,7 +50,7 @@ export const bindSuperSidebarCollapsedEvents = () => {
     const widthChanged = previousWindowWidth !== newWindowWidth;
 
     if (widthChanged) {
-      initSuperSidebarCollapsedState();
+      initSuperSidebarCollapsedState(forceDesktopExpandedSidebar);
     }
     previousWindowWidth = newWindowWidth;
   }, 100);

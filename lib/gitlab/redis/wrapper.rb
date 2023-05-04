@@ -160,35 +160,10 @@ module Gitlab
       def raw_config_hash
         config_data = fetch_config
 
-        config_hash =
-          if config_data
-            config_data.is_a?(String) ? { url: config_data } : config_data.deep_symbolize_keys
-          else
-            { url: '' }
-          end
+        return { url: '' } if config_data.nil?
+        return { url: config_data } if config_data.is_a?(String)
 
-        if config_hash[:url].blank? && config_hash[:cluster].blank?
-          config_hash[:url] = legacy_fallback_urls[self.class.store_name] || legacy_fallback_urls[self.class.config_fallback.store_name]
-        end
-
-        config_hash
-      end
-
-      # These URLs were defined for cache, queues, and shared_state in
-      # code. They are used only when no config file exists at all for a
-      # given instance. The configuration does not seem particularly
-      # useful - it uses different ports on localhost - but we cannot
-      # confidently delete it as we don't know if any instances rely on
-      # this.
-      #
-      # DO NOT ADD new instances here. All new instances should define a
-      # `.config_fallback`, which will then be used to look up this URL.
-      def legacy_fallback_urls
-        {
-          'Cache' => 'redis://localhost:6380',
-          'Queues' => 'redis://localhost:6381',
-          'SharedState' => 'redis://localhost:6382'
-        }
+        config_data.deep_symbolize_keys
       end
 
       def fetch_config

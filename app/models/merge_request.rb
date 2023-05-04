@@ -41,13 +41,13 @@ class MergeRequest < ApplicationRecord
   belongs_to :merge_user, class_name: "User"
 
   has_internal_id :iid, scope: :target_project, track_if: -> { !importing? },
-                        init: ->(mr, scope) do
-                                if mr
-                                  mr.target_project&.merge_requests&.maximum(:iid)
-                                elsif scope[:project]
-                                  where(target_project: scope[:project]).maximum(:iid)
-                                end
-                              end
+    init: ->(mr, scope) do
+      if mr
+        mr.target_project&.merge_requests&.maximum(:iid)
+      elsif scope[:project]
+        where(target_project: scope[:project]).maximum(:iid)
+      end
+    end
 
   has_many :merge_request_diffs,
     -> { regular }, inverse_of: :merge_request
@@ -350,11 +350,12 @@ class MergeRequest < ApplicationRecord
   end
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
-    preload_routables
-      .preload(:assignees, :author, :unresolved_notes, :labels, :milestone,
-               :timelogs, :latest_merge_request_diff, :reviewers,
-               target_project: :project_feature,
-               metrics: [:latest_closed_by, :merged_by])
+    preload_routables.preload(
+      :assignees, :author, :unresolved_notes, :labels, :milestone,
+      :timelogs, :latest_merge_request_diff, :reviewers,
+      target_project: :project_feature,
+      metrics: [:latest_closed_by, :merged_by]
+    )
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
@@ -397,8 +398,10 @@ class MergeRequest < ApplicationRecord
   scope :preload_target_project, -> { preload(:target_project) }
   scope :preload_target_project_with_namespace, -> { preload(target_project: [:namespace]) }
   scope :preload_routables, -> do
-    preload(target_project: [:route, { namespace: :route }],
-            source_project: [:route, { namespace: :route }])
+    preload(
+      target_project: [:route, { namespace: :route }],
+      source_project: [:route, { namespace: :route }]
+    )
   end
   scope :preload_author, -> { preload(:author) }
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
@@ -1019,8 +1022,7 @@ class MergeRequest < ApplicationRecord
     return true if target_project == source_project
     return true unless source_project_missing?
 
-    errors.add :validate_fork,
-               'Source project is not a fork of the target project'
+    errors.add :validate_fork, 'Source project is not a fork of the target project'
   end
 
   def validate_reviewer_size_length
@@ -1187,8 +1189,10 @@ class MergeRequest < ApplicationRecord
   alias_method :wip_title, :draft_title
 
   def mergeable?(skip_ci_check: false, skip_discussions_check: false)
-    return false unless mergeable_state?(skip_ci_check: skip_ci_check,
-                                         skip_discussions_check: skip_discussions_check)
+    return false unless mergeable_state?(
+      skip_ci_check: skip_ci_check,
+      skip_discussions_check: skip_discussions_check
+    )
 
     check_mergeability
 
@@ -1209,10 +1213,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_state?(skip_ci_check: false, skip_discussions_check: false)
-    additional_checks = execute_merge_checks(params: {
-                                               skip_ci_check: skip_ci_check,
-                                               skip_discussions_check: skip_discussions_check
-                                             })
+    additional_checks = execute_merge_checks(
+      params: {
+        skip_ci_check: skip_ci_check,
+        skip_discussions_check: skip_discussions_check
+      }
+    )
     additional_checks.success?
   end
 

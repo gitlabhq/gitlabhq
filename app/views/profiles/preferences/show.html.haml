@@ -5,6 +5,7 @@
 - user_fields = { theme: user_theme_id, gitpod_enabled: @user.gitpod_enabled, sourcegraph_enabled: @user.sourcegraph_enabled }.to_json
 - @themes = Gitlab::Themes::available_themes.to_json
 - data_attributes = { themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path }
+- @force_desktop_expanded_sidebar = true
 
 - Gitlab::Themes.each do |theme|
   = stylesheet_link_tag "themes/#{theme.css_filename}" if theme.css_filename

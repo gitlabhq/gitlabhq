@@ -171,8 +171,10 @@ class Note < ApplicationRecord
 
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits
-    includes(:author, :noteable, :updated_by,
-             project: [:project_members, :namespace, { group: [:group_members] }])
+    includes(
+      :author, :noteable, :updated_by,
+      project: [:project_members, :namespace, { group: [:group_members] }]
+    )
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
 

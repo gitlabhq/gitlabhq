@@ -31,6 +31,9 @@ module Gitlab
 
       attr_reader :build, :ttl
 
+      delegate :project, :user, :pipeline, :runner, to: :build
+      delegate :source_ref, :source_ref_path, to: :pipeline
+
       def reserved_claims
         now = Time.now.to_i
 
@@ -53,8 +56,8 @@ module Gitlab
           user_id: user&.id.to_s,
           user_login: user&.username,
           user_email: user&.email,
-          pipeline_id: build.pipeline.id.to_s,
-          pipeline_source: build.pipeline.source.to_s,
+          pipeline_id: pipeline.id.to_s,
+          pipeline_source: pipeline.source.to_s,
           job_id: build.id.to_s,
           ref: source_ref,
           ref_type: ref_type,
@@ -91,28 +94,8 @@ module Gitlab
         public_key.to_jwk[:kid]
       end
 
-      def project
-        build.project
-      end
-
       def namespace
         project.namespace
-      end
-
-      def user
-        build.user
-      end
-
-      def pipeline
-        build.pipeline
-      end
-
-      def source_ref
-        pipeline.source_ref
-      end
-
-      def source_ref_path
-        pipeline.source_ref_path
       end
 
       def ref_type
@@ -125,10 +108,6 @@ module Gitlab
 
       def environment_protected?
         false # Overridden in EE
-      end
-
-      def runner
-        build.runner
       end
     end
   end

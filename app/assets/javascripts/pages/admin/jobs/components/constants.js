@@ -15,6 +15,8 @@ export const PRIMARY_ACTION_TEXT = s__('AdminArea|Yes, proceed');
 export const CANCEL_JOBS_WARNING = s__(
   "AdminArea|You're about to cancel all running and pending jobs across this instance. Do you want to proceed?",
 );
+export const RUNNER_EMPTY_TEXT = __('None');
+export const RUNNER_NO_DESCRIPTION = s__('Runners|No description');
 
 /* Admin Table constants */
 export const DEFAULT_FIELDS_ADMIN = [

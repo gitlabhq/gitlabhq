@@ -2,6 +2,7 @@
 - page_title s_("Profiles|Edit Profile")
 - add_page_specific_style 'page_bundles/profile'
 - gravatar_link = link_to Gitlab.config.gravatar.host, 'https://' + Gitlab.config.gravatar.host
+- @force_desktop_expanded_sidebar = true
 
 = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user gl-mt-3 js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
   .row.js-search-settings-section

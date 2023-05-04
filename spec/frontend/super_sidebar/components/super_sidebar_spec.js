@@ -4,19 +4,24 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
+import SidebarPeekBehavior, {
+  STATE_CLOSED,
+  STATE_WILL_OPEN,
+  STATE_OPEN,
+  STATE_WILL_CLOSE,
+} from '~/super_sidebar/components/sidebar_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
-import {
-  SUPER_SIDEBAR_PEEK_OPEN_DELAY,
-  SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
-} from '~/super_sidebar/constants';
+import { sidebarState } from '~/super_sidebar/constants';
 import {
   toggleSuperSidebarCollapsed,
   isCollapsed,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData } from '../mock_data';
+
+const initialSidebarState = { ...sidebarState };
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
 const closeContextSwitcherMock = jest.fn();
@@ -28,16 +33,19 @@ const TrialStatusPopoverStub = {
   template: `<div data-testid="${trialStatusPopoverStubTestId}" />`,
 };
 
+const peekClass = 'super-sidebar-peek';
+const peekHintClass = 'super-sidebar-peek-hint';
+
 describe('SuperSidebar component', () => {
   let wrapper;
 
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
-  const findHoverArea = () => wrapper.findByTestId('super-sidebar-hover-area');
   const findUserBar = () => wrapper.findComponent(UserBar);
   const findContextSwitcher = () => wrapper.findComponent(ContextSwitcher);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
+  const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
@@ -45,14 +53,11 @@ describe('SuperSidebar component', () => {
   const createWrapper = ({
     provide = {},
     sidebarData = mockSidebarData,
-    sidebarState = {},
+    sidebarState: state = {},
   } = {}) => {
+    Object.assign(sidebarState, state);
+
     wrapper = shallowMountExtended(SuperSidebar, {
-      data() {
-        return {
-          ...sidebarState,
-        };
-      },
       provide: {
         showTrialStatusWidget: false,
         ...provide,
@@ -69,6 +74,10 @@ describe('SuperSidebar component', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    Object.assign(sidebarState, initialSidebarState);
+  });
 
   describe('default', () => {
     it('adds inert attribute when collapsed', () => {
@@ -154,12 +163,18 @@ describe('SuperSidebar component', () => {
       expect(findTrialStatusWidget().exists()).toBe(false);
       expect(findTrialStatusPopover().exists()).toBe(false);
     });
+
+    it('does not have peek behavior', () => {
+      createWrapper();
+
+      expect(findPeekBehavior().exists()).toBe(false);
+    });
   });
 
   describe('on collapse', () => {
     beforeEach(() => {
       createWrapper();
-      wrapper.vm.isCollapsed = true;
+      sidebarState.isCollapsed = true;
     });
 
     it('closes the context switcher', () => {
@@ -167,91 +182,39 @@ describe('SuperSidebar component', () => {
     });
   });
 
-  describe('when peeking on hover', () => {
-    const peekClass = 'super-sidebar-peek';
+  describe('peek behavior', () => {
+    it(`initially makes sidebar inert and peekable (${STATE_CLOSED})`, () => {
+      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
 
-    it('updates inert attribute and peek class', async () => {
-      createWrapper({
-        provide: { glFeatures: { superSidebarPeek: true } },
-        sidebarState: { isCollapsed: true },
-      });
-
-      findHoverArea().trigger('mouseenter');
-
-      jest.advanceTimersByTime(SUPER_SIDEBAR_PEEK_OPEN_DELAY - 1);
-      await nextTick();
-
-      // Not quite enough time has elapsed yet for sidebar to open
+      expect(findSidebar().attributes('inert')).toBe('inert');
+      expect(findSidebar().classes()).not.toContain(peekHintClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
-      expect(findSidebar().attributes('inert')).toBe('inert');
-
-      jest.advanceTimersByTime(1);
-      await nextTick();
-
-      // Exactly enough time has elapsed to open
-      expect(findSidebar().classes()).toContain(peekClass);
-      expect(findSidebar().attributes('inert')).toBe(undefined);
-
-      // Important: assume the cursor enters the sidebar
-      findSidebar().trigger('mouseenter');
-
-      jest.runAllTimers();
-      await nextTick();
-
-      // Sidebar remains peeked open indefinitely without a mouseleave
-      expect(findSidebar().classes()).toContain(peekClass);
-      expect(findSidebar().attributes('inert')).toBe(undefined);
-
-      findSidebar().trigger('mouseleave');
-
-      jest.advanceTimersByTime(SUPER_SIDEBAR_PEEK_CLOSE_DELAY - 1);
-      await nextTick();
-
-      // Not quite enough time has elapsed yet for sidebar to hide
-      expect(findSidebar().classes()).toContain(peekClass);
-      expect(findSidebar().attributes('inert')).toBe(undefined);
-
-      jest.advanceTimersByTime(1);
-      await nextTick();
-
-      // Exactly enough time has elapsed for sidebar to hide
-      expect(findSidebar().classes()).not.toContain('super-sidebar-peek');
-      expect(findSidebar().attributes('inert')).toBe('inert');
     });
 
-    it('eventually closes the sidebar if cursor never enters sidebar', async () => {
-      createWrapper({
-        provide: { glFeatures: { superSidebarPeek: true } },
-        sidebarState: { isCollapsed: true },
-      });
+    it(`makes sidebar inert and shows peek hint when peek state is ${STATE_WILL_OPEN}`, async () => {
+      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
 
-      findHoverArea().trigger('mouseenter');
-
-      jest.advanceTimersByTime(SUPER_SIDEBAR_PEEK_OPEN_DELAY);
+      findPeekBehavior().vm.$emit('change', STATE_WILL_OPEN);
       await nextTick();
 
-      // Sidebar is now open
-      expect(findSidebar().classes()).toContain(peekClass);
-      expect(findSidebar().attributes('inert')).toBe(undefined);
-
-      // Important: do *not* fire a mouseenter event on the sidebar here. This
-      // imitates what happens if the cursor moves away from the sidebar before
-      // it actually appears.
-
-      jest.advanceTimersByTime(SUPER_SIDEBAR_PEEK_CLOSE_DELAY - 1);
-      await nextTick();
-
-      // Not quite enough time has elapsed yet for sidebar to hide
-      expect(findSidebar().classes()).toContain(peekClass);
-      expect(findSidebar().attributes('inert')).toBe(undefined);
-
-      jest.advanceTimersByTime(1);
-      await nextTick();
-
-      // Exactly enough time has elapsed for sidebar to hide
-      expect(findSidebar().classes()).not.toContain('super-sidebar-peek');
       expect(findSidebar().attributes('inert')).toBe('inert');
+      expect(findSidebar().classes()).toContain(peekHintClass);
+      expect(findSidebar().classes()).not.toContain(peekClass);
     });
+
+    it.each([STATE_OPEN, STATE_WILL_CLOSE])(
+      'makes sidebar interactive and visible when peek state is %s',
+      async (state) => {
+        createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
+
+        findPeekBehavior().vm.$emit('change', state);
+        await nextTick();
+
+        expect(findSidebar().attributes('inert')).toBe(undefined);
+        expect(findSidebar().classes()).toContain(peekClass);
+        expect(findSidebar().classes()).not.toContain(peekHintClass);
+      },
+    );
   });
 
   describe('nav container', () => {

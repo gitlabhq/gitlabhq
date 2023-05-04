@@ -13,14 +13,6 @@ RSpec.describe Gitlab::Redis::Queues do
       expect(subject).to receive(:fetch_config) { config }
     end
 
-    context 'when the config url is blank' do
-      let(:config) { nil }
-
-      it 'has a legacy default URL' do
-        expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6381' )
-      end
-    end
-
     context 'when the config url is present' do
       let(:config) { { url: 'redis://localhost:1111' } }
 

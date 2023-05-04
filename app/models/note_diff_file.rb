@@ -19,9 +19,11 @@ class NoteDiffFile < ApplicationRecord
   def raw_diff_file
     raw_diff = Gitlab::Git::Diff.new(to_hash)
 
-    Gitlab::Diff::File.new(raw_diff,
-                           repository: project.repository,
-                           diff_refs: original_position.diff_refs,
-                           unique_identifier: id)
+    Gitlab::Diff::File.new(
+      raw_diff,
+      repository: project.repository,
+      diff_refs: original_position.diff_refs,
+      unique_identifier: id
+    )
   end
 end

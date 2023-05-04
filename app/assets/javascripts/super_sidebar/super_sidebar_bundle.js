@@ -67,7 +67,7 @@ export const initSuperSidebar = () => {
 
   const { rootPath, sidebar, toggleNewNavEndpoint, forceDesktopExpandedSidebar } = el.dataset;
 
-  bindSuperSidebarCollapsedEvents();
+  bindSuperSidebarCollapsedEvents(forceDesktopExpandedSidebar);
   initSuperSidebarCollapsedState(parseBoolean(forceDesktopExpandedSidebar));
 
   const sidebarData = JSON.parse(sidebar);

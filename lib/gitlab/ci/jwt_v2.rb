@@ -45,7 +45,7 @@ module Gitlab
         super.merge(
           runner_id: runner&.id,
           runner_environment: runner_environment,
-          sha: build.pipeline.sha
+          sha: pipeline.sha
         )
       end
 

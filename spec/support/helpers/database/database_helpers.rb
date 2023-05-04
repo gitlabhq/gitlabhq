@@ -4,11 +4,13 @@ module Database
   module DatabaseHelpers
     # In order to directly work with views using factories,
     # we can swapout the view for a table of identical structure.
-    def swapout_view_for_table(view, connection:)
+    def swapout_view_for_table(view, connection:, schema: nil)
+      table_name = [schema, "_test_#{view}_copy"].compact.join('.')
+
       connection.execute(<<~SQL.squish)
-        CREATE TABLE _test_#{view}_copy (LIKE #{view});
+        CREATE TABLE #{table_name} (LIKE #{view});
         DROP VIEW #{view};
-        ALTER TABLE _test_#{view}_copy RENAME TO #{view};
+        ALTER TABLE #{table_name} RENAME TO #{view};
       SQL
     end
 

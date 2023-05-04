@@ -3,18 +3,14 @@ import { GlButton } from '@gitlab/ui';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  sidebarState,
-  SUPER_SIDEBAR_PEEK_OPEN_DELAY,
-  SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
-} from '../constants';
+import { sidebarState } from '../constants';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import ContextSwitcher from './context_switcher.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
+import SidebarPeekBehavior, { STATE_CLOSED, STATE_WILL_OPEN } from './sidebar_peek_behavior.vue';
 
 export default {
   components: {
@@ -23,13 +19,13 @@ export default {
     ContextSwitcher,
     HelpCenter,
     SidebarMenu,
+    SidebarPeekBehavior,
     SidebarPortalTarget,
     TrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
     TrialStatusPopover: () =>
       import('ee_component/contextual_sidebar/components/trial_status_popover.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
   },
@@ -41,16 +37,25 @@ export default {
     },
   },
   data() {
-    return sidebarState;
+    return {
+      sidebarState,
+      showPeekHint: false,
+    };
   },
   computed: {
     menuItems() {
       return this.sidebarData.current_menu_items || [];
     },
+    peekClasses() {
+      return {
+        'super-sidebar-peek-hint': this.showPeekHint,
+        'super-sidebar-peek': this.sidebarState.isPeek,
+      };
+    },
   },
   watch: {
-    isCollapsed() {
-      if (this.isCollapsed) {
+    'sidebarState.isCollapsed': function isCollapsedWatcher(newIsCollapsed) {
+      if (newIsCollapsed) {
         this.$refs['context-switcher'].close();
       }
     },
@@ -68,36 +73,23 @@ export default {
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
     },
-    onHoverAreaMouseEnter() {
-      this.openPeekTimer = setTimeout(this.openPeek, SUPER_SIDEBAR_PEEK_OPEN_DELAY);
-    },
-    onHoverAreaMouseLeave() {
-      clearTimeout(this.openPeekTimer);
-    },
-    onSidebarMouseEnter() {
-      clearTimeout(this.closePeekTimer);
-    },
-    onSidebarMouseLeave() {
-      this.closePeekTimer = setTimeout(this.closePeek, SUPER_SIDEBAR_PEEK_CLOSE_DELAY);
-    },
-    closePeek() {
-      if (this.isPeek) {
-        this.isPeek = false;
-        this.isCollapsed = true;
+    onPeekChange(state) {
+      if (state === STATE_CLOSED) {
+        this.sidebarState.isPeek = false;
+        this.sidebarState.isCollapsed = true;
+        this.showPeekHint = false;
+      } else if (state === STATE_WILL_OPEN) {
+        this.sidebarState.isPeek = false;
+        this.sidebarState.isCollapsed = true;
+        this.showPeekHint = true;
+      } else {
+        this.sidebarState.isPeek = true;
+        this.sidebarState.isCollapsed = false;
+        this.showPeekHint = false;
       }
     },
-    openPeek() {
-      this.isPeek = true;
-      this.isCollapsed = false;
-
-      // Cancel and start the timer to close sidebar, in case the user moves
-      // the cursor fast enough away to not trigger a mouseenter event.
-      // This is cancelled if the user moves the cursor into the sidebar.
-      this.onSidebarMouseEnter();
-      this.onSidebarMouseLeave();
-    },
     onContextSwitcherToggled(open) {
-      this.contextSwitcherOpen = open;
+      this.sidebarState.contextSwitcherOpen = open;
     },
   },
 };
@@ -106,22 +98,14 @@ export default {
 <template>
   <div>
     <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
-    <div
-      v-if="!isPeek && glFeatures.superSidebarPeek"
-      class="super-sidebar-hover-area gl-fixed gl-left-0 gl-top-0 gl-bottom-0 gl-w-3"
-      data-testid="super-sidebar-hover-area"
-      @mouseenter="onHoverAreaMouseEnter"
-      @mouseleave="onHoverAreaMouseLeave"
-    ></div>
+
     <aside
       id="super-sidebar"
       class="super-sidebar"
-      :class="{ 'super-sidebar-peek': isPeek }"
+      :class="peekClasses"
       data-testid="super-sidebar"
       data-qa-selector="navbar"
-      :inert="isCollapsed"
-      @mouseenter="onSidebarMouseEnter"
-      @mouseleave="onSidebarMouseLeave"
+      :inert="sidebarState.isCollapsed"
     >
       <gl-button
         class="super-sidebar-skip-to gl-sr-only-focusable gl-absolute gl-left-3 gl-right-3 gl-top-3"
@@ -130,7 +114,7 @@ export default {
       >
         {{ $options.i18n.skipToMainContent }}
       </gl-button>
-      <user-bar :has-collapse-button="!isPeek" :sidebar-data="sidebarData" />
+      <user-bar :has-collapse-button="!sidebarState.isPeek" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
           class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! nav-item-link gl-py-3"
@@ -140,7 +124,7 @@ export default {
       <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
         <div
           class="gl-flex-grow-1"
-          :class="{ 'gl-overflow-auto': !contextSwitcherOpen }"
+          :class="{ 'gl-overflow-auto': !sidebarState.contextSwitcherOpen }"
           data-testid="nav-container"
         >
           <context-switcher
@@ -176,5 +160,11 @@ export default {
     >
       {{ shortcutLink.title }}
     </a>
+
+    <!--
+      Only mount SidebarPeekBehavior if the sidebar is peekable, to avoid
+      setting up event listeners unnecessarily.
+    -->
+    <sidebar-peek-behavior v-if="sidebarState.isPeekable" @change="onPeekChange" />
   </div>
 </template>

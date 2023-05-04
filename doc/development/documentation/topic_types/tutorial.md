@@ -32,6 +32,10 @@ For tutorial Markdown files, you can either:
 - Save the file in a directory with the product documentation.
 - Create a subfolder under `doc/tutorials` and name the file `index.md`.
 
+In the left nav, add the tutorial near the relevant feature documentation.
+
+Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/index.md).
+
 ## Tutorial format
 
 Tutorials should be in this format:

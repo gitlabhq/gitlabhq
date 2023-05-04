@@ -8,14 +8,6 @@ RSpec.describe Gitlab::Redis::Cache do
 
   include_examples "redis_shared_examples"
 
-  describe '#raw_config_hash' do
-    it 'has a legacy default URL' do
-      expect(subject).to receive(:fetch_config) { false }
-
-      expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6380' )
-    end
-  end
-
   describe '.active_support_config' do
     it 'has a default ttl of 8 hours' do
       expect(described_class.active_support_config[:expires_in]).to eq(8.hours)

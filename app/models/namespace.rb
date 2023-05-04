@@ -124,18 +124,18 @@ class Namespace < ApplicationRecord
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
   delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,
-           to: :namespace_settings, allow_nil: true
+    to: :namespace_settings, allow_nil: true
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
-           to: :namespace_settings
+    to: :namespace_settings
   delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
-           to: :namespace_settings
+    to: :namespace_settings
   delegate :allow_runner_registration_token,
-           :allow_runner_registration_token=,
-           to: :namespace_settings
+    :allow_runner_registration_token=,
+    to: :namespace_settings
   delegate :maven_package_requests_forwarding,
-           :pypi_package_requests_forwarding,
-           :npm_package_requests_forwarding,
-           to: :package_settings
+    :pypi_package_requests_forwarding,
+    :npm_package_requests_forwarding,
+    to: :package_settings
 
   before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent

@@ -22,10 +22,8 @@ module Gitlab
             log "This process prevents the migration from acquiring the necessary locks"
             log "Query: `#{wraparound_vacuum[:query]}`"
             log "Current duration: #{wraparound_vacuum[:duration].inspect}"
-            log "Process id: #{wraparound_vacuum[:pid]}"
-            log "You can wait until it completes or if absolutely necessary interrupt it using: " \
-                "`select pg_cancel_backend(#{wraparound_vacuum[:pid]});`"
-            log "Be aware that a new process will kick in immediately, so multiple interruptions " \
+            log "You can wait until it completes or if absolutely necessary interrupt it, " \
+                "but be aware that a new process will kick in immediately, so multiple interruptions " \
                 "might be required to time it right with the locks retry mechanism"
           end
 
@@ -48,10 +46,9 @@ module Gitlab
 
           def raw_wraparound_vacuum
             connection.select_all(<<~SQL.squish)
-              SELECT pid, state, age(clock_timestamp(), query_start) as duration, query
-                FROM pg_stat_activity
+              SELECT age(clock_timestamp(), query_start) as duration, query
+                FROM postgres_pg_stat_activity_autovacuum()
                 WHERE query ILIKE '%VACUUM%' || #{quoted_table_name} || '%(to prevent wraparound)'
-                AND backend_type = 'autovacuum worker'
                 LIMIT 1
             SQL
           end

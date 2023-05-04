@@ -42,24 +42,28 @@ describe('Super Sidebar Collapsed State Manager', () => {
 
   describe('toggleSuperSidebarCollapsed', () => {
     it.each`
-      collapsed | saveCookie | windowWidth | hasClass
-      ${true}   | ${true}    | ${xl}       | ${true}
-      ${true}   | ${false}   | ${xl}       | ${true}
-      ${true}   | ${true}    | ${sm}       | ${true}
-      ${true}   | ${false}   | ${sm}       | ${true}
-      ${false}  | ${true}    | ${xl}       | ${false}
-      ${false}  | ${false}   | ${xl}       | ${false}
-      ${false}  | ${true}    | ${sm}       | ${false}
-      ${false}  | ${false}   | ${sm}       | ${false}
+      collapsed | saveCookie | windowWidth | hasClass | superSidebarPeek | isPeekable
+      ${true}   | ${true}    | ${xl}       | ${true}  | ${false}         | ${false}
+      ${true}   | ${true}    | ${xl}       | ${true}  | ${true}          | ${true}
+      ${true}   | ${false}   | ${xl}       | ${true}  | ${false}         | ${false}
+      ${true}   | ${true}    | ${sm}       | ${true}  | ${false}         | ${false}
+      ${true}   | ${false}   | ${sm}       | ${true}  | ${false}         | ${false}
+      ${false}  | ${true}    | ${xl}       | ${false} | ${false}         | ${false}
+      ${false}  | ${true}    | ${xl}       | ${false} | ${true}          | ${false}
+      ${false}  | ${false}   | ${xl}       | ${false} | ${false}         | ${false}
+      ${false}  | ${true}    | ${sm}       | ${false} | ${false}         | ${false}
+      ${false}  | ${false}   | ${sm}       | ${false} | ${false}         | ${false}
     `(
       'when collapsed is $collapsed, saveCookie is $saveCookie, and windowWidth is $windowWidth then page class contains `page-with-super-sidebar-collapsed` is $hasClass',
-      ({ collapsed, saveCookie, windowWidth, hasClass }) => {
+      ({ collapsed, saveCookie, windowWidth, hasClass, superSidebarPeek, isPeekable }) => {
         jest.spyOn(bp, 'windowWidth').mockReturnValue(windowWidth);
+        gon.features = { superSidebarPeek };
 
         toggleSuperSidebarCollapsed(collapsed, saveCookie);
 
         pageHasCollapsedClass(hasClass);
         expect(sidebarState.isCollapsed).toBe(collapsed);
+        expect(sidebarState.isPeekable).toBe(isPeekable);
 
         if (saveCookie && windowWidth >= xl) {
           expect(setCookie).toHaveBeenCalledWith(SIDEBAR_COLLAPSED_COOKIE, collapsed, {

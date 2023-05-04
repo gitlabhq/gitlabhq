@@ -49,14 +49,6 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
                                                  :use_primary_store_as_default_for_sidekiq_status
   end
 
-  describe '#raw_config_hash' do
-    it 'has a legacy default URL' do
-      expect(subject).to receive(:fetch_config) { false }
-
-      expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6382')
-    end
-  end
-
   describe '#store_name' do
     it 'returns the name of the SharedState store' do
       expect(described_class.store_name).to eq('SharedState')

@@ -83,9 +83,4 @@ An example configuration file for Redis is in this directory under the name
 | `db_load_balancing` | `shared_state`    | [Database Load Balancing](https://docs.gitlab.com/ee/administration/postgresql/database_load_balancing.html) |
 
 If no configuration is found, or no URL is found in the configuration
-file, the default URL used is:
-
-1. `redis://localhost:6380` for `cache`.
-1. `redis://localhost:6381` for `queues`.
-1. `redis://localhost:6382` for `shared_state`.
-1. The URL from the fallback instance for all other instances.
+file, the default URL used is `redis://localhost:6379` for all Redis instances.

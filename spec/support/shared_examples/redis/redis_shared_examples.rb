@@ -411,12 +411,6 @@ RSpec.shared_examples "redis_shared_examples" do
       end
     end
 
-    it 'has a value for the legacy default URL' do
-      allow(subject).to receive(:fetch_config).and_return(nil)
-
-      expect(subject.send(:raw_config_hash)).to include(url: a_string_matching(%r{\Aredis://localhost:638[012]\Z}))
-    end
-
     context 'when redis.yml exists' do
       subject { described_class.new('test').send(:fetch_config) }
 

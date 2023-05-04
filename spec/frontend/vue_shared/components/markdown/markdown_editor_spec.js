@@ -62,10 +62,19 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       },
     });
   };
+
+  const ContentEditorStub = stubComponent(ContentEditor);
+
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
   const findTextarea = () => wrapper.find('textarea');
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
-  const findContentEditor = () => wrapper.findComponent(ContentEditor);
+  const findContentEditor = () => {
+    const result = wrapper.findComponent(ContentEditor);
+
+    // In Vue.js 3 there are nuances stubbing component with custom stub on mount
+    // So we try to search for stub also
+    return result.exists() ? result : wrapper.findComponent(ContentEditorStub);
+  };
 
   const enableContentEditor = async () => {
     findMarkdownField().vm.$emit('enableContentEditor');
@@ -185,7 +194,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     it('autosizes the textarea when the value changes', async () => {
       buildWrapper();
       await findTextarea().setValue('Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines');
-
+      await nextTick();
       expect(Autosize.update).toHaveBeenCalled();
     });
 
@@ -276,7 +285,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
   it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when enableMarkdownEditor emitted from content editor`, async () => {
     buildWrapper({
-      stubs: { ContentEditor: stubComponent(ContentEditor) },
+      stubs: { ContentEditor: ContentEditorStub },
     });
 
     await enableContentEditor();
@@ -383,7 +392,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       beforeEach(() => {
         buildWrapper({
           propsData: { autofocus: true },
-          stubs: { ContentEditor: stubComponent(ContentEditor) },
+          stubs: { ContentEditor: ContentEditorStub },
         });
       });
 

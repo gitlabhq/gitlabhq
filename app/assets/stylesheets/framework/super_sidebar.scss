@@ -7,6 +7,9 @@
   }
 }
 
+$super-sidebar-transition-duration: $gl-transition-duration-medium;
+$super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
+
 @mixin notification-dot($color, $size, $top, $left) {
   background-color: $color;
   border: 2px solid $gray-10; // Same as the sidebar's background color.
@@ -34,16 +37,15 @@
 
   &.super-sidebar-loading {
     transform: translate3d(-100%, 0, 0);
+    transition: none;
 
     @include media-breakpoint-up(xl) {
       transform: translate3d(0, 0, 0);
     }
   }
 
-  &:not(.super-sidebar-loading) {
-    @media (prefers-reduced-motion: no-preference) {
-      transition: transform $gl-transition-duration-medium;
-    }
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform $super-sidebar-transition-duration;
   }
 
   .user-bar {
@@ -207,24 +209,23 @@
   display: none;
 }
 
-.super-sidebar-peek {
+.super-sidebar-peek,
+.super-sidebar-peek-hint {
   @include gl-shadow;
   border-right: 0;
-
-  @media (prefers-reduced-motion: no-preference) {
-    transition: transform 100ms !important;
-  }
 }
 
-.super-sidebar-hover-area {
-  z-index: $super-sidebar-z-index;
+.super-sidebar-peek-hint {
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform $super-sidebar-transition-hint-duration ease-out;
+  }
 }
 
 .page-with-super-sidebar {
   padding-left: 0;
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: padding-left $gl-transition-duration-medium;
+    transition: padding-left $super-sidebar-transition-duration;
   }
 
   &:not(.page-with-super-sidebar-collapsed) {
@@ -259,6 +260,10 @@
 
     &.super-sidebar-peek {
       transform: translate3d(0, 0, 0);
+    }
+
+    &.super-sidebar-peek-hint {
+      transform: translate3d(calc(#{$gl-spacing-scale-3} - 100%), 0, 0);
     }
   }
 

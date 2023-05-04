@@ -206,7 +206,7 @@ export default {
 <template>
   <div>
     <local-storage-sync
-      v-model="editingMode"
+      :value="editingMode"
       as-string
       storage-key="gl-markdown-editor-mode"
       @input="onEditingModeRestored"

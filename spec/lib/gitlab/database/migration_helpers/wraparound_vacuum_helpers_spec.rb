@@ -36,7 +36,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundVacuumHelpers, feat
 
       context 'with wraparound vacuuum running' do
         before do
-          swapout_view_for_table(:pg_stat_activity, connection: migration.connection)
+          swapout_view_for_table(:pg_stat_activity, connection: migration.connection, schema: 'pg_temp')
 
           migration.connection.execute(<<~SQL.squish)
             INSERT INTO pg_stat_activity (
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundVacuumHelpers, feat
               state_change, wait_event_type, wait_event, state, backend_xmin,
               query, backend_type)
             VALUES (
-              16401, 'gitlabhq_dblab', 178, '2023-03-30 08:10:50.851322+00',
+              16401, current_database(), 178, '2023-03-30 08:10:50.851322+00',
               '2023-03-30 08:10:50.890485+00', now() - '150 minutes'::interval,
               '2023-03-30 08:10:50.890485+00', 'IO', 'DataFileRead', 'active','3214790381'::xid,
               'autovacuum: VACUUM public.ci_builds (to prevent wraparound)', 'autovacuum worker')
@@ -58,8 +58,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundVacuumHelpers, feat
 
         it { expect { subject }.to output(/autovacuum: VACUUM public.ci_builds \(to prevent wraparound\)/).to_stdout }
         it { expect { subject }.to output(/Current duration: 2 hours, 30 minutes/).to_stdout }
-        it { expect { subject }.to output(/Process id: 178/).to_stdout }
-        it { expect { subject }.to output(/`select pg_cancel_backend\(178\);`/).to_stdout }
 
         context 'when GITLAB_MIGRATIONS_DISABLE_WRAPAROUND_CHECK is set' do
           before do

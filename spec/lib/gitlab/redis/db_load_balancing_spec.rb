@@ -41,12 +41,4 @@ RSpec.describe Gitlab::Redis::DbLoadBalancing, feature_category: :scalability do
     it_behaves_like 'multi store feature flags', :use_primary_and_secondary_stores_for_db_load_balancing,
       :use_primary_store_as_default_for_db_load_balancing
   end
-
-  describe '#raw_config_hash' do
-    it 'has a legacy default URL' do
-      expect(subject).to receive(:fetch_config).and_return(false)
-
-      expect(subject.send(:raw_config_hash)).to eq(url: 'redis://localhost:6382')
-    end
-  end
 end

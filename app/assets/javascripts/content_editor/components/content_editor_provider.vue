@@ -4,7 +4,10 @@ export default {
     // We can't use this.contentEditor due to bug in vue-apollo when
     // provide is called in beforeCreate
     // See https://github.com/vuejs/vue-apollo/pull/1153 for details
-    const { contentEditor } = this.$options.propsData;
+
+    // @vue-compat does not care to normalize propsData fields
+    const contentEditor =
+      this.$options.propsData.contentEditor || this.$options.propsData['content-editor'];
 
     return {
       contentEditor,

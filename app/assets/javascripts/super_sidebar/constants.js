@@ -16,8 +16,7 @@ export const sidebarState = Vue.observable({
   contextSwitcherOpen: false,
   isCollapsed: false,
   isPeek: false,
-  openPeekTimer: null,
-  closePeekTimer: null,
+  isPeekable: false,
 });
 
 export const helpCenterState = Vue.observable({
