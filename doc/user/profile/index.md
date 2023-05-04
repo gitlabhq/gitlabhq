@@ -342,17 +342,21 @@ the server continues to reset the TTL, regardless of whether 2FA is installed.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
-When you sign in, two cookies are set:
+When you sign in, three cookies are set:
 
 - A session cookie called `_gitlab_session`.
   This cookie has no set expiration date. However, it expires based on its `session_expire_delay`.
+- A session cookied called `about_gitlab_active_user`.
+  This cookie is used by the [marketing site](https://about.gitlab.com/) to determine if a user has an active GitLab session. No user information is passed to the cookie and it expires with the session.
 - A persistent cookie called `remember_user_token`, which is set only if you selected **Remember me** on the sign-in page.
 
-When you close your browser, the `_gitlab_session` cookie is usually cleared client-side.
-When it expires or isn't available, GitLab uses the `remember_user_token`cookie to get you
-a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
+When you close your browser, the `_gitlab_session` and `about_gitlab_active_user` cookies are usually cleared client-side.
+When it expires or isn't available, GitLab:
 
-When both cookies are gone or expired, you must sign in again.
+- Uses the `remember_user_token`cookie to get you a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
+- Sets the `about_gitlab_active_user` to `true`.
+
+When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.
 
 NOTE:
 When any session is signed out, or when a session is revoked

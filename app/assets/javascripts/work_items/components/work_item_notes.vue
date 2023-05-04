@@ -15,11 +15,7 @@ import {
   WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import {
-  getWorkItemNotesQuery,
-  autocompleteDataSources,
-  markdownPreviewPath,
-} from '~/work_items/utils';
+import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
@@ -31,6 +27,7 @@ import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_ite
 import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import deleteNoteMutation from '../graphql/notes/delete_work_item_notes.mutation.graphql';
+import workItemNotesByIidQuery from '../graphql/notes/work_item_notes_by_iid.query.graphql';
 import WorkItemAddNote from './notes/work_item_add_note.vue';
 
 export default {
@@ -68,11 +65,6 @@ export default {
     workItemType: {
       type: String,
       required: true,
-    },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isModal: {
       type: Boolean,
@@ -133,7 +125,6 @@ export default {
         queryVariables: this.queryVariables,
         fullPath: this.fullPath,
         workItemId: this.workItemId,
-        fetchByIid: this.fetchByIid,
         workItemType: this.workItemType,
         sortOrder: this.sortOrder,
         isNewDiscussion: true,
@@ -172,9 +163,7 @@ export default {
   },
   apollo: {
     workItemNotes: {
-      query() {
-        return getWorkItemNotesQuery(this.fetchByIid);
-      },
+      query: workItemNotesByIidQuery,
       context: {
         isSingleRequest: true,
       },
@@ -186,15 +175,11 @@ export default {
         };
       },
       update(data) {
-        const workItemWidgets = this.fetchByIid
-          ? data.workspace?.workItems?.nodes[0]?.widgets
-          : data.workItem?.widgets;
-        const discussionNodes =
-          workItemWidgets.find((widget) => widget.type === 'NOTES')?.discussions || [];
-        return discussionNodes;
+        const widgets = data.workspace?.workItems?.nodes[0]?.widgets;
+        return widgets?.find((widget) => widget.type === 'NOTES')?.discussions || [];
       },
       skip() {
-        return !this.queryVariables.id && !this.queryVariables.iid;
+        return !this.queryVariables.iid;
       },
       error() {
         this.$emit('error', i18n.fetchError);
@@ -214,7 +199,7 @@ export default {
         {
           document: workItemNoteCreatedSubscription,
           updateQuery(previousResult, { subscriptionData }) {
-            return updateCacheAfterCreatingNote(previousResult, subscriptionData, this.fetchByIid);
+            return updateCacheAfterCreatingNote(previousResult, subscriptionData);
           },
           variables() {
             return {
@@ -228,7 +213,7 @@ export default {
         {
           document: workItemNoteDeletedSubscription,
           updateQuery(previousResult, { subscriptionData }) {
-            return updateCacheAfterDeletingNote(previousResult, subscriptionData, this.fetchByIid);
+            return updateCacheAfterDeletingNote(previousResult, subscriptionData);
           },
           variables() {
             return {
@@ -377,7 +362,6 @@ export default {
                 :query-variables="queryVariables"
                 :full-path="fullPath"
                 :work-item-id="workItemId"
-                :fetch-by-iid="fetchByIid"
                 :work-item-type="workItemType"
                 :is-modal="isModal"
                 :autocomplete-data-sources="autocompleteDataSources"

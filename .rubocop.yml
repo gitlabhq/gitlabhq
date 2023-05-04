@@ -151,6 +151,8 @@ RSpec/FilePath:
     - 'ee/spec/frontend/fixtures/*'
     - 'spec/requests/api/v3/*'
     - 'spec/fixtures/**/*'
+  CustomTransform:
+    HTTPartyBasicAuth: httparty_basic_auth
 
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:

@@ -1,6 +1,7 @@
 - breadcrumb_title _("Repository Settings")
 - page_title _("Repository")
 - deploy_token_description = s_('DeployTokens|Deploy tokens allow access to packages, your repository, and registry images.')
+- @force_desktop_expanded_sidebar = true
 
 = render "projects/branch_defaults/show"
 - if Feature.enabled?(:branch_rules, @project)

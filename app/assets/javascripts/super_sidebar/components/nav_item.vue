@@ -129,7 +129,7 @@ export default {
           />
         </slot>
       </div>
-      <div class="gl-pr-3 gl-text-gray-900 gl-truncate-end">
+      <div class="gl-pr-8 gl-text-gray-900 gl-truncate-end">
         {{ item.title }}
         <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500 gl-truncate-end">
           {{ item.subtitle }}

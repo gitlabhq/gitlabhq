@@ -121,32 +121,6 @@ export const mockFields = [
   },
 ];
 
-export const optInJwtQueryResponse = (optInJwt) => ({
-  data: {
-    project: {
-      id: '1',
-      ciCdSettings: {
-        optInJwt,
-        __typename: 'ProjectCiCdSetting',
-      },
-      __typename: 'Project',
-    },
-  },
-});
-
-export const optInJwtMutationResponse = (optInJwt) => ({
-  data: {
-    projectCiCdSettingsUpdate: {
-      ciCdSettings: {
-        optInJwt,
-        __typename: 'ProjectCiCdSetting',
-      },
-      errors: [],
-      __typename: 'ProjectCiCdSettingsUpdatePayload',
-    },
-  },
-});
-
 export const inboundJobTokenScopeEnabledResponse = {
   data: {
     project: {

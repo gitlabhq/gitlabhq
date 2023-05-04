@@ -35,11 +35,6 @@ export default {
       type: String,
       required: true,
     },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     discussion: {
       type: Array,
       required: true,
@@ -168,7 +163,6 @@ export default {
     :work-item-id="workItemId"
     :query-variables="queryVariables"
     :full-path="fullPath"
-    :fetch-by-iid="fetchByIid"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
     @reportAbuse="$emit('reportAbuse', note)"
@@ -201,7 +195,6 @@ export default {
                   :can-set-work-item-metadata="canSetWorkItemMetadata"
                   :query-variables="queryVariables"
                   :full-path="fullPath"
-                  :fetch-by-iid="fetchByIid"
                   @startReplying="showReplyForm"
                   @deleteNote="$emit('deleteNote', note)"
                   @reportAbuse="$emit('reportAbuse', note)"
@@ -229,7 +222,6 @@ export default {
                         :can-set-work-item-metadata="canSetWorkItemMetadata"
                         :query-variables="queryVariables"
                         :full-path="fullPath"
-                        :fetch-by-iid="fetchByIid"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @reportAbuse="$emit('reportAbuse', reply)"
@@ -244,7 +236,6 @@ export default {
                       :query-variables="queryVariables"
                       :full-path="fullPath"
                       :work-item-id="workItemId"
-                      :fetch-by-iid="fetchByIid"
                       :discussion-id="discussionId"
                       :work-item-type="workItemType"
                       :sort-order="sortOrder"

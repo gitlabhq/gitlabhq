@@ -9,7 +9,6 @@ import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { getWorkItemQuery } from '~/work_items/utils';
 import EditedAt from '~/issues/show/components/edited.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
@@ -17,6 +16,7 @@ import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 
 export default {
@@ -36,11 +36,6 @@ export default {
     fullPath: {
       type: String,
       required: true,
-    },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     queryVariables: {
       type: Object,
@@ -161,17 +156,15 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
         return this.queryVariables;
       },
       update(data) {
-        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+        return data.workspace?.workItems?.nodes[0];
       },
       skip() {
-        return !this.queryVariables.id && !this.queryVariables.iid;
+        return !this.queryVariables.iid;
       },
       error() {
         this.$emit('error', i18n.fetchError);

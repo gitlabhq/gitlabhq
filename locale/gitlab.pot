@@ -8421,9 +8421,6 @@ msgstr ""
 msgid "CICD|Allow access to this project with a CI_JOB_TOKEN"
 msgstr ""
 
-msgid "CICD|An error occurred while update the setting. Please try again."
-msgstr ""
-
 msgid "CICD|Auto DevOps"
 msgstr ""
 
@@ -8463,9 +8460,6 @@ msgstr ""
 msgid "CICD|Limit CI_JOB_TOKEN access"
 msgstr ""
 
-msgid "CICD|Limit JSON Web Token (JWT) access"
-msgstr ""
-
 msgid "CICD|Manage which projects can use their CI_JOB_TOKEN to access this project. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -8481,22 +8475,13 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
-msgid "CICD|The JWT must be manually declared in each job that needs it. When disabled, the token is always available in all jobs in the pipeline. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
 msgid "CICD|There are several CI/CD limits in place."
-msgstr ""
-
-msgid "CICD|There was a problem fetching the token access settings."
 msgstr ""
 
 msgid "CICD|Unprotected branches will not have access to the cache from protected branches."
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
-msgstr ""
-
-msgid "CICD|Use the %{codeStart}secrets%{codeEnd} keyword to configure a job with a JWT."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -9816,6 +9801,9 @@ msgstr ""
 msgid "Cloud Storage"
 msgstr ""
 
+msgid "CloudSeed|AI / ML"
+msgstr ""
+
 msgid "CloudSeed|All"
 msgstr ""
 
@@ -9852,6 +9840,9 @@ msgstr ""
 msgid "CloudSeed|Configuration"
 msgstr ""
 
+msgid "CloudSeed|Configure via Merge Request"
+msgstr ""
+
 msgid "CloudSeed|Create MySQL Instance"
 msgstr ""
 
@@ -9880,6 +9871,12 @@ msgid "CloudSeed|Databases"
 msgstr ""
 
 msgid "CloudSeed|Deployments"
+msgstr ""
+
+msgid "CloudSeed|Derive insights from unstructured text using Google machine learning"
+msgstr ""
+
+msgid "CloudSeed|Derive insights from your images in the cloud or at the edge"
 msgstr ""
 
 msgid "CloudSeed|Description"
@@ -9921,16 +9918,25 @@ msgstr ""
 msgid "CloudSeed|Google Cloud project"
 msgstr ""
 
+msgid "CloudSeed|Google Cloud's AI tools are armed with the best of Google's research and technology to help developers focus exclusively on solving problems that matter"
+msgstr ""
+
 msgid "CloudSeed|I accept Google Cloud pricing and responsibilities involved with managing database instances"
 msgstr ""
 
 msgid "CloudSeed|Instances"
 msgstr ""
 
+msgid "CloudSeed|Language AI"
+msgstr ""
+
 msgid "CloudSeed|Learn more about pricing for %{cloudsqlPricingStart}Cloud SQL%{cloudsqlPricingEnd}, %{alloydbPricingStart}Alloy DB%{alloydbPricingEnd}, %{memorystorePricingStart}Memorystore%{memorystorePricingEnd} and %{firestorePricingStart}Firestore%{firestorePricingEnd}."
 msgstr ""
 
 msgid "CloudSeed|Machine type"
+msgstr ""
+
+msgid "CloudSeed|Make your content and apps multilingual with fast, dynamic machine translation"
 msgstr ""
 
 msgid "CloudSeed|Memorystore for Redis"
@@ -9960,7 +9966,13 @@ msgstr ""
 msgid "CloudSeed|There are no instances to display."
 msgstr ""
 
+msgid "CloudSeed|Translation AI"
+msgstr ""
+
 msgid "CloudSeed|Version"
+msgstr ""
+
+msgid "CloudSeed|Vision AI"
 msgstr ""
 
 msgid "Cluster"
@@ -11146,6 +11158,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Cancel"
 msgstr ""
 
+msgid "ComplianceFrameworks|Compliance Frameworks Export"
+msgstr ""
+
 msgid "ComplianceFrameworks|Compliance framework created"
 msgstr ""
 
@@ -11228,6 +11243,12 @@ msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try
 msgstr ""
 
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
+msgstr ""
+
+msgid "ComplianceFrameworks|Your Compliance Frameworks CSV export for the group \"%{group_name}\" has been attached to this email."
+msgstr ""
+
+msgid "ComplianceFrameworks|Your Compliance Frameworks CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
 msgid "ComplianceFrameworks|default"

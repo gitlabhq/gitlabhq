@@ -733,7 +733,6 @@ export default {
           :work-item-iid="workItem.iid"
           :query-variables="queryVariables"
           :full-path="fullPath"
-          :fetch-by-iid="fetchByIid"
           :work-item-type="workItemType"
           :is-modal="isModal"
           :assignees="workItemAssignees && workItemAssignees.assignees.nodes"

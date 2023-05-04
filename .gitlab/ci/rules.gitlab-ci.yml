@@ -1420,6 +1420,10 @@
     - <<: *if-force-ci
       when: manual
       allow_failure: true
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
 
 .qa:rules:package-and-test-schedule:
   rules:
@@ -1437,10 +1441,6 @@
   rules:
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:package-and-test-schedule", rules]
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
 
 .qa:rules:package-and-test-ce:
   rules:
@@ -1465,9 +1465,6 @@
       when: never
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:package-and-test-schedule", rules]
-    - <<: *if-merge-request
-      changes: *code-patterns
-      allow_failure: true
 
 .qa:rules:package-and-test-sidebar:
   rules:

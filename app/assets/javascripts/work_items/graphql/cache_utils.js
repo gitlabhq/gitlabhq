@@ -3,22 +3,12 @@ import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
 const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
 
-const getNotesWidgetFromSourceData = (draftData, fetchByIid) => {
-  return fetchByIid
-    ? draftData.workspace.workItems.nodes[0].widgets.find(isNotesWidget)
-    : draftData.workItem.widgets.find(isNotesWidget);
-};
+const getNotesWidgetFromSourceData = (draftData) =>
+  draftData?.workspace?.workItems?.nodes[0]?.widgets.find(isNotesWidget);
 
-const updateNotesWidgetDataInDraftData = (draftData, notesWidget, fetchByIid) => {
-  const noteWidgetIndex = fetchByIid
-    ? draftData.workspace.workItems.nodes[0].widgets.findIndex(isNotesWidget)
-    : draftData.workItem.widgets.findIndex(isNotesWidget);
-
-  if (fetchByIid) {
-    draftData.workspace.workItems.nodes[0].widgets[noteWidgetIndex] = notesWidget;
-  } else {
-    draftData.workItem.widgets[noteWidgetIndex] = notesWidget;
-  }
+const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
+  const noteWidgetIndex = draftData.workspace.workItems.nodes[0].widgets.findIndex(isNotesWidget);
+  draftData.workspace.workItems.nodes[0].widgets[noteWidgetIndex] = notesWidget;
 };
 
 /**
@@ -26,17 +16,16 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget, fetchByIid) =>
  *
  * @param currentNotes
  * @param subscriptionData
- * @param fetchByIid
  */
 
-export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData, fetchByIid) => {
+export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData) => {
   if (!subscriptionData.data?.workItemNoteCreated) {
     return currentNotes;
   }
   const newNote = subscriptionData.data.workItemNoteCreated;
 
   return produce(currentNotes, (draftData) => {
-    const notesWidget = getNotesWidgetFromSourceData(draftData, fetchByIid);
+    const notesWidget = getNotesWidgetFromSourceData(draftData);
 
     if (!notesWidget.discussions) {
       return;
@@ -50,7 +39,7 @@ export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData, fet
     }
 
     notesWidget.discussions.nodes.push(newNote.discussion);
-    updateNotesWidgetDataInDraftData(draftData, notesWidget, fetchByIid);
+    updateNotesWidgetDataInDraftData(draftData, notesWidget);
   });
 };
 
@@ -59,10 +48,9 @@ export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData, fet
  *
  * @param currentNotes
  * @param subscriptionData
- * @param fetchByIid
  */
 
-export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData, fetchByIid) => {
+export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData) => {
   if (!subscriptionData.data?.workItemNoteDeleted) {
     return currentNotes;
   }
@@ -70,7 +58,7 @@ export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData, fet
   const { id, discussionId, lastDiscussionNote } = deletedNote;
 
   return produce(currentNotes, (draftData) => {
-    const notesWidget = getNotesWidgetFromSourceData(draftData, fetchByIid);
+    const notesWidget = getNotesWidgetFromSourceData(draftData);
 
     if (!notesWidget.discussions) {
       return;
@@ -95,6 +83,6 @@ export const updateCacheAfterDeletingNote = (currentNotes, subscriptionData, fet
       notesWidget.discussions.nodes[discussionIndex] = deletedThreadDiscussion;
     }
 
-    updateNotesWidgetDataInDraftData(draftData, notesWidget, fetchByIid);
+    updateNotesWidgetDataInDraftData(draftData, notesWidget);
   });
 };

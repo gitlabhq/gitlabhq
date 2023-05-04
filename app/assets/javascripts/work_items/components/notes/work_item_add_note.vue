@@ -4,9 +4,8 @@ import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { getWorkItemQuery } from '../../utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
@@ -21,7 +20,7 @@ export default {
     WorkItemCommentLocked,
     WorkItemCommentForm,
   },
-  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  mixins: [Tracking.mixin()],
   props: {
     workItemId: {
       type: String,
@@ -30,11 +29,6 @@ export default {
     fullPath: {
       type: String,
       required: true,
-    },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     queryVariables: {
       type: Object,
@@ -89,17 +83,15 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
         return this.queryVariables;
       },
       update(data) {
-        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+        return data.workspace.workItems.nodes[0];
       },
       skip() {
-        return !this.queryVariables.id && !this.queryVariables.iid;
+        return !this.queryVariables.iid;
       },
       error() {
         this.$emit('error', i18n.fetchError);

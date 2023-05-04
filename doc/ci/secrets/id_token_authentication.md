@@ -130,7 +130,13 @@ manual_authentication:
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.
 
-### Enable automatic ID token authentication
+<!--- start_remove The following content will be removed on remove_date: '2023-05-11' -->
+
+### Enable automatic ID token authentication (deprecated)
+
+WARNING:
+This setting was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/391886) in GitLab 16.0.
+ID token authentication is now always available, and JSON Web Token access is always limited.
 
 To enable automatic ID token authentication:
 
@@ -138,6 +144,8 @@ To enable automatic ID token authentication:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Limit JSON Web Token (JWT) access** to enabled.
+
+<!--- end_remove -->
 
 ### Configure automatic ID Token authentication
 

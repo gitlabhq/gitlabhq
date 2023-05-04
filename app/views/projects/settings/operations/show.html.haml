@@ -1,5 +1,6 @@
 - page_title _('Monitor Settings')
 - breadcrumb_title _('Monitor Settings')
+- @force_desktop_expanded_sidebar = true
 
 - if Feature.disabled?(:remove_monitor_metrics)
   = render 'projects/settings/operations/metrics_dashboard'

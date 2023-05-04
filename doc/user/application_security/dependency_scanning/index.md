@@ -773,34 +773,6 @@ As a result, it only supports Java 8, 11, and 17.
 
 Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
 
-## Interacting with the vulnerabilities
-
-Once a vulnerability is found, you can interact with it. Read more on how to
-[address the vulnerabilities](../vulnerabilities/index.md).
-
-## Solutions for vulnerabilities
-
-Some vulnerabilities can be fixed by applying the solution that GitLab
-automatically generates. Read more about the
-[solutions for vulnerabilities](../vulnerabilities/index.md#resolve-a-vulnerability).
-
-## Security Dashboard
-
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
-
-## Vulnerabilities database update
-
-For more information about the vulnerabilities database update, see the
-[maintenance table](../index.md#vulnerability-scanner-maintenance).
-
-## Dependency List
-
-An additional benefit of dependency scanning is the ability to view your
-project's dependencies and their known vulnerabilities. Read more about
-the [Dependency List](../dependency_list/index.md).
-
 ## Reports JSON format
 
 The dependency scanning tool emits a JSON report file. For more information, see the

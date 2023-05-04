@@ -66,6 +66,12 @@ tests = [
   },
 
   {
+    explanation: 'Map RuboCop related files to respective specs',
+    source: 'rubocop/cop/gettext/static_identifier.rb',
+    expected: ['spec/rubocop/cop/gettext/static_identifier_spec.rb']
+  },
+
+  {
     explanation: 'Initializers should map to respective spec',
     source: 'config/initializers/action_mailer_hooks.rb',
     expected: ['spec/initializers/action_mailer_hooks_spec.rb']

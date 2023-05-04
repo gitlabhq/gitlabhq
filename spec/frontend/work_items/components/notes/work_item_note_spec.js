@@ -11,13 +11,14 @@ import NoteBody from '~/work_items/components/notes/work_item_note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import NoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemNoteMutation from '~/work_items/graphql/notes/update_work_item_note.mutation.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   mockAssignees,
   mockWorkItemCommentNote,
   updateWorkItemMutationResponse,
+  workItemByIidResponseFactory,
   workItemQueryResponse,
 } from 'jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
@@ -45,7 +46,7 @@ describe('Work Item Note', () => {
     },
   });
 
-  const workItemResponseHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const workItemResponseHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
 
   const updateWorkItemMutationSuccessHandler = jest
     .fn()
@@ -68,8 +69,7 @@ describe('Work Item Note', () => {
     workItemId = mockWorkItemId,
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
-    queryVariables = { id: mockWorkItemId },
-    fetchByIid = false,
+    queryVariables = { iid: '1' },
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       propsData: {
@@ -81,11 +81,10 @@ describe('Work Item Note', () => {
         autocompleteDataSources: {},
         assignees,
         queryVariables,
-        fetchByIid,
         fullPath: 'test-project-path',
       },
       apolloProvider: mockApollo([
-        [workItemQuery, workItemResponseHandler],
+        [workItemByIidQuery, workItemResponseHandler],
         [updateWorkItemNoteMutation, updateNoteMutationHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),

@@ -13,7 +13,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:issue) { create(:issue, project: project, description: 'Some **issue** description') }
   let_it_be(:email) { 'someone@gitlab.com' }
   let_it_be(:expected_unsubscribe_url) { unsubscribe_sent_notification_url('b7721fc7e8419911a8bea145236a0519') }
   let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
@@ -168,6 +168,13 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       context 'with unexpected placeholder' do
         let(:template_content) { 'thank you, **your new issue:** %{this is issue}' }
         let(:expected_body) { "thank you, <strong>your new issue:</strong> %{this is issue}" }
+
+        it_behaves_like 'handle template content', 'thank_you'
+      end
+
+      context 'when issue description placeholder is used' do
+        let(:template_content) { 'thank you, your new issue has been created. %{ISSUE_DESCRIPTION}' }
+        let(:expected_body) { "<p dir=\"auto\">thank you, your new issue has been created. </p>#{issue.description_html}" }
 
         it_behaves_like 'handle template content', 'thank_you'
       end

@@ -78,8 +78,3 @@ can refresh the data manually from the Jira interface:
 1. Select **DVCS accounts**.
 1. In the table, for the repository you want to refresh, in the **Last Activity**
    column, select the icon.
-
-## Troubleshooting
-
-To troubleshoot the Jira development panel on your own server, see the
-[Atlassian documentation](https://confluence.atlassian.com/jirakb/troubleshoot-the-development-panel-in-jira-server-574685212.html).

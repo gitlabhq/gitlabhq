@@ -5,21 +5,16 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { clearDraft } from '~/lib/utils/autosave';
-import { config } from '~/graphql_shared/issuable_client';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comment_locked.vue';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
-import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
-  workItemResponseFactory,
-  workItemQueryResponse,
-  projectWorkItemResponse,
   createWorkItemNoteResponse,
-  mockWorkItemNotesResponse,
+  workItemByIidResponseFactory,
+  workItemQueryResponse,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -33,7 +28,6 @@ describe('Work item add note', () => {
   Vue.use(VueApollo);
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemNoteResponse);
-  const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
@@ -42,9 +36,8 @@ describe('Work item add note', () => {
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
-    workItemResponse = workItemResponseFactory({ canUpdate }),
-    queryVariables = { id: workItemId },
-    fetchByIid = false,
+    workItemResponse = workItemByIidResponseFactory({ canUpdate }),
+    queryVariables = { iid: '1' },
     signedIn = true,
     isEditing = true,
     workItemType = 'Task',
@@ -55,24 +48,10 @@ describe('Work item add note', () => {
       window.gon.current_user_avatar_url = 'avatar.png';
     }
 
-    const apolloProvider = createMockApollo(
-      [
-        [workItemQuery, workItemResponseHandler],
-        [createNoteMutation, mutationHandler],
-        [workItemByIidQuery, workItemByIidResponseHandler],
-      ],
-      {},
-      { ...config.cacheConfig },
-    );
-
-    apolloProvider.clients.defaultClient.writeQuery({
-      query: workItemNotesQuery,
-      variables: {
-        id: workItemId,
-        pageSize: 100,
-      },
-      data: mockWorkItemNotesResponse.data,
-    });
+    const apolloProvider = createMockApollo([
+      [workItemByIidQuery, workItemResponseHandler],
+      [createNoteMutation, mutationHandler],
+    ]);
 
     const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMountExtended(WorkItemAddNote, {
@@ -81,7 +60,6 @@ describe('Work item add note', () => {
         workItemId: id,
         fullPath: 'test-project-path',
         queryVariables,
-        fetchByIid,
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
@@ -139,9 +117,7 @@ describe('Work item add note', () => {
       await createComponent({
         isEditing: true,
         signedIn: true,
-        queryVariables: {
-          id: mockWorkItemNotesResponse.data.workItem.id,
-        },
+        queryVariables: { iid: '1' },
       });
 
       findCommentForm().vm.$emit('submitForm', 'some text');
@@ -244,23 +220,14 @@ describe('Work item add note', () => {
     });
   });
 
-  it('calls the global ID work item query when `fetchByIid` prop is false', async () => {
-    createComponent({ fetchByIid: false });
-    await waitForPromises();
+  it('calls the work item query', async () => {
+    await createComponent();
 
     expect(workItemResponseHandler).toHaveBeenCalled();
-    expect(workItemByIidResponseHandler).not.toHaveBeenCalled();
   });
 
-  it('calls the IID work item query when when `fetchByIid` prop is true', async () => {
-    await createComponent({ fetchByIid: true, isEditing: false });
-
-    expect(workItemResponseHandler).not.toHaveBeenCalled();
-    expect(workItemByIidResponseHandler).toHaveBeenCalled();
-  });
-
-  it('skips calling the handlers when missing the needed queryVariables', async () => {
-    await createComponent({ queryVariables: {}, fetchByIid: false, isEditing: false });
+  it('skips calling the work item query when missing queryVariables', async () => {
+    await createComponent({ queryVariables: {}, isEditing: false });
 
     expect(workItemResponseHandler).not.toHaveBeenCalled();
   });

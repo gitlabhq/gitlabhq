@@ -11,7 +11,7 @@ import {
 } from 'jest/work_items/mock_data';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
-const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workItem.widgets.find(
+const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItems.nodes[0].widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
@@ -28,8 +28,7 @@ describe('Work Item Discussion', () => {
   const createComponent = ({
     discussion = [mockWorkItemCommentNote],
     workItemId = mockWorkItemId,
-    queryVariables = { id: workItemId },
-    fetchByIid = false,
+    queryVariables = { iid: '1' },
     fullPath = 'gitlab-org',
     workItemType = 'Task',
   } = {}) => {
@@ -38,7 +37,6 @@ describe('Work Item Discussion', () => {
         discussion,
         workItemId,
         queryVariables,
-        fetchByIid,
         fullPath,
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',

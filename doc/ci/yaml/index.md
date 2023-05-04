@@ -3831,9 +3831,6 @@ job:
 
 Use `secrets:token` to explicitly select a token to use when authenticating with Vault by referencing the token's CI/CD variable.
 
-This keyword has no effect if [**Limit JSON Web Token (JWT) access**](../secrets/id_token_authentication.md#enable-automatic-id-token-authentication)
-is disabled.
-
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**:
@@ -3857,8 +3854,8 @@ job:
 
 **Additional details**:
 
-- When the `token` keyword is not set and **Limit JSON Web Token (JWT) access** enabled, the first ID token
-  is used to authenticate.
+- When the `token` keyword is not set, the first ID token is used to authenticate.
+- In GitLab 15.8 to 15.11, you must enable [**Limit JSON Web Token (JWT) access**](../secrets/id_token_authentication.md#enable-automatic-id-token-authentication-deprecated) for this keyword to be available.
 - When **Limit JSON Web Token (JWT) access** is disabled, the `token` keyword is ignored and the `CI_JOB_JWT`
   CI/CD variable is used to authenticate.
 

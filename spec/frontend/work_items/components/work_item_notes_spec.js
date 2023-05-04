@@ -10,7 +10,6 @@ import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
-import workItemNotesQuery from '~/work_items/graphql/notes/work_item_notes.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -36,15 +35,11 @@ const mockNotesWidgetResponse = mockWorkItemNotesResponse.data.workItem.widgets.
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
-const mockNotesByIidWidgetResponse = mockWorkItemNotesByIidResponse.data.workspace.workItems.nodes[0].widgets.find(
+const mockMoreNotesWidgetResponse = mockMoreWorkItemNotesResponse.data.workspace.workItems.nodes[0].widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
-const mockMoreNotesWidgetResponse = mockMoreWorkItemNotesResponse.data.workItem.widgets.find(
-  (widget) => widget.type === WIDGET_TYPE_NOTES,
-);
-
-const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workItem.widgets.find(
+const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItems.nodes[0].widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
@@ -61,7 +56,6 @@ describe('WorkItemNotes component', () => {
 
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
-  const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findActivityHeader = () => wrapper.findComponent(WorkItemNotesActivityHeader);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
@@ -69,10 +63,7 @@ describe('WorkItemNotes component', () => {
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
 
-  const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesResponse);
-  const workItemNotesByIidQueryHandler = jest
-    .fn()
-    .mockResolvedValue(mockWorkItemNotesByIidResponse);
+  const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
   const workItemNotesWithCommentsQueryHandler = jest
     .fn()
@@ -93,7 +84,6 @@ describe('WorkItemNotes component', () => {
 
   const createComponent = ({
     workItemId = mockWorkItemId,
-    fetchByIid = false,
     workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
@@ -101,8 +91,7 @@ describe('WorkItemNotes component', () => {
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
-        [workItemNotesQuery, defaultWorkItemNotesQueryHandler],
-        [workItemNotesByIidQuery, workItemNotesByIidQueryHandler],
+        [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
         [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
@@ -111,11 +100,8 @@ describe('WorkItemNotes component', () => {
       propsData: {
         workItemId,
         workItemIid,
-        queryVariables: {
-          id: workItemId,
-        },
+        queryVariables: { iid: '1' },
         fullPath: 'test-path',
-        fetchByIid,
         workItemType: 'task',
         reportAbusePath: '/report/abuse/path',
         isModal,
@@ -132,17 +118,6 @@ describe('WorkItemNotes component', () => {
 
   it('has the work item note activity header', () => {
     expect(findActivityHeader().exists()).toBe(true);
-  });
-
-  it('passes correct props to comment form component', async () => {
-    createComponent({
-      workItemId: mockWorkItemId,
-      fetchByIid: false,
-      defaultWorkItemNotesQueryHandler: workItemNotesByIidQueryHandler,
-    });
-    await waitForPromises();
-
-    expect(findWorkItemAddNote().props('fetchByIid')).toEqual(false);
   });
 
   describe('when notes are loading', () => {
@@ -162,25 +137,12 @@ describe('WorkItemNotes component', () => {
 
     it('renders system notes to the length of the response', async () => {
       await waitForPromises();
+      expect(workItemNotesQueryHandler).toHaveBeenCalledWith({
+        after: undefined,
+        iid: '1',
+        pageSize: 30,
+      });
       expect(findAllSystemNotes()).toHaveLength(mockNotesWidgetResponse.discussions.nodes.length);
-    });
-  });
-
-  describe('when the notes are fetched by `iid`', () => {
-    beforeEach(async () => {
-      createComponent({ workItemId: mockWorkItemId, fetchByIid: true });
-      await waitForPromises();
-    });
-
-    it('renders the notes list to the length of the response', () => {
-      expect(workItemNotesByIidQueryHandler).toHaveBeenCalled();
-      expect(findAllSystemNotes()).toHaveLength(
-        mockNotesByIidWidgetResponse.discussions.nodes.length,
-      );
-    });
-
-    it('passes correct props to comment form component', () => {
-      expect(findWorkItemAddNote().props('fetchByIid')).toEqual(true);
     });
   });
 
@@ -202,14 +164,14 @@ describe('WorkItemNotes component', () => {
       it('fetch more notes should be called', async () => {
         expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
-          id: 'gid://gitlab/WorkItem/1',
+          iid: '1',
         });
 
         await nextTick();
 
         expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
-          id: 'gid://gitlab/WorkItem/1',
+          iid: '1',
           after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
         });
       });

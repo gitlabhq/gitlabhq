@@ -27,8 +27,10 @@ In general, you might consider using a tutorial when:
 
 ## Tutorial file name and location
 
-For tutorial Markdown files, create a subfolder under `doc/tutorials`.
-The tutorial file should be `index.md`.
+For tutorial Markdown files, you can either:
+
+- Save the file in a directory with the product documentation.
+- Create a subfolder under `doc/tutorials` and name the file `index.md`.
 
 ## Tutorial format
 

@@ -175,7 +175,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
 
       context 'when builds and manual actions are present' do
         let!(:pipeline) { create(:ci_pipeline, project: project) }
-        let!(:build) { create(:ci_build, pipeline: pipeline) }
+        let!(:build) { create(:ci_build, :success, pipeline: pipeline) }
 
         let!(:action) do
           create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production')
@@ -207,8 +207,14 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
             .not_to change { Ci::Pipeline.count }
         end
 
-        it 'shows a stop button' do
+        it 'shows a stop button and dialog' do
           expect(page).to have_selector(stop_button_selector)
+
+          click_button(_('Stop'))
+
+          within('.modal-body') do
+            expect(page).to have_css('.warning_message')
+          end
         end
 
         it 'does not show external link button' do
@@ -216,7 +222,6 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
         end
 
         it 'does not show terminal button' do
-          expect(page).not_to have_button(_('More actions'))
           expect(page).not_to have_terminal_button
         end
 
@@ -242,8 +247,14 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
                                 on_stop: 'close_app')
           end
 
-          it 'shows a stop button' do
+          it 'shows a stop button and dialog' do
             expect(page).to have_selector(stop_button_selector)
+
+            click_button(_('Stop'))
+
+            within('.modal-body') do
+              expect(page).not_to have_css('.warning_message')
+            end
           end
 
           context 'when user is a reporter' do
@@ -273,7 +284,6 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
               let(:role) { :developer }
 
               it 'does not show terminal button' do
-                expect(page).not_to have_button(_('More actions'))
                 expect(page).not_to have_terminal_button
               end
             end

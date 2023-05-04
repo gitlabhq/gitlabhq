@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import OutboundTokenAccess from '~/token_access/components/outbound_token_access.vue';
 import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import OptInJwt from '~/token_access/components/opt_in_jwt.vue';
 import TokenAccessApp from '~/token_access/components/token_access_app.vue';
 
 describe('TokenAccessApp component', () => {
@@ -9,7 +8,6 @@ describe('TokenAccessApp component', () => {
 
   const findOutboundTokenAccess = () => wrapper.findComponent(OutboundTokenAccess);
   const findInboundTokenAccess = () => wrapper.findComponent(InboundTokenAccess);
-  const findOptInJwt = () => wrapper.findComponent(OptInJwt);
 
   const createComponent = () => {
     wrapper = shallowMount(TokenAccessApp);
@@ -18,10 +16,6 @@ describe('TokenAccessApp component', () => {
   describe('default', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('renders the opt in jwt component', () => {
-      expect(findOptInJwt().exists()).toBe(true);
     });
 
     it('renders the outbound token access component', () => {

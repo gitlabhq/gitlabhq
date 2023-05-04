@@ -41,6 +41,9 @@ export default {
         text: __('Cancel'),
       };
     },
+    hasStopAction() {
+      return this.graphql ? this.environment.hasStopAction : this.environment.has_stop_action;
+    },
   },
 
   methods: {
@@ -81,7 +84,7 @@ export default {
 
     <p>{{ s__('Environments|Are you sure you want to stop this environment?') }}</p>
 
-    <div v-if="!environment.has_stop_action" class="warning_message">
+    <div v-if="!hasStopAction" class="warning_message">
       <p>
         <gl-sprintf
           :message="

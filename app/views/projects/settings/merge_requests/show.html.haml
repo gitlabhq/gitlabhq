@@ -1,5 +1,6 @@
 - breadcrumb_title _('Merge requests')
 - page_title _('Merge requests')
+- @force_desktop_expanded_sidebar = true
 
 %section.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings.expanded{ class: [('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)], data: { qa_selector: 'merge_request_settings_content' } }
   .settings-header
