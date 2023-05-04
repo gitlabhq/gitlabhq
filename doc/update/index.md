@@ -272,9 +272,9 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.11.0
 
-- Upgrades to GitLab 15.11 directly from GitLab versions 15.5.0 and earlier on self-managed installs will fail due to a missing migration until the fix for [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) is released in 15.11.1. Affected users wanting to upgrade to 15.11.x can either:
+- Upgrades to GitLab 15.11 directly from GitLab versions 15.5.0 and earlier on self-managed installs will fail due to a missing migration until the fix for [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) is released in an upcoming patch release. Affected users wanting to upgrade to 15.11.x can either:
   - Perform an intermediate upgrade to any version between 15.5 and 15.10 before upgrading to 15.11, or
-  - Target the forthcoming 15.11.1 patch.
+  - Target the forthcoming patch release.
 
 ### 15.10.0
 

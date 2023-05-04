@@ -7,13 +7,23 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
   let(:token) {}
   let(:args) { {} }
   let(:runner) { execute.payload[:runner] }
+  let(:allow_runner_registration_token) { true }
 
   before do
     stub_application_setting(runners_registration_token: registration_token)
     stub_application_setting(valid_runner_registrars: ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
+    stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
   end
 
   subject(:execute) { described_class.new(token, args).execute }
+
+  shared_examples 'runner registration is disallowed' do
+    it 'returns error response' do
+      expect(execute).to be_error
+      expect(execute.message).to eq 'runner registration disallowed'
+      expect(execute.http_status).to eq :forbidden
+    end
+  end
 
   context 'when no token is provided' do
     let(:token) { '' }
@@ -36,7 +46,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
   end
 
   context 'when valid token is provided' do
-    context 'with a registration token' do
+    context 'when instance registration token is used' do
       let(:token) { registration_token }
 
       it 'creates runner with default values' do
@@ -49,6 +59,12 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
         expect(runner.token).not_to eq(registration_token)
         expect(runner.token).not_to start_with(::Ci::Runner::CREATED_RUNNER_TOKEN_PREFIX)
         expect(runner).to be_instance_type
+      end
+
+      context 'when registering instance runners is disallowed' do
+        let(:allow_runner_registration_token) { false }
+
+        it_behaves_like 'runner registration is disallowed'
       end
 
       context 'with non-default arguments' do
@@ -112,9 +128,15 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
     end
 
-    context 'when project token is used' do
-      let(:project) { create(:project) }
+    context 'when project registration token is used' do
+      let_it_be(:project) { create(:project, :with_namespace_settings) }
+
       let(:token) { project.runners_token }
+      let(:allow_group_runner_registration_token) { true }
+
+      before do
+        project.namespace.update!(allow_runner_registration_token: allow_group_runner_registration_token)
+      end
 
       it 'creates project runner' do
         expect(execute).to be_success
@@ -125,6 +147,18 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
         expect(runner.token).not_to eq(registration_token)
         expect(runner.token).not_to eq(project.runners_token)
         expect(runner).to be_project_type
+      end
+
+      context 'with runner registration disabled at instance level' do
+        let(:allow_runner_registration_token) { false }
+
+        it_behaves_like 'runner registration is disallowed'
+      end
+
+      context 'with runner registration disabled at group level' do
+        let(:allow_group_runner_registration_token) { false }
+
+        it_behaves_like 'runner registration is disallowed'
       end
 
       context 'when it exceeds the application limits' do
@@ -173,9 +207,15 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       end
     end
 
-    context 'when group token is used' do
-      let(:group) { create(:group) }
+    context 'when group registration token is used' do
+      let_it_be_with_refind(:group) { create(:group) }
+
       let(:token) { group.runners_token }
+      let(:allow_group_runner_registration_token) { true }
+
+      before do
+        group.update!(allow_runner_registration_token: allow_group_runner_registration_token)
+      end
 
       it 'creates a group runner' do
         expect(execute).to be_success
@@ -186,6 +226,18 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
         expect(runner.token).not_to eq(registration_token)
         expect(runner.token).not_to eq(group.runners_token)
         expect(runner).to be_group_type
+      end
+
+      context 'with runner registration disabled at instance level' do
+        let(:allow_runner_registration_token) { false }
+
+        it_behaves_like 'runner registration is disallowed'
+      end
+
+      context 'with runner registration disabled at group level' do
+        let(:allow_group_runner_registration_token) { false }
+
+        it_behaves_like 'runner registration is disallowed'
       end
 
       context 'when it exceeds the application limits' do

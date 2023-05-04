@@ -130,7 +130,6 @@ class Namespace < ApplicationRecord
   delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
            to: :namespace_settings
   delegate :allow_runner_registration_token,
-           :allow_runner_registration_token?,
            :allow_runner_registration_token=,
            to: :namespace_settings
   delegate :maven_package_requests_forwarding,
@@ -595,6 +594,10 @@ class Namespace < ApplicationRecord
 
   def all_ancestors_have_runner_registration_enabled?
     namespace_settings&.all_ancestors_have_runner_registration_enabled?
+  end
+
+  def allow_runner_registration_token?
+    !!namespace_settings&.allow_runner_registration_token?
   end
 
   def all_projects_with_pages

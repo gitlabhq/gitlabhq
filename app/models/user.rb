@@ -2242,6 +2242,13 @@ class User < ApplicationRecord
     abuse_trust_scores.where(source: source)
   end
 
+  def abuse_metadata
+    {
+      account_age: account_age_in_days,
+      two_factor_enabled: two_factor_enabled? ? 1 : 0
+    }
+  end
+
   protected
 
   # override, from Devise::Validatable

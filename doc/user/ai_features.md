@@ -70,7 +70,6 @@ To explain your code:
 
 Please be aware we cannot guarantee that the large language model will produce results that are correct. Use the explanation with caution. 
 
-
 ### GitLab Chat **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
@@ -95,7 +94,6 @@ These features are designed as a progressive enhancement to existing GitLab feat
 
 ### Off by default
 
-
 ### Stability and performance
 
 These features are in a variety of [feature support levels](../policy/alpha-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable **beta and experimental** features for any or all customers at any time at our discretion.
@@ -104,7 +102,7 @@ These features are in a variety of [feature support levels](../policy/alpha-beta
 
 ### Data privacy
 
-Some AI features require the use of third-party AI services  models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features. 
+Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features. 
 
 Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting).
 

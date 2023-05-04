@@ -311,6 +311,42 @@ For a web developer writing a webpage for your company's website:
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 1. Your production team [cherry-picks](cherry_pick_changes.md) the merge commit into production.
 
+## Filter activity in a merge request
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115383) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `mr_activity_filters`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available per user, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
+On GitLab.com, this feature is enabled for all GitLab team members.
+
+To understand the history of a merge request, filter its activity feed to show you
+only the items that are relevant to you.
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
+1. Scroll to **Activity**.
+1. On the right side of the page, select **Activity filter** to show the filter options.
+   If you've selected filter options previously, this field shows a summary of your
+   choices, like **Activity + 5 more**.
+1. Select the types of activity you want to see. Options include:
+
+   - Assignees & Reviewers
+   - Approvals
+   - Comments
+   - Commits & branches
+   - Edits
+   - Labels
+   - Lock status
+   - Mentions
+   - Merge request status
+   - Tracking
+
+1. Optional. Select **Sort** (**{sort-lowest}**) to reverse the sort order.
+
+Your selection persists across all merge requests. You can also change the
+sort order by clicking the sort button on the right.
+
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)

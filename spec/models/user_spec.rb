@@ -291,6 +291,31 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '#abuse_metadata' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:contribution_calendar) { Gitlab::ContributionsCalendar.new(user) }
+
+      before do
+        allow(Gitlab::ContributionsCalendar).to receive(:new).and_return(contribution_calendar)
+        allow(contribution_calendar).to receive(:activity_dates).and_return({ first: 3, second: 5, third: 4 })
+
+        allow(user).to receive_messages(
+          account_age_in_days: 10,
+          two_factor_enabled?: true
+        )
+      end
+
+      it 'returns the expected hash' do
+        abuse_metadata = user.abuse_metadata
+
+        expect(abuse_metadata.length).to eq 2
+        expect(abuse_metadata).to include(
+          account_age: 10,
+          two_factor_enabled: 1
+        )
+      end
+    end
+
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
         user = create(:user)

@@ -13,6 +13,10 @@ module Ci
       def execute
         return ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden) unless attrs_from_token
 
+        unless registration_token_allowed?(attrs_from_token)
+          return ServiceResponse.error(message: 'runner registration disallowed', http_status: :forbidden)
+        end
+
         runner = ::Ci::Runner.new(attributes.merge(attrs_from_token))
 
         Ci::BulkInsertableTags.with_bulk_insert_tags do
@@ -46,6 +50,17 @@ module Ci
       end
       strong_memoize_attr :attrs_from_token
 
+      def registration_token_allowed?(attrs)
+        case attrs[:runner_type]
+        when :group_type
+          token_scope.allow_runner_registration_token?
+        when :project_type
+          token_scope.namespace.allow_runner_registration_token?
+        else
+          Gitlab::CurrentSettings.allow_runner_registration_token
+        end
+      end
+
       def runner_registration_token_valid?(registration_token)
         ActiveSupport::SecurityUtils.secure_compare(registration_token, Gitlab::CurrentSettings.runners_registration_token)
       end
@@ -55,7 +70,13 @@ module Ci
       end
 
       def token_scope
-        attrs_from_token[:projects]&.first || attrs_from_token[:groups]&.first
+        case attrs_from_token[:runner_type]
+        when :project_type
+          attrs_from_token[:projects]&.first
+        when :group_type
+          attrs_from_token[:groups]&.first
+          # No scope for instance type
+        end
       end
     end
   end

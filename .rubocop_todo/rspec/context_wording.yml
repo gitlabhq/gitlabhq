@@ -973,7 +973,6 @@ RSpec/ContextWording:
     - 'spec/controllers/admin/application_settings_controller_spec.rb'
     - 'spec/controllers/admin/instance_review_controller_spec.rb'
     - 'spec/controllers/admin/integrations_controller_spec.rb'
-    - 'spec/controllers/admin/runner_projects_controller_spec.rb'
     - 'spec/controllers/admin/sessions_controller_spec.rb'
     - 'spec/controllers/admin/users_controller_spec.rb'
     - 'spec/controllers/application_controller_spec.rb'

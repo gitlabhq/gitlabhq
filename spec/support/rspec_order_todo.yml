@@ -3306,7 +3306,6 @@
 - './spec/controllers/admin/jobs_controller_spec.rb'
 - './spec/controllers/admin/plan_limits_controller_spec.rb'
 - './spec/controllers/admin/projects_controller_spec.rb'
-- './spec/controllers/admin/runner_projects_controller_spec.rb'
 - './spec/controllers/admin/runners_controller_spec.rb'
 - './spec/controllers/admin/sessions_controller_spec.rb'
 - './spec/controllers/admin/spam_logs_controller_spec.rb'

@@ -168,6 +168,7 @@ module IssuesHelper
       can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issuable).to_s,
       iid: issuable.iid,
+      issuable_id: issuable.id,
       is_issue_author: (issuable.author == current_user).to_s,
       issue_path: issuable_path(issuable),
       issue_type: issuable_display_type(issuable),

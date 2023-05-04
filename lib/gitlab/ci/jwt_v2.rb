@@ -43,10 +43,16 @@ module Gitlab
 
       def custom_claims
         super.merge(
-          runner_id: build.runner.id,
-          runner_environment: build.runner.gitlab_hosted? ? GITLAB_HOSTED_RUNNER : SELF_HOSTED_RUNNER,
+          runner_id: runner&.id,
+          runner_environment: runner_environment,
           sha: build.pipeline.sha
         )
+      end
+
+      def runner_environment
+        return unless runner
+
+        runner.gitlab_hosted? ? GITLAB_HOSTED_RUNNER : SELF_HOSTED_RUNNER
       end
     end
   end

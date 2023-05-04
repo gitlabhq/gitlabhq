@@ -504,7 +504,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
     it { is_expected.to delegate_method(:runner_registration_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:runner_registration_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:allow_runner_registration_token).to(:namespace_settings) }
-    it { is_expected.to delegate_method(:allow_runner_registration_token?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:package_settings) }
@@ -522,6 +521,38 @@ RSpec.describe Namespace, feature_category: :subgroups do
     it do
       is_expected.to delegate_method(:allow_runner_registration_token=).to(:namespace_settings)
                        .with_arguments(:args)
+    end
+
+    describe '#allow_runner_registration_token?' do
+      subject { namespace.allow_runner_registration_token? }
+
+      context 'when namespace_settings is nil' do
+        let_it_be(:namespace) { create(:namespace) }
+
+        it { is_expected.to eq false }
+      end
+
+      context 'when namespace_settings is not nil' do
+        let_it_be(:namespace) { create(:namespace, :with_namespace_settings) }
+
+        it { is_expected.to eq true }
+
+        context 'when namespace_settings.allow_runner_registration_token? is false' do
+          before do
+            namespace.allow_runner_registration_token = false
+          end
+
+          it { is_expected.to eq false }
+        end
+
+        context 'when namespace_settings.allow_runner_registration_token? is true' do
+          before do
+            namespace.allow_runner_registration_token = true
+          end
+
+          it { is_expected.to eq true }
+        end
+      end
     end
   end
 

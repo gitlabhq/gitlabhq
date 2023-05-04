@@ -126,6 +126,10 @@ module Gitlab
       def environment_protected?
         false # Overridden in EE
       end
+
+      def runner
+        build.runner
+      end
     end
   end
 end

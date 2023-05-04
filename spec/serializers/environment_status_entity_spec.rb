@@ -36,7 +36,9 @@ RSpec.describe EnvironmentStatusEntity do
   it { is_expected.to include(:details) }
   it { is_expected.to include(:changes) }
   it { is_expected.to include(:status) }
+  it { is_expected.to include(:environment_available) }
 
+  it { is_expected.not_to include(:retry_url) }
   it { is_expected.not_to include(:stop_url) }
   it { is_expected.not_to include(:metrics_url) }
   it { is_expected.not_to include(:metrics_monitoring_url) }
@@ -45,6 +47,7 @@ RSpec.describe EnvironmentStatusEntity do
     let(:user) { maintainer }
 
     it { is_expected.to include(:stop_url) }
+    it { is_expected.to include(:retry_url) }
   end
 
   context 'when deployment has metrics' do

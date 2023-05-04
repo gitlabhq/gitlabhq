@@ -973,6 +973,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionexplaincode"></a>`explainCode` | [`AiExplainCodeInput`](#aiexplaincodeinput) | Input for explain_code AI action. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
+| <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
 | <a id="mutationaiactiongeneratetestfile"></a>`generateTestFile` | [`GenerateTestFileInput`](#generatetestfileinput) | Input for generate_test_file AI action. |
 | <a id="mutationaiactionmarkupformat"></a>`markupFormat` | [`MarkupFormat`](#markupformat) | Indicates the response format. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
@@ -26697,6 +26698,16 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiexplainvulnerabilityinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiGenerateDescriptionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigeneratedescriptioninputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
+| <a id="aigeneratedescriptioninputdescriptiontemplatename"></a>`descriptionTemplateName` | [`String`](#string) | Name of the description template to use to generate message off of. |
+| <a id="aigeneratedescriptioninputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 
 ### `AiSummarizeCommentsInput`
 

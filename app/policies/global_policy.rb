@@ -22,7 +22,7 @@ class GlobalPolicy < BasePolicy
   condition(:project_bot, scope: :user) { @user&.project_bot? }
   condition(:migration_bot, scope: :user) { @user&.migration_bot? }
 
-  condition(:create_runner_workflow_enabled) do
+  condition(:create_runner_workflow_enabled, scope: :user) do
     Feature.enabled?(:create_runner_workflow_for_admin, @user)
   end
 

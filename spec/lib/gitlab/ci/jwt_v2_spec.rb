@@ -66,6 +66,14 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
         it 'is the ID of the runner executing the job' do
           expect(payload[:runner_id]).to eq(runner.id)
         end
+
+        context 'when build is not associated with a runner' do
+          let(:runner) { nil }
+
+          it 'is nil' do
+            expect(payload[:runner_id]).to be_nil
+          end
+        end
       end
 
       describe 'runner_environment' do
@@ -86,6 +94,14 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :continuous_integration do
 
           it "is #{described_class::SELF_HOSTED_RUNNER}" do
             expect(payload[:runner_environment]).to eq(described_class::SELF_HOSTED_RUNNER)
+          end
+        end
+
+        context 'when build is not associated with a runner' do
+          let(:runner) { nil }
+
+          it 'is nil' do
+            expect(payload[:runner_environment]).to be_nil
           end
         end
       end

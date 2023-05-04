@@ -15,7 +15,7 @@ RSpec.describe 'Runners', feature_category: :runner_fleet do
     end
 
     context 'when user views runners page' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       before do
         project.add_maintainer(user)
