@@ -1,5 +1,5 @@
 variables:
-  DAST_AUTO_DEPLOY_IMAGE_VERSION: 'v2.48.1'
+  DAST_AUTO_DEPLOY_IMAGE_VERSION: 'v2.48.2'
 
 .dast-auto-deploy:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${DAST_AUTO_DEPLOY_IMAGE_VERSION}"

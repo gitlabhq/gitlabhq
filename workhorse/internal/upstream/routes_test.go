@@ -22,6 +22,17 @@ func TestAdminGeoPathsWithGeoProxy(t *testing.T) {
 	runTestCasesWithGeoProxyEnabled(t, testCases)
 }
 
+func TestApiGeoPathsWithGeoProxy(t *testing.T) {
+	testCases := []testCase{
+		{"Geo replication endpoint", "/api/v4/geo_replication", "Local Rails server received request to path /api/v4/geo_replication"},
+		{"Geo GraphQL endpoint", "/api/v4/geo/graphql", "Local Rails server received request to path /api/v4/geo/graphql"},
+		{"Current geo node failures", "/api/v4/geo_nodes/current/failures", "Local Rails server received request to path /api/v4/geo_nodes/current/failures"},
+		{"Current geo sites failures", "/api/v4/geo_sites/current/failures", "Local Rails server received request to path /api/v4/geo_sites/current/failures"},
+	}
+
+	runTestCasesWithGeoProxyEnabled(t, testCases)
+}
+
 func TestProjectNotExistingGitHttpPullWithGeoProxy(t *testing.T) {
 	testCases := []testCase{
 		{"secondary info/refs", "/group/project.git/info/refs", "Local Rails server received request to path /group/project.git/info/refs"},

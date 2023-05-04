@@ -3513,6 +3513,18 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
 
       expect(response).to have_gitlab_http_status(:conflict)
     end
+
+    context 'when project is forked' do
+      let(:forked_project) { fork_project(project) }
+      let(:path) { "/projects/#{forked_project.id}/share" }
+
+      it 'returns a 404 error when group does not exist' do
+        forked_project.add_maintainer(user)
+        post api(path, user), params: { group_id: non_existing_record_id, group_access: Gitlab::Access::DEVELOPER }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/share/:group_id' do

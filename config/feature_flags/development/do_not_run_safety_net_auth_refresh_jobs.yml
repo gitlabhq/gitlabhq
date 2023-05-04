@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110986
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390336
 milestone: '15.9'
 type: development
-group: group::tenant scale
+group: group::authentication and authorization
 default_enabled: false

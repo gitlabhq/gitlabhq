@@ -15,6 +15,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
   describe 'associations' do
     it { is_expected.to belong_to(:reporter).class_name('User') }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_many(:events).class_name('ResourceEvents::AbuseReportEvent').inverse_of(:abuse_report) }
 
     it "aliases reporter to author" do
       expect(subject.author).to be(subject.reporter)

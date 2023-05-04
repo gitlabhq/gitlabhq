@@ -25,6 +25,7 @@ describe('ProjectAvatar', () => {
       entityName: defaultProps.projectName,
       size: 32,
       src: '',
+      fallbackOnError: true,
     });
   });
 

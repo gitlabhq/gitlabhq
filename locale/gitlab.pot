@@ -45283,9 +45283,6 @@ msgstr ""
 msgid "There was a problem updating the keep latest artifacts setting."
 msgstr ""
 
-msgid "There was an error adding a To Do."
-msgstr ""
-
 msgid "There was an error creating the dashboard, branch name is invalid."
 msgstr ""
 
@@ -45293,9 +45290,6 @@ msgid "There was an error creating the dashboard, branch named: %{branch} alread
 msgstr ""
 
 msgid "There was an error creating the issue"
-msgstr ""
-
-msgid "There was an error deleting the To Do."
 msgstr ""
 
 msgid "There was an error fetching configuration for charts"
@@ -50851,6 +50845,9 @@ msgid "Workspaces|Stopping"
 msgstr ""
 
 msgid "Workspaces|Terminate"
+msgstr ""
+
+msgid "Workspaces|Terminated"
 msgstr ""
 
 msgid "Workspaces|Terminating"

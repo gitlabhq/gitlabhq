@@ -56,5 +56,6 @@ export default {
     :src="projectAvatarUrl"
     :alt="avatarAlt"
     :size="size"
+    :fallback-on-error="true"
   />
 </template>

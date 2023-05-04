@@ -406,6 +406,8 @@ func configureRoutes(u *upstream) {
 		u.route("", "^/api/v4/geo_replication", defaultUpstream),
 		u.route("", "^/api/v4/geo/proxy_git_ssh", defaultUpstream),
 		u.route("", "^/api/v4/geo/graphql", defaultUpstream),
+		u.route("", "^/api/v4/geo_nodes/current/failures", defaultUpstream),
+		u.route("", "^/api/v4/geo_sites/current/failures", defaultUpstream),
 
 		// Internal API routes
 		u.route("", "^/api/v4/internal", defaultUpstream),

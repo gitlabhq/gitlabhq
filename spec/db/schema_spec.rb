@@ -26,7 +26,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     clusters_applications_crossplane: %w[cluster_id],
     clusters_applications_helm: %w[cluster_id],
     clusters_applications_ingress: %w[cluster_id],
-    clusters_applications_jupyter: %w[cluster_id oauth_application_id],
     clusters_applications_knative: %w[cluster_id],
     clusters_applications_prometheus: %w[cluster_id],
     clusters_applications_runners: %w[cluster_id],

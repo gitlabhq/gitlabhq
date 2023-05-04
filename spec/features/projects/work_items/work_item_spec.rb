@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Work item', :js, feature_category: :team_planning do
+  let_it_be_with_reload(:user) { create(:user) }
+
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:user) { create(:user) }
   let_it_be(:work_item) { create(:work_item, project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:milestones) { create_list(:milestone, 25, project: project) }

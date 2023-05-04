@@ -15,6 +15,8 @@ class AbuseReport < ApplicationRecord
   belongs_to :reporter, class_name: 'User'
   belongs_to :user
 
+  has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
+
   validates :reporter, presence: true
   validates :user, presence: true
   validates :message, presence: true
