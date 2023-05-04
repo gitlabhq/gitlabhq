@@ -17,7 +17,11 @@ module Gitlab
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           redis.pipelined do |pipeline|
-            keys.each_slice(1000) { |subset| pipeline.unlink(*subset) }
+            if ::Feature.enabled?(:use_pipeline_over_multikey)
+              keys.each { |key| pipeline.unlink(key) }
+            else
+              keys.each_slice(1000) { |subset| pipeline.unlink(*subset) }
+            end
           end
         end
       end

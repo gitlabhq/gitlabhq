@@ -121,6 +121,20 @@ If you rely on the order of the returned projects to be `id_asc`, change your sc
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### CiRunnerUpgradeStatusType GraphQL type renamed to CiRunnerUpgradeStatus
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+The `CiRunnerUpgradeStatusType` GraphQL type has been renamed to `CiRunnerUpgradeStatus`. In GitLab 17.0,
+the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### DAST ZAP advanced configuration variables deprecation
 
 <div class="deprecation-notes">

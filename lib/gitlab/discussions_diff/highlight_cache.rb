@@ -41,7 +41,13 @@ module Gitlab
           content =
             with_redis do |redis|
               Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-                redis.mget(keys)
+                if ::Feature.enabled?(:use_pipeline_over_multikey)
+                  redis.pipelined do |pipeline|
+                    keys.each { |key| pipeline.get(key) }
+                  end
+                else
+                  redis.mget(keys)
+                end
               end
             end
 
@@ -66,7 +72,13 @@ module Gitlab
 
           with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.del(keys)
+              if ::Feature.enabled?(:use_pipeline_over_multikey)
+                redis.pipelined do |pipeline|
+                  keys.each { |key| pipeline.del(key) }
+                end.sum
+              else
+                redis.del(keys)
+              end
             end
           end
         end

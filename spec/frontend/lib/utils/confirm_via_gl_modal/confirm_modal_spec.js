@@ -14,6 +14,7 @@ describe('Confirm Modal', () => {
     secondaryText,
     secondaryVariant,
     title,
+    size,
     hideCancel = false,
   } = {}) => {
     wrapper = mount(ConfirmModal, {
@@ -24,6 +25,7 @@ describe('Confirm Modal', () => {
         secondaryVariant,
         hideCancel,
         title,
+        size,
       },
     });
   };
@@ -90,6 +92,18 @@ describe('Confirm Modal', () => {
       createComponent({ title });
 
       expect(findGlModal().props().title).toBe(title);
+    });
+
+    it('should set modal size to `sm` by default', () => {
+      createComponent();
+
+      expect(findGlModal().props('size')).toBe('sm');
+    });
+
+    it('should set modal size when `size` prop is set', () => {
+      createComponent({ size: 'md' });
+
+      expect(findGlModal().props('size')).toBe('md');
     });
   });
 });

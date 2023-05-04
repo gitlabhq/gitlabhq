@@ -29,6 +29,7 @@ describe('IssuableLockForm', () => {
   const findEditForm = () => wrapper.findComponent(EditForm);
   const findSidebarLockStatusTooltip = () =>
     getBinding(findSidebarCollapseIcon().element, 'gl-tooltip');
+  const findIssuableLockClickable = () => wrapper.find('[data-testid="issuable-lock"]');
 
   const initStore = (isLocked) => {
     if (issuableType === ISSUABLE_TYPE_ISSUE) {
@@ -48,7 +49,7 @@ describe('IssuableLockForm', () => {
     store.getters.getNoteableData.discussion_locked = isLocked;
   };
 
-  const createComponent = ({ props = {} }, movedMrSidebar = false) => {
+  const createComponent = ({ props = {}, movedMrSidebar = false }) => {
     wrapper = shallowMount(IssuableLockForm, {
       store,
       provide: {
@@ -169,11 +170,27 @@ describe('IssuableLockForm', () => {
     `('displays $message when merge request is $locked', async ({ locked, message }) => {
       initStore(locked);
 
-      createComponent({}, true);
+      createComponent({ movedMrSidebar: true });
 
       await wrapper.find('.dropdown-item').trigger('click');
 
       expect(toast).toHaveBeenCalledWith(message);
+    });
+  });
+
+  describe('moved_mr_sidebar flag', () => {
+    describe('when the flag is off', () => {
+      it('does not show the non editable lock status', () => {
+        createComponent({ movedMrSidebar: false });
+        expect(findIssuableLockClickable().exists()).toBe(false);
+      });
+    });
+
+    describe('when the flag is on', () => {
+      it('does not show the non editable lock status', () => {
+        createComponent({ movedMrSidebar: true });
+        expect(findIssuableLockClickable().exists()).toBe(true);
+      });
     });
   });
 });

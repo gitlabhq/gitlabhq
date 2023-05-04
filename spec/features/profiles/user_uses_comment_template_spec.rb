@@ -18,7 +18,7 @@ RSpec.describe 'User uses comment template', :js,
   it 'applies comment template' do
     visit project_merge_request_path(merge_request.project, merge_request)
 
-    find('[data-testid="comment-template-dropdown-toggle"]').click
+    find('.js-comment-template-toggle').click
 
     wait_for_requests
 

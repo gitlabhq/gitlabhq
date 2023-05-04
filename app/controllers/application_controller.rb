@@ -110,6 +110,11 @@ class ApplicationController < ActionController::Base
     render plain: e.message, status: :too_many_requests
   end
 
+  rescue_from Gitlab::Git::ResourceExhaustedError do |e|
+    response.headers.merge!(e.headers)
+    render plain: e.message, status: :too_many_requests
+  end
+
   content_security_policy do |p|
     next if p.directives.blank?
     next unless Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?

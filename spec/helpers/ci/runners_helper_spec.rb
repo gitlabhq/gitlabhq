@@ -106,6 +106,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
   describe '#group_shared_runners_settings_data' do
     let_it_be(:parent) { create(:group) }
     let_it_be(:group) { create(:group, parent: parent, shared_runners_enabled: false) }
+    let_it_be(:group_with_project) { create(:group, parent: parent) }
+    let_it_be(:project) { create(:project, group: group_with_project) }
 
     let(:runner_constants) do
       {
@@ -118,6 +120,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
     it 'returns group data for top level group' do
       result = {
         group_id: parent.id,
+        group_name: parent.name,
+        group_is_empty: 'false',
         shared_runners_setting: Namespace::SR_ENABLED,
         parent_shared_runners_setting: nil
       }.merge(runner_constants)
@@ -128,11 +132,25 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
     it 'returns group data for child group' do
       result = {
         group_id: group.id,
+        group_name: group.name,
+        group_is_empty: 'true',
         shared_runners_setting: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
         parent_shared_runners_setting: Namespace::SR_ENABLED
       }.merge(runner_constants)
 
       expect(helper.group_shared_runners_settings_data(group)).to eq result
+    end
+
+    it 'returns group data for child group with project' do
+      result = {
+        group_id: group_with_project.id,
+        group_name: group_with_project.name,
+        group_is_empty: 'false',
+        shared_runners_setting: Namespace::SR_ENABLED,
+        parent_shared_runners_setting: Namespace::SR_ENABLED
+      }.merge(runner_constants)
+
+      expect(helper.group_shared_runners_settings_data(group_with_project)).to eq result
     end
   end
 

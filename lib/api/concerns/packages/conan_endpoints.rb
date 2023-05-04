@@ -82,7 +82,8 @@ module API
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
           get 'conans/search', urgency: :low do
-            service = ::Packages::Conan::SearchService.new(current_user, query: params[:q]).execute
+            service = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
+
             service.payload
           end
 

@@ -10,6 +10,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
 
   context 'user is not logged in' do
     before do
+      stub_feature_flags(moved_mr_sidebar: false)
       visit(project_issue_path(project, issue))
     end
 
@@ -20,9 +21,9 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
 
   context 'user is logged in' do
     before do
+      stub_feature_flags(moved_mr_sidebar: false)
       project.add_developer(user)
       sign_in(user)
-
       visit(project_issue_path(project, issue))
     end
 
@@ -52,6 +53,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
 
   context 'user is logged in without edit permission' do
     before do
+      stub_feature_flags(moved_mr_sidebar: false)
       sign_in(user2)
 
       visit(project_issue_path(project, issue))

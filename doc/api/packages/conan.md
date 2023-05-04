@@ -123,7 +123,7 @@ GET <route-prefix>/users/authenticate
 ```
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/packages/conan/v1/users/authenticate
+curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/packages/conan/v1/users/authenticate"
 ```
 
 Example response:

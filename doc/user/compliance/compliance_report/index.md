@@ -18,6 +18,7 @@ See reports about compliance violations and compliance frameworks for the group.
 > - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/5237) in GitLab 14.10. [Feature flag `compliance_violations_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/346266) removed.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) ability to create/edit compliance frameworks in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `manage_compliance_frameworks_modals_refactor`. Disabled by default.
 
 With compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
 

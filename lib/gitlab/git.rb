@@ -22,6 +22,21 @@ module Gitlab
     InvalidRefFormatError = Class.new(BaseError)
     ReferencesLockedError = Class.new(BaseError)
 
+    class ResourceExhaustedError < BaseError
+      def initialize(msg = nil, retry_after = 0)
+        super(msg)
+        @retry_after = retry_after
+      end
+
+      def headers
+        if @retry_after.to_i > 0
+          { "Retry-After" => @retry_after }
+        else
+          {}
+        end
+      end
+    end
+
     class << self
       include Gitlab::EncodingHelper
 

@@ -1212,7 +1212,7 @@ For more advanced setups refer to the [standalone Gitaly Cluster documentation](
 Praefect, the routing and transaction manager for Gitaly Cluster, requires its own database server to store data on Gitaly Cluster status.
 
 If you want to have a highly available setup, Praefect requires a third-party PostgreSQL database.
-A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919).
+A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 
 #### Praefect non-HA PostgreSQL standalone using Omnibus GitLab
 

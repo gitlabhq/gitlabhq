@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe ::Packages::Conan::PackageFinder do
+RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project) }
@@ -15,7 +15,8 @@ RSpec.describe ::Packages::Conan::PackageFinder do
 
   describe '#execute' do
     let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
-    let(:finder) { described_class.new(user, query: query) }
+    let(:finder) { described_class.new(user, params) }
+    let(:params) { { query: query } }
 
     subject { finder.execute }
 
@@ -40,7 +41,7 @@ RSpec.describe ::Packages::Conan::PackageFinder do
     end
 
     with_them do
-      let(:expected_packages) { packages_visible ? [conan_package, conan_package2] : [] }
+      let(:expected_packages) { packages_visible ? [conan_package2, conan_package] : [] }
       let(:user) { role == :anonymous ? nil : super() }
 
       before do
@@ -49,6 +50,24 @@ RSpec.describe ::Packages::Conan::PackageFinder do
       end
 
       it { is_expected.to eq(expected_packages) }
+    end
+
+    context 'with project' do
+      subject { described_class.new(user, params, project: project).execute }
+
+      it { is_expected.to match_array([conan_package2, conan_package]) }
+
+      it 'respects the limit' do
+        stub_const("#{described_class}::MAX_PACKAGES_COUNT", 1)
+
+        expect(subject).to match_array([conan_package2])
+      end
+
+      context 'with a different project' do
+        let_it_be(:project) { private_project }
+
+        it { is_expected.to match_array([private_package]) }
+      end
     end
   end
 end

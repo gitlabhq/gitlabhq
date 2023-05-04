@@ -940,6 +940,8 @@ Omnibus automatically configures a tracking database when `roles(['geo_secondary
 If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above.
 Instead, follow the instructions below.
 
+If you want to run the Geo tracking database on a single node, see [Configure the Geo tracking database on the Geo secondary site](../replication/multiple_servers.md#step-3-configure-the-geo-tracking-database-on-the-geo-secondary-site).
+
 A production-ready and secure setup for the tracking PostgreSQL DB requires at least three Consul nodes: two
 Patroni nodes, and one PgBouncer node on the secondary site.
 

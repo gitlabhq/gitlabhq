@@ -847,6 +847,14 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         is_expected.to match_array([package])
       end
     end
+
+    describe '.preload_conan_metadatum' do
+      subject { described_class.preload_conan_metadatum }
+
+      it 'loads conan metadatum' do
+        expect(subject.first.association(:conan_metadatum)).to be_loaded
+      end
+    end
   end
 
   describe '.without_nuget_temporary_name' do

@@ -359,4 +359,26 @@ RSpec.describe API::API, feature_category: :system_access do
       end
     end
   end
+
+  describe 'Handle Gitlab::Git::ResourceExhaustedError exception' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, creator: user) }
+
+    before do
+      project.add_maintainer(user)
+      allow(Gitlab::GitalyClient).to receive(:call).with(any_args).and_raise(
+        Gitlab::Git::ResourceExhaustedError.new("Upstream Gitaly has been exhausted. Try again later", 50)
+      )
+    end
+
+    it 'returns 429 status with exhausted' do
+      get api("/projects/#{project.id}/repository/commits", user)
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response.headers['Retry-After']).to be(50)
+      expect(json_response).to eql(
+        'message' => 'Upstream Gitaly has been exhausted. Try again later'
+      )
+    end
+  end
 end

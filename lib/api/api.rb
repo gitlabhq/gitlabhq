@@ -134,6 +134,10 @@ module API
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
     end
 
+    rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
+      rack_response({ 'message' => exception.message }.to_json, 429, exception.headers)
+    end
+
     rescue_from :all do |exception|
       handle_api_exception(exception)
     end

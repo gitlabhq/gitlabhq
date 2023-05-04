@@ -72,48 +72,60 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_cache do
   end
 
   describe '#expire' do
-    subject { cache.expire(*keys) }
+    shared_examples 'expires varying amount of keys' do
+      subject { cache.expire(*keys) }
 
-    before do
-      cache.write(:foo, ['value'])
-      cache.write(:bar, ['value2'])
-    end
+      before do
+        cache.write(:foo, ['value'])
+        cache.write(:bar, ['value2'])
+      end
 
-    it 'actually wrote the values' do
-      expect(cache.read(:foo)).to contain_exactly('value')
-      expect(cache.read(:bar)).to contain_exactly('value2')
-    end
+      it 'actually wrote the values' do
+        expect(cache.read(:foo)).to contain_exactly('value')
+        expect(cache.read(:bar)).to contain_exactly('value2')
+      end
 
-    context 'single key' do
-      let(:keys) { %w(foo) }
+      context 'single key' do
+        let(:keys) { %w(foo) }
 
-      it { is_expected.to eq(1) }
+        it { is_expected.to eq(1) }
 
-      it 'deletes the given key from the cache' do
-        subject
+        it 'deletes the given key from the cache' do
+          subject
 
-        expect(cache.read(:foo)).to be_empty
+          expect(cache.read(:foo)).to be_empty
+        end
+      end
+
+      context 'multiple keys' do
+        let(:keys) { %w(foo bar) }
+
+        it { is_expected.to eq(2) }
+
+        it 'deletes the given keys from the cache' do
+          subject
+
+          expect(cache.read(:foo)).to be_empty
+          expect(cache.read(:bar)).to be_empty
+        end
+      end
+
+      context 'no keys' do
+        let(:keys) { [] }
+
+        it { is_expected.to eq(0) }
       end
     end
 
-    context 'multiple keys' do
-      let(:keys) { %w(foo bar) }
-
-      it { is_expected.to eq(2) }
-
-      it 'deletes the given keys from the cache' do
-        subject
-
-        expect(cache.read(:foo)).to be_empty
-        expect(cache.read(:bar)).to be_empty
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(use_pipeline_over_multikey: false)
       end
+
+      it_behaves_like 'expires varying amount of keys'
     end
 
-    context 'no keys' do
-      let(:keys) { [] }
-
-      it { is_expected.to eq(0) }
-    end
+    it_behaves_like 'expires varying amount of keys'
   end
 
   describe '#exist?' do

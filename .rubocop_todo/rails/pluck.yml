@@ -73,7 +73,6 @@ Rails/Pluck:
     - 'ee/spec/requests/api/groups_spec.rb'
     - 'ee/spec/requests/api/iterations_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
-    - 'ee/spec/requests/api/merge_request_approval_rules_spec.rb'
     - 'ee/spec/requests/api/project_approval_rules_spec.rb'
     - 'ee/spec/requests/api/project_approval_settings_spec.rb'
     - 'ee/spec/requests/api/projects_spec.rb'

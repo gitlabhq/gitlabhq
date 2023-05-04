@@ -356,6 +356,16 @@ as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8 kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration](https://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
+### Use Keytabs created using AES-only encryption with Windows AD
+
+When you create a keytab with Advanced Encryption Standard (AES)-only encryption, you must select the **This account supports Kerberos AES <128/256> bit encryption** checkbox for that account in the AD server. Whether the checkbox is 128 or 256 bit depends on the encryption strength used when you created the keytab. To check this, on the Active Directory server:
+
+1. Open the **Users and Groups** tool.
+1. Locate the account that you used to create the keytab.
+1. Right-click the account and select **Properties**.
+1. In **Account Options** on the **Account** tab, select the appropriate AES encryption support checkbox.
+1. Save and close.
+
 ## Troubleshooting
 
 ### Using Google Chrome with Kerberos authentication against Windows AD

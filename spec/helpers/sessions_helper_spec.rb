@@ -52,7 +52,7 @@ RSpec.describe SessionsHelper do
   end
 
   describe '#send_rate_limited?' do
-    let_it_be(:user) { build(:user) }
+    let(:user) { build_stubbed(:user) }
 
     subject { helper.send_rate_limited?(user) }
 
@@ -77,30 +77,14 @@ RSpec.describe SessionsHelper do
   end
 
   describe '#obfuscated_email' do
+    let(:email) { 'mail@example.com' }
+
     subject { helper.obfuscated_email(email) }
 
-    context 'when an email address is normal length' do
-      let(:email) { 'alex@gitlab.com' }
+    it 'delegates to Gitlab::Utils::Email.obfuscated_email' do
+      expect(Gitlab::Utils::Email).to receive(:obfuscated_email).with(email).and_call_original
 
-      it { is_expected.to eq('al**@g*****.com') }
-    end
-
-    context 'when an email address contains multiple top level domains' do
-      let(:email) { 'alex@gl.co.uk' }
-
-      it { is_expected.to eq('al**@g****.uk') }
-    end
-
-    context 'when an email address is very short' do
-      let(:email) { 'a@b.c' }
-
-      it { is_expected.to eq('a@b.c') }
-    end
-
-    context 'when an email address is even shorter' do
-      let(:email) { 'a@b' }
-
-      it { is_expected.to eq('a@b') }
+      expect(subject).to eq('ma**@e******.com')
     end
   end
 end

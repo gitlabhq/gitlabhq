@@ -79,6 +79,8 @@ module Ci
     def group_shared_runners_settings_data(group)
       {
         group_id: group.id,
+        group_name: group.name,
+        group_is_empty: (group.projects.empty? && group.children.empty?).to_s,
         shared_runners_setting: group.shared_runners_setting,
         parent_shared_runners_setting: group.parent&.shared_runners_setting,
         runner_enabled_value: Namespace::SR_ENABLED,

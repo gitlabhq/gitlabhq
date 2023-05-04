@@ -1858,8 +1858,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     context 'when Gitaly returns Internal error' do
       before do
-        expect(repository.gitaly_ref_client)
-          .to receive(:find_tag)
+        expect(Gitlab::GitalyClient)
+          .to receive(:call)
           .and_raise(GRPC::Internal, "tag not found")
       end
 
@@ -1868,8 +1868,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     context 'when Gitaly returns tag_not_found error' do
       before do
-        expect(repository.gitaly_ref_client)
-          .to receive(:find_tag)
+        expect(Gitlab::GitalyClient)
+          .to receive(:call)
           .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
                                         "tag was not found",
                                         Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))

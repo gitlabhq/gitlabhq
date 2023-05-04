@@ -12,11 +12,9 @@ class ProtectedTag::CreateAccessLevel < ApplicationRecord
   validate :validate_deploy_key_membership
 
   def type
-    if deploy_key.present?
-      :deploy_key
-    else
-      super
-    end
+    return :deploy_key if deploy_key.present?
+
+    super
   end
 
   def humanize
@@ -25,28 +23,28 @@ class ProtectedTag::CreateAccessLevel < ApplicationRecord
     super
   end
 
-  def check_access(user)
-    return false if access_level == Gitlab::Access::NO_ACCESS
-
-    if user && deploy_key.present?
-      return user.can?(:read_project, project) && enabled_deploy_key_for_user?(deploy_key, user)
+  def check_access(current_user)
+    super do
+      break enabled_deploy_key_for_user?(current_user) if deploy_key?
     end
-
-    super
   end
 
   private
 
+  def deploy_key?
+    type == :deploy_key
+  end
+
   def validate_deploy_key_membership
     return unless deploy_key
-
     return if project.deploy_keys_projects.where(deploy_key: deploy_key).exists?
 
     errors.add(:deploy_key, 'is not enabled for this project')
   end
 
-  def enabled_deploy_key_for_user?(deploy_key, user)
-    deploy_key.user_id == user.id &&
+  def enabled_deploy_key_for_user?(current_user)
+    current_user.can?(:read_project, project) &&
+      deploy_key.user_id == current_user.id &&
       DeployKey.with_write_access_for_project(protected_tag.project, deploy_key: deploy_key).any?
   end
 end

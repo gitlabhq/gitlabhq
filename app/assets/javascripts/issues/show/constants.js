@@ -17,3 +17,5 @@ export const issueState = {
   issueType: undefined,
   isDirty: false,
 };
+
+export const NEW_ACTIONS_POPOVER_KEY = 'new-actions-popover-viewed';

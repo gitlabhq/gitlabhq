@@ -9,7 +9,7 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
   let!(:conan_package) { create(:conan_package, project: project) }
   let!(:conan_package2) { create(:conan_package, project: project) }
 
-  subject { described_class.new(user, query: query) }
+  subject { described_class.new(project, user, query: query) }
 
   before do
     project.add_developer(user)
@@ -24,7 +24,7 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
         result = subject.execute
 
         expect(result.status).to eq :success
-        expect(result.payload).to eq(results: [conan_package.conan_recipe, conan_package2.conan_recipe])
+        expect(result.payload).to eq(results: [conan_package2.conan_recipe, conan_package.conan_recipe])
       end
     end
 
@@ -69,6 +69,30 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
 
         expect(result.status).to eq :success
         expect(result.payload).to eq(results: [])
+      end
+    end
+
+    context 'for project' do
+      let_it_be(:project2) { create(:project, :public) }
+      let(:query) { conan_package.name }
+      let!(:conan_package3) { create(:conan_package, name: conan_package.name, project: project2) }
+
+      context 'when passing a project' do
+        it 'returns only packages of the given project' do
+          result = subject.execute
+
+          expect(result.status).to eq :success
+          expect(result[:results]).to match_array([conan_package.conan_recipe])
+        end
+      end
+
+      context 'when passing a project with nil' do
+        it 'returns all packages' do
+          result = described_class.new(nil, user, query: query).execute
+
+          expect(result.status).to eq :success
+          expect(result[:results]).to eq([conan_package3.conan_recipe, conan_package.conan_recipe])
+        end
       end
     end
   end

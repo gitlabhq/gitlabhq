@@ -65,6 +65,22 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       )
       expect(response).to have_gitlab_http_status(:forbidden)
     end
+
+    it 'handles Gitlab::Git::ResourceExhaustedError', :aggregate_failures do
+      allow(controller).to receive(:execute) do
+        raise Gitlab::Git::ResourceExhaustedError.new("Upstream Gitaly has been exhausted. Try again later", 50)
+      end
+
+      post :execute
+
+      expect(json_response).to include(
+        'errors' => include(
+          a_hash_including('message' => 'Upstream Gitaly has been exhausted. Try again later')
+        )
+      )
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response.headers['Retry-After']).to be(50)
+    end
   end
 
   describe 'POST #execute' do

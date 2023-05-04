@@ -242,7 +242,7 @@ that to achieve full High Availability, a third-party PostgreSQL database soluti
 We hope to offer a built-in solution for these restrictions in the future. In the meantime, a non-HA PostgreSQL server
 can be set up using Omnibus GitLab as the specifications reflect. Refer to the following issues for more information:
 
-- [`omnibus-gitlab#5919`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5919).
+- [`omnibus-gitlab#7292`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 - [`gitaly#3398`](https://gitlab.com/gitlab-org/gitaly/-/issues/3398).
 
 ## Recommended cloud providers and services

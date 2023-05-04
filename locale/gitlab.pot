@@ -762,6 +762,9 @@ msgstr ""
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr ""
 
+msgid "%{issuableDisplayName} %{lockStatus}."
+msgstr ""
+
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
@@ -1841,10 +1844,10 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
-msgid "AI Generated Test File"
+msgid "AI actions"
 msgstr ""
 
-msgid "AI actions"
+msgid "AI-generated test file"
 msgstr ""
 
 msgid "AISummary|Experiment"
@@ -11302,6 +11305,9 @@ msgstr ""
 msgid "ComplianceReport|Do you want to refresh the filtered results to include your change?"
 msgstr ""
 
+msgid "ComplianceReport|Edit the framework"
+msgstr ""
+
 msgid "ComplianceReport|Framework successfully applied"
 msgstr ""
 
@@ -12161,6 +12167,9 @@ msgid "Copy %{accessTokenType}"
 msgstr ""
 
 msgid "Copy %{http_label} clone URL"
+msgstr ""
+
+msgid "Copy %{issueType} email address"
 msgstr ""
 
 msgid "Copy %{name}"
@@ -16288,6 +16297,9 @@ msgid "Email Notification"
 msgstr ""
 
 msgid "Email a new %{name} to this project"
+msgstr ""
+
+msgid "Email address copied"
 msgstr ""
 
 msgid "Email address suffix"
@@ -21762,6 +21774,12 @@ msgstr ""
 msgid "Header message"
 msgstr ""
 
+msgid "HeaderAction|Notifications and other %{issueType} actions have moved to this menu."
+msgstr ""
+
+msgid "HeaderAction|Okay!"
+msgstr ""
+
 msgid "HeaderAction|incident"
 msgstr ""
 
@@ -26720,6 +26738,9 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
+msgid "Lock %{issuableType}"
+msgstr ""
+
 msgid "Lock File?"
 msgstr ""
 
@@ -26727,9 +26748,6 @@ msgid "Lock memberships to LDAP synchronization"
 msgstr ""
 
 msgid "Lock memberships to SAML Group Links synchronization"
-msgstr ""
-
-msgid "Lock merge request"
 msgstr ""
 
 msgid "Lock not found"
@@ -27723,9 +27741,6 @@ msgstr ""
 msgid "Merge request events"
 msgstr ""
 
-msgid "Merge request locked."
-msgstr ""
-
 msgid "Merge request not merged"
 msgstr ""
 
@@ -27733,9 +27748,6 @@ msgid "Merge request reports"
 msgstr ""
 
 msgid "Merge request status"
-msgstr ""
-
-msgid "Merge request unlocked."
 msgstr ""
 
 msgid "Merge request was scheduled to merge after pipeline succeeds"
@@ -36881,6 +36893,9 @@ msgstr ""
 msgid "Reference"
 msgstr ""
 
+msgid "Reference copied"
+msgstr ""
+
 msgid "References"
 msgstr ""
 
@@ -38488,6 +38503,9 @@ msgstr ""
 msgid "Runners|Architecture"
 msgstr ""
 
+msgid "Runners|Are you sure you want to disable shared runners for %{groupName}?"
+msgstr ""
+
 msgid "Runners|Assigned Group"
 msgstr ""
 
@@ -38769,6 +38787,9 @@ msgstr ""
 msgid "Runners|No spot. This is the default choice for Linux Docker executor."
 msgstr ""
 
+msgid "Runners|No, keep shared runners enabled"
+msgstr ""
+
 msgid "Runners|Not accepting jobs"
 msgstr ""
 
@@ -38993,6 +39014,9 @@ msgstr ""
 msgid "Runners|Shared runners are disabled in the group settings"
 msgstr ""
 
+msgid "Runners|Shared runners will be disabled for all projects and subgroups in this group. If you proceed, you must manually re-enable shared runners in the settings of each project and subgroup."
+msgstr ""
+
 msgid "Runners|Show only inherited"
 msgstr ""
 
@@ -39161,6 +39185,9 @@ msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
+msgstr ""
+
+msgid "Runners|Yes, disable shared runners"
 msgstr ""
 
 msgid "Runners|Yes, start deleting stale runners"
@@ -43053,6 +43080,9 @@ msgstr ""
 msgid "StatusCheck|Status checks all passed"
 msgstr ""
 
+msgid "StatusCheck|Status checks are API calls to external systems that request the status of an external requirement. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "StatusCheck|Status checks are being fetched"
 msgstr ""
 
@@ -43063,6 +43093,9 @@ msgid "StatusCheck|Target branch"
 msgstr ""
 
 msgid "StatusCheck|Update status check"
+msgstr ""
+
+msgid "StatusCheck|What is status check?"
 msgstr ""
 
 msgid "StatusCheck|You are about to remove the %{name} status check."
@@ -47606,10 +47639,10 @@ msgstr ""
 msgid "Unlock"
 msgstr ""
 
-msgid "Unlock account"
+msgid "Unlock %{issuableType}"
 msgstr ""
 
-msgid "Unlock merge request"
+msgid "Unlock account"
 msgstr ""
 
 msgid "Unlock more features with GitLab Ultimate"
@@ -47868,6 +47901,9 @@ msgid "Uploading..."
 msgstr ""
 
 msgid "Upstream"
+msgstr ""
+
+msgid "Upstream Gitaly has been exhausted. Try again later"
 msgstr ""
 
 msgid "Upvotes"
@@ -53253,6 +53289,9 @@ msgstr ""
 msgid "loading"
 msgstr ""
 
+msgid "locked"
+msgstr ""
+
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr ""
 
@@ -54161,6 +54200,9 @@ msgid "type parameter is missing and is required"
 msgstr ""
 
 msgid "unicode domains should use IDNA encoding"
+msgstr ""
+
+msgid "unlocked"
 msgstr ""
 
 msgid "updated"

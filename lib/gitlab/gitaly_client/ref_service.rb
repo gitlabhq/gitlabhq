@@ -113,7 +113,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :tag_not_found
           raise Gitlab::Git::UnknownRef, "tag does not exist: #{tag_name}"
         else
@@ -135,7 +135,7 @@ module Gitlab
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
-        case detailed_error&.error
+        case detailed_error.try(:error)
         when :invalid_format
           raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(",")}"
         when :references_locked

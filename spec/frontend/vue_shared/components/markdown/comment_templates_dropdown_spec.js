@@ -49,7 +49,7 @@ describe('Comment templates dropdown', () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
     wrapper = createComponent({ mockApollo });
 
-    wrapper.findByTestId('comment-template-dropdown-toggle').trigger('click');
+    wrapper.find('.js-comment-template-toggle').trigger('click');
 
     await waitForPromises();
 
@@ -60,7 +60,7 @@ describe('Comment templates dropdown', () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
     wrapper = createComponent({ mockApollo });
 
-    wrapper.findByTestId('comment-template-dropdown-toggle').trigger('click');
+    wrapper.find('.js-comment-template-toggle').trigger('click');
 
     await waitForPromises();
 

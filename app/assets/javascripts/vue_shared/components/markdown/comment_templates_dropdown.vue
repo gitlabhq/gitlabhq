@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltip, GlButton } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { updateText } from '~/lib/utils/text_markdown';
 import savedRepliesQuery from './saved_replies.query.graphql';
@@ -16,11 +16,8 @@ export default {
   },
   components: {
     GlCollapsibleListbox,
-    GlIcon,
     GlButton,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlTooltip,
   },
   props: {
     newCommentTemplatePath: {
@@ -44,6 +41,9 @@ export default {
 
       return savedReplies.map((r) => ({ value: r.id, text: r.name, content: r.content }));
     },
+  },
+  mounted() {
+    this.tooltipTarget = this.$el.querySelector('.js-comment-template-toggle');
   },
   methods: {
     fetchCommentTemplates() {
@@ -75,53 +75,49 @@ export default {
 </script>
 
 <template>
-  <gl-collapsible-listbox
-    :header-text="__('Insert comment template')"
-    :items="filteredSavedReplies"
-    placement="right"
-    searchable
-    class="comment-template-dropdown"
-    :searching="$apollo.queries.savedReplies.loading"
-    @shown="fetchCommentTemplates"
-    @search="setCommentTemplateSearch"
-    @select="onSelect"
-  >
-    <template #toggle>
-      <gl-button
-        v-gl-tooltip
-        :title="__('Insert comment template')"
-        :aria-label="__('Insert comment template')"
-        category="tertiary"
-        class="gl-px-3!"
-        data-testid="comment-template-dropdown-toggle"
-        @keydown.prevent
-      >
-        <gl-icon name="comment-lines" class="gl-mr-0!" />
-        <gl-icon name="chevron-down" />
-      </gl-button>
-    </template>
-    <template #list-item="{ item }">
-      <div class="gl-display-flex js-comment-template-content">
-        <div class="gl-text-truncate">
-          <strong>{{ item.text }}</strong
-          ><span class="gl-ml-2">{{ item.content }}</span>
+  <span>
+    <gl-collapsible-listbox
+      :header-text="__('Insert comment template')"
+      :items="filteredSavedReplies"
+      :toggle-text="__('Insert comment template')"
+      text-sr-only
+      toggle-class="js-comment-template-toggle"
+      icon="comment-lines"
+      category="tertiary"
+      placement="right"
+      searchable
+      class="comment-template-dropdown"
+      :searching="$apollo.queries.savedReplies.loading"
+      @shown="fetchCommentTemplates"
+      @search="setCommentTemplateSearch"
+      @select="onSelect"
+    >
+      <template #list-item="{ item }">
+        <div class="gl-display-flex js-comment-template-content">
+          <div class="gl-text-truncate">
+            <strong>{{ item.text }}</strong
+            ><span class="gl-ml-2">{{ item.content }}</span>
+          </div>
         </div>
-      </div>
-    </template>
-    <template #footer>
-      <div
-        class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-100 gl-display-flex gl-justify-content-center gl-p-3"
-      >
-        <gl-button
-          :href="newCommentTemplatePath"
-          category="tertiary"
-          block
-          class="gl-justify-content-start! gl-mt-0! gl-mb-0! gl-px-3!"
-          >{{ __('Add a new comment template') }}</gl-button
+      </template>
+      <template #footer>
+        <div
+          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-100 gl-display-flex gl-justify-content-center gl-p-3"
         >
-      </div>
-    </template>
-  </gl-collapsible-listbox>
+          <gl-button
+            :href="newCommentTemplatePath"
+            category="tertiary"
+            block
+            class="gl-justify-content-start! gl-mt-0! gl-mb-0! gl-px-3!"
+            >{{ __('Add a new comment template') }}</gl-button
+          >
+        </div>
+      </template>
+    </gl-collapsible-listbox>
+    <gl-tooltip :target="() => tooltipTarget">
+      {{ __('Insert comment template') }}
+    </gl-tooltip>
+  </span>
 </template>
 
 <style>

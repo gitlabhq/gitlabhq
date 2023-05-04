@@ -8,13 +8,20 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
 
   describe '.obfuscated_email' do
     where(:input, :output) do
-      'alex@gitlab.com' | 'al**@g*****.com'
-      'alex@gl.co.uk'   | 'al**@g****.uk'
-      'a@b.c'           | 'a@b.c'
-      'q@example.com'   | 'q@e******.com'
-      'q@w.'            | 'q@w.'
-      'a@b'             | 'a@b'
-      'no mail'         | 'no mail'
+      'alex@gitlab.com'                                | 'al**@g*****.com'
+      'alex@gl.co.uk'                                  | 'al**@g****.uk'
+      'a@b.c'                                          | 'aa@b.c'
+      'qqwweerrttyy@example.com'                       | 'qq**********@e******.com'
+      'getsuperfancysupport@paywhatyouwant.accounting' | 'ge******************@p*************.accounting'
+      'q@example.com'                                  | 'qq@e******.com'
+      'q@w.'                                           | 'qq@w.'
+      'a@b'                                            | 'aa@b'
+      'trun"@"e@example.com'                           | 'tr******@e******.com'
+      '@'                                              | '@'
+      'n'                                              | 'n'
+      'no mail'                                        | 'n******'
+      'truncated@exa'                                  | 'tr*******@exa'
+      ''                                               | ''
     end
 
     with_them do
@@ -29,9 +36,14 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
         'qqwweerrttyy@example.com'                       | 'qq*****@e*****.c**'
         'getsuperfancysupport@paywhatyouwant.accounting' | 'ge*****@p*****.a**'
         'q@example.com'                                  | 'qq*****@e*****.c**'
-        'q@w.'                                           | 'q@w.'
-        'a@b'                                            | 'a@b'
-        'no mail'                                        | 'no mail'
+        'q@w.'                                           | 'qq*****@w*****.'
+        'a@b'                                            | 'aa*****@b**'
+        'trun"@"e@example.com'                           | 'tr*****@e*****.c**'
+        '@'                                              | '@'
+        'no mail'                                        | 'n**'
+        'n'                                              | 'n**'
+        'truncated@exa'                                  | 'tr*****@e**'
+        ''                                               | ''
       end
 
       with_them do

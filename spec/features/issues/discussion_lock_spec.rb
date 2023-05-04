@@ -9,6 +9,7 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
 
   before do
     sign_in(user)
+    stub_feature_flags(moved_mr_sidebar: false)
   end
 
   context 'when a user is a team member' do

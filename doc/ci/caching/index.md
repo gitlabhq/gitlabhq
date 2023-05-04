@@ -590,6 +590,7 @@ If you have a cache mismatch, follow these steps to troubleshoot.
 | You use runners in autoscale mode without a distributed cache enabled. | Configure the autoscale runner to use a distributed cache. |
 | The machine the runner is installed on is low on disk space or, if you've set up distributed cache, the S3 bucket where the cache is stored doesn't have enough space. | Make sure you clear some space to allow new caches to be stored. There's no automatic way to do this. |
 | You use the same `key` for jobs where they cache different paths. | Use different cache keys so that the cache archive is stored to a different location and doesn't overwrite wrong caches. |
+| You have not enabled the [distributed runner caching on your runners](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching). | Set `Shared = false` and re-provision your runners. |
 
 #### Cache mismatch example 1
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'issuable templates', :js, feature_category: :projects do
   include ProjectForksHelper
+  include CookieHelper
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
@@ -12,6 +13,7 @@ RSpec.describe 'issuable templates', :js, feature_category: :projects do
   before do
     project.add_maintainer(user)
     sign_in user
+    set_cookie('new-actions-popover-viewed', 'true')
   end
 
   context 'user creates an issue using templates' do

@@ -2,12 +2,17 @@ import { GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import SharedRunnersForm from '~/group_settings/components/shared_runners_form.vue';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { updateGroup } from '~/api/groups_api';
 
+import SharedRunnersForm from '~/group_settings/components/shared_runners_form.vue';
+import { I18N_CONFIRM_MESSAGE } from '~/group_settings/constants';
+
 jest.mock('~/api/groups_api');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 
 const GROUP_ID = '99';
+const GROUP_NAME = 'My group';
 const RUNNER_ENABLED_VALUE = 'enabled';
 const RUNNER_DISABLED_VALUE = 'disabled_and_unoverridable';
 const RUNNER_ALLOW_OVERRIDE_VALUE = 'disabled_and_overridable';
@@ -19,6 +24,8 @@ describe('group_settings/components/shared_runners_form', () => {
     wrapper = shallowMountExtended(SharedRunnersForm, {
       provide: {
         groupId: GROUP_ID,
+        groupName: GROUP_NAME,
+        groupIsEmpty: false,
         sharedRunnersSetting: RUNNER_ENABLED_VALUE,
         parentSharedRunnersSetting: null,
         runnerEnabledValue: RUNNER_ENABLED_VALUE,
@@ -41,10 +48,12 @@ describe('group_settings/components/shared_runners_form', () => {
   };
 
   beforeEach(() => {
+    confirmAction.mockResolvedValue(true);
     updateGroup.mockResolvedValue({});
   });
 
   afterEach(() => {
+    confirmAction.mockReset();
     updateGroup.mockReset();
   });
 
@@ -110,8 +119,9 @@ describe('group_settings/components/shared_runners_form', () => {
 
     it('does not update settings while loading', async () => {
       findSharedRunnersToggle().vm.$emit('change', true);
+      await nextTick();
       findSharedRunnersToggle().vm.$emit('change', false);
-      await waitForPromises();
+      await nextTick();
 
       expect(updateGroup).toHaveBeenCalledTimes(1);
     });
@@ -134,6 +144,8 @@ describe('group_settings/components/shared_runners_form', () => {
       findSharedRunnersToggle().vm.$emit('change', true);
       await waitForPromises();
 
+      expect(confirmAction).not.toHaveBeenCalled();
+
       expect(getSharedRunnersSetting()).toEqual(RUNNER_ENABLED_VALUE);
       expect(findOverrideToggle().props('disabled')).toBe(true);
     });
@@ -142,17 +154,59 @@ describe('group_settings/components/shared_runners_form', () => {
       findSharedRunnersToggle().vm.$emit('change', false);
       await waitForPromises();
 
+      expect(confirmAction).toHaveBeenCalledTimes(1);
+      expect(confirmAction).toHaveBeenCalledWith(
+        I18N_CONFIRM_MESSAGE,
+        expect.objectContaining({
+          title: expect.stringContaining(GROUP_NAME),
+        }),
+      );
+
       expect(getSharedRunnersSetting()).toEqual(RUNNER_DISABLED_VALUE);
       expect(findOverrideToggle().props('disabled')).toBe(false);
+    });
+
+    describe('when user cancels operation', () => {
+      beforeEach(() => {
+        confirmAction.mockResolvedValue(false);
+      });
+
+      it('sends no payload when turned off', async () => {
+        findSharedRunnersToggle().vm.$emit('change', false);
+        await waitForPromises();
+
+        expect(confirmAction).toHaveBeenCalledTimes(1);
+        expect(confirmAction).toHaveBeenCalledWith(
+          I18N_CONFIRM_MESSAGE,
+          expect.objectContaining({
+            title: expect.stringContaining(GROUP_NAME),
+          }),
+        );
+
+        expect(updateGroup).not.toHaveBeenCalled();
+        expect(findOverrideToggle().props('disabled')).toBe(true);
+      });
+    });
+
+    describe('when group is empty', () => {
+      beforeEach(() => {
+        createComponent({ groupIsEmpty: true });
+      });
+
+      it('confirmation is not shown when turned off', async () => {
+        findSharedRunnersToggle().vm.$emit('change', false);
+        await waitForPromises();
+
+        expect(confirmAction).not.toHaveBeenCalled();
+        expect(getSharedRunnersSetting()).toEqual(RUNNER_DISABLED_VALUE);
+      });
     });
   });
 
   describe('"Override the group setting" toggle', () => {
-    beforeEach(() => {
-      createComponent({ sharedRunnersSetting: RUNNER_ALLOW_OVERRIDE_VALUE });
-    });
-
     it('enabling the override toggle sends correct payload', async () => {
+      createComponent({ sharedRunnersSetting: RUNNER_ALLOW_OVERRIDE_VALUE });
+
       findOverrideToggle().vm.$emit('change', true);
       await waitForPromises();
 
@@ -160,6 +214,8 @@ describe('group_settings/components/shared_runners_form', () => {
     });
 
     it('disabling the override toggle sends correct payload', async () => {
+      createComponent({ sharedRunnersSetting: RUNNER_ALLOW_OVERRIDE_VALUE });
+
       findOverrideToggle().vm.$emit('change', false);
       await waitForPromises();
 

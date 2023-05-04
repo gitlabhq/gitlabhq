@@ -56,6 +56,11 @@ export default {
       required: false,
       default: false,
     },
+    size: {
+      type: String,
+      required: false,
+      default: 'sm',
+    },
   },
   computed: {
     primaryAction() {
@@ -103,9 +108,9 @@ export default {
 <template>
   <gl-modal
     ref="modal"
-    size="sm"
     modal-id="confirmationModal"
     body-class="gl-display-flex"
+    :size="size"
     :title="title"
     :action-primary="primaryAction"
     :action-cancel="cancelAction"

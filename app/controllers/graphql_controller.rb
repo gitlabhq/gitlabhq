@@ -76,6 +76,13 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :forbidden)
   end
 
+  rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
+    log_exception(exception)
+
+    response.headers.merge!(exception.headers)
+    render_error(exception.message, status: :too_many_requests)
+  end
+
   rescue_from Gitlab::Graphql::Variables::Invalid do |exception|
     render_error(exception.message, status: :unprocessable_entity)
   end

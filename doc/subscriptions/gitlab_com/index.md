@@ -164,7 +164,7 @@ Seats owed = 12 - 10 (Maximum users - users in subscription)
 ### Free Guest users **(ULTIMATE)**
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
-The user must not be assigned any other role, anywhere in the instance.
+The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.
 
 - If your project is private or internal, a user with the Guest role has
   [a set of permissions](../../user/permissions.md#project-members-permissions).

@@ -1117,4 +1117,28 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
   end
+
+  context 'when Gitlab::Git::ResourceExhaustedError exception is raised' do
+    before do
+      sign_in user
+    end
+
+    controller(described_class) do
+      def index
+        raise Gitlab::Git::ResourceExhaustedError.new(
+          "Upstream Gitaly has been exhausted: maximum time in concurrency queue reached. Try again later", 50
+        )
+      end
+    end
+
+    it 'returns a plaintext error response with 429 status' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:too_many_requests)
+      expect(response.body).to include(
+        "Upstream Gitaly has been exhausted: maximum time in concurrency queue reached. Try again later"
+      )
+      expect(response.headers['Retry-After']).to eq(50)
+    end
+  end
 end

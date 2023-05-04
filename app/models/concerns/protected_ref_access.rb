@@ -45,11 +45,23 @@ module ProtectedRefAccess
     type == :role
   end
 
-  def check_access(user)
-    return false unless user
+  def check_access(current_user)
+    return false if current_user.nil? || no_access?
 
-    user.can?(:push_code, project) &&
-      project.team.max_member_access(user.id) >= access_level
+    yield if block_given?
+
+    user_can_access?(current_user)
+  end
+
+  private
+
+  def no_access?
+    role? && access_level == Gitlab::Access::NO_ACCESS
+  end
+
+  def user_can_access?(current_user)
+    current_user.can?(:push_code, project) &&
+      project.team.max_member_access(current_user.id) >= access_level
   end
 end
 
