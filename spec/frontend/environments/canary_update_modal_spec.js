@@ -30,12 +30,6 @@ describe('/environments/components/canary_update_modal.vue', () => {
     modal = wrapper.findComponent(GlModal);
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   beforeEach(() => {
     createComponent();
   });

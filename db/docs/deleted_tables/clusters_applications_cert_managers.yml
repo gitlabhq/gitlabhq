@@ -6,3 +6,5 @@ description: "(Deprecated) A GitLab managed cert-manager installation in a Kuber
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8837519445c319a699e0f3ced1c6912c839f3389
 milestone: '11.6'
 gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119238
+removed_in_milestone: '16.0'

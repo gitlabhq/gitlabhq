@@ -67,12 +67,6 @@ describe('MRWidgetClosed', () => {
     wrapper = createComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   it('renders closed icon', () => {
     expect(wrapper.findComponent(StateContainer).exists()).toBe(true);
     expect(wrapper.findComponent(StateContainer).props().status).toBe('closed');

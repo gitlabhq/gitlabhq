@@ -29,12 +29,6 @@ describe('Branches Sort Dropdown', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
   const findBranchesDropdown = () => wrapper.findByTestId('branches-dropdown');
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('When in overview mode', () => {
     beforeEach(() => {
       wrapper = createWrapper();

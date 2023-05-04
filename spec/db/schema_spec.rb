@@ -22,7 +22,6 @@ RSpec.describe 'Database schema', feature_category: :database do
   # In the subsequent table removal MR, remove the entries.
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
   REMOVED_FKS = {
-    clusters_applications_cert_managers: %w[cluster_id],
     clusters_applications_cilium: %w[cluster_id],
     clusters_applications_crossplane: %w[cluster_id],
     clusters_applications_helm: %w[cluster_id],

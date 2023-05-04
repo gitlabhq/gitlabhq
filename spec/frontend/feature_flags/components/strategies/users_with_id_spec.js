@@ -18,12 +18,6 @@ describe('~/feature_flags/components/users_with_id.vue', () => {
     textarea = wrapper.findComponent(GlFormTextarea);
   });
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-  });
-
   it('should display the current value of the parameters', () => {
     expect(textarea.element.value).toBe(usersWithIdStrategy.parameters.userIds);
   });

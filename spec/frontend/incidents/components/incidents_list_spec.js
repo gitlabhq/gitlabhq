@@ -97,13 +97,6 @@ describe('Incidents List', () => {
     );
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   it('shows the loading state', () => {
     mountComponent({
       loading: true,

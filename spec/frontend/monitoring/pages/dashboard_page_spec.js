@@ -38,13 +38,6 @@ describe('monitoring/pages/dashboard_page', () => {
     jest.spyOn(store, 'dispatch').mockResolvedValue();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   it('throws errors if dashboard props are not passed', () => {
     expect(() => assertProps(DashboardPage, {})).toThrow('Missing required prop: "dashboardProps"');
   });

@@ -16,9 +16,6 @@ describe('Job log controllers', () => {
   });
 
   afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
     commonUtils.backOff.mockReset();
   });
 

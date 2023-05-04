@@ -28,12 +28,6 @@ describe('Stacktrace Entry', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   it('should render stacktrace entry collapsed', () => {
     mountComponent({ lines });
     expect(wrapper.findComponent(StackTraceEntry).exists()).toBe(true);

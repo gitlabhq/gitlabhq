@@ -44,22 +44,11 @@ describe('Feature flags strategy', () => {
       provide,
     },
   ) => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
     wrapper = mount(Strategy, { store: createStore({ projectId: '1' }), ...opts });
   };
 
   beforeEach(() => {
     Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [userList] });
-  });
-
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
   });
 
   describe('helper links', () => {

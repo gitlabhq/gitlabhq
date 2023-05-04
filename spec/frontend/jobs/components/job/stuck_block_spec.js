@@ -5,13 +5,6 @@ import StuckBlock from '~/jobs/components/job/stuck_block.vue';
 describe('Stuck Block Job component', () => {
   let wrapper;
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const createWrapper = (props) => {
     wrapper = shallowMount(StuckBlock, {
       propsData: {

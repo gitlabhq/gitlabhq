@@ -18,13 +18,6 @@ describe('BitbucketServerStatusTable', () => {
       .filter((w) => w.props().variant === 'info')
       .at(0);
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   function createComponent(bitbucketStatusTableStub = true) {
     wrapper = shallowMount(BitbucketServerStatusTable, {
       propsData: { providerTitle: 'Test', reconfigurePath: '/reconfigure' },

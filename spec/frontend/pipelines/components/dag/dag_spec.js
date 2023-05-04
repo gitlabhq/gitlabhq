@@ -30,10 +30,6 @@ describe('Pipeline DAG graph wrapper', () => {
     provideOverride = {},
     method = shallowMount,
   } = {}) => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-
     wrapper = method(Dag, {
       provide: {
         pipelineProjectPath: 'root/abc-dag',

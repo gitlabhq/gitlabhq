@@ -32,12 +32,6 @@ describe('notes/components/discussion_navigator', () => {
     jumpToPreviousDiscussion = jest.fn();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('on create', () => {
     let onSpy;
     let vm;

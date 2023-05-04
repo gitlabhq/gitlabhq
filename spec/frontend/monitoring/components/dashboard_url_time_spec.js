@@ -46,9 +46,6 @@ describe('dashboard invalid url parameters', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
     mock.restore();
     queryToObject.mockReset();
   });

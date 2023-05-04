@@ -14,13 +14,6 @@ const ImportProjectsTableStub = {
 describe('BitbucketStatusTable', () => {
   let wrapper;
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   function createComponent(propsData, importProjectsTableStub = true, slots) {
     wrapper = shallowMount(BitbucketStatusTable, {
       propsData,

@@ -21,12 +21,6 @@ describe('NewBoardButton', () => {
       }),
     );
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('control variant', () => {
     beforeAll(() => {
       stubExperiments({ [FEATURE]: 'control' });

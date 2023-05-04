@@ -52,9 +52,6 @@ describe('MetricEmbed', () => {
 
   afterEach(() => {
     metricsWithDataGetter.mockClear();
-    if (wrapper) {
-      wrapper.destroy();
-    }
   });
 
   describe('no metrics are available yet', () => {

@@ -33,12 +33,6 @@ describe('error tracking settings project dropdown', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('empty project list', () => {
     it('renders the dropdown', () => {
       expect(wrapper.find('#project-dropdown').exists()).toBe(true);

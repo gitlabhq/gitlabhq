@@ -28,11 +28,8 @@ describe('grafana integration component', () => {
   });
 
   afterEach(() => {
-    if (wrapper.destroy) {
-      wrapper.destroy();
-      createAlert.mockReset();
-      refreshCurrentPage.mockReset();
-    }
+    createAlert.mockReset();
+    refreshCurrentPage.mockReset();
   });
 
   describe('default state', () => {

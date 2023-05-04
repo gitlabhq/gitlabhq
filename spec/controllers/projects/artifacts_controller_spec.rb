@@ -27,31 +27,13 @@ RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts
   describe 'GET index' do
     subject { get :index, params: { namespace_id: project.namespace, project_id: project } }
 
-    context 'when feature flag is on' do
-      render_views
+    render_views
 
-      before do
-        stub_feature_flags(artifacts_management_page: true)
-      end
+    it 'renders the page with data for the artifacts app' do
+      subject
 
-      it 'renders the page with data for the artifacts app' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('projects/artifacts/index')
-      end
-    end
-
-    context 'when feature flag is off' do
-      before do
-        stub_feature_flags(artifacts_management_page: false)
-      end
-
-      it 'renders no content' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template('projects/artifacts/index')
     end
   end
 

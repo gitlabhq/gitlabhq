@@ -14350,26 +14350,6 @@ CREATE TABLE clusters (
     helm_major_version integer DEFAULT 3 NOT NULL
 );
 
-CREATE TABLE clusters_applications_cert_managers (
-    id integer NOT NULL,
-    cluster_id integer NOT NULL,
-    status integer NOT NULL,
-    version character varying NOT NULL,
-    email character varying NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    status_reason text
-);
-
-CREATE SEQUENCE clusters_applications_cert_managers_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_cert_managers_id_seq OWNED BY clusters_applications_cert_managers.id;
-
 CREATE TABLE clusters_applications_cilium (
     id bigint NOT NULL,
     cluster_id bigint NOT NULL,
@@ -25073,8 +25053,6 @@ ALTER TABLE ONLY cluster_providers_gcp ALTER COLUMN id SET DEFAULT nextval('clus
 
 ALTER TABLE ONLY clusters ALTER COLUMN id SET DEFAULT nextval('clusters_id_seq'::regclass);
 
-ALTER TABLE ONLY clusters_applications_cert_managers ALTER COLUMN id SET DEFAULT nextval('clusters_applications_cert_managers_id_seq'::regclass);
-
 ALTER TABLE ONLY clusters_applications_cilium ALTER COLUMN id SET DEFAULT nextval('clusters_applications_cilium_id_seq'::regclass);
 
 ALTER TABLE ONLY clusters_applications_crossplane ALTER COLUMN id SET DEFAULT nextval('clusters_applications_crossplane_id_seq'::regclass);
@@ -26984,9 +26962,6 @@ ALTER TABLE ONLY cluster_providers_aws
 
 ALTER TABLE ONLY cluster_providers_gcp
     ADD CONSTRAINT cluster_providers_gcp_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY clusters_applications_cert_managers
-    ADD CONSTRAINT clusters_applications_cert_managers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY clusters_applications_cilium
     ADD CONSTRAINT clusters_applications_cilium_pkey PRIMARY KEY (id);
@@ -30431,8 +30406,6 @@ CREATE INDEX index_cluster_providers_aws_on_cluster_id_and_status ON cluster_pro
 CREATE INDEX index_cluster_providers_gcp_on_cloud_run ON cluster_providers_gcp USING btree (cloud_run);
 
 CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON cluster_providers_gcp USING btree (cluster_id);
-
-CREATE UNIQUE INDEX index_clusters_applications_cert_managers_on_cluster_id ON clusters_applications_cert_managers USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_cilium_on_cluster_id ON clusters_applications_cilium USING btree (cluster_id);
 

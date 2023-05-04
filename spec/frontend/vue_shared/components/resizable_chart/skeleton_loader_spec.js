@@ -19,12 +19,6 @@ describe('Resizable Skeleton Loader', () => {
     expect(labelItems.length).toBe(8);
   };
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-  });
-
   describe('default setup', () => {
     beforeEach(() => {
       createComponent({ uniqueKey: null });

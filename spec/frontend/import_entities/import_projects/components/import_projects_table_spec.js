@@ -81,13 +81,6 @@ describe('ImportProjectsTable', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   it('renders a loading icon while repos are loading', () => {
     createComponent({ state: { isLoadingRepos: true } });
 

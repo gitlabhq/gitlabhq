@@ -18,12 +18,6 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
   const factory = (props = {}) =>
     mount(PercentRollout, { propsData: { ...DEFAULT_PROPS, ...props } });
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-  });
-
   describe('with valid percentage', () => {
     beforeEach(() => {
       wrapper = factory();

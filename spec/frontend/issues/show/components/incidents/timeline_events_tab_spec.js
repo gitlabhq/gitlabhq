@@ -44,12 +44,6 @@ describe('TimelineEventsTab', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findTimelineEventsList = () => wrapper.findComponent(IncidentTimelineEventsList);

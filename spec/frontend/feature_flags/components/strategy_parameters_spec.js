@@ -28,12 +28,6 @@ describe('~/feature_flags/components/strategy_parameters.vue', () => {
       },
     });
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-  });
-
   describe.each`
     name                                 | component
     ${ROLLOUT_STRATEGY_ALL_USERS}        | ${Default}

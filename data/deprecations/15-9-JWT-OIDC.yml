@@ -1,42 +1,28 @@
-# This is a template for announcing a feature deprecation or other important planned change.
-#
-# Please refer to the deprecation guidelines to confirm your understanding of GitLab's definitions.
-# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
-#
-# Deprecations and other future breaking changes must be announced at least
-# three releases prior to removal.
-#
-# Breaking changes must happen in a major release.
-#
-# See the OPTIONAL END OF SUPPORT FIELDS section below if an End of Support period also applies.
-#
-# For more information please refer to the handbook documentation here:
-# https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
-#
-# Please delete this line and above before submitting your merge request.
-#
-# REQUIRED FIELDS
-#
+---
 - title: "Old versions of JSON web tokens are deprecated"
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "16.5"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: dhershkovitch  # (required) GitLab username of the person reporting the change
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366798  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Now that we have released [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html)
-    with OIDC support, the old JSON web tokens are deprecated and will be removed.
-    Both the `CI_JOB_JWT` and `CI_JOB_JWT_V2` tokens, exposed to jobs as predefined variables,
-    will no longer be available in GitLab 16.0.
+    with OIDC support, the old JSON web tokens are deprecated.
+    Both the `CI_JOB_JWT` and `CI_JOB_JWT_V2` tokens, exposed to jobs as predefined variables, will:
 
-    To prepare for this change, you should:
+    - Not be creatable in GitLab 16.0 and later.
+    - Be removed in GitLab 16.5.
 
-    - Configure your pipelines to use the fully configurable and more secure
+    To prepare for this change:
+
+    - Before the release of GitLab 16.5, configure your pipelines to use the fully configurable and more secure
       [`id_token`](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens) keyword instead.
     - [Enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
-      setting, which prevents the old tokens from being exposed to any jobs. This setting
-      will be permanently enabled for all projects in GitLab 16.0.
+      setting, which prevents the old tokens from being exposed to any jobs.
+
+      In GitLab 16.0 and later, the ability to set this option will be removed and all new projects will have the option
+      enabled.
 #
 # If an End of Support period applies, the announcement should be shared with GitLab Support
 # in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.

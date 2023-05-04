@@ -20,12 +20,6 @@ describe('feature_flags/components/strategies/flexible_rollout.vue', () => {
   const factory = (props = {}) =>
     mount(FlexibleRollout, { propsData: { ...DEFAULT_PROPS, ...props } });
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-  });
-
   describe('with valid percentage', () => {
     beforeEach(() => {
       wrapper = factory();

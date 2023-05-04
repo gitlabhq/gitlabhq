@@ -545,6 +545,39 @@ During the transition to the GitLab Observability UI, we will migrate the [GitLa
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.5">
+
+## GitLab 16.5
+
+<div class="deprecation breaking-change" data-milestone="16.5">
+
+### Old versions of JSON web tokens are deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+Now that we have released [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html)
+with OIDC support, the old JSON web tokens are deprecated.
+Both the `CI_JOB_JWT` and `CI_JOB_JWT_V2` tokens, exposed to jobs as predefined variables, will:
+
+- Not be creatable in GitLab 16.0 and later.
+- Be removed in GitLab 16.5.
+
+To prepare for this change:
+
+- Before the release of GitLab 16.5, configure your pipelines to use the fully configurable and more secure
+  [`id_token`](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens) keyword instead.
+- [Enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+  setting, which prevents the old tokens from being exposed to any jobs.
+
+  In GitLab 16.0 and later, the ability to set this option will be removed and all new projects will have the option
+  enabled.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.1">
 
 ## GitLab 16.1
@@ -1389,30 +1422,6 @@ so GitLab assumes there is one Redis server at `localhost:6379`.
 Administrators who want to keep the three servers must configure
 the Redis URLs by editing the `config/redis.cache.yml`,`config/redis.queues.yml`
 and `config/redis.shared_state.yml` files.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Old versions of JSON web tokens are deprecated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-Now that we have released [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html)
-with OIDC support, the old JSON web tokens are deprecated and will be removed.
-Both the `CI_JOB_JWT` and `CI_JOB_JWT_V2` tokens, exposed to jobs as predefined variables,
-will no longer be available in GitLab 16.0.
-
-To prepare for this change, you should:
-
-- Configure your pipelines to use the fully configurable and more secure
-  [`id_token`](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens) keyword instead.
-- [Enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
-  setting, which prevents the old tokens from being exposed to any jobs. This setting
-  will be permanently enabled for all projects in GitLab 16.0.
 
 </div>
 

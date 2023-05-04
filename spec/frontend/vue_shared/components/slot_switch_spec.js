@@ -20,12 +20,6 @@ describe('SlotSwitch', () => {
 
   const getChildrenHtml = () => wrapper.findAll('* *').wrappers.map((c) => c.html());
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   it('throws an error if activeSlotNames is missing', () => {
     expect(() => assertProps(SlotSwitch, {})).toThrow(
       '[Vue warn]: Missing required prop: "activeSlotNames"',

@@ -1,4 +1,0 @@
----
-Rails/RenderInline:
-  Exclude:
-    - 'ee/app/controllers/sitemap_controller.rb'

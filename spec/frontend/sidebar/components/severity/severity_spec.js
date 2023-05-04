@@ -14,13 +14,6 @@ describe('SeverityToken', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findIcon = () => wrapper.findComponent(GlIcon);
 
   it('renders severity token for each severity type', () => {

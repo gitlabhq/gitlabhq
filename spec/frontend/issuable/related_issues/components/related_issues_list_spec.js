@@ -37,13 +37,6 @@ describe('RelatedIssuesList', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   describe('with defaults', () => {
     const heading = 'Related to';
 

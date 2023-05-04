@@ -20,12 +20,6 @@ describe('AlertManagementList', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('Alert List Wrapper', () => {
     it('should show the empty state when alerts are not enabled', () => {
       expect(wrapper.findComponent(AlertManagementEmptyState).exists()).toBe(true);

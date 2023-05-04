@@ -14,10 +14,6 @@ describe('The DAG annotations', () => {
   const getToggleButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = {}, method = shallowMount) => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-    }
-
     wrapper = method(DagAnnotations, {
       propsData,
       data() {

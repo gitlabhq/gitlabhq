@@ -19,12 +19,6 @@ describe('ServiceDeskTemplateDropdown', () => {
       }),
     );
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('templates dropdown', () => {
     it('renders a dropdown to choose a template', () => {
       wrapper = createComponent();

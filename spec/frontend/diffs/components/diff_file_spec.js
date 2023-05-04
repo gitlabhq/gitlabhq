@@ -511,8 +511,6 @@ describe('DiffFile', () => {
   });
 
   it('loads collapsed file on mounted when single file mode is enabled', async () => {
-    wrapper.destroy();
-
     const file = {
       ...getReadableFile(),
       load_collapsed_diff_url: '/diff_for_path',
@@ -531,10 +529,6 @@ describe('DiffFile', () => {
   });
 
   describe('merge conflicts', () => {
-    beforeEach(() => {
-      wrapper.destroy();
-    });
-
     it('does not render conflict alert', () => {
       const file = {
         ...getReadableFile(),

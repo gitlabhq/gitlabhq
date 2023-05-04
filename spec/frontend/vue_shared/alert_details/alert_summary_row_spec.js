@@ -16,13 +16,6 @@ describe('AlertSummaryRow', () => {
     });
   }
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   describe('Alert Summary Row', () => {
     beforeEach(() => {
       mountComponent({

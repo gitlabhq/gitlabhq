@@ -27,13 +27,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   feature_category :build_artifacts
 
-  def index
-    # Loading artifacts is very expensive in projects with a lot of artifacts.
-    # This feature flag prevents a DOS attack vector.
-    # It should be removed only after resolving the underlying performance
-    # issues: https://gitlab.com/gitlab-org/gitlab/issues/32281
-    return head :no_content unless Feature.enabled?(:artifacts_management_page, @project)
-  end
+  def index; end
 
   def destroy
     notice = if artifact.destroy

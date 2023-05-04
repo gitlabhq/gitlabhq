@@ -50,11 +50,6 @@ describe('IDE stages list', () => {
     Object.values(storeActions).forEach((actionMock) => actionMock.mockClear());
   });
 
-  afterAll(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
-
   it('renders loading icon when no stages & loading', () => {
     createComponent({ loading: true, stages: [] });
 

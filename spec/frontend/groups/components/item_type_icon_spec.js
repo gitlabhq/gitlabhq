@@ -16,13 +16,6 @@ describe('ItemTypeIcon', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findGlIcon = () => wrapper.findComponent(GlIcon);
 
   describe('template', () => {

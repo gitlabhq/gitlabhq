@@ -90,12 +90,6 @@ describe('AlertManagementEmptyState', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const EmptyState = () => wrapper.find('.empty-state');
   const ItemsTable = () => wrapper.find('.gl-table');
   const ErrorAlert = () => wrapper.findComponent(GlAlert);

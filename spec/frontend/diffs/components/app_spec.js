@@ -93,12 +93,6 @@ describe('diffs/components/app', () => {
     // reset globals
     window.mrTabs = oldMrTabs;
 
-    // reset component
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-
     mock.restore();
   });
 

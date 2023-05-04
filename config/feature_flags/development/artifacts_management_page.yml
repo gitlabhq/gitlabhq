@@ -1,8 +1,0 @@
----
-name: artifacts_management_page
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16654
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/254938
-milestone: '12.4'
-type: development
-group: group::pipeline security
-default_enabled: false

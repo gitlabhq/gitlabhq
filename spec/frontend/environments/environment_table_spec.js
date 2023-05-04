@@ -16,10 +16,6 @@ describe('Environment table', () => {
   let wrapper;
 
   const factory = (options = {}) => {
-    // This destroys any wrappers created before a nested call to factory reassigns it
-    if (wrapper && wrapper.destroy) {
-      wrapper.destroy();
-    }
     wrapper = mount(EnvironmentTable, {
       ...options,
     });

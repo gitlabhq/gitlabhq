@@ -117,7 +117,6 @@ describe('content_editor/components/toolbar_text_style_dropdown', () => {
             },
           ],
         ]);
-        wrapper.destroy();
       });
     });
   });

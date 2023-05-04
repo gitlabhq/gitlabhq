@@ -26,12 +26,6 @@ describe('Tags sort dropdown', () => {
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByClick);
   const findTagsDropdown = () => wrapper.findByTestId('tags-dropdown');
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('default state', () => {
     beforeEach(() => {
       wrapper = createWrapper();

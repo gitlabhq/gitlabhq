@@ -15,25 +15,27 @@ should be partitioned from the start.
 
 ## Create a new routing table
 
-The database helpers for creating tables do not accept partitioning options,
-so the best solution is to create the tables using raw SQL:
+Here is an example on how to use database helpers to create a new table and foreign keys:
 
 ```ruby
-  enable_lock_retries!
+  include Gitlab::Database::PartitioningMigrationHelpers
+  disable_ddl_transaction!
 
   def up
-    execute(<<~SQL)
-      CREATE TABLE p_ci_examples (
-        id bigint NOT NULL,
-        partition_id bigint NOT NULL,
-        build_id bigint NOT NULL,
-        PRIMARY KEY (id, partition_id),
-        CONSTRAINT fk_bb490f12fe_p FOREIGN KEY (partition_id, build_id)
-           REFERENCES ci_builds(partition_id, id)
-           ON UPDATE CASCADE ON DELETE CASCADE
-      )
-      PARTITION BY LIST (partition_id);
-    SQL
+    create_table(:p_ci_examples, primary_key: [:id, :partition_id], options: 'PARTITION BY LIST (partition_id)', if_not_exists: true) do |t|
+      t.bigserial :id, null: false
+      t.bigint :partition_id, null: false
+      t.bigint :build_id, null: false
+    end
+
+    add_concurrent_partitioned_foreign_key(
+      :p_ci_examples, :ci_builds,
+      column: [:partition_id, :build_id],
+      target_column: [:partition_id, :id],
+      on_update: :cascade,
+      on_delete: :cascade,
+      reverse_lock_order: true
+    )
   end
 
   def down

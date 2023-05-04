@@ -47,9 +47,6 @@ describe('operation settings external dashboard component', () => {
   });
 
   afterEach(() => {
-    if (wrapper.destroy) {
-      wrapper.destroy();
-    }
     axios.patch.mockReset();
     refreshCurrentPage.mockReset();
     createAlert.mockReset();

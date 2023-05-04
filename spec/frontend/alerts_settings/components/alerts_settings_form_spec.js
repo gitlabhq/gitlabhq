@@ -63,12 +63,6 @@ describe('AlertsSettingsForm', () => {
   const findActionBtn = () => wrapper.findByTestId('payload-action-btn');
   const findTabs = () => wrapper.findAllComponents(GlTab);
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   const selectOptionAtIndex = async (index) => {
     const options = findSelect().findAll('option');
     await options.at(index).setSelected();

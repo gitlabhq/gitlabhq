@@ -27,12 +27,6 @@ describe('Pipeline Wizard - Text Widget', () => {
     });
   };
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   it('creates an input element with the correct label', () => {
     createComponent();
 

@@ -35,13 +35,6 @@ describe('Empty State', () => {
   const findAction = () => wrapper.findByTestId('job-empty-state-action');
   const findManualVarsForm = () => wrapper.findComponent(ManualVariablesForm);
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   describe('renders image and title', () => {
     beforeEach(() => {
       createWrapper();

@@ -47,13 +47,6 @@ describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', (
       },
     });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   const findMetricsSlot = () => wrapper.findByTestId('metrics-slot');
   const findSegmentedControl = () => wrapper.findComponent(SegmentedControlButtonGroup);
 

@@ -35,10 +35,6 @@ describe('Timeline toggle', () => {
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-      wrapper = null;
-    }
     store.dispatch.mockReset();
     mockEvent.currentTarget.blur.mockReset();
     Tracking.event.mockReset();

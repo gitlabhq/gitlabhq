@@ -211,10 +211,6 @@ describe('Pipeline Wizard - wrapper.vue', () => {
       createComponent();
     });
 
-    afterAll(() => {
-      wrapper.destroy();
-    });
-
     it('editor reflects changes', async () => {
       const newCompiledDoc = new Document({ faa: 'bur' });
       await getStepWrapper().vm.$emit('update:compiled', newCompiledDoc);

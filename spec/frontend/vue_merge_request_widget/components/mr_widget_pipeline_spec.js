@@ -53,13 +53,6 @@ describe('MRWidgetPipeline', () => {
     );
   };
 
-  afterEach(() => {
-    if (wrapper?.destroy) {
-      wrapper.destroy();
-      wrapper = null;
-    }
-  });
-
   it('should render CI error if there is a pipeline, but no status', () => {
     createWrapper({ ciStatus: null }, mount);
     expect(findCIErrorMessage().text()).toBe(ciErrorMessage);

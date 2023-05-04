@@ -68,12 +68,6 @@ describe('error tracking settings app', () => {
     mountComponent();
   });
 
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.destroy();
-    }
-  });
-
   describe('section', () => {
     it('renders the form and dropdown', () => {
       expect(wrapper.findComponent(ErrorTrackingForm).exists()).toBe(true);

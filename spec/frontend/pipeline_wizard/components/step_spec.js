@@ -56,10 +56,6 @@ describe('Pipeline Wizard - Step Page', () => {
     });
   };
 
-  afterEach(async () => {
-    await wrapper.destroy();
-  });
-
   describe('input children', () => {
     beforeEach(() => {
       createComponent();

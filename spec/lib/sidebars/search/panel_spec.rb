@@ -15,15 +15,15 @@ RSpec.describe Sidebars::Search::Panel, feature_category: :navigation do
 
   describe '#aria_label' do
     it 'returns the correct aria label' do
-      expect(panel.aria_label).to eq(_('Search'))
+      expect(panel.aria_label).to eq(_('Search results'))
     end
   end
 
   describe '#super_sidebar_context_header' do
     it 'returns a hash with the correct title and icon' do
       expected_header = {
-        title: 'Search',
-        icon: 'search'
+        title: 'Search results',
+        icon: 'search-results'
       }
       expect(panel.super_sidebar_context_header).to eq(expected_header)
     end
