@@ -234,7 +234,7 @@ When bulk-editing merge requests in a project, you can edit the following attrib
 To update multiple project merge requests at the same time:
 
 1. In a project, go to **Merge requests**.
-1. Select **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+1. Select **Bulk edit**. A sidebar on the right-hand side of your screen appears with
    editable fields.
 1. Select the checkboxes next to each merge request you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
@@ -254,7 +254,7 @@ When bulk editing merge requests in a group, you can edit the following attribut
 To update multiple group merge requests at the same time:
 
 1. In a group, go to **Merge requests**.
-1. Select **Edit merge requests**. A sidebar on the right-hand side of your screen appears with
+1. Select **Bulk edit**. A sidebar on the right-hand side of your screen appears with
    editable fields.
 1. Select the checkboxes next to each merge request you want to edit.
 1. Select the appropriate fields and their values from the sidebar.

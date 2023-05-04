@@ -7,7 +7,7 @@
 
 .nav-controls.issues-nav-controls.gl-font-size-0
   - if @can_bulk_update
-    = button_tag _("Edit issues"), class: "gl-button btn btn-default gl-mr-3 js-bulk-update-toggle"
+    = button_tag _("Bulk edit"), class: "gl-button btn btn-default gl-mr-3 js-bulk-update-toggle"
   - if show_new_issue_link?(@project)
     = link_to _("New issue"), new_project_issue_path(@project,
                                                   issue: { milestone_id: finder.milestones.first.try(:id) }),

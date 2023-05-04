@@ -2,7 +2,7 @@
 <% email_address = @service_desk_setting.custom_email %>
 <% verify_email_address = @service_desk_setting.custom_email_address_for_verification %>
 
-<% if @verification.verified? %>
+<% if @verification.finished? %>
   <%= s_("Notify|Email successfully verified") %>
 
   <%= s_('Notify|Your email address %{strong_open}%{email_address}%{strong_close} for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} was verified successfully.') % { email_address: email_address, project_link_start: '', project_name: project_name, project_link_end: '', strong_open: '', strong_close: '' } %>

@@ -8137,6 +8137,9 @@ msgstr ""
 msgid "Built-in"
 msgstr ""
 
+msgid "Bulk edit"
+msgstr ""
+
 msgid "Bulk request concurrency"
 msgstr ""
 
@@ -16155,9 +16158,6 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
-msgid "Edit epics"
-msgstr ""
-
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -16185,13 +16185,7 @@ msgstr ""
 msgid "Edit inline"
 msgstr ""
 
-msgid "Edit issues"
-msgstr ""
-
 msgid "Edit link"
-msgstr ""
-
-msgid "Edit merge requests"
 msgstr ""
 
 msgid "Edit project: %{project_name}"
@@ -22637,6 +22631,9 @@ msgstr ""
 msgid "ImportProjects|Advanced import settings"
 msgstr ""
 
+msgid "ImportProjects|All organizations"
+msgstr ""
+
 msgid "ImportProjects|Blocked import URL: %{message}"
 msgstr ""
 
@@ -22647,6 +22644,9 @@ msgid "ImportProjects|Cancelling project import failed"
 msgstr ""
 
 msgid "ImportProjects|Cancelling project import failed: %{reason}"
+msgstr ""
+
+msgid "ImportProjects|Collaborated"
 msgstr ""
 
 msgid "ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}"
@@ -22662,6 +22662,15 @@ msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
 msgid "ImportProjects|Importing the project failed: %{reason}"
+msgstr ""
+
+msgid "ImportProjects|Organization"
+msgstr ""
+
+msgid "ImportProjects|Organizations"
+msgstr ""
+
+msgid "ImportProjects|Owned"
 msgstr ""
 
 msgid "ImportProjects|Re-import creates a new project. It does not sync with the existing project."
@@ -52962,6 +52971,9 @@ msgid "expired on %{timebox_due_date}"
 msgstr ""
 
 msgid "expires on %{timebox_due_date}"
+msgstr ""
+
+msgid "external link"
 msgstr ""
 
 msgid "failed"

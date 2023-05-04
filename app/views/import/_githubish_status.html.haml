@@ -8,6 +8,7 @@
 - details_path = local_assigns.fetch(:details_path, nil)
 - provider_title = Gitlab::ImportSources.title(local_assigns.fetch(:provider))
 - optional_stages = local_assigns.fetch(:optional_stages, [])
+- status_import_github_group_path = local_assigns.fetch(:status_import_github_group_path, '')
 
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
@@ -19,6 +20,7 @@
                                jobs_path: url_for([:realtime_changes, :import, provider, { format: :json }]),
                                default_target_namespace: default_namespace_path,
                                import_path: url_for([:import, provider, { format: :json }]),
+                               status_import_github_group_path: status_import_github_group_path,
                                cancel_path: cancel_path,
                                details_path: details_path,
                                filterable: filterable.to_s,

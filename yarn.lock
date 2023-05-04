@@ -12708,10 +12708,10 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue-test-utils-compat@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/vue-test-utils-compat/-/vue-test-utils-compat-0.0.11.tgz#d3e92bcee6893e7506b5d6463f774678f144fe7a"
-  integrity sha512-vAc19M4GS0qxGZGB0UZg7mG6j90hyNoDQXWYCEG4Sjahyi+v+CHq9xHa6js70S8HExNkm2f4LF3x2+gbCMFVUQ==
+vue-test-utils-compat@0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/vue-test-utils-compat/-/vue-test-utils-compat-0.0.13.tgz#31cf91746601c2cafb0f4e560d32e7d6782c1380"
+  integrity sha512-h4EBx87YmYTZF8xZvRmX04YsuyTHz4kkmcJS6J7NBMgWQecjq/fmAfLzpYnVF32E7Yus4uB3xv6iaaVtJp4YGQ==
 
 vue-virtual-scroll-list@^1.4.7:
   version "1.4.7"

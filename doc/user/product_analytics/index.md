@@ -158,7 +158,7 @@ You can define different charts, and add visualization options to some of them:
 
 - Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
 - Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Data table, without options.
+- Data table, with the only option to render `links` (array of objects, each with `text` and `href` properties to specify the dimensions to be used in links). See [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112)).
 - Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
 
 To define a chart for your dashboards:

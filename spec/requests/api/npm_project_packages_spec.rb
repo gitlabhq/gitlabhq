@@ -214,6 +214,14 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
             it_behaves_like 'not a package tracking event'
           end
         end
+
+        context 'invalid package attachment data' do
+          let(:package_name) { "@#{group.path}/my_package_name" }
+          let(:params) { upload_params(package_name: package_name, file: 'npm/payload_with_empty_attachment.json') }
+
+          it_behaves_like 'handling invalid record with 400 error'
+          it_behaves_like 'not a package tracking event'
+        end
       end
 
       context 'valid package params' do

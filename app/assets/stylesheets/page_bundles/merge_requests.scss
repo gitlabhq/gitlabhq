@@ -1164,10 +1164,6 @@ $tabs-holder-z-index: 250;
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  .right-sidebar-expanded & {
-    padding-right: $gutter_width;
-  }
-
   @media (max-width: map-get($grid-breakpoints, sm)-1) {
     padding-left: 0;
     padding-right: 0;

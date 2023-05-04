@@ -206,7 +206,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/app/models/dependencies/dependency_list_export.rb'
     - 'ee/app/models/ee/issue_assignee.rb'
     - 'ee/app/models/geo/ci_secure_file_state.rb'
-    - 'ee/app/models/namespaces/storage/cli_notification.rb'
     - 'ee/app/models/namespaces/storage/limit_exclusion.rb'
     - 'ee/app/models/project_security_setting.rb'
     - 'ee/app/models/protected_environment.rb'

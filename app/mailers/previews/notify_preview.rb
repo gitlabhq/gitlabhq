@@ -233,7 +233,7 @@ class NotifyPreview < ActionMailer::Preview
     cleanup do
       setup_service_desk_custom_email_objects
 
-      custom_email_verification.update!(state: 1)
+      custom_email_verification.mark_as_finished!
 
       Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com').message
     end
@@ -297,7 +297,7 @@ class NotifyPreview < ActionMailer::Preview
     cleanup do
       setup_service_desk_custom_email_objects
 
-      custom_email_verification.update!(state: 2, error: error)
+      custom_email_verification.mark_as_failed!(error)
 
       Notify.service_desk_verification_result_email(service_desk_setting, 'owner@example.com').message
     end
@@ -319,7 +319,7 @@ class NotifyPreview < ActionMailer::Preview
       token: 'XXXXXXXXXXXX',
       triggerer: user,
       triggered_at: Time.current,
-      state: 0
+      state: 'started'
     )
   end
 

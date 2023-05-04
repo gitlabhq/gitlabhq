@@ -277,7 +277,7 @@
     "swagger-cli": "^4.0.4",
     "timezone-mock": "^1.0.8",
     "vue-loader-vue3": "npm:vue-loader@17",
-    "vue-test-utils-compat": "^0.0.11",
+    "vue-test-utils-compat": "0.0.13",
     "webpack-dev-server": "4.13.3",
     "xhr-mock": "^2.5.1",
     "yarn-check-webpack-plugin": "^1.2.0",

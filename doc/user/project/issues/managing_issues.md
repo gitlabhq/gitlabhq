@@ -54,7 +54,7 @@ To edit multiple issues at the same time:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
-1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
 1. Select **Update all**.
@@ -87,7 +87,7 @@ To edit multiple issues at the same time:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues**.
-1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
 1. Select **Update all**.
@@ -136,7 +136,7 @@ To move multiple issues at the same time:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Issues**.
-1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to move.
 1. From the right sidebar, select **Move selected**.
 1. From the dropdown list, select the destination project.

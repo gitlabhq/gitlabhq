@@ -25,7 +25,7 @@ describe('import_projects store mutations', () => {
 
     beforeEach(() => {
       state = {
-        filter: 'some-value',
+        filter: { someField: 'some-value' },
         repositories: ['some', ' repositories'],
         pageInfo: {
           page: 1,
@@ -46,6 +46,17 @@ describe('import_projects store mutations', () => {
       expect(state.pageInfo.startCursor).toBe(null);
       expect(state.pageInfo.endCursor).toBe(null);
       expect(state.pageInfo.hasNextPage).toBe(true);
+    });
+
+    it('merges filter updates', () => {
+      const originalFilter = { ...state.filter };
+      const anotherFilter = { anotherField: 'another-value' };
+      mutations[types.SET_FILTER](state, anotherFilter);
+
+      expect(state.filter).toStrictEqual({
+        ...originalFilter,
+        ...anotherFilter,
+      });
     });
   });
 

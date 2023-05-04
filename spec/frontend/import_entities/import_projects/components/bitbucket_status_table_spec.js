@@ -14,11 +14,11 @@ const ImportProjectsTableStub = {
 describe('BitbucketStatusTable', () => {
   let wrapper;
 
-  function createComponent(propsData, importProjectsTableStub = true, slots) {
+  function createComponent(propsData, slots) {
     wrapper = shallowMount(BitbucketStatusTable, {
       propsData,
       stubs: {
-        ImportProjectsTable: importProjectsTableStub,
+        ImportProjectsTable: ImportProjectsTableStub,
       },
       slots,
     });
@@ -30,20 +30,23 @@ describe('BitbucketStatusTable', () => {
   });
 
   it('passes alert in incompatible-repos-warning slot', () => {
-    createComponent({ providerTitle: 'Test' }, ImportProjectsTableStub);
+    createComponent({ providerTitle: 'Test' });
     expect(wrapper.findComponent(GlAlert).exists()).toBe(true);
   });
 
   it('passes actions slot to import project table component', () => {
     const actionsSlotContent = 'DEMO';
-    createComponent({ providerTitle: 'Test' }, ImportProjectsTableStub, {
-      actions: actionsSlotContent,
-    });
+    createComponent(
+      { providerTitle: 'Test' },
+      {
+        actions: actionsSlotContent,
+      },
+    );
     expect(wrapper.findComponent(ImportProjectsTable).text()).toBe(actionsSlotContent);
   });
 
   it('dismisses alert when requested', async () => {
-    createComponent({ providerTitle: 'Test' }, ImportProjectsTableStub);
+    createComponent({ providerTitle: 'Test' });
     wrapper.findComponent(GlAlert).vm.$emit('dismiss');
     await nextTick();
 

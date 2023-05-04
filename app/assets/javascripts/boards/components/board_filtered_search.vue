@@ -397,7 +397,6 @@ export default {
     generateParams(filters = []) {
       const filterParams = {};
       const labels = [];
-      const plainText = [];
 
       filters.forEach((filter) => {
         switch (filter.type) {
@@ -439,7 +438,9 @@ export default {
             filterParams.confidential = filter.value.data;
             break;
           case FILTERED_SEARCH_TERM:
-            if (filter.value.data) plainText.push(filter.value.data);
+            if (filter.value.data) {
+              filterParams.search = filter.value.data;
+            }
             break;
           case TOKEN_TYPE_HEALTH:
             filterParams.healthStatus = filter.value.data;
@@ -453,10 +454,6 @@ export default {
         filterParams.labelName = labels;
       }
 
-      if (plainText.length) {
-        filterParams.search = plainText.join(' ');
-      }
-
       return filterParams;
     },
   },
@@ -468,6 +465,7 @@ export default {
     :key="filteredSearchKey"
     class="gl-w-full"
     namespace=""
+    terms-as-tokens
     :tokens="tokens"
     :search-input-placeholder="$options.i18n.search"
     :initial-filter-value="getFilteredSearchValue"

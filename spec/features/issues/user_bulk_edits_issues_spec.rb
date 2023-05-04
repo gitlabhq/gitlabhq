@@ -16,7 +16,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
     it 'sets to closed', :js do
       visit project_issues_path(project)
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       click_button 'Select status'
       click_button 'Closed'
@@ -29,7 +29,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
       create_closed
       visit project_issues_path(project, state: 'closed')
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       click_button 'Select status'
       click_button 'Open'
@@ -43,7 +43,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
     it 'updates to current user' do
       visit project_issues_path(project)
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       click_update_assignee_button
       click_button user.username
@@ -61,7 +61,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
 
       expect(find('.issue:first-of-type')).to have_link "Assigned to #{user.name}"
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       click_update_assignee_button
       click_button 'Unassigned'
@@ -77,7 +77,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
     it 'updates milestone' do
       visit project_issues_path(project)
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       click_button 'Select milestone'
       click_button milestone.title
@@ -94,7 +94,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
 
       expect(find('.issue:first-of-type')).to have_text milestone.title
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       click_button 'Select milestone'
       click_button 'No milestone'
@@ -110,7 +110,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
     it 'after selecting all issues, unchecking one issue only unselects that one issue' do
       visit project_issues_path(project)
 
-      click_button 'Edit issues'
+      click_button 'Bulk edit'
       check 'Select all'
       uncheck issue.title
 

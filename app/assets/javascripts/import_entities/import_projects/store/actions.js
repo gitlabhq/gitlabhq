@@ -83,7 +83,7 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
     .get(
       pathWithParams({
         path: reposPath,
-        filter: filter ?? '',
+        ...(filter ?? {}),
         ...paginationParams({ state }),
       }),
     )
@@ -203,7 +203,7 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
 
   eTagPoll = new Poll({
     resource: {
-      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, filter: state.filter })),
+      fetchJobs: () => axios.get(pathWithParams({ path: jobsPath, ...state.filter })),
     },
     method: 'fetchJobs',
     successCallback: ({ data }) =>

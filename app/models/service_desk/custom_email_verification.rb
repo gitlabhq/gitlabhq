@@ -2,11 +2,8 @@
 
 module ServiceDesk
   class CustomEmailVerification < ApplicationRecord
-    enum state: {
-      running: 0,
-      verified: 1,
-      error: 2
-    }, _default: 'running'
+    TIMEFRAME = 30.minutes
+    STATES = { started: 0, finished: 1, failed: 2 }.freeze
 
     enum error: {
       incorrect_token: 0,
@@ -15,8 +12,6 @@ module ServiceDesk
       invalid_credentials: 3,
       smtp_host_issue: 4
     }
-
-    TIMEFRAME = 30.minutes
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
@@ -33,6 +28,61 @@ module ServiceDesk
 
     delegate :service_desk_setting, to: :project
 
+    state_machine :state do
+      state :started do
+        validates :token, presence: true, length: { is: 12 }
+        validates :triggerer, presence: true
+        validates :triggered_at, presence: true
+        validates :error, absence: true
+      end
+
+      state :finished do
+        validates :token, absence: true
+        validates :error, absence: true
+      end
+
+      state :failed do
+        validates :token, absence: true
+        validates :error, presence: true
+      end
+
+      event :mark_as_started do
+        transition all => :started
+      end
+
+      event :mark_as_finished do
+        transition started: :finished
+      end
+
+      event :mark_as_failed do
+        transition all => :failed
+      end
+
+      before_transition any => :started do |verification, transition|
+        triggerer = transition.args.first
+
+        verification.triggerer = triggerer
+        verification.token = verification.class.generate_token
+        verification.triggered_at = Time.current
+        verification.error = nil
+      end
+
+      before_transition started: :finished do |verification|
+        verification.token = nil
+      end
+
+      before_transition started: :failed do |verification, transition|
+        error = transition.args.first
+
+        verification.error = error
+        verification.token = nil
+      end
+    end
+
+    # Needs to be below `state_machine` definition to suppress
+    # its method override warnings
+    enum state: STATES
+
     class << self
       def generate_token
         SecureRandom.alphanumeric(12)
@@ -40,14 +90,14 @@ module ServiceDesk
     end
 
     def accepted_until
-      return unless running?
+      return unless started?
       return unless triggered_at.present?
 
       TIMEFRAME.since(triggered_at)
     end
 
     def in_timeframe?
-      return false unless running?
+      return false unless started?
 
       !!accepted_until&.future?
     end

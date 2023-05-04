@@ -61,6 +61,7 @@ export default function mountImportProjectsTable({
   mountElement,
   Component = ImportProjectsTable,
   extraProps = () => ({}),
+  extraProvide = () => ({}),
 }) {
   if (!mountElement) return undefined;
 
@@ -75,6 +76,7 @@ export default function mountImportProjectsTable({
     apolloProvider,
     provide: {
       detailsPath,
+      ...extraProvide(mountElement.dataset),
     },
     render(createElement) {
       // We are using attrs instead of props so root-level component with inheritAttrs

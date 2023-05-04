@@ -83,7 +83,7 @@ export const i18n = {
   confidentialNo: __('No'),
   confidentialYes: __('Yes'),
   downvotes: __('Downvotes'),
-  editIssues: __('Edit issues'),
+  editIssues: __('Bulk edit'),
   errorFetchingCounts: __('An error occurred while getting issue counts'),
   errorFetchingIssues: __('An error occurred while loading issues'),
   importIssues: __('Import issues'),

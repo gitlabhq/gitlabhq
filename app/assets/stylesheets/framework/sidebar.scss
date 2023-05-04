@@ -306,7 +306,6 @@
 
 @mixin right-sidebar {
   position: fixed;
-  top: calc(#{$header-height} + #{$calc-application-bars-height});
   bottom: calc(#{$calc-application-footer-height} + var(--mr-review-bar-height));
   right: 0;
   transition: width $gl-transition-duration-medium;
@@ -318,6 +317,7 @@
 .right-sidebar {
   &:not(.right-sidebar-merge-requests) {
     @include right-sidebar;
+    top: calc(#{$header-height} + #{$calc-application-bars-height});
 
     @include media-breakpoint-down(sm) {
       z-index: 251;
@@ -327,6 +327,7 @@
   &.right-sidebar-merge-requests {
     @include media-breakpoint-down(md) {
       @include right-sidebar;
+      top: $calc-application-header-height;
       z-index: 251;
     }
   }

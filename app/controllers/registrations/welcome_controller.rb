@@ -49,16 +49,7 @@ module Registrations
       params.require(:user).permit(:role, :setup_for_company)
     end
 
-    def requires_confirmation?(user)
-      return false if user.confirmed?
-      return false unless Gitlab::CurrentSettings.email_confirmation_setting_hard?
-
-      true
-    end
-
     def path_for_signed_in_user(user)
-      return users_almost_there_path(email: user.email) if requires_confirmation?(user)
-
       stored_location_for(user) || members_activity_path(user.members)
     end
 

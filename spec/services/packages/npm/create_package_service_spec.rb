@@ -294,6 +294,13 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
+    context 'with empty attachment data' do
+      let(:params) { super().merge({ _attachments: { "#{package_name}-#{version}.tgz" => { data: '' } } }) }
+
+      it { expect(subject[:http_status]).to eq 400 }
+      it { expect(subject[:message]).to eq 'Attachment data is empty.' }
+    end
+
     it 'obtains a lease to create a new package' do
       expect_to_obtain_exclusive_lease(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
 

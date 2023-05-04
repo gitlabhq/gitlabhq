@@ -304,13 +304,13 @@ describe('CE IssuesListApp component', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: true }, mountFn: mount });
 
-        expect(findGlButton().text()).toBe('Edit issues');
+        expect(findGlButton().text()).toBe('Bulk edit');
       });
 
       it('does not render when user does not have permissions', () => {
         wrapper = mountComponent({ provide: { canBulkUpdate: false }, mountFn: mount });
 
-        expect(findGlButtons().filter((button) => button.text() === 'Edit issues')).toHaveLength(0);
+        expect(findGlButtons().filter((button) => button.text() === 'Bulk edit')).toHaveLength(0);
       });
 
       it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {

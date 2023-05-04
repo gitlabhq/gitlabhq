@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { n__, __, sprintf } from '~/locale';
+
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
 import AdvancedSettings from './advanced_settings.vue';
 
@@ -123,6 +124,10 @@ export default {
       'setFilter',
       'importAll',
     ]),
+
+    showImportAllModal() {
+      this.$refs.importAllModal.show();
+    },
   },
 };
 </script>
@@ -135,43 +140,30 @@ export default {
     <template v-if="hasIncompatibleRepos">
       <slot name="incompatible-repos-warning"></slot>
     </template>
-    <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-mb-5">
-      <gl-button
-        variant="confirm"
-        :loading="isImportingAnyRepo"
-        :disabled="!hasImportableRepos"
-        type="button"
-        @click="$refs.importAllModal.show()"
-        >{{ importAllButtonText }}</gl-button
-      >
-      <gl-modal
-        ref="importAllModal"
-        modal-id="import-all-modal"
-        :title="s__('ImportProjects|Import repositories')"
-        :ok-title="__('Import')"
-        @ok="importAll({ optionalStages: optionalStagesSelection })"
-      >
-        {{
-          n__(
-            'Are you sure you want to import %d repository?',
-            'Are you sure you want to import %d repositories?',
-            importAllCount,
-          )
-        }}
-      </gl-modal>
+    <slot name="filter" v-bind="{ showImportAllModal, importAllButtonText }">
+      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-mb-5">
+        <gl-button
+          variant="confirm"
+          :loading="isImportingAnyRepo"
+          :disabled="!hasImportableRepos"
+          type="button"
+          @click="showImportAllModal"
+          >{{ importAllButtonText }}</gl-button
+        >
 
-      <slot name="actions"></slot>
-      <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
-        <gl-search-box-by-click
-          data-qa-selector="githubish_import_filter_field"
-          name="filter"
-          :placeholder="__('Filter by name')"
-          autofocus
-          @submit="setFilter"
-          @clear="setFilter('')"
-        />
-      </form>
-    </div>
+        <slot name="actions"></slot>
+        <form v-if="filterable" class="gl-ml-auto" novalidate @submit.prevent>
+          <gl-search-box-by-click
+            data-qa-selector="githubish_import_filter_field"
+            name="filter"
+            :placeholder="__('Filter by name')"
+            autofocus
+            @submit="setFilter({ filter: $event })"
+            @clear="setFilter({ filter: '' })"
+          />
+        </form>
+      </div>
+    </slot>
     <advanced-settings
       v-if="optionalStages && optionalStages.length"
       v-model="optionalStagesSelection"
@@ -179,6 +171,21 @@ export default {
       :is-initially-expanded="isAdvancedSettingsPanelInitiallyExpanded"
       class="gl-mb-5"
     />
+    <gl-modal
+      ref="importAllModal"
+      modal-id="import-all-modal"
+      :title="s__('ImportProjects|Import repositories')"
+      :ok-title="__('Import')"
+      @ok="importAll({ optionalStages: optionalStagesSelection })"
+    >
+      {{
+        n__(
+          'Are you sure you want to import %d repository?',
+          'Are you sure you want to import %d repositories?',
+          importAllCount,
+        )
+      }}
+    </gl-modal>
     <div v-if="repositories.length" class="gl-w-full">
       <table class="table gl-table">
         <thead>
@@ -209,7 +216,7 @@ export default {
       </table>
     </div>
     <gl-intersection-observer
-      v-if="paginatable && pageInfo.hasNextPage"
+      v-if="!isLoadingRepos && paginatable && pageInfo.hasNextPage"
       :key="pagePaginationStateKey"
       @appear="fetchRepos"
     />

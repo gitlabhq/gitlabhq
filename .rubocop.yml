@@ -109,6 +109,7 @@ Layout/LineLength:
   AllowedPatterns: ['^RSpec\.describe\s.*\sdo']
   Exclude:
     - 'ee/spec/controllers/concerns/routable_actions_spec.rb'
+    - 'ee/spec/lib/gitlab/auth/group_saml/sso_enforcer_spec.rb'
 
 Lint/LastKeywordArgument:
   Safe: false

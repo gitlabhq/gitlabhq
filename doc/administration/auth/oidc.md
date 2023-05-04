@@ -89,10 +89,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    ```
 
    NOTE:
-   For more information on each configuration option, refer to the:
-
-   - [OmniAuth OpenID Connect usage documentation](https://github.com/m0n9oose/omniauth_openid_connect#usage).
-   - [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
+   For more information on each configuration option, refer to the [OmniAuth OpenID Connect usage documentation](https://github.com/omniauth/omniauth_openid_connect#usage) and [OpenID Connect Core 1.0 specification](https://openid.net/specs/openid-connect-core-1_0.html).
 
 1. For the provider configuration, change the values for the provider to match your
    OpenID Connect client setup. Use the following as a guide:
@@ -129,7 +126,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider. For example,
-       [OmniAuth OpenIDConnect](https://github.com/omniauth/omniauth_openid_connect)) requires this. If the service provider doesn't require a secret,
+       [OmniAuth OpenID Connect](https://github.com/omniauth/omniauth_openid_connect) requires this. If the service provider doesn't require a secret,
        provide any value and it is ignored.
      - `redirect_uri` is the GitLab URL to redirect the user to after successful login
        (for example, `http://example.com/users/auth/openid_connect/callback`).
@@ -963,7 +960,7 @@ For installation from source:
 
 1. Check your system clock to ensure the time is synchronized properly.
 
-1. As mentioned in [the OmniAuth OpenID Connect documentation](https://github.com/m0n9oose/omniauth_openid_connect),
+1. As mentioned in [the OmniAuth OpenID Connect documentation](https://github.com/omniauth/omniauth_openid_connect),
    make sure `issuer` corresponds to the base URL of the Discovery URL. For
    example, `https://accounts.google.com` is used for the URL
    `https://accounts.google.com/.well-known/openid-configuration`.

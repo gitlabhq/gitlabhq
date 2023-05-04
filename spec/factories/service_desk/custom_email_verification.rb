@@ -2,7 +2,10 @@
 
 FactoryBot.define do
   factory :service_desk_custom_email_verification, class: '::ServiceDesk::CustomEmailVerification' do
+    state { 'started' }
+    token { 'XXXXXXXXXXXX' }
     project
-    state { "running" }
+    triggerer factory: :user
+    triggered_at { Time.current }
   end
 end

@@ -96,15 +96,14 @@ if (global.document) {
           $slots: slots = {},
           $scopedSlots: scopedSlots = {},
           $parent: parent,
-          $vnode: { children },
+          $vnode: vnode,
         } = this;
 
-        const hasDefaultSlot = 'default' in slots || 'default' in scopedSlots;
-        const isTheOnlyChild = parent && parent.$.subTree.children === children;
-
+        const hasStaticDefaultSlot = 'default' in slots && !('default' in scopedSlots);
+        const isTheOnlyChild = parent?.$.subTree === vnode;
         // this condition should be altered when https://github.com/vuejs/vue-test-utils/pull/2068 is merged
         // and our codebase will be updated to include it (@vue/test-utils@1.3.6 I assume)
-        const shouldRenderAllSlots = !hasDefaultSlot && isTheOnlyChild;
+        const shouldRenderAllSlots = !hasStaticDefaultSlot && isTheOnlyChild;
 
         const renderSlotByName = (slotName) => {
           const slot = scopedSlots[slotName] || slots[slotName];

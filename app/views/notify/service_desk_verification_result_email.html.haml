@@ -14,7 +14,7 @@
 
 %tr
   %td.text-content
-    - if @verification.verified?
+    - if @verification.finished?
       %h1{ :style => "margin-top:0;" }
         = s_("Notify|Email successfully verified")
       %p

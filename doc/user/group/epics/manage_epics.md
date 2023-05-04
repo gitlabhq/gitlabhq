@@ -132,7 +132,7 @@ Prerequisites:
 To update multiple epics at the same time:
 
 1. In a group, go to **Epics > List**.
-1. Select **Edit epics**. A sidebar on the right appears with editable fields.
+1. Select **Bulk edit**. A sidebar on the right appears with editable fields.
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update all**.

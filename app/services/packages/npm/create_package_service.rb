@@ -10,6 +10,7 @@ module Packages
 
       def execute
         return error('Version is empty.', 400) if version.blank?
+        return error('Attachment data is empty.', 400) if attachment['data'].blank?
         return error('Package already exists.', 403) if current_package_exists?
         return error('File is too large.', 400) if file_size_exceeded?
 
