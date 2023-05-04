@@ -92,7 +92,8 @@ export default {
     :icon="icon"
     type="button"
     category="tertiary"
-    class="js-md"
+    size="small"
+    class="js-md gl-mr-3"
     data-container="body"
     @click="$emit('click', $event)"
   />

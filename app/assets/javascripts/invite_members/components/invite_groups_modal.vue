@@ -203,8 +203,10 @@ export default {
       <group-select
         v-model="groupToBeSharedWith"
         :groups-filter="groupSelectFilter"
+        :source-id="id"
         :parent-group-id="groupSelectParentId"
         :invalid-groups="invalidGroups"
+        :is-project="isProject"
         @input="clearValidation"
       />
     </template>

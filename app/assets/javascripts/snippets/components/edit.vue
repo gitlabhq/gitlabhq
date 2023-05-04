@@ -256,7 +256,7 @@ export default {
       <form-footer-actions>
         <template #prepend>
           <gl-button
-            class="js-no-auto-disable"
+            class="js-no-auto-disable gl-mr-2"
             category="primary"
             type="submit"
             variant="confirm"

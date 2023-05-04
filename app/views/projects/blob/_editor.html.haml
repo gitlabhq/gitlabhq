@@ -2,8 +2,8 @@
 - file_name = params[:id].split("/").last ||= ""
 - is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(file_name)
 
-.file-holder-bottom-radius.file-holder.file.gl-mb-3
-  .js-file-title.file-title.gl-display-flex.gl-align-items-center.clearfix{ data: { current_action: action } }
+.file-holder.file.gl-mb-3
+  .js-file-title.file-title.gl-display-flex.gl-align-items-center.gl-rounded-top-base{ data: { current_action: action } }
     .editor-ref.block-truncated.has-tooltip{ title: ref }
       = sprite_icon('branch', size: 12)
       = ref
@@ -29,7 +29,10 @@
     - unless Feature.enabled?(:source_editor_toolbar, current_user)
       .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
         - if is_markdown
-          = render 'shared/blob/markdown_buttons', show_fullscreen_button: false, supports_file_upload: false
+          .md-header.gl-display-flex.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
+            .gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-justify-content-space-between
+              .md-header-toolbar.gl-display-flex.gl-py-2.gl-flex-wrap{ class: "gl-m-0!" }
+                = render 'shared/blob/markdown_buttons', supports_file_upload: false
         %span.soft-wrap-toggle
           = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
             = _("No wrap")

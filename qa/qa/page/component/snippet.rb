@@ -156,8 +156,14 @@ module QA
           end
         end
 
-        def has_embed_dropdown?
-          has_element?(:snippet_embed_dropdown)
+        RSpec::Matchers.define :have_embed_dropdown do
+          match do |page|
+            page.has_element?(:snippet_embed_dropdown)
+          end
+
+          match_when_negated do |page|
+            page.has_no_element?(:snippet_embed_dropdown)
+          end
         end
 
         def click_edit_button

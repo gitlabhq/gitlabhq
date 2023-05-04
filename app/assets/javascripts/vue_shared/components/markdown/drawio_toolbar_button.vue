@@ -43,6 +43,7 @@ export default {
     :aria-label="__('Insert or edit diagram')"
     category="tertiary"
     icon="diagram"
+    size="small"
     @click="launchDrawioEditor"
   />
 </template>

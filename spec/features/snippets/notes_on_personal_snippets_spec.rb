@@ -81,6 +81,7 @@ RSpec.describe 'Comments on personal snippets', :js, feature_category: :source_c
 
     it 'previews a note' do
       fill_in 'note[note]', with: 'This is **awesome**!'
+
       find('.js-md-preview-button').click
 
       page.within('.new-note .md-preview-holder') do

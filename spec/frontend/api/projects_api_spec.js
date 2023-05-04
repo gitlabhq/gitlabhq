@@ -146,4 +146,29 @@ describe('~/api/projects_api.js', () => {
       });
     });
   });
+
+  describe('getProjectShareLocations', () => {
+    it('requests share locations for a project', async () => {
+      const expectedUrl = `/api/v7/projects/1/share_locations`;
+      const params = { search: 'foo' };
+
+      const response = [
+        {
+          id: 27,
+          web_url: 'http://127.0.0.1:3000/groups/Commit451',
+          name: 'Commit451',
+          avatar_url: null,
+          full_name: 'Commit451',
+          full_path: 'Commit451',
+        },
+      ];
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, response);
+
+      await expect(projectsApi.getProjectShareLocations(projectId, params)).resolves.toMatchObject({
+        data: response,
+      });
+      expect(mock.history.get[0].params).toEqual({ ...params, per_page: DEFAULT_PER_PAGE });
+    });
+  });
 });

@@ -67,7 +67,7 @@ export default {
 </script>
 <template>
   <div
-    class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-base gl-border-gray-100"
+    class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-lg gl-border-gray-100 gl-bg-white"
   >
     <div
       v-if="withAlertContainer"

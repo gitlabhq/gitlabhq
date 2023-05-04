@@ -59,7 +59,7 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
         fill_in(:merge_request_description, with: '')
 
         page.within('.js-vue-markdown-field') do
-          click_link('Preview')
+          click_button("Preview")
 
           expect(find('.js-vue-md-preview')).to have_content('Nothing to preview.')
         end
@@ -69,12 +69,12 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
         fill_in(:merge_request_description, with: ':+1: Nice')
 
         page.within('.js-vue-markdown-field') do
-          click_link('Preview')
+          click_button("Preview")
 
           expect(find('.js-vue-md-preview')).to have_css('gl-emoji')
         end
 
-        expect(find('.js-vue-markdown-field')).to have_css('.js-vue-md-preview').and have_link('Write')
+        expect(find('.js-vue-markdown-field')).to have_css('.js-md-preview-button')
         expect(find('#merge_request_description', visible: false)).not_to be_visible
       end
     end

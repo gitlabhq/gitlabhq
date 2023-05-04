@@ -186,13 +186,14 @@ export default class Shortcuts {
   }
 
   static toggleMarkdownPreview(e) {
-    // Check if short-cut was triggered while in Write Mode
-    const $target = $(e.target);
-    const $form = $target.closest('form');
+    const $form = $(e.target).closest('form');
+    const toggle = $('.js-md-preview-button', $form).get(0);
 
-    if ($target.hasClass('js-note-text')) {
-      $('.js-md-preview-button', $form).focus();
-    }
+    if (!toggle) return;
+
+    toggle.focus();
+    toggle.click();
+
     $(document).triggerHandler('markdown-preview:toggle', [e]);
   }
 

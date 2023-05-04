@@ -85,16 +85,4 @@ RSpec.describe Gitlab::UsageDataMetrics, :with_license, feature_category: :servi
       end
     end
   end
-
-  describe '.suggested_names' do
-    subject { described_class.suggested_names }
-
-    let(:suggested_names) do
-      ::Gitlab::Usage::Metric.all.map(&:with_suggested_name).reduce({}, :deep_merge)
-    end
-
-    it 'includes Service Ping suggested names' do
-      expect(subject).to match_array(suggested_names)
-    end
-  end
 end

@@ -1,11 +1,10 @@
 import $ from 'jquery';
-import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { flatten } from 'lodash';
+import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { Mousetrap } from '~/lib/mousetrap';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Shortcuts, { LOCAL_MOUSETRAP_DATA_KEY } from '~/behaviors/shortcuts/shortcuts';
-
-jest.mock('mousetrap/plugins/pause/mousetrap-pause', () => {});
+import MarkdownPreview from '~/behaviors/preview_markdown';
 
 describe('Shortcuts', () => {
   const createEvent = (type, target) =>
@@ -20,6 +19,9 @@ describe('Shortcuts', () => {
 
   beforeEach(() => {
     setHTMLFixture(htmlSnippetsShow);
+
+    new Shortcuts(); // eslint-disable-line no-new
+    new MarkdownPreview(); // eslint-disable-line no-new
 
     jest.spyOn(document.querySelector('.js-new-note-form .js-md-preview-button'), 'focus');
     jest.spyOn(document.querySelector('.edit-note .js-md-preview-button'), 'focus');

@@ -8,8 +8,9 @@ import { createAlert } from '~/alert';
 import RunnerJobs from '~/ci/runner/components/runner_jobs.vue';
 import RunnerJobsTable from '~/ci/runner/components/runner_jobs_table.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
+import RunnerJobsEmptyState from '~/ci/runner/components/runner_jobs_empty_state.vue';
 import { captureException } from '~/ci/runner/sentry_utils';
-import { I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '~/ci/runner/constants';
+import { RUNNER_DETAILS_JOBS_PAGE_SIZE } from '~/ci/runner/constants';
 
 import runnerJobsQuery from '~/ci/runner/graphql/show/runner_jobs.query.graphql';
 
@@ -31,7 +32,7 @@ describe('RunnerJobs', () => {
   const findGlSkeletonLoading = () => wrapper.findComponent(GlSkeletonLoader);
   const findRunnerJobsTable = () => wrapper.findComponent(RunnerJobsTable);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
-
+  const findEmptyState = () => wrapper.findComponent(RunnerJobsEmptyState);
   const createComponent = ({ mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerJobs, {
       apolloProvider: createMockApollo([[runnerJobsQuery, mockRunnerJobsQuery]]),
@@ -127,8 +128,8 @@ describe('RunnerJobs', () => {
       await waitForPromises();
     });
 
-    it('Shows a "None" label', () => {
-      expect(wrapper.text()).toBe(I18N_NO_JOBS_FOUND);
+    it('should render empty state', () => {
+      expect(findEmptyState().exists()).toBe(true);
     });
   });
 

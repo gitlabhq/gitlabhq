@@ -41,7 +41,7 @@ module Features
         wait_for_requests
         filled_text.send_keys(:escape)
 
-        click_on('Preview')
+        click_button("Preview")
 
         yield if block_given?
       end

@@ -108,7 +108,7 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
 
       fill_release_notes('**some** _markdown_ [content](https://example.com)')
 
-      click_on 'Preview'
+      click_button("Preview")
 
       wait_for_all_requests
     end

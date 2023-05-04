@@ -26,7 +26,9 @@ const sortItemsByFrequencyAndLastAccess = (items) =>
 
 // This imitates getTopFrequentItems from app/assets/javascripts/frequent_items/utils.js, but
 // adjusts the rules to accommodate for the context switcher's designs.
-export const getTopFrequentItems = (items = [], maxCount) => {
+export const getTopFrequentItems = (items, maxCount) => {
+  if (!Array.isArray(items)) return [];
+
   const frequentItems = items.filter((item) => item.frequency >= FREQUENT_ITEMS.ELIGIBLE_FREQUENCY);
   sortItemsByFrequencyAndLastAccess(frequentItems);
 

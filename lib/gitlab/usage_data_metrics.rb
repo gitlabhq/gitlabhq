@@ -8,10 +8,6 @@ module Gitlab
         build_payload(:with_value)
       end
 
-      def suggested_names
-        build_payload(:with_suggested_name)
-      end
-
       private
 
       def build_payload(method_symbol)

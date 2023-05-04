@@ -4,7 +4,6 @@
  */
 .file-holder {
   border: 1px solid $border-color;
-  border-top: 0;
   border-radius: $border-radius-default;
 
   &.file-holder-top-border {
@@ -19,10 +18,6 @@
 
   &.file-holder-no-border {
     border: 0;
-  }
-
-  &.file-holder-bottom-radius {
-    border-radius: 0 0 $border-radius-small $border-radius-small;
   }
 
   &.readme-holder {

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlButton, GlTooltipDirective, GlModal, GlToggle } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTooltipDirective, GlIcon, GlModal, GlToggle } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { labelForStrategy } from '../utils';
@@ -15,6 +15,7 @@ export default {
   components: {
     GlBadge,
     GlButton,
+    GlIcon,
     GlModal,
     GlToggle,
     StrategyLabel,
@@ -116,7 +117,12 @@ export default {
     </div>
 
     <template v-for="featureFlag in featureFlags">
-      <div :key="featureFlag.id" class="gl-responsive-table-row" role="row">
+      <div
+        :key="featureFlag.id"
+        :data-testid="featureFlag.id"
+        class="gl-responsive-table-row"
+        role="row"
+      >
         <div class="table-section section-10" role="gridcell">
           <div class="table-mobile-header" role="rowheader">{{ s__('FeatureFlags|ID') }}</div>
           <div class="table-mobile-content js-feature-flag-id">
@@ -155,9 +161,14 @@ export default {
               <div class="feature-flag-name text-monospace text-truncate">
                 {{ featureFlag.name }}
               </div>
-            </div>
-            <div class="feature-flag-description text-secondary text-truncate">
-              {{ featureFlag.description }}
+              <div class="feature-flag-description">
+                <gl-icon
+                  v-if="featureFlag.description"
+                  v-gl-tooltip.hover="featureFlag.description"
+                  class="gl-ml-3 gl-mr-3"
+                  name="information-o"
+                />
+              </div>
             </div>
           </div>
         </div>

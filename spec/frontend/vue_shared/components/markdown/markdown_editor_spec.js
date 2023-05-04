@@ -122,13 +122,13 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   it('enables content editor switcher when contentEditorEnabled prop is true', () => {
     buildWrapper({ propsData: { enableContentEditor: true } });
 
-    expect(findMarkdownField().text()).toContain('Rich text');
+    expect(findMarkdownField().text()).toContain('Switch to rich text');
   });
 
   it('hides content editor switcher when contentEditorEnabled prop is false', () => {
     buildWrapper({ propsData: { enableContentEditor: false } });
 
-    expect(findMarkdownField().text()).not.toContain('Rich text');
+    expect(findMarkdownField().text()).not.toContain('Switch to rich text');
   });
 
   it('passes down any additional props to markdown field component', () => {

@@ -1365,6 +1365,84 @@ lib/gitlab/checks/**
 /**/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
 
+## Verify:Runner Fleet Backend
+
+/app/controllers/admin/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/controllers/concerns/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/controllers/groups/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/controllers/projects/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/controllers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/finders/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/graphql/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/graphql/resolvers/ci/*_runners_resolver.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/graphql/resolvers/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/graphql/types/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/graphql/types/namespace/shared_runners_setting_enum.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/graphql/types/permission_types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/models/ci/build_runner_session.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/models/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/models/concerns/ci/has_runner_executor.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/models/concerns/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/models/preloaders/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/policies/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/presenters/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/serializers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/db/docs/ci_runner*.yml @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/controllers/ee/admin/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/controllers/ee/groups/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/graphql/ee/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/graphql/ee/types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/graphql/resolvers/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/models/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/policies/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/services/audit_events/*runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/services/ee/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/app/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/graphql/ee/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/graphql/resolvers/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/graphql/types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/models/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/policies/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/requests/api/graphql/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/services/audit_events/*runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/ee/spec/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/api/ci/helpers/runner.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/api/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/api/ci/runner.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/api/entities/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/gitlab/audit/ci_runner_token_author.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/gitlab/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/gitlab/seeders/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/lib/tasks/gitlab/seed/runner_fleet.rake @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/factories/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/finders/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/graphql/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/graphql/resolvers/ci/*runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/graphql/types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/graphql/types/permission_types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/lib/gitlab/audit/ci_runner_token_author_spec.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/lib/api/ci/helpers/runner_*_spec.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/lib/api/ci/helpers/runner_spec.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/lib/gitlab/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/lib/gitlab/seeders/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/models/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/models/concerns/runners*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/models/preloaders/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/requests/api/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/requests/api/graphql/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/requests/api/graphql/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/requests/api/graphql/mutations/ci/runners_registration_token/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/requests/api/graphql/project/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/support/shared_contexts/graphql/resolvers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/support/shared_examples/features/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/tasks/gitlab/seed/runner_fleet_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/spec/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah

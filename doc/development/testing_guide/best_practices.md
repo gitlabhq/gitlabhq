@@ -1340,6 +1340,12 @@ Example:
 expect(metrics.merged_at).to be_like_time(time)
 ```
 
+Example for `be_within`:
+
+```ruby
+expect(violation.reload.merged_at).to be_within(0.00001.seconds).of(merge_request.merged_at)
+```
+
 #### `have_gitlab_http_status`
 
 Prefer `have_gitlab_http_status` over `have_http_status` and

@@ -68,3 +68,64 @@ RSpec.shared_examples_for 'LEFT JOIN-able value stream analytics event' do
     end
   end
 end
+
+RSpec.shared_examples_for 'value stream analytics first assignment event methods' do
+  let_it_be(:model1) { create(model_factory) } # rubocop: disable Rails/SaveBang
+  let_it_be(:model2) { create(model_factory) } # rubocop: disable Rails/SaveBang
+
+  let_it_be(:assignment_event1) do
+    create(event_factory, action: :add, created_at: 3.years.ago, model_factory => model1)
+  end
+
+  let_it_be(:assignment_event2) do
+    create(event_factory, action: :add, created_at: 2.years.ago, model_factory => model1)
+  end
+
+  let_it_be(:unassignment_event1) do
+    create(event_factory, action: :remove, created_at: 1.year.ago, model_factory => model1)
+  end
+
+  let(:query) { model1.class.where(id: [model1.id, model2.id]) }
+  let(:event) { described_class.new({}) }
+
+  describe '#apply_query_customization' do
+    subject(:records) { event.apply_query_customization(query).pluck(:id, *event.column_list).to_a }
+
+    it 'looks up the first assignment event timestamp' do
+      expect(records).to match_array([[model1.id, be_within(1.second).of(assignment_event1.created_at)]])
+    end
+  end
+
+  describe '#apply_negated_query_customization' do
+    subject(:records) { event.apply_negated_query_customization(query).pluck(:id).to_a }
+
+    it 'returns records where the event has not happened yet' do
+      expect(records).to eq([model2.id])
+    end
+  end
+
+  describe '#include_in' do
+    subject(:records) { event.include_in(query).pluck(:id, *event.column_list).to_a }
+
+    it 'returns both records' do
+      expect(records).to match_array([
+        [model1.id, be_within(1.second).of(assignment_event1.created_at)],
+        [model2.id, nil]
+      ])
+    end
+
+    context 'when invoked multiple times' do
+      subject(:records) do
+        scope = event.include_in(query)
+        event.include_in(scope).pluck(:id, *event.column_list).to_a
+      end
+
+      it 'returns both records' do
+        expect(records).to match_array([
+          [model1.id, be_within(1.second).of(assignment_event1.created_at)],
+          [model2.id, nil]
+        ])
+      end
+    end
+  end
+end

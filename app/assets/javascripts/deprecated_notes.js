@@ -599,7 +599,10 @@ export default class Notes {
     // remove validation errors
     form.find('.js-errors').remove();
     // reset text and preview
-    form.find('.js-md-write-button').click();
+    if (form.find('.js-md-preview-button').val() === 'edit') {
+      form.find('.js-md-preview-button').click();
+    }
+
     form.find('.js-note-text').val('').trigger('input');
     form.find('.js-note-text').each(function reset() {
       this.$autosave.reset();
@@ -939,6 +942,7 @@ export default class Notes {
     const replyLink = $(target).closest('.js-discussion-reply-button');
     // insert the form after the button
     replyLink.closest('.discussion-reply-holder').hide().after(form);
+
     // show the form
     return this.setupDiscussionNoteForm(replyLink, form);
   }
@@ -1241,7 +1245,10 @@ export default class Notes {
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
     $editForm.find('.js-note-text').focus().val(originalContent);
-    $editForm.find('.js-md-write-button').trigger('click');
+    // reset preview
+    if ($editForm.find('.js-md-preview-button').val() === 'edit') {
+      $editForm.find('.js-md-preview-button').click();
+    }
     $editForm.find('.referenced-users').hide();
   }
 

@@ -1,5 +1,6 @@
 .ProseMirror {
-  min-height: 128px;
+  padding-top: $gl-spacing-scale-4;
+  min-height: 140px;
   max-height: 55vh;
   overflow-y: auto;
 
@@ -116,14 +117,8 @@
   }
 }
 
-.content-editor-dropdown .dropdown-menu {
-  width: auto !important;
-
-  @include gl-min-w-0;
-
-  button {
-    @include gl-white-space-nowrap;
-  }
+.content-editor-switcher {
+  min-height: 32px;
 }
 
 

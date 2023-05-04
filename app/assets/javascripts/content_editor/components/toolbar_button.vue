@@ -47,7 +47,7 @@ export default {
     size: {
       type: String,
       required: false,
-      default: 'medium',
+      default: 'small',
     },
   },
   data() {
@@ -82,6 +82,7 @@ export default {
       :aria-label="label"
       :title="label"
       :icon="iconName"
+      class="gl-mr-3"
       @click="execute"
     />
   </editor-state-observer>

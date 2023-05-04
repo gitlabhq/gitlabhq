@@ -3,6 +3,7 @@ import { NodeViewWrapper } from '@tiptap/vue-2';
 import { selectedRect as getSelectedRect } from '@tiptap/pm/tables';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import TableCellBaseWrapper from '~/content_editor/components/wrappers/table_cell_base.vue';
 import { createTestEditor, mockChainedCommands, emitEditorEvent } from '../../test_utils';
 
@@ -19,6 +20,13 @@ describe('content/components/wrappers/table_cell_base', () => {
         editor,
         node,
         ...propsData,
+      },
+      stubs: {
+        GlDropdown: stubComponent(GlDropdown, {
+          methods: {
+            hide: jest.fn(),
+          },
+        }),
       },
     });
   };
@@ -37,14 +45,6 @@ describe('content/components/wrappers/table_cell_base', () => {
     const { $cursor } = editor.state.selection;
 
     jest.spyOn($cursor, 'node').mockReturnValue(node);
-  };
-  const mockDropdownHide = () => {
-    /*
-     * TODO: Replace this method with using the scoped hide function
-     * provided by BootstrapVue https://bootstrap-vue.org/docs/components/dropdown.
-     * GitLab UI is not exposing it in the default scope
-     */
-    findDropdown().vm.hide = jest.fn();
   };
 
   beforeEach(() => {
@@ -96,8 +96,6 @@ describe('content/components/wrappers/table_cell_base', () => {
 
       createWrapper();
       await nextTick();
-
-      mockDropdownHide();
     });
 
     it.each`

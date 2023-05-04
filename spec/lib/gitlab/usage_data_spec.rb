@@ -665,29 +665,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     end
   end
 
-  describe '.runners_usage' do
-    before do
-      project = build(:project)
-      create_list(:ci_runner, 2, :instance_type, :online)
-      create(:ci_runner, :group, :online)
-      create(:ci_runner, :group, :inactive)
-      create_list(:ci_runner, 3, :project_type, :online, projects: [project])
-    end
-
-    subject { described_class.runners_usage }
-
-    it 'gathers runner usage counts correctly' do
-      expect(subject[:ci_runners]).to eq(7)
-      expect(subject[:ci_runners_instance_type_active]).to eq(2)
-      expect(subject[:ci_runners_group_type_active]).to eq(1)
-      expect(subject[:ci_runners_project_type_active]).to eq(3)
-
-      expect(subject[:ci_runners_instance_type_active_online]).to eq(2)
-      expect(subject[:ci_runners_group_type_active_online]).to eq(1)
-      expect(subject[:ci_runners_project_type_active_online]).to eq(3)
-    end
-  end
-
   describe '.license_usage_data' do
     subject { described_class.license_usage_data }
 

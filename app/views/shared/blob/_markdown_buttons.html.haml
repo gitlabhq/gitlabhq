@@ -1,42 +1,44 @@
 - modifier_key = client_js_flags[:isMac] ? '⌘' : s_('KeyboardKey|Ctrl+')
 - supports_file_upload = local_assigns.fetch(:supports_file_upload, true)
 
-.md-header-toolbar.active
-  = markdown_toolbar_button({ icon: "bold",
-                              data: { "md-tag" => "**", "md-shortcuts": '["mod+b"]' },
-                              title: sprintf(s_("MarkdownEditor|Add bold text (%{modifier_key}B)") % { modifier_key: modifier_key }) })
+= markdown_toolbar_button({ icon: "bold",
+                            css_class: 'gl-mr-3',
+                            data: { "md-tag" => "**", "md-shortcuts": '["mod+b"]' },
+                            title: sprintf(s_("MarkdownEditor|Add bold text (%{modifier_key}B)") % { modifier_key: modifier_key }) })
 
-  = markdown_toolbar_button({ icon: "italic",
-                              data: { "md-tag" => "_", "md-shortcuts": '["mod+i"]' },
-                              title: sprintf(s_("MarkdownEditor|Add italic text (%{modifier_key}I)") % { modifier_key: modifier_key }) })
+= markdown_toolbar_button({ icon: "italic",
+                            css_class: 'gl-mr-3',
+                            data: { "md-tag" => "_", "md-shortcuts": '["mod+i"]' },
+                            title: sprintf(s_("MarkdownEditor|Add italic text (%{modifier_key}I)") % { modifier_key: modifier_key }) })
 
-  = markdown_toolbar_button({ icon: "strikethrough",
-                              data: { "md-tag" => "~~", "md-shortcuts": '["mod+shift+x"]' },
-                              title: sprintf(s_("MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)") % { modifier_key: modifier_key }) })
+= markdown_toolbar_button({ icon: "strikethrough",
+                            css_class: 'gl-mr-3',
+                            data: { "md-tag" => "~~", "md-shortcuts": '["mod+shift+x"]' },
+                            title: sprintf(s_("MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)") % { modifier_key: modifier_key }) })
 
-  = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: _("Insert a quote") })
-  = markdown_toolbar_button({ icon: "code", data: { "md-tag" => "`", "md-block" => "```" }, title: _("Insert code") })
+= markdown_toolbar_button({ icon: "quote", css_class: 'gl-mr-3', data: { "md-tag" => "> ", "md-prepend" => true }, title: _("Insert a quote") })
+= markdown_toolbar_button({ icon: "code", css_class: 'gl-mr-3', data: { "md-tag" => "`", "md-block" => "```" }, title: _("Insert code") })
 
-  = markdown_toolbar_button({ icon: "link",
-                              data: { "md-tag" => "[{text}](url)", "md-select" => "url", "md-shortcuts": '["mod+k"]' },
-                              title: sprintf(s_("MarkdownEditor|Add a link (%{modifier_key}K)") % { modifier_key: modifier_key }) })
+= markdown_toolbar_button({ icon: "link",
+                            css_class: 'gl-mr-3',
+                            data: { "md-tag" => "[{text}](url)", "md-select" => "url", "md-shortcuts": '["mod+k"]' },
+                            title: sprintf(s_("MarkdownEditor|Add a link (%{modifier_key}K)") % { modifier_key: modifier_key }) })
 
-  = markdown_toolbar_button({ icon: "list-bulleted", data: { "md-tag" => "- ", "md-prepend" => true }, title: _("Add a bullet list") })
-  = markdown_toolbar_button({ icon: "list-numbered", data: { "md-tag" => "1. ", "md-prepend" => true }, title: _("Add a numbered list") })
-  = markdown_toolbar_button({ icon: "list-task", data: { "md-tag" => "- [ ] ", "md-prepend" => true }, title: _("Add a checklist") })
-  = markdown_toolbar_button({ icon: "list-indent",
-                              data: { "md-command" => 'indentLines', "md-shortcuts": '["mod+]"]' },
-                              css_class: 'gl-display-none',
-                              title: sprintf(s_("MarkdownEditor|Indent line (%{modifier_key}])") % { modifier_key: modifier_key }) })
-  = markdown_toolbar_button({ icon: "list-outdent",
-                              data: { "md-command" => 'outdentLines', "md-shortcuts": '["mod+["]' },
-                              css_class: 'gl-display-none',
-                              title: sprintf(s_("MarkdownEditor|Outdent line (%{modifier_key}[)") % { modifier_key: modifier_key }) })
-  = markdown_toolbar_button({ icon: "details-block",
-                              data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-prepend" => true, "md-select" => "Click to expand" },
-                              title: _("Add a collapsible section") })
-  = markdown_toolbar_button({ icon: "table", data: { "md-tag" => "| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |", "md-prepend" => true }, title: _("Add a table") })
-  - if supports_file_upload
-    = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button', data: { testid: 'button-attach-file', container: 'body' } })
-  - if show_fullscreen_button
-    = render Pajamas::ButtonComponent.new(icon: 'maximize', category: :tertiary, button_options: { 'tabindex': -1, 'aria-label': _("Go full screen"), class: 'has-tooltip js-zen-enter', data: { container: 'body' } })
+= markdown_toolbar_button({ icon: "list-bulleted", css_class: 'gl-mr-3', data: { "md-tag" => "- ", "md-prepend" => true }, title: _("Add a bullet list") })
+= markdown_toolbar_button({ icon: "list-numbered", css_class: 'gl-mr-3', data: { "md-tag" => "1. ", "md-prepend" => true }, title: _("Add a numbered list") })
+= markdown_toolbar_button({ icon: "list-task", css_class: 'gl-mr-3', data: { "md-tag" => "- [ ] ", "md-prepend" => true }, title: _("Add a checklist") })
+= markdown_toolbar_button({ icon: "list-indent",
+                            css_class: 'gl-display-none gl-mr-3',
+                            data: { "md-command" => 'indentLines', "md-shortcuts": '["mod+]"]' },
+                            title: sprintf(s_("MarkdownEditor|Indent line (%{modifier_key}])") % { modifier_key: modifier_key }) })
+= markdown_toolbar_button({ icon: "list-outdent",
+                            css_class: 'gl-display-none gl-mr-3',
+                            data: { "md-command" => 'outdentLines', "md-shortcuts": '["mod+["]' },
+                            title: sprintf(s_("MarkdownEditor|Outdent line (%{modifier_key}[)") % { modifier_key: modifier_key }) })
+= markdown_toolbar_button({ icon: "details-block",
+                            css_class: 'gl-mr-3',
+                            data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-prepend" => true, "md-select" => "Click to expand" },
+                            title: _("Add a collapsible section") })
+= markdown_toolbar_button({ icon: "table", css_class: 'gl-mr-3', data: { "md-tag" => "| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |", "md-prepend" => true }, title: _("Add a table") })
+- if supports_file_upload
+  = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, size: :small, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button gl-mr-3', data: { testid: 'button-attach-file', container: 'body' } })

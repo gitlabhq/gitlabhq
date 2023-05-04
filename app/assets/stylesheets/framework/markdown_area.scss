@@ -44,46 +44,6 @@
   }
 }
 
-.md-header {
-  .nav-links {
-    a {
-      width: 100%;
-      padding-top: 0;
-      line-height: 19px;
-
-      &.btn.btn-sm {
-        padding: 2px 5px;
-      }
-
-      &:focus {
-        margin-top: -10px;
-        padding-top: 10px;
-      }
-    }
-  }
-
-  .gl-tabs-nav {
-    @include media-breakpoint-down(xs) {
-      .nav-item {
-        flex: 1;
-      }
-
-      .gl-tab-nav-item {
-        padding-top: $gl-padding-4;
-        padding-bottom: $gl-padding-8;
-      }
-
-      .md-header-toolbar {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        padding-top: $gl-padding-8;
-        border-top: 1px solid $border-color;
-      }
-    }
-  }
-}
-
 .md-header-tab {
   @include media-breakpoint-down(xs) {
     flex: 1;
@@ -131,7 +91,7 @@
 }
 
 .md-preview-holder {
-  min-height: 172px;
+  min-height: 176px;
   padding: 10px 0;
   overflow-x: auto;
 }

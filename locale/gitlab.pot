@@ -13216,6 +13216,9 @@ msgstr ""
 msgid "CycleAnalyticsEvent|Issue first added to a board"
 msgstr ""
 
+msgid "CycleAnalyticsEvent|Issue first assigned"
+msgstr ""
+
 msgid "CycleAnalyticsEvent|Issue first associated with a milestone"
 msgstr ""
 
@@ -13238,6 +13241,9 @@ msgid "CycleAnalyticsEvent|Merge request closed"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request created"
+msgstr ""
+
+msgid "CycleAnalyticsEvent|Merge request first assigned"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|Merge request first commit time"
@@ -16243,12 +16249,6 @@ msgid "Edited %{timeago} by %{author}"
 msgstr ""
 
 msgid "Editing"
-msgstr ""
-
-msgid "Editing markdown"
-msgstr ""
-
-msgid "Editing rich text"
 msgstr ""
 
 msgid "Edits"
@@ -27036,9 +27036,6 @@ msgid "Mark this issue as related to another issue"
 msgstr ""
 
 msgid "Mark to do as done"
-msgstr ""
-
-msgid "Markdown"
 msgstr ""
 
 msgid "Markdown Help"
@@ -38327,9 +38324,6 @@ msgstr ""
 msgid "Revoked personal access token %{personal_access_token_name}!"
 msgstr ""
 
-msgid "Rich text"
-msgstr ""
-
 msgid "RightSidebar|Copy email address"
 msgstr ""
 
@@ -38730,6 +38724,9 @@ msgstr ""
 msgid "Runners|Maintenance note"
 msgstr ""
 
+msgid "Runners|Make sure the runner is online and available to run jobs (not paused). Jobs display here when the runner picks them up."
+msgstr ""
+
 msgid "Runners|Manually verify that the runner is available to pick up jobs."
 msgstr ""
 
@@ -39104,6 +39101,9 @@ msgid "Runners|This registration process is not supported in GitLab Runner 15.9 
 msgstr ""
 
 msgid "Runners|This registration process is only supported in GitLab Runner 15.10 or later"
+msgstr ""
+
+msgid "Runners|This runner has not run any jobs"
 msgstr ""
 
 msgid "Runners|This runner has not run any jobs."
@@ -42243,19 +42243,19 @@ msgstr ""
 msgid "Snippets|Delete file"
 msgstr ""
 
+msgid "Snippets|Describe what your snippet does or how to use it…"
+msgstr ""
+
 msgid "Snippets|Description (optional)"
 msgstr ""
 
 msgid "Snippets|Error with Akismet. Please check the logs for more info."
 msgstr ""
 
+msgid "Snippets|File name (e.g. test.rb)"
+msgstr ""
+
 msgid "Snippets|Files"
-msgstr ""
-
-msgid "Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby"
-msgstr ""
-
-msgid "Snippets|Optionally add a description about what your snippet does or how to use it…"
 msgstr ""
 
 msgid "Snippets|Snippets can't contain empty files. Ensure all files have content, or delete them."
@@ -43863,6 +43863,12 @@ msgid "Switch branch/tag"
 msgstr ""
 
 msgid "Switch to GitLab Next"
+msgstr ""
+
+msgid "Switch to Markdown"
+msgstr ""
+
+msgid "Switch to rich text"
 msgstr ""
 
 msgid "Switch to the source to copy the file contents"
@@ -49084,9 +49090,6 @@ msgstr ""
 msgid "View all projects"
 msgstr ""
 
-msgid "View and edit markdown, with the option to preview the formatted output."
-msgstr ""
-
 msgid "View blame"
 msgstr ""
 
@@ -49214,9 +49217,6 @@ msgid "View the %{code_open}last_activity_at%{code_close} attribute for %{projec
 msgstr ""
 
 msgid "View the documentation"
-msgstr ""
-
-msgid "View the formatted output in real-time as you edit."
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"

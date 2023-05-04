@@ -10,5 +10,9 @@ module ResourceEvents
     validates :issue, presence: true
 
     enum action: { add: 1, remove: 2 }
+
+    def self.issuable_id_column
+      :issue_id
+    end
   end
 end

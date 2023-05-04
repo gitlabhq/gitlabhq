@@ -35,9 +35,7 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-w-full">
       <gl-form-input
         v-model="name"
-        :placeholder="
-          s__('Snippets|Give your file a name to add code highlighting, e.g. example.rb for Ruby')
-        "
+        :placeholder="s__('Snippets|File name (e.g. test.rb)')"
         name="snippet_file_name"
         class="form-control js-snippet-file-name"
         type="text"

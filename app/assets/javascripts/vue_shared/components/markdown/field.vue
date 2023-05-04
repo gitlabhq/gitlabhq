@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { debounce, unescape } from 'lodash';
 import { createAlert } from '~/alert';
@@ -27,6 +27,7 @@ export default {
   },
   directives: {
     SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -245,7 +246,7 @@ export default {
       immediate: true,
       handler(newVal) {
         if (!newVal) {
-          this.showWriteTab();
+          this.hidePreview();
         }
       },
     },
@@ -277,7 +278,7 @@ export default {
     }
   },
   methods: {
-    showPreviewTab() {
+    showPreview() {
       if (this.previewMarkdown) return;
 
       this.previewMarkdown = true;
@@ -297,7 +298,7 @@ export default {
         this.renderMarkdown();
       }
     },
-    showWriteTab() {
+    hidePreview() {
       this.markdownPreview = '';
       this.previewMarkdown = false;
     },
@@ -365,9 +366,11 @@ export default {
       :drawio-enabled="drawioEnabled"
       data-testid="markdownHeader"
       :restricted-tool-bar-items="restrictedToolBarItems"
-      @preview-markdown="showPreviewTab"
-      @write-markdown="showWriteTab"
+      :show-content-editor-switcher="showContentEditorSwitcher"
+      @showPreview="showPreview"
+      @hidePreview="hidePreview"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+      @enableContentEditor="$emit('enableContentEditor')"
     />
     <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
@@ -384,8 +387,6 @@ export default {
           :quick-actions-docs-path="quickActionsDocsPath"
           :can-attach-file="canAttachFile"
           :show-comment-tool-bar="showCommentToolBar"
-          :show-content-editor-switcher="showContentEditorSwitcher"
-          @enableContentEditor="$emit('enableContentEditor')"
         />
       </div>
     </div>
@@ -393,7 +394,7 @@ export default {
       <div
         v-show="previewMarkdown"
         ref="markdown-preview"
-        class="js-vue-md-preview md-preview-holder"
+        class="js-vue-md-preview md-preview-holder gl-px-5"
       >
         <suggestions
           v-if="hasSuggestion"
@@ -410,13 +411,13 @@ export default {
         v-show="previewMarkdown"
         ref="markdown-preview"
         v-safe-html:[$options.safeHtmlConfig]="markdownPreview"
-        class="js-vue-md-preview md md-preview-holder"
+        class="js-vue-md-preview md md-preview-holder gl-px-5"
       ></div>
     </template>
     <div
       v-if="referencedCommands && previewMarkdown && !markdownPreviewLoading"
       v-safe-html:[$options.safeHtmlConfig]="referencedCommands"
-      class="referenced-commands gl-mx-n5"
+      class="referenced-commands gl-mx-2 gl-mb-2 gl-px-4 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
       data-testid="referenced-commands"
     ></div>
     <div v-if="shouldShowReferencedUsers" class="referenced-users">

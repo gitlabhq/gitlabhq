@@ -1,9 +1,10 @@
-import { mount, createWrapper } from '@vue/test-utils';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import noteActions from '~/notes/components/note_actions.vue';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import TimelineEventButton from '~/notes/components/note_actions/timeline_event_button.vue';
@@ -18,6 +19,8 @@ describe('noteActions', () => {
   let props;
   let actions;
   let axiosMock;
+
+  const mockCloseDropdown = jest.fn();
 
   const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
@@ -45,6 +48,14 @@ describe('noteActions', () => {
       store,
       propsData,
       computed,
+      stubs: {
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          methods: {
+            close: mockCloseDropdown,
+          },
+        }),
+        GlDisclosureDropdownItem,
+      },
     });
   };
 
@@ -144,17 +155,6 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-note-delete').exists()).toBe(true);
       });
 
-      it('closes tooltip when dropdown opens', async () => {
-        wrapper.find('.more-actions-toggle').trigger('click');
-
-        const rootWrapper = createWrapper(wrapper.vm.$root);
-
-        await nextTick();
-        const emitted = Object.keys(rootWrapper.emitted());
-
-        expect(emitted).toEqual([BV_HIDE_TOOLTIP]);
-      });
-
       it('should not be possible to assign or unassign the comment author in a merge request', () => {
         const assignUserButton = wrapper.find('[data-testid="assign-user"]');
         expect(assignUserButton.exists()).toBe(false);
@@ -174,6 +174,11 @@ describe('noteActions', () => {
 
         const { resolveButton } = wrapper.vm.$refs;
         expect(resolveButton.$el.getAttribute('title')).toBe(`Resolved by ${complexUnescapedName}`);
+      });
+
+      it('closes the dropdown', () => {
+        findReportAbuseButton().vm.$emit('action');
+        expect(mockCloseDropdown).toHaveBeenCalled();
       });
     });
   });
@@ -401,13 +406,13 @@ describe('noteActions', () => {
       });
 
       it('opens the drawer when report abuse button is clicked', async () => {
-        await findReportAbuseButton().trigger('click');
+        await findReportAbuseButton().vm.$emit('action');
 
         expect(findAbuseCategorySelector().props('showDrawer')).toEqual(true);
       });
 
       it('closes the drawer', async () => {
-        await findReportAbuseButton().trigger('click');
+        await findReportAbuseButton().vm.$emit('action');
         findAbuseCategorySelector().vm.$emit('close-drawer');
 
         await nextTick();

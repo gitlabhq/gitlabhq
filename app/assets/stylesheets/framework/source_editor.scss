@@ -37,6 +37,7 @@
 
   .gl-source-editor {
     @include gl-order-n1;
+    border-radius: 0 0 $border-radius-default $border-radius-default;
   }
 }
 

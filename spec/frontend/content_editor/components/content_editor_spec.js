@@ -2,7 +2,6 @@ import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import { EditorContent, Editor } from '@tiptap/vue-2';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import EditorModeDropdown from '~/vue_shared/components/markdown/editor_mode_dropdown.vue';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
@@ -44,7 +43,6 @@ describe('ContentEditor', () => {
         ContentEditorAlert,
         GlLink,
         GlSprintf,
-        EditorModeDropdown,
       },
     });
   };
@@ -105,12 +103,6 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(findEditorElement().text()).not.toContain('For quick actions, type /');
-  });
-
-  it('renders an editor mode dropdown', () => {
-    createWrapper();
-
-    expect(wrapper.findComponent(EditorModeDropdown).exists()).toBe(true);
   });
 
   describe('when setting initial content', () => {

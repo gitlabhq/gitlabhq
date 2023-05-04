@@ -61,7 +61,7 @@ module GoogleCloud
     end
 
     def pipeline_content(include_path)
-      gitlab_ci_yml = Gitlab::Config::Loader::Yaml.new(default_branch_gitlab_ci_yml || '{}').load!
+      gitlab_ci_yml = ::Gitlab::Ci::Config::Yaml.load!(default_branch_gitlab_ci_yml || '{}')
       append_remote_include(gitlab_ci_yml, "https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library/-/raw/main/#{include_path}")
     end
 

@@ -13,8 +13,8 @@ describe('Super sidebar utils spec', () => {
   describe('getTopFrequentItems', () => {
     const maxItems = 3;
 
-    it('returns empty array if no items provided', () => {
-      const result = getTopFrequentItems();
+    it.each([undefined, null])('returns empty array if `items` is %s', (items) => {
+      const result = getTopFrequentItems(items);
 
       expect(result.length).toBe(0);
     });

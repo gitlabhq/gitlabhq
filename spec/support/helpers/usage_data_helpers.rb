@@ -7,7 +7,6 @@ module UsageDataHelpers
     ci_external_pipelines
     ci_pipeline_config_auto_devops
     ci_pipeline_config_repository
-    ci_runners
     ci_triggers
     ci_pipeline_schedules
     auto_devops_enabled

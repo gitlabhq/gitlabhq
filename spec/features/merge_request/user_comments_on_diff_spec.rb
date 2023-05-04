@@ -248,7 +248,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
       page.within('.diff-file:nth-of-type(1) .discussion .note') do
         find('.more-actions').click
-        find('.more-actions .dropdown-menu li', match: :first)
+        find('.more-actions li', match: :first)
         find('.js-note-delete').click
       end
 

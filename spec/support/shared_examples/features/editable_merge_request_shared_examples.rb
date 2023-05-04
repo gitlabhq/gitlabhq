@@ -104,8 +104,8 @@ RSpec.shared_examples 'an editable merge request' do
     fill_in 'merge_request_description', with: long_description
 
     height = get_textarea_height
-    find('.js-md-preview-button').click
-    find('.js-md-write-button').click
+    click_button("Preview")
+    click_button("Continue editing")
     new_height = get_textarea_height
 
     expect(height).to eq(new_height)

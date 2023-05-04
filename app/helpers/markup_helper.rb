@@ -192,7 +192,7 @@ module MarkupHelper
 
   def markdown_toolbar_button(options = {})
     data = options[:data].merge({ container: 'body' })
-    css_classes = %w[gl-button btn btn-default-tertiary btn-icon js-md has-tooltip] << options[:css_class].to_s
+    css_classes = %w[gl-button btn btn-default-tertiary btn-icon btn-sm js-md has-tooltip] << options[:css_class].to_s
     content_tag :button,
       type: 'button',
       class: css_classes.join(' '),

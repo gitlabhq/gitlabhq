@@ -117,9 +117,7 @@ export default {
           {{ __('Summary comment (optional)') }}
         </template>
         <div class="common-note-form gfm-form">
-          <div
-            class="comment-warning-wrapper gl-border-solid gl-border-1 gl-rounded-base gl-border-gray-100"
-          >
+          <div class="comment-warning-wrapper-large gl-border-0 gl-bg-white">
             <markdown-field
               :is-submitting="isSubmitting"
               :add-spacing-classes="false"

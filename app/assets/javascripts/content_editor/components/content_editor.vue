@@ -3,7 +3,6 @@ import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
-import EditorModeDropdown from '~/vue_shared/components/markdown/editor_mode_dropdown.vue';
 import { createContentEditor } from '../services/create_content_editor';
 import { ALERT_EVENT, TIPTAP_AUTOFOCUS_OPTIONS } from '../constants';
 import ContentEditorAlert from './content_editor_alert.vue';
@@ -30,7 +29,6 @@ export default {
     LinkBubbleMenu,
     MediaBubbleMenu,
     EditorStateObserver,
-    EditorModeDropdown,
   },
   props: {
     renderMarkdown: {
@@ -99,6 +97,11 @@ export default {
       isLoading: false,
       latestMarkdown: null,
     };
+  },
+  computed: {
+    showPlaceholder() {
+      return this.placeholder && !this.markdown && !this.focused;
+    },
   },
   watch: {
     markdown(markdown) {
@@ -196,11 +199,6 @@ export default {
         markdown: this.latestMarkdown,
       });
     },
-    handleEditorModeChanged(mode) {
-      if (mode === 'markdown') {
-        this.$emit('enableMarkdownEditor');
-      }
-    },
   },
   i18n: {
     quickActionsText: s__(
@@ -226,34 +224,36 @@ export default {
         :class="{ 'is-focused': focused }"
       >
         <formatting-toolbar ref="toolbar" @enableMarkdownEditor="$emit('enableMarkdownEditor')" />
-        <div class="gl-relative gl-mt-4">
+        <div class="gl-relative">
           <formatting-bubble-menu />
           <code-block-bubble-menu />
           <link-bubble-menu />
           <media-bubble-menu />
-          <div v-if="placeholder && !markdown && !focused" class="gl-absolute gl-text-gray-400">
+          <div v-if="showPlaceholder" class="gl-absolute gl-text-gray-400 gl-px-5 gl-pt-4">
             {{ placeholder }}
           </div>
           <tiptap-editor-content
-            class="md"
+            class="md gl-px-5"
             data-testid="content_editor_editablebox"
             :editor="contentEditor.tiptapEditor"
           />
           <loading-indicator v-if="isLoading" />
-          <div class="gl-display-flex gl-border-t gl-py-2 gl-text-secondary">
-            <div class="gl-w-full">
-              <template v-if="quickActionsDocsPath">
-                <gl-sprintf :message="$options.i18n.quickActionsText">
-                  <template #keyboard="{ content }">
-                    <kbd>{{ content }}</kbd>
-                  </template>
-                  <template #quickActionsDocsLink="{ content }">
-                    <gl-link :href="quickActionsDocsPath" target="_blank">{{ content }}</gl-link>
-                  </template>
-                </gl-sprintf>
-              </template>
+          <div
+            v-if="quickActionsDocsPath"
+            class="gl-display-flex gl-align-items-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-4 gl-mx-2 gl-mb-2 gl-bg-gray-10 gl-text-secondary"
+          >
+            <div class="gl-w-full gl-line-height-32 gl-font-sm">
+              <gl-sprintf :message="$options.i18n.quickActionsText">
+                <template #keyboard="{ content }">
+                  <kbd>{{ content }}</kbd>
+                </template>
+                <template #quickActionsDocsLink="{ content }">
+                  <gl-link :href="quickActionsDocsPath" target="_blank" class="gl-font-sm">{{
+                    content
+                  }}</gl-link>
+                </template>
+              </gl-sprintf>
             </div>
-            <editor-mode-dropdown size="small" value="richText" @input="handleEditorModeChanged" />
           </div>
         </div>
       </div>

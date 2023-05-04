@@ -18,3 +18,4 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "<13.9"
+instrumentation_class: CountCiRunnersMetric

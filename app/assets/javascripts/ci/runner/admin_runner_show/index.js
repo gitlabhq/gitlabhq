@@ -17,7 +17,7 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
     return null;
   }
 
-  const { runnerId, runnersPath } = el.dataset;
+  const { runnerId, runnersPath, emptyStateImage } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -26,6 +26,9 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
   return new Vue({
     el,
     apolloProvider,
+    provide: {
+      emptyStateImage,
+    },
     render(h) {
       return h(AdminRunnerShowApp, {
         props: {

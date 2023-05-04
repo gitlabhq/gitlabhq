@@ -145,7 +145,7 @@ export default {
       return this.isNewDiscussion
         ? 'timeline-entry note-form'
         : // eslint-disable-next-line @gitlab/require-i18n-strings
-          'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix';
+          'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix gl-bg-white! gl-pt-0!';
     },
   },
   watch: {

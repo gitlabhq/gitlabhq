@@ -86,6 +86,7 @@ export default {
       category="tertiary"
       placement="right"
       searchable
+      size="small"
       class="comment-template-dropdown"
       :searching="$apollo.queries.savedReplies.loading"
       @shown="fetchCommentTemplates"

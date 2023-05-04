@@ -319,7 +319,7 @@ export default {
                 />
                 <li
                   v-else-if="canShowReplyActions && showReplies"
-                  :class="{ 'is-replying': isReplying }"
+                  :class="{ 'is-replying gl-bg-white! gl-pt-0!': isReplying }"
                   class="discussion-reply-holder gl-border-t-0! clearfix"
                 >
                   <discussion-actions

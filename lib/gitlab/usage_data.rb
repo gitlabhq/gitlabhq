@@ -145,7 +145,6 @@ module Gitlab
             merge_requests: count(MergeRequest),
             notes: count(Note)
           }.merge(
-            runners_usage,
             integrations_usage,
             user_preferences_usage,
             service_desk_counts
@@ -155,18 +154,6 @@ module Gitlab
         }
       end
       # rubocop: enable Metrics/AbcSize
-
-      def runners_usage
-        {
-          ci_runners: count(::Ci::Runner),
-          ci_runners_instance_type_active: count(::Ci::Runner.instance_type.active),
-          ci_runners_group_type_active: count(::Ci::Runner.group_type.active),
-          ci_runners_project_type_active: count(::Ci::Runner.project_type.active),
-          ci_runners_instance_type_active_online: count(::Ci::Runner.instance_type.active.online),
-          ci_runners_group_type_active_online: count(::Ci::Runner.group_type.active.online),
-          ci_runners_project_type_active_online: count(::Ci::Runner.project_type.active.online)
-        }
-      end
 
       def system_usage_data_monthly
         {

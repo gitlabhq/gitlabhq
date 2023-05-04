@@ -8,6 +8,7 @@ const PROJECT_ALL_MEMBERS_PATH = '/api/:version/projects/:id/members/all';
 const PROJECT_IMPORT_MEMBERS_PATH = '/api/:version/projects/:id/import_project_members/:project_id';
 const PROJECT_REPOSITORY_SIZE_PATH = '/api/:version/projects/:id/repository_size';
 const PROJECT_TRANSFER_LOCATIONS_PATH = 'api/:version/projects/:id/transfer_locations';
+const PROJECT_SHARE_LOCATIONS = 'api/:version/projects/:id/share_locations';
 
 export function getProjects(query, options, callback = () => {}) {
   const url = buildApiUrl(PROJECTS_PATH);
@@ -69,4 +70,11 @@ export const getProjectMembers = (projectId, inherited = false) => {
   const url = buildApiUrl(path).replace(':id', projectId);
 
   return axios.get(url);
+};
+
+export const getProjectShareLocations = (projectId, params = {}) => {
+  const url = buildApiUrl(PROJECT_SHARE_LOCATIONS).replace(':id', projectId);
+  const defaultParams = { per_page: DEFAULT_PER_PAGE };
+
+  return axios.get(url, { params: { ...defaultParams, ...params } });
 };

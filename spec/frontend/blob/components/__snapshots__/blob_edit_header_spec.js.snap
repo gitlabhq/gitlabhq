@@ -10,7 +10,7 @@ exports[`Blob Header Editing rendering matches the snapshot 1`] = `
     <gl-form-input-stub
       class="form-control js-snippet-file-name"
       name="snippet_file_name"
-      placeholder="Give your file a name to add code highlighting, e.g. example.rb for Ruby"
+      placeholder="File name (e.g. test.rb)"
       type="text"
       value="foo.md"
     />

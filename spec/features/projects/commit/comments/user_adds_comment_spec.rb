@@ -36,7 +36,7 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
         expect(page).not_to have_css(".js-note-text")
 
         # Check on the `Write` tab
-        click_button("Write")
+        click_button("Continue editing")
 
         expect(page).to have_field("note[note]", with: "#{comment_text} #{emoji}")
 
@@ -107,7 +107,7 @@ RSpec.describe "User adds a comment on a commit", :js, feature_category: :source
           # Test UI elements, then submit.
           page.within("form[data-line-code='#{sample_commit.line_code}']") do
             expect(find(".js-note-text", visible: false).text).to eq("")
-            expect(page).to have_css('.js-md-write-button')
+            expect(page).to have_css('.js-md-preview')
 
             click_button("Comment")
           end

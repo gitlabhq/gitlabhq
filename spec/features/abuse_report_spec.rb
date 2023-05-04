@@ -115,7 +115,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
       before do
         visit project_issue_path(project, issue)
-        click_button 'More actions'
+        find('.more-actions-toggle button').click
       end
 
       it_behaves_like 'reports the user with an abuse category'

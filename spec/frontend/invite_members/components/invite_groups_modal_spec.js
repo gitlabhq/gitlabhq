@@ -242,4 +242,16 @@ describe('InviteGroupsModal', () => {
       });
     });
   });
+
+  it('renders `GroupSelect` component and passes correct props', () => {
+    createComponent();
+
+    expect(findGroupSelect().props()).toEqual({
+      groupsFilter: 'all',
+      sourceId: '1',
+      parentGroupId: null,
+      invalidGroups: [],
+      isProject: false,
+    });
+  });
 });

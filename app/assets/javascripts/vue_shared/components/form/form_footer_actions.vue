@@ -1,7 +1,7 @@
 <template>
-  <footer class="form-actions d-flex justify-content-between">
-    <div><slot name="prepend"></slot></div>
-    <div><slot></slot></div>
-    <div><slot name="append"></slot></div>
+  <footer class="gl-mt-5 footer-block">
+    <slot name="prepend"></slot>
+    <slot></slot>
+    <slot name="append"></slot>
   </footer>
 </template>

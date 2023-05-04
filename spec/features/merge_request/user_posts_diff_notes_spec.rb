@@ -103,7 +103,7 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
         should_allow_commenting(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
 
         accept_gl_confirm(button_text: 'Delete comment') do
-          first('button.more-actions-toggle').click
+          first('.more-actions-toggle button').click
           first('.js-note-delete').click
         end
 

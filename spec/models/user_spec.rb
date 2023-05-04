@@ -5321,13 +5321,13 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#source_groups_of_two_factor_authentication_requirement' do
-    let_it_be(:group_not_requiring_2FA) { create :group }
+    let_it_be(:group_not_requiring_2fa) { create :group }
 
     let(:user) { create :user }
 
     before do
       group.add_member(user, GroupMember::OWNER)
-      group_not_requiring_2FA.add_member(user, GroupMember::OWNER)
+      group_not_requiring_2fa.add_member(user, GroupMember::OWNER)
     end
 
     context 'when user is direct member of group requiring 2FA' do

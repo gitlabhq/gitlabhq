@@ -1,5 +1,6 @@
-import { GlToggle } from '@gitlab/ui';
+import { GlIcon, GlToggle } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -46,6 +47,13 @@ const getDefaultProps = () => ({
         },
       ],
     },
+    {
+      id: 2,
+      iid: 2,
+      active: true,
+      name: 'flag without description',
+      description: '',
+    },
   ],
 });
 
@@ -61,6 +69,9 @@ describe('Feature flag table', () => {
         csrfToken: 'fakeToken',
       },
       ...opts,
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
@@ -105,10 +116,6 @@ describe('Feature flag table', () => {
     it('Should render a feature flag column', () => {
       expect(wrapper.find('.js-feature-flag-title').exists()).toBe(true);
       expect(trimText(wrapper.find('.feature-flag-name').text())).toEqual('flag name');
-
-      expect(trimText(wrapper.find('.feature-flag-description').text())).toEqual(
-        'flag description',
-      );
     });
 
     it('should render an environments specs label', () => {
@@ -123,6 +130,37 @@ describe('Feature flag table', () => {
       expect(wrapper.find('.js-feature-flag-edit-button').exists()).toBe(true);
       expect(wrapper.find('.js-feature-flag-edit-button').attributes('href')).toEqual('edit/path');
     });
+  });
+
+  describe.each(getDefaultProps().featureFlags)('description tooltip', (featureFlag) => {
+    beforeEach(() => {
+      createWrapper(props);
+    });
+
+    const haveInfoIcon = Boolean(featureFlag.description);
+
+    it(`${haveInfoIcon ? 'displays' : "doesn't display"} an information icon`, () => {
+      expect(
+        wrapper
+          .findByTestId(featureFlag.id)
+          .find('.feature-flag-description')
+          .findComponent(GlIcon)
+          .exists(),
+      ).toBe(haveInfoIcon);
+    });
+
+    if (haveInfoIcon) {
+      it('includes a tooltip', () => {
+        const icon = wrapper
+          .findByTestId(featureFlag.id)
+          .find('.feature-flag-description')
+          .findComponent(GlIcon);
+        const tooltip = getBinding(icon.element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe(featureFlag.description);
+      });
+    }
   });
 
   describe('when active and with an update toggle', () => {

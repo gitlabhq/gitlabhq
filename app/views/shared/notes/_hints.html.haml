@@ -1,7 +1,7 @@
 - supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 - supports_file_upload = local_assigns.fetch(:supports_file_upload, true)
-.comment-toolbar.clearfix
-  .toolbar-text
+.comment-toolbar.gl-mx-2.gl-mb-2.gl-px-4.gl-bg-gray-10.gl-rounded-bottom-left-base.gl-rounded-bottom-right-base.clearfix
+  .toolbar-text.gl-font-sm
     - markdownLinkStart = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/markdown') }
     - quickActionsLinkStart = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/quick_actions') }
     - if supports_quick_actions
@@ -9,7 +9,7 @@
     - else
       = html_escape(s_('MarkdownToolbar|Supports %{markdownDocsLinkStart}Markdown%{markdownDocsLinkEnd}')) % { markdownDocsLinkStart: markdownLinkStart, markdownDocsLinkEnd: '</a>'.html_safe }
   - if supports_file_upload
-    %span.uploading-container.gl-line-height-32
+    %span.uploading-container.gl-line-height-32.gl-font-sm
       %span.uploading-progress-container.hide
         = sprite_icon('paperclip', css_class: 'gl-icon gl-vertical-align-text-bottom')
         %span.attaching-file-message

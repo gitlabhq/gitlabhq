@@ -46,6 +46,7 @@ export default {
       :title="__('Attach a file or image')"
       category="tertiary"
       icon="paperclip"
+      size="small"
       lazy
       @click="openFileUpload"
     />

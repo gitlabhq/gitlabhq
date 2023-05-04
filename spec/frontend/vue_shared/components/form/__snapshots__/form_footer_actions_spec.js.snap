@@ -2,18 +2,8 @@
 
 exports[`Form Footer Actions renders content properly 1`] = `
 <footer
-  class="form-actions d-flex justify-content-between"
+  class="gl-mt-5 footer-block"
 >
-  <div>
-    Bar
-  </div>
-   
-  <div>
-    Foo
-  </div>
-   
-  <div>
-    Abrakadabra
-  </div>
+  Bar Foo Abrakadabra
 </footer>
 `;
