@@ -103,7 +103,7 @@ export default {
 };
 </script>
 <template>
-  <div :style="scrollContainerStyle">
+  <div :style="scrollContainerStyle" class="gl-overflow-auto">
     <dynamic-scroller :items="artifacts.nodes" :min-item-size="$options.ARTIFACT_ROW_HEIGHT">
       <template #default="{ item, index, active }">
         <dynamic-scroller-item :item="item" :active="active" :class="{ active }">

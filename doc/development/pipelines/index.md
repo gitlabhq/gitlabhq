@@ -430,7 +430,8 @@ No password is used from mirroring because GitLab JH is a public project.
 
 ##### How the GitLab JH validation project is set up
 
-This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) project is public and CI is enabled, without any project variables.
+This [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) project is public and CI is enabled, with temporary
+project variables set.
 
 It's a pull mirror pulling from [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
 mirroring only protected branches, `master` and `main-jh`, overriding
@@ -463,6 +464,14 @@ It's used to run `sync-as-if-jh-branch` to synchronize the dependencies
 when the merge requests changed the dependencies. See
 [How we generate the as-if-JH branch](#how-we-generate-the-as-if-jh-branch)
 for how it works.
+
+###### Temporary GitLab JH validation project variables
+
+- `BUNDLER_CHECKSUM_VERIFICATION_OPT_IN` is set to `false`
+  - We can remove this variable after JiHu has
+    [`jh/Gemfile.checksum`](https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/Gemfile.checksum)
+    committed. More context can be found at:
+    [Setting it to `false` to skip it](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118938#note_1374688877)
 
 ### `rspec:undercoverage` job
 

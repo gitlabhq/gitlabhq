@@ -17,8 +17,8 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 ```
 cd existing_repo
 git remote add origin <%= project.http_url_to_repo %>
-git branch -M <%= project.default_branch_or_main %>
-git push -uf origin <%= project.default_branch_or_main %>
+git branch -M <%= params[:default_branch] %>
+git push -uf origin <%= params[:default_branch] %>
 ```
 
 ## Integrate with your tools

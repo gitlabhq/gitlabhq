@@ -235,17 +235,4 @@ RSpec.shared_examples 'obtaining lease to update database' do
       expect { subject }.not_to raise_error
     end
   end
-
-  context 'when feature flag counter_attribute_db_lease_for_update is disabled' do
-    before do
-      stub_feature_flags(counter_attribute_db_lease_for_update: false)
-      allow(model).to receive(:in_lock).and_call_original
-    end
-
-    it 'does not attempt to get a lock' do
-      expect(model).not_to receive(:in_lock)
-
-      subject
-    end
-  end
 end

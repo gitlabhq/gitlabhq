@@ -17,22 +17,21 @@ GitLab issues and merge requests. Mention a Jira issue in a GitLab issue,
 merge request, or comment, and GitLab adds a formatted comment to the Jira issue.
 The comment links back to your work in GitLab.
 
-For example, this commit references the Jira issue `GIT-1`:
+For example, when this commit refers to a `GIT-1` Jira issue:
 
 ```shell
 git commit -m "GIT-1 this is a test commit"
 ```
 
-GitLab adds a reference to the **Issue Links** section of Jira issue `GIT-1`:
+GitLab adds to that issue:
 
-![Example of mentioning or closing the Jira issue](img/jira_issue_reference.png)
+- A reference in the **Issue links** section
+- A comment in the **Activity** section that follows this format:
 
-GitLab also adds a comment to the issue, and uses this format:
-
-```plaintext
-USER mentioned this issue in RESOURCE_NAME of [PROJECT_NAME|COMMENTLINK]:
-ENTITY_TITLE
-```
+  ```plaintext
+  USER mentioned this issue in RESOURCE_NAME of [PROJECT_NAME|COMMENTLINK]:
+  ENTITY_TITLE
+  ```
 
 - `USER`: The name of the user who mentioned the issue, linked to their GitLab user profile.
 - `COMMENTLINK`: A link to where the Jira issue was mentioned.
@@ -110,7 +109,7 @@ For example, use any of these trigger words to close the Jira issue `PROJECT-1`:
 - `Fixes PROJECT-1`
 
 The commit or merge request must target your project's [default branch](../../user/project/repository/branches/default.md).
-You can change your project's default branch under [project settings](img/jira_project_settings.png).
+You can change your project's default branch in [project settings](../../user/project/settings/index.md).
 
 ### Use case for closing issues
 
@@ -120,8 +119,7 @@ Consider this example:
 1. You create a merge request in GitLab to build the requested feature.
 1. In the merge request, you add the issue closing trigger `Closes PROJECT-7`.
 1. When the merge request is merged:
-   - GitLab closes the Jira issue for you:
-     ![The GitLab integration closes Jira issue](img/jira_service_close_issue.png)
+   - GitLab closes the Jira issue for you.
    - GitLab adds a formatted comment to Jira, linking back to the commit that
      resolved the issue. You can [disable comments](#disable-comments-on-jira-issues).
 
@@ -129,19 +127,19 @@ Consider this example:
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3622) in GitLab 13.2.
 
-You can browse, search, and view issues from a selected Jira project directly in GitLab,
-if your GitLab administrator [has configured it](configure.md).
+You can view and search issues from a selected Jira project directly in GitLab,
+provided your GitLab administrator [has configured the integration](configure.md#configure-the-integration).
 
-To do this, in GitLab, go to your project and select **Issues > Jira issues**. The issue list
-sorts by **Created date** by default, with the newest issues listed at the top:
+To view Jira issues:
 
-![Jira issues integration enabled](img/open_jira_issues_list_v14_6.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues > Jira issues**.
+
+The issues are sorted by **Created date** by default, with the most recently created issues listed at the top.
 
 - To display the most recently updated issues first, select **Updated date**.
-- You can [search and filter](#search-and-filter-the-issues-list) the issues list.
-- In GitLab [versions 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/299832),
-  you can select an issue from the list to view it in GitLab:
-  ![Jira issue detail view](img/jira_issue_detail_view_v13.10.png)
+- You can [search and filter the issue list](#search-and-filter-the-issue-list).
+- In GitLab 13.10 and later, you can [select an issue from the list to view the issue in GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/299832).
 
 Issues are grouped into tabs based on their
 [Jira status](https://confluence.atlassian.com/adminjiraserver070/defining-status-field-values-749382903.html):
@@ -150,7 +148,7 @@ Issues are grouped into tabs based on their
 - **Closed** tab: All issues with a Jira status categorized as Done.
 - **All** tab: All issues of any status.
 
-### Search and filter the issues list **(PREMIUM)**
+### Search and filter the issue list **(PREMIUM)**
 
 To refine the list of issues, use the search bar to search for any text
 contained in an issue summary (title) or description. Use any combination

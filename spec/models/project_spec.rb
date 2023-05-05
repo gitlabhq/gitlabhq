@@ -3135,6 +3135,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         expect(project.create_repository).to eq(false)
         expect(project.errors).not_to be_empty
       end
+
+      it 'passes through default branch' do
+        expect(project.repository).to receive(:create_repository).with('pineapple')
+
+        expect(project.create_repository(default_branch: 'pineapple')).to eq(true)
+      end
     end
 
     context 'using a forked repository' do

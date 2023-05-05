@@ -197,7 +197,7 @@ module Projects
 
     def create_readme
       commit_attrs = {
-        branch_name: @default_branch.presence || @project.default_branch_or_main,
+        branch_name: default_branch,
         commit_message: 'Initial commit',
         file_path: 'README.md',
         file_content: readme_content
@@ -211,7 +211,11 @@ module Projects
     end
 
     def readme_content
-      @readme_template.presence || ReadmeRendererService.new(@project, current_user).execute
+      readme_attrs = {
+        default_branch: default_branch
+      }
+
+      @readme_template.presence || ReadmeRendererService.new(@project, current_user, readme_attrs).execute
     end
 
     def skip_wiki?
@@ -227,8 +231,10 @@ module Projects
 
           @project.create_labels unless @project.gitlab_project_import?
 
-          unless @project.import?
-            raise 'Failed to create repository' unless @project.create_repository
+          break if @project.import?
+
+          unless @project.create_repository(default_branch: default_branch)
+            raise 'Failed to create repository'
           end
         end
       end
@@ -276,6 +282,10 @@ module Projects
     end
 
     private
+
+    def default_branch
+      @default_branch.presence || @project.default_branch_or_main
+    end
 
     def validate_import_source_enabled!
       return unless @params[:import_type]

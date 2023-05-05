@@ -201,8 +201,6 @@ module CounterAttribute
   #
   # It does not guarantee that there will not be any concurrent updates.
   def detect_race_on_record(log_fields: {})
-    return yield unless Feature.enabled?(:counter_attribute_db_lease_for_update, project)
-
     # Ensure attributes is always an array before we log
     log_fields[:attributes] = Array(log_fields[:attributes])
 

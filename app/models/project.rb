@@ -1876,11 +1876,11 @@ class Project < ApplicationRecord
     repository.update!(shard_name: repository_storage, disk_path: disk_path)
   end
 
-  def create_repository(force: false)
+  def create_repository(force: false, default_branch: nil)
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    repository.create_repository
+    repository.create_repository(default_branch)
     repository.after_create
 
     true
