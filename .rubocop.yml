@@ -54,6 +54,10 @@ AllCops:
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
+    # Adding this specifically for a large revert: !118368
+    <% File.readlines('.rubocop_revert_ignores.txt').map(&:chomp).each do |f| %>
+    - '<%= f %>'
+    <% end %>
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
   MaxFilesInCache: 1_000_000
