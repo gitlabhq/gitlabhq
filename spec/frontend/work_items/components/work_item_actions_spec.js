@@ -18,10 +18,10 @@ import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_wor
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 import {
-  workItemResponseFactory,
   convertWorkItemMutationResponse,
   projectWorkItemTypesQueryResponse,
   convertWorkItemMutationErrorResponse,
+  workItemByIidResponseFactory,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
@@ -211,45 +211,45 @@ describe('WorkItemActions component', () => {
 
   describe('notifications action', () => {
     const errorMessage = 'Failed to subscribe';
+    const id = 'gid://gitlab/WorkItem/1';
     const notificationToggledOffMessage = 'Notifications turned off.';
     const notificationToggledOnMessage = 'Notifications turned on.';
 
-    const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
     const inputVariablesOff = {
-      id: workItemQueryResponse.data.workItem.id,
+      id,
       notificationsWidget: {
         subscribed: false,
       },
     };
 
     const inputVariablesOn = {
-      id: workItemQueryResponse.data.workItem.id,
+      id,
       notificationsWidget: {
         subscribed: true,
       },
     };
 
-    const notificationsOffExpectedResponse = workItemResponseFactory({
+    const notificationsOffExpectedResponse = workItemByIidResponseFactory({
       subscribed: false,
     });
 
     const toggleNotificationsOffHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem: notificationsOffExpectedResponse.data.workItem,
+          workItem: notificationsOffExpectedResponse.data.workspace.workItems.nodes[0],
           errors: [],
         },
       },
     });
 
-    const notificationsOnExpectedResponse = workItemResponseFactory({
+    const notificationsOnExpectedResponse = workItemByIidResponseFactory({
       subscribed: true,
     });
 
     const toggleNotificationsOnHandler = jest.fn().mockResolvedValue({
       data: {
         workItemUpdate: {
-          workItem: notificationsOnExpectedResponse.data.workItem,
+          workItem: notificationsOnExpectedResponse.data.workspace.workItems.nodes[0],
           errors: [],
         },
       },

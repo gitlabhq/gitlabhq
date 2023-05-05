@@ -4,14 +4,8 @@ import {
   SAST_DESCRIPTION,
   SAST_HELP_PATH,
   SAST_CONFIG_HELP_PATH,
-  LICENSE_COMPLIANCE_NAME,
-  LICENSE_COMPLIANCE_DESCRIPTION,
-  LICENSE_COMPLIANCE_HELP_PATH,
 } from '~/security_configuration/components/constants';
-import {
-  REPORT_TYPE_LICENSE_COMPLIANCE,
-  REPORT_TYPE_SAST,
-} from '~/vue_shared/security_reports/constants';
+import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 
 export const testProjectPath = 'foo/bar';
 export const testProviderIds = [101, 102, 103];
@@ -125,16 +119,6 @@ export const securityFeaturesMock = [
     configurationHelpPath: SAST_CONFIG_HELP_PATH,
     type: REPORT_TYPE_SAST,
     available: true,
-  },
-];
-
-export const complianceFeaturesMock = [
-  {
-    name: LICENSE_COMPLIANCE_NAME,
-    description: LICENSE_COMPLIANCE_DESCRIPTION,
-    helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    type: REPORT_TYPE_LICENSE_COMPLIANCE,
-    configurationHelpPath: LICENSE_COMPLIANCE_HELP_PATH,
   },
 ];
 

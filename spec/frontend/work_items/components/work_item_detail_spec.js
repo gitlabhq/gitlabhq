@@ -39,7 +39,7 @@ import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_ta
 import {
   mockParent,
   workItemDatesSubscriptionResponse,
-  workItemByIidResponseFactory as workItemResponseFactory,
+  workItemByIidResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemAssigneesSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
@@ -52,8 +52,8 @@ describe('WorkItemDetail component', () => {
 
   Vue.use(VueApollo);
 
-  const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
-  const workItemQueryResponseWithoutParent = workItemResponseFactory({
+  const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemQueryResponseWithoutParent = workItemByIidResponseFactory({
     parent: null,
     canUpdate: true,
     canDelete: true,
@@ -221,7 +221,7 @@ describe('WorkItemDetail component', () => {
 
   describe('confidentiality', () => {
     const errorMessage = 'Mutation failed';
-    const confidentialWorkItem = workItemResponseFactory({
+    const confidentialWorkItem = workItemByIidResponseFactory({
       confidential: true,
     });
     const workItem = confidentialWorkItem.data.workspace.workItems.nodes[0];
@@ -398,7 +398,7 @@ describe('WorkItemDetail component', () => {
 
     describe('with parent', () => {
       beforeEach(() => {
-        const parentResponse = workItemResponseFactory(mockParent);
+        const parentResponse = workItemByIidResponseFactory(mockParent);
         createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
 
         return waitForPromises();
@@ -437,7 +437,7 @@ describe('WorkItemDetail component', () => {
             },
           },
         };
-        const parentResponse = workItemResponseFactory(mockParentObjective);
+        const parentResponse = workItemByIidResponseFactory(mockParentObjective);
         createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
         await waitForPromises();
 
@@ -492,7 +492,7 @@ describe('WorkItemDetail component', () => {
 
       describe('when the assignees widget does not exist', () => {
         it('does not call the assignees subscription', async () => {
-          const response = workItemResponseFactory({ assigneesWidgetPresent: false });
+          const response = workItemByIidResponseFactory({ assigneesWidgetPresent: false });
           const handler = jest.fn().mockResolvedValue(response);
           createComponent({ handler });
           await waitForPromises();
@@ -514,7 +514,7 @@ describe('WorkItemDetail component', () => {
 
       describe('when the due date widget does not exist', () => {
         it('does not call the dates subscription', async () => {
-          const response = workItemResponseFactory({ datesWidgetPresent: false });
+          const response = workItemByIidResponseFactory({ datesWidgetPresent: false });
           const handler = jest.fn().mockResolvedValue(response);
           createComponent({ handler });
           await waitForPromises();
@@ -537,7 +537,7 @@ describe('WorkItemDetail component', () => {
       createComponent({
         handler: jest
           .fn()
-          .mockResolvedValue(workItemResponseFactory({ assigneesWidgetPresent: false })),
+          .mockResolvedValue(workItemByIidResponseFactory({ assigneesWidgetPresent: false })),
       });
       await waitForPromises();
 
@@ -551,7 +551,7 @@ describe('WorkItemDetail component', () => {
       ${'renders when widget is returned from API'}             | ${true}             | ${true}
       ${'does not render when widget is not returned from API'} | ${false}            | ${false}
     `('$description', async ({ labelsWidgetPresent, exists }) => {
-      const response = workItemResponseFactory({ labelsWidgetPresent });
+      const response = workItemByIidResponseFactory({ labelsWidgetPresent });
       const handler = jest.fn().mockResolvedValue(response);
       createComponent({ handler });
       await waitForPromises();
@@ -567,7 +567,7 @@ describe('WorkItemDetail component', () => {
       ${'when widget is not returned from API'} | ${false}           | ${false}
     `('$description', ({ datesWidgetPresent, exists }) => {
       it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, async () => {
-        const response = workItemResponseFactory({ datesWidgetPresent });
+        const response = workItemByIidResponseFactory({ datesWidgetPresent });
         const handler = jest.fn().mockResolvedValue(response);
         createComponent({ handler });
         await waitForPromises();
@@ -594,7 +594,7 @@ describe('WorkItemDetail component', () => {
       ${'renders when widget is returned from API'}             | ${true}                | ${true}
       ${'does not render when widget is not returned from API'} | ${false}               | ${false}
     `('$description', async ({ milestoneWidgetPresent, exists }) => {
-      const response = workItemResponseFactory({ milestoneWidgetPresent });
+      const response = workItemByIidResponseFactory({ milestoneWidgetPresent });
       const handler = jest.fn().mockResolvedValue(response);
       createComponent({ handler });
       await waitForPromises();
@@ -614,7 +614,7 @@ describe('WorkItemDetail component', () => {
 
       describe('when the assignees widget does not exist', () => {
         it('does not call the milestone subscription', async () => {
-          const response = workItemResponseFactory({ milestoneWidgetPresent: false });
+          const response = workItemByIidResponseFactory({ milestoneWidgetPresent: false });
           const handler = jest.fn().mockResolvedValue(response);
           createComponent({ handler });
           await waitForPromises();
@@ -630,6 +630,13 @@ describe('WorkItemDetail component', () => {
     await waitForPromises();
 
     expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+  });
+
+  it('skips the work item query when there is no workItemIid', async () => {
+    createComponent({ workItemIid: null });
+    await waitForPromises();
+
+    expect(successHandler).not.toHaveBeenCalled();
   });
 
   it('calls the work item query when isModal=true', async () => {
@@ -648,7 +655,7 @@ describe('WorkItemDetail component', () => {
     });
 
     describe('work item has children', () => {
-      const objectiveWorkItem = workItemResponseFactory({
+      const objectiveWorkItem = workItemByIidResponseFactory({
         workItemType: objectiveType,
         confidential: true,
       });

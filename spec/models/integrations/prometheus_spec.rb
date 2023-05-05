@@ -90,37 +90,6 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
           end
         end
       end
-
-      context 'with self-monitoring project and internal Prometheus' do
-        before do
-          integration.api_url = 'http://localhost:9090'
-
-          stub_application_setting(self_monitoring_project_id: project.id)
-          stub_config(prometheus: { enable: true, server_address: 'localhost:9090' })
-        end
-
-        it 'allows self-monitoring project to connect to internal Prometheus' do
-          aggregate_failures do
-            ['127.0.0.1', '192.168.2.3'].each do |url|
-              allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
-
-              expect(integration.can_query?).to be true
-            end
-          end
-        end
-
-        it 'does not allow self-monitoring project to connect to other local URLs' do
-          integration.api_url = 'http://localhost:8000'
-
-          aggregate_failures do
-            ['127.0.0.1', '192.168.2.3'].each do |url|
-              allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([Addrinfo.tcp(url, 80)])
-
-              expect(integration.can_query?).to be false
-            end
-          end
-        end
-      end
     end
   end
 
@@ -217,23 +186,6 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
       it 'blocks local requests' do
         expect(integration.prometheus_client).to be_nil
-      end
-
-      context 'with self-monitoring project and internal Prometheus URL' do
-        before do
-          stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
-          stub_application_setting(self_monitoring_project_id: project.id)
-
-          stub_config(prometheus: {
-            enable: true,
-            server_address: api_url
-          })
-        end
-
-        it 'allows local requests' do
-          expect(integration.prometheus_client).not_to be_nil
-          expect { integration.prometheus_client.ping }.not_to raise_error
-        end
       end
     end
 

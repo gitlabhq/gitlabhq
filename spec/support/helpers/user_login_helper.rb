@@ -30,4 +30,20 @@ module UserLoginHelper
   def ensure_one_active_pane
     expect(page).to have_selector('.tab-pane.active', count: 1)
   end
+
+  def ensure_remember_me_in_tab(tab_name)
+    find_link(tab_name).click
+
+    within '.tab-pane.active' do
+      expect(page).to have_content _('Remember me')
+    end
+  end
+
+  def ensure_remember_me_not_in_tab(tab_name)
+    find_link(tab_name).click
+
+    within '.tab-pane.active' do
+      expect(page).not_to have_content _('Remember me')
+    end
+  end
 end

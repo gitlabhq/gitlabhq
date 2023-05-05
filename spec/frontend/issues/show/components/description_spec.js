@@ -8,7 +8,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import Description from '~/issues/show/components/description.vue';
 import eventHub from '~/issues/show/event_hub';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import TaskList from '~/task_list';
@@ -35,13 +34,6 @@ const $toast = {
 };
 
 const issueDetailsResponse = getIssueDetailsResponse();
-const workItemQueryResponse = {
-  data: {
-    workItem: null,
-  },
-};
-
-const queryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
 const workItemTypesQueryHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
 
 describe('Description component', () => {
@@ -72,7 +64,6 @@ describe('Description component', () => {
         ...provide,
       },
       apolloProvider: createMockApollo([
-        [workItemQuery, queryHandler],
         [workItemTypesQuery, workItemTypesQueryHandler],
         [getIssueDetailsQuery, issueDetailsQueryHandler],
         [createWorkItemMutation, createWorkItemMutationHandler],

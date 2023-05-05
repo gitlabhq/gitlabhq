@@ -8,9 +8,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import { config } from '~/graphql_shared/issuable_client';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
-import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import {
@@ -22,7 +20,6 @@ import {
 import {
   projectMembersResponseWithCurrentUser,
   mockAssignees,
-  workItemQueryResponse,
   currentUserResponse,
   currentUserNullResponse,
   projectMembersResponseWithoutCurrentUser,
@@ -78,25 +75,11 @@ describe('WorkItemAssignees component', () => {
     canInviteMembers = false,
     canUpdate = true,
   } = {}) => {
-    const apolloProvider = createMockApollo(
-      [
-        [userSearchQuery, searchQueryHandler],
-        [currentUserQuery, currentUserQueryHandler],
-        [updateWorkItemMutation, updateWorkItemMutationHandler],
-      ],
-      {},
-      {
-        typePolicies: config.cacheConfig.typePolicies,
-      },
-    );
-
-    apolloProvider.clients.defaultClient.writeQuery({
-      query: workItemQuery,
-      variables: {
-        id: workItemId,
-      },
-      data: workItemQueryResponse.data,
-    });
+    const apolloProvider = createMockApollo([
+      [userSearchQuery, searchQueryHandler],
+      [currentUserQuery, currentUserQueryHandler],
+      [updateWorkItemMutation, updateWorkItemMutationHandler],
+    ]);
 
     wrapper = mountExtended(WorkItemAssignees, {
       propsData: {

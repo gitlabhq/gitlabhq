@@ -7551,24 +7551,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     end
   end
 
-  describe '#self_monitoring?' do
-    let_it_be(:project) { create(:project) }
-
-    subject { project.self_monitoring? }
-
-    context 'when the project is instance self-monitoring' do
-      before do
-        stub_application_setting(self_monitoring_project_id: project.id)
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when the project is not self-monitoring' do
-      it { is_expected.to be false }
-    end
-  end
-
   describe '#add_export_job' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }

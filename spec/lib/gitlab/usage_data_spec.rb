@@ -639,8 +639,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         create(:alert_management_alert, project: project, created_at: n.days.ago)
       end
 
-      stub_application_setting(self_monitoring_project: project)
-
       for_defined_days_back do
         create(:product_analytics_event, project: project, se_category: 'epics', se_action: 'promote')
       end

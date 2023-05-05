@@ -9,7 +9,7 @@ class BulkImports::Configuration < ApplicationRecord
 
   validates :url, :access_token, length: { maximum: 255 }, presence: true
   validates :url, public_url: { schemes: %w[http https], enforce_sanitization: true, ascii_only: true },
-                  allow_nil: true
+    allow_nil: true
 
   attr_encrypted :url,
     key: Settings.attr_encrypted_db_key_base_32,

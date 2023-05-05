@@ -684,87 +684,6 @@ export const createWorkItemMutationErrorResponse = {
   },
 };
 
-export const createWorkItemFromTaskMutationResponse = {
-  data: {
-    workItemCreateFromTask: {
-      __typename: 'WorkItemCreateFromTaskPayload',
-      errors: [],
-      workItem: {
-        __typename: 'WorkItem',
-        description: 'New description',
-        id: 'gid://gitlab/WorkItem/1',
-        iid: '1',
-        title: 'Updated title',
-        state: 'OPEN',
-        confidential: false,
-        createdAt: '2022-08-03T12:41:54Z',
-        closedAt: null,
-        project: {
-          __typename: 'Project',
-          id: '1',
-          fullPath: 'test-project-path',
-          archived: false,
-        },
-        workItemType: {
-          __typename: 'WorkItemType',
-          id: 'gid://gitlab/WorkItems::Type/5',
-          name: 'Task',
-          iconName: 'issue-type-task',
-        },
-        userPermissions: {
-          deleteWorkItem: false,
-          updateWorkItem: false,
-          setWorkItemMetadata: false,
-          __typename: 'WorkItemPermissions',
-        },
-        widgets: [
-          {
-            __typename: 'WorkItemWidgetDescription',
-            type: 'DESCRIPTION',
-            description: 'New description',
-            descriptionHtml: '<p>New description</p>',
-            lastEditedAt: '2022-09-21T06:18:42Z',
-            lastEditedBy: {
-              name: 'Administrator',
-              webPath: '/root',
-            },
-          },
-        ],
-      },
-      newWorkItem: {
-        __typename: 'WorkItem',
-        id: 'gid://gitlab/WorkItem/1000000',
-        iid: '100',
-        title: 'Updated title',
-        state: 'OPEN',
-        createdAt: '2022-08-03T12:41:54Z',
-        closedAt: null,
-        description: '',
-        confidential: false,
-        project: {
-          __typename: 'Project',
-          id: '1',
-          fullPath: 'test-project-path',
-          archived: false,
-        },
-        workItemType: {
-          __typename: 'WorkItemType',
-          id: 'gid://gitlab/WorkItems::Type/5',
-          name: 'Task',
-          iconName: 'issue-type-task',
-        },
-        userPermissions: {
-          deleteWorkItem: false,
-          updateWorkItem: false,
-          setWorkItemMetadata: false,
-          __typename: 'WorkItemPermissions',
-        },
-        widgets: [],
-      },
-    },
-  },
-};
-
 export const deleteWorkItemResponse = {
   data: { workItemDelete: { errors: [], __typename: 'WorkItemDeletePayload' } },
 };
@@ -1825,18 +1744,6 @@ export const projectMilestonesResponseWithNoMilestones = {
       attributes: {
         nodes: [],
         __typename: 'MilestoneConnection',
-      },
-      __typename: 'Project',
-    },
-  },
-};
-
-export const projectWorkItemResponse = {
-  data: {
-    workspace: {
-      id: 'gid://gitlab/Project/1',
-      workItems: {
-        nodes: [workItemQueryResponse.data.workItem],
       },
       __typename: 'Project',
     },

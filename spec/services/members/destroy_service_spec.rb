@@ -463,16 +463,26 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
   end
 
   context 'subresources' do
-    let(:user) { create(:user) }
-    let(:member_user) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let_it_be_with_reload(:member_user) { create(:user) }
 
-    let(:group) { create(:group, :public) }
-    let(:subgroup) { create(:group, parent: group) }
-    let(:subsubgroup) { create(:group, parent: subgroup) }
-    let(:subsubproject) { create(:project, group: subsubgroup) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be(:private_subgroup) { create(:group, :private, parent: group, name: 'private_subgroup') }
+    let_it_be(:private_subgroup_with_direct_membership) { create(:group, :private, parent: group) }
+    let_it_be_with_reload(:subsubgroup) { create(:group, parent: subgroup) }
 
-    let(:group_project) { create(:project, :public, group: group) }
-    let(:control_project) { create(:project, group: subsubgroup) }
+    let_it_be_with_reload(:group_project) { create(:project, :public, group: group) }
+    let_it_be_with_reload(:control_project) { create(:project, :private, group: subsubgroup) }
+    let_it_be_with_reload(:subsubproject) { create(:project, :public, group: subsubgroup) }
+
+    let_it_be(:private_subgroup_project) do
+      create(:project, :private, group: private_subgroup, name: 'private_subgroup_project')
+    end
+
+    let_it_be(:private_subgroup_with_direct_membership_project) do
+      create(:project, :private, group: private_subgroup_with_direct_membership, name: 'private_subgroup_project')
+    end
 
     context 'with memberships' do
       before do
@@ -481,14 +491,68 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
         subsubproject.add_developer(member_user)
         group_project.add_developer(member_user)
         control_project.add_maintainer(user)
+        private_subgroup_with_direct_membership.add_developer(member_user)
         group.add_owner(user)
 
         @group_member = create(:group_member, :developer, group: group, user: member_user)
       end
 
+      let_it_be(:todo_in_public_group_project) do
+        create(:todo, :pending,
+          project: group_project,
+          user: member_user,
+          target: create(:issue, project: group_project)
+        )
+      end
+
+      let_it_be(:mr_in_public_group_project) do
+        create(:merge_request, source_project: group_project, assignees: [member_user])
+      end
+
+      let_it_be(:todo_in_private_subgroup_project) do
+        create(:todo, :pending,
+          project: private_subgroup_project,
+          user: member_user,
+          target: create(:issue, project: private_subgroup_project)
+        )
+      end
+
+      let_it_be(:mr_in_private_subgroup_project) do
+        create(:merge_request, source_project: private_subgroup_project, assignees: [member_user])
+      end
+
+      let_it_be(:todo_in_public_subsubgroup_project) do
+        create(:todo, :pending,
+          project: subsubproject,
+          user: member_user,
+          target: create(:issue, project: subsubproject)
+        )
+      end
+
+      let_it_be(:mr_in_public_subsubgroup_project) do
+        create(:merge_request, source_project: subsubproject, assignees: [member_user])
+      end
+
+      let_it_be(:todo_in_private_subgroup_with_direct_membership_project) do
+        create(:todo, :pending,
+          project: private_subgroup_with_direct_membership_project,
+          user: member_user,
+          target: create(:issue, project: private_subgroup_with_direct_membership_project)
+        )
+      end
+
+      let_it_be(:mr_in_private_subgroup_with_direct_membership_project) do
+        create(:merge_request,
+          source_project: private_subgroup_with_direct_membership_project,
+          assignees: [member_user]
+        )
+      end
+
       context 'with skipping of subresources' do
+        subject(:execute_service) { described_class.new(user).execute(@group_member, skip_subresources: true) }
+
         before do
-          described_class.new(user).execute(@group_member, skip_subresources: true)
+          execute_service
         end
 
         it 'removes the group membership' do
@@ -514,11 +578,35 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
         it 'does not remove the user from the control project' do
           expect(control_project.members.map(&:user)).to include(user)
         end
+
+        context 'todos', :sidekiq_inline do
+          it 'removes todos for which the user no longer has access' do
+            expect(member_user.todos).to include(
+              todo_in_public_group_project,
+              todo_in_public_subsubgroup_project,
+              todo_in_private_subgroup_with_direct_membership_project
+            )
+
+            expect(member_user.todos).not_to include(todo_in_private_subgroup_project)
+          end
+        end
+
+        context 'issuables', :sidekiq_inline do
+          subject(:execute_service) do
+            described_class.new(user).execute(@group_member, skip_subresources: true, unassign_issuables: true)
+          end
+
+          it 'removes assigned issuables, even in subresources' do
+            expect(member_user.assigned_merge_requests).to be_empty
+          end
+        end
       end
 
       context 'without skipping of subresources' do
+        subject(:execute_service) { described_class.new(user).execute(@group_member, skip_subresources: false) }
+
         before do
-          described_class.new(user).execute(@group_member, skip_subresources: false)
+          execute_service
         end
 
         it 'removes the project membership' do
@@ -543,6 +631,30 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
 
         it 'does not remove the user from the control project' do
           expect(control_project.members.map(&:user)).to include(user)
+        end
+
+        context 'todos', :sidekiq_inline do
+          it 'removes todos for which the user no longer has access' do
+            expect(member_user.todos).to include(
+              todo_in_public_group_project,
+              todo_in_public_subsubgroup_project
+            )
+
+            expect(member_user.todos).not_to include(
+              todo_in_private_subgroup_project,
+              todo_in_private_subgroup_with_direct_membership_project
+            )
+          end
+        end
+
+        context 'issuables', :sidekiq_inline do
+          subject(:execute_service) do
+            described_class.new(user).execute(@group_member, skip_subresources: false, unassign_issuables: true)
+          end
+
+          it 'removes assigned issuables' do
+            expect(member_user.assigned_merge_requests).to be_empty
+          end
         end
       end
     end
@@ -624,6 +736,15 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
 
     it 'removes project members invited by deleted user' do
       expect(project.members.not_accepted_invitations_by_user(member_user)).to be_empty
+    end
+  end
+
+  describe '#mark_as_recursive_call' do
+    it 'marks the instance as recursive' do
+      service = described_class.new(current_user)
+      service.mark_as_recursive_call
+
+      expect(service.send(:recursive_call?)).to eq(true)
     end
   end
 end

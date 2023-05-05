@@ -1,5 +1,5 @@
 - server = local_assigns.fetch(:server)
-- hide_remember_me = local_assigns.fetch(:hide_remember_me, false)
+- render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
 - submit_message = local_assigns.fetch(:submit_message, _('Sign in'))
 
 = form_tag(omniauth_callback_path(:user, server['provider_name']), id: 'new_ldap_user', class: "gl-show-field-errors") do
@@ -9,7 +9,7 @@
   .form-group.gl-px-5
     = label_tag :password
     = password_field_tag :password, nil, { autocomplete: 'current-password', class: "form-control gl-form-input bottom", title: _("This field is required."), data: { qa_selector: 'password_field' }, required: true }
-  - if !hide_remember_me && devise_mapping.rememberable?
+  - if render_remember_me
     .gl-px-5
       = render Pajamas::CheckboxTagComponent.new(name: 'remember_me') do |c|
         = c.label do

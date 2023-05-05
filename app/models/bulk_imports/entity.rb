@@ -41,22 +41,14 @@ class BulkImports::Entity < ApplicationRecord
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
   validates :source_type, presence: true
-  validates :source_full_path,
-            presence: true,
-            format: { with: Gitlab::Regex.bulk_import_source_full_path_regex,
-                      message: Gitlab::Regex.bulk_import_source_full_path_regex_message }
+  validates :source_full_path, presence: true, format: {
+    with: Gitlab::Regex.bulk_import_source_full_path_regex,
+    message: Gitlab::Regex.bulk_import_source_full_path_regex_message
+  }
 
-  validates :destination_name,
-            presence: true,
-            if: -> { group || project }
-
-  validates :destination_namespace,
-            exclusion: [nil],
-            if: :group
-
-  validates :destination_namespace,
-            presence: true,
-            if: :project?
+  validates :destination_name, presence: true, if: -> { group || project }
+  validates :destination_namespace, exclusion: [nil], if: :group
+  validates :destination_namespace, presence: true, if: :project?
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
@@ -72,9 +64,8 @@ class BulkImports::Entity < ApplicationRecord
 
   alias_attribute :destination_slug, :destination_name
 
-  delegate  :default_project_visibility,
-            :default_group_visibility,
-            to: :'Gitlab::CurrentSettings.current_application_settings'
+  delegate :default_project_visibility, :default_group_visibility,
+    to: :'Gitlab::CurrentSettings.current_application_settings'
 
   state_machine :status, initial: :created do
     state :created, value: 0

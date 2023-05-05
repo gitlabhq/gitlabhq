@@ -305,3 +305,8 @@ body.gl-dark {
   // lightens chat bubble in darkmode as $gray-50 matches drawer background.  See tanuki_bot_chat.scss
   background-color: $gray-100;
 }
+
+.ai-genie-chat,
+.ai-genie-chat .gl-form-input {
+  background-color: $gray-10;
+}

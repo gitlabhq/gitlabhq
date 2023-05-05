@@ -13,7 +13,6 @@ import {
   REPORT_TYPE_COVERAGE_FUZZING,
   REPORT_TYPE_CORPUS_MANAGEMENT,
   REPORT_TYPE_API_FUZZING,
-  REPORT_TYPE_LICENSE_COMPLIANCE,
 } from '~/vue_shared/security_reports/constants';
 
 import kontraLogo from 'images/vulnerability/kontra-logo.svg';
@@ -150,14 +149,6 @@ export const API_FUZZING_NAME = __('API Fuzzing');
 export const API_FUZZING_DESCRIPTION = __('Find bugs in your code with API fuzzing.');
 export const API_FUZZING_HELP_PATH = helpPagePath('user/application_security/api_fuzzing/index');
 
-export const LICENSE_COMPLIANCE_NAME = __('License Compliance');
-export const LICENSE_COMPLIANCE_DESCRIPTION = __(
-  'Search your project dependencies for their licenses and apply policies.',
-);
-export const LICENSE_COMPLIANCE_HELP_PATH = helpPagePath(
-  'user/compliance/license_compliance/index',
-);
-
 export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
 
 export const SCANNER_NAMES_MAP = {
@@ -270,15 +261,6 @@ export const securityFeatures = [
     },
     shortName: BAS_SHORT_NAME,
     type: REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION,
-  },
-];
-
-export const complianceFeatures = [
-  {
-    name: LICENSE_COMPLIANCE_NAME,
-    description: LICENSE_COMPLIANCE_DESCRIPTION,
-    helpPath: LICENSE_COMPLIANCE_HELP_PATH,
-    type: REPORT_TYPE_LICENSE_COMPLIANCE,
   },
 ];
 

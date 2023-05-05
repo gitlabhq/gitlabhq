@@ -8,7 +8,6 @@
 
 = render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 = render partial: 'flash_messages', locals: { project: @project }
-= render "self_monitoring_deprecation_notice", project: @project
 
 = render 'clusters_deprecation_alert'
 

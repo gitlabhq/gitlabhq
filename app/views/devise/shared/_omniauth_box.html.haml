@@ -1,4 +1,4 @@
-- hide_remember_me = local_assigns.fetch(:hide_remember_me, false)
+- render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
 - restyle_login_page_enabled = Feature.enabled?(:restyle_login_page, @project)
 %div{ class: restyle_login_page_enabled ? 'omniauth-container gl-mt-5 gl-p-5 gl-text-center gl-w-90p gl-ml-auto gl-mr-auto' : 'omniauth-container gl-mt-5 gl-p-5' }
   %label{ class: restyle_login_page_enabled ? 'gl-font-weight-normal' : 'gl-font-weight-bold' }
@@ -12,7 +12,7 @@
           = provider_image_tag(provider)
         %span.gl-button-text
           = label_for_provider(provider)
-  - unless hide_remember_me
+  - if render_remember_me
     = render Pajamas::CheckboxTagComponent.new(name: 'remember_me_omniauth', value: nil) do |c|
       = c.label do
         = _('Remember me')

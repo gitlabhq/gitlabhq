@@ -7,7 +7,6 @@
 
 = render "home_panel"
 = render "archived_notice", project: @project
-= render "self_monitoring_deprecation_notice", project: @project
 
 = render "invite_members_empty_project" if can_admin_project_member?(@project)
 

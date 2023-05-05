@@ -372,9 +372,11 @@ class Deployment < ApplicationRecord
     # i.e.:
     # MergeRequest.select(1, 2).to_sql #=> SELECT 1, 2 FROM "merge_requests"
     # MergeRequest.select(1, 1).to_sql #=> SELECT 1 FROM "merge_requests"
-    select = relation.select('merge_requests.id',
-                             "#{id} as deployment_id",
-                             "#{environment_id} as environment_id").to_sql
+    select = relation.select(
+      'merge_requests.id',
+      "#{id} as deployment_id",
+      "#{environment_id} as environment_id"
+    ).to_sql
 
     # We don't use `ApplicationRecord.legacy_bulk_insert` here so that we don't need to
     # first pluck lots of IDs into memory.

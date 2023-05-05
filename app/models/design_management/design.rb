@@ -31,8 +31,8 @@ module DesignManagement
     has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
     has_internal_id :iid, scope: :project, presence: true,
-                          hook_names: %i[create update], # Deal with old records
-                          track_if: -> { !importing? }
+      hook_names: %i[create update], # Deal with old records
+      track_if: -> { !importing? }
 
     validates :project, :filename, presence: true
     validates :issue, presence: true, unless: :importing?

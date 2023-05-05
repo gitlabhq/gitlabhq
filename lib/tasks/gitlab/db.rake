@@ -340,11 +340,7 @@ namespace :gitlab do
         exit 1
       end
 
-      # A list of projects that GitLab creates automatically on install/upgrade
-      # gc = Gitlab::CurrentSettings.current_application_settings
-      seed_projects = [Gitlab::CurrentSettings.current_application_settings.self_monitoring_project]
-
-      if (Project.count - seed_projects.count { |x| !x.nil? }).eql?(0)
+      if Project.count.eql?(0)
         puts "No user created projects. Database not active"
         exit 1
       end

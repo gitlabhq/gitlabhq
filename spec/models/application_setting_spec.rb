@@ -27,12 +27,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   describe 'associations' do
     it do
-      is_expected.to belong_to(:self_monitoring_project).class_name('Project')
-        .with_foreign_key(:instance_administration_project_id)
-        .inverse_of(:application_setting)
-    end
-
-    it do
       is_expected.to belong_to(:instance_group).class_name('Group')
         .with_foreign_key(:instance_administrators_group_id)
         .inverse_of(:application_setting)

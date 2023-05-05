@@ -2174,6 +2174,20 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#sign_in_with_codes_allowed?' do
+    let_it_be(:user) { create(:user, :two_factor_via_webauthn) }
+
+    context 'when `webauthn_without_totp` disabled' do
+      before do
+        stub_feature_flags(webauthn_without_totp: false)
+      end
+
+      it { expect(user.sign_in_with_codes_allowed?).to eq(false) }
+    end
+
+    it { expect(user.sign_in_with_codes_allowed?).to eq(true) }
+  end
+
   describe '#two_factor_otp_enabled?' do
     let_it_be(:user) { create(:user) }
 

@@ -87,4 +87,24 @@ RSpec.describe SessionsHelper do
       expect(subject).to eq('ma**@e******.com')
     end
   end
+
+  describe '#remember_me_enabled?' do
+    subject { helper.remember_me_enabled? }
+
+    context 'when application setting is enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: true)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when application setting is disabled' do
+      before do
+        stub_application_setting(remember_me_enabled: false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
 end

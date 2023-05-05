@@ -961,19 +961,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     using RSpec::Parameterized::TableSyntax
 
     let(:task) { 'gitlab:db:active' }
-    let(:self_monitoring) { double('self_monitoring') }
 
-    where(:needs_migration, :self_monitoring_project, :project_count, :exit_status, :exit_code) do
-      true | nil | nil | 1 | false
-      false | :self_monitoring | 1 | 1 | false
-      false | nil | 0 | 1 | false
-      false | :self_monitoring | 2 | 0 | true
+    where(:needs_migration, :project_count, :exit_status, :exit_code) do
+      true  | nil | 1 | false
+      false | 1 | 0 | true
+      false | 0 | 1 | false
+      false | 2 | 0 | true
     end
 
     with_them do
       it 'exits 0 or 1 depending on user modifications to the database' do
         allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migration)
-        allow_any_instance_of(ApplicationSetting).to receive(:self_monitoring_project).and_return(self_monitoring_project)
         allow(Project).to receive(:count).and_return(project_count)
 
         expect { run_rake_task(task) }.to raise_error do |error|

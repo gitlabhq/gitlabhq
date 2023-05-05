@@ -6,7 +6,7 @@ import {
   currentUserResponse,
   workItemAssigneesSubscriptionResponse,
   workItemDatesSubscriptionResponse,
-  workItemByIidResponseFactory as workItemResponseFactory,
+  workItemByIidResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemLabelsSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
@@ -32,7 +32,7 @@ describe('Work items router', () => {
 
   Vue.use(VueApollo);
 
-  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
+  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
   const currentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);

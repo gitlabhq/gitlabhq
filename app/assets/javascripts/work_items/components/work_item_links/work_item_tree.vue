@@ -61,11 +61,6 @@ export default {
       type: String,
       required: true,
     },
-    fetchByIid: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -174,7 +169,7 @@ export default {
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
-        :fetch-by-iid="fetchByIid"
+        fetch-by-iid
         @removeChild="$emit('removeChild', $event)"
         @show-modal="showModal"
       />

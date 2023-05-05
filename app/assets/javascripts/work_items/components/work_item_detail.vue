@@ -46,7 +46,8 @@ import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscr
 import workItemMilestoneSubscription from '../graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
-import { findHierarchyWidgetChildren, getWorkItemQuery } from '../utils';
+import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import { findHierarchyWidgetChildren } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -137,18 +138,15 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return getWorkItemQuery(this.fetchByIid);
-      },
+      query: workItemByIidQuery,
       variables() {
         return this.queryVariables;
       },
       skip() {
-        return !this.workItemId && !this.workItemIid;
+        return !this.workItemIid;
       },
       update(data) {
-        const workItem = this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
-        return workItem ?? {};
+        return data.workspace.workItems.nodes[0] ?? {};
       },
       error() {
         this.setEmptyState();
@@ -316,18 +314,11 @@ export default {
     workItemNotes() {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
     },
-    fetchByIid() {
-      return true;
-    },
     queryVariables() {
-      return this.fetchByIid
-        ? {
-            fullPath: this.fullPath,
-            iid: this.workItemIid,
-          }
-        : {
-            id: this.workItemId,
-          };
+      return {
+        fullPath: this.fullPath,
+        iid: this.workItemIid,
+      };
     },
     children() {
       return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
@@ -408,14 +399,12 @@ export default {
     },
     toggleChildFromCache(workItem, childId, store) {
       const sourceData = store.readQuery({
-        query: getWorkItemQuery(this.fetchByIid),
+        query: workItemByIidQuery,
         variables: this.queryVariables,
       });
 
       const newData = produce(sourceData, (draftState) => {
-        const widgets = this.fetchByIid
-          ? draftState.workspace.workItems.nodes[0].widgets
-          : draftState.workItem.widgets;
+        const { widgets } = draftState.workspace.workItems.nodes[0];
         const widgetHierarchy = widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
 
         const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
@@ -428,7 +417,7 @@ export default {
       });
 
       store.writeQuery({
-        query: getWorkItemQuery(this.fetchByIid),
+        query: workItemByIidQuery,
         variables: this.queryVariables,
         data: newData,
       });
@@ -475,12 +464,8 @@ export default {
       this.$emit('has-notes');
     },
     updateUrl(modalWorkItem) {
-      const params = this.fetchByIid
-        ? { work_item_iid: modalWorkItem?.iid }
-        : { work_item_id: getIdFromGraphQLId(modalWorkItem?.id) };
-
       updateHistory({
-        url: setUrlParams(params),
+        url: setUrlParams({ work_item_iid: modalWorkItem?.iid }),
         replace: true,
       });
     },
@@ -722,7 +707,6 @@ export default {
           :can-update="canUpdate"
           :project-path="fullPath"
           :confidential="workItem.confidential"
-          :fetch-by-iid="fetchByIid"
           @addWorkItemChild="addChild"
           @removeChild="removeChild"
           @show-modal="openInModal"

@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
 import SecurityConfigurationApp from './components/app.vue';
-import { securityFeatures, complianceFeatures } from './components/constants';
+import { securityFeatures } from './components/constants';
 import { augmentFeatures } from './utils';
 
 export const initSecurityConfiguration = (el) => {
@@ -28,9 +28,8 @@ export const initSecurityConfiguration = (el) => {
     vulnerabilityTrainingDocsPath,
   } = el.dataset;
 
-  const { augmentedSecurityFeatures, augmentedComplianceFeatures } = augmentFeatures(
+  const { augmentedSecurityFeatures } = augmentFeatures(
     securityFeatures,
-    complianceFeatures,
     features ? JSON.parse(features) : [],
   );
 
@@ -48,7 +47,6 @@ export const initSecurityConfiguration = (el) => {
     render(createElement) {
       return createElement(SecurityConfigurationApp, {
         props: {
-          augmentedComplianceFeatures,
           augmentedSecurityFeatures,
           latestPipelinePath,
           gitlabCiHistoryPath,

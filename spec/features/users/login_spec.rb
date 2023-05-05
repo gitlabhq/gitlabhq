@@ -394,6 +394,24 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
                                   providers: [mock_saml_config_with_upstream_two_factor_authn_contexts])
       end
 
+      it 'displays the remember me checkbox' do
+        visit new_user_session_path
+
+        expect(page).to have_field('remember_me_omniauth')
+      end
+
+      context 'when remember me is not enabled' do
+        before do
+          stub_application_setting(remember_me_enabled: false)
+        end
+
+        it 'does not display the remember me checkbox' do
+          visit new_user_session_path
+
+          expect(page).not_to have_field('remember_me_omniauth')
+        end
+      end
+
       context 'when authn_context is worth two factors' do
         let(:mock_saml_response) do
           File.read('spec/fixtures/authentication/saml_response.xml')
@@ -444,6 +462,24 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
   end
 
   describe 'without two-factor authentication' do
+    it 'displays the remember me checkbox' do
+      visit new_user_session_path
+
+      expect(page).to have_content(_('Remember me'))
+    end
+
+    context 'when remember me is not enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: false)
+      end
+
+      it 'does not display the remember me checkbox' do
+        visit new_user_session_path
+
+        expect(page).not_to have_content(_('Remember me'))
+      end
+    end
+
     context 'with correct username and password' do
       let(:user) { create(:user) }
 
@@ -750,16 +786,36 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           allow(instance).to receive(:"user_#{provider}_omniauth_callback_path")
             .and_return("/users/auth/#{provider}/callback")
         end
-
-        visit new_user_session_path
       end
 
       it 'correctly renders tabs and panes' do
+        visit new_user_session_path
+
         ensure_tab_pane_correctness(['Main LDAP', 'Standard'])
       end
 
       it 'renders link to sign up path' do
+        visit new_user_session_path
+
         expect(page.body).to have_link('Register now', href: new_user_registration_path)
+      end
+
+      it 'displays the remember me checkbox' do
+        visit new_user_session_path
+
+        ensure_remember_me_in_tab(ldap_server_config['label'])
+      end
+
+      context 'when remember me is not enabled' do
+        before do
+          stub_application_setting(remember_me_enabled: false)
+        end
+
+        it 'does not display the remember me checkbox' do
+          visit new_user_session_path
+
+          ensure_remember_me_not_in_tab(ldap_server_config['label'])
+        end
       end
     end
 
@@ -775,12 +831,30 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           allow(instance).to receive(:user_crowd_omniauth_authorize_path)
             .and_return("/users/auth/crowd/callback")
         end
-
-        visit new_user_session_path
       end
 
       it 'correctly renders tabs and panes' do
+        visit new_user_session_path
+
         ensure_tab_pane_correctness(%w(Crowd Standard))
+      end
+
+      it 'displays the remember me checkbox' do
+        visit new_user_session_path
+
+        ensure_remember_me_in_tab(_('Crowd'))
+      end
+
+      context 'when remember me is not enabled' do
+        before do
+          stub_application_setting(remember_me_enabled: false)
+        end
+
+        it 'does not display the remember me checkbox' do
+          visit new_user_session_path
+
+          ensure_remember_me_not_in_tab(_('Crowd'))
+        end
       end
     end
   end

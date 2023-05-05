@@ -3,6 +3,7 @@ import Visibility from 'visibilityjs';
 import {
   isGid,
   getIdFromGraphQLId,
+  getTypeFromGraphQLId,
   convertToGraphQLId,
   convertToGraphQLIds,
   convertFromGraphQLIds,
@@ -26,52 +27,30 @@ describe('isGid', () => {
   });
 });
 
-describe('getIdFromGraphQLId', () => {
-  [
-    {
-      input: '',
-      output: null,
-    },
-    {
-      input: null,
-      output: null,
-    },
-    {
-      input: 2,
-      output: 2,
-    },
-    {
-      input: 'gid://',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments/',
-      output: null,
-    },
-    {
-      input: 'gid://gitlab/Environments/0',
-      output: 0,
-    },
-    {
-      input: 'gid://gitlab/Environments/123',
-      output: 123,
-    },
-    {
-      input: 'gid://gitlab/DesignManagement::Version/2',
-      output: 2,
-    },
-  ].forEach(({ input, output }) => {
-    it(`getIdFromGraphQLId returns ${output} when passed ${input}`, () => {
-      expect(getIdFromGraphQLId(input)).toBe(output);
-    });
+describe.each`
+  input                                           | id      | type
+  ${''}                                           | ${null} | ${null}
+  ${null}                                         | ${null} | ${null}
+  ${0}                                            | ${0}    | ${null}
+  ${'0'}                                          | ${0}    | ${null}
+  ${2}                                            | ${2}    | ${null}
+  ${'2'}                                          | ${2}    | ${null}
+  ${'gid://'}                                     | ${null} | ${null}
+  ${'gid://gitlab'}                               | ${null} | ${null}
+  ${'gid://gitlab/'}                              | ${null} | ${null}
+  ${'gid://gitlab/Environments'}                  | ${null} | ${'Environments'}
+  ${'gid://gitlab/Environments/'}                 | ${null} | ${'Environments'}
+  ${'gid://gitlab/Environments/0'}                | ${0}    | ${'Environments'}
+  ${'gid://gitlab/Environments/123'}              | ${123}  | ${'Environments'}
+  ${'gid://gitlab/Environments/123/test'}         | ${123}  | ${'Environments'}
+  ${'gid://gitlab/DesignManagement::Version/123'} | ${123}  | ${'DesignManagement::Version'}
+`('parses GraphQL ID `$input`', ({ input, id, type }) => {
+  it(`getIdFromGraphQLId returns ${id}`, () => {
+    expect(getIdFromGraphQLId(input)).toBe(id);
+  });
+
+  it(`getTypeFromGraphQLId returns ${type}`, () => {
+    expect(getTypeFromGraphQLId(input)).toBe(type);
   });
 });
 

@@ -7,7 +7,7 @@
   - ldap_servers.each_with_index do |server, i|
     .login-box.tab-pane{ id: "#{server['provider_name']}", role: 'tabpanel', class: active_when(i == 0 && form_based_auth_provider_has_active_class?(:ldapmain)) }
       .login-body
-        = render 'devise/sessions/new_ldap', server: server, hide_remember_me: true, submit_message: _('Enter Admin Mode')
+        = render 'devise/sessions/new_ldap', server: server, render_remember_me: false, submit_message: _('Enter Admin Mode')
 
   = render_if_exists 'devise/sessions/new_smartcard'
 

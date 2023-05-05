@@ -5,15 +5,15 @@
   .form-group.gl-px-5
     = f.label :password, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
     = f.password_field :password, class: 'form-control gl-form-input bottom', autocomplete: 'current-password', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field', testid: 'password-field' }
-  - if devise_mapping.rememberable?
-    .gl-px-5
-      .gl-display-inline-block
+  .gl-px-5
+    .gl-display-inline-block
+      - if remember_me_enabled?
         = f.gitlab_ui_checkbox_component :remember_me, _('Remember me')
-      .gl-float-right
-        - if unconfirmed_email?
-          = link_to _('Resend confirmation email'), new_user_confirmation_path
-        - else
-          = link_to _('Forgot your password?'), new_password_path(:user)
+    .gl-float-right
+      - if unconfirmed_email?
+        = link_to _('Resend confirmation email'), new_user_confirmation_path
+      - else
+        = link_to _('Forgot your password?'), new_password_path(:user)
     %div
     - if Feature.enabled?(:arkose_labs_login_challenge)
       = render_if_exists 'devise/sessions/arkose_labs'

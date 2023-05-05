@@ -38,8 +38,8 @@ class ContainerRepository < ApplicationRecord
   validates :migration_aborted_in_state, inclusion: { in: ABORTABLE_MIGRATION_STATES }, allow_nil: true
 
   validates :migration_retries_count, presence: true,
-                                      numericality: { greater_than_or_equal_to: 0 },
-                                      allow_nil: false
+    numericality: { greater_than_or_equal_to: 0 },
+    allow_nil: false
 
   enum status: { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
@@ -124,9 +124,7 @@ class ContainerRepository < ApplicationRecord
     state :import_done
 
     state :import_skipped do
-      validates :migration_skipped_reason,
-                :migration_skipped_at,
-                presence: true
+      validates :migration_skipped_reason, :migration_skipped_at, presence: true
     end
 
     state :import_aborted do
@@ -603,8 +601,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.build_from_path(path)
-    self.new(project: path.repository_project,
-             name: path.repository_name)
+    self.new(project: path.repository_project, name: path.repository_name)
   end
 
   def self.find_or_create_from_path(path)
@@ -622,13 +619,11 @@ class ContainerRepository < ApplicationRecord
   end
 
   def self.find_by_path!(path)
-    self.find_by!(project: path.repository_project,
-                  name: path.repository_name)
+    self.find_by!(project: path.repository_project, name: path.repository_name)
   end
 
   def self.find_by_path(path)
-    self.find_by(project: path.repository_project,
-                 name: path.repository_name)
+    self.find_by(project: path.repository_project, name: path.repository_name)
   end
 
   private

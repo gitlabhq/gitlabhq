@@ -21,7 +21,7 @@
   %div
     %p= _("We heard back from your device. You have been authenticated.")
     = form_tag(target_path, method: :post, id: 'js-login-token-2fa-form') do |f|
-      - if render_remember_me
+      - if remember_me_enabled? && render_remember_me
         - resource_params = params[resource_name].presence || params
         = hidden_field_tag 'user[remember_me]', resource_params.fetch(:remember_me, 0)
       = hidden_field_tag 'user[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"

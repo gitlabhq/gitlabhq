@@ -20,4 +20,4 @@
 
         - if omniauth_enabled? && button_based_providers_enabled?
           .clearfix
-            = render 'devise/shared/omniauth_box', hide_remember_me: true
+            = render 'devise/shared/omniauth_box', render_remember_me: false

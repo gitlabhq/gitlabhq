@@ -11,7 +11,7 @@ import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/components/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { complianceFeaturesMock, securityFeaturesMock, provideMock } from '../mock_data';
+import { securityFeaturesMock, provideMock } from '../mock_data';
 
 const gitlabCiHistoryPath = 'test/historyPath';
 const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
@@ -29,7 +29,6 @@ describe('~/security_configuration/components/app', () => {
     wrapper = mountExtended(SecurityConfigurationApp, {
       propsData: {
         augmentedSecurityFeatures: securityFeaturesMock,
-        augmentedComplianceFeatures: complianceFeaturesMock,
         securityTrainingEnabled: true,
         ...propsData,
       },
@@ -72,12 +71,7 @@ describe('~/security_configuration/components/app', () => {
       text: i18n.configurationHistory,
       container: findByTestId('security-testing-tab'),
     });
-  const findComplianceViewHistoryLink = () =>
-    findLink({
-      href: gitlabCiHistoryPath,
-      text: i18n.configurationHistory,
-      container: findByTestId('compliance-testing-tab'),
-    });
+
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
@@ -94,7 +88,7 @@ describe('~/security_configuration/components/app', () => {
     });
 
     describe('tabs', () => {
-      const expectedTabs = ['security-testing', 'compliance-testing', 'vulnerability-management'];
+      const expectedTabs = ['security-testing', 'vulnerability-management'];
 
       it('renders GlTab Component', () => {
         expect(findTab().exists()).toBe(true);
@@ -123,9 +117,8 @@ describe('~/security_configuration/components/app', () => {
 
     it('renders right amount of feature cards for given props with correct props', () => {
       const cards = findFeatureCards();
-      expect(cards).toHaveLength(2);
+      expect(cards).toHaveLength(1);
       expect(cards.at(0).props()).toEqual({ feature: securityFeaturesMock[0] });
-      expect(cards.at(1).props()).toEqual({ feature: complianceFeaturesMock[0] });
     });
 
     it('renders a basic description', () => {
@@ -137,7 +130,6 @@ describe('~/security_configuration/components/app', () => {
     });
 
     it('should not show configuration History Link when gitlabCiPresent & gitlabCiHistoryPath are not defined', () => {
-      expect(findComplianceViewHistoryLink().exists()).toBe(false);
       expect(findSecurityViewHistoryLink().exists()).toBe(false);
     });
   });
@@ -158,7 +150,7 @@ describe('~/security_configuration/components/app', () => {
 
       it('should show Alert with error Message', async () => {
         expect(findManageViaMRErrorAlert().exists()).toBe(false);
-        findFeatureCards().at(1).vm.$emit('error', errorMessage);
+        findFeatureCards().at(0).vm.$emit('error', errorMessage);
 
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(true);
@@ -166,7 +158,7 @@ describe('~/security_configuration/components/app', () => {
       });
 
       it('should hide Alert when it is dismissed', async () => {
-        findFeatureCards().at(1).vm.$emit('error', errorMessage);
+        findFeatureCards().at(0).vm.$emit('error', errorMessage);
 
         await nextTick();
         expect(findManageViaMRErrorAlert().exists()).toBe(true);
@@ -257,7 +249,6 @@ describe('~/security_configuration/components/app', () => {
 
             createComponent({
               augmentedSecurityFeatures: securityFeaturesMock,
-              augmentedComplianceFeatures: complianceFeaturesMock,
               autoDevopsEnabled: true,
             });
 
@@ -285,24 +276,6 @@ describe('~/security_configuration/components/app', () => {
         latestPipelinePath: 'test/path',
       });
     });
-
-    it('should show latest pipeline info on the security tab  with correct link when latestPipelinePath is defined', () => {
-      const latestPipelineInfoSecurity = findByTestId('latest-pipeline-info-security');
-
-      expect(latestPipelineInfoSecurity.text()).toMatchInterpolatedText(
-        i18n.latestPipelineDescription,
-      );
-      expect(latestPipelineInfoSecurity.find('a').attributes('href')).toBe('test/path');
-    });
-
-    it('should show latest pipeline info on the compliance tab  with correct link when latestPipelinePath is defined', () => {
-      const latestPipelineInfoCompliance = findByTestId('latest-pipeline-info-compliance');
-
-      expect(latestPipelineInfoCompliance.text()).toMatchInterpolatedText(
-        i18n.latestPipelineDescription,
-      );
-      expect(latestPipelineInfoCompliance.find('a').attributes('href')).toBe('test/path');
-    });
   });
 
   describe('given gitlabCiPresent & gitlabCiHistoryPath props', () => {
@@ -314,10 +287,8 @@ describe('~/security_configuration/components/app', () => {
     });
 
     it('should show configuration History Link', () => {
-      expect(findComplianceViewHistoryLink().exists()).toBe(true);
       expect(findSecurityViewHistoryLink().exists()).toBe(true);
 
-      expect(findComplianceViewHistoryLink().attributes('href')).toBe('test/historyPath');
       expect(findSecurityViewHistoryLink().attributes('href')).toBe('test/historyPath');
     });
   });

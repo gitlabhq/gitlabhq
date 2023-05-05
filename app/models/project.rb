@@ -173,7 +173,7 @@ class Project < ApplicationRecord
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 
-  has_many :application_setting, inverse_of: :self_monitoring_project
+  has_many :application_setting
 
   def self.integration_association_name(name)
     "#{name}_integration"
@@ -2855,10 +2855,6 @@ class Project < ApplicationRecord
 
   def allow_protected_branches_for_group?
     Feature.enabled?(:group_protected_branches, group) || Feature.enabled?(:allow_protected_branches_for_group, group)
-  end
-
-  def self_monitoring?
-    Gitlab::CurrentSettings.self_monitoring_project_id == id
   end
 
   def deploy_token_create_url(opts = {})

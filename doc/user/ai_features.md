@@ -7,7 +7,7 @@ type: index, reference
 
 # AI/ML powered features
 
-GitLab is creating AI-assisted features across our DevSecOps platform. These features aim to help increase velocity and solve key painpoints across the software development lifecycle.
+GitLab is creating AI-assisted features across our DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 
 ## Enable AI/ML features
 
@@ -32,13 +32,13 @@ When a feature is [Generally Available](../policy/alpha-beta-support.md#generall
 
 ## Beta AI features
 
-[Beta features](../policy/alpha-beta-support.md#beta) do not require the [group-level experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled. 
+[Beta features](../policy/alpha-beta-support.md#beta) do not require the [group-level experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
 
 - [Code Suggestions](project/repository/code_suggestions.md)
 
-## Experiment AI features 
+## Experiment AI features
 
-[Experiment features](../policy/alpha-beta-support.md#experiment) will soon require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled. 
+[Experiment features](../policy/alpha-beta-support.md#experiment) will soon require the [group-level Experiment features setting](group/manage.md#group-experiment-features-setting) to be enabled.
 
 ## Third-party AI features
 
@@ -50,25 +50,32 @@ Third-party AI features require the [group-level third-party AI features setting
 
 This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3.
 
-If you spend a lot of time trying to understand pieces of code that others have created, or
-are struggling to understand code written in a language that you are not familiar with, GitLab can help you get up to speed faster. By using a large language model, GitLab can explain the code in natural language.
+GitLab can help you get up to speed faster if you:
+
+- Spend a lot of time trying to understand pieces of code that others have created, or
+- Struggle to understand code written in a language that you are not familiar with.
+
+By using a large language model, GitLab can explain the code in natural language.
 
 Prerequisites:
 
 - The project must be a public project on GitLab.com.
-- You must have the Ultimate subscription tier.
+- You must have the GitLab Ultimate subscription tier.
 - You must be a member of the project.
 
 To explain your code:
 
-1. Navigate to the file and select the lines that you want to have explained. 
-1. On the left side, select the question mark. You might have to scroll to the first line of your selection to view it. This sends the selected code together with a prompt to provide an explanation to the large language model referenced above. 
-1. A drawer is displayed. Wait a moment for the explanation to be generated. 
-1. Provide feedback about how satisfied you are with the explanation so we can improve the results.
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**, then select your merge request.
+1. On the secondary menu, select **Changes**.
+1. Go to the file, and select the lines that you want to have explained.
+1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
+1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
+1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
 
 ![How to use the Explain Code Experiment](img/explain_code_experiment.png)
 
-Please be aware we cannot guarantee that the large language model will produce results that are correct. Use the explanation with caution. 
+We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
 ### GitLab Chat **(ULTIMATE SAAS)**
 
@@ -76,13 +83,73 @@ Please be aware we cannot guarantee that the large language model will produce r
 
 This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
 
-Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Chat. 
+Getting help has never been easier. If you have a question about how the GitLab product works, you can ask product how-to questions and get AI generated support from GitLab Chat.
 
 1. In the lower-left corner, select the Help icon.
 1. Select **Ask in GitLab Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to search the product docs and produce an answer.
+1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to search the product documentation and produce an answer.
 
 To give feedback, select the **Give Feedback** link.
+
+### Summarize merge request changes **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10400) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+
+Merge request summaries can be generated by using the `/summarize_diff` quick action in a merge request comment. This posts a comment from a GitLab bot that provides a summary of the changes and the related SHA for when that summary was generated.
+
+Feedback on this experimental feature can be provided in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
+
+#### Data usage
+
+This data is sent to the large language model referenced above when you use the `/summarize_diff` quick action:
+
+1. The diff of changes between the head of the source branch and the target branch
+
+### Summarize my merge request review **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+
+When you've completed your review of a merge request and are ready to [submit your review](project/merge_requests/reviews/index.md#submit-a-review) you can choose to have summary generated for you. To generate the summary:
+
+1. Select the AI Actions dropdown list.
+1. Select **Summarize my code review**.
+
+The summary is generated and entered in to the comment box where you can edit and refine prior to submitting with your review.
+
+Feedback on this experimental feature can be provided in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
+
+#### Data usage
+
+This data is sent to the large language model referenced above when you click on **Summarize my code review**:
+
+1. Draft comment's text
+1. File path of the commented file(s)
+
+### Generate suggested tests in merge requests **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).
+
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by OpenAI's GPT-3. It requires the [group-level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting) to be enabled.
+
+When in a merge request you can choose to have GitLab suggest tests for the file you are reviewing. This can help to determine if appropriate test coverage has been provided or help with writing tests to provide more coverage for your project. To generate a test suggestion:
+
+1. Select the menu icon on the header of a file.
+1. Select **Generate test with AI**.
+
+A sidebar opens where the test suggestion is generated. From there you can choose to copy that suggestion in to your editor as the start of your tests.
+
+Feedback on this experimental feature can be provided in [issue 408995](https://gitlab.com/gitlab-org/gitlab/-/issues/408995).
+
+#### Data usage
+
+This data is sent to the large language model referenced above when you click on **Generate test with AI**:
+
+1. Contents of the file
+1. The file name
 
 ## Data Usage
 
@@ -102,13 +169,13 @@ These features are in a variety of [feature support levels](../policy/alpha-beta
 
 ### Data privacy
 
-Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features. 
+Some AI features require the use of third-party AI services models and APIs from: Google AI and OpenAI. The processing of any personal data is in accordance with our [Privacy Statement](https://about.gitlab.com/privacy/). You may also visit the [Sub-Processors page](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors) to see the list of our Sub-Processors that we use in order to provide these features.
 
 Group owners can control which top-level groups have access to third-party AI features by using the [group level third-party AI features setting](group/manage.md#group-third-party-ai-features-setting).
 
 ### Model accuracy and quality
 
-Generative AI may produce unexpected results that may be: 
+Generative AI may produce unexpected results that may be:
 
 - Low-quality
 - Incoherent
