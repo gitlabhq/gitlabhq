@@ -2834,8 +2834,6 @@ Layout/LineLength:
     - 'lib/gitlab/github_import.rb'
     - 'lib/gitlab/github_import/importer/pull_request_importer.rb'
     - 'lib/gitlab/github_import/parallel_scheduling.rb'
-    - 'lib/gitlab/gitlab_import/client.rb'
-    - 'lib/gitlab/gitlab_import/importer.rb'
     - 'lib/gitlab/gl_repository.rb'
     - 'lib/gitlab/global_id/deprecations.rb'
     - 'lib/gitlab/golang.rb'

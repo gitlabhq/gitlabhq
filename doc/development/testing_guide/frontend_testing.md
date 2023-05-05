@@ -903,7 +903,7 @@ The `scripts/frontend/download_fixtures.sh` script is meant to download and extr
 ```shell
 # Checks if a frontend fixture package exists in the gitlab-org/gitlab
 # package registry by looking at the commits on a local branch.
-# 
+#
 # The package is downloaded and extracted if it exists
 $ scripts/frontend/download_fixtures.sh
 
@@ -1753,11 +1753,8 @@ Inside the terminal, where capybara is running, you can also execute `next` whic
 
 ### Updating ChromeDriver
 
-On MacOS, if you get a ChromeDriver error, make sure to update it by running
-
-```shell
-  brew upgrade chromedriver
-```
+Starting from `Selenium` 4.6, ChromeDriver can be automatically managed by `Selenium Manager` which comes with the `selenium-webdriver` gem.
+You are no longer required to manually keeping chromedriver in sync.
 
 ---
 

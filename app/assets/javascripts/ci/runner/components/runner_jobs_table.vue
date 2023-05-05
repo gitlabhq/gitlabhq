@@ -2,7 +2,7 @@
 import { GlTableLite } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { durationTimeFormatted } from '~/lib/utils/datetime_utility';
+import { formatTime } from '~/lib/utils/datetime_utility';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -50,11 +50,11 @@ export default {
     },
     duration(job) {
       const { duration } = job;
-      return duration ? durationTimeFormatted(duration) : '';
+      return duration ? formatTime(duration * 1000) : '';
     },
     queued(job) {
       const { queuedDuration } = job;
-      return queuedDuration ? durationTimeFormatted(queuedDuration) : '';
+      return queuedDuration ? formatTime(queuedDuration * 1000) : '';
     },
   },
   fields: [

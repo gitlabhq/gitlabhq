@@ -661,7 +661,6 @@ module Gitlab
         time_frame = metric_time_period(time_period)
         counters = {
           gitlab_project: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitlab_project' }),
-          gitlab: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'gitlab' }),
           github: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'github' }),
           bitbucket: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'bitbucket' }),
           bitbucket_server: add_metric('CountImportedProjectsMetric', time_frame: time_frame, options: { import_type: 'bitbucket_server' }),

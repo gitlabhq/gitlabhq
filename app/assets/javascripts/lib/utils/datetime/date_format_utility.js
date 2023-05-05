@@ -162,16 +162,24 @@ export const formatDate = (datetime, format = 'mmm d, yyyy h:MMtt Z', utc = fals
  * @returns {string}
  */
 export const formatTime = (milliseconds) => {
-  const remainingSeconds = Math.floor(milliseconds / 1000) % 60;
-  const remainingMinutes = Math.floor(milliseconds / 1000 / 60) % 60;
-  const remainingHours = Math.floor(milliseconds / 1000 / 60 / 60);
+  const seconds = Math.round(milliseconds / 1000);
+  const absSeconds = Math.abs(seconds);
+
+  const remainingSeconds = Math.floor(absSeconds) % 60;
+  const remainingMinutes = Math.floor(absSeconds / 60) % 60;
+  const hours = Math.floor(absSeconds / 60 / 60);
+
   let formattedTime = '';
-  if (remainingHours < 10) formattedTime += '0';
-  formattedTime += `${remainingHours}:`;
+  if (hours < 10) formattedTime += '0';
+  formattedTime += `${hours}:`;
   if (remainingMinutes < 10) formattedTime += '0';
   formattedTime += `${remainingMinutes}:`;
   if (remainingSeconds < 10) formattedTime += '0';
   formattedTime += remainingSeconds;
+
+  if (seconds < 0) {
+    return `-${formattedTime}`;
+  }
   return formattedTime;
 };
 
@@ -203,7 +211,7 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
       const isNonZero = Boolean(unitValue);
 
       if (fullNameFormat && isNonZero) {
-        // Remove traling 's' if unit value is singular
+        // Remove trailing 's' if unit value is singular
         const formattedUnitName = unitValue > 1 ? unitName : unitName.replace(/s$/, '');
         return `${memo} ${unitValue} ${formattedUnitName}`;
       }
@@ -385,27 +393,6 @@ export const formatTimeAsSummary = ({ seconds, hours, days, minutes, weeks, mont
     return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1m'), { ALLOWED_TAGS: [] }));
   }
   return '-';
-};
-
-export const durationTimeFormatted = (duration) => {
-  const date = new Date(Math.abs(duration) * 1000);
-
-  const days = date.getUTCDate() - 1;
-  let hh = 24 * days + date.getUTCHours();
-  let mm = date.getUTCMinutes();
-  let ss = date.getSeconds();
-
-  if (hh < 10) {
-    hh = `0${hh}`;
-  }
-  if (mm < 10) {
-    mm = `0${mm}`;
-  }
-  if (ss < 10) {
-    ss = `0${ss}`;
-  }
-
-  return `${duration < 0 ? '-' : ''}${hh}:${mm}:${ss}`;
 };
 
 /**

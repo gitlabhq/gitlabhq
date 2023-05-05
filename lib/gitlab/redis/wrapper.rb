@@ -55,11 +55,15 @@ module Gitlab
         def config_file_name
           [
             # Instance specific config sources:
+            ENV["GITLAB_REDIS_#{store_name.underscore.upcase}_CONFIG_FILE"],
             config_file_path("redis.#{store_name.underscore}.yml"),
 
             # The current Redis instance may have been split off from another one
             # (e.g. TraceChunks was split off from SharedState).
-            config_fallback&.config_file_name
+            config_fallback&.config_file_name,
+
+            # Global config sources:
+            ENV['GITLAB_REDIS_CONFIG_FILE']
           ].compact.first
         end
 

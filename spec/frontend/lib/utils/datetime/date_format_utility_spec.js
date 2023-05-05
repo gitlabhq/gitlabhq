@@ -134,23 +134,6 @@ describe('formatTimeAsSummary', () => {
   });
 });
 
-describe('durationTimeFormatted', () => {
-  it.each`
-    duration                        | expectedOutput
-    ${0}                            | ${'00:00:00'}
-    ${12}                           | ${'00:00:12'}
-    ${60}                           | ${'00:01:00'}
-    ${60 + 27}                      | ${'00:01:27'}
-    ${120 + 21}                     | ${'00:02:21'}
-    ${4 * 60 * 60 + 25 * 60 + 37}   | ${'04:25:37'}
-    ${35 * 60 * 60 + 3 * 60 + 7}    | ${'35:03:07'}
-    ${-60}                          | ${'-00:01:00'}
-    ${-(35 * 60 * 60 + 3 * 60 + 7)} | ${'-35:03:07'}
-  `('returns $expectedOutput when provided $duration', ({ duration, expectedOutput }) => {
-    expect(utils.durationTimeFormatted(duration)).toBe(expectedOutput);
-  });
-});
-
 describe('formatUtcOffset', () => {
   it.each`
     offset       | expected

@@ -8,7 +8,8 @@ module Gitlab
 
       STUB_CLASSES = {
         agent_tracker: Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub,
-        configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub
+        configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub,
+        notifications: Gitlab::Agent::Notifications::Rpc::Notifications::Stub
       }.freeze
 
       ConfigurationError = Class.new(StandardError)
@@ -37,6 +38,18 @@ module Gitlab
           .list_agent_config_files(request, metadata: metadata)
           .config_files
           .to_a
+      end
+
+      def send_git_push_event(project:)
+        request = Gitlab::Agent::Notifications::Rpc::GitPushEventRequest.new(
+          project: Gitlab::Agent::Notifications::Rpc::Project.new(
+            id: project.id,
+            full_path: project.full_path
+          )
+        )
+
+        stub_for(:notifications)
+          .git_push_event(request, metadata: metadata)
       end
 
       private

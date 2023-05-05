@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportSources do
+RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   describe '.options' do
     it 'returns a hash' do
       expected =
@@ -10,7 +10,6 @@ RSpec.describe Gitlab::ImportSources do
           'GitHub' => 'github',
           'Bitbucket Cloud' => 'bitbucket',
           'Bitbucket Server' => 'bitbucket_server',
-          'GitLab.com' => 'gitlab',
           'FogBugz' => 'fogbugz',
           'Repository by URL' => 'git',
           'GitLab export' => 'gitlab_project',
@@ -29,7 +28,6 @@ RSpec.describe Gitlab::ImportSources do
           github
           bitbucket
           bitbucket_server
-          gitlab
           fogbugz
           git
           gitlab_project
@@ -48,7 +46,6 @@ RSpec.describe Gitlab::ImportSources do
           github
           bitbucket
           bitbucket_server
-          gitlab
           fogbugz
           gitlab_project
           gitea
@@ -63,7 +60,6 @@ RSpec.describe Gitlab::ImportSources do
       'github' => Gitlab::GithubImport::ParallelImporter,
       'bitbucket' => Gitlab::BitbucketImport::Importer,
       'bitbucket_server' => Gitlab::BitbucketServerImport::Importer,
-      'gitlab' => Gitlab::GitlabImport::Importer,
       'fogbugz' => Gitlab::FogbugzImport::Importer,
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
@@ -83,7 +79,6 @@ RSpec.describe Gitlab::ImportSources do
       'github' => 'GitHub',
       'bitbucket' => 'Bitbucket Cloud',
       'bitbucket_server' => 'Bitbucket Server',
-      'gitlab' => 'GitLab.com',
       'fogbugz' => 'FogBugz',
       'git' => 'Repository by URL',
       'gitlab_project' => 'GitLab export',

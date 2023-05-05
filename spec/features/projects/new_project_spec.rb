@@ -85,7 +85,6 @@ RSpec.describe 'New project', :js, feature_category: :projects do
 
         expect(page).to have_link('GitHub')
         expect(page).to have_link('Bitbucket')
-        expect(page).to have_link('GitLab.com')
         expect(page).to have_button('Repository by URL')
         expect(page).to have_link('GitLab export')
       end
@@ -136,7 +135,6 @@ RSpec.describe 'New project', :js, feature_category: :projects do
             'github': :new_import_github_path,
             'bitbucket': :status_import_bitbucket_path,
             'bitbucket server': :status_import_bitbucket_server_path,
-            'gitlab.com': :status_import_gitlab_path,
             'fogbugz': :new_import_fogbugz_path,
             'gitea': :new_import_gitea_path,
             'manifest': :new_import_manifest_path
@@ -567,25 +565,6 @@ RSpec.describe 'New project', :js, feature_category: :projects do
     context 'as an admin', :do_not_mock_admin_mode_setting do
       let(:user) { create(:admin) }
       let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
-
-      it_behaves_like 'has instructions to enable OAuth'
-    end
-  end
-
-  context 'from GitLab.com', :js do
-    let(:target_link) { 'GitLab.com' }
-    let(:provider) { :gitlab }
-
-    context 'as a user' do
-      let(:user) { create(:user) }
-      let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, ask your GitLab administrator to configure OAuth integration' }
-
-      it_behaves_like 'has instructions to enable OAuth'
-    end
-
-    context 'as an admin', :do_not_mock_admin_mode_setting do
-      let(:user) { create(:admin) }
-      let(:oauth_config_instructions) { 'To enable importing projects from GitLab.com, as administrator you need to configure OAuth integration' }
 
       it_behaves_like 'has instructions to enable OAuth'
     end

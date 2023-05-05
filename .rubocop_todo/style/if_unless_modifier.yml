@@ -850,8 +850,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/github_import/client.rb'
     - 'lib/gitlab/github_import/importer/pull_request_review_importer.rb'
     - 'lib/gitlab/github_import/representation/issue.rb'
-    - 'lib/gitlab/gitlab_import/client.rb'
-    - 'lib/gitlab/gitlab_import/importer.rb'
     - 'lib/gitlab/golang.rb'
     - 'lib/gitlab/graphql/pagination/keyset/connection.rb'
     - 'lib/gitlab/graphql/queries.rb'

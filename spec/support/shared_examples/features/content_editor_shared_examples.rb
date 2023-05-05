@@ -22,7 +22,6 @@ RSpec.shared_examples 'edits content using the content editor' do
     begin
       refresh
     rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError
-      page.driver.browser.switch_to.alert.dismiss
     end
 
     expect(page).to have_text('Typing text in the content editor')

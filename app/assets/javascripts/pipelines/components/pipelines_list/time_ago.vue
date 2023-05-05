@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { durationTimeFormatted } from '~/lib/utils/datetime_utility';
+import { formatTime } from '~/lib/utils/datetime_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
@@ -20,7 +20,7 @@ export default {
       return this.pipeline?.details?.duration;
     },
     durationFormatted() {
-      return durationTimeFormatted(this.duration);
+      return formatTime(this.duration * 1000);
     },
     finishedTime() {
       return this.pipeline?.details?.finished_at;

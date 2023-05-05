@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+
+SEE_DB_DOC = "See the [database dictionary documentation](https://docs.gitlab.com/ee/development/database/database_dictionary.html)."
+
+PARTITIONING_COMMENT = <<~SUGGEST_COMMENT
+When adding new CI tables, consider [partitioning](https://docs.gitlab.com/ee/development/cicd/cicd_tables.html) the table
+from the start if it references any of the larger CI tables: `ci_pipelines`, `ci_stages`, `ci_builds`, `p_ci_builds_metadata`, `ci_job_artifacts`, `ci_pipeline_variables`.
+SUGGEST_COMMENT
+
+def check_database_dictionary_yaml(database_dictionary)
+  return unless database_dictionary.ci_schema?
+  # `p_` prefix is used by the partitioned tables, so we can assume that the table is already partitioned
+  return if database_dictionary.table_name.to_s.start_with?('p_')
+
+  mr_line = database_dictionary.raw.lines.find_index { |line| line.start_with?('table_name:') }
+  return unless mr_line
+
+  markdown(PARTITIONING_COMMENT, file: database_dictionary.path, line: mr_line.succ)
+rescue Psych::Exception
+  # YAML could not be parsed, fail the build.
+  fail "#{helper.html_link(database_ditionary.path)} isn't valid YAML! #{SEE_DB_DOC}" # rubocop:disable Style/SignalException
+rescue StandardError => e
+  warn "There was a problem trying to check the database dictionary file. Exception: #{e.class.name} - #{e.message}"
+end
+
+def added_database_dictionary_files
+  database_dictionary.database_dictionary_files(change_type: :added)
+end
+
+added_database_dictionary_files.each do |database_dictionary|
+  check_database_dictionary_yaml(database_dictionary)
+end

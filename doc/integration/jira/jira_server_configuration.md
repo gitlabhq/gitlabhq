@@ -6,14 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Jira Server credentials **(FREE)**
 
-To [integrate Jira with GitLab](index.md), you must
-create a Jira user account for your Jira projects to access projects in GitLab.
+To [integrate Jira with GitLab](index.md), you can:
+
+- Recommended. Create a separate Jira user account for your Jira projects to access projects in GitLab.
 This Jira user account must have write access to your Jira projects. To create the
 credentials, you must:
 
-1. [Create a Jira Server user](#create-a-jira-server-user).
-1. [Create a Jira Server group](#create-a-jira-server-group) for the user to belong to.
-1. [Create a permission scheme for your group](#create-a-permission-scheme-for-your-group).
+  1. [Create a Jira Server user](#create-a-jira-server-user).
+  1. [Create a Jira Server group](#create-a-jira-server-group) for the user to belong to.
+  1. [Create a permission scheme for your group](#create-a-permission-scheme-for-your-group).
+
+- Use an existing Jira user account provided the user belongs to a Jira group that
+has been granted the **Administer Projects** [permission scheme](#create-a-permission-scheme-for-your-group).
+
+After you select a Jira user account for the integration, [configure GitLab](configure.md) to use the account.
 
 ## Create a Jira Server user
 
@@ -22,15 +28,12 @@ This process creates a user named `gitlab`:
 1. Sign in to your Jira instance as a Jira administrator.
 1. On the top bar, in the upper-right corner, select the gear icon, then
    select **User Management**.
-1. Create a new user account (`gitlab`) with write access to
+1. [Create a new user account manually](https://confluence.atlassian.com/adminjiraserver/create-edit-or-remove-a-user-938847025.html#Create,edit,orremoveauser-CreateusersmanuallyinJira) with write access to
    projects in Jira.
-   - **Email address**: Jira requires a valid email address, and sends a verification
-     email, which is required to set up the password.
-   - **Username**: Jira creates the username by using the email prefix. You can change
-     this username later.
-   - **Password**: You must create a password, because the GitLab integration doesn't
-     support SSO, such as SAML. To create the password, go to the user profile, look up
-     the username, and set a password.
+   - **Email address**: You should use a valid email address.
+   - **Username**: Set the username to `gitlab`.
+   - **Password**: You must set a password because the Jira issue integration does not
+     support SSO such as SAML.
 1. Select **Create user**.
 
 After you create the user, create a group for it.
@@ -67,7 +70,7 @@ Next, create a permission scheme for your group.
 
 ## Create a permission scheme for your group
 
-After creating the group in Jira, grant permissions to the group by creating a permission scheme:
+After you [create the group in Jira](#create-a-jira-server-group), grant permissions to the group by creating a permission scheme:
 
 1. Sign in to your Jira instance as a Jira administrator.
 1. On the top bar, in the upper-right corner, select the gear icon, then

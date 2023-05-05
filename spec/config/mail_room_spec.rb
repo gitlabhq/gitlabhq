@@ -7,13 +7,12 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
 
   let(:mailroom_config_path) { 'config/mail_room.yml' }
   let(:gitlab_config_path) { 'config/mail_room.yml' }
-  let(:queues_config_source_path) { 'config/redis.queues.yml' }
   let(:queues_config_path) { 'config/redis.queues.yml' }
-  let(:queue_config_tmp_path) { 'config/redis.queues.yml.tmp' }
 
   let(:configuration) do
     vars = {
-      'MAIL_ROOM_GITLAB_CONFIG_FILE' => absolute_path(gitlab_config_path)
+      'MAIL_ROOM_GITLAB_CONFIG_FILE' => absolute_path(gitlab_config_path),
+      'GITLAB_REDIS_QUEUES_CONFIG_FILE' => absolute_path(queues_config_path)
     }
     cmd = "puts ERB.new(File.read(#{absolute_path(mailroom_config_path).inspect})).result"
 
@@ -26,16 +25,8 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
     YAML.safe_load(output, permitted_classes: [Symbol])
   end
 
-  around do |example|
-    # put aside config/redis.queues.yml if it exists
-    FileUtils.mv(queues_config_path, queue_config_tmp_path) if File.file?(queues_config_path)
-
-    # set config/redis.queues.yml
-    FileUtils.cp(queues_config_source_path, queues_config_path) if queues_config_source_path != queues_config_path
-
-    example.run
-
-    FileUtils.mv(queue_config_tmp_path, queues_config_path) if File.file?(queue_config_tmp_path)
+  before do
+    stub_env('GITLAB_REDIS_QUEUES_CONFIG_FILE', absolute_path(queues_config_path))
   end
 
   context 'when incoming email is disabled' do
@@ -48,7 +39,7 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
 
   context 'when both incoming email and service desk email are enabled' do
     let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled.yml' }
-    let(:queues_config_source_path) { 'spec/fixtures/config/redis_new_format_host.yml' }
+    let(:queues_config_path) { 'spec/fixtures/config/redis_new_format_host.yml' }
     let(:gitlab_redis_queues) { Gitlab::Redis::Queues.new(Rails.env) }
 
     it 'contains the intended configuration' do
@@ -78,7 +69,7 @@ RSpec.describe 'mail_room.yml', feature_category: :service_desk do
 
   context 'when both incoming email and service desk email are enabled for Microsoft Graph' do
     let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled_ms_graph.yml' }
-    let(:queues_config_source_path) { 'spec/fixtures/config/redis_new_format_host.yml' }
+    let(:queues_config_path) { 'spec/fixtures/config/redis_new_format_host.yml' }
     let(:gitlab_redis_queues) { Gitlab::Redis::Queues.new(Rails.env) }
 
     it 'contains the intended configuration' do

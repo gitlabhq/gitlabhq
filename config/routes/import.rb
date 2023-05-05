@@ -34,12 +34,6 @@ namespace :import do
     get :realtime_changes
   end
 
-  resource :gitlab, only: [:create], controller: :gitlab do
-    get :status
-    get :callback
-    get :realtime_changes
-  end
-
   resource :bitbucket, only: [:create], controller: :bitbucket do
     get :status
     get :callback

@@ -218,7 +218,6 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/git/patches/collection.rb'
     - 'lib/gitlab/github_import/markdown_text.rb'
     - 'lib/gitlab/github_import/user_finder.rb'
-    - 'lib/gitlab/gitlab_import/importer.rb'
     - 'lib/gitlab/graphql/pagination/keyset/connection.rb'
     - 'lib/gitlab/health_checks/metric.rb'
     - 'lib/gitlab/health_checks/probes/status.rb'

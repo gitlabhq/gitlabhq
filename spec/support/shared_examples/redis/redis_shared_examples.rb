@@ -39,6 +39,34 @@ RSpec.shared_examples "redis_shared_examples" do
 
     context 'when there is no config file anywhere' do
       it { expect(subject).to be_nil }
+
+      context 'and there is a global env override' do
+        before do
+          stub_env('GITLAB_REDIS_CONFIG_FILE', 'global override')
+        end
+
+        it { expect(subject).to eq('global override') }
+
+        context 'and there is an instance specific config file' do
+          before do
+            FileUtils.touch(File.join(rails_root, instance_specific_config_file))
+          end
+
+          it { expect(subject).to eq("#{rails_root}/#{instance_specific_config_file}") }
+
+          it 'returns a path that exists' do
+            expect(File.file?(subject)).to eq(true)
+          end
+
+          context 'and there is a specific env override' do
+            before do
+              stub_env(environment_config_file_name, 'instance specific override')
+            end
+
+            it { expect(subject).to eq('instance specific override') }
+          end
+        end
+      end
     end
   end
 

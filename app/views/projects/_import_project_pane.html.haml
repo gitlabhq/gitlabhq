@@ -21,11 +21,6 @@
           = render Pajamas::ButtonComponent.new(href: '#', icon: 'tanuki', button_options: { class: 'btn_import_gitlab_project js-import-project-btn', data: { href: new_import_gitlab_project_path, platform: 'gitlab_export', **tracking_attrs_data(track_label, 'click_button', 'gitlab_export') } }) do
             = _('GitLab export')
 
-      - if gitlab_import_enabled?
-        %div
-          = render Pajamas::ButtonComponent.new(href: status_import_gitlab_path(namespace_id: namespace_id), icon: 'tanuki', button_options: { class: "import_gitlab js-import-project-btn #{'js-how-to-import-link' unless gitlab_import_configured?}", data: { modal_title: _("Import projects from GitLab.com"), modal_message: import_from_gitlab_message, platform: 'gitlab_com', **tracking_attrs_data(track_label, 'click_button', 'gitlab_com') } }) do
-            GitLab.com
-
       - if github_import_enabled?
         %div
           = render Pajamas::ButtonComponent.new(href: new_import_github_path(namespace_id: namespace_id), icon: 'github', button_options: { class: 'js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data(track_label, 'click_button', 'github') } }) do

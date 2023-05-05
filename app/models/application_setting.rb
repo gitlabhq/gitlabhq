@@ -802,7 +802,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   def remove_old_import_sources
-    self.import_sources -= ['phabricator'] if self.import_sources
+    self.import_sources -= %w[phabricator gitlab] if self.import_sources
   end
 
   Recursion = Class.new(RuntimeError)

@@ -528,8 +528,6 @@ Style/GuardClause:
     - 'lib/gitlab/github_import/importer/pull_request_importer.rb'
     - 'lib/gitlab/github_import/importer/pull_request_review_importer.rb'
     - 'lib/gitlab/github_import/object_counter.rb'
-    - 'lib/gitlab/gitlab_import/client.rb'
-    - 'lib/gitlab/gitlab_import/importer.rb'
     - 'lib/gitlab/graphql/query_analyzers/ast/recursion_analyzer.rb'
     - 'lib/gitlab/i18n/po_linter.rb'
     - 'lib/gitlab/import_export/after_export_strategies/web_upload_strategy.rb'

@@ -85,7 +85,7 @@ RSpec.describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'includes each file that has conflicts' do
-        filenames = json_response['files'].map { |file| file['new_path'] }
+        filenames = json_response['files'].pluck('new_path')
 
         expect(filenames).to contain_exactly('files/ruby/popen.rb', 'files/ruby/regex.rb')
       end
@@ -114,7 +114,7 @@ RSpec.describe Projects::MergeRequests::ConflictsController do
 
       it 'has unique section IDs across files' do
         section_ids = json_response['files'].flat_map do |file|
-          file['sections'].map { |section| section['id'] }.compact
+          file['sections'].pluck('id').compact
         end
 
         expect(section_ids.uniq).to eq(section_ids)

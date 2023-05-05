@@ -11140,6 +11140,12 @@ msgstr ""
 msgid "Completed in %{duration_seconds} seconds (%{relative_time})"
 msgstr ""
 
+msgid "Compliance Report|Export as CSV"
+msgstr ""
+
+msgid "Compliance Report|Export frameworks as CSV. You will be emailed after export is processed."
+msgstr ""
+
 msgid "Compliance Report|Frameworks"
 msgstr ""
 
@@ -45997,9 +46003,6 @@ msgstr ""
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."
 msgstr ""
 
-msgid "This namespace has already been taken! Please choose another one."
-msgstr ""
-
 msgid "This only applies to repository indexing operations."
 msgstr ""
 
@@ -50871,6 +50874,9 @@ msgstr ""
 msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
 msgstr ""
 
+msgid "Workspaces|Hours before automatic termination"
+msgstr ""
+
 msgid "Workspaces|New workspace"
 msgstr ""
 
@@ -53076,6 +53082,9 @@ msgid "has too deep level of nesting"
 msgstr ""
 
 msgid "help"
+msgstr ""
+
+msgid "hours"
 msgstr ""
 
 msgid "http:"

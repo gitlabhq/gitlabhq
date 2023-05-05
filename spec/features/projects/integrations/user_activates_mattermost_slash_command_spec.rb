@@ -79,7 +79,7 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
 
         select_element = find('#mattermost_team_id')
 
-        expect(select_element['disabled']).to be_falsey
+        expect(select_element['disabled']).to eq('false')
         expect(select_element.all('option').count).to eq(3)
       end
 

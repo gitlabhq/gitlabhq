@@ -62,7 +62,7 @@ end
 #      realtime_changes_import_github GET      /import/github/realtime_changes(.:format)                                                                 import/github#jobs
 #                       import_github POST     /import/github(.:format)                                                                      import/github#create
 #                   new_import_github GET      /import/github/new(.:format)                                                                  import/github#new
-RSpec.describe Import::GithubController, 'routing' do
+RSpec.describe Import::GithubController, 'routing', feature_category: :importers do
   it_behaves_like 'importer routing' do
     let(:provider) { 'github' }
     let(:is_realtime) { true }
@@ -86,7 +86,7 @@ end
 #      realtime_changes_import_gitea GET      /import/gitea/realtime_changes(.:format)                                                                  import/gitea#jobs
 #                       import_gitea POST     /import/gitea(.:format)                                                                       import/gitea#create
 #                   new_import_gitea GET      /import/gitea/new(.:format)                                                                   import/gitea#new
-RSpec.describe Import::GiteaController, 'routing' do
+RSpec.describe Import::GiteaController, 'routing', feature_category: :importers do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:callback] }
     let(:provider) { 'gitea' }
@@ -98,23 +98,11 @@ RSpec.describe Import::GiteaController, 'routing' do
   end
 end
 
-#           status_import_gitlab GET      /import/gitlab/status(.:format)                                                                   import/gitlab#status
-#         callback_import_gitlab GET      /import/gitlab/callback(.:format)                                                                 import/gitlab#callback
-# realtime_changes_import_gitlab GET      /import/gitlab/realtime_changes(.:format)                                                         import/gitlab#realtime_changes
-#                  import_gitlab POST     /import/gitlab(.:format)                                                                          import/gitlab#create
-RSpec.describe Import::GitlabController, 'routing' do
-  it_behaves_like 'importer routing' do
-    let(:except_actions) { [:new] }
-    let(:provider) { 'gitlab' }
-    let(:is_realtime) { true }
-  end
-end
-
 #           status_import_bitbucket GET      /import/bitbucket/status(.:format)                                                             import/bitbucket#status
 #         callback_import_bitbucket GET      /import/bitbucket/callback(.:format)                                                           import/bitbucket#callback
 # realtime_changes_import_bitbucket GET      /import/bitbucket/realtime_changes(.:format)                                                   import/bitbucket#realtime_changes
 #                  import_bitbucket POST     /import/bitbucket(.:format)                                                                    import/bitbucket#create
-RSpec.describe Import::BitbucketController, 'routing' do
+RSpec.describe Import::BitbucketController, 'routing', feature_category: :importers do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:new] }
     let(:provider) { 'bitbucket' }
@@ -127,7 +115,7 @@ end
 # realtime_changes_import_bitbucket_server GET      /import/bitbucket_server/realtime_changes(.:format)                                     import/bitbucket_server#realtime_changes
 #              new_import_bitbucket_server GET      /import/bitbucket_server/new(.:format)                                                  import/bitbucket_server#new
 #                  import_bitbucket_server POST     /import/bitbucket_server(.:format)                                                      import/bitbucket_server#create
-RSpec.describe Import::BitbucketServerController, 'routing' do
+RSpec.describe Import::BitbucketServerController, 'routing', feature_category: :importers do
   it_behaves_like 'importer routing' do
     let(:provider) { 'bitbucket_server' }
     let(:is_realtime) { true }
@@ -141,7 +129,7 @@ end
 #  create_user_map_import_fogbugz POST     /import/fogbugz/user_map(.:format)                                                           import/fogbugz#create_user_map
 #                  import_fogbugz POST     /import/fogbugz(.:format)                                                                    import/fogbugz#create
 #              new_import_fogbugz GET      /import/fogbugz/new(.:format)                                                                import/fogbugz#new
-RSpec.describe Import::FogbugzController, 'routing' do
+RSpec.describe Import::FogbugzController, 'routing', feature_category: :importers do
   it_behaves_like 'importer routing' do
     let(:except_actions) { [:callback] }
     let(:provider) { 'fogbugz' }
@@ -164,7 +152,7 @@ end
 #     import_gitlab_project POST     /import/gitlab_project(.:format)                                                              import/gitlab_projects#create
 #                           POST     /import/gitlab_project(.:format)                                                              import/gitlab_projects#create
 # new_import_gitlab_project GET      /import/gitlab_project/new(.:format)                                                          import/gitlab_projects#new
-RSpec.describe Import::GitlabProjectsController, 'routing' do
+RSpec.describe Import::GitlabProjectsController, 'routing', feature_category: :importers do
   it 'to #create' do
     expect(post('/import/gitlab_project')).to route_to('import/gitlab_projects#create')
   end
@@ -175,7 +163,7 @@ RSpec.describe Import::GitlabProjectsController, 'routing' do
 end
 
 # status_import_github_group GET /import/github_group/status(.:format) import/github_groups#status
-RSpec.describe Import::GithubGroupsController, 'routing' do
+RSpec.describe Import::GithubGroupsController, 'routing', feature_category: :importers do
   it 'to #status' do
     expect(get('/import/github_group/status')).to route_to('import/github_groups#status')
   end

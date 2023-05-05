@@ -6,7 +6,9 @@ product_section: dev
 product_stage: manage
 product_group: import
 value_type: number
-status: active
+status: removed
+removed_by: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118891"
+milestone_removed: "16.0"
 time_frame: all
 data_source: database
 instrumentation_class: CountImportedProjectsMetric

@@ -109,6 +109,35 @@ RSpec.describe Gitlab::Kas::Client do
       it { expect(subject).to eq(agent_configurations) }
     end
 
+    describe '#send_git_push_event' do
+      let(:stub) { instance_double(Gitlab::Agent::Notifications::Rpc::Notifications::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::Notifications::Rpc::GitPushEventRequest) }
+      let(:project_param) { instance_double(Gitlab::Agent::Notifications::Rpc::Project) }
+      let(:response) { double(Gitlab::Agent::Notifications::Rpc::GitPushEventResponse) }
+
+      subject { described_class.new.send_git_push_event(project: project) }
+
+      before do
+        expect(Gitlab::Agent::Notifications::Rpc::Notifications::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .and_return(stub)
+
+        expect(Gitlab::Agent::Notifications::Rpc::Project).to receive(:new)
+          .with(id: project.id, full_path: project.full_path)
+          .and_return(project_param)
+
+        expect(Gitlab::Agent::Notifications::Rpc::GitPushEventRequest).to receive(:new)
+          .with(project: project_param)
+          .and_return(request)
+
+        expect(stub).to receive(:git_push_event)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(response) }
+    end
+
     describe 'with grpcs' do
       let(:stub) { instance_double(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub) }
       let(:credentials) { instance_double(GRPC::Core::ChannelCredentials) }

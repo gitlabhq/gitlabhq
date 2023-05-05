@@ -1,6 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { durationTimeFormatted } from '~/lib/utils/datetime_utility';
+import { formatTime } from '~/lib/utils/datetime_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -25,7 +25,7 @@ export default {
       return this.job?.duration;
     },
     durationFormatted() {
-      return durationTimeFormatted(this.duration);
+      return formatTime(this.duration * 1000);
     },
   },
 };

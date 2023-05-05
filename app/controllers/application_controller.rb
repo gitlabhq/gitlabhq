@@ -60,7 +60,6 @@ class ApplicationController < ActionController::Base
   helper_method :can?
   helper_method :import_sources_enabled?, :github_import_enabled?,
     :gitea_import_enabled?, :github_import_configured?,
-    :gitlab_import_enabled?, :gitlab_import_configured?,
     :bitbucket_import_enabled?, :bitbucket_import_configured?,
     :bitbucket_server_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
@@ -446,14 +445,6 @@ class ApplicationController < ActionController::Base
 
   def github_import_configured?
     Gitlab::Auth::OAuth::Provider.enabled?(:github)
-  end
-
-  def gitlab_import_enabled?
-    request.host != 'gitlab.com' && Gitlab::CurrentSettings.import_sources.include?('gitlab')
-  end
-
-  def gitlab_import_configured?
-    Gitlab::Auth::OAuth::Provider.enabled?(:gitlab)
   end
 
   def bitbucket_import_enabled?

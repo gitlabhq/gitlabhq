@@ -341,7 +341,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
           it 'only renders the diffs for the path given' do
             diff_for_path(old_path: existing_path, new_path: existing_path)
 
-            paths = json_response['diff_files'].map { |file| file['new_path'] }
+            paths = json_response['diff_files'].pluck('new_path')
 
             expect(paths).to include(existing_path)
           end
