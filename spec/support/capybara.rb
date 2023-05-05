@@ -42,9 +42,6 @@ SCREENSHOT_FILENAME_LENGTH = ENV['CI'] || ENV['CI_SERVER'] ? 255 : 99
 
 @blackhole_tcp_server = nil
 
-chrome_options = Selenium::WebDriver::Chrome::Options.chrome
-chromedriver_path = File.dirname(Selenium::WebDriver::SeleniumManager.driver_path(chrome_options))
-
 # Run Workhorse on the given host and port, proxying to Puma on a UNIX socket,
 # for a closer-to-production experience
 Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
@@ -54,8 +51,15 @@ Capybara.register_server :puma_via_workhorse do |app, port, host, **options|
 
   TestEnv.with_workhorse(host, port, socket_path) do
     # In cases of multiple installations of chromedriver, prioritize the version installed by SeleniumManager
-    ENV['PATH'] = "#{chromedriver_path}:#{ENV['PATH']}" # rubocop:disable RSpec/EnvAssignment
+    chromedriver_path =
+      # selenium-manager doesn't work with Linux arm64 yet:
+      # https://github.com/SeleniumHQ/selenium/issues/11357
+      if RUBY_PLATFORM =~ /x86_64-linux|darwin/
+        chrome_options = Selenium::WebDriver::Chrome::Options.chrome
+        File.dirname(Selenium::WebDriver::SeleniumManager.driver_path(chrome_options))
+      end
 
+    ENV['PATH'] = "#{chromedriver_path}:#{ENV['PATH']}" if chromedriver_path # rubocop:disable RSpec/EnvAssignment
     Capybara.servers[:puma].call(app, nil, socket_path, **options)
   end
 end

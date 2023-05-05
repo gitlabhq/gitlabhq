@@ -20,7 +20,6 @@ const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
 const TEST_PROJECT_PATH = 'group1/project1';
 const TEST_BRANCH_NAME = '12345-foo-patch';
-const TEST_GITLAB_URL = 'https://test-gitlab/';
 const TEST_USER_PREFERENCES_PATH = '/user/preferences';
 const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/webpack/assets/gitlab-web-ide/public/path';
 const TEST_FILE_PATH = 'foo/README.md';
@@ -71,7 +70,6 @@ describe('ide/init_gitlab_web_ide', () => {
 
   beforeEach(() => {
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
-    window.gon.gitlab_url = TEST_GITLAB_URL;
 
     confirmAction.mockImplementation(
       () =>
@@ -102,7 +100,7 @@ describe('ide/init_gitlab_web_ide', () => {
         mrId: TEST_MR_ID,
         mrTargetProject: '',
         forkInfo: null,
-        gitlabUrl: TEST_GITLAB_URL,
+        gitlabUrl: TEST_HOST,
         nonce: TEST_NONCE,
         httpHeaders: {
           'mock-csrf-header': 'mock-csrf-token',

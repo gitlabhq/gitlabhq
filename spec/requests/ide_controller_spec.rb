@@ -20,14 +20,14 @@ RSpec.describe IdeController, feature_category: :web_ide do
 
   let(:user) { creator }
 
-  def find_csp_frame_src
+  def find_csp_source(key)
     csp = response.headers['Content-Security-Policy']
 
-    # Transform "frame-src foo bar; connect-src foo bar; script-src ..."
-    # into array of connect-src values
+    # Transform "default-src foo bar; connect-src foo bar; script-src ..."
+    # into array of values for a single directive based on the given key
     csp.split(';')
       .map(&:strip)
-      .find { |entry| entry.starts_with?('frame-src') }
+      .find { |entry| entry.starts_with?(key) }
       .split(' ')
       .drop(1)
   end
@@ -195,15 +195,23 @@ RSpec.describe IdeController, feature_category: :web_ide do
       end
     end
 
-    describe 'frame-src content security policy' do
+    describe 'content security policy' do
       let(:route) { '/-/ide' }
 
-      before do
+      it 'updates the content security policy with the correct frame sources' do
         subject
+
+        expect(find_csp_source('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
+        expect(find_csp_source('worker-src')).to include("http://www.example.com/assets/webpack/")
       end
 
-      it 'adds https://*.vscode-cdn.net in frame-src CSP policy' do
-        expect(find_csp_frame_src).to include("https://*.vscode-cdn.net/")
+      it 'with relative_url_root, updates the content security policy with the correct frame sources' do
+        stub_config_setting(relative_url_root: '/gitlab')
+
+        subject
+
+        expect(find_csp_source('frame-src')).to include("http://www.example.com/gitlab/assets/webpack/")
+        expect(find_csp_source('worker-src')).to include("http://www.example.com/gitlab/assets/webpack/")
       end
     end
   end

@@ -418,20 +418,6 @@ export default {
             <gl-icon name="ellipsis_v" class="mr-0" />
             <span class="sr-only">{{ $options.i18n.optionsDropdownTitle }}</span>
           </template>
-          <gl-dropdown-item
-            v-if="showGenerateTestFileButton"
-            @click="setGenerateTestFilePath(diffFile.new_path)"
-          >
-            {{ __('Generate test with AI') }}
-          </gl-dropdown-item>
-          <gl-dropdown-item
-            v-if="diffFile.replaced_view_path"
-            ref="replacedFileButton"
-            :href="diffFile.replaced_view_path"
-            target="_blank"
-          >
-            {{ viewReplacedFileButtonText }}
-          </gl-dropdown-item>
           <gl-dropdown-item ref="viewButton" :href="diffFile.view_path" target="_blank">
             {{ viewFileButtonText }}
           </gl-dropdown-item>
@@ -454,6 +440,20 @@ export default {
               target="_blank"
             >
               {{ __('Open in Web IDE') }}
+            </gl-dropdown-item>
+            <gl-dropdown-item
+              v-if="showGenerateTestFileButton"
+              @click="setGenerateTestFilePath(diffFile.new_path)"
+            >
+              {{ __('Generate test with AI') }}
+            </gl-dropdown-item>
+            <gl-dropdown-item
+              v-if="diffFile.replaced_view_path"
+              ref="replacedFileButton"
+              :href="diffFile.replaced_view_path"
+              target="_blank"
+            >
+              {{ viewReplacedFileButtonText }}
             </gl-dropdown-item>
           </template>
 

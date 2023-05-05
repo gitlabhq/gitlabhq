@@ -244,6 +244,7 @@ export default {
       v-else
       :jobs="jobs.list"
       :table-fields="DEFAULT_FIELDS_ADMIN"
+      admin
       class="gl-table-no-top-border"
     />
 

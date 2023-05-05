@@ -71,18 +71,6 @@
   }
 }
 
-.commit-header {
-  padding: 5px 10px;
-  background-color: $gray-light;
-  border-bottom: 1px solid $gray-darker;
-  border-top: 1px solid $gray-darker;
-  font-size: 14px;
-
-  &:first-child {
-    border-top-width: 0;
-  }
-}
-
 .commit-row-title {
   .str-truncated {
     max-width: 70%;

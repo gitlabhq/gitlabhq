@@ -72,7 +72,7 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       end
 
       it "updates the content security policy with the correct frame sources" do
-        expect(find_csp_source('frame-src')).to include("https://*.vscode-cdn.net/")
+        expect(find_csp_source('frame-src')).to include("http://www.example.com/assets/webpack/", "https://*.vscode-cdn.net/")
       end
     end
 

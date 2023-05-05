@@ -8,8 +8,9 @@
 - hidden = @hidden_commit_count
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, daily_commits|
-  %li.commit-header.js-commit-header{ data: { day: day } }
-    %span.day= l(day, format: '%d %b, %Y')
+  %li.js-commit-header.gl-mt-7.gl-pb-2.gl-border-b{ data: { day: day } }
+    %span.day.font-weight-bold= l(day, format: '%d %b, %Y')
+    %span -
     %span.commits-count= n_("%d commit", "%d commits", daily_commits.size) % daily_commits.size
 
   %li.commits-row{ data: { day: day } }
@@ -20,7 +21,7 @@
         = render partial: 'projects/commits/commit', collection: daily_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
 - if context_commits.present?
-  %li.commit-header.js-commit-header
+  %li.js-commit-header.gl-mt-7.gl-pb-2.gl-border-b
     %span.font-weight-bold= n_("%d previously merged commit", "%d previously merged commits", context_commits.count) % context_commits.count
     - if can_update_merge_request
       = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-ml-3 add-review-item-modal-trigger', data: { context_commits_empty: 'false' } }) do

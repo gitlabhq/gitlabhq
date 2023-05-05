@@ -299,6 +299,14 @@ The intent is to ensure that a change doesn't introduce a failure after `gitlab-
 
 ### As-if-JH cross project downstream pipeline
 
+#### What it is
+
+This pipeline is also called [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html),
+and it's currently allowed to fail. When that happens, please follow
+[What to do when the validation pipeline fails](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html#what-to-do-when-the-validation-pipeline-failed).
+
+#### How we run it
+
 The `start-as-if-jh` job triggers a cross project downstream pipeline which
 runs the GitLab test suite "as if JiHu", meaning as if the pipeline would run
 in the context of [GitLab JH](../jh_features_review.md). These jobs are only
