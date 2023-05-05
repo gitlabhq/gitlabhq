@@ -184,21 +184,7 @@ git checkout origin/master db/structure.sql
 VERSION=<migration ID> bundle exec rails db:migrate:main
 ```
 
-### Adding new tables to the database dictionary
-
-GitLab connects to two different Postgres databases: `main` and `ci`. New tables should be defined in [`db/docs/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/docs):
-
-```yaml
-table_name: table name exmaple
-description: Description example
-introduced_by_url: Merge request link
-milestone: Milestone example
-feature_categories:
-- Feature category example
-classes:
-- Class example
-gitlab_schema: gitlab_main
-```
+After a table has been created, it should be added to the database dictionary, following the steps mentioned in the [database dictionary guide](database/database_dictionary.md#adding-tables).
 
 ## Avoiding downtime
 
@@ -917,6 +903,8 @@ def down
   # create_table ...
 end
 ```
+
+After a table has been dropped, it should be added to the database dictionary, following the steps in the [database dictionary guide](database/database_dictionary.md#dropping-tables).
 
 ## Dropping a sequence
 

@@ -47477,9 +47477,6 @@ msgstr ""
 msgid "Unable to load commits. Try again later."
 msgstr ""
 
-msgid "Unable to load current Workspaces. Please try again or contact an administrator."
-msgstr ""
-
 msgid "Unable to load file contents. Try again later."
 msgstr ""
 
@@ -50923,6 +50920,9 @@ msgid "Workspaces|To create a workspace for this project, an administrator must 
 msgstr ""
 
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
+msgstr ""
+
+msgid "Workspaces|Unable to load current Workspaces. Please try again or contact an administrator."
 msgstr ""
 
 msgid "Workspaces|Unknown state"

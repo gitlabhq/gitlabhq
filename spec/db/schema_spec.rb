@@ -23,7 +23,6 @@ RSpec.describe 'Database schema', feature_category: :database do
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
   REMOVED_FKS = {
     clusters_applications_cilium: %w[cluster_id],
-    clusters_applications_crossplane: %w[cluster_id],
     clusters_applications_helm: %w[cluster_id],
     clusters_applications_ingress: %w[cluster_id],
     clusters_applications_knative: %w[cluster_id],
