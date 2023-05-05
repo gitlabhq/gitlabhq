@@ -421,6 +421,8 @@
   - 1
 - - product_analytics_initialize_snowplow_product_analytics
   - 1
+- - product_analytics_post_push
+  - 1
 - - project_cache
   - 1
 - - project_destroy

@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.2 (2023-05-03)
+
+### Security (2 changes)
+
+- [Only maintainers of projects should be able to assign runners to them](gitlab-org/security/gitlab@c52abfffad2c06c2a49788e3db473f14923c3926) ([merge request](gitlab-org/security/gitlab!3234))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@8e78aecb9a6c248099a043f181de3c8f6d4417ce)
+
 ## 15.11.1 (2023-05-01)
 
 ### Fixed (2 changes)
@@ -836,6 +843,12 @@ entry.
 - [Update header section](gitlab-org/gitlab@cf4ab283267d84fa1c0dc90fefb1b6ddd2617b5c) ([merge request](gitlab-org/gitlab!114102)) **GitLab Enterprise Edition**
 - [Swap merge_request_user_mentions.note_id to bigint](gitlab-org/gitlab@96baed47326db4f0cc9f60b2e74215211effd814) ([merge request](gitlab-org/gitlab!113928))
 
+## 15.10.6 (2023-05-03)
+
+### Security (1 change)
+
+- [Only maintainers of projects should be able to assign runners to them](gitlab-org/security/gitlab@a20f5018b757a78a772d2bf1f9f8cdfe95a019ed) ([merge request](gitlab-org/security/gitlab!3235))
+
 ## 15.10.5 (2023-05-01)
 
 ### Security (9 changes)
@@ -1628,6 +1641,12 @@ entry.
 ### change (1 change)
 
 - [Update submit buttons to use Pajamas component](gitlab-org/gitlab@4ffb92755e6be3268c78f02e471f5c2a21f437be) ([merge request](gitlab-org/gitlab!114246))
+
+## 15.9.7 (2023-05-03)
+
+### Security (1 change)
+
+- [Only maintainers of projects should be able to assign runners to them](gitlab-org/security/gitlab@695748314b758ca2d9992df7509025a6ac868000) ([merge request](gitlab-org/security/gitlab!3236))
 
 ## 15.9.6 (2023-05-01)
 

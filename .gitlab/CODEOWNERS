@@ -649,7 +649,7 @@ lib/gitlab/checks/**
 /doc/architecture/blueprints/database_scaling/ @aqualls
 /doc/ci/ @drcatherinepope
 /doc/ci/caching/ @marcel.amirault
-/doc/ci/chatops/ @phillipwells
+/doc/ci/chatops/ @eread
 /doc/ci/cloud_deployment/ @phillipwells
 /doc/ci/cloud_services/ @marcel.amirault
 /doc/ci/directed_acyclic_graph/ @marcel.amirault
@@ -693,7 +693,7 @@ lib/gitlab/checks/**
 /doc/development/bulk_import.md @eread
 /doc/development/cached_queries.md @jglassman1
 /doc/development/cascading_settings.md @jglassman1
-/doc/development/chatops_on_gitlabcom.md @phillipwells
+/doc/development/chatops_on_gitlabcom.md @eread
 /doc/development/cicd/ @marcel.amirault
 /doc/development/cicd/cicd_tables.md @drcatherinepope
 /doc/development/cicd/index.md @drcatherinepope

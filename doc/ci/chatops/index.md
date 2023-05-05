@@ -1,6 +1,6 @@
 ---
-stage: Deploy
-group: Environments
+stage: Manage
+group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, concepts, howto
 ---

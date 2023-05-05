@@ -123,6 +123,9 @@ function createApolloClient(resolvers = {}, config = {}) {
     path = '/api/graphql',
     useGet = false,
   } = config;
+
+  const shouldUnbatch = gon.features?.unbatchGraphqlQueries;
+
   let ac = null;
   let uri = `${gon.relative_url_root || ''}${path}`;
 
@@ -160,7 +163,7 @@ function createApolloClient(resolvers = {}, config = {}) {
   };
 
   const requestLink = ApolloLink.split(
-    () => useGet,
+    () => useGet || shouldUnbatch,
     new HttpLink({ ...httpOptions, fetch: fetchIntervention }),
     new BatchHttpLink(httpOptions),
   );

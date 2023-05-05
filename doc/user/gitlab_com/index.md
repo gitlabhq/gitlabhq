@@ -89,15 +89,21 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
 are included when cloning.
 
+## Delayed group deletion **(PREMIUM SAAS)**
+
+After May 08, 2023, all groups have delayed deletion enabled by default.
+
+Groups are permanently deleted after a seven-day delay.
+
+If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
+
 ## Delayed project deletion **(PREMIUM SAAS)**
 
-Top-level groups created after August 12, 2021 have delayed project deletion enabled by default.
+After May 08, 2023, all groups have delayed project deletion enabled by default.
+
 Projects are permanently deleted after a seven-day delay.
 
-If you are on:
-
-- Premium tier and above, you can disable this by changing the [group setting](../group/manage.md#enable-delayed-project-deletion).
-- Free tier, you cannot disable this setting or restore projects.
+If you are on the Free tier, your projects are immediately deleted, and you will not be able to restore them.
 
 ## Inactive project deletion
 

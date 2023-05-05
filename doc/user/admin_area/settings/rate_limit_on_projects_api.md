@@ -7,7 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Rate limit on Projects API **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10 behind a feature flag, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283) in GitLab 15.10 with a [flag](../../../administration/feature_flags.md) named `rate_limit_for_unauthenticated_projects_api_access`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/391922) on May 08, 2023.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119603) in GitLab 16.0 by default.
 
 You can configure the rate limit per IP address for unauthenticated requests to the [list all projects API](../../../api/projects.md#list-all-projects).
 

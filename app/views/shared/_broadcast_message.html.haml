@@ -9,6 +9,8 @@
         = sprite_icon(icon_name)
       .gl-broadcast-message-text.js-broadcast-message-preview
         - if message.message.present?
+          %h2.gl-sr-only
+            = s_("Admin message")
           = render_broadcast_message(message)
         - else
           = yield
@@ -24,6 +26,8 @@
   .broadcast-message.broadcast-notification-message.mt-2{ role: "alert", class: notification_class, data: { qa_selector: 'broadcast_notification_container' } }
     = sprite_icon(icon_name, css_class: 'vertical-align-text-top')
     - if message.message.present?
+      %h2.gl-sr-only
+        = s_("Admin message")
       = render_broadcast_message(message)
     - else
       = yield

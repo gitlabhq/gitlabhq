@@ -8,6 +8,7 @@ RSpec.describe 'User reverts a merge request', :js, feature_category: :code_revi
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(unbatch_graphql_queries: false)
     project.add_developer(user)
     sign_in(user)
 

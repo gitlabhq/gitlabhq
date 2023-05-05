@@ -96,7 +96,9 @@ With this method, GitLab.com serves as a proxy for Jira traffic from your instan
 If your instance doesn't meet the [prerequisites](#prerequisites) or you don't want to use the official marketplace listing, you can
 [install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
-It's not possible to create branches from Jira for self-managed instances. For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
+With this method, it's not possible to create branches from Jira Cloud for self-managed instances.
+For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
+To create branches from Jira Cloud, [install the app manually](#install-the-gitlab-for-jira-cloud-app-manually).
 
 ### Prerequisites
 

@@ -1002,7 +1002,6 @@ RSpec/VerifiedDoubles:
     - 'spec/workers/bulk_imports/export_request_worker_spec.rb'
     - 'spec/workers/chat_notification_worker_spec.rb'
     - 'spec/workers/ci/build_prepare_worker_spec.rb'
-    - 'spec/workers/ci/create_cross_project_pipeline_worker_spec.rb'
     - 'spec/workers/ci/create_downstream_pipeline_worker_spec.rb'
     - 'spec/workers/ci/pipeline_bridge_status_worker_spec.rb'
     - 'spec/workers/ci/pipeline_success_unlock_artifacts_worker_spec.rb'

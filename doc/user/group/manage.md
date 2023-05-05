@@ -402,6 +402,8 @@ To transfer a group:
 > - [Instance setting is inherited and enforced when disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 > - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) on May 08, 2023.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 [Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
 [deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
@@ -432,7 +434,7 @@ To enable delayed deletion of projects in a group:
 In GitLab 13.11 and later, the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md), inheritance can be overridden unless enforced by an ancestor.
 
 In GitLab 15.11 with the `always_perform_delayed_deletion` feature flag enabled, this setting is removed
-and all projects are deleted after the [retention period defined by the admin](../admin_area/settings/visibility_and_access_controls.md#retention-period).
+and all projects are deleted after the [retention period defined by the admin](../admin_area/settings/visibility_and_access_controls.md#retention-period). This will be the default behavior in GitLab 16.0 and later.
 
 ## Disable email notifications
 

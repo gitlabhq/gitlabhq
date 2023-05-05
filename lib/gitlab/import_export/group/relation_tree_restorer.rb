@@ -135,9 +135,7 @@ module Gitlab
 
           modify_attributes
 
-          Gitlab::Timeless.timeless(@importable) do
-            @importable.save!
-          end
+          @importable.save!(touch: false)
         end
 
         def filter_attributes(params)
