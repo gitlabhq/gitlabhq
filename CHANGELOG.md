@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.2 (2023-05-03)
+
+### Security (2 changes)
+
+- [Only maintainers of projects should be able to assign runners to them](gitlab-org/security/gitlab@c52abfffad2c06c2a49788e3db473f14923c3926) ([merge request](gitlab-org/security/gitlab!3234))
+- [Authorize access to vulnerabilitiesCountByDay resolver](gitlab-org/security/gitlab@8e78aecb9a6c248099a043f181de3c8f6d4417ce)
+
 ## 15.11.1 (2023-05-01)
 
 ### Fixed (2 changes)
