@@ -21,7 +21,7 @@ but it is not customizable. In GitLab 14.6 an earlier you must use the `CI_JOB_J
 
 NOTE:
 `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and are scheduled to be removed in GitLab 16.0. Use [ID tokens](../yaml/index.md#id_tokens) instead.
+and are scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead.
 
 ## Requirements
 

@@ -2727,34 +2727,73 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
         .and_return(['http://example.com', port].compact.join(':'))
     end
 
-    context 'when pages_unique_domain feature flag is disabled' do
-      before do
-        stub_feature_flags(pages_unique_domain: false)
-      end
+    context 'when not using pages_unique_domain' do
+      subject { project.pages_url(with_unique_domain: false) }
 
-      it { is_expected.to eq('http://group.example.com/project') }
-    end
-
-    context 'when pages_unique_domain feature flag is enabled' do
-      before do
-        stub_feature_flags(pages_unique_domain: true)
-
-        project.project_setting.update!(
-          pages_unique_domain_enabled: pages_unique_domain_enabled,
-          pages_unique_domain: 'unique-domain'
-        )
-      end
-
-      context 'when pages_unique_domain_enabled is false' do
-        let(:pages_unique_domain_enabled) { false }
+      context 'when pages_unique_domain feature flag is disabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: false)
+        end
 
         it { is_expected.to eq('http://group.example.com/project') }
       end
 
-      context 'when pages_unique_domain_enabled is false' do
-        let(:pages_unique_domain_enabled) { true }
+      context 'when pages_unique_domain feature flag is enabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: true)
 
-        it { is_expected.to eq('http://unique-domain.example.com') }
+          project.project_setting.update!(
+            pages_unique_domain_enabled: pages_unique_domain_enabled,
+            pages_unique_domain: 'unique-domain'
+          )
+        end
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:pages_unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:pages_unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+      end
+    end
+
+    context 'when using pages_unique_domain' do
+      subject { project.pages_url(with_unique_domain: true) }
+
+      context 'when pages_unique_domain feature flag is disabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: false)
+        end
+
+        it { is_expected.to eq('http://group.example.com/project') }
+      end
+
+      context 'when pages_unique_domain feature flag is enabled' do
+        before do
+          stub_feature_flags(pages_unique_domain: true)
+
+          project.project_setting.update!(
+            pages_unique_domain_enabled: pages_unique_domain_enabled,
+            pages_unique_domain: 'unique-domain'
+          )
+        end
+
+        context 'when pages_unique_domain_enabled is false' do
+          let(:pages_unique_domain_enabled) { false }
+
+          it { is_expected.to eq('http://group.example.com/project') }
+        end
+
+        context 'when pages_unique_domain_enabled is true' do
+          let(:pages_unique_domain_enabled) { true }
+
+          it { is_expected.to eq('http://unique-domain.example.com') }
+        end
       end
     end
 

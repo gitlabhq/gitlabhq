@@ -103,11 +103,11 @@ export default {
     },
     fetchGroups() {
       if (this.isProject) {
-        return new Promise((resolve, reject) => {
-          getProjectShareLocations(this.sourceId, { search: this.searchTerm })
-            .then(({ data }) => resolve(data))
-            .catch(reject);
-        });
+        return getProjectShareLocations(this.sourceId, { search: this.searchTerm })
+          .then(({ data }) => data)
+          .catch((error) => {
+            throw error;
+          });
       }
 
       switch (this.groupsFilter) {

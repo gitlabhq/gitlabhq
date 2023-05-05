@@ -1,8 +1,0 @@
----
-name: remove_job_age_from_jobs_api
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118045
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/406662
-milestone: '16.0'
-type: development
-group: group::pipeline execution
-default_enabled: true

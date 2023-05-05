@@ -1,4 +1,6 @@
 - if @project.pages_deployed?
+  - pages_url = @project.pages_url(with_unique_domain: true)
+
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { qa_selector: 'access_page_container' } }, footer_options: { class: 'gl-alert-warning' }) do |c|
     - c.header do
       = s_('GitLabPages|Access pages')
@@ -8,7 +10,7 @@
           = s_('GitLabPages|Your pages are served under:')
 
       %p
-        = external_link(@project.pages_url, @project.pages_url)
+        = external_link(pages_url, pages_url)
 
       - @project.pages_domains.each do |domain|
         %p

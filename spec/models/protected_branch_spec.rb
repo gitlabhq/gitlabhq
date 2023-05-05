@@ -453,6 +453,62 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
+  describe '.protected_ref_accessible_to?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:guest) { create(:user) }
+    let_it_be(:reporter) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:admin) { create(:user, :admin) }
+
+    before do
+      project.add_guest(guest)
+      project.add_reporter(reporter)
+      project.add_developer(developer)
+      project.add_maintainer(maintainer)
+      project.add_owner(owner)
+    end
+
+    subject { described_class.protected_ref_accessible_to?(anything, current_user, project: project, action: :push) }
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
   describe '.by_name' do
     let!(:protected_branch) { create(:protected_branch, name: 'master') }
     let!(:another_protected_branch) { create(:protected_branch, name: 'stable') }

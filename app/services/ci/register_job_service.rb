@@ -129,11 +129,6 @@ module Ci
         builds = queue.builds_with_any_tags(builds)
       end
 
-      # pick builds that older than specified age
-      if params.key?(:job_age) && Feature.disabled?(:remove_job_age_from_jobs_api)
-        builds = queue.builds_queued_before(builds, params[:job_age].seconds.ago)
-      end
-
       build_ids = retrieve_queue(-> { queue.execute(builds) })
 
       @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)

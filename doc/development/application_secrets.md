@@ -17,7 +17,7 @@ This page is a development guide for application secrets.
 |`db_key_base`                     | The base key to encrypt the data for `attr_encrypted` columns     |
 |`openid_connect_signing_key`      | The signing key for OpenID Connect                                |
 | `encrypted_settings_key_base`    | The base key to encrypt settings files with                       |
-| `ci_jwt_signing_key`             | The base key for encrypting the `CI_JOB_JWT` and `CI_JOB_JWT_V2` predefined CI/CD variables. `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated) and are scheduled to be removed in GitLab 16.0. |
+| `ci_jwt_signing_key`             | The base key for encrypting the `CI_JOB_JWT` and `CI_JOB_JWT_V2` predefined CI/CD variables. `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated) and are scheduled to be removed in GitLab 16.5. |
 
 ## Where the secrets are stored
 

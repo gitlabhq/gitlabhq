@@ -705,6 +705,31 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
+### Changing MobSF-based SAST analyzer behavior in multi-module Android projects
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+We'll change how the MobSF-based analyzer in GitLab SAST handles multi-module Android projects.
+This analyzer only runs if you [enable Experimental features](https://docs.gitlab.com/ee/user/application_security/sast/#experimental-features) for SAST.
+
+The analyzer currently searches for `AndroidManifest.xml` files and scans only the first one it finds.
+This manifest often is not the main manifest for the app, so the scan checks less of the app's source code for vulnerabilities.
+
+Starting in GitLab 16.0, the analyzer will always use `app/src/main/AndroidManifest.xml` as the manifest, and use `app/src/main/` as the project root directory.
+The new behavior matches standard Android project layouts and addresses bug reports from customers, so we expect it will improve scan coverage for most apps.
+
+If you relied on the previous behavior, you can [pin the MobSF analyzer](https://docs.gitlab.com/ee/user/application_security/sast/#pinning-to-minor-image-version) to version 4.0.0, which uses the old behavior.
+Then, please comment on [the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408396) so we can consider new configuration options to accommodate your use case.
+
+This change doesn't affect scans you run in GitLab 15.11 or previous versions, since this change is only included in the [new major version](#secure-analyzers-major-version-update) of the MobSF-based analyzer.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
 ### Changing merge request approvals with the `/approvals` API endpoint
 
 <div class="deprecation-notes">

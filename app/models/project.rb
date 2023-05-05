@@ -2143,8 +2143,8 @@ class Project < ApplicationRecord
     pages_metadatum&.deployed?
   end
 
-  def pages_url
-    return pages_unique_url if pages_unique_domain_enabled?
+  def pages_url(with_unique_domain: false)
+    return pages_unique_url if with_unique_domain && pages_unique_domain_enabled?
 
     url = pages_namespace_url
     url_path = full_path.partition('/').last
