@@ -7,7 +7,6 @@ RSpec.describe Gitlab::Redis::SidekiqStatus do
   # to move away from `Sidekiq.redis` for sidekiq status data. Thus, we use the
   # same store configuration as the former.
   let(:instance_specific_config_file) { "config/redis.shared_state.yml" }
-  let(:environment_config_file_name) { "GITLAB_REDIS_SHARED_STATE_CONFIG_FILE" }
 
   include_examples "redis_shared_examples"
 

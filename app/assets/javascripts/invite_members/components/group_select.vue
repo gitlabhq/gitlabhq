@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { s__ } from '~/locale';
-import { getGroups, getDescendentGroups, getProjectShareLocations } from '~/rest_api';
+import { getGroups, getDescendentGroups } from '~/rest_api';
 import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
 
 export default {
@@ -29,10 +29,6 @@ export default {
       required: false,
       default: GROUP_FILTERS.ALL,
     },
-    sourceId: {
-      type: String,
-      required: true,
-    },
     parentGroupId: {
       type: Number,
       required: false,
@@ -40,10 +36,6 @@ export default {
     },
     invalidGroups: {
       type: Array,
-      required: true,
-    },
-    isProject: {
-      type: Boolean,
       required: true,
     },
   },
@@ -87,7 +79,7 @@ export default {
       const rawGroups = response.map((group) => ({
         id: group.id,
         name: group.full_name,
-        path: group.full_path,
+        path: group.path,
         avatarUrl: group.avatar_url,
       }));
 
@@ -102,14 +94,6 @@ export default {
       this.$emit('input', this.selectedGroup);
     },
     fetchGroups() {
-      if (this.isProject) {
-        return getProjectShareLocations(this.sourceId, { search: this.searchTerm })
-          .then(({ data }) => data)
-          .catch((error) => {
-            throw error;
-          });
-      }
-
       switch (this.groupsFilter) {
         case GROUP_FILTERS.DESCENDANT_GROUPS:
           return getDescendentGroups(

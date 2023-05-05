@@ -1,6 +1,6 @@
 - if remote_mirror.update_in_progress?
   = render Pajamas::ButtonComponent.new(icon: 'retry',
-    button_options: { class: 'disabled', title: _('Updating'), data: { toggle: 'tooltip', container: 'body', qa_selector: 'updating_button' } },
+    button_options: { class: 'disabled', title: _('Updating'), data: { toggle: 'tooltip', container: 'body' } },
     icon_classes: 'spin')
 - elsif remote_mirror.enabled?
   = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn btn-icon gl-button rspec-update-now-button", data: { toggle: 'tooltip', container: 'body', qa_selector: 'update_now_button' }, title: _('Update now') do

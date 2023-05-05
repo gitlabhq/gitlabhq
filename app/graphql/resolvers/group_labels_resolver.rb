@@ -15,9 +15,7 @@ module Resolvers
              default_value: false
 
     before_connection_authorization do |nodes, current_user|
-      if Feature.enabled?(:preload_max_access_levels_for_labels_finder)
-        Preloaders::LabelsPreloader.new(nodes, current_user).preload_all
-      end
+      Preloaders::LabelsPreloader.new(nodes, current_user).preload_all
     end
   end
 end

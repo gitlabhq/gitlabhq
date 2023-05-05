@@ -29,7 +29,6 @@ module QA
 
           view 'app/views/shared/_remote_mirror_update_button.html.haml' do
             element :update_now_button
-            element :updating_button
           end
 
           view 'app/views/projects/mirrors/_ssh_host_keys.html.haml' do
@@ -86,11 +85,10 @@ module QA
 
           def update(url)
             row_index = find_repository_row_index(url)
-
             within_element_by_index(:mirrored_repository_row_container, row_index) do
               # When a repository is first mirrored, the update process might
               # already be started, so the button is already "clicked"
-              click_element :update_now_button unless has_element? :updating_button
+              click_element :update_now_button if has_element?(:update_now_button, wait: 0)
             end
           end
 

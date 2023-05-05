@@ -50,7 +50,8 @@ module QA
       #
       def fabricate_via_api!
         api_get
-      rescue NoValueError
+      rescue NoValueError => e
+        Runtime::Logger.info("Runner api_get exception caught and handled: #{e}")
         # Start container on initial fabrication and populate all attributes once id is known
         # see: https://docs.gitlab.com/ee/api/runners.html#get-runners-details
         start_container_and_register
@@ -119,6 +120,7 @@ module QA
       def populate_initial_id
         tag_list = tags ? { tag_list: tags.compact.join(',') } : {}
         runner = runner(**tag_list)
+        Runtime::Logger.debug("Details of the runner fetched using tag_list: #{runner}")
         @id = runner[:id]
       end
 

@@ -60,52 +60,25 @@ RSpec.describe Resolvers::GroupLabelsResolver do
       before do
         group.add_developer(current_user)
 
-        stub_feature_flags(preload_max_access_levels_for_labels_finder: flag_enabled)
-
         # warmup
         resolve_labels(group, params).to_a
       end
 
-      context 'when the preload_max_access_levels_for_labels_finder FF is on' do
-        let(:flag_enabled) { true }
-
-        it 'prevents N+1 queries' do
-          control = Gitlab::WithRequestStore.with_request_store do
-            ActiveRecord::QueryRecorder.new { resolve_labels(group, params).to_a }
-          end
-
-          another_project = create(:project, :private, group: sub_subgroup)
-          another_subgroup = create(:group, :private, parent: group)
-          create(:label, project: another_project, name: 'another project feature')
-          create(:group_label, group: another_subgroup, name: 'another group feature')
-
-          expect do
-            Gitlab::WithRequestStore.with_request_store do
-              resolve_labels(group, params).to_a
-            end
-          end.not_to exceed_query_limit(control.count)
+      it 'prevents N+1 queries' do
+        control = Gitlab::WithRequestStore.with_request_store do
+          ActiveRecord::QueryRecorder.new { resolve_labels(group, params).to_a }
         end
-      end
 
-      context 'when the preload_max_access_levels_for_labels_finder FF is off' do
-        let(:flag_enabled) { false }
+        another_project = create(:project, :private, group: sub_subgroup)
+        another_subgroup = create(:group, :private, parent: group)
+        create(:label, project: another_project, name: 'another project feature')
+        create(:group_label, group: another_subgroup, name: 'another group feature')
 
-        it 'creates N+1 queries' do
-          control = Gitlab::WithRequestStore.with_request_store do
-            ActiveRecord::QueryRecorder.new { resolve_labels(group, params).to_a }
+        expect do
+          Gitlab::WithRequestStore.with_request_store do
+            resolve_labels(group, params).to_a
           end
-
-          another_project = create(:project, :private, group: sub_subgroup)
-          another_subgroup = create(:group, :private, parent: group)
-          create(:label, project: another_project, name: 'another project feature')
-          create(:group_label, group: another_subgroup, name: 'another group feature')
-
-          expect do
-            Gitlab::WithRequestStore.with_request_store do
-              resolve_labels(group, params).to_a
-            end
-          end.to exceed_query_limit(control.count)
-        end
+        end.not_to exceed_query_limit(control.count)
       end
     end
 

@@ -1,8 +1,0 @@
----
-name: preload_max_access_levels_for_labels_finder
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111313
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390664
-milestone: '15.9'
-type: development
-group: group::optimize
-default_enabled: true

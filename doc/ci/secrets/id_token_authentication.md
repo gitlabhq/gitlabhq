@@ -130,7 +130,7 @@ manual_authentication:
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-05-11' -->
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
 ### Enable automatic ID token authentication (deprecated)
 
