@@ -18,14 +18,14 @@ production:
     #     port: 8600
     #     record: secondary.postgresql.service.consul
     #     interval: 300
-  # ci:
-  #   adapter: postgresql
-  #   encoding: unicode
-  #   database: gitlabhq_production
-  #   database_tasks: false
-  #   username: git
-  #   password: "secure password"
-  #   host: localhost
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    database_tasks: false
+    username: git
+    password: "secure password"
+    host: localhost
   geo:
     adapter: postgresql
     encoding: unicode
@@ -47,16 +47,16 @@ development:
     host: localhost
     variables:
       statement_timeout: 15s
-  # ci:
-  #   adapter: postgresql
-  #   encoding: unicode
-  #   database: gitlabhq_development
-  #   database_tasks: false
-  #   username: postgres
-  #   password: "secure password"
-  #   host: localhost
-  #   variables:
-  #     statement_timeout: 15s
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_development
+    database_tasks: false
+    username: postgres
+    password: "secure password"
+    host: localhost
+    variables:
+      statement_timeout: 15s
   geo:
     adapter: postgresql
     encoding: unicode
@@ -76,14 +76,14 @@ staging:
     username: git
     password: "secure password"
     host: localhost
-  # ci:
-  #   adapter: postgresql
-  #   encoding: unicode
-  #   database: gitlabhq_staging
-  #   database_tasks: false
-  #   username: git
-  #   password: "secure password"
-  #   host: localhost
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_staging
+    database_tasks: false
+    username: git
+    password: "secure password"
+    host: localhost
   geo:
     adapter: postgresql
     encoding: unicode
@@ -106,17 +106,17 @@ test: &test
     prepared_statements: false
     variables:
       statement_timeout: 15s
-  # ci:
-  #   adapter: postgresql
-  #   encoding: unicode
-  #   database: gitlabhq_test
-  #   database_tasks: false
-  #   username: postgres
-  #   password:
-  #   host: localhost
-  #   prepared_statements: false
-  #   variables:
-  #     statement_timeout: 15s
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_test
+    database_tasks: false
+    username: postgres
+    password:
+    host: localhost
+    prepared_statements: false
+    variables:
+      statement_timeout: 15s
   geo:
     adapter: postgresql
     encoding: unicode

@@ -164,6 +164,7 @@ export function initHeaderActions(store, type = '') {
       canReportSpam: parseBoolean(el.dataset.canReportSpam),
       canUpdateIssue: parseBoolean(el.dataset.canUpdateIssue),
       iid: el.dataset.iid,
+      issuableId: el.dataset.issuableId,
       isIssueAuthor: parseBoolean(el.dataset.isIssueAuthor),
       issuePath: el.dataset.issuePath,
       issueType: el.dataset.issueType,

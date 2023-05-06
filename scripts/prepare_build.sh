@@ -17,9 +17,9 @@ else
   echo "Using decomposed database config (config/database.yml.postgresql)"
   cp config/database.yml.postgresql config/database.yml
 
-  if [ "$CI_CONNECTION_DB" == "true" ]; then
-    echo "Enabling ci connection (database_tasks: false) in config/database.yml"
-    sed -i '/ci:/,/geo:/''s/^  # /  /g' config/database.yml
+  if [ "$CI_CONNECTION_DB" != "true" ]; then
+    echo "Disabling ci connection in config/database.yml"
+    sed -i "/ci:$/, /geo:$/ {s|^|#|;s|#  geo:|  geo:|;}" config/database.yml
   fi
 fi
 

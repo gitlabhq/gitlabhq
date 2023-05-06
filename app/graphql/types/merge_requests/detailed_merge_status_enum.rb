@@ -45,6 +45,9 @@ module Types
       value 'EXTERNAL_STATUS_CHECKS',
             value: :status_checks_must_pass,
             description: 'Status checks must pass.'
+      value 'PREPARING',
+            value: :preparing,
+            description: 'Merge request diff is being created.'
     end
   end
 end

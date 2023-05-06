@@ -100,6 +100,9 @@ export default {
     iid: {
       default: '',
     },
+    issuableId: {
+      default: '',
+    },
     isIssueAuthor: {
       default: false,
     },
@@ -323,7 +326,7 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header-actions gl-display-flex gl-align-self-start">
+  <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-gap-3">
     <gl-dropdown
       v-if="hasMobileDropdown"
       class="gl-sm-display-none! w-100"
@@ -420,7 +423,7 @@ export default {
 
     <gl-button
       v-if="showToggleIssueStateButton"
-      class="gl-display-none gl-sm-display-inline-flex! gl-sm-ml-3"
+      class="gl-display-none gl-sm-display-inline-flex!"
       :data-qa-selector="qaSelector"
       :loading="isToggleStateButtonLoading"
       data-testid="toggle-button"
@@ -433,7 +436,7 @@ export default {
       v-if="hasDesktopDropdown"
       id="new-actions-header-dropdown"
       v-gl-tooltip.hover
-      class="gl-display-none gl-sm-display-inline-flex! gl-sm-ml-3"
+      class="gl-display-none gl-sm-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
       data-qa-selector="issue_actions_ellipsis_dropdown"

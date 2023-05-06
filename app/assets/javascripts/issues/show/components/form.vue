@@ -1,7 +1,11 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import ConvertDescriptionModal from 'ee_component/issues/show/components/convert_description_modal.vue';
 import { getDraft, updateDraft, getLockVersion, clearDraft } from '~/lib/utils/autosave';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_ISSUE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { TYPE_ISSUE } from '~/issues/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import EditActions from './edit_actions.vue';
 import DescriptionField from './fields/description.vue';
@@ -12,6 +16,7 @@ import LockedWarning from './locked_warning.vue';
 
 export default {
   components: {
+    ConvertDescriptionModal,
     DescriptionField,
     DescriptionTemplateField,
     EditActions,
@@ -20,6 +25,7 @@ export default {
     IssuableTypeField,
     LockedWarning,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     endpoint: {
       type: String,
@@ -73,6 +79,11 @@ export default {
       required: false,
       default: '',
     },
+    issueId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const autosaveKey = [document.location.pathname, document.location.search];
@@ -99,6 +110,12 @@ export default {
     },
     isIssueType() {
       return this.issuableType === TYPE_ISSUE;
+    },
+    resourceId() {
+      return this.issueId && convertToGraphQLId(TYPENAME_ISSUE, this.issueId);
+    },
+    userId() {
+      return convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
     },
   },
   watch: {
@@ -158,6 +175,9 @@ export default {
         updateDraft(this.descriptionAutosaveKey, description, this.formState.lock_version);
       }
     },
+    setDescription(desc) {
+      this.formData.description = desc;
+    },
   },
 };
 </script>
@@ -185,12 +205,12 @@ export default {
         <issuable-title-field ref="title" v-model="formData.title" @input="updateTitleDraft" />
       </div>
     </div>
-    <div class="row">
+    <div class="row gl-gap-3">
       <div v-if="isIssueType" class="col-12 col-md-4 pr-md-0">
         <issuable-type-field ref="issue-type" />
       </div>
 
-      <div v-if="hasIssuableTemplates" class="col-12 col-md-4 pl-md-2">
+      <div v-if="hasIssuableTemplates" class="col-12 col-md-4 gl-md-pl-0 gl-md-pr-0">
         <description-template-field
           v-model="formData.description"
           :issuable-templates="issuableTemplates"
@@ -199,6 +219,14 @@ export default {
           :project-namespace="projectNamespace"
         />
       </div>
+
+      <convert-description-modal
+        v-if="issueId && glFeatures.generateDescriptionAi"
+        class="gl-pl-5 gl-sm-pl-0"
+        :resource-id="resourceId"
+        :user-id="userId"
+        @contentGenerated="setDescription"
+      />
     </div>
 
     <description-field

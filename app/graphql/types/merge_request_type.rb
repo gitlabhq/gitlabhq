@@ -223,6 +223,9 @@ module Types
       null: true,
       description: 'List of award emojis associated with the merge request.'
 
+    field :prepared_at, Types::TimeType, null: true,
+                                         description: 'Timestamp of when the merge request was prepared.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

@@ -489,6 +489,7 @@ export default {
         :project-namespace="projectNamespace"
         :can-attach-file="canAttachFile"
         :enable-autocomplete="enableAutocomplete"
+        :issue-id="issueId"
         :issuable-type="issuableType"
         @updateForm="setFormState"
       />

@@ -580,6 +580,10 @@ If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional ste
 
 ### Configure GitLab DB Settings
 
+NOTE:
+From [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/387898), `database.yml` with only a section: `main:` is deprecated.
+In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
+
 ```shell
 sudo -u git cp config/database.yml.postgresql config/database.yml
 
@@ -591,6 +595,11 @@ sudo -u git cp config/database.yml.postgresql config/database.yml
 #       adapter: postgresql
 #       encoding: unicode
 #       database: gitlabhq_production
+#     ci:
+#       adapter: postgresql
+#       encoding: unicode
+#       database: gitlabhq_production
+#       database_tasks: false
 #
 sudo -u git -H editor config/database.yml
 
@@ -609,10 +618,10 @@ sudo -u git -H editor config/database.yml
 sudo -u git -H chmod o-rwx config/database.yml
 ```
 
-NOTE:
-From GitLab 15.9, `database.yml` with only a section: `main:` is deprecated.
-In GitLab 15.10 and later, you should have two sections in your `database.yml`, `main:` and `ci:`. The `ci`: connection [must be to the same database](../administration/postgresql/multiple_databases.md).
-In GitLab 17.0 and later, you must have the two `main:` and `ci:` sections in your `database.yml`.
+You should have two sections in your `database.yml`: `main:` and `ci:`. The `ci`:
+connection [must be to the same database](../administration/postgresql/multiple_databases.md).
+If, for any reason, you wish to remain on a single database connection, remove the `ci:`
+section from `config/database.yml`.
 
 ### Install Gems
 

@@ -55,6 +55,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
   after do
     FileUtils.rm(tars_glob, force: true)
     FileUtils.rm(backup_files, force: true)
+    FileUtils.rm(backup_restore_pid_path, force: true)
     FileUtils.rm_rf(backup_directories, secure: true)
     FileUtils.rm_rf('tmp/tests/public/uploads', secure: true)
   end
@@ -66,32 +67,79 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
   end
 
   describe 'lock parallel backups' do
-    using RSpec::Parameterized::TableSyntax
+    let(:progress) { $stdout }
+    let(:delete_message) { /-- Deleting backup and restore PID file/ }
+    let(:pid_file) do
+      File.open(backup_restore_pid_path, File::RDWR | File::CREAT)
+    end
 
-    context 'when a process is running' do
-      let(:pid_file) { instance_double(File) }
+    before do
+      allow(Kernel).to receive(:system).and_return(true)
+      allow(YAML).to receive(:safe_load_file).and_return({ gitlab_version: Gitlab::VERSION })
+    end
+
+    context 'when a process is running in parallel' do
+      before do
+        File.open(backup_restore_pid_path, 'wb') do |file|
+          file.write('123456')
+          file.close
+        end
+      end
 
       it 'exits the new process' do
         allow(File).to receive(:open).and_call_original
         allow(File).to receive(:open).with(backup_restore_pid_path, any_args).and_yield(pid_file)
-        allow(pid_file).to receive(:read).and_return('123456')
-        allow(pid_file).to receive(:flock).with(any_args)
+        allow(Process).to receive(:getpgid).with(123456).and_return(123456)
 
         expect { run_rake_task('gitlab:backup:create') }.to raise_error(SystemExit).and output(
-          <<~HEREDOC
+          <<~MESSAGE
             Backup and restore in progress:
-              There is a backup and restore task in progress. Please, try to run the current task once the previous one ends.
-              If there is no other process running, please remove the PID file manually: rm #{backup_restore_pid_path}
-          HEREDOC
+              There is a backup and restore task in progress (PID 123456). Try to run the current task once the previous one ends.
+          MESSAGE
         ).to_stdout
       end
     end
 
-    context 'when no processes are running' do
-      let(:progress) { $stdout }
-      let(:pid_file) { instance_double(File, write: 12345) }
+    context 'when no process is running in parallel but a PID file exists' do
+      let(:rewritten_message) do
+        <<~MESSAGE
+          The PID file #{backup_restore_pid_path} exists and contains 123456, but the process is not running.
+          The PID file will be rewritten with the current process ID #{Process.pid}.
+        MESSAGE
+      end
 
-      where(:tasks_name, :rake_task) do
+      before do
+        File.open(backup_restore_pid_path, 'wb') do |file|
+          file.write('123456')
+          file.close
+        end
+      end
+
+      it 'rewrites, locks and deletes the PID file while logging a message' do
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with(backup_restore_pid_path, any_args).and_yield(pid_file)
+        allow(Process).to receive(:getpgid).with(123456).and_raise(Errno::ESRCH)
+        allow(progress).to receive(:puts).with(delete_message).once
+        allow(progress).to receive(:puts).with(rewritten_message).once
+
+        allow_next_instance_of(::Backup::Manager) do |instance|
+          allow(instance).to receive(:run_restore_task).with('db')
+        end
+
+        expect(pid_file).to receive(:flock).with(File::LOCK_EX)
+        expect(pid_file).to receive(:flock).with(File::LOCK_UN)
+        expect(File).to receive(:delete).with(backup_restore_pid_path)
+        expect(progress).to receive(:puts).with(rewritten_message).once
+        expect(progress).to receive(:puts).with(delete_message).once
+
+        run_rake_task('gitlab:backup:db:restore')
+      end
+    end
+
+    context 'when no process is running in parallel' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:task_name, :rake_task) do
         'db'              | 'gitlab:backup:db:restore'
         'repositories'    | 'gitlab:backup:repo:restore'
         'builds'          | 'gitlab:backup:builds:restore'
@@ -106,34 +154,23 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
 
       with_them do
         before do
-          allow(Kernel).to receive(:system).and_return(true)
-          allow(YAML).to receive(:safe_load_file).and_return({ gitlab_version: Gitlab::VERSION })
-          allow(File).to receive(:delete).with(backup_restore_pid_path).and_return(1)
           allow(File).to receive(:open).and_call_original
           allow(File).to receive(:open).with(backup_restore_pid_path, any_args).and_yield(pid_file)
-          allow(pid_file).to receive(:read).and_return('')
-          allow(pid_file).to receive(:flock).with(any_args)
-          allow(pid_file).to receive(:write).with(12345).and_return(true)
-          allow(pid_file).to receive(:flush)
+          allow(File).to receive(:delete).with(backup_restore_pid_path)
           allow(progress).to receive(:puts).at_least(:once)
 
           allow_next_instance_of(::Backup::Manager) do |instance|
-            Array(tasks_name).each do |task|
+            Array(task_name).each do |task|
               allow(instance).to receive(:run_restore_task).with(task)
             end
           end
         end
 
-        it 'locks the PID file' do
+        it 'locks and deletes the PID file while logging a message' do
           expect(pid_file).to receive(:flock).with(File::LOCK_EX)
           expect(pid_file).to receive(:flock).with(File::LOCK_UN)
-
-          run_rake_task(rake_task)
-        end
-
-        it 'deletes the PID file and logs a message' do
           expect(File).to receive(:delete).with(backup_restore_pid_path)
-          expect(progress).to receive(:puts).with(/-- Deleting backup and restore lock file/)
+          expect(progress).to receive(:puts).with(delete_message)
 
           run_rake_task(rake_task)
         end

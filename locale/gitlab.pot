@@ -1865,10 +1865,16 @@ msgstr ""
 msgid "AI| %{link_start}What are experiment features?%{link_end}"
 msgstr ""
 
+msgid "AI|Autocomplete"
+msgstr ""
+
 msgid "AI|Close the Code Explanation"
 msgstr ""
 
 msgid "AI|Code Explanation"
+msgstr ""
+
+msgid "AI|Describe the issue"
 msgstr ""
 
 msgid "AI|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
@@ -1884,6 +1890,9 @@ msgid "AI|Explain the code from %{filePath} in human understandable language pre
 msgstr ""
 
 msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
+msgstr ""
+
+msgid "AI|For example: It should be possible to forecast into the future using our value stream analytics charts. This would allow organizations to better understand how they are trending on important metrics."
 msgstr ""
 
 msgid "AI|Helpful"
@@ -1917,6 +1926,9 @@ msgid "AI|Use third-party AI services"
 msgstr ""
 
 msgid "AI|What does the selected code mean?"
+msgstr ""
+
+msgid "AI|Write a summary to fill out the selected issue template"
 msgstr ""
 
 msgid "AI|Wrong"
@@ -18136,6 +18148,9 @@ msgid "Failed to find import label for Jira import."
 msgstr ""
 
 msgid "Failed to find users for %{missing}"
+msgstr ""
+
+msgid "Failed to generate description"
 msgstr ""
 
 msgid "Failed to generate export, please try again later."

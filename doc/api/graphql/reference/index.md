@@ -16366,6 +16366,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
 | <a id="mergerequestnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
+| <a id="mergerequestpreparedat"></a>`preparedAt` | [`Time`](#time) | Timestamp of when the merge request was prepared. |
 | <a id="mergerequestproject"></a>`project` | [`Project!`](#project) | Alias for target_project. |
 | <a id="mergerequestprojectid"></a>`projectId` | [`Int!`](#int) | ID of the merge request project. |
 | <a id="mergerequestrebasecommitsha"></a>`rebaseCommitSha` | [`String`](#string) | Rebase commit SHA of the merge request. |
@@ -23725,6 +23726,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatusnot_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
 | <a id="detailedmergestatusnot_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
 | <a id="detailedmergestatuspolicies_denied"></a>`POLICIES_DENIED` | There are denied policies for the merge request. |
+| <a id="detailedmergestatuspreparing"></a>`PREPARING` | Merge request diff is being created. |
 | <a id="detailedmergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `DiffPositionType`

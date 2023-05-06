@@ -182,6 +182,8 @@ git diff origin/PREVIOUS_BRANCH:config/gitlab.yml.example origin/BRANCH:config/g
 
 #### New configuration options for `database.yml`
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119139) in GitLab 16.0 to have `ci:` section in `config/database.yml.postgresql`.
+
 There might be configuration options available for [`database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql).
 View them with the command below and apply them manually to your current `database.yml`:
 
