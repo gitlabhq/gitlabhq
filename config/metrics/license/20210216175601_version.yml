@@ -10,6 +10,7 @@ status: active
 milestone: "<13.9"
 time_frame: none
 data_source: system
+instrumentation_class: VersionMetric
 distribution:
 - ce
 - ee

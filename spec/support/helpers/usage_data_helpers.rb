@@ -83,15 +83,9 @@ module UsageDataHelpers
   ).freeze
 
   USAGE_DATA_KEYS = %i(
-    active_user_count
     counts
     counts_monthly
     recorded_at
-    edition
-    version
-    installation_type
-    uuid
-    hostname
     mattermost_enabled
     signup_enabled
     ldap_enabled

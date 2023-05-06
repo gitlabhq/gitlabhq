@@ -27,11 +27,6 @@ module QA
             choose_element(:merge_ff_radio, true)
             click_save_changes
           end
-
-          def enable_merge_if_all_disscussions_are_resolved
-            check_element(:only_allow_merge_if_all_discussions_are_resolved_checkbox, true)
-            click_save_changes
-          end
         end
       end
     end

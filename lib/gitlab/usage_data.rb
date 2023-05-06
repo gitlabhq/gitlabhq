@@ -47,15 +47,7 @@ module Gitlab
       end
 
       def license_usage_data
-        {
-          recorded_at: recorded_at,
-          uuid: add_metric('UuidMetric'),
-          hostname: add_metric('HostnameMetric'),
-          version: alt_usage_data { Gitlab::VERSION },
-          installation_type: alt_usage_data { installation_type },
-          active_user_count: add_metric('ActiveUserCountMetric'),
-          edition: 'CE'
-        }
+        { recorded_at: recorded_at }
       end
 
       def recorded_at
@@ -355,14 +347,6 @@ module Gitlab
         {
           user_preferences_user_gitpod_enabled: count(UserPreference.with_user.gitpod_enabled.merge(User.active))
         }
-      end
-
-      def installation_type
-        if Rails.env.production?
-          Gitlab::INSTALLATION_TYPE
-        else
-          "gitlab-development-kit"
-        end
       end
 
       def operating_system

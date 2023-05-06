@@ -11,6 +11,7 @@ milestone: "11.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5952/
 time_frame: none
 data_source: system
+instrumentation_class: InstallationTypeMetric
 distribution:
 - ce
 - ee
