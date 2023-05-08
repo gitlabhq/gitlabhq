@@ -62,7 +62,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/requests/omniauth_kerberos_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/update_service_spec.rb'
     - 'ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb'
-    - 'ee/spec/services/ci/minutes/batch_reset_service_spec.rb'
     - 'ee/spec/services/ci/runners/register_runner_service_spec.rb'
     - 'ee/spec/services/ci/runners/reset_registration_token_service_spec.rb'
     - 'ee/spec/services/ci/runners/unassign_runner_service_spec.rb'

@@ -45,7 +45,10 @@ module QA
         # @param [String] sub_menu
         # @return [void]
         def open_submenu(parent_menu_name, sub_menu)
-          click_element(:menu_section_button, section_name: parent_menu_name)
+          # prevent closing sub-menu if it was already open
+          unless has_element?(:menu_section, section_name: parent_menu_name, wait: 0)
+            click_element(:menu_section_button, section_name: parent_menu_name)
+          end
 
           within_element(:menu_section, section_name: parent_menu_name) do
             click_element(:nav_item_link, submenu_item: sub_menu)

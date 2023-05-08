@@ -259,6 +259,20 @@ This change is a breaking change. You should use an [authentication token](../ci
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL type, `RunnerMembershipFilter` renamed to `CiRunnerMembershipFilter`
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+The GraphQL type, `RunnerMembershipFilter`, has been renamed to `CiRunnerMembershipFilter`. In GitLab 17.0,
+the aliasing for the `RunnerMembershipFilter` type will be removed.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL: The `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` enum is deprecated. Use `DISABLED_AND_OVERRIDABLE` instead
 
 <div class="deprecation-notes">

@@ -588,8 +588,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe 'drop_tables' do
     let(:tables) { %w(one two schema_migrations) }
-    let(:views) { %w(three four) }
+    let(:views) { %w(three four pg_stat_statements) }
     let(:schemas) { Gitlab::Database::EXTRA_SCHEMAS }
+    let(:ignored_views) { double(ActiveRecord::Relation, pluck: ['pg_stat_statements']) }
+
+    before do
+      allow(Gitlab::Database::PgDepend).to receive(:using_connection).and_yield
+      allow(Gitlab::Database::PgDepend).to receive(:from_pg_extension).with('VIEW').and_return(ignored_views)
+    end
 
     context 'with a single database' do
       let(:connection) { ActiveRecord::Base.connection }
@@ -664,6 +670,8 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "three" CASCADE')
       expect(connection).to receive(:execute).with('DROP VIEW IF EXISTS "four" CASCADE')
+      expect(Gitlab::Database::PgDepend).to receive(:from_pg_extension).with('VIEW')
+      expect(connection).not_to receive(:execute).with('DROP VIEW IF EXISTS "pg_stat_statements" CASCADE')
 
       expect(connection).to receive(:execute).with('TRUNCATE schema_migrations')
 

@@ -102,14 +102,6 @@ RSpec.describe 'File blame', :js, feature_category: :projects do
       end
     end
 
-    context 'when streaming is disabled' do
-      before do
-        stub_feature_flags(blame_page_streaming: false)
-      end
-
-      it_behaves_like 'a full blame page'
-    end
-
     context 'when streaming is enabled' do
       before do
         stub_const('Gitlab::Git::BlamePagination::STREAMING_PER_PAGE', 50)

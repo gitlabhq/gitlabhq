@@ -11,8 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
 WARNING:
-The Debian package registry for GitLab is under development and isn't ready for production use due to
-limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
+The Debian package registry for GitLab is under development and isn't ready for production use. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
 work and timelines to make it production ready.
 
 Publish Debian packages in your project's Package Registry. Then install the
@@ -36,6 +35,9 @@ Debian repository support is still a work in progress. It's gated behind a featu
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can opt to enable it.
 
+WARNING:
+Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+
 To enable it:
 
 ```ruby
@@ -51,6 +53,9 @@ Feature.disable(:debian_packages)
 ## Enable the Debian group API **(FREE SELF)**
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
+
+WARNING:
+Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
 
 To enable it:
 

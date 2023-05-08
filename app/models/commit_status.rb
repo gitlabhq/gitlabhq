@@ -36,7 +36,7 @@ class CommitStatus < Ci::ApplicationRecord
 
   validates :pipeline, presence: true, unless: :importing?
   validates :name, presence: true, unless: :importing?
-  validates :stage, :ref, :target_url, :description, length: { maximum: 255 }, if: :ci_builds_columns_size_validation_enabled?
+  validates :stage, :ref, :target_url, :description, length: { maximum: 255 }
 
   alias_attribute :author, :user
   alias_attribute :pipeline_id, :commit_id
@@ -320,9 +320,5 @@ class CommitStatus < Ci::ApplicationRecord
 
   def unrecoverable_failure?
     script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? || data_integrity_failure?
-  end
-
-  def ci_builds_columns_size_validation_enabled?
-    Feature.enabled?(:ci_builds_columns_size_validation, project)
   end
 end

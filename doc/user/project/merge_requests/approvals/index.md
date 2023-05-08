@@ -101,7 +101,7 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
   database, for all proposed code changes.
 - Use the [code owners of changed files](rules.md#code-owners-as-eligible-approvers),
   to determine who should review the work.
-- Require an [approval before merging code that causes test coverage to decline](../../../../ci/testing/code_coverage.md#coverage-check-approval-rule)
+- Require an [approval before merging code that causes test coverage to decline](../../../../ci/testing/code_coverage.md#coverage-check-approval-rule).
 - Users on GitLab Ultimate can also [require approval from a security team](../../../application_security/index.md#security-approvals-in-merge-requests)
   before merging code that could introduce a vulnerability.
 
@@ -109,13 +109,14 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance,
-ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
+On GitLab.com, this feature is enabled by default.
 
-Whenever an approval rule cannot be satisfied, the rule is displayed as `(!) Auto approved`. This applies to the following conditions:
+Whenever an approval rule cannot be satisfied, the rule is displayed as **(!) Auto approved**. This applies to the following conditions:
 
 - The only eligible approver is the author of the merge request.
 - No eligible approvers (either groups or users) have been assigned to the approval rule.
@@ -124,7 +125,7 @@ Whenever an approval rule cannot be satisfied, the rule is displayed as `(!) Aut
 These rules are automatically approved to unblock their respective merge requests,
 unless they were created through a security policy.
 
-Invalid approval rules created through a security policy are presented with `(!) Action Required`
+Invalid approval rules created through a security policy are presented with **(!) Action Required**
 and are not automatically approved, blocking their respective merge requests.
 
 ## Related topics

@@ -235,11 +235,27 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         wait_for_requests
 
         expect(page).to have_field('Title', with: '')
+        expect(page).to have_field('Description', with: '')
 
         fill_in 'issue_title', with: 'bug 345'
         fill_in 'issue_description', with: 'bug description'
 
         click_button 'Create issue'
+      end
+    end
+
+    it 'clears local storage after cancelling a new issue creation', :js do
+      2.times do
+        visit new_project_issue_path(project)
+        wait_for_requests
+
+        expect(page).to have_field('Title', with: '')
+        expect(page).to have_field('Description', with: '')
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        click_link 'Cancel'
       end
     end
   end

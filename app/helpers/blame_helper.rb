@@ -44,11 +44,7 @@ module BlameHelper
     namespace_project_blame_page_url(namespace_id: project.namespace, project_id: project, id: id, streaming: true)
   end
 
-  def entire_blame_path(id, project, blame_mode)
-    if blame_mode.streaming_supported?
-      namespace_project_blame_streaming_path(namespace_id: project.namespace, project_id: project, id: id)
-    else
-      namespace_project_blame_path(namespace_id: project.namespace, project_id: project, id: id, no_pagination: true)
-    end
+  def entire_blame_path(id, project)
+    namespace_project_blame_streaming_path(namespace_id: project.namespace, project_id: project, id: id)
   end
 end

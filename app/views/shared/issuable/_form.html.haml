@@ -62,9 +62,9 @@
       = sanitize(html_escape(_('Please review the %{linkStart}contribution guidelines%{linkEnd} for this project.')) % { linkStart: contribution_guidelines_start, linkEnd: contribution_guidelines_end })
 
   - if issuable.new_record?
-    = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button', data: { qa_selector: 'issuable_create_button', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
+    = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button js-reset-autosave', data: { qa_selector: 'issuable_create_button', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
   - else
-    = form.submit _('Save changes'), pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button', data: { track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
+    = form.submit _('Save changes'), pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button js-reset-autosave', data: { track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
 
   - if issuable.new_record?
     = link_to _('Cancel'), polymorphic_path([@project, issuable.class]), class: 'btn gl-button btn-default js-reset-autosave'

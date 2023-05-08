@@ -2203,7 +2203,6 @@ Layout/LineLength:
     - 'ee/spec/services/ci/compare_security_reports_service_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/compliance_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb'
-    - 'ee/spec/services/ci/minutes/batch_reset_service_spec.rb'
     - 'ee/spec/services/ci/minutes/refresh_cached_data_service_spec.rb'
     - 'ee/spec/services/ci/minutes/update_project_and_namespace_usage_service_spec.rb'
     - 'ee/spec/services/ci/process_build_service_spec.rb'

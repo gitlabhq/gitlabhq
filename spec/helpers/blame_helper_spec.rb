@@ -69,23 +69,12 @@ RSpec.describe BlameHelper, feature_category: :source_code_management do
   end
 
   describe '#entire_blame_path' do
-    subject { helper.entire_blame_path(id, project, blame_mode) }
+    subject { helper.entire_blame_path(id, project) }
 
     let_it_be(:project) { build_stubbed(:project) }
 
     let(:id) { 'main/README.md' }
-    let(:blame_mode) { instance_double('Gitlab::Git::BlameMode', 'streaming_supported?' => streaming_enabled) }
 
-    context 'when streaming is supported' do
-      let(:streaming_enabled) { true }
-
-      it { is_expected.to eq "/#{project.full_path}/-/blame/#{id}/streaming" }
-    end
-
-    context 'when streaming is not supported' do
-      let(:streaming_enabled) { false }
-
-      it { is_expected.to eq "/#{project.full_path}/-/blame/#{id}?no_pagination=true" }
-    end
+    it { is_expected.to eq "/#{project.full_path}/-/blame/#{id}/streaming" }
   end
 end

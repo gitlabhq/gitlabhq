@@ -9,7 +9,7 @@ RSpec.describe Pajamas::CheckboxTagComponent, :aggregate_failures, type: :compon
   context 'with default options' do
     before do
       render_inline(described_class.new(name: name)) do |c|
-        c.label { label }
+        c.with_label { label }
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe Pajamas::CheckboxTagComponent, :aggregate_failures, type: :compon
           label_options: label_options
         )
       ) do |c|
-        c.label { label }
+        c.with_label { label }
       end
     end
 
@@ -48,8 +48,8 @@ RSpec.describe Pajamas::CheckboxTagComponent, :aggregate_failures, type: :compon
   context 'with `help_text` slot' do
     before do
       render_inline(described_class.new(name: name)) do |c|
-        c.label { label }
-        c.help_text { help_text }
+        c.with_label { label }
+        c.with_help_text { help_text }
       end
     end
 

@@ -1,8 +1,0 @@
----
-name: blame_page_streaming
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110208
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/392890
-milestone: '15.10'
-type: development
-group: group::source code
-default_enabled: false

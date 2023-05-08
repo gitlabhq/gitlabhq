@@ -2541,7 +2541,6 @@
 - './ee/spec/services/ci/external_pull_requests/process_github_event_service_spec.rb'
 - './ee/spec/services/ci/minutes/additional_packs/change_namespace_service_spec.rb'
 - './ee/spec/services/ci/minutes/additional_packs/create_service_spec.rb'
-- './ee/spec/services/ci/minutes/batch_reset_service_spec.rb'
 - './ee/spec/services/ci/minutes/email_notification_service_spec.rb'
 - './ee/spec/services/ci/minutes/refresh_cached_data_service_spec.rb'
 - './ee/spec/services/ci/minutes/reset_usage_service_spec.rb'

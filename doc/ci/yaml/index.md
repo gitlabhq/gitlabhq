@@ -3178,6 +3178,14 @@ job:
     description: './path/to/CHANGELOG.md'
 ```
 
+**Additional details**:
+
+- The `description` is evaluated by the shell that runs `release-cli`.
+  You can use CI/CD variables to define the description, but some shells
+  [use different syntax](../variables/index.md#use-cicd-variables-in-job-scripts)
+  to reference variables. Similarly, some shells might require special characters
+  to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (<code>&#92;</code>).
+
 #### `release:ref`
 
 The `ref` for the release, if the `release: tag_name` doesn't exist yet.

@@ -3,7 +3,12 @@ import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { EDITING_MODE_MARKDOWN_FIELD, EDITING_MODE_CONTENT_EDITOR } from '~/vue_shared/constants';
+import {
+  EDITING_MODE_MARKDOWN_FIELD,
+  EDITING_MODE_CONTENT_EDITOR,
+  CLEAR_AUTOSAVE_ENTRY_EVENT,
+} from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
@@ -250,6 +255,38 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       buildWrapper({ propsData: { autosaveKey: 'issue/1234', value: '' } });
 
       expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
+
+    describe('clear local storage event handler', () => {
+      it('does not clear the local storage if the autosave key is not defined', async () => {
+        buildWrapper();
+
+        await waitForPromises();
+
+        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, 'issue/1234');
+
+        expect(localStorage.removeItem).not.toHaveBeenCalled();
+      });
+
+      it('does not clear the local storage if the event autosave key does not match', async () => {
+        buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+
+        await waitForPromises();
+
+        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, 'issue/1235');
+
+        expect(localStorage.removeItem).not.toHaveBeenCalled();
+      });
+
+      it('clears the local storage if the event autosave key matches', async () => {
+        buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+
+        await waitForPromises();
+
+        markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, 'issue/1234');
+
+        expect(localStorage.removeItem).toHaveBeenCalledWith('autosave/issue/1234');
+      });
     });
   });
 

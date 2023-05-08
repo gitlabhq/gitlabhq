@@ -9,8 +9,8 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
   describe 'slots' do
     it 'renders title' do
       render_inline described_class.new do |c|
-        c.title { title }
-        c.body { body }
+        c.with_title { title }
+        c.with_body { body }
       end
 
       expect(page).to have_css('h4', text: title)
@@ -18,8 +18,8 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
 
     it 'renders body slot' do
       render_inline described_class.new do |c|
-        c.title { title }
-        c.body { body }
+        c.with_title { title }
+        c.with_body { body }
       end
 
       expect(page).to have_content(body)
@@ -28,9 +28,9 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
     context 'when description slot is provided' do
       before do
         render_inline described_class.new do |c|
-          c.title { title }
-          c.description { description }
-          c.body { body }
+          c.with_title { title }
+          c.with_description { description }
+          c.with_body { body }
         end
       end
 
@@ -42,8 +42,8 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
     context 'when description slot is not provided' do
       before do
         render_inline described_class.new do |c|
-          c.title { title }
-          c.body { body }
+          c.with_title { title }
+          c.with_body { body }
         end
       end
 
@@ -57,8 +57,8 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
     describe 'border' do
       it 'defaults to true and adds gl-border-b CSS class' do
         render_inline described_class.new do |c|
-          c.title { title }
-          c.body { body }
+          c.with_title { title }
+          c.with_body { body }
         end
 
         expect(page).to have_css('.gl-border-b')
@@ -66,8 +66,8 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
 
       it 'does not add gl-border-b CSS class when set to false' do
         render_inline described_class.new(border: false) do |c|
-          c.title { title }
-          c.body { body }
+          c.with_title { title }
+          c.with_body { body }
         end
 
         expect(page).not_to have_css('.gl-border-b')
@@ -77,8 +77,8 @@ RSpec.describe Layouts::HorizontalSectionComponent, type: :component do
     describe 'options' do
       it 'adds options to wrapping element' do
         render_inline described_class.new(options: { data: { testid: 'foo-bar' }, class: 'foo-bar' }) do |c|
-          c.title { title }
-          c.body { body }
+          c.with_title { title }
+          c.with_body { body }
         end
 
         expect(page).to have_css('.foo-bar[data-testid="foo-bar"]')

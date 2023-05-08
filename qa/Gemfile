@@ -9,7 +9,7 @@ gem 'capybara', '~> 3.39.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13', '>= 13.0.6'
 gem 'rspec', '~> 3.12'
-gem 'selenium-webdriver', '~> 4.9'
+gem 'selenium-webdriver', '~> 4.9', '>= 4.9.1'
 gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec-retry', '~> 0.6.2', require: 'rspec/retry'

@@ -8,20 +8,6 @@ RSpec.describe Gitlab::Git::BlameMode, feature_category: :source_code_management
   let_it_be(:project) { build(:project) }
   let(:params) { {} }
 
-  describe '#streaming_supported?' do
-    subject { blame_mode.streaming_supported? }
-
-    it { is_expected.to be_truthy }
-
-    context 'when `blame_page_streaming` is disabled' do
-      before do
-        stub_feature_flags(blame_page_streaming: false)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
   describe '#streaming?' do
     subject { blame_mode.streaming? }
 
@@ -31,14 +17,6 @@ RSpec.describe Gitlab::Git::BlameMode, feature_category: :source_code_management
       let(:params) { { streaming: true } }
 
       it { is_expected.to be_truthy }
-
-      context 'when `blame_page_streaming` is disabled' do
-        before do
-          stub_feature_flags(blame_page_streaming: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
   end
 

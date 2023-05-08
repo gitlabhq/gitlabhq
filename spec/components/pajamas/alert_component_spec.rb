@@ -8,8 +8,8 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
 
     before do
       render_inline described_class.new do |c|
-        c.body { body }
-        c.actions { actions }
+        c.with_body { body }
+        c.with_actions { actions }
       end
     end
 

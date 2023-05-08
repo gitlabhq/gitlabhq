@@ -4,8 +4,13 @@ import axios from '~/lib/utils/axios_utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
-import { EDITING_MODE_MARKDOWN_FIELD, EDITING_MODE_CONTENT_EDITOR } from '../../constants';
+import {
+  EDITING_MODE_MARKDOWN_FIELD,
+  EDITING_MODE_CONTENT_EDITOR,
+  CLEAR_AUTOSAVE_ENTRY_EVENT,
+} from '../../constants';
 import MarkdownField from './field.vue';
+import eventHub from './eventhub';
 
 export default {
   components: {
@@ -125,6 +130,11 @@ export default {
       getValue: () => this.getValue(),
       setValue: (val) => this.setValue(val),
     });
+
+    eventHub.$on(CLEAR_AUTOSAVE_ENTRY_EVENT, this.clearDraft);
+  },
+  beforeDestroy() {
+    eventHub.$off(CLEAR_AUTOSAVE_ENTRY_EVENT, this.clearDraft);
   },
   methods: {
     getValue() {
@@ -187,6 +197,10 @@ export default {
       if (!this.autosaveKey) return;
       if (this.markdown) updateDraft(this.autosaveKey, this.markdown);
       else clearDraft(this.autosaveKey);
+    },
+    clearDraft(key) {
+      if (!this.autosaveKey || key !== this.autosaveKey) return;
+      clearDraft(this.autosaveKey);
     },
     togglePreview(value) {
       if (this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {

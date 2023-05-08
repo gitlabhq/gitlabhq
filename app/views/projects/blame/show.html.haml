@@ -42,7 +42,7 @@
 
     - if @blame_mode.pagination? && @blame_pagination.total_pages > 1
       .gl-display-flex.gl-justify-content-center.gl-flex-direction-column.gl-align-items-center.gl-p-3.gl-bg-gray-50.gl-border-t-solid.gl-border-t-1.gl-border-gray-100
-        = render Pajamas::ButtonComponent.new(href: entire_blame_path(@id, @project, @blame_mode), size: :small, button_options: { class: 'gl-mt-3' }) do |c|
+        = render Pajamas::ButtonComponent.new(href: entire_blame_path(@id, @project), size: :small, button_options: { class: 'gl-mt-3' }) do |c|
           = _('Show full blame')
 
     - if @blame_mode.streaming?

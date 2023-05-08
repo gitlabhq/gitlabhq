@@ -34,17 +34,6 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   it { is_expected.to validate_length_of(:target_url).is_at_most(255) }
   it { is_expected.to validate_length_of(:description).is_at_most(255) }
 
-  context 'when feature flag ci_builds_columns_size_validation is disabled' do
-    before do
-      stub_feature_flags(ci_builds_columns_size_validation: false)
-    end
-
-    it { is_expected.not_to validate_length_of(:stage).is_at_most(255) }
-    it { is_expected.not_to validate_length_of(:ref).is_at_most(255) }
-    it { is_expected.not_to validate_length_of(:target_url).is_at_most(255) }
-    it { is_expected.not_to validate_length_of(:description).is_at_most(255) }
-  end
-
   it { is_expected.to delegate_method(:sha).to(:pipeline) }
   it { is_expected.to delegate_method(:short_sha).to(:pipeline) }
 

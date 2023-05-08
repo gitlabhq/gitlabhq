@@ -2,6 +2,8 @@
 
 module Layouts
   class HorizontalSectionComponent < ViewComponent::Base
+    warn_on_deprecated_slot_setter
+
     # @param [Boolean] border
     # @param [Hash] options
     def initialize(border: true, options: {})

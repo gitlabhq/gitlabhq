@@ -1,9 +1,9 @@
 = render Pajamas::AlertComponent.new(title: _('Some changes are not shown.'),
   variant: :warning,
   alert_options: { class: 'gl-mb-5', data: { testid: "too-many-changes-alert" } }) do |c|
-  = c.body do
+  = c.with_body do
     = message
 
-  = c.actions do
+  = c.with_actions do
     = diff_link
     = patch_link

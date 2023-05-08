@@ -61,13 +61,18 @@ namespace :gitlab do
         # In PostgreSQLAdapter, data_sources returns both views and tables, so use tables instead
         tables = connection.tables
 
+        # Views that are dependencies to PG_EXTENSION (like pg_stat_statements) should be ignored
+        ignored_views = Gitlab::Database::PgDepend.using_connection(connection) do
+          Gitlab::Database::PgDepend.from_pg_extension('VIEW').pluck('relname')
+        end
+
         # Removes the entry from the array
         tables.delete 'schema_migrations'
         # Truncate schema_migrations to ensure migrations re-run
         connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations'
 
         # Drop any views
-        connection.views.each do |view|
+        (connection.views - ignored_views).each do |view|
           connection.execute("DROP VIEW IF EXISTS #{connection.quote_table_name(view)} CASCADE")
         end
 

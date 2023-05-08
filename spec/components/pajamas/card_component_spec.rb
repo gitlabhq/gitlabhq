@@ -9,9 +9,9 @@ RSpec.describe Pajamas::CardComponent, :aggregate_failures, type: :component do
   context 'slots' do
     before do
       render_inline described_class.new do |c|
-        c.header { header }
-        c.body { body }
-        c.footer { footer }
+        c.with_header { header }
+        c.with_body { body }
+        c.with_footer { footer }
       end
     end
 
@@ -51,9 +51,9 @@ RSpec.describe Pajamas::CardComponent, :aggregate_failures, type: :component do
         header_options: { class: '_header_class_', data: { testid: '_header_testid_' } },
         body_options: { class: '_body_class_', data: { testid: '_body_testid_' } },
         footer_options: { class: '_footer_class_', data: { testid: '_footer_testid_' } }) do |c|
-        c.header { header }
-        c.body { body }
-        c.footer { footer }
+        c.with_header { header }
+        c.with_body { body }
+        c.with_footer { footer }
       end
     end
 

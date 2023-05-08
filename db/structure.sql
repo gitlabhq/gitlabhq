@@ -20295,6 +20295,7 @@ CREATE TABLE pm_packages (
     name text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    licenses jsonb,
     CONSTRAINT check_3a3aedb8ba CHECK ((char_length(name) <= 255))
 );
 
