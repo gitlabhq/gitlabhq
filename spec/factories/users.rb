@@ -120,14 +120,6 @@ FactoryBot.define do
       end
     end
 
-    trait :two_factor_via_u2f do
-      transient { registrations_count { 5 } }
-
-      after(:create) do |user, evaluator|
-        create_list(:u2f_registration, evaluator.registrations_count, user: user)
-      end
-    end
-
     trait :two_factor_via_webauthn do
       transient { registrations_count { 5 } }
 

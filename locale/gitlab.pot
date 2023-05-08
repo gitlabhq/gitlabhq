@@ -51834,9 +51834,6 @@ msgstr ""
 msgid "Your To-Do List"
 msgstr ""
 
-msgid "Your U2F device did not send a valid JSON response."
-msgstr ""
-
 msgid "Your WebAuthn device did not send a valid JSON response."
 msgstr ""
 

@@ -898,7 +898,7 @@ For the steps below, consider the entry of `sidekiq['routing_rules']`:
 - `["feature_category=global_search", "global_search"]` as all indexing jobs are routed to the `global_search` queue.
 - `["*", "default"]` as all other non-indexing jobs are routed to the `default` queue.
 
-Note that at least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
+At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
 ### Single node, two processes
 

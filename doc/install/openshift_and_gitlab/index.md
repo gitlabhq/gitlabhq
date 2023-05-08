@@ -31,7 +31,7 @@ The GitLab Operator does not include the GitLab Runner. To install and manage a 
 
 ### Secure
 
-- [License Compliance via the `License-Scanning.gitlab-ci.yml` CI/CD template](../../user/compliance/license_compliance/index.md). Note that [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) is supported on OpenShift.
+- [License Compliance via the `License-Scanning.gitlab-ci.yml` CI/CD template](../../user/compliance/license_compliance/index.md). [License scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) is supported on OpenShift.
 - [Code Quality scanning](../../ci/testing/code_quality.md)
 - [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: Pipeline [Container Scanning](../../user/application_security/container_scanning/index.md) is supported)
 

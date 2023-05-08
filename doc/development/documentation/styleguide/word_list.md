@@ -1078,7 +1078,8 @@ Do not use **please**. For details, see the [Microsoft style guide](https://lear
 
 ## Premium
 
-Use **Premium**, in uppercase, for the subscription tier.
+Use **Premium**, in uppercase, for the subscription tier.  When you refer to **Premium**
+in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
 ## prerequisites
 
@@ -1442,7 +1443,8 @@ See also [**enter**](#enter).
 
 ## Ultimate
 
-Use **Ultimate**, in uppercase, for the subscription tier.
+Use **Ultimate**, in uppercase, for the subscription tier. When you refer to **Ultimate**
+in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
 ## units of compute
 

@@ -630,7 +630,7 @@ You can nest lists in other lists.
 ## Tables
 
 Tables should be used to describe complex information in a straightforward
-manner. Note that in many cases, an unordered list is sufficient to describe a
+manner. In many cases, an unordered list is sufficient to describe a
 list of items with a single, simple description per item. But, if you have data
 that's best described by a matrix, tables are the best choice.
 

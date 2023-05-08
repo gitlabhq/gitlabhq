@@ -94,21 +94,7 @@ module AuthenticatesWithTwoFactor
     end
   end
 
-  # Setup in preparation of communication with a U2F (universal 2nd factor) device
-  # Actual communication is performed using a Javascript API
   # rubocop: disable CodeReuse/ActiveRecord
-  def setup_u2f_authentication(user)
-    key_handles = user.u2f_registrations.pluck(:key_handle)
-    u2f = U2F::U2F.new(u2f_app_id)
-
-    if key_handles.present?
-      sign_requests = u2f.authentication_requests(key_handles)
-      session[:challenge] ||= u2f.challenge
-      gon.push(u2f: { challenge: session[:challenge], app_id: u2f_app_id,
-                      sign_requests: sign_requests })
-    end
-  end
-
   def setup_webauthn_authentication(user)
     if user.webauthn_registrations.present?
 

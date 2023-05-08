@@ -533,6 +533,19 @@ The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/
 From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### project.pipeline.securityReportFindings GraphQL query
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.1</span>
+- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+</div>
+
+Previous work helped [align the vulnerabilities calls for pipeline security tabs](https://gitlab.com/gitlab-org/gitlab/-/issues/343469) to match the vulnerabilities calls for project-level and group-level vulnerability reports. This helped the frontend have a more consistent interface. The old `project.pipeline.securityReportFindings` query was formatted differently than other vulnerability data calls. Now that it has been replaced with the new `project.pipeline.vulnerabilities` field, the old `project.pipeline.securityReportFindings` is being deprecated and will be removed in GitLab 17.0.
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="16.6">
@@ -2042,19 +2055,6 @@ The `POST ci/lint` API endpoint is deprecated in 15.7, and will be removed in 16
 </div>
 
 To avoid confusion and duplication, the `environment_tier` parameter is deprecated in favor of the `environment_tiers` parameter. The new `environment_tiers` parameter allows DORA APIs to return aggregated data for multiple tiers at the same time. The `environment_tier` parameter will be removed in GitLab 16.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### project.pipeline.securityReportFindings GraphQL query
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.1</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-Previous work helped [align the vulnerabilities calls for pipeline security tabs](https://gitlab.com/gitlab-org/gitlab/-/issues/343469) to match the vulnerabilities calls for project-level and group-level vulnerability reports. This helped the frontend have a more consistent interface. The old `project.pipeline.securityReportFindings` query was formatted differently than other vulnerability data calls. Now that it has been replaced with the new `project.pipeline.vulnerabilities` field, the old `project.pipeline.securityReportFindings` is being deprecated and will be removed in GitLab 16.0.
 
 </div>
 

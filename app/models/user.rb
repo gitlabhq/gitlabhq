@@ -149,7 +149,6 @@ class User < ApplicationRecord
   has_many :emails
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
-  has_many :u2f_registrations, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :webauthn_registrations
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :saved_replies, class_name: '::Users::SavedReply'
@@ -1051,7 +1050,6 @@ class User < ApplicationRecord
 
   def disable_two_factor!
     transaction do
-      self.u2f_registrations.destroy_all # rubocop:disable Cop/DestroyAll
       self.disable_webauthn!
       self.disable_two_factor_otp!
       self.reset_backup_codes!

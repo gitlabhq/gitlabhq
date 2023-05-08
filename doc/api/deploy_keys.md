@@ -228,10 +228,10 @@ POST /projects/:id/deploy_keys
 | Attribute    | Type | Required | Description |
 | -----------  | ---- | -------- | ----------- |
 | `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `title`      | string   | yes | New deploy key's title |
 | `key`        | string   | yes | New deploy key |
-| `expires_at` | datetime | no | Expiration date for the deploy key. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `title`      | string   | yes | New deploy key's title |
 | `can_push`   | boolean  | no  | Can deploy key push to the project's repository |
+| `expires_at` | datetime | no | Expiration date for the deploy key. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
@@ -263,8 +263,8 @@ PUT /projects/:id/deploy_keys/:key_id
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
 | `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `title`    | string  | no | New deploy key's title |
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
+| `title`    | string  | no | New deploy key's title |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \

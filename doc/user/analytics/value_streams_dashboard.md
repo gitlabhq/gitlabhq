@@ -58,7 +58,7 @@ To view the value streams dashboard:
    - For a project, select **Projects** and find your project.
    - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
-1. Below the **Filter results** text box, in the **Key metrics** row, select **Value Streams Dashboard | DORA**.
+1. Below the **Filter results** text box, in the **Key metrics** row, select **Value Streams Dashboard / DORA**.
 1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
 (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 

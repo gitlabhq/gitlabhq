@@ -83,7 +83,6 @@ resource :profile, only: [:show, :update] do
       end
     end
 
-    resources :u2f_registrations, only: [:destroy]
     resources :webauthn_registrations, only: [:destroy]
   end
 end

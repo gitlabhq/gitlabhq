@@ -394,4 +394,4 @@ See [the release permissions](#release-permissions) for more information.
 
 ### Note about storage
 
-Note that the feature is built on top of Git tags, so virtually no extra data is needed besides to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.
+This feature is built on top of Git tags, so virtually no extra data is needed besides to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.

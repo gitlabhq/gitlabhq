@@ -2703,6 +2703,67 @@ You can expedite the investigation with the [testssl.sh tool](https://testssl.sh
 1. Run `./testssl.sh --log https://specs`.
 1. Attach the log file to your support ticket.
 
+### `ERROR: Job failed: failed to pull image`
+
+This error message occurs when pulling an image from a container registry that requires authentication to access (it is not public).
+
+In the job console output the error looks like:
+
+```log
+Running with gitlab-runner 15.6.0~beta.186.ga889181a (a889181a)
+  on blue-2.shared.runners-manager.gitlab.com/default XxUrkriX
+Resolving secrets
+00:00
+Preparing the "docker+machine" executor
+00:06
+Using Docker executor with image registry.gitlab.com/security-products/api-security:2 ...
+Starting service registry.example.com/my-target-app:latest ...
+Pulling docker image registry.example.com/my-target-app:latest ...
+WARNING: Failed to pull image with policy "always": Error response from daemon: Get https://registry.example.com/my-target-app/manifests/latest: unauthorized (manager.go:237:0s)
+ERROR: Job failed: failed to pull image "registry.example.com/my-target-app:latest" with specified policies [always]: Error response from daemon: Get https://registry.example.com/my-target-app/manifests/latest: unauthorized (manager.go:237:0s)
+```
+
+**Error message**
+
+- In GitLab 15.9 and earlier, `ERROR: Job failed: failed to pull image` followed by `Error response from daemon: Get IMAGE: unauthorized`.
+
+**Solution**
+
+Authentication credentials are provided using the methods outlined in the [Access an image from a private Container Registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry) documentation section. The method used is dictated by your container registry provider and its configuration. If your using a container registry provided by a third party, such as a cloud provider (Azure, Google Could (GCP), AWS and so on), check the providers documentation for information on how to authenticate to their container registries.
+
+The following example uses the [statically defined credentials](../../../ci/docker/using_docker_images.md#use-statically-defined-credentials) authentication method. In this example the container registry is `registry.example.com` and image is `my-target-app:latest`.
+
+1. Read how to [Determine your `DOCKER_AUTH_CONFIG` data](../../../ci/docker/using_docker_images.md#determine-your-docker_auth_config-data) to understand how to compute the variable value for `DOCKER_AUTH_CONFIG`. The configuration variable `DOCKER_AUTH_CONFIG` contains the Docker JSON configuration to provide the appropriate authentication information. For example, to access private container registry: `registry.example.com` with the credentials `aGVsbG8gd29ybGQK`, the Docker JSON looks like:
+
+    ```json
+    {
+        "auths": {
+            "registry.example.com": {
+                "auth": "aGVsbG8gd29ybGQK"
+            }
+        }
+    }
+    ```
+
+1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file you should create a project [CI/CD variable](../../../ci/variables/index.md#for-a-project).
+1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If succeeded the job console shows an output like:
+
+   ```log
+   Running with gitlab-runner 15.6.0~beta.186.ga889181a (a889181a)
+     on blue-4.shared.runners-manager.gitlab.com/default J2nyww-s
+   Resolving secrets
+   00:00
+   Preparing the "docker+machine" executor
+   00:56
+   Using Docker executor with image registry.gitlab.com/security-products/api-security:2 ...
+   Starting service registry.example.com/my-target-app:latest ...
+   Authenticating with credentials from $DOCKER_AUTH_CONFIG
+   Pulling docker image registry.example.com/my-target-app:latest ...
+   Using docker image sha256:139c39668e5e4417f7d0eb0eeb74145ba862f4f3c24f7c6594ecb2f82dc4ad06 for registry.example.com/my-target-app:latest with digest registry.example.com/my-target- 
+   app@sha256:2b69fc7c3627dbd0ebaa17674c264fcd2f2ba21ed9552a472acf8b065d39039c ...
+   Waiting for services to be up and running (timeout 30 seconds)...
+   ```
+
 ## Get support or request an improvement
 
 To get support for your particular problem use the [getting help channels](https://about.gitlab.com/get-help/).

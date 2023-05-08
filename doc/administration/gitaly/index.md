@@ -474,6 +474,9 @@ The primary node is chosen to serve the request if:
 - No up-to-date nodes exist.
 - Any other error occurs during node selection.
 
+If you have a large, heavily modified repository (like a multi-gigabyte monorepo), the primary node can service most or all requests if changes come in faster than Praefect
+can replicate to the secondaries. When this occurs, CI/CD jobs and other repository traffic are bottlenecked by the capacity of the primary node.
+
 You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) using Prometheus.
 
 #### Strong consistency
