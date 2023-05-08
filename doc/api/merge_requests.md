@@ -608,7 +608,7 @@ For important notes on response data, read [Merge requests list response notes](
 Shows information about a single merge request.
 
 **Note**: the `changes_count` value in the response is a string, not an
-integer. This is because when an merge request has too many changes to display and store,
+integer. When an merge request has too many changes to display and store,
 it is capped at 1,000. In that case, the API returns the string
 `"1000+"` for the changes count.
 
@@ -1822,7 +1822,7 @@ Merge the changes between the merge request source and target branches into `ref
 ref, of the target project repository, if possible. This ref has the state the target branch would have if
 a regular merge action was taken.
 
-This is not a regular merge action given it doesn't change the merge request target branch state in any manner.
+This action isn't a regular merge action, because it doesn't change the merge request target branch state in any manner.
 
 This ref (`refs/merge-requests/:iid/merge`) isn't necessarily overwritten when submitting
 requests to this API, though it makes sure the ref has the latest possible state.
@@ -2042,7 +2042,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase"
 ```
 
-This is an asynchronous request. The API returns a `HTTP 202 Accepted` response
+This request is asynchronous. The API returns a `HTTP 202 Accepted` response
 if the request is enqueued successfully, with a response containing:
 
 ```json

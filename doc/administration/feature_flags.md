@@ -41,11 +41,15 @@ GitLab, the feature flag status may change.
 
 ## Risks when enabling features still in development
 
+Before enabling a disabled feature flag in a production GitLab environment, it is crucial to understand the potential risks involved.
+
+WARNING:
+Data corruption, stability degradation, performance degradation, and security issues may occur if you enable a feature that's disabled by default.
+
 Features that are disabled by default may change or be removed without notice in a future version of GitLab.
 
-Data corruption, stability degradation, performance degradation, or security issues might occur if
-you enable a feature that's disabled by default. Problems caused by using a default
-disabled feature aren't covered by GitLab Support.
+Features behind default-disabled feature flags are not recommended for use in a production environment
+and problems caused by using a default disabled features aren't covered by GitLab Support.
 
 Security issues found in features that are disabled by default are patched in regular releases
 and do not follow our regular [maintenance policy](../policy/maintenance.md#security-releases)

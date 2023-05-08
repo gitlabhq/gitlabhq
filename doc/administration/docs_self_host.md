@@ -76,7 +76,7 @@ To run the GitLab product documentation website in a Docker container:
 
 1. Visit `http://0.0.0.0:4000` to view the documentation website and verify that
    it works.
-1. [Redirect the help links to the new Docs site](#redirect-the-help-links-to-the-new-docs-site).
+1. [Redirect the help links to the new documentation site](#redirect-the-help-links-to-the-new-docs-site).
 
 ### Self-host the product documentation with GitLab Pages
 
@@ -84,7 +84,7 @@ You can use GitLab Pages to host the GitLab product documentation.
 
 Prerequisite:
 
-- Ensure the Pages site URL does not use a subfolder. Because of the way the docs
+- Ensure the Pages site URL does not use a subfolder. Because of the way the                       
   site is pre-compiled, the CSS and JavaScript files are relative to the
   main domain or subdomain. For example, URLs like `https://example.com/docs/`
   are not supported.
@@ -114,13 +114,13 @@ To host the product documentation site with GitLab Pages:
    | [Project website](../user/project/pages/getting_started_part_one.md#project-website-examples) | Not supported | Supported |
    | [User or group website](../user/project/pages/getting_started_part_one.md#user-and-group-website-examples) | Supported | Supported |
 
-1. [Redirect the help links to the new Docs site](#redirect-the-help-links-to-the-new-docs-site).
+1. [Redirect the help links to the new documentation site](#redirect-the-help-links-to-the-new-docs-site).
 
 ### Self-host the product documentation on your own web server
 
 Because the product documentation site is static, you can take the contents of
 `/usr/share/nginx/html` from inside the container, and use your own web server to host
-the docs wherever you want.
+the documentation wherever you want.
 
 The `html` directory should be served as is and it has the following structure:
 
@@ -135,7 +135,7 @@ In this example:
 - `index.html` is a simple HTML file that redirects to the directory containing the documentation. In this
    case, `14.5/`.
 
-To extract the HTML files of the Docs site:
+To extract the HTML files of the documentation site:
 
 1. Create the container that holds the HTML files of the documentation website:
 
@@ -158,21 +158,21 @@ To extract the HTML files of the Docs site:
    ```
 
 1. Point your web server to serve the contents of `/srv/gitlab/html/`.
-1. [Redirect the help links to the new Docs site](#redirect-the-help-links-to-the-new-docs-site).
+1. [Redirect the help links to the new documentation site](#redirect-the-help-links-to-the-new-docs-site).
 
 ## Redirect the `/help` links to the new Docs site
 
 After your local product documentation site is running,
 [redirect the help links](../user/admin_area/settings/help_page.md#redirect-help-pages)
 in the GitLab application to your local site, by using the fully qualified domain
-name as the docs URL. For example, if you used the
+name as the documentation URL. For example, if you used the
 [Docker method](#self-host-the-product-documentation-with-docker), enter `http://0.0.0.0:4000`.
 
 You don't need to append the version. GitLab detects it and appends it to
 documentation URL requests as needed. For example, if your GitLab version is
 14.5:
 
-- The GitLab Docs URL becomes `http://0.0.0.0:4000/14.5/`.
+- The GitLab documentation URL becomes `http://0.0.0.0:4000/14.5/`.
 - The link in GitLab displays as `<instance_url>/help/user/admin_area/settings/help_page#destination-requirements`.
 - When you select the link, you are redirected to
 `http://0.0.0.0:4000/14.5/ee/user/admin_area/settings/help_page/#destination-requirements`.
@@ -185,7 +185,7 @@ To test the setting, in GitLab, select a **Learn more** link. For example:
 
 ## Upgrade the product documentation to a later version
 
-Upgrading the Docs site to a later version requires downloading the newer Docker image tag.
+Upgrading the documentation site to a later version requires downloading the newer Docker image tag.
 
 ### Upgrade using Docker
 
@@ -241,13 +241,13 @@ To upgrade to a later version [using GitLab Pages](#self-host-the-product-docume
    image: registry.gitlab.com/gitlab-org/gitlab-docs:14.5
    ```
 
-1. Commit the changes, push, and GitLab Pages pulls the new Docs site version.
+1. Commit the changes, push, and GitLab Pages pulls the new documentation site version.
 
 ### Upgrade using your own web-server
 
 To upgrade to a later version [using your own web-server](#self-host-the-product-documentation-on-your-own-web-server):
 
-1. Copy the HTML files of the Docs site:
+1. Copy the HTML files of the documentation site:
 
    ```shell
    docker create -it --name gitlab_docs registry.gitlab.com/gitlab-org/gitlab-docs:14.6

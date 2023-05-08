@@ -23,7 +23,7 @@ For a video walkthrough of this process, see [Offline GitLab Installation: Downl
 
 You should [manually download the GitLab package](../../update/package/index.md#upgrade-using-a-manually-downloaded-package) and relevant dependencies using a server of the same operating system type that has access to the Internet.
 
-If your offline environment has no local network access, you must manually transport across the relevant package files through physical media, such as a USB drive, or writable DVD.
+If your offline environment has no local network access, you must manually transport the relevant package through physical media, such as a USB drive.
 
 In Ubuntu, this can be performed on a server with Internet access using the following commands:
 
@@ -200,7 +200,7 @@ done.
 
 ### Disable Version Check and Service Ping
 
-The Version Check and Service Ping services improve the GitLab user experience and ensure that
+Version Check and Service Ping improve the GitLab user experience and ensure that
 users are on the most up-to-date instances of GitLab. These two services can be turned off for offline
 environments so that they do not attempt and fail to reach out to GitLab services.
 
@@ -218,8 +218,8 @@ always fails because it uses `pool.ntp.org`. This error can be ignored but you c
 ## Enabling the package metadata database
 
 Enabling the package metadata database is required to enable [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files).
-This process will require usage of the GitLab License Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/v1/LICENSE).
-Please note the following in relation to use of the License Database:
+This process requires usage of the GitLab License Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/v1/LICENSE).
+Note the following in relation to use of the License Database:
 
 - We may change or discontinue all or any part of the License Database, at any time and without notice, at our sole discretion.
 - The License Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.

@@ -167,7 +167,7 @@ GET <route-prefix>/conans/:package_name/:package_version/:package_username/:pack
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 
 ```shell
@@ -199,7 +199,7 @@ GET <route-prefix>/conans/:package_name/:package_version/:package_username/:pack
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
 
@@ -231,7 +231,7 @@ GET <route-prefix>/conans/:package_name/:package_version/:package_username/:pack
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 
 ```shell
@@ -265,7 +265,7 @@ GET <route-prefix>/conans/:package_name/:package_version/:package_username/:pack
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
 
@@ -290,8 +290,8 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 > Introduced in GitLab 12.5.
 
-Returns a list of recipe filenames with their associated download URLs.
-This is the same payload as the [recipe manifest](#recipe-manifest) endpoint.
+Recipe download URLs return a list of recipe filenames with their associated download URLs.
+This attribute is the same payload as the [recipe manifest](#recipe-manifest) endpoint.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/download_urls
@@ -301,7 +301,7 @@ GET <route-prefix>/conans/:package_name/:package_version/:package_username/:pack
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 
 ```shell
@@ -325,8 +325,8 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 > Introduced in GitLab 12.5.
 
-Returns a list of package filenames with their associated download URLs.
-This is the same payload as the [package manifest](#package-manifest) endpoint.
+Package download URLs return a list of package filenames with their associated download URLs.
+This URL is the same payload as the [package manifest](#package-manifest) endpoint.
 
 ```plaintext
 GET <route-prefix>/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls
@@ -336,7 +336,7 @@ GET <route-prefix>/conans/:package_name/:package_version/:package_username/:pack
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
 
@@ -371,7 +371,7 @@ POST <route-prefix>/conans/:package_name/:package_version/:package_username/:pac
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 
 Example request JSON payload:
@@ -417,7 +417,7 @@ POST <route-prefix>/conans/:package_name/:package_version/:package_username/:pac
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
 
@@ -468,7 +468,7 @@ GET packages/conan/v1/files/:package_name/:package_version/:package_username/:pa
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `recipe_revision`   | string | yes | Revision of the recipe. GitLab does not yet support Conan revisions, so the default value of `0` is always used. |
 | `file_name`         | string | yes | The name and file extension of the requested file. |
@@ -501,7 +501,7 @@ PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:pa
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `recipe_revision`   | string | yes | Revision of the recipe. GitLab does not yet support Conan revisions, so the default value of `0` is always used. |
 | `file_name`         | string | yes | The name and file extension of the requested file. |
@@ -531,7 +531,7 @@ GET packages/conan/v1/files/:package_name/:package_version/:package_username/:pa
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `recipe_revision`   | string | yes | Revision of the recipe. GitLab does not yet support Conan revisions, so the default value of `0` is always used. |
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
@@ -566,7 +566,7 @@ PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:pa
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 | `recipe_revision`   | string | yes | Revision of the recipe. GitLab does not yet support Conan revisions, so the default value of `0` is always used. |
 | `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
@@ -596,7 +596,7 @@ DELETE <route-prefix>/conans/:package_name/:package_version/:package_username/:p
 | --------- | ---- | -------- | ----------- |
 | `package_name`      | string | yes | Name of a package. |
 | `package_version`   | string | yes | Version of a package. |
-| `package_username`  | string | yes | Conan username of a package. This is the `+`-separated full path of your project. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
 | `package_channel`   | string | yes | Channel of a package. |
 
 ```shell
