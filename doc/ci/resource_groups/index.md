@@ -54,7 +54,7 @@ deploy:
 With this configuration, the safety on the deployments is assured while you
 can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
-## Requirements
+## Prerequisites
 
 - The basic knowledge of the [GitLab CI/CD pipelines](../pipelines/index.md)
 - The basic knowledge of the [GitLab Environments and Deployments](../environments/index.md)

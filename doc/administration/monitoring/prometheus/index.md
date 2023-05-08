@@ -22,7 +22,7 @@ Prometheus services are on by default.
 Prometheus and its exporters don't authenticate users, and are available to anyone who can access
 them.
 
-## Overview
+## How Prometheus works
 
 Prometheus works by periodically connecting to data sources and collecting their
 performance metrics through the [various exporters](#bundled-software-metrics). To view

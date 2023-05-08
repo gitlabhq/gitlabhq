@@ -6,7 +6,7 @@ const setIframeRenderedSize = (h, w) => {
   window.parent.postMessage({ h, w }, origin);
 };
 
-const drawDiagram = (source) => {
+const drawDiagram = async (source) => {
   const element = document.getElementById('app');
   const insertSvg = (svgCode) => {
     // eslint-disable-next-line no-unsanitized/property
@@ -17,7 +17,9 @@ const drawDiagram = (source) => {
 
     setIframeRenderedSize(height, width);
   };
-  mermaid.mermaidAPI.render('mermaid', source, insertSvg);
+
+  const { svg } = await mermaid.mermaidAPI.render('mermaid', source);
+  insertSvg(svg);
 };
 
 const darkModeEnabled = () => getParameterByName('darkMode') === 'true';

@@ -17,7 +17,7 @@ NOTE:
 
 GitLab has support for automatically detecting and monitoring the Kubernetes NGINX Ingress controller. This is provided by leveraging the included VTS Prometheus metrics exporter in [version 0.9.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#09-beta1) through [0.15.x](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0150).
 
-## Requirements
+## Prerequisite
 
 [Prometheus integration](../prometheus.md) must be active.
 

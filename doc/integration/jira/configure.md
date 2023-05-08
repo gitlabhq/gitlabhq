@@ -55,17 +55,16 @@ To configure your project settings in GitLab:
    can view all issues from the specified Jira project.
 
 1. To enable [issue creation for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select **Enable Jira issue creation from vulnerabilities**.
-1. Select the **Jira issue type**. If the dropdown list is empty, select refresh (**{retry}**) and try again.
+1. Select the **Jira issue type**. If the dropdown list is empty, select **Refresh** (**{retry}**) and try again.
 1. To verify the Jira connection is working, select **Test settings**.
 1. Select **Save changes**.
 
-Your GitLab project can now interact with all Jira projects in your instance and the project now
+Your GitLab project can now interact with all Jira projects in your instance, and the project
 displays a Jira link that opens the Jira project.
 
 ## Create a Jira Cloud API token
 
-To configure the integration with Jira Cloud, you must create a Jira Cloud API token.
-
+To configure the Jira issue integration for Jira Cloud, you must have a Jira Cloud API token.
 To create a Jira Cloud API token:
 
 1. Sign in to [Atlassian](https://id.atlassian.com/manage-profile/security/api-tokens)

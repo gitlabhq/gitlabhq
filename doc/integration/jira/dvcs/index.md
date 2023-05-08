@@ -58,11 +58,10 @@ To configure Jira for DVCS:
 1. For **Client ID**, use the [**Application ID** value](#create-a-gitlab-application-for-dvcs).
 1. For **Client Secret**, use the [**Secret** value](#create-a-gitlab-application-for-dvcs).
 1. Ensure that all other checkboxes are selected.
-1. To create the DVCS account, select **Add** and then **Continue**.
-1. Jira redirects to GitLab where you have to confirm the authorization.
-   GitLab then redirects back to Jira where the synced
-   projects should display in the new account. The initial sync takes a few minutes.
+1. To create the DVCS account, select **Add**, then **Continue**.
 
+Jira redirects to GitLab where you have to confirm the authorization. GitLab then redirects back to Jira
+where the synced projects are displayed in the new account. The initial sync takes a few minutes.
 After the initial sync, it can take up to 60 minutes to refresh.
 
 To connect additional GitLab projects from other GitLab top-level groups or
@@ -70,11 +69,9 @@ personal namespaces, repeat the previous steps with additional Jira DVCS account
 
 ## Refresh data imported to Jira
 
-Jira imports the commits and branches every 60 minutes for your projects. You
-can refresh the data manually from the Jira interface:
+Jira imports commits and branches for GitLab projects every 60 minutes. To refresh the data manually in Jira:
 
 1. Sign in to your Jira instance as the user you configured the integration with.
 1. Go to **Settings (gear) > Applications**.
 1. Select **DVCS accounts**.
-1. In the table, for the repository you want to refresh, in the **Last Activity**
-   column, select the icon.
+1. In the **Last activity** column, next to the repository you want to refresh, select **Refresh** (**{retry}**).

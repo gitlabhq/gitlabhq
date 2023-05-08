@@ -23,7 +23,7 @@ NOTE:
 `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
 and are scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead.
 
-## Requirements
+## Prerequisites
 
 - Account on GitLab.
 - Access to a cloud provider that supports OIDC to configure authorization and create roles.

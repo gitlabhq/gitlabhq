@@ -17,7 +17,7 @@ When a protected environment requires one or more approvals, all deployments to 
 NOTE:
 See the [epic](https://gitlab.com/groups/gitlab-org/-/epics/6832) for planned features.
 
-## Requirements
+## Prerequisites
 
 - Basic knowledge of [GitLab Environments and Deployments](index.md).
 - Basic knowledge of [Protected Environments](protected_environments.md).

@@ -4,18 +4,16 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Canary Deployments **(FREE)**
+# Canary deployments **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1659) in GitLab 9.1.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212320) from GitLab Premium to GitLab Free in 13.8.
 
-A popular [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
+Canary deployments are a popular [continuous deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of
 your application.
 
-## Overview
-
-When embracing [Continuous Delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/), a company needs to decide what
+When embracing [continuous delivery](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/), an organization needs to decide what
 type of deployment strategy to use. One of the most popular strategies is canary
 deployments, where a small portion of the fleet is updated to the new version
 first. This subset, the canaries, then serve as the proverbial

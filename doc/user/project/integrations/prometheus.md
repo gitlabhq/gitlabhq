@@ -35,7 +35,7 @@ See [Prometheus cluster integration](../../clusters/integrations.md#prometheus-c
 
 ### Manual configuration of Prometheus
 
-#### Requirements
+#### Prerequisites
 
 Integration with Prometheus requires the following:
 

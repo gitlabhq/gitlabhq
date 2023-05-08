@@ -124,13 +124,12 @@ describe('Release block assets', () => {
   });
 
   describe('links', () => {
-    const containsExternalSourceIndicator = () =>
-      wrapper.find('[data-testid="external-link-indicator"]').exists();
+    const findAllExternalIcons = () => wrapper.findAll('[data-testid="external-link-indicator"]');
 
     beforeEach(() => createComponent(defaultProps));
 
-    it('renders with an external source indicator (except for sections with no title)', () => {
-      expect(containsExternalSourceIndicator()).toBe(true);
+    it('renders with an external source indicator', () => {
+      expect(findAllExternalIcons()).toHaveLength(defaultProps.assets.count);
     });
   });
 });

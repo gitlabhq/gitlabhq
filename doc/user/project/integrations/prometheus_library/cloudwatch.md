@@ -17,7 +17,7 @@ with the [Elastic Load Balancer](https://aws.amazon.com/elasticloadbalancing/) (
 This is provided by leveraging the official [Cloudwatch exporter](https://github.com/prometheus/cloudwatch_exporter), which translates [Cloudwatch metrics](https://aws.amazon.com/cloudwatch/) into
 a Prometheus readable form.
 
-## Requirements
+## Prerequisite
 
 You must enable the [Prometheus service](../prometheus.md).
 

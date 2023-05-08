@@ -75,7 +75,7 @@ information directly in the merge request.
 | [Access to Security Dashboard page](#security-dashboard) | No | Yes |
 | [Access to Dependency List page](../dependency_list/index.md) | No | Yes |
 
-## Requirements
+## Prerequisites
 
 To enable container scanning in your pipeline, you need the following:
 
@@ -106,7 +106,7 @@ The included template:
 
 - Creates a `container_scanning` job in your CI/CD pipeline.
 - Pulls the built Docker image from your project's [container registry](../../packages/container_registry/index.md)
-  (see [requirements](#requirements)) and scans it for possible vulnerabilities.
+  (see [prerequisites](#prerequisites)) and scans it for possible vulnerabilities.
 
 GitLab saves the results as a
 [Container Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
@@ -527,7 +527,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use container scanning in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#prerequisites).
 - To configure a local Docker container registry with copies of the container scanning images. You
   can find these images in their respective registries:
 

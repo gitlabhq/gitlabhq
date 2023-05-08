@@ -13,8 +13,6 @@ controlled by an external service that permits access based on project
 classification and user access. GitLab provides a way to check project
 authorization with your own defined service.
 
-## Overview
-
 After the external service is configured and enabled, when a project is
 accessed, a request is made to the external service with the user information
 and project classification label assigned to the project. When the service

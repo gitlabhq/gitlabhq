@@ -161,7 +161,7 @@
     "marked": "^4.0.18",
     "mathjax": "3",
     "mdurl": "^1.0.1",
-    "mermaid": "^9.1.3",
+    "mermaid": "10.1.0",
     "micromatch": "^4.0.5",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.30.1",

@@ -21,7 +21,7 @@ open source Certificate Authority.
 WARNING:
 This feature covers only certificates for **custom domains**, not the wildcard certificate required to run [Pages daemon](../../../../administration/pages/index.md) **(FREE SELF)**. Wildcard certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
 
-## Requirements
+## Prerequisites
 
 Before you can enable automatic provisioning of an SSL certificate for your domain, make sure you have:
 

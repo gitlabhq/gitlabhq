@@ -229,6 +229,20 @@ The table shows a list of related workflow items for the selected stage. Based o
 - Issues
 - Merge requests
 
+### Data filters
+
+You can filter value stream analytics to view data that matches specific criteria. The following filters are supported:
+
+- Date range
+- Project
+- Assignee
+- Author
+- Milestone
+- Label
+
+NOTE:
+For the "Tasks by type" chart, only the Date range and Project selector filters are available. Labels and other filters are not applied, and you need to select labels separately from the dropdown list next to the chart.
+
 ## Value stream analytics metrics
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.

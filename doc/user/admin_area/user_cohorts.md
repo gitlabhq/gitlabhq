@@ -8,14 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 You can analyze your users' GitLab activities over time.
 
-To view user cohorts:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Overview > Users**.
-1. Select the **Cohorts** tab.
-
-## Overview
-
 How do you interpret the user cohorts table? Let's review an example with the
 following user cohorts:
 
@@ -37,3 +29,11 @@ How do we measure the activity of users? GitLab considers a user active if:
   requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8).
 - The user uses the API.
 - The user uses the GraphQL API.
+
+## View user cohorts
+
+To view user cohorts:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Overview > Users**.
+1. Select the **Cohorts** tab.

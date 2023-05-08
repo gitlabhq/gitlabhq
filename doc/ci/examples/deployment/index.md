@@ -13,7 +13,7 @@ used with GitLab CI/CD.
 
 Dpl can be used to deploy to any of the [supported providers](https://github.com/travis-ci/dpl#supported-providers).
 
-## Requirements
+## Prerequisite
 
 To use Dpl you need at least Ruby 1.9.3 with ability to install gems.
 

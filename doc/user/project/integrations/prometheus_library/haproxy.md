@@ -14,7 +14,7 @@ in GitLab 14.7, and is planned for removal in GitLab 16.0.
 
 GitLab has support for automatically detecting and monitoring HAProxy. This is provided by leveraging the [HAProxy Exporter](https://github.com/prometheus/haproxy_exporter), which translates HAProxy statistics into a Prometheus readable form.
 
-## Requirements
+## Prerequisite
 
 The [Prometheus service](../prometheus.md) must be enabled.
 

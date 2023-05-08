@@ -33,6 +33,8 @@ module Gitlab
 
       delegate :project, :user, :pipeline, :runner, to: :build
       delegate :source_ref, :source_ref_path, to: :pipeline
+      delegate :public_key, to: :key
+      delegate :namespace, to: :project
 
       def reserved_claims
         now = Time.now.to_i
@@ -86,16 +88,8 @@ module Gitlab
         end
       end
 
-      def public_key
-        key.public_key
-      end
-
       def kid
         public_key.to_jwk[:kid]
-      end
-
-      def namespace
-        project.namespace
       end
 
       def ref_type

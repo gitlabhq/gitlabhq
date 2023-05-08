@@ -17,7 +17,7 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 NOTE:
 NGINX Ingress versions prior to 0.16.0 offer an included [VTS Prometheus metrics exporter](nginx_ingress_vts.md), which exports metrics different than the built-in metrics.
 
-## Requirements
+## Prerequisite
 
 [Prometheus integration](../prometheus.md) must be active.
 

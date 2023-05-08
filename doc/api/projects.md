@@ -132,12 +132,14 @@ When the user is authenticated and `simple` is not set this returns something li
 [
   {
     "id": 4,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "name": "Diaspora Client",
     "name_with_namespace": "Diaspora / Diaspora Client",
     "path": "diaspora-client",
     "path_with_namespace": "diaspora/diaspora-client",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "default_branch": "main",
     "tag_list": [ //deprecated, use `topics` instead
       "example",
@@ -352,7 +354,8 @@ GET /users/:user_id/projects
 [
   {
     "id": 4,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
@@ -388,6 +391,7 @@ GET /users/:user_id/projects
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "import_url": null,
@@ -457,7 +461,8 @@ GET /users/:user_id/projects
   },
   {
     "id": 6,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
@@ -493,6 +498,7 @@ GET /users/:user_id/projects
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "import_url": null,
@@ -626,7 +632,8 @@ Example response:
 [
   {
     "id": 4,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
@@ -662,6 +669,7 @@ Example response:
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
@@ -720,7 +728,8 @@ Example response:
   },
   {
     "id": 6,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "private",
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
@@ -756,6 +765,7 @@ Example response:
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
@@ -860,7 +870,8 @@ GET /projects/:id
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -906,6 +917,7 @@ GET /projects/:id
     "next_run_at": "2020-01-07T21:42:58.658Z"
   },
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -1592,7 +1604,8 @@ Example responses:
 [
   {
     "id": 3,
-    "description": null,
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
     "default_branch": "master",
     "visibility": "internal",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -1623,6 +1636,7 @@ Example responses:
     "container_registry_access_level": "disabled",
     "security_and_compliance_access_level": "disabled",
     "created_at": "2013-09-30T13:46:02Z",
+    "updated_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
@@ -1692,7 +1706,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -1723,6 +1738,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -1798,7 +1814,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -1829,6 +1846,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -1979,7 +1997,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -2015,6 +2034,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -2108,7 +2128,8 @@ Example response:
 ```json
 {
   "id": 3,
-  "description": null,
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "default_branch": "master",
   "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
@@ -2144,6 +2165,7 @@ Example response:
   "container_registry_access_level": "disabled",
   "security_and_compliance_access_level": "disabled",
   "created_at": "2013-09-30T13:46:02Z",
+  "updated_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
@@ -2760,12 +2782,14 @@ Example response:
 ```json
   {
   "id": 7,
-  "description": "",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "description_html": "<p data-sourcepos=\"1:1-1:56\" dir=\"auto\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
   "name": "hello-world",
   "name_with_namespace": "cute-cats / hello-world",
   "path": "hello-world",
   "path_with_namespace": "cute-cats/hello-world",
   "created_at": "2020-10-15T16:25:22.415Z",
+  "updated_at": "2020-10-15T16:25:22.415Z",
   "default_branch": "master",
   "tag_list": [], //deprecated, use `topics` instead
   "topics": [],

@@ -2552,6 +2552,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(project.id)
         expect(json_response['description']).to eq(project.description)
+        expect(json_response['description_html']).to eq(project.description_html)
         expect(json_response['default_branch']).to eq(project.default_branch)
         expect(json_response['tag_list']).to be_an Array # deprecated in favor of 'topics'
         expect(json_response['topics']).to be_an Array
@@ -2573,6 +2574,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['container_registry_access_level']).to be_present
         expect(json_response['created_at']).to be_present
+        expect(json_response['updated_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
         expect(json_response['shared_runners_enabled']).to be_present
         expect(json_response['group_runners_enabled']).to be_present

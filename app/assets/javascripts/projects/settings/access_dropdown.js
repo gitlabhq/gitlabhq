@@ -408,14 +408,16 @@ export default class AccessDropdown {
 
       // Has to be checked against server response
       // because the selected item can be in filter results
-      usersResponse.forEach((response) => {
-        // Add is it has not been added
-        if (map.indexOf(LEVEL_TYPES.USER + response.id) === -1) {
-          const user = { ...response };
-          user.type = LEVEL_TYPES.USER;
-          users.push(user);
-        }
-      });
+      if (gon.current_project_id) {
+        usersResponse.forEach((response) => {
+          // Add is it has not been added
+          if (map.indexOf(LEVEL_TYPES.USER + response.id) === -1) {
+            const user = { ...response };
+            user.type = LEVEL_TYPES.USER;
+            users.push(user);
+          }
+        });
+      }
 
       if (groups.length) {
         if (roles.length) {

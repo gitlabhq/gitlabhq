@@ -26,7 +26,7 @@ instructions from where to fetch or where to push the large file.
 
 Documentation for GitLab instance administrators is under [LFS administration doc](../../../administration/lfs/index.md).
 
-## Requirements
+## Prerequisites
 
 - Git LFS must be [enabled in project settings](../../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
 - [Git LFS client](https://git-lfs.com/) version 1.0.1 or higher must be installed.

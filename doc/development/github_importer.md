@@ -18,7 +18,7 @@ difference between these two importers is:
 - The sequential importer does all the work in a single thread, so it's more suited for debugging purposes or Rake tasks.
 - The parallel importer uses Sidekiq.
 
-## Requirements
+## Prerequisites
 
 - GitLab CE 10.2.0 or newer.
 - Sidekiq workers that process the `github_importer` and

@@ -42,7 +42,6 @@ itself: # project
     - runners_token_encrypted
     - storage_version
     - topic_list
-    - updated_at
     - mirror_branch_regex
   remapped_attributes:
     avatar: avatar_url
@@ -75,6 +74,7 @@ itself: # project
     - tag_list
     - topics
     - web_url
+    - description_html
 
 build_auto_devops: # auto_devops
   unexposed_attributes:

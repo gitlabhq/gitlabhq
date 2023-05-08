@@ -20,7 +20,7 @@ We also highly recommend that you use the Omnibus GitLab packages. We
 optimize them specifically for GitLab, and we take care of upgrading GitLab
 Pages to the latest supported version.
 
-## Overview
+## How GitLab Pages works
 
 GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a lightweight HTTP server that listens on an external IP address and provides support for
 custom domains and certificates. It supports dynamic certificates through

@@ -34,7 +34,7 @@ Fail fast testing gives you a faster feedback loop from the pipeline. It lets yo
 know quickly that the new tests are passing and the new functionality did not break
 other tests.
 
-## Requirements
+## Prerequisites
 
 This template requires:
 

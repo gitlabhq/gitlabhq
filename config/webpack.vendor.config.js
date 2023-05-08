@@ -35,8 +35,6 @@ module.exports = {
       'jquery/dist/jquery.slim.js',
       'katex',
       'lodash',
-      'mermaid',
-      'moment-mini',
       'mousetrap',
       'pikaday',
       'popper.js',

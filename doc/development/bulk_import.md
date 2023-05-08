@@ -17,8 +17,6 @@ including projects, from one GitLab instance to another.
 
 ## Design decisions
 
-### Overview
-
 The following architectural diagram illustrates how the Group Migration
 works with a set of [ETL](#etl) Pipelines leveraging from the current [GitLab APIs](#api).
 

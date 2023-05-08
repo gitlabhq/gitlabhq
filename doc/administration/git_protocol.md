@@ -17,7 +17,7 @@ More details about the new features and improvements are available in
 the [Google Open Source Blog](https://opensource.googleblog.com/2018/05/introducing-git-protocol-version-2.html)
 and the [protocol documentation](https://github.com/git/git/blob/master/Documentation/gitprotocol-v2.txt).
 
-## Requirements
+## Prerequisites
 
 From the client side, `git` `v2.18.0` or newer must be installed.
 

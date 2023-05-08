@@ -14,7 +14,7 @@ This guide is for Omnibus GitLab installations. If you have installed
 GitLab from source, see
 [GitLab Pages administration for source installations](source.md).
 
-## Overview
+## The GitLab Pages daemon
 
 GitLab Pages makes use of the [GitLab Pages daemon](https://gitlab.com/gitlab-org/gitlab-pages), a basic HTTP server
 written in Go that can listen on an external IP address and provide support for
@@ -299,6 +299,10 @@ control over how the Pages daemon runs and serves content in your environment.
 | `rate_limit_source_ip_burst`            | Rate limit per source IP maximum burst allowed per second. |
 | `rate_limit_domain`                     | Rate limit per domain in number of requests per second. Set to `0` to disable this feature. |
 | `rate_limit_domain_burst`               | Rate limit per domain maximum burst allowed per second. |
+| `rate_limit_tls_source_ip`              | Rate limit per source IP in number of TLS connections per second. Set to `0` to disable this feature. |
+| `rate_limit_tls_source_ip_burst`        | Rate limit per source IP maximum TLS connections burst allowed per second. |
+| `rate_limit_tls_domain`                 | Rate limit per domain in number of TLS connections per second. Set to `0` to disable this feature. |
+| `rate_limit_tls_domain_burst`           | Rate limit per domain maximum TLS connections burst allowed per second. |
 | `server_read_timeout`                   | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. Default: `5s` |
 | `server_read_header_timeout`            | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. Default: `1s` |
 | `server_write_timeout`                  | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. Default: `0` |
@@ -1138,14 +1142,14 @@ than GitLab to prevent XSS attacks.
 
 You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
 uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
-requests that exceed the specified limits are reported but not rejected.
+requests or TLS connections that exceed the specified limits are reported but not rejected.
 
 GitLab Pages supports the following types of rate limiting:
 
-- Per `source_ip`. It limits how many requests are allowed from the single client IP address.
-- Per `domain`. It limits how many requests are allowed per domain hosted on GitLab Pages. It can be a custom domain like `example.com`, or group domain like `group.gitlab.io`.
+- Per `source_ip`. It limits how many requests or TLS connections are allowed from the single client IP address.
+- Per `domain`. It limits how many requests or TLS connections are allowed per domain hosted on GitLab Pages. It can be a custom domain like `example.com`, or group domain like `group.gitlab.io`.
 
-Rate limits are enforced using the following:
+HTTP request-based rate limits are enforced using the following:
 
 - `rate_limit_source_ip`: Set the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
 - `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
@@ -1153,7 +1157,15 @@ Rate limits are enforced using the following:
 - `rate_limit_domain`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
 - `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 
-#### Enable source-IP rate limits
+TLS connection-based rate limits are enforced using the following:
+
+- `rate_limit_tls_source_ip`: Set the maximum threshold in number of TLS connections per client IP per second. Set to 0 to disable this feature.
+- `rate_limit_tls_source_ip_burst`: Sets the maximum threshold of number of TLS connections allowed in an initial outburst of TLS connections per client IP.
+  For example, when you load a web page from different web browsers at the same time.
+- `rate_limit_tls_domain`: Set the maximum threshold in number of TLS connections per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_tls_domain_burst`: Sets the maximum threshold of number of TLS connections allowed in an initial outburst of TLS connections per hosted pages domain.
+
+#### Enable HTTP requests rate limits by source-IP
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
 
@@ -1164,16 +1176,9 @@ Rate limits are enforced using the following:
    gitlab_pages['rate_limit_source_ip_burst'] = 600
    ```
 
-1. To reject requests that exceed the specified limits, enable the `FF_ENFORCE_IP_RATE_LIMITS` feature flag in
-   `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['env'] = {'FF_ENFORCE_IP_RATE_LIMITS' => 'true'}
-   ```
-
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
-#### Enable domain rate limits
+#### Enable HTTP requests rate limits by domain
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/630) in GitLab 14.7.
 
@@ -1184,11 +1189,30 @@ Rate limits are enforced using the following:
    gitlab_pages['rate_limit_domain_burst'] = 5000
    ```
 
-1. To reject requests that exceed the specified limits, enable the `FF_ENFORCE_DOMAIN_RATE_LIMITS` feature flag in
-   `/etc/gitlab/gitlab.rb`:
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+#### Enable TLS connections rate limits by source-IP
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
+
+1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_pages['env'] = {'FF_ENFORCE_DOMAIN_RATE_LIMITS' => 'true'}
+   gitlab_pages['rate_limit_tls_source_ip'] = 20.0
+   gitlab_pages['rate_limit_tls_source_ip_burst'] = 600
+   ```
+
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+#### Enable TLS connections rate limits by domain
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
+
+1. Set rate limits in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['rate_limit_tls_domain'] = 1000
+   gitlab_pages['rate_limit_tls_domain_burst'] = 5000
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).

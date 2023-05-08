@@ -14,7 +14,7 @@ in GitLab 14.7, and is planned for removal in GitLab 16.0.
 
 GitLab has support for automatically detecting and monitoring NGINX. This is provided by leveraging the [NGINX VTS exporter](https://github.com/hnlq715/nginx-vts-exporter), which translates [VTS statistics](https://github.com/vozlt/nginx-module-vts) into a Prometheus readable form.
 
-## Requirements
+## Prerequisite
 
 The [Prometheus service](../prometheus.md) must be enabled.
 

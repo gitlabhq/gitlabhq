@@ -8,21 +8,12 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
+- You can configure GitLab so your users can sign in with their Kerberos credentials.
+- You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
+
 WARNING:
 GitLab CI/CD doesn't work with a Kerberos-enabled GitLab instance unless the integration is
 [set to use a dedicated port](#http-git-access-with-kerberos-token-passwordless-authentication).
-
-## Overview
-
-[Kerberos](https://web.mit.edu/kerberos/) is a secure method for authenticating a request for a service in a
-computer network. Kerberos was developed in the Athena Project at the
-[Massachusetts Institute of Technology (MIT)](https://web.mit.edu/). The name is taken from Greek
-mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
-
-## Use-cases
-
-- GitLab can be configured to allow your users to sign with their Kerberos credentials.
-- You can use Kerberos to [prevent](https://web.mit.edu/sipb/doc/working/guide/guide/node20.html) anyone from intercepting or eavesdropping on the transmitted password.
 
 ## Configuration
 

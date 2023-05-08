@@ -35,7 +35,7 @@ The method described on this guide rewrites Git history. Make
 sure to back up your repository before beginning and use it at your
 own risk.
 
-## Requirements
+## Prerequisites
 
 Before beginning, make sure:
 

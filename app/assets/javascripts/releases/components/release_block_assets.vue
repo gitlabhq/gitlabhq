@@ -83,8 +83,17 @@ export default {
     linksForType(type) {
       return this.assets.links.filter((l) => l.linkType === type);
     },
+    getTooltipTitle(section) {
+      return section.title
+        ? this.$options.externalLinkTooltipText
+        : this.$options.downloadTooltipText;
+    },
+    getIconName(section) {
+      return section.title ? 'external-link' : 'download';
+    },
   },
   externalLinkTooltipText: __('This link points to external content'),
+  downloadTooltipText: __('Download'),
 };
 </script>
 
@@ -121,13 +130,12 @@ export default {
                 <gl-icon :name="section.iconName" class="gl-mr-2 gl-flex-shrink-0 gl-flex-grow-0" />
                 {{ link.name }}
                 <gl-icon
-                  v-if="section.title"
                   v-gl-tooltip
-                  name="external-link"
-                  :aria-label="$options.externalLinkTooltipText"
-                  :title="$options.externalLinkTooltipText"
+                  :name="getIconName(section)"
+                  :aria-label="getTooltipTitle(section)"
+                  :title="getTooltipTitle(section)"
                   data-testid="external-link-indicator"
-                  class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0 gl-text-gray-400"
+                  class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0"
                 />
               </gl-link>
             </li>

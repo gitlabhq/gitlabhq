@@ -9,8 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy.
 
-## Overview
-
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're

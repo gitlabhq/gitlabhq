@@ -404,8 +404,8 @@ RSpec.shared_examples 'edits content using the content editor' do
       expect(iframe['src']).to include('/-/sandbox/mermaid')
 
       within_frame(iframe) do
-        expect(find('svg').text).to include('JohnDoe12')
-        expect(find('svg').text).to include('HelloWorld34')
+        expect(find('svg .nodes').text).to include('JohnDoe12')
+        expect(find('svg .nodes').text).to include('HelloWorld34')
       end
 
       expect(iframe['height'].to_i).to be > 100
@@ -415,8 +415,8 @@ RSpec.shared_examples 'edits content using the content editor' do
       within_frame(iframe) do
         page.has_content?('JaneDoe34')
 
-        expect(find('svg').text).to include('JaneDoe34')
-        expect(find('svg').text).to include('HelloWorld56')
+        expect(find('svg .nodes').text).to include('JaneDoe34')
+        expect(find('svg .nodes').text).to include('HelloWorld56')
       end
     end
 
@@ -431,8 +431,8 @@ RSpec.shared_examples 'edits content using the content editor' do
       iframe = find(content_editor_testid).find('iframe')
 
       within_frame(iframe) do
-        expect(find('svg').text).to include('JohnDoe12')
-        expect(find('svg').text).to include('HelloWorld34')
+        expect(find('svg .nodes').text).to include('JohnDoe12')
+        expect(find('svg .nodes').text).to include('HelloWorld34')
       end
     end
   end

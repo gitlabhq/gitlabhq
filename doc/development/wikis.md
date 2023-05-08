@@ -9,8 +9,6 @@ description: "GitLab's development guidelines for Wikis"
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227027) in GitLab 13.5.
 
-## Overview
-
 The wiki functionality in GitLab is based on [Gollum 4.x](https://github.com/gollum/gollum/).
 It's used in the [Gitaly](gitaly.md) Ruby service, and accessed from the Rails app through Gitaly RPC calls.
 

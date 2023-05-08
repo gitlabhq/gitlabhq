@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab can be set up to allow users to comment on issues and merge requests by
 replying to notification emails.
 
-## Requirement
+## Prerequisite
 
 Make sure [incoming email](incoming_email.md) is set up.
 
