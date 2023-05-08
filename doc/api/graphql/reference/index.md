@@ -251,6 +251,16 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 
+### `Query.instanceExternalAuditEventDestinations`
+
+Instance level external audit event destinations.
+
+Returns [`InstanceExternalAuditEventDestinationConnection`](#instanceexternalauditeventdestinationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.instanceSecurityDashboard`
 
 Fields related to Instance Security Dashboard.
@@ -8803,6 +8813,29 @@ The edge type for [`IncidentManagementOncallShift`](#incidentmanagementoncallshi
 | ---- | ---- | ----------- |
 | <a id="incidentmanagementoncallshiftedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="incidentmanagementoncallshiftedgenode"></a>`node` | [`IncidentManagementOncallShift`](#incidentmanagementoncallshift) | The item at the end of the edge. |
+
+#### `InstanceExternalAuditEventDestinationConnection`
+
+The connection type for [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceexternalauditeventdestinationconnectionedges"></a>`edges` | [`[InstanceExternalAuditEventDestinationEdge]`](#instanceexternalauditeventdestinationedge) | A list of edges. |
+| <a id="instanceexternalauditeventdestinationconnectionnodes"></a>`nodes` | [`[InstanceExternalAuditEventDestination]`](#instanceexternalauditeventdestination) | A list of nodes. |
+| <a id="instanceexternalauditeventdestinationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InstanceExternalAuditEventDestinationEdge`
+
+The edge type for [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceexternalauditeventdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="instanceexternalauditeventdestinationedgenode"></a>`node` | [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination) | The item at the end of the edge. |
 
 #### `IssuableResourceLinkConnection`
 

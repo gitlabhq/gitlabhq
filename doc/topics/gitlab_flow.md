@@ -36,9 +36,12 @@ crucial for several reasons:
 A structured workflow promotes organization, efficiency, and code
 quality, leading to a more successful and streamlined development process.
 
-Because the default workflow is not specifically defined, many organizations
-end up with workflows that are too complicated, not clearly defined, or
-not integrated with their issue tracking systems.
+If the default workflow is not specifically defined, many organizations
+end up with workflows that are:
+
+- Too complicated.
+- Not clearly defined.
+- Not integrated with their issue tracking systems.
 
 Your organization can use GitLab with any workflow you choose.
 
@@ -57,16 +60,16 @@ repository.
 
 Developers create separate branches for each feature or bugfix,
 keeping the 'main' branch stable. When a feature is complete, the
-developer submits a pull request or merge request to integrate the
-changes back into the `main` branch after a code review.
+developer submits a merge request to integrate the
+changes back into `main` after a code review.
 
 ### Forking workflow
 
 Commonly used in open-source projects, this workflow allows external
 contributors to work without direct access to the main repository.
-Developers create a fork (a personal copy) of the main repository,
-make changes in their fork, and then submit a pull request or merge
-request to have their changes integrated into the main repository.
+Developers create a fork (personal copy) of the main repository and
+make changes in it. They then submit a merge request to have those changes
+integrated into the main repository.
 
 ### Git flow workflow
 
@@ -247,7 +250,7 @@ In this case, deploy the `staging` branch to your staging environment.
 To deploy to pre-production, create a merge request from the `staging` branch to the `pre-prod` branch.
 Go live by merging the `pre-prod` branch into the `production` branch.
 This workflow, where commits only flow downstream, ensures that everything is tested in all environments.
-If you need to cherry-pick a commit with a hotfix, it is common to develop it on a feature branch and merge it into `production` with a merge request.
+To cherry-pick a commit with a hotfix, develop it on a feature branch and merge it into `production` with a merge request.
 In this case, do not delete the feature branch yet.
 If `production` passes automatic testing, you then merge the feature branch into the other branches.
 If this is not possible because more manual testing is required, you can send merge requests from the feature branch to the downstream branches.
@@ -279,7 +282,7 @@ Create stable branches using `main` as a starting point, and branch as late as p
 By doing this, you minimize the length of time during which you have to apply bug fixes to multiple branches.
 After announcing a release branch, only add serious bug fixes to the branch.
 If possible, first merge these bug fixes into `main`, and then cherry-pick them into the release branch.
-If you start by merging into the release branch, you might forget to cherry-pick them into `main`, and then you'd encounter the same bug in subsequent releases.
+If you initially merged into the release branch and then forgot to cherry-pick to `main`, you'd encounter the same bug in subsequent releases.
 Merging into `main` and then cherry-picking into release is called an "upstream first" policy, which is also practiced by [Google](https://www.chromium.org/chromium-os/chromiumos-design-docs/upstream-first/) and [Red Hat](https://www.redhat.com/en/blog/a-community-for-using-openstack-with-red-hat-rdo).
 Every time you include a bug fix in a release branch, increase the patch version (to comply with [Semantic Versioning](https://semver.org/)) by setting a new tag.
 Some projects also have a stable branch that points to the same commit as the latest released branch.
@@ -304,7 +307,7 @@ If the review reveals shortcomings, anyone can commit and push a fix.
 Usually, the person to do this is the creator of the merge request.
 The diff in the merge request automatically updates when new commits are pushed to the branch.
 
-When you are ready for your feature branch to be merged, assign the merge request to the person who knows most about the codebase you are changing.
+When you are ready to merge your feature branch, assign the merge request to a maintainer for the project.
 Also, mention any other people from whom you would like feedback.
 After the assigned person feels comfortable with the result, they can merge the branch.
 If the assigned person does not feel comfortable, they can request more changes or close the merge request without merging.
@@ -441,7 +444,7 @@ Three reasons to merge in `main`:
 1. Resolving merge conflicts.
 1. Updating long-running branches.
 
-If you need to use some code that was introduced in `main` after you created the feature branch, you can often solve this by just cherry-picking a commit.
+To use some code that was introduced in `main` after you created the feature branch, cherry-pick a commit.
 
 If your feature branch has a merge conflict, creating a merge commit is a standard way of solving this.
 
@@ -469,7 +472,7 @@ In conclusion, you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean, but your history should represent what actually happened.
 Developing software happens in small, messy steps, and it is OK to have your history reflect this.
 You can use tools to view the network graphs of commits and understand the messy history that created your code.
-If you rebase code, the history is incorrect, and there is no way for tools to remedy this because they can't deal with changing commit identifiers.
+If you rebase code, the commit history changes. Because of changed commit identifiers, tools can't restore the commit history.
 
 ## Commit often and push frequently
 
@@ -501,8 +504,8 @@ The words "change," "improve," "fix," and "refactor" don't add much information 
 For more information, see Tim Pope's excellent [note about formatting commit messages](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 To add more context to a commit message, consider adding information regarding the
-origin of the change. For example, the URL of a GitLab issue, or a Jira issue number,
-containing more information for users who need in-depth context about the change.
+origin of the change, such the GitLab issue URL or Jira issue number. That way, you provide 
+more information for users who need in-depth context about the change.
 
 For example:
 

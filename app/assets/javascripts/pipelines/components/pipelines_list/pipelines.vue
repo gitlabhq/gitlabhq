@@ -189,6 +189,10 @@ export default {
       );
     },
 
+    shouldRenderPagination() {
+      return !this.isLoading && !this.hasError;
+    },
+
     emptyTabMessage() {
       if (this.scope === this.$options.scopes.finished) {
         return s__('Pipelines|There are currently no finished pipelines.');
@@ -381,10 +385,8 @@ export default {
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.error"
         :svg-path="errorStateSvgPath"
-        :title="
-          s__(`Pipelines|There was an error fetching the pipelines.
-        Try again in a few moments or contact your support team.`)
-        "
+        :title="s__('Pipelines|There was an error fetching the pipelines.')"
+        :description="s__('Pipelines|Try again in a few moments or contact your support team.')"
       />
 
       <gl-empty-state

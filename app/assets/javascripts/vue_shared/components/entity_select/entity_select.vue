@@ -75,6 +75,7 @@ export default {
   computed: {
     selected: {
       set(value) {
+        this.$emit('input', value);
         this.selectedValue = value;
         this.selectedText =
           value === null ? null : this.items.find((item) => item.value === value).text;
@@ -160,6 +161,7 @@ export default {
     },
     onReset() {
       this.selected = null;
+      this.$emit('input', null);
     },
     onBottomReached() {
       this.fetchEntities(this.page + 1);

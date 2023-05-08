@@ -159,6 +159,7 @@ gemnasium-maven-dependency_scanning:
     - '**/requirements.txt'
     - '**/requirements.pip'
     - '**/Pipfile'
+    - '**/Pipfile.lock'
     - '**/requires.txt'
     - '**/setup.py'
     - '**/poetry.lock'

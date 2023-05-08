@@ -750,8 +750,9 @@ describe('Pipelines', () => {
       });
 
       it('shows error state', () => {
-        expect(findEmptyState().text()).toBe(
-          'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
+        expect(findEmptyState().props('title')).toBe('There was an error fetching the pipelines.');
+        expect(findEmptyState().props('description')).toBe(
+          'Try again in a few moments or contact your support team.',
         );
       });
     });
@@ -775,8 +776,9 @@ describe('Pipelines', () => {
       });
 
       it('shows error state', () => {
-        expect(findEmptyState().text()).toBe(
-          'There was an error fetching the pipelines. Try again in a few moments or contact your support team.',
+        expect(findEmptyState().props('title')).toBe('There was an error fetching the pipelines.');
+        expect(findEmptyState().props('description')).toBe(
+          'Try again in a few moments or contact your support team.',
         );
       });
     });

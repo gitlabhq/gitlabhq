@@ -150,9 +150,9 @@ Parameters:
 | ------------ | ---------------- | ---------------------- | ----------- |
 | `id`         | integer/string   | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`       | string           | **{check-circle}** Yes | New deploy token's name |
+| `scopes`     | array of strings | **{check-circle}** Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 | `expires_at` | datetime         | **{dotted-circle}** No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `username`   | string           | **{dotted-circle}** No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
-| `scopes`     | array of strings | **{check-circle}** Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 
 Example request:
 
@@ -306,9 +306,9 @@ Parameters:
 | ------------ | ---- | --------- | ----------- |
 | `id`         | integer/string   | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `name`       | string           | **{check-circle}** Yes | New deploy token's name |
+| `scopes`     | array of strings | **{check-circle}** Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 | `expires_at` | datetime         | **{dotted-circle}** No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `username`   | string           | **{dotted-circle}** No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
-| `scopes`     | array of strings | **{check-circle}** Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 
 Example request:
 

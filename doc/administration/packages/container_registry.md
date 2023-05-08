@@ -21,10 +21,8 @@ Registry, see the [user documentation](../../user/packages/container_registry/in
 If you installed GitLab by using the Omnibus installation package, the Container Registry
 may or may not be available by default.
 
-The Container Registry is automatically enabled and available on your GitLab domain, port 5050 if:
-
-- You're using the built-in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration), and
-- You're using GitLab 12.5 or later.
+The Container Registry is automatically enabled and available on your GitLab domain, port 5050 if
+you're using the built-in [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration).
 
 Otherwise, the Container Registry is not enabled. To enable it:
 
@@ -96,7 +94,7 @@ If `auth` is not set up, users can pull Docker images without authentication.
 
 ## Container Registry domain configuration
 
-There are two ways you can configure the Registry's external domain. Either:
+You can configure the Registry's external domain in either of these ways:
 
 - [Use the existing GitLab domain](#configure-container-registry-under-an-existing-gitlab-domain).
   The Registry listens on a port and reuses the TLS certificate from GitLab.
@@ -114,9 +112,10 @@ If the Registry is configured to use the existing GitLab domain, you can
 expose the Registry on a port. This way you can reuse the existing GitLab TLS
 certificate.
 
-If the GitLab domain is `https://gitlab.example.com` and the port to the outside world is `5050`, here is what you need to set
-in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
-GitLab from source respectively.
+If the GitLab domain is `https://gitlab.example.com` and the port to the outside world is `5050` you need to configure the Registry:
+
+- Edit `gitlab.rb` if you are using Omnibus GitLab.
+- Edit `gitlab.yml` if you installed GitLab from source.
 
 Ensure you choose a port different than the one that Registry listens to (`5000` by default),
 otherwise conflicts occur.
@@ -261,7 +260,7 @@ docker login registry.gitlab.example.com
 ## Disable Container Registry site-wide
 
 When you disable the Registry by following these steps, you do not
-remove any existing Docker images. This is handled by the
+remove any existing Docker images. Docker image removal is handled by the
 Registry application itself.
 
 **Omnibus GitLab**
@@ -557,7 +556,7 @@ you can pull from the Container Registry, but you cannot push.
 1. To perform the final data sync,
    [put the Container Registry in `read-only` mode](#performing-garbage-collection-without-downtime) and
    [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
-1. Sync any changes since the initial data load to your S3 bucket and delete files that exist in the destination bucket but not in the source:
+1. Sync any changes dating from after the initial data load to your S3 bucket, and delete files that exist in the destination bucket but not in the source:
 
    ```shell
    sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket --delete --dryrun
@@ -590,15 +589,15 @@ you can pull from the Container Registry, but you cannot push.
 
 #### Moving to Azure Object Storage
 
-> The default configuration for the storage driver will be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
+> The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
 
 <!--- start_remove The following content will be removed on remove_date: '2023-10-22' -->
 WARNING:
-The default configuration for the storage driver will be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0. The storage driver will use `/` as the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration now to avoid any disruptions. For more information, see the [Container Registry configuration](https://gitlab.com/gitlab-org/container-registry/-/tree/master/docs-gitlab#azure-storage-driver) documentation.
+The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0. The storage driver will use `/` as the default root directory. You can add `trimlegacyrootprefix: false` to your current configuration now to avoid any disruptions. For more information, see the [Container Registry configuration](https://gitlab.com/gitlab-org/container-registry/-/tree/master/docs-gitlab#azure-storage-driver) documentation.
 <!--- end_remove -->
 
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
-This configuration is done by setting [`trimlegacyrootprefix: true]`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
+Configure it by setting [`trimlegacyrootprefix: true]`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
 Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
 
 **Omnibus GitLab installations**
@@ -682,7 +681,7 @@ However, this behavior is undesirable for registries used by internal hosts that
 
 You can use server-side encryption with AWS KMS for S3 buckets that have
 [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
-Customer master keys (CMKs) and SSE-C encryption aren't supported since this requires sending the
+Customer master keys (CMKs) and SSE-C encryption aren't supported because this requires sending the
 encryption keys in every request.
 
 For SSE-S3, you must enable the `encrypt` option in the registry settings. How you do this depends
@@ -728,7 +727,7 @@ For installations from source:
 
 ### Storage limitations
 
-Currently, there is no storage limitation, which means a user can upload an
+There is no storage limitation, which means a user can upload an
 infinite amount of Docker images with arbitrary sizes. This setting should be
 configurable in future releases.
 
@@ -770,8 +769,8 @@ project, you can [disable it from your project's settings](../../user/project/se
 WARNING:
 Using external container registries in GitLab is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
 in GitLab 15.8 and the end of support is scheduled for GitLab 16.0.
-If you need to use external container registries instead of the GitLab Container Registry, 
-please tell us about your use cases in [the feedback issue](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
+If you need to use external container registries instead of the GitLab Container Registry,
+tell us about your use cases in [feedback issue 958](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
 
 If you use an external container registry, some features associated with the
 container registry may be unavailable or have [inherent risks](../../user/packages/container_registry/reduce_container_registry_storage.md#use-with-external-container-registries).
@@ -877,7 +876,7 @@ You can use GitLab as an auth endpoint with an external container registry.
 ## Configure Container Registry notifications
 
 You can configure the Container Registry to send webhook notifications in
-response to events happening within the registry.
+response to events happening in the registry.
 
 Read more about the Container Registry notifications configuration options in the
 [Docker Registry notifications documentation](https://docs.docker.com/registry/notifications/).
@@ -930,9 +929,13 @@ notifications:
 
 WARNING:
 If you're using a distributed architecture and Sidekiq is running on a different node, the cleanup
-policies don't work. To fix this, you must configure the `gitlab.rb` file on the Sidekiq nodes to
-point to the correct registry URL and copy the `registry.key` file to each Sidekiq node. For more
-information, see the [Sidekiq configuration](../sidekiq/index.md)
+policies don't work. To fix this:
+
+1. Configure the `gitlab.rb` file on the Sidekiq nodes to
+   point to the correct registry URL.
+1. Copy the `registry.key` file to each Sidekiq node.
+
+For more information, see the [Sidekiq configuration](../sidekiq/index.md)
 page.
 
 To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
@@ -999,7 +1002,7 @@ You can also [run cleanup on a schedule](../../user/packages/container_registry/
 ## Container Registry garbage collection
 
 NOTE:
-Retention policies within your object storage provider, such as Amazon S3 Lifecycle, may prevent
+Retention policies in your object storage provider, such as Amazon S3 Lifecycle, may prevent
 objects from being properly deleted.
 
 Container Registry can use considerable amounts of disk space. To clear up
@@ -1043,9 +1046,9 @@ docker build -t my.registry.com/my.group/my.project:latest .
 docker push my.registry.com/my.group/my.project:latest
 ```
 
-Now, the `:latest` tag points to manifest of `sha256:222222`. However, due to
-the architecture of registry, this data is still accessible when pulling the
-image `my.registry.com/my.group/my.project@sha256:111111`, even though it is
+Now, the `:latest` tag points to manifest of `sha256:222222`.
+Due to the architecture of registry, this data is still accessible when pulling the
+image `my.registry.com/my.group/my.project@sha256:111111`, though it is
 no longer directly accessible via the `:latest` tag.
 
 ### Recycling unused tags

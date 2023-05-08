@@ -14335,24 +14335,6 @@ CREATE TABLE clusters (
     helm_major_version integer DEFAULT 3 NOT NULL
 );
 
-CREATE TABLE clusters_applications_cilium (
-    id bigint NOT NULL,
-    cluster_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    status integer NOT NULL,
-    status_reason text
-);
-
-CREATE SEQUENCE clusters_applications_cilium_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_cilium_id_seq OWNED BY clusters_applications_cilium.id;
-
 CREATE TABLE clusters_applications_helm (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -14375,29 +14357,6 @@ CREATE SEQUENCE clusters_applications_helm_id_seq
 
 ALTER SEQUENCE clusters_applications_helm_id_seq OWNED BY clusters_applications_helm.id;
 
-CREATE TABLE clusters_applications_ingress (
-    id integer NOT NULL,
-    cluster_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    status integer NOT NULL,
-    ingress_type integer NOT NULL,
-    version character varying NOT NULL,
-    cluster_ip character varying,
-    status_reason text,
-    external_ip character varying,
-    external_hostname character varying
-);
-
-CREATE SEQUENCE clusters_applications_ingress_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_ingress_id_seq OWNED BY clusters_applications_ingress.id;
-
 CREATE TABLE clusters_applications_knative (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -14419,29 +14378,6 @@ CREATE SEQUENCE clusters_applications_knative_id_seq
     CACHE 1;
 
 ALTER SEQUENCE clusters_applications_knative_id_seq OWNED BY clusters_applications_knative.id;
-
-CREATE TABLE clusters_applications_prometheus (
-    id integer NOT NULL,
-    cluster_id integer NOT NULL,
-    status integer NOT NULL,
-    version character varying NOT NULL,
-    status_reason text,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    last_update_started_at timestamp with time zone,
-    encrypted_alert_manager_token character varying,
-    encrypted_alert_manager_token_iv character varying,
-    healthy boolean
-);
-
-CREATE SEQUENCE clusters_applications_prometheus_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_prometheus_id_seq OWNED BY clusters_applications_prometheus.id;
 
 CREATE TABLE clusters_applications_runners (
     id integer NOT NULL,
@@ -25010,15 +24946,9 @@ ALTER TABLE ONLY cluster_providers_gcp ALTER COLUMN id SET DEFAULT nextval('clus
 
 ALTER TABLE ONLY clusters ALTER COLUMN id SET DEFAULT nextval('clusters_id_seq'::regclass);
 
-ALTER TABLE ONLY clusters_applications_cilium ALTER COLUMN id SET DEFAULT nextval('clusters_applications_cilium_id_seq'::regclass);
-
 ALTER TABLE ONLY clusters_applications_helm ALTER COLUMN id SET DEFAULT nextval('clusters_applications_helm_id_seq'::regclass);
 
-ALTER TABLE ONLY clusters_applications_ingress ALTER COLUMN id SET DEFAULT nextval('clusters_applications_ingress_id_seq'::regclass);
-
 ALTER TABLE ONLY clusters_applications_knative ALTER COLUMN id SET DEFAULT nextval('clusters_applications_knative_id_seq'::regclass);
-
-ALTER TABLE ONLY clusters_applications_prometheus ALTER COLUMN id SET DEFAULT nextval('clusters_applications_prometheus_id_seq'::regclass);
 
 ALTER TABLE ONLY clusters_applications_runners ALTER COLUMN id SET DEFAULT nextval('clusters_applications_runners_id_seq'::regclass);
 
@@ -26915,20 +26845,11 @@ ALTER TABLE ONLY cluster_providers_aws
 ALTER TABLE ONLY cluster_providers_gcp
     ADD CONSTRAINT cluster_providers_gcp_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY clusters_applications_cilium
-    ADD CONSTRAINT clusters_applications_cilium_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY clusters_applications_helm
     ADD CONSTRAINT clusters_applications_helm_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY clusters_applications_ingress
-    ADD CONSTRAINT clusters_applications_ingress_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY clusters_applications_knative
     ADD CONSTRAINT clusters_applications_knative_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY clusters_applications_prometheus
-    ADD CONSTRAINT clusters_applications_prometheus_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY clusters_applications_runners
     ADD CONSTRAINT clusters_applications_runners_pkey PRIMARY KEY (id);
@@ -30346,15 +30267,9 @@ CREATE INDEX index_cluster_providers_gcp_on_cloud_run ON cluster_providers_gcp U
 
 CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON cluster_providers_gcp USING btree (cluster_id);
 
-CREATE UNIQUE INDEX index_clusters_applications_cilium_on_cluster_id ON clusters_applications_cilium USING btree (cluster_id);
-
 CREATE UNIQUE INDEX index_clusters_applications_helm_on_cluster_id ON clusters_applications_helm USING btree (cluster_id);
 
-CREATE UNIQUE INDEX index_clusters_applications_ingress_on_cluster_id ON clusters_applications_ingress USING btree (cluster_id);
-
 CREATE UNIQUE INDEX index_clusters_applications_knative_on_cluster_id ON clusters_applications_knative USING btree (cluster_id);
-
-CREATE UNIQUE INDEX index_clusters_applications_prometheus_on_cluster_id ON clusters_applications_prometheus USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_runners_on_cluster_id ON clusters_applications_runners USING btree (cluster_id);
 

@@ -122,6 +122,12 @@ describe('EntitySelect', () => {
     });
 
     describe('once a group is selected', () => {
+      it('emits `input` event with the select value', async () => {
+        createComponent();
+        await selectGroup();
+        expect(wrapper.emitted('input')[0]).toEqual(['1']);
+      });
+
       it(`uses the selected group's name as the toggle text`, async () => {
         createComponent();
         await selectGroup();
@@ -145,6 +151,16 @@ describe('EntitySelect', () => {
         await nextTick();
 
         expect(findListbox().props('toggleText')).toBe(defaultToggleText);
+      });
+
+      it('emits `input` event with `null` on reset', async () => {
+        createComponent();
+        await selectGroup();
+
+        findListbox().vm.$emit('reset');
+        await nextTick();
+
+        expect(wrapper.emitted('input')[2]).toEqual([null]);
       });
     });
   });

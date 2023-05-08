@@ -32989,6 +32989,9 @@ msgstr ""
 msgid "Pipelines|There was a problem with loading the pipeline data."
 msgstr ""
 
+msgid "Pipelines|There was an error fetching the pipelines."
+msgstr ""
+
 msgid "Pipelines|There was an error fetching the pipelines. Try again in a few moments or contact your support team."
 msgstr ""
 
@@ -33023,6 +33026,9 @@ msgid "Pipelines|Token"
 msgstr ""
 
 msgid "Pipelines|Trigger user has insufficient permissions to project"
+msgstr ""
+
+msgid "Pipelines|Try again in a few moments or contact your support team."
 msgstr ""
 
 msgid "Pipelines|Try test template"
