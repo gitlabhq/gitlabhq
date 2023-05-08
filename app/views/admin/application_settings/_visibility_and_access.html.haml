@@ -28,10 +28,8 @@
       %span.form-text.gl-mt-0.gl-mb-3#import-sources-help
         = _('Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub')
         = link_to sprite_icon('question-o'), help_page_path("integration/github")
-        , Bitbucket
+        and Bitbucket
         = link_to sprite_icon('question-o'), help_page_path("integration/bitbucket")
-        and GitLab.com
-        = link_to sprite_icon('question-o'), help_page_path("integration/gitlab")
       = hidden_field_tag 'application_setting[import_sources][]'
       - import_sources_checkboxes(f).each do |source|
         = source

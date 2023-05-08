@@ -46,10 +46,14 @@ describe('WorkItemLinks', () => {
     .fn()
     .mockResolvedValue(changeWorkItemParentMutationResponse);
   const childWorkItemByIidHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+  const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyResponse);
+  const responseWithoutAddChildPermission = jest
+    .fn()
+    .mockResolvedValue(workItemByIidResponseFactory({ adminParentLink: false }));
 
   const createComponent = async ({
     data = {},
-    fetchHandler = jest.fn().mockResolvedValue(workItemHierarchyResponse),
+    fetchHandler = responseWithAddChildPermission,
     mutationHandler = mutationChangeParentHandler,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
@@ -110,6 +114,20 @@ describe('WorkItemLinks', () => {
     mockApollo = null;
     setWindowLocation('');
   });
+
+  it.each`
+    expectedAssertion    | workItemFetchHandler                 | value
+    ${'renders'}         | ${responseWithAddChildPermission}    | ${true}
+    ${'does not render'} | ${responseWithoutAddChildPermission} | ${false}
+  `(
+    '$expectedAssertion "Add" button in hierarchy widget header when "userPermissions.adminParentLink" is $value',
+    async ({ workItemFetchHandler, value }) => {
+      createComponent({ fetchHandler: workItemFetchHandler });
+      await waitForPromises();
+
+      expect(findToggleFormDropdown().exists()).toBe(value);
+    },
+  );
 
   describe('add link form', () => {
     it('displays add work item form on click add dropdown then add existing button and hides form on cancel', async () => {

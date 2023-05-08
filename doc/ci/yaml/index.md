@@ -2905,7 +2905,7 @@ Parallel jobs are named sequentially from `job_name 1/N` to `job_name N/N`.
 
 **Possible inputs**:
 
-- A numeric value from `2` to `200`.
+- A numeric value from `1` to `200`.
 
 **Example of `parallel`**:
 

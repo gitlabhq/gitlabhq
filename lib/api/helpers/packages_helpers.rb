@@ -101,8 +101,6 @@ module API
           **args
         )
 
-        return unless Feature.enabled?(:route_hll_to_snowplow_phase3)
-
         if action.to_s == 'push_package' && service.originator_type == :deploy_token
           track_snowplow_event("push_package_by_deploy_token", category, args)
         elsif action.to_s == 'pull_package' && service.originator_type == :guest

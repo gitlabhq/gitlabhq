@@ -7,10 +7,7 @@ import {
   GlLink,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { isSafeURL } from '~/lib/utils/url_utility';
-import { s__, __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import ReviewAppLink from '../review_app_link.vue';
 
 export default {
@@ -22,7 +19,6 @@ export default {
     GlIcon,
     GlLink,
     GlSearchBoxByType,
-    ModalCopyButton,
     ReviewAppLink,
   },
   directives: {
@@ -54,13 +50,6 @@ export default {
     filteredChanges() {
       return this.deployment?.changes?.filter((change) => change.path.includes(this.searchTerm));
     },
-    isSafeUrl() {
-      return isSafeURL(this.deploymentExternalUrl);
-    },
-  },
-  i18n: {
-    copy: __('Copy URL'),
-    copyTitle: s__('Environments|Copy live environment URL'),
   },
 };
 </script>
@@ -68,20 +57,11 @@ export default {
   <span class="gl-display-inline-flex">
     <gl-button-group v-if="shouldRenderDropdown" size="small">
       <review-app-link
-        v-if="isSafeUrl"
         :display="appButtonText"
         :link="deploymentExternalUrl"
         size="small"
-        css-class="deploy-link js-deploy-url inline"
+        css-class="deploy-link js-deploy-url gl-display-inline"
       />
-      <modal-copy-button
-        v-else
-        :title="$options.i18n.copyTitle"
-        :text="deploymentExternalUrl"
-        size="small"
-      >
-        {{ $options.i18n.copy }}
-      </modal-copy-button>
       <gl-dropdown toggle-class="gl-px-2!" size="small" class="js-mr-wigdet-deployment-dropdown">
         <template #button-content>
           <gl-icon
@@ -110,22 +90,12 @@ export default {
         </gl-dropdown-item>
       </gl-dropdown>
     </gl-button-group>
-    <template v-else>
-      <review-app-link
-        v-if="isSafeUrl"
-        :display="appButtonText"
-        :link="deploymentExternalUrl"
-        size="small"
-        css-class="deploy-link js-deploy-url inline"
-      />
-      <modal-copy-button
-        v-else
-        :title="$options.i18n.copyTitle"
-        :text="deploymentExternalUrl"
-        size="small"
-      >
-        {{ $options.i18n.copy }}
-      </modal-copy-button>
-    </template>
+    <review-app-link
+      v-else
+      :display="appButtonText"
+      :link="deploymentExternalUrl"
+      size="small"
+      css-class="deploy-link js-deploy-url gl-display-inline"
+    />
   </span>
 </template>

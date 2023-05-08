@@ -34,8 +34,6 @@ module API
         Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user, project: user_project)
         namespace = user_project.namespace
 
-        return unless Feature.enabled?(:route_hll_to_snowplow_phase3, namespace)
-
         Gitlab::Tracking.event(
           'API::Commits',
           :commit,

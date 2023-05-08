@@ -34,7 +34,7 @@ RSpec.describe 'Merge request > User merges when pipeline succeeds', :js, featur
 
     describe 'enabling Merge when pipeline succeeds' do
       shared_examples 'Merge when pipeline succeeds activator' do
-        it 'activates the Merge when pipeline succeeds feature' do
+        it 'activates the Merge when pipeline succeeds feature', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410105' do
           click_button "Merge when pipeline succeeds"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"

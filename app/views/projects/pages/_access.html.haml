@@ -6,10 +6,6 @@
       = s_('GitLabPages|Access pages')
     - c.body do
       %p
-        %strong
-          = s_('GitLabPages|Your pages are served under:')
-
-      %p
         = external_link(pages_url, pages_url)
 
       - @project.pages_domains.each do |domain|

@@ -57,7 +57,6 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
       it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         subject(:record_activity) { described_class.new(author: user, namespace: namespace, project: project).execute }
 
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase3 }
         let(:category) { described_class.name }
         let(:action) { 'perform_action' }
         let(:label) { 'redis_hll_counters.manage.unique_active_users_monthly' }

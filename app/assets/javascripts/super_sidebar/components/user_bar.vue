@@ -204,7 +204,7 @@ export default {
         class="gl-flex-basis-third shortcuts-todos js-todos-count"
         icon="todo-done"
         :count="userCounts.todos"
-        href="/dashboard/todos"
+        :href="sidebarData.todos_dashboard_path"
         :label="$options.i18n.todoList"
         data-qa-selector="todos_shortcut_button"
         data-track-action="click_link"

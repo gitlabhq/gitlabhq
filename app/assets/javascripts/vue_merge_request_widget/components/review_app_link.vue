@@ -38,6 +38,7 @@ export default {
     :size="size"
     target="_blank"
     rel="noopener noreferrer nofollow"
+    is-unsafe-link
     :class="cssClass"
     data-track-action="open_review_app"
     data-track-label="review_app"

@@ -61,11 +61,6 @@ export default {
       required: false,
       default: 'primary',
     },
-    size: {
-      type: String,
-      required: false,
-      default: 'medium',
-    },
   },
   computed: {
     modalDomId() {
@@ -108,9 +103,6 @@ export default {
     :title="title"
     :aria-label="title"
     :category="category"
-    :size="size"
     icon="copy-to-clipboard"
-  >
-    <slot></slot>
-  </gl-button>
+  />
 </template>

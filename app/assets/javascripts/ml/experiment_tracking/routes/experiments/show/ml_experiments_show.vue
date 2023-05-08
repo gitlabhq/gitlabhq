@@ -1,5 +1,5 @@
 <script>
-import { GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
+import { GlTableLite, GlLink, GlEmptyState, GlButton } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -7,8 +7,9 @@ import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/c
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import KeysetPagination from '~/vue_shared/components/incubation/pagination.vue';
-import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
-import ExperimentHeader from './components/experiment_header.vue';
+import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
+import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+
 import {
   LIST_KEY_CREATED_AT,
   BASE_SORT_FIELDS,
@@ -23,11 +24,12 @@ export default {
     GlTableLite,
     GlLink,
     GlEmptyState,
+    GlButton,
     TimeAgo,
-    IncubationAlert,
     RegistrySearch,
     KeysetPagination,
-    ExperimentHeader,
+    ModelExperimentsHeader,
+    DeleteButton,
   },
   props: {
     experiment: {
@@ -153,6 +155,12 @@ export default {
       this.updateSorting(newValue);
       this.submitFilters();
     },
+    downloadCsv() {
+      const currentPath = window.location.pathname;
+      const currentSearch = window.location.search;
+
+      visitUrl(`${currentPath}.csv${currentSearch}`);
+    },
   },
   i18n: translations,
   constants: {
@@ -165,12 +173,12 @@ export default {
 
 <template>
   <div>
-    <incubation-alert
-      :feature-name="$options.constants.FEATURE_NAME"
-      :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
-    />
-
-    <experiment-header :title="experiment.name" :delete-info="deleteButtonInfo" />
+    <model-experiments-header :page-title="experiment.name">
+      <gl-button class="gl-mr-3" @click="downloadCsv">{{
+        $options.i18n.DOWNLOAD_AS_CSV_LABEL
+      }}</gl-button>
+      <delete-button v-bind="deleteButtonInfo" />
+    </model-experiments-header>
 
     <registry-search
       :filters="filters"

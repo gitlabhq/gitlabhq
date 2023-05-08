@@ -1110,15 +1110,15 @@
     stylelint-declaration-strict-value "1.8.0"
     stylelint-scss "4.2.0"
 
-"@gitlab/svgs@3.43.0":
-  version "3.43.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.43.0.tgz#7789e6e5e8cd7d97489d9cfb021e0f25ddcfa829"
-  integrity sha512-o5P8T42qXh38DU0Px7rnVCV86cDfrsKHNczdNQAIGeyw5Ci7orsL/0f1M4BVtOSgU0VOoHuB0Yb/HyQjjmwt6A==
+"@gitlab/svgs@3.44.0":
+  version "3.44.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.44.0.tgz#7c79c5345e33c93417fb0755b14f563dab7231e6"
+  integrity sha512-9R3/wWtDkQfbnvuLBIbdOo45QS2n7ad/kdktetYUar02vkENbcg/r8ecCoXw0t9ekqcoRdoj8HFPkl3dH95eOw==
 
-"@gitlab/ui@62.8.0":
-  version "62.8.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-62.8.0.tgz#6190bbbe8d891b0371a6c17e794eb60c60560e22"
-  integrity sha512-IXdif3LGEmulJqwBIQgqKP6IZ19pJ61+1VVDLRjLEXFCtQi7MHlmzFrJqJ0QTp8kCA4ntvrM+THO+dCcwRrPVw==
+"@gitlab/ui@62.9.0":
+  version "62.9.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-62.9.0.tgz#f72878441b68e9f6400465d6aab5ec13ec11e792"
+  integrity sha512-eO+t587EXHjg2jAN5eUbIX3SHuPOWjt2EU/X2944zBAsB3sQtYLWJzsGCan7rVV/p0DjshDxSg4A2FGAQCDCLg==
   dependencies:
     "@popperjs/core" "^2.11.2"
     bootstrap-vue "2.23.1"

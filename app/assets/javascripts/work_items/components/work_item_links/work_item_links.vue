@@ -118,6 +118,9 @@ export default {
     canUpdate() {
       return this.workItem?.userPermissions.updateWorkItem || false;
     },
+    canAddTask() {
+      return this.workItem?.userPermissions.adminParentLink || false;
+    },
     // Only used for children for now but should be extended later to support parents and siblings
     isChildrenEmpty() {
       return this.children?.length === 0;
@@ -287,7 +290,7 @@ export default {
     </template>
     <template #header-right>
       <gl-dropdown
-        v-if="canUpdate"
+        v-if="canUpdate && canAddTask"
         right
         size="small"
         :text="$options.i18n.addChildButtonLabel"

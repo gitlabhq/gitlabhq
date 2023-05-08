@@ -98,10 +98,12 @@ module Sidebars
 
           ::Sidebars::MenuItem.new(
             title: _('AWS'),
-            link: '#',
+            link: project_aws_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::OperationsMenu,
             item_id: :aws,
-            active_routes: { controller: '' }
+            active_routes: { controller: %w[
+              projects/aws/configuration
+            ] }
           )
         end
 

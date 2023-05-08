@@ -7,8 +7,9 @@ RSpec.describe 'Query.jobs', feature_category: :continuous_integration do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:build) do
-    create(:ci_build, pipeline: pipeline, name: 'my test job', ref: 'HEAD', tag_list: %w[tag1 tag2])
+    create(:ci_build, pipeline: pipeline, name: 'my test job', ref: 'HEAD', tag_list: %w[tag1 tag2], runner: runner)
   end
 
   let(:query) do
@@ -27,7 +28,7 @@ RSpec.describe 'Query.jobs', feature_category: :continuous_integration do
   let(:jobs_graphql_data) { graphql_data_at(:jobs, :nodes) }
 
   let(:fields) do
-    %w[commitPath refPath webPath browseArtifactsPath playPath tags]
+    %w[commitPath refPath webPath browseArtifactsPath playPath tags runner{id}]
   end
 
   it 'returns the paths in each job of a pipeline' do
@@ -41,7 +42,8 @@ RSpec.describe 'Query.jobs', feature_category: :continuous_integration do
         web_path: "/#{project.full_path}/-/jobs/#{build.id}",
         browse_artifacts_path: "/#{project.full_path}/-/jobs/#{build.id}/artifacts/browse",
         play_path: "/#{project.full_path}/-/jobs/#{build.id}/play",
-        tags: build.tag_list
+        tags: build.tag_list,
+        runner: a_graphql_entity_for(runner)
       )
     )
   end
@@ -75,6 +77,50 @@ RSpec.describe 'Query.jobs', feature_category: :continuous_integration do
 
         expect { post_graphql(query, **args) }.not_to exceed_all_query_limit(control)
       end
+    end
+  end
+end
+
+RSpec.describe 'Query.jobs.runner', feature_category: :continuous_integration do
+  include GraphqlHelpers
+
+  let_it_be(:admin) { create(:admin) }
+
+  let(:jobs_runner_graphql_data) { graphql_data_at(:jobs, :nodes, :runner) }
+  let(:query) do
+    %(
+      query {
+        jobs {
+          nodes {
+            runner{
+              id
+              adminUrl
+              description
+            }
+          }
+        }
+      }
+    )
+  end
+
+  context 'when job has no runner' do
+    let_it_be(:build) { create(:ci_build) }
+
+    it 'returns nil' do
+      post_graphql(query, current_user: admin)
+
+      expect(jobs_runner_graphql_data).to eq([nil])
+    end
+  end
+
+  context 'when job has runner' do
+    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:build_with_runner) { create(:ci_build, runner: runner) }
+
+    it 'returns runner attributes' do
+      post_graphql(query, current_user: admin)
+
+      expect(jobs_runner_graphql_data).to contain_exactly(a_graphql_entity_for(runner, :description, 'adminUrl' => "http://localhost/admin/runners/#{runner.id}"))
     end
   end
 end

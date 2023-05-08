@@ -83,6 +83,24 @@ export const extendedWrapper = (wrapper) => {
         return this.findAll(`[data-testid="${id}"]`);
       },
     },
+    /*
+     * Keep in mind that there are some limitations when using `findComponent`
+     * with CSS selectors: https://v1.test-utils.vuejs.org/api/wrapper/#findcomponent
+     */
+    findComponentByTestId: {
+      value(id) {
+        return this.findComponent(`[data-testid="${id}"]`);
+      },
+    },
+    /*
+     * Keep in mind that there are some limitations when using `findAllComponents`
+     * with CSS selectors: https://v1.test-utils.vuejs.org/api/wrapper/#findallcomponents
+     */
+    findAllComponentsByTestId: {
+      value(id) {
+        return this.findAllComponents(`[data-testid="${id}"]`);
+      },
+    },
     // `findBy`
     ...AVAILABLE_QUERIES.reduce((accumulator, query) => {
       return {

@@ -1,39 +1,47 @@
+- can_add_new_domain = can_create_pages_custom_domains?(current_user, @project)
 - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
 
-- if can?(current_user, :update_pages, @project) && @domains.any?
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}) do |c|
+- if can?(current_user, :update_pages, @project)
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, header_options: { class: 'gl-display-flex gl-align-items-center gl-justify-content-space-between' }) do |c|
     - c.header do
       Domains (#{@domains.size})
+      - if can_add_new_domain
+        = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_project_pages_domain_path(@project)) do
+          = s_('GitLabPages|New Domain')
     - c.body do
-      %ul.list-group.list-group-flush
-        - @domains.each do |domain|
-          %li.list-group-item.gl-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-p-0
-            .gl-display-flex.gl-align-items-center
-              - if verification_enabled
-                - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
-                .domain-status.ci-status-icon.has-tooltip{ class: "gl-mr-5 ci-status-icon-#{status}", title: tooltip }
-                  = sprite_icon("status_#{status}")
-              .domain-name
-                = external_link(domain.url, domain.url)
-                - if domain.certificate
-                  %div
-                    = gl_badge_tag(s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject })
-                    - if domain.expired?
-                      = gl_badge_tag s_('GitLabPages|Expired'), variant: :danger
-            %div
-              = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn gl-button btn-sm btn-grouped btn-confirm btn-inverted"
-              = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, "aria-label": s_("GitLabPages|Remove domain"), method: :delete, class: "btn gl-button btn-danger btn-sm btn-grouped"
-          - if domain.needs_verification?
-            %li.list-group-item.bs-callout-warning
-              - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
-              - details_link_end = '</a>'.html_safe
-              = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
-                  link_start: details_link_start,
-                  link_end: details_link_end }
-          - if domain.show_auto_ssl_failed_warning?
-            %li.list-group-item.bs-callout-warning
-              - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
-              - details_link_end = '</a>'.html_safe
-              = s_("GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}.").html_safe % { domain: domain.domain,
-                  link_start: details_link_start,
-                  link_end: details_link_end }
+      - if @domains.any?
+        %ul.list-group.list-group-flush
+          - @domains.each do |domain|
+            %li.list-group-item.gl-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-p-0
+              .gl-display-flex.gl-align-items-center
+                - if verification_enabled
+                  - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
+                  .domain-status.ci-status-icon.has-tooltip{ class: "gl-mr-5 ci-status-icon-#{status}", title: tooltip }
+                    = sprite_icon("status_#{status}")
+                .domain-name
+                  = external_link(domain.url, domain.url)
+                  - if domain.certificate
+                    %div
+                      = gl_badge_tag(s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject })
+                      - if domain.expired?
+                        = gl_badge_tag s_('GitLabPages|Expired'), variant: :danger
+              %div
+                = link_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: "btn gl-button btn-sm btn-grouped btn-confirm btn-inverted"
+                = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, "aria-label": s_("GitLabPages|Remove domain"), method: :delete, class: "btn gl-button btn-danger btn-sm btn-grouped"
+            - if domain.needs_verification?
+              %li.list-group-item.bs-callout-warning
+                - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
+                - details_link_end = '</a>'.html_safe
+                = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
+                    link_start: details_link_start,
+                    link_end: details_link_end }
+            - if domain.show_auto_ssl_failed_warning?
+              %li.list-group-item.bs-callout-warning
+                - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
+                - details_link_end = '</a>'.html_safe
+                = s_("GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}.").html_safe % { domain: domain.domain,
+                    link_start: details_link_start,
+                    link_end: details_link_end }
+      - else
+        .gl-text-center
+          = s_("You currently have no custom domains.")

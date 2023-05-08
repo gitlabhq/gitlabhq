@@ -1,10 +1,7 @@
-- can_add_new_domain = can_create_pages_custom_domains?(current_user, @project)
+- @content_class = 'limit-container-width'
 
-%h1.page-title.gl-font-size-h-display.with-button
+%h4.page-title
   = s_('GitLabPages|Pages')
-  - if can_add_new_domain
-    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'float-right'}, href: new_project_pages_domain_path(@project)) do
-      = s_('GitLabPages|New Domain')
 %p
   - docs_link_start = "<a href='#{help_page_path('user/project/pages/index')}' target='_blank' rel='noopener noreferrer'>".html_safe
   - docs_link_end = '</a>'.html_safe

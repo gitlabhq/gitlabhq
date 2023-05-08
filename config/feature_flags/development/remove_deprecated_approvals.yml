@@ -1,0 +1,8 @@
+---
+name: remove_deprecated_approvals
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118036
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409686
+milestone: '16.0'
+type: development
+group: group::source code
+default_enabled: false

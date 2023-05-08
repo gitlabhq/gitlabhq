@@ -94,7 +94,7 @@
                   = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<span class='gl-font-monospace' data-testid='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</span>".html_safe, source_branch: html_escape(source_branch) }
                 = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm js-source-branch-copy')
 
-      - if show_forwarding_email
+      - if show_forwarding_email && !moved_sidebar_enabled
         .block
           .js-sidebar-copy-email-root
       - if issuable_sidebar.dig(:current_user, :can_move)

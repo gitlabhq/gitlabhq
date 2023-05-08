@@ -24,6 +24,8 @@ module Resolvers
           previous_stage_jobs_or_needs: [:needs, :pipeline],
           artifacts: [:job_artifacts],
           pipeline: [:user],
+          kind: [:metadata],
+          retryable: [:metadata],
           project: [{ project: [:route, { namespace: [:route] }] }],
           commit_path: [:pipeline, { project: { namespace: [:route] } }],
           ref_path: [{ project: [:route, { namespace: [:route] }] }],

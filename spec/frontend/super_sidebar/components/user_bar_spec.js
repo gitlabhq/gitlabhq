@@ -97,7 +97,7 @@ describe('UserBar component', () => {
     describe('Todos counter', () => {
       it('renders it', () => {
         const todosCounter = findTodosCounter();
-        expect(todosCounter.props('href')).toBe('/dashboard/todos');
+        expect(todosCounter.props('href')).toBe(sidebarData.todos_dashboard_path);
         expect(todosCounter.props('label')).toBe(__('To-Do list'));
         expect(todosCounter.attributes('data-track-action')).toBe('click_link');
         expect(todosCounter.attributes('data-track-label')).toBe('todos_link');

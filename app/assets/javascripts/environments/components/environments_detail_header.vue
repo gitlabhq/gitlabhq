@@ -4,8 +4,6 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
-import { isSafeURL } from '~/lib/utils/url_utility';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 
@@ -18,7 +16,6 @@ export default {
     TimeAgo,
     DeleteEnvironmentModal,
     StopEnvironmentModal,
-    ModalCopyButton,
   },
   directives: {
     GlModalDirective,
@@ -76,8 +73,6 @@ export default {
     deleteButtonText: s__('Environments|Delete'),
     externalButtonTitle: s__('Environments|Open live environment'),
     externalButtonText: __('View deployment'),
-    copyUrlText: __('Copy URL'),
-    copyUrlTitle: s__('Environments|Copy live environment URL'),
     cancelAutoStopButtonTitle: __('Prevent environment from auto-stopping'),
   },
   computed: {
@@ -86,9 +81,6 @@ export default {
     },
     shouldShowExternalUrlButton() {
       return Boolean(this.environment.externalUrl);
-    },
-    isSafeUrl() {
-      return isSafeURL(this.environment.externalUrl);
     },
     shouldShowStopButton() {
       return this.canStopEnvironment && this.environment.isAvailable;
@@ -131,25 +123,17 @@ export default {
         :href="terminalPath"
         icon="terminal"
       />
-      <template v-if="shouldShowExternalUrlButton">
-        <gl-button
-          v-if="isSafeUrl"
-          v-gl-tooltip.hover
-          data-testid="external-url-button"
-          :title="$options.i18n.externalButtonTitle"
-          :href="environment.externalUrl"
-          icon="external-link"
-          target="_blank"
-          >{{ $options.i18n.externalButtonText }}</gl-button
-        >
-        <modal-copy-button
-          v-else
-          :title="$options.i18n.copyUrlTitle"
-          :text="environment.externalUrl"
-        >
-          {{ $options.i18n.copyUrlText }}
-        </modal-copy-button>
-      </template>
+      <gl-button
+        v-if="shouldShowExternalUrlButton"
+        v-gl-tooltip.hover
+        data-testid="external-url-button"
+        :title="$options.i18n.externalButtonTitle"
+        :href="environment.externalUrl"
+        is-unsafe-link
+        icon="external-link"
+        target="_blank"
+        >{{ $options.i18n.externalButtonText }}</gl-button
+      >
       <gl-button
         v-if="shouldShowExternalUrlButton"
         v-gl-tooltip.hover

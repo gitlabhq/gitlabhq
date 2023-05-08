@@ -6,7 +6,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Merge request approvals API **(PREMIUM)**
 
-> Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
+> - Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
+> - Endpoint `/approvals` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0.
 
 Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
@@ -592,49 +593,6 @@ Supported attributes:
       }
     }
   ]
-}
-```
-
-### Change approval configuration (deprecated)
-
-> - Moved to GitLab Premium in GitLab 13.9.
-> - Endpoint `/approvals` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
-
-WARNING:
-The `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3
-and is planned for removal in 16.0. To change the approvals required for a merge request,
-use the `/approval_rules` endpoint described in [Create merge request level rule](#create-merge-request-level-rule).
-on this page. This change is a breaking change.
-
-If you are allowed to, you can change `approvals_required` using the following
-endpoint:
-
-```plaintext
-POST /projects/:id/merge_requests/:merge_request_iid/approvals
-```
-
-Supported attributes:
-
-| Attribute            | Type              | Required               | Description                                                                   |
-|----------------------|-------------------|------------------------|-------------------------------------------------------------------------------|
-| `id`                 | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
-| `approvals_required` | integer           | **{check-circle}** Yes | Approvals required before MR can be merged.                                   |
-| `merge_request_iid`  | integer           | **{check-circle}** Yes | The IID of the merge request.                                                 |
-
-```json
-{
-  "id": 5,
-  "iid": 5,
-  "project_id": 1,
-  "title": "Approvals API",
-  "description": "Test",
-  "state": "opened",
-  "created_at": "2016-06-08T00:19:52.638Z",
-  "updated_at": "2016-06-08T21:20:42.470Z",
-  "merge_status": "cannot_be_merged",
-  "approvals_required": 2,
-  "approvals_left": 2,
-  "approved_by": []
 }
 ```
 

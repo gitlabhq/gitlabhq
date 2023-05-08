@@ -1,8 +1,0 @@
----
-name: route_hll_to_snowplow_phase3
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104947
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383657
-milestone: '15.7'
-type: development
-group: 'group::product intelligence'
-default_enabled: false

@@ -83,6 +83,7 @@ export const workItemQueryResponse = {
         deleteWorkItem: false,
         updateWorkItem: false,
         setWorkItemMetadata: false,
+        adminParentLink: false,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -185,6 +186,7 @@ export const updateWorkItemMutationResponse = {
           deleteWorkItem: false,
           updateWorkItem: false,
           setWorkItemMetadata: false,
+          adminParentLink: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -288,6 +290,7 @@ export const convertWorkItemMutationResponse = {
           deleteWorkItem: false,
           updateWorkItem: false,
           setWorkItemMetadata: false,
+          adminParentLink: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -381,6 +384,7 @@ export const objectiveType = {
 export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
+  adminParentLink = false,
   notificationsWidgetPresent = true,
   subscribed = true,
   allowsMultipleAssignees = true,
@@ -430,6 +434,7 @@ export const workItemResponseFactory = ({
         deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
         setWorkItemMetadata: canUpdate,
+        adminParentLink,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -665,6 +670,7 @@ export const createWorkItemMutationResponse = {
           deleteWorkItem: false,
           updateWorkItem: false,
           setWorkItemMetadata: false,
+          adminParentLink: false,
           __typename: 'WorkItemPermissions',
         },
         widgets: [],
@@ -902,6 +908,7 @@ export const workItemHierarchyEmptyResponse = {
         deleteWorkItem: false,
         updateWorkItem: false,
         setWorkItemMetadata: false,
+        adminParentLink: false,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -944,6 +951,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         deleteWorkItem: false,
         updateWorkItem: false,
         setWorkItemMetadata: false,
+        adminParentLink: false,
         __typename: 'WorkItemPermissions',
       },
       project: {
@@ -1086,6 +1094,7 @@ export const workItemHierarchyResponse = {
         deleteWorkItem: true,
         updateWorkItem: true,
         setWorkItemMetadata: true,
+        adminParentLink: true,
         __typename: 'WorkItemPermissions',
       },
       author: {
@@ -1176,6 +1185,7 @@ export const workItemObjectiveWithChild = {
     deleteWorkItem: true,
     updateWorkItem: true,
     setWorkItemMetadata: true,
+    adminParentLink: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -1244,6 +1254,7 @@ export const workItemHierarchyTreeResponse = {
         deleteWorkItem: true,
         updateWorkItem: true,
         setWorkItemMetadata: true,
+        adminParentLink: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -1322,6 +1333,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
           deleteWorkItem: true,
           updateWorkItem: true,
           setWorkItemMetadata: true,
+          adminParentLink: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -1384,6 +1396,7 @@ export const changeWorkItemParentMutationResponse = {
           deleteWorkItem: true,
           updateWorkItem: true,
           setWorkItemMetadata: true,
+          adminParentLink: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,

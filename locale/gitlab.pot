@@ -1886,7 +1886,7 @@ msgstr ""
 msgid "AI|Experiment features"
 msgstr ""
 
-msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`"
+msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say \"The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?\" and wait for another question."
 msgstr ""
 
 msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
@@ -15930,9 +15930,6 @@ msgstr ""
 msgid "Download artifacts"
 msgstr ""
 
-msgid "Download as CSV"
-msgstr ""
-
 msgid "Download codes"
 msgstr ""
 
@@ -16873,9 +16870,6 @@ msgid "Environments|Clean up environments"
 msgstr ""
 
 msgid "Environments|Commit"
-msgstr ""
-
-msgid "Environments|Copy live environment URL"
 msgstr ""
 
 msgid "Environments|Delete"
@@ -19415,6 +19409,9 @@ msgstr ""
 msgid "Geo|Internal URL (optional)"
 msgstr ""
 
+msgid "Geo|Last event ID"
+msgstr ""
+
 msgid "Geo|Last event ID from primary"
 msgstr ""
 
@@ -20139,9 +20136,6 @@ msgid "GitLabPages|Your Pages site is not configured yet. See the %{docs_link_st
 msgstr ""
 
 msgid "GitLabPages|Your Project has been configured for Pages. Now we have to wait for the Pipeline to succeed for the first time."
-msgstr ""
-
-msgid "GitLabPages|Your pages are served under:"
 msgstr ""
 
 msgid "Gitaly Servers"
@@ -28748,6 +28742,9 @@ msgid "MlExperimentTracking|Deleting this experiment will also delete its candid
 msgstr ""
 
 msgid "MlExperimentTracking|Details"
+msgstr ""
+
+msgid "MlExperimentTracking|Download as CSV"
 msgstr ""
 
 msgid "MlExperimentTracking|Experiment"
@@ -51354,6 +51351,9 @@ msgid "You can’t edit files directly in this project. Fork this project and su
 msgstr ""
 
 msgid "You could not create a new trigger."
+msgstr ""
+
+msgid "You currently have no custom domains."
 msgstr ""
 
 msgid "You do not have access to any projects for creating incidents."

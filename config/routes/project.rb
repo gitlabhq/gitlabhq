@@ -315,6 +315,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :databases, only: [:index, :create, :new], path_names: { new: 'new/:product' }
         end
 
+        namespace :aws do
+          get '/', to: redirect('%{namespace_id}/%{project_id}/-/aws/configuration')
+
+          get '/configuration', to: 'configuration#index'
+        end
+
         resources :environments, except: [:destroy] do
           member do
             post :stop

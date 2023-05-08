@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :reliable, product_group: :knowledge do
+  RSpec.describe 'Plan', :reliable, product_group: :knowledge,
+    quarantine: {
+      only: { job: 'relative-url' },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409541',
+      type: :bug
+    } do
     describe 'Testing project wiki file upload' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:page_title) { 'Content Editor Page' }

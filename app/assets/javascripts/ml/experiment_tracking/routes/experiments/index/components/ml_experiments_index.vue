@@ -1,16 +1,16 @@
 <script>
 import { GlTableLite, GlEmptyState, GlLink } from '@gitlab/ui';
-import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
 import Pagination from '~/vue_shared/components/incubation/pagination.vue';
 import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import * as constants from '~/ml/experiment_tracking/routes/experiments/index/constants';
 import * as translations from '~/ml/experiment_tracking/routes/experiments/index/translations';
+import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 
 export default {
   name: 'MlExperimentsIndexApp',
   components: {
     Pagination,
-    IncubationAlert,
+    ModelExperimentsHeader,
     GlTableLite,
     GlEmptyState,
     GlLink,
@@ -52,14 +52,7 @@ export default {
 
 <template>
   <div v-if="hasExperiments">
-    <h1 class="page-title gl-font-size-h-display">
-      {{ $options.i18n.TITLE_LABEL }}
-    </h1>
-
-    <incubation-alert
-      :feature-name="$options.constants.FEATURE_NAME"
-      :link-to-feedback-issue="$options.constants.FEATURE_FEEDBACK_ISSUE"
-    />
+    <model-experiments-header :page-title="$options.i18n.TITLE_LABEL" />
 
     <gl-table-lite :items="tableItems" :fields="$options.tableFields">
       <template #cell(nameColumn)="data">

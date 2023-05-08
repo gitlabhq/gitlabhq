@@ -89,6 +89,7 @@ export const sidebarData = {
     review_requested_merge_requests: 1,
   },
   issues_dashboard_path: 'path/to/issues',
+  todos_dashboard_path: 'path/to/todos',
   create_new_menu_groups: createNewMenuGroups,
   merge_request_menu: mergeRequestMenuGroup,
   projects_path: 'path/to/projects',

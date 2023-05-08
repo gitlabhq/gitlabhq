@@ -261,13 +261,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
           end
         end
 
-        context 'when it is lower than two' do
-          let(:config) { { script: 'echo', parallel: 1 } }
+        context 'when it is lower than one' do
+          let(:config) { { script: 'echo', parallel: 0 } }
 
           it 'returns error about value too low' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include 'parallel config must be greater than or equal to 2'
+              .to include 'parallel config must be greater than or equal to 1'
           end
         end
 

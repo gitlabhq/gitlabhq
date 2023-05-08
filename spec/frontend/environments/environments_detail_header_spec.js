@@ -1,12 +1,10 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { __, s__ } from '~/locale';
 import DeleteEnvironmentModal from '~/environments/components/delete_environment_modal.vue';
 import EnvironmentsDetailHeader from '~/environments/components/environments_detail_header.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { createEnvironment } from './mock_data';
 
 describe('Environments detail header component', () => {
@@ -22,7 +20,7 @@ describe('Environments detail header component', () => {
   const findCancelAutoStopAtButton = () => wrapper.findByTestId('cancel-auto-stop-button');
   const findCancelAutoStopAtForm = () => wrapper.findByTestId('cancel-auto-stop-form');
   const findTerminalButton = () => wrapper.findByTestId('terminal-button');
-  const findExternalUrlButton = () => wrapper.findByTestId('external-url-button');
+  const findExternalUrlButton = () => wrapper.findComponentByTestId('external-url-button');
   const findMetricsButton = () => wrapper.findByTestId('metrics-button');
   const findEditButton = () => wrapper.findByTestId('edit-button');
   const findStopButton = () => wrapper.findByTestId('stop-button');
@@ -171,6 +169,7 @@ describe('Environments detail header component', () => {
 
     it('displays the external url button with correct path', () => {
       expect(findExternalUrlButton().attributes('href')).toBe(externalUrl);
+      expect(findExternalUrlButton().props('isUnsafeLink')).toBe(true);
     });
   });
 
@@ -239,25 +238,6 @@ describe('Environments detail header component', () => {
 
     it('displays delete environment modal', () => {
       expect(findDeleteEnvironmentModal().exists()).toBe(true);
-    });
-  });
-
-  describe('when the environment has an unsafe external url', () => {
-    const externalUrl = 'postgres://staging';
-
-    beforeEach(() => {
-      createWrapper({
-        props: {
-          environment: createEnvironment({ externalUrl }),
-        },
-      });
-    });
-
-    it('should show a copy button instead', () => {
-      const button = wrapper.findComponent(ModalCopyButton);
-      expect(button.props('title')).toBe(s__('Environments|Copy live environment URL'));
-      expect(button.props('text')).toBe(externalUrl);
-      expect(button.text()).toBe(__('Copy URL'));
     });
   });
 });

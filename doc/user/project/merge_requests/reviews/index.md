@@ -21,6 +21,9 @@ You can review merge requests from the GitLab interface. If you install the
 [GitLab Workflow VS Code extension](../../repository/vscode.md), you can also
 review merge requests in Visual Studio Code.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
+
 ## Suggested reviewers **(ULTIMATE SAAS)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/alpha-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.

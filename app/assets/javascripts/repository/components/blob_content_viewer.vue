@@ -144,9 +144,6 @@ export default {
     };
   },
   computed: {
-    shouldRenderGenie() {
-      return this.explainCodeAvailable && this.viewer?.fileType === TEXT_FILE_TYPE;
-    },
     isLoggedIn() {
       return isLoggedIn();
     },
@@ -399,7 +396,7 @@ export default {
       />
     </div>
     <ai-genie
-      v-if="shouldRenderGenie"
+      v-if="explainCodeAvailable"
       container-id="fileHolder"
       :file-path="path"
       class="gl-ml-7"

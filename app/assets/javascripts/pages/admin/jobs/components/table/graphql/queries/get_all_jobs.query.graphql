@@ -7,6 +7,11 @@ query getAllJobs($after: String, $first: Int = 50, $statuses: [CiJobStatus!]) {
       startCursor
     }
     nodes {
+      runner {
+        id
+        description
+        adminUrl
+      }
       artifacts {
         nodes {
           id

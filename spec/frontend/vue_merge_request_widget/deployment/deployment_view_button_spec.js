@@ -2,7 +2,6 @@ import { GlDropdown, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeploymentViewButton from '~/vue_merge_request_widget/components/deployment/deployment_view_button.vue';
 import ReviewAppLink from '~/vue_merge_request_widget/components/review_app_link.vue';
-import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { deploymentMockData } from './deployment_mock_data';
 
 const appButtonText = {
@@ -33,7 +32,6 @@ describe('Deployment View App button', () => {
   const findMrWigdetDeploymentDropdownIcon = () =>
     wrapper.findByTestId('mr-wigdet-deployment-dropdown-icon');
   const findDeployUrlMenuItems = () => wrapper.findAllComponents(GlLink);
-  const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
 
   describe('text', () => {
     it('renders text as passed', () => {
@@ -42,93 +40,39 @@ describe('Deployment View App button', () => {
   });
 
   describe('without changes', () => {
-    let deployment;
-
     beforeEach(() => {
-      deployment = { ...deploymentMockData, changes: null };
-    });
-
-    describe('with safe url', () => {
-      beforeEach(() => {
-        createComponent({
-          propsData: {
-            deployment,
-            appButtonText,
-          },
-        });
-      });
-
-      it('renders the link to the review app without dropdown', () => {
-        expect(findMrWigdetDeploymentDropdown().exists()).toBe(false);
-        expect(findReviewAppLink().attributes('href')).toBe(deployment.external_url);
+      createComponent({
+        propsData: {
+          deployment: { ...deploymentMockData, changes: null },
+          appButtonText,
+        },
       });
     });
 
-    describe('without safe URL', () => {
-      beforeEach(() => {
-        deployment = { ...deployment, external_url: 'postgres://example' };
-        createComponent({
-          propsData: {
-            deployment,
-            appButtonText,
-          },
-        });
-      });
-
-      it('renders the link as a copy button', () => {
-        expect(findMrWigdetDeploymentDropdown().exists()).toBe(false);
-        expect(findCopyButton().props('text')).toBe(deployment.external_url);
-      });
+    it('renders the link to the review app without dropdown', () => {
+      expect(findMrWigdetDeploymentDropdown().exists()).toBe(false);
     });
   });
 
   describe('with a single change', () => {
-    let deployment;
-    let change;
-
     beforeEach(() => {
-      [change] = deploymentMockData.changes;
-      deployment = { ...deploymentMockData, changes: [change] };
-    });
-
-    describe('with safe URL', () => {
-      beforeEach(() => {
-        createComponent({
-          propsData: {
-            deployment,
-            appButtonText,
-          },
-        });
-      });
-
-      it('renders the link to the review app without dropdown', () => {
-        expect(findMrWigdetDeploymentDropdown().exists()).toBe(false);
-        expect(findMrWigdetDeploymentDropdownIcon().exists()).toBe(false);
-      });
-
-      it('renders the link to the review app linked to to the first change', () => {
-        const expectedUrl = deploymentMockData.changes[0].external_url;
-
-        expect(findReviewAppLink().attributes('href')).toBe(expectedUrl);
+      createComponent({
+        propsData: {
+          deployment: { ...deploymentMockData, changes: [deploymentMockData.changes[0]] },
+          appButtonText,
+        },
       });
     });
 
-    describe('with unsafe URL', () => {
-      beforeEach(() => {
-        change = { ...change, external_url: 'postgres://example' };
-        deployment = { ...deployment, changes: [change] };
-        createComponent({
-          propsData: {
-            deployment,
-            appButtonText,
-          },
-        });
-      });
+    it('renders the link to the review app without dropdown', () => {
+      expect(findMrWigdetDeploymentDropdown().exists()).toBe(false);
+      expect(findMrWigdetDeploymentDropdownIcon().exists()).toBe(false);
+    });
 
-      it('renders the link as a copy button', () => {
-        expect(findMrWigdetDeploymentDropdown().exists()).toBe(false);
-        expect(findCopyButton().props('text')).toBe(change.external_url);
-      });
+    it('renders the link to the review app linked to to the first change', () => {
+      const expectedUrl = deploymentMockData.changes[0].external_url;
+
+      expect(findReviewAppLink().attributes('href')).toBe(expectedUrl);
     });
   });
 

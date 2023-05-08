@@ -27,6 +27,8 @@ module Types
                                                    description: 'References to builds that must complete before the jobs run.'
       field :pipeline, Types::Ci::PipelineType, null: true,
                                                 description: 'Pipeline the job belongs to.'
+
+      field :runner, Types::Ci::RunnerType, null: true, description: 'Runner assigned to execute the job.'
       field :runner_manager, ::Types::Ci::RunnerManagerType, null: true,
             description: 'Runner manager assigned to the job.',
             alpha: { milestone: '15.11' }
@@ -185,6 +187,10 @@ module Types
 
       def stage
         ::Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Stage, object.stage_id).find
+      end
+
+      def runner
+        Gitlab::Graphql::Loaders::BatchModelLoader.new(::Ci::Runner, object.runner_id).find
       end
 
       def runner_manager

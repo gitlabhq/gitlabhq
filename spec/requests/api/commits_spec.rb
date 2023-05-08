@@ -592,7 +592,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             let(:category) { described_class.to_s }
             let(:namespace) { project.namespace.reload }
             let(:label) { 'counts.web_ide_commits' }
-            let(:feature_flag_name) { 'route_hll_to_snowplow_phase3' }
             let(:context) do
               [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.web_ide_commits').to_context.to_json]
             end

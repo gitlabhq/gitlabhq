@@ -49,6 +49,9 @@ class ProjectPolicy < BasePolicy
   desc "User is a member of the group"
   condition(:group_member, scope: :subject) { project_group_member? }
 
+  desc "User is a requester of the group"
+  condition(:group_requester, scope: :subject) { project_group_requester? }
+
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.archived? }
 
@@ -431,7 +434,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:package))
   end
 
-  rule { owner | admin | guest | group_member }.prevent :request_access
+  rule { owner | admin | guest | group_member | group_requester }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
@@ -917,16 +920,19 @@ class ProjectPolicy < BasePolicy
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
     return false unless user_is_user?
 
-    project.group &&
-      (
-        project.group.members_with_parents.exists?(user_id: @user.id) ||
-        project.group.requesters.exists?(user_id: @user.id)
-      )
+    project.group && project.group.member?(@user)
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def project_group_requester?
+    return false if @user.nil?
+    return false unless user_is_user?
+
+    project.group && project.group.requesters.exists?(user_id: @user.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

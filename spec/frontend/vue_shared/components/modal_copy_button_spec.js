@@ -13,14 +13,7 @@ describe('modal copy button', () => {
         title: 'Copy this value',
         id: 'test-id',
       },
-      slots: {
-        default: 'test',
-      },
     });
-  });
-
-  it('should show the default slot', () => {
-    expect(wrapper.text()).toBe('test');
   });
 
   describe('clipboard', () => {
