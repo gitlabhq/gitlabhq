@@ -96,7 +96,7 @@ This worker imports assigned reviewers of pull requests. For each pull request, 
 This worker imports reviews of pull requests. For each pull request, this worker:
 
 - Fetches all the pages of reviews.
-- Schedules a `Gitlab::GithubImport::ImportPullRequestReviewWorker` job for each fetched review.
+- Schedules a `Gitlab::GithubImport::PullRequests::ImportReviewWorker` job for each fetched review.
 
 ### 9. Stage::ImportIssuesAndDiffNotesWorker
 

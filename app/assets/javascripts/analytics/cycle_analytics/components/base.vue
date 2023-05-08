@@ -9,7 +9,7 @@ import PathNavigation from '~/analytics/cycle_analytics/components/path_navigati
 import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { SUMMARY_METRICS_REQUEST, METRICS_REQUESTS } from '../constants';
 
 const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
@@ -79,7 +79,9 @@ export default {
       }
       return this.selectedStageError
         ? this.selectedStageError
-        : __("We don't have enough data to show this stage.");
+        : s__(
+            'ValueStreamAnalyticsStage|There are 0 items to show in this stage, for these filters, within this time range.',
+          );
     },
     emptyStageText() {
       if (this.displayNoAccess) {

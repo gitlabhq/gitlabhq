@@ -587,6 +587,9 @@ gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite'
 # Work with RPM packages
 gem 'arr-pm', '~> 0.0.12'
 
+# Remote Development
+gem 'devfile', '~> 0.0.17.pre.alpha1'
+
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0'
 gem 'app_store_connect'

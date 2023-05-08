@@ -865,3 +865,45 @@ export const k8sServicesMock = [
     },
   },
 ];
+
+const readyDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'True' },
+      { type: 'Progressing', status: 'True' },
+    ],
+  },
+};
+const failedDeployment = {
+  status: {
+    conditions: [
+      { type: 'Available', status: 'False' },
+      { type: 'Progressing', status: 'False' },
+    ],
+  },
+};
+const readyDaemonSet = {
+  status: { numberReady: 1, desiredNumberScheduled: 1, numberMisscheduled: 0 },
+};
+const failedDaemonSet = {
+  status: { numberMisscheduled: 1, numberReady: 0, desiredNumberScheduled: 1 },
+};
+const readySet = { spec: { replicas: 2 }, status: { readyReplicas: 2 } };
+const failedSet = { spec: { replicas: 2 }, status: { readyReplicas: 1 } };
+const completedJob = { spec: { completions: 1 }, status: { succeeded: 1, failed: 0 } };
+const failedJob = { spec: { completions: 1 }, status: { succeeded: 0, failed: 1 } };
+const completedCronJob = {
+  spec: { suspend: 0 },
+  status: { active: 0, lastScheduleTime: new Date().toString() },
+};
+const suspendedCronJob = { spec: { suspend: 1 }, status: { active: 0, lastScheduleTime: '' } };
+const failedCronJob = { spec: { suspend: 0 }, status: { active: 2, lastScheduleTime: '' } };
+
+export const k8sWorkloadsMock = {
+  DeploymentList: [readyDeployment, failedDeployment],
+  DaemonSetList: [readyDaemonSet, failedDaemonSet, failedDaemonSet],
+  StatefulSetList: [readySet, readySet, failedSet],
+  ReplicaSetList: [readySet, failedSet],
+  JobList: [completedJob, completedJob, failedJob],
+  CronJobList: [completedCronJob, suspendedCronJob, failedCronJob],
+};

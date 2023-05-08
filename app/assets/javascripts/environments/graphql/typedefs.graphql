@@ -93,6 +93,74 @@ type LocalK8sServices {
   spec: k8sServiceSpec
 }
 
+type k8sDeploymentStatus {
+  conditions: JSON
+}
+
+type localK8sDeployment {
+  status: k8sDeploymentStatus
+}
+
+type k8sDaemonSetStatus {
+  IntMisscheduled: Int
+  IntReady: Int
+  desiredIntScheduled: Int
+}
+
+type localK8sDaemonSet {
+  status: k8sDaemonSetStatus
+}
+
+type k8sSetStatus {
+  readyReplicas: Int
+}
+
+type k8sSetSpec {
+  replicas: Int
+}
+
+type localK8sSet {
+  status: k8sSetStatus
+  spec: k8sSetSpec
+}
+
+type k8sJobStatus {
+  failed: Int
+  succeeded: Int
+}
+
+type k8sJobSpec {
+  completions: Int
+}
+
+type localK8sJob {
+  status: k8sJobStatus
+  spec: k8sJobSpec
+}
+
+type k8sCronJobStatus {
+  active: Int
+  lastScheduleTime: String
+}
+
+type k8sCronJobSpec {
+  suspend: Boolean
+}
+
+type localK8sCronJob {
+  status: k8sCronJobStatus
+  spec: k8sCronJobSpec
+}
+
+type LocalK8sWorkloads {
+  DeploymentList: [localK8sDeployment]
+  DaemonSetList: [localK8sDaemonSet]
+  StatefulSetList: [localK8sSet]
+  ReplicaSetList: [localK8sSet]
+  JobList: [localK8sJob]
+  CronJobList: [localK8sCronJob]
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -104,6 +172,7 @@ extend type Query {
   isLastDeployment(environment: LocalEnvironmentInput): Boolean
   k8sPods(configuration: LocalConfiguration, namespace: String): [LocalK8sPods]
   k8sServices(configuration: LocalConfiguration): [LocalK8sServices]
+  k8sWorkloads(configuration: LocalConfiguration, namespace: String): LocalK8sWorkloads
 }
 
 extend type Mutation {

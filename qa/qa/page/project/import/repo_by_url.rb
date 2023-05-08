@@ -10,6 +10,10 @@ module QA
             element :select_namespace_dropdown_search_field
           end
 
+          view 'app/views/projects/_new_project_fields.html.haml' do
+            element :project_create_button
+          end
+
           def import!(gitlab_repo_path, name)
             fill_git_repository_url_link(gitlab_repo_path)
             fill_project_name(name)
@@ -42,7 +46,7 @@ module QA
           end
 
           def click_create_button
-            find('.btn-confirm').click
+            click_element(:project_create_button)
           end
 
           def wait_for_success

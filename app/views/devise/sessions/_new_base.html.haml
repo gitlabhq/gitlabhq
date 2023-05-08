@@ -21,8 +21,8 @@
       .gl-px-5
         = recaptcha_tags nonce: content_security_policy_nonce
 
-  .submit-container.move-submit-down.gl-px-5
+  .submit-container.move-submit-down.gl-px-5.gl-pb-5
     = f.button _('Sign in'), type: :submit, class: "gl-button btn btn-block btn-confirm js-sign-in-button#{' js-no-auto-disable' if Feature.enabled?(:arkose_labs_login_challenge)}", data: { qa_selector: 'sign_in_button', testid: 'sign-in-button' }
-    - if Gitlab::CurrentSettings.sign_in_text.present? && Feature.enabled?(:restyle_login_page, @project)
-      .gl-px-5
+  - if Gitlab::CurrentSettings.sign_in_text.present? && Feature.enabled?(:restyle_login_page, @project)
+    .gl-px-5
       = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)

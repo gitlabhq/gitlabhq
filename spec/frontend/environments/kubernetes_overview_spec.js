@@ -107,6 +107,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
 
     it('renders kubernetes tabs', () => {
       expect(findKubernetesTabs().props()).toEqual({
+        namespace: agent.kubernetesNamespace,
         configuration,
       });
     });

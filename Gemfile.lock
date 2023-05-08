@@ -375,6 +375,7 @@ GEM
       thor (>= 0.19, < 2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    devfile (0.0.17.pre.alpha1)
     device_detector (1.0.0)
     devise (4.8.1)
       bcrypt (~> 3.0)
@@ -617,7 +618,7 @@ GEM
       opentracing (~> 0.4)
       pg_query (~> 2.1)
       redis (> 3.0.0, < 6.0.0)
-    gitlab-license (2.2.1)
+    gitlab-license (2.2.2)
     gitlab-mail_room (0.0.23)
       jwt (>= 2.0)
       net-imap (>= 0.2.1)
@@ -1713,6 +1714,7 @@ DEPENDENCIES
   declarative_policy (~> 1.1.0)
   deprecation_toolkit (~> 1.5.1)
   derailed_benchmarks
+  devfile (~> 0.0.17.pre.alpha1)
   device_detector
   devise (~> 4.8.1)
   devise-pbkdf2-encryptable (~> 0.0.0)!

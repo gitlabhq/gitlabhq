@@ -12,7 +12,8 @@ let trackingSpy = null;
 
 const noDataSvgPath = 'path/to/no/data';
 const emptyStateTitle = 'Too much data';
-const notEnoughDataError = "We don't have enough data to show this stage.";
+const notEnoughDataError =
+  'There are 0 items to show in this stage, for these filters, within this time range.';
 const issueEventItems = issueEvents.events;
 const reviewEventItems = reviewEvents.events;
 const [firstIssueEvent] = issueEventItems;

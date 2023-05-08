@@ -175,3 +175,5 @@ module Types
     end
   end
 end
+
+Types::UserInterface.prepend_mod

@@ -5606,10 +5606,13 @@ msgstr ""
 msgid "ApprovalRule|Name"
 msgstr ""
 
-msgid "ApprovalRule|Newly detected"
+msgid "ApprovalRule|Needs Triage"
 msgstr ""
 
-msgid "ApprovalRule|Previously detected"
+msgid "ApprovalRule|New"
+msgstr ""
+
+msgid "ApprovalRule|Previously existing"
 msgstr ""
 
 msgid "ApprovalRule|Reduce your time to merge."
@@ -13446,6 +13449,9 @@ msgstr ""
 msgid "DORA4Metrics|Change failure rate (percentage)"
 msgstr ""
 
+msgid "DORA4Metrics|Critical Vulnerabilities"
+msgstr ""
+
 msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
@@ -13474,6 +13480,9 @@ msgid "DORA4Metrics|Forecast"
 msgstr ""
 
 msgid "DORA4Metrics|Go to docs"
+msgstr ""
+
+msgid "DORA4Metrics|High Vulnerabilities"
 msgstr ""
 
 msgid "DORA4Metrics|Lead Time for Changes"
@@ -17019,13 +17028,25 @@ msgstr ""
 msgid "Environment|Cluster IP"
 msgstr ""
 
+msgid "Environment|CronJobs"
+msgstr ""
+
+msgid "Environment|DaemonSets"
+msgstr ""
+
 msgid "Environment|Deployment tier"
+msgstr ""
+
+msgid "Environment|Deployments"
 msgstr ""
 
 msgid "Environment|External IP"
 msgstr ""
 
 msgid "Environment|Failed"
+msgstr ""
+
+msgid "Environment|Jobs"
 msgstr ""
 
 msgid "Environment|Kubernetes overview"
@@ -17040,13 +17061,22 @@ msgstr ""
 msgid "Environment|Ports"
 msgstr ""
 
+msgid "Environment|ReplicaSets"
+msgstr ""
+
 msgid "Environment|Running"
 msgstr ""
 
 msgid "Environment|Services"
 msgstr ""
 
+msgid "Environment|StatefulSets"
+msgstr ""
+
 msgid "Environment|Succeeded"
+msgstr ""
+
+msgid "Environment|Summary"
 msgstr ""
 
 msgid "Epic"
@@ -23641,6 +23671,9 @@ msgstr ""
 msgid "Inherited:"
 msgstr ""
 
+msgid "Inheriting from parent is not yet supported"
+msgstr ""
+
 msgid "Initial default branch name"
 msgstr ""
 
@@ -29670,6 +29703,12 @@ msgid "No commits present here"
 msgstr ""
 
 msgid "No committers"
+msgstr ""
+
+msgid "No component has 'gl/inject-editor' attribute"
+msgstr ""
+
+msgid "No components present in the devfile"
 msgstr ""
 
 msgid "No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}."
@@ -39508,7 +39547,7 @@ msgstr ""
 msgid "ScanResultPolicy|Maximum number of severity-criteria is one"
 msgstr ""
 
-msgid "ScanResultPolicy|Maximum number of status-criteria is one"
+msgid "ScanResultPolicy|Maximum number of status-criteria is two"
 msgstr ""
 
 msgid "ScanResultPolicy|New severity"
@@ -48850,7 +48889,7 @@ msgstr ""
 msgid "Value stream analytics"
 msgstr ""
 
-msgid "ValueStreamAnalyticsStage|We don't have enough data to show this stage."
+msgid "ValueStreamAnalyticsStage|There are 0 items to show in this stage, for these filters, within this time range."
 msgstr ""
 
 msgid "ValueStreamAnalytics|%{stageCount}+ items"
@@ -48938,6 +48977,12 @@ msgid "ValueStreamAnalytics|The time to successfully deliver a commit into produ
 msgstr ""
 
 msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Total Critical vulnerabilities."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Total High vulnerabilities."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Total number of deploys to production."
@@ -49817,9 +49862,6 @@ msgid "We couldn't reach the Prometheus server. Either the server no longer exis
 msgstr ""
 
 msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."
-msgstr ""
-
-msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "We found your token in a public project and have automatically revoked it to protect your account."
@@ -53017,6 +53059,12 @@ msgstr ""
 msgid "for %{ref}"
 msgstr ""
 
+msgid "for Workspace is required to be public"
+msgstr ""
+
+msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
+msgstr ""
+
 msgid "for this project"
 msgstr ""
 
@@ -53162,6 +53210,9 @@ msgid "is an invalid IP address range"
 msgstr ""
 
 msgid "is blocked by"
+msgstr ""
+
+msgid "is currently immutable, and cannot be updated. Create a new agent instead."
 msgstr ""
 
 msgid "is forbidden by a top-level group"

@@ -107,6 +107,12 @@ module QA
           end
         end
 
+        def go_to_workspaces
+          within_sidebar do
+            click_element(:sidebar_menu_link, menu_item: "Workspaces")
+          end
+        end
+
         private
 
         def hover_settings

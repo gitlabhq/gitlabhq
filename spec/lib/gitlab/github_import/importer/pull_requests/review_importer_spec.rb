@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
-               :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter,
+  :clean_gitlab_redis_cache, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:merge_request) { create(:merge_request) }
 
   let(:project) { merge_request.project }
-  let(:submitted_at) { Time.new(2017, 1, 1, 12, 00).utc }
+  let(:submitted_at) { Time.new(2017, 1, 1, 12).utc }
   let(:client_double) do
     instance_double(
       'Gitlab::GithubImport::Client',
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
   shared_examples 'imports a reviewer for the Merge Request' do
     it 'creates reviewer for the Merge Request' do
-      expect { subject.execute }.to change(MergeRequestReviewer, :count).by(1)
+      expect { subject.execute }.to change { MergeRequestReviewer.count }.by(1)
 
       expect(merge_request.reviewers).to contain_exactly(author)
     end
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
       end
 
       it 'does not change Merge Request reviewers' do
-        expect { subject.execute }.not_to change(MergeRequestReviewer, :count)
+        expect { subject.execute }.not_to change { MergeRequestReviewer.count }
 
         expect(merge_request.reviewers).to contain_exactly(author)
       end
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
       end
 
       it 'does not change Merge Request reviewers', :aggregate_failures do
-        expect { subject.execute }.not_to change(MergeRequestReviewer, :count)
+        expect { subject.execute }.not_to change { MergeRequestReviewer.count }
 
         expect(merge_request.reviewers).to contain_exactly(author)
       end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
   shared_examples 'imports an approval for the Merge Request' do
     it 'creates an approval for the Merge Request' do
-      expect { subject.execute }.to change(Approval, :count).by(1)
+      expect { subject.execute }.to change { Approval.count }.by(1)
 
       expect(merge_request.approved_by_users.reload).to include(author)
       expect(merge_request.approvals.last.created_at).to eq(submitted_at)
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
         it_behaves_like 'imports a reviewer for the Merge Request'
 
         it 'creates a note for the review' do
-          expect { subject.execute }.to change(Note, :count).by(1)
+          expect { subject.execute }.to change { Note.count }.by(1)
 
           last_note = merge_request.notes.last
           expect(last_note.note).to eq('approved this merge request')
@@ -91,8 +91,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
           it 'does not import second approve and note' do
             expect { subject.execute }
-              .to change(Note, :count).by(0)
-              .and change(Approval, :count).by(0)
+              .to change { Note.count }.by(0)
+              .and change { Approval.count }.by(0)
           end
         end
       end
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
         it_behaves_like 'imports a reviewer for the Merge Request'
 
         it 'does not create note for the review' do
-          expect { subject.execute }.not_to change(Note, :count)
+          expect { subject.execute }.not_to change { Note.count }
         end
       end
 
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
         it_behaves_like 'imports a reviewer for the Merge Request'
 
         it 'does not create a note for the review' do
-          expect { subject.execute }.not_to change(Note, :count)
+          expect { subject.execute }.not_to change { Note.count }
         end
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
         it_behaves_like 'imports a reviewer for the Merge Request'
 
         it 'creates a note for the review' do
-          expect { subject.execute }.to change(Note, :count).by(2)
+          expect { subject.execute }.to change { Note.count }.by(2)
 
           note = merge_request.notes.where(system: false).last
           expect(note.note).to eq("**Review:** Approved\n\nnote")
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
         it 'creates a note for the review' do
           expect { subject.execute }
-            .to change(Note, :count).by(1)
+            .to change { Note.count }.by(1)
             .and not_change(Approval, :count)
 
           last_note = merge_request.notes.last
@@ -162,7 +162,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
         it 'creates a note for the review' do
           expect { subject.execute }
-            .to change(Note, :count).by(1)
+            .to change { Note.count }.by(1)
             .and not_change(Approval, :count)
 
           last_note = merge_request.notes.last
@@ -182,7 +182,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
         it 'creates a note for the review with *Approved by by<author>*' do
           expect { subject.execute }
-            .to change(Note, :count).by(1)
+            .to change { Note.count }.by(1)
 
           last_note = merge_request.notes.last
           expect(last_note.note).to eq("*Created by: author*\n\n**Review:** Approved")
@@ -195,7 +195,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
         let(:review) { create_review(type: 'COMMENTED', note: '') }
 
         it 'creates a note for the review with *Commented by<author>*' do
-          expect { subject.execute }.not_to change(Note, :count)
+          expect { subject.execute }.not_to change { Note.count }
         end
       end
 
@@ -203,7 +203,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
         let(:review) { create_review(type: 'CHANGES_REQUESTED', note: '') }
 
         it 'creates a note for the review with *Changes requested by <author>*' do
-          expect { subject.execute }.not_to change(Note, :count)
+          expect { subject.execute }.not_to change { Note.count }
         end
       end
     end
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
       it 'creates a note for the review without the author information' do
         expect { subject.execute }
-          .to change(Note, :count).by(1)
+          .to change { Note.count }.by(1)
 
         last_note = merge_request.notes.last
         expect(last_note.note).to eq('**Review:** Approved')
@@ -231,7 +231,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
       it 'creates a note for the review with the author username' do
         expect { subject.execute }
-          .to change(Note, :count).by(1)
+          .to change { Note.count }.by(1)
         last_note = merge_request.notes.last
         expect(last_note.note).to eq("*Created by: author*\n\n**Review:** Approved")
         expect(last_note.author).to eq(project.creator)
@@ -243,7 +243,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
       let(:review) { create_review(type: 'APPROVED', note: '', submitted_at: nil) }
 
       it 'creates a note for the review without the author information' do
-        expect { subject.execute }.to change(Note, :count).by(1)
+        expect { subject.execute }.to change { Note.count }.by(1)
 
         last_note = merge_request.notes.last
 
@@ -258,7 +258,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
         it 'creates a note for the review with *Approved by by<author>*' do
           expect { subject.execute }
-            .to change(Note, :count).by(1)
+            .to change { Note.count }.by(1)
 
           last_note = merge_request.notes.last
 
@@ -273,7 +273,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
         it 'creates a note for the review with *Commented by<author>*' do
           expect { subject.execute }
-            .to change(Note, :count).by(1)
+            .to change { Note.count }.by(1)
 
           last_note = merge_request.notes.last
 
@@ -288,7 +288,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter,
 
         it 'creates a note for the review with *Changes requested by <author>*' do
           expect { subject.execute }
-            .to change(Note, :count).by(1)
+            .to change { Note.count }.by(1)
 
           last_note = merge_request.notes.last
 

@@ -63,6 +63,12 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
 
     describe 'visibility_pipeline_id_type' do
+      it 'is set to 0 by default' do
+        pref = described_class.new
+
+        expect(pref.visibility_pipeline_id_type).to eq('id')
+      end
+
       it { is_expected.to define_enum_for(:visibility_pipeline_id_type).with_values(id: 0, iid: 1) }
     end
   end

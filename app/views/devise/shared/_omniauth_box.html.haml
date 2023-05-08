@@ -1,17 +1,21 @@
 - render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
 - restyle_login_page_enabled = Feature.enabled?(:restyle_login_page, @project)
-%div{ class: restyle_login_page_enabled ? 'omniauth-container gl-mt-5 gl-p-5 gl-text-center gl-w-90p gl-ml-auto gl-mr-auto' : 'omniauth-container gl-mt-5 gl-p-5' }
-  %label{ class: restyle_login_page_enabled ? 'gl-font-weight-normal' : 'gl-font-weight-bold' }
-    = _('Sign in with')
-  - providers = enabled_button_based_providers
-  .gl-display-flex.gl-flex-wrap{ class: restyle_login_page_enabled ? 'gl-justify-content-center' : 'gl-justify-content-between' }
-    - providers.each do |provider|
-      - has_icon = provider_has_icon?(provider)
-      = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", data: { qa_selector: "#{qa_selector_for_provider(provider)}" }, class: "btn gl-button btn-default gl-ml-2 gl-mr-2 gl-mb-2 js-oauth-login #{'gl-w-full' unless restyle_login_page_enabled}", form: { class: restyle_login_page_enabled ? 'gl-mb-3' : 'gl-w-full gl-mb-3' } do
-        - if has_icon
-          = provider_image_tag(provider)
-        %span.gl-button-text
-          = label_for_provider(provider)
+
+- if restyle_login_page_enabled && (any_form_based_providers_enabled? || password_authentication_enabled_for_web?)
+  .omniauth-divider.gl-display-flex.gl-align-items-center
+    = _("or")
+
+.gl-mt-5.gl-px-5{ class: restyle_login_page_enabled ? 'omniauth-container gl-text-center gl-ml-auto gl-mr-auto' : 'omniauth-container gl-py-5' }
+  - if !restyle_login_page_enabled
+    %label.gl-font-weight-bold
+      = _('Sign in with')
+  - enabled_button_based_providers.each do |provider|
+    - has_icon = provider_has_icon?(provider)
+    = button_to omniauth_authorize_path(:user, provider), id: "oauth-login-#{provider}", data: { qa_selector: "#{qa_selector_for_provider(provider)}" }, class: "btn gl-button btn-default gl-mb-2 js-oauth-login gl-w-full", form: { class: restyle_login_page_enabled ? 'gl-mb-3' : 'gl-w-full gl-mb-3' } do
+      - if has_icon
+        = provider_image_tag(provider)
+      %span.gl-button-text
+        = label_for_provider(provider)
   - if render_remember_me
     = render Pajamas::CheckboxTagComponent.new(name: 'remember_me_omniauth', value: nil) do |c|
       = c.label do

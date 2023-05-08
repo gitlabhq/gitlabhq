@@ -515,6 +515,7 @@ project:
 - cluster_agents
 - ci_access_project_authorizations
 - cluster_project
+- workspaces
 - creator
 - cycle_analytics_stages
 - value_streams

@@ -52,7 +52,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
 
       it 'shows active stage with empty message' do
         expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Issue')
-        expect(page).to have_content("We don't have enough data to show this stage.")
+        expect(page).to have_content("There are 0 items to show in this stage, for these filters, within this time range.")
       end
     end
 

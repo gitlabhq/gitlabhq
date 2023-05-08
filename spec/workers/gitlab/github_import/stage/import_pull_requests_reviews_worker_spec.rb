@@ -14,7 +14,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker, fea
 
       waiter = Gitlab::JobWaiter.new(2, '123')
 
-      expect(Gitlab::GithubImport::Importer::PullRequestsReviewsImporter)
+      expect(Gitlab::GithubImport::Importer::PullRequests::ReviewsImporter)
         .to receive(:new)
         .with(project, client)
         .and_return(importer)

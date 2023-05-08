@@ -451,3 +451,21 @@
     color: $gl-text-color;
   }
 }
+
+@mixin omniauth-divider {
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--gray-100, $gray-100);
+    margin: $gl-padding-24 0;
+  }
+
+  &::before {
+    margin-right: $gl-padding;
+  }
+
+  &::after {
+    margin-left: $gl-padding;
+  }
+}

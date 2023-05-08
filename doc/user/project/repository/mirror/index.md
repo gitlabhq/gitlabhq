@@ -106,13 +106,14 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 ## Mirror specific branches
 
-> Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default the field `mirror_branch_regex` is not available.
-To make it available, ask an administrator to [enable the feature flag](../../../../administration/feature_flags.md)
+On self-managed GitLab, by default the field `mirror_branch_regex` is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
 named `mirror_only_branches_match_regex`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
 enter a regular expression into the **Mirror specific branches** field. Branches with names that

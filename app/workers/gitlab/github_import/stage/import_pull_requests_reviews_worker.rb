@@ -15,7 +15,7 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          waiter = Importer::PullRequestsReviewsImporter
+          waiter = Importer::PullRequests::ReviewsImporter
             .new(project, client)
             .execute
 

@@ -530,6 +530,63 @@ end
 
 When running mobile tests for phone layouts, both `remote_mobile_device_name` and `mobile_layout` are `true` but when using a tablet layout, only `remote_mobile_device_name` is true. This is because phone layouts have more menus closed by default such as how both tablets and phones have the left nav closed but unlike phone layouts, tablets have the regular top navigation bar, not the mobile one. So in the case where the navigation being edited needs to be used in tablet layouts as well, use `remote_mobile_device_name` instead of `mobile_layout?` when prepending so it will use it if it's a tablet layout as well.
 
+## Targeting canary vs non-canary components in live environments
+
+Use the `QA_COOKIES` ENV variable to have the entire test target a `canary` (`staging-canary` or `canary`) or `non-canary` (`staging` or `production`) environment.
+
+Locally, that would mean prepending the ENV variable to your call to bin/qa. To target the `canary` version of that environment:
+
+```shell
+QA_COOKIES="gitlab_canary=true" WEBDRIVER_HEADLESS=false bin/qa Test::Instance::Staging <YOUR SPECIFIC TAGS OR TESTS>
+```
+
+Alternatively, you may set the cookie to `false` to ensure the `non-canary` version is targeted.
+
+You can also export the cookie for your current session to avoid prepending it each time:
+
+```shell
+export QA_COOKIES="gitlab_canary=true"
+```
+
+### Updating the cookie within a running spec
+
+Within a specific test, you can target either the `canary` or `non-canary` nodes within live environments, such as `staging` and `production`.
+
+For example, to switch back and forth between the two environments, you could utilize the `target_canary` method:
+
+```ruby
+it 'tests toggling between canary and non-canary nodes' do
+  Runtime::Browser.visit(:gitlab, Page::Main::Login)
+
+  # After starting the browser session, use the target_canary method ...
+
+  Runtime::Browser::Session.target_canary(true)
+  Flow::Login.sign_in
+
+  verify_session_on_canary(true)
+
+  Runtime::Browser::Session.target_canary(false)
+
+  # Refresh the page ...
+
+  verify_session_on_canary(false)
+
+  # Log out and clean up ...
+end
+
+def verify_session_on_canary(enable_canary)
+  Page::Main::Menu.perform do |menu|
+    aggregate_failures 'testing session log in' do
+      expect(menu.canary?).to be(enable_canary)
+    end
+  end
+end
+```
+
+You can verify whether GitLab is appropriately redirecting your session to the `canary` or `non-canary` nodes with the `menu.canary?` method.
+
+The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](beginners_guide.md).
+
 ## OpenID Connect (OIDC) tests
 
 To run the [`login_via_oidc_with_gitlab_as_idp_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/188e2c876a17a097448d7f3ed35bdf264fed0d3b/qa/qa/specs/features/browser_ui/1_manage/login/login_via_oidc_with_gitlab_as_idp_spec.rb) on your local machine:

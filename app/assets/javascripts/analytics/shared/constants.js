@@ -38,6 +38,14 @@ const VSA_FLOW_METRICS_GROUP = {
 
 export const VSA_METRICS_GROUPS = [VSA_FLOW_METRICS_GROUP];
 
+export const VULNERABILITY_CRITICAL_TYPE = 'vulnerability_critical';
+export const VULNERABILITY_HIGH_TYPE = 'vulnerability_high';
+
+export const VULNERABILITY_METRICS = {
+  CRITICAL: VULNERABILITY_CRITICAL_TYPE,
+  HIGH: VULNERABILITY_HIGH_TYPE,
+};
+
 export const METRIC_TOOLTIPS = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
     description: s__(
@@ -100,6 +108,18 @@ export const METRIC_TOOLTIPS = {
     groupLink: '-/analytics/productivity_analytics',
     projectLink: '-/analytics/merge_request_analytics',
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
+  },
+  [VULNERABILITY_METRICS.CRITICAL]: {
+    description: s__('ValueStreamAnalytics|Total Critical vulnerabilities.'),
+    groupLink: '-/security/vulnerabilities',
+    projectLink: '-/security/vulnerability_report',
+    docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
+  },
+  [VULNERABILITY_METRICS.HIGH]: {
+    description: s__('ValueStreamAnalytics|Total High vulnerabilities.'),
+    groupLink: '-/security/vulnerabilities',
+    projectLink: '-/security/vulnerability_report',
+    docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
   },
 };
 

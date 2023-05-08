@@ -114,7 +114,7 @@ module LoginHelpers
   def login_via(provider, user, uid, remember_me: false, additional_info: {})
     mock_auth_hash(provider, uid, user.email, additional_info: additional_info)
     visit new_user_session_path
-    expect(page).to have_content('Sign in with')
+    expect(page).to have_css('.omniauth-container')
 
     check 'remember_me_omniauth' if remember_me
 

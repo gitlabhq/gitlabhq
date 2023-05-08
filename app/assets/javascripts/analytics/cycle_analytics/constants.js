@@ -14,7 +14,7 @@ export const DEFAULT_VALUE_STREAM = {
 };
 
 export const NOT_ENOUGH_DATA_ERROR = s__(
-  "ValueStreamAnalyticsStage|We don't have enough data to show this stage.",
+  'ValueStreamAnalyticsStage|There are 0 items to show in this stage, for these filters, within this time range.',
 );
 
 export const PAGINATION_TYPE = 'keyset';

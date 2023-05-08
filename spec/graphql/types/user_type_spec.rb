@@ -50,7 +50,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       user_achievements
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
   describe 'name field' do

@@ -7,7 +7,7 @@ require (
 	github.com/BurntSushi/toml v1.2.1
 	github.com/FZambia/sentinel v1.1.1
 	github.com/alecthomas/chroma/v2 v2.7.0
-	github.com/aws/aws-sdk-go v1.44.253
+	github.com/aws/aws-sdk-go v1.44.254
 	github.com/disintegration/imaging v1.6.2
 	github.com/getsentry/raven-go v0.2.0
 	github.com/golang-jwt/jwt/v5 v5.0.0

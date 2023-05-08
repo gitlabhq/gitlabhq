@@ -14,7 +14,7 @@ stages:
 
 variables:
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
-  DAST_API_VERSION: "2"
+  DAST_API_VERSION: "3"
   DAST_API_IMAGE_SUFFIX: ""
   DAST_API_IMAGE: api-security
 

@@ -10,6 +10,12 @@ RSpec.describe 'User', feature_category: :user_profile do
   shared_examples 'a working user query' do
     it_behaves_like 'a working graphql query' do
       before do
+        # TODO: This license stub is necessary because the remote development workspaces field
+        #       defined in the EE version of UserInterface gets picked up here and thus the license
+        #       check happens. This comes from the `ancestors` call in
+        #       lib/graphql/schema/member/has_fields.rb#fields in the graphql library.
+        stub_licensed_features(remote_development: true)
+
         post_graphql(query, current_user: current_user)
       end
     end

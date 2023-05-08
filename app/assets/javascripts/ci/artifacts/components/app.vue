@@ -18,12 +18,8 @@ export default {
       variables() {
         return { projectPath: this.projectPath };
       },
-      update({
-        project: {
-          statistics: { buildArtifactsSize },
-        },
-      }) {
-        return buildArtifactsSize;
+      update({ project: { statistics } }) {
+        return statistics?.buildArtifactsSize ?? null;
       },
     },
   },

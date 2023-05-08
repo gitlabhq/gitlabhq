@@ -14,15 +14,20 @@ const TEST_BUILD_ARTIFACTS_SIZE = 1024;
 const TEST_PROJECT_PATH = 'project/path';
 const TEST_PROJECT_ID = 'gid://gitlab/Project/22';
 
-const createBuildArtifactsSizeResponse = (buildArtifactsSize) => ({
+const createBuildArtifactsSizeResponse = ({
+  buildArtifactsSize = TEST_BUILD_ARTIFACTS_SIZE,
+  nullStatistics = false,
+}) => ({
   data: {
     project: {
       __typename: 'Project',
       id: TEST_PROJECT_ID,
-      statistics: {
-        __typename: 'ProjectStatistics',
-        buildArtifactsSize,
-      },
+      statistics: nullStatistics
+        ? null
+        : {
+            __typename: 'ProjectStatistics',
+            buildArtifactsSize,
+          },
     },
   },
 });
@@ -82,28 +87,32 @@ describe('ArtifactsApp component', () => {
   });
 
   describe.each`
-    buildArtifactsSize           | expectedText
-    ${TEST_BUILD_ARTIFACTS_SIZE} | ${numberToHumanSize(TEST_BUILD_ARTIFACTS_SIZE)}
-    ${null}                      | ${SIZE_UNKNOWN}
-  `('when buildArtifactsSize is $buildArtifactsSize', ({ buildArtifactsSize, expectedText }) => {
-    beforeEach(async () => {
-      getBuildArtifactsSizeSpy.mockResolvedValue(
-        createBuildArtifactsSizeResponse(buildArtifactsSize),
-      );
+    buildArtifactsSize           | nullStatistics | expectedText
+    ${TEST_BUILD_ARTIFACTS_SIZE} | ${false}       | ${numberToHumanSize(TEST_BUILD_ARTIFACTS_SIZE)}
+    ${null}                      | ${false}       | ${SIZE_UNKNOWN}
+    ${null}                      | ${true}        | ${SIZE_UNKNOWN}
+  `(
+    'when buildArtifactsSize is $buildArtifactsSize',
+    ({ buildArtifactsSize, nullStatistics, expectedText }) => {
+      beforeEach(async () => {
+        getBuildArtifactsSizeSpy.mockResolvedValue(
+          createBuildArtifactsSizeResponse({ buildArtifactsSize, nullStatistics }),
+        );
 
-      createComponent();
+        createComponent();
 
-      await waitForPromises();
-    });
+        await waitForPromises();
+      });
 
-    it('hides loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(false);
-    });
+      it('hides loader', () => {
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
 
-    it('shows the size', () => {
-      expect(findBuildArtifactsSize().text()).toMatchInterpolatedText(
-        `${TOTAL_ARTIFACTS_SIZE} ${expectedText}`,
-      );
-    });
-  });
+      it('shows the size', () => {
+        expect(findBuildArtifactsSize().text()).toMatchInterpolatedText(
+          `${TOTAL_ARTIFACTS_SIZE} ${expectedText}`,
+        );
+      });
+    },
+  );
 });

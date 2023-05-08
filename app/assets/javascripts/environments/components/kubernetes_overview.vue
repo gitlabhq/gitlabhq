@@ -108,6 +108,7 @@ export default {
           @cluster-error="onClusterError" />
         <kubernetes-tabs
           :configuration="k8sAccessConfiguration"
+          :namespace="namespace"
           class="gl-mb-5"
           @cluster-error="onClusterError"
       /></template>

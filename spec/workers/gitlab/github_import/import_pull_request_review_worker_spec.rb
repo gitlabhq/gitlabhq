@@ -10,6 +10,6 @@ RSpec.describe Gitlab::GithubImport::ImportPullRequestReviewWorker, feature_cate
   end
 
   describe '#importer_class' do
-    it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::PullRequestReviewImporter) }
+    it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::PullRequests::ReviewImporter) }
   end
 end

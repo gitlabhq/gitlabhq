@@ -60,7 +60,7 @@ module QA
 
           def initialize
             wait_for_requests(skip_finished_loading_check: true)
-            dismiss_file_tree_popover if has_element?(:file_tree_popover)
+            dismiss_file_tree_popover
 
             super
           end

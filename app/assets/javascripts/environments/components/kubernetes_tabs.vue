@@ -4,6 +4,7 @@ import { __, s__ } from '~/locale';
 import k8sServicesQuery from '../graphql/queries/k8s_services.query.graphql';
 import { generateServicePortsString, getServiceAge } from '../helpers/k8s_integration_helper';
 import { SERVICES_LIMIT_PER_PAGE } from '../constants';
+import KubernetesSummary from './kubernetes_summary.vue';
 
 const tableHeadingClasses = 'gl-bg-gray-50! gl-font-weight-bold gl-white-space-nowrap';
 
@@ -15,6 +16,7 @@ export default {
     GlTable,
     GlPagination,
     GlLoadingIcon,
+    KubernetesSummary,
   },
   apollo: {
     k8sServices: {
@@ -36,6 +38,10 @@ export default {
     configuration: {
       required: true,
       type: Object,
+    },
+    namespace: {
+      required: true,
+      type: String,
     },
   },
   data() {
@@ -128,6 +134,8 @@ export default {
 </script>
 <template>
   <gl-tabs>
+    <kubernetes-summary :namespace="namespace" :configuration="configuration" />
+
     <gl-tab>
       <template #title>
         {{ $options.i18n.servicesTitle }}

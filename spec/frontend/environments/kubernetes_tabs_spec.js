@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlTabs, GlTab, GlTable, GlPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlTabs, GlTab, GlTable, GlPagination, GlBadge } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
+import KubernetesSummary from '~/environments/components/kubernetes_summary.vue';
 import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
 import { mockKasTunnelUrl } from './mock_data';
 import { k8sServicesMock } from './graphql/mock_data';
@@ -16,6 +17,7 @@ Vue.use(VueApollo);
 describe('~/environments/components/kubernetes_tabs.vue', () => {
   let wrapper;
 
+  const namespace = 'my-kubernetes-namespace';
   const configuration = {
     basePath: mockKasTunnelUrl,
     baseOptions: {
@@ -25,9 +27,10 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTabs = () => wrapper.findComponent(GlTabs);
-  const findTab = (at) => wrapper.findAllComponents(GlTab).at(at);
+  const findTab = () => wrapper.findComponent(GlTab);
   const findTable = () => wrapper.findComponent(GlTable);
   const findPagination = () => wrapper.findComponent(GlPagination);
+  const findKubernetesSummary = () => wrapper.findComponent(KubernetesSummary);
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -40,14 +43,15 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
   };
 
   const createWrapper = (apolloProvider = createApolloProvider()) => {
-    wrapper = shallowMount(KubernetesTabs, {
-      propsData: { configuration },
+    wrapper = shallowMountExtended(KubernetesTabs, {
+      propsData: { configuration, namespace },
       apolloProvider,
       stubs: {
         GlTab,
         GlTable: stubComponent(GlTable, {
           props: ['items', 'per-page'],
         }),
+        GlBadge,
       },
     });
   };
@@ -59,10 +63,16 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       expect(findTabs().exists()).toBe(true);
     });
 
+    it('renders summary tab', () => {
+      createWrapper();
+
+      expect(findKubernetesSummary().props()).toEqual({ namespace, configuration });
+    });
+
     it('renders services tab', () => {
       createWrapper();
 
-      expect(findTab(0).text()).toMatchInterpolatedText(`${KubernetesTabs.i18n.servicesTitle} 0`);
+      expect(findTab().text()).toMatchInterpolatedText(`${KubernetesTabs.i18n.servicesTitle} 0`);
     });
   });
 

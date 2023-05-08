@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { CoreV1Api } from '@gitlab/cluster-client';
+import { CoreV1Api, AppsV1Api, BatchV1Api } from '@gitlab/cluster-client';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -36,6 +36,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       headers: { 'GitLab-Agent-Id': '1' },
     },
   };
+  const namespace = 'default';
 
   beforeEach(() => {
     mockResolvers = resolvers(ENDPOINT);
@@ -154,8 +155,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
   });
   describe('k8sPods', () => {
-    const namespace = 'default';
-
     const mockPodsListFn = jest.fn().mockImplementation(() => {
       return Promise.resolve({
         data: {
@@ -230,6 +229,92 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(mockResolvers.Query.k8sServices(null, { configuration })).rejects.toThrow(
+        'API error',
+      );
+    });
+  });
+  describe('k8sWorkloads', () => {
+    const emptyImplementation = jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        data: {
+          items: [],
+        },
+      });
+    });
+
+    const [
+      mockNamespacedDeployment,
+      mockNamespacedDaemonSet,
+      mockNamespacedStatefulSet,
+      mockNamespacedReplicaSet,
+      mockNamespacedJob,
+      mockNamespacedCronJob,
+      mockAllDeployment,
+      mockAllDaemonSet,
+      mockAllStatefulSet,
+      mockAllReplicaSet,
+      mockAllJob,
+      mockAllCronJob,
+    ] = Array(12).fill(emptyImplementation);
+
+    const namespacedMocks = [
+      { method: 'listAppsV1NamespacedDeployment', api: AppsV1Api, spy: mockNamespacedDeployment },
+      { method: 'listAppsV1NamespacedDaemonSet', api: AppsV1Api, spy: mockNamespacedDaemonSet },
+      { method: 'listAppsV1NamespacedStatefulSet', api: AppsV1Api, spy: mockNamespacedStatefulSet },
+      { method: 'listAppsV1NamespacedReplicaSet', api: AppsV1Api, spy: mockNamespacedReplicaSet },
+      { method: 'listBatchV1NamespacedJob', api: BatchV1Api, spy: mockNamespacedJob },
+      { method: 'listBatchV1NamespacedCronJob', api: BatchV1Api, spy: mockNamespacedCronJob },
+    ];
+
+    const allMocks = [
+      { method: 'listAppsV1DeploymentForAllNamespaces', api: AppsV1Api, spy: mockAllDeployment },
+      { method: 'listAppsV1DaemonSetForAllNamespaces', api: AppsV1Api, spy: mockAllDaemonSet },
+      { method: 'listAppsV1StatefulSetForAllNamespaces', api: AppsV1Api, spy: mockAllStatefulSet },
+      { method: 'listAppsV1ReplicaSetForAllNamespaces', api: AppsV1Api, spy: mockAllReplicaSet },
+      { method: 'listBatchV1JobForAllNamespaces', api: BatchV1Api, spy: mockAllJob },
+      { method: 'listBatchV1CronJobForAllNamespaces', api: BatchV1Api, spy: mockAllCronJob },
+    ];
+
+    beforeEach(() => {
+      [...namespacedMocks, ...allMocks].forEach((workloadMock) => {
+        jest
+          .spyOn(workloadMock.api.prototype, workloadMock.method)
+          .mockImplementation(workloadMock.spy);
+      });
+    });
+
+    it('should request namespaced workload types from the cluster_client library if namespace is specified', async () => {
+      await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace });
+
+      namespacedMocks.forEach((workloadMock) => {
+        expect(workloadMock.spy).toHaveBeenCalledWith(namespace);
+      });
+    });
+
+    it('should request all workload types from the cluster_client library if namespace is not specified', async () => {
+      await mockResolvers.Query.k8sWorkloads(null, { configuration, namespace: '' });
+
+      allMocks.forEach((workloadMock) => {
+        expect(workloadMock.spy).toHaveBeenCalled();
+      });
+    });
+    it('should pass fulfilled calls data if one of the API calls fail', async () => {
+      jest
+        .spyOn(AppsV1Api.prototype, 'listAppsV1DeploymentForAllNamespaces')
+        .mockRejectedValue(new Error('API error'));
+
+      await expect(
+        mockResolvers.Query.k8sWorkloads(null, { configuration }),
+      ).resolves.toBeDefined();
+    });
+    it('should throw an error if all the API calls fail', async () => {
+      [...allMocks].forEach((workloadMock) => {
+        jest
+          .spyOn(workloadMock.api.prototype, workloadMock.method)
+          .mockRejectedValue(new Error('API error'));
+      });
+
+      await expect(mockResolvers.Query.k8sWorkloads(null, { configuration })).rejects.toThrow(
         'API error',
       );
     });

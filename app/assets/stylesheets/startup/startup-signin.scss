@@ -360,11 +360,6 @@ input.btn-block[type="button"] {
   align-items: center;
   justify-content: space-between;
 }
-.clearfix::after {
-  display: block;
-  clear: both;
-  content: "";
-}
 .fixed-top {
   position: fixed;
   top: 0;
@@ -783,11 +778,8 @@ svg {
 .gl-display-inline-block {
   display: inline-block;
 }
-.gl-flex-wrap {
-  flex-wrap: wrap;
-}
-.gl-justify-content-center {
-  justify-content: center;
+.gl-align-items-center {
+  align-items: center;
 }
 .gl-justify-content-space-between {
   justify-content: space-between;
@@ -801,9 +793,6 @@ svg {
 .gl-w-half {
   width: 50%;
 }
-.gl-w-90p {
-  width: 90%;
-}
 .gl-w-full {
   width: 100%;
 }
@@ -812,15 +801,19 @@ svg {
     width: 100%;
   }
 }
-.gl-p-5 {
-  padding: 1rem;
-}
 .gl-px-5 {
   padding-left: 1rem;
   padding-right: 1rem;
 }
 .gl-pt-5 {
   padding-top: 1rem;
+}
+.gl-pb-5 {
+  padding-bottom: 1rem;
+}
+.gl-py-5 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 .gl-mt-3 {
   margin-top: 0.5rem;
@@ -830,9 +823,6 @@ svg {
 }
 .gl-mr-auto {
   margin-right: auto;
-}
-.gl-mr-2 {
-  margin-right: 0.25rem;
 }
 .gl-mb-1 {
   margin-bottom: 0.125rem;
@@ -846,9 +836,6 @@ svg {
 .gl-ml-auto {
   margin-left: auto;
 }
-.gl-ml-2 {
-  margin-left: 0.25rem;
-}
 @media (min-width: 576px) {
   .gl-sm-mt-0 {
     margin-top: 0;
@@ -859,9 +846,6 @@ svg {
 }
 .gl-font-size-h2 {
   font-size: 1.1875rem;
-}
-.gl-font-weight-normal {
-  font-weight: 400;
 }
 .gl-font-weight-bold {
   font-weight: 600;

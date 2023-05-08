@@ -26,5 +26,4 @@
       = _("Don't have an account yet?")
       = link_to _("Register now"), new_registration_path(:user, invite_email: @invite_email), data: { qa_selector: 'register_link' }
   - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
-    .clearfix
-      = render 'devise/shared/omniauth_box'
+    = render 'devise/shared/omniauth_box'

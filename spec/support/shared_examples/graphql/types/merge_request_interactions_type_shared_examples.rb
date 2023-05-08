@@ -45,6 +45,10 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       user_achievements
     ]
 
+    # TODO: 'workspaces' needs to be included, but only when this spec is run in EE context, to account for the
+    #       ee-only extension in ee/app/graphql/ee/types/user_interface.rb. Not sure how else to handle this.
+    expected_fields << 'workspaces' if Gitlab.ee?
+
     expect(described_class).to have_graphql_fields(*expected_fields)
   end
 

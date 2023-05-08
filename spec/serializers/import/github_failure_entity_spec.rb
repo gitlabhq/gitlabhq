@@ -85,7 +85,7 @@ RSpec.describe Import::GithubFailureEntity, feature_category: :importers do
 
   context 'with `pull_request_review` failure' do
     it_behaves_like 'import failure entity' do
-      let(:source) { 'Gitlab::GithubImport::Importer::PullRequestReviewImporter' }
+      let(:source) { 'Gitlab::GithubImport::Importer::PullRequests::ReviewImporter' }
       let(:title) { 'Pull request review 123456' }
       let(:provider_url) { 'https://github.com/example/repo/pull/2#pullrequestreview-123456' }
       let(:github_identifiers) do

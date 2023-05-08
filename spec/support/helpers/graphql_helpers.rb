@@ -639,7 +639,11 @@ module GraphqlHelpers
   end
 
   def expect_graphql_errors_to_be_empty
-    expect(flattened_errors).to be_empty
+    # TODO: using eq([]) instead of be_empty makes it print out the full error message including the
+    #       raisedAt key which contains the full stacktrace. This is necessary to know where the
+    #       unexpected error occurred during tests.
+    #       This or an equivalent fix should be added in a separate MR on master.
+    expect(flattened_errors).to eq([])
   end
 
   # Helps migrate to the new GraphQL interpreter,

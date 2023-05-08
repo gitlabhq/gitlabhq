@@ -73,6 +73,11 @@ module API
 
           Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
         end
+
+        def update_configuration(agent:, config:)
+          ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: config).execute
+          ::Clusters::Agents::Authorizations::UserAccess::RefreshService.new(agent, config: config).execute
+        end
       end
 
       namespace 'internal' do
@@ -128,9 +133,7 @@ module API
           end
           post '/', feature_category: :deployment_management, urgency: :low do
             agent = ::Clusters::Agent.find(params[:agent_id])
-
-            ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: params[:agent_config]).execute
-            ::Clusters::Agents::Authorizations::UserAccess::RefreshService.new(agent, config: params[:agent_config]).execute
+            update_configuration(agent: agent, config: params[:agent_config])
 
             no_content!
           end
