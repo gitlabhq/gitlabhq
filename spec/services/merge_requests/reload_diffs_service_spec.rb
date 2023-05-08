@@ -35,8 +35,9 @@ feature_category: :code_review_workflow do
 
     context 'cache clearing' do
       it 'clears the cache for older diffs on the merge request' do
-        expect_any_instance_of(Redis).to receive(:del).once.and_call_original
-        expect(Rails.cache).to receive(:delete).once.and_call_original
+        expect_next_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff) do |instance|
+          expect(instance).to receive(:clear_cache).and_call_original
+        end
 
         subject.execute
       end
