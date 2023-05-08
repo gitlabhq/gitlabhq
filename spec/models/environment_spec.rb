@@ -1387,7 +1387,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     context 'when the environment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:project, :with_prometheus_integration, :repository) }
+        let_it_be(:project) { create(:project, :with_prometheus_integration, :repository) }
 
         context 'and a deployment' do
           let!(:deployment) { create(:deployment, environment: environment) }
@@ -1460,7 +1460,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     context 'when the environment is unavailable' do
-      let(:project) { create(:project, :with_prometheus_integration) }
+      let_it_be(:project) { create(:project, :with_prometheus_integration) }
 
       before do
         environment.stop
@@ -1487,7 +1487,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '#metrics' do
-    let(:project) { create(:project, :with_prometheus_integration) }
+    let_it_be(:project) { create(:project, :with_prometheus_integration) }
 
     subject { environment.metrics }
 
@@ -1523,7 +1523,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '#additional_metrics' do
-    let(:project) { create(:project, :with_prometheus_integration) }
+    let_it_be(:project) { create(:project, :with_prometheus_integration) }
     let(:metric_params) { [] }
 
     subject { environment.additional_metrics(*metric_params) }

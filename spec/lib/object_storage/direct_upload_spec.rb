@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::DirectUpload do
+RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
   let(:region) { 'us-east-1' }
   let(:path_style) { false }
   let(:use_iam_profile) { false }

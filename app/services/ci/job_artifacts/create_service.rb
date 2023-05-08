@@ -23,7 +23,11 @@ module Ci
         result = validate_requirements(artifact_type: artifact_type, filesize: filesize)
         return result unless result[:status] == :success
 
-        headers = JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size(artifact_type))
+        headers = JobArtifactUploader.workhorse_authorize(
+          has_length: false,
+          maximum_size: max_size(artifact_type),
+          use_final_store_path: Feature.enabled?(:ci_artifacts_upload_to_final_location, project)
+        )
 
         if lsif?(artifact_type)
           headers[:ProcessLsif] = true

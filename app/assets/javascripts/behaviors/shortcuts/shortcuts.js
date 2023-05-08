@@ -186,14 +186,6 @@ export default class Shortcuts {
   }
 
   static toggleMarkdownPreview(e) {
-    const $form = $(e.target).closest('form');
-    const toggle = $('.js-md-preview-button', $form).get(0);
-
-    if (!toggle) return;
-
-    toggle.focus();
-    toggle.click();
-
     $(document).triggerHandler('markdown-preview:toggle', [e]);
   }
 

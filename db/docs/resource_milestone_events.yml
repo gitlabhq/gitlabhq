@@ -3,7 +3,7 @@ table_name: resource_milestone_events
 classes:
 - ResourceMilestoneEvent
 feature_categories:
-- planning_analytics
+- team_planning
 description: Records the addition and removal of issues to milestones
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23965
 milestone: '12.8'

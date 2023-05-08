@@ -165,4 +165,16 @@ module StubObjectStorage
         </InitiateMultipartUploadResult>
       EOS
   end
+
+  def stub_object_storage_multipart_init_with_final_store_path(full_path, upload_id = "upload_id")
+    stub_request(:post, %r{\A#{full_path}\?uploads\z})
+      .to_return status: 200, body: <<-EOS.strip_heredoc
+        <?xml version="1.0" encoding="UTF-8"?>
+        <InitiateMultipartUploadResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+          <Bucket>example-bucket</Bucket>
+          <Key>example-object</Key>
+          <UploadId>#{upload_id}</UploadId>
+        </InitiateMultipartUploadResult>
+      EOS
+  end
 end

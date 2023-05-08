@@ -84,7 +84,17 @@ const installed = new WeakMap();
 export default class VueRouterCompat {
   constructor(options) {
     // eslint-disable-next-line no-constructor-return
-    return createRouter(transformOptions(options));
+    return new Proxy(createRouter(transformOptions(options)), {
+      get(target, prop) {
+        const result = target[prop];
+        // eslint-disable-next-line no-underscore-dangle
+        if (result?.__v_isRef) {
+          return result.value;
+        }
+
+        return result;
+      },
+    });
   }
 
   static install() {

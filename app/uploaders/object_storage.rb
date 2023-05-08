@@ -23,6 +23,19 @@ module ObjectStorage
     end
   end
 
+  class DirectUploadStorage < ::CarrierWave::Storage::Fog
+    def store!(file)
+      return super unless @uploader.direct_upload_final_path.present?
+
+      # The direct_upload_final_path is defined which means
+      # file was uploaded to its final location so no need to move it.
+      # Now we delete the pending upload entry as the upload is considered complete.
+      ObjectStorage::PendingDirectUpload.complete(@uploader.class.storage_location_identifier, file.path)
+
+      file
+    end
+  end
+
   TMP_UPLOAD_PATH = 'tmp/uploads'
 
   module Store
@@ -91,6 +104,7 @@ module ObjectStorage
 
   module Concern
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
     included do |base|
       base.include(ObjectStorage)
@@ -109,6 +123,10 @@ module ObjectStorage
 
       def direct_upload_enabled?
         object_store_options&.direct_upload
+      end
+
+      def direct_upload_to_object_store?
+        object_store_enabled? && direct_upload_enabled?
       end
 
       def proxy_download_enabled?
@@ -131,10 +149,26 @@ module ObjectStorage
         model_class.uploader_options.dig(mount_point, :mount_on) || mount_point
       end
 
-      def workhorse_authorize(has_length:, maximum_size: nil)
+      def generate_remote_id
+        [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
+      end
+
+      def generate_final_store_path
+        hash = Digest::SHA2.hexdigest(SecureRandom.uuid)
+
+        # We prefix '@final' to prevent clashes and make the files easily recognizable
+        # as having been created by this code.
+        File.join('@final', hash[0..1], hash[2..3], hash[4..])
+      end
+
+      def workhorse_authorize(has_length:, maximum_size: nil, use_final_store_path: false)
         {}.tap do |hash|
-          if self.object_store_enabled? && self.direct_upload_enabled?
-            hash[:RemoteObject] = workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size)
+          if self.direct_upload_to_object_store?
+            hash[:RemoteObject] = workhorse_remote_upload_options(
+              has_length: has_length,
+              maximum_size: maximum_size,
+              use_final_store_path: use_final_store_path
+            )
           else
             hash[:TempPath] = workhorse_local_upload_path
           end
@@ -148,20 +182,37 @@ module ObjectStorage
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
+      def with_bucket_prefix(path)
+        File.join([object_store_options.bucket_prefix, path].compact)
+      end
+
       def object_store_config
         ObjectStorage::Config.new(object_store_options)
       end
 
-      def workhorse_remote_upload_options(has_length:, maximum_size: nil)
-        return unless self.object_store_enabled?
-        return unless self.direct_upload_enabled?
+      def workhorse_remote_upload_options(has_length:, maximum_size: nil, use_final_store_path: false)
+        return unless direct_upload_to_object_store?
 
-        id = [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
-        upload_path = File.join(TMP_UPLOAD_PATH, id)
+        if use_final_store_path
+          id = generate_final_store_path
+          upload_path = with_bucket_prefix(id)
+          prepare_pending_direct_upload(id)
+        else
+          id = generate_remote_id
+          upload_path = File.join(TMP_UPLOAD_PATH, id)
+        end
+
         direct_upload = ObjectStorage::DirectUpload.new(self.object_store_config, upload_path,
-          has_length: has_length, maximum_size: maximum_size)
+          has_length: has_length, maximum_size: maximum_size, skip_delete: use_final_store_path)
 
         direct_upload.to_hash.merge(ID: id)
+      end
+
+      def prepare_pending_direct_upload(path)
+        ObjectStorage::PendingDirectUpload.prepare(
+          storage_location_identifier,
+          path
+        )
       end
     end
 
@@ -304,13 +355,16 @@ module ObjectStorage
 
     def store_path(*args)
       if self.object_store == Store::REMOTE
+        path = direct_upload_final_path
+        path ||= super
+
         # We allow administrators to create "sub buckets" by setting a prefix.
         # This makes it possible to deploy GitLab with only one object storage
         # bucket. Because the prefix is configuration data we do not want to
         # store it in the uploads table via RecordsUploads. That means that the
         # prefix cannot be part of store_dir. This is why we chose to implement
         # the prefix support here in store_path.
-        File.join([self.class.object_store_options.bucket_prefix, super].compact)
+        self.class.with_bucket_prefix(path)
       else
         super
       end
@@ -335,7 +389,7 @@ module ObjectStorage
 
     def store!(new_file = nil)
       # when direct upload is enabled, always store on remote storage
-      if self.class.object_store_enabled? && self.class.direct_upload_enabled?
+      if self.class.direct_upload_to_object_store?
         self.object_store = Store::REMOTE
       end
 
@@ -346,12 +400,44 @@ module ObjectStorage
       "object_storage_migrate:#{model.class}:#{model.id}"
     end
 
+    override :delete_tmp_file_after_storage
+    def delete_tmp_file_after_storage
+      # If final path is present then the file is not on temporary location
+      # so we don't want carrierwave to delete it.
+      return false if direct_upload_final_path.present?
+
+      super
+    end
+
+    def retrieve_from_store!(identifier)
+      # We need to force assign the value of @filename so that we will still
+      # get the original_filename in cases wherein the file points to a random generated
+      # path format. This happens for direct uploaded files to final location.
+      #
+      # If we don't set @filename value here, the result of uploader.filename (see ObjectStorage#filename) will result
+      # to the value of uploader.file.filename which will then contain the random generated path.
+      # The `identifier` variable contains the value of the `file` column which is the original_filename.
+      #
+      # In cases wherein we are not uploading to final location, it is still fine to set the
+      # @filename with the `identifier` value because it still contains the original filename from the `file` column,
+      # which is what we want in either case.
+      @filename = identifier # rubocop: disable Gitlab/ModuleWithInstanceVariables
+
+      super
+    end
+
     private
 
     def cache_remote_file!(remote_object_id, original_filename)
-      file_path = File.join(TMP_UPLOAD_PATH, remote_object_id)
-      file_path = Pathname.new(file_path).cleanpath.to_s
-      raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(TMP_UPLOAD_PATH + '/')
+      if ObjectStorage::PendingDirectUpload.exists?(self.class.storage_location_identifier, remote_object_id) # rubocop:disable CodeReuse/ActiveRecord
+        # This is an assumption that a model with matching pending direct upload will have this attribute
+        model.write_attribute(direct_upload_final_path_attribute_name, remote_object_id)
+        file_path = self.class.with_bucket_prefix(remote_object_id)
+      else
+        file_path = File.join(TMP_UPLOAD_PATH, remote_object_id)
+        file_path = Pathname.new(file_path).cleanpath.to_s
+        raise RemoteStoreError, 'Bad file path' unless file_path.start_with?(TMP_UPLOAD_PATH + '/')
+      end
 
       # TODO:
       # This should be changed to make use of `tmp/cache` mechanism
@@ -398,7 +484,7 @@ module ObjectStorage
       when Store::REMOTE
         raise "Object Storage is not enabled for #{self.class}" unless self.class.object_store_enabled?
 
-        CarrierWave::Storage::Fog.new(self)
+        DirectUploadStorage.new(self)
       when Store::LOCAL
         CarrierWave::Storage::File.new(self)
       else
@@ -463,6 +549,14 @@ module ObjectStorage
       FileUtils.rm_f(cache_path)
       cache_storage.delete_dir!(cache_path(nil))
     end
+  end
+
+  def direct_upload_final_path_attribute_name
+    "#{mounted_as}_final_path"
+  end
+
+  def direct_upload_final_path
+    model.try(direct_upload_final_path_attribute_name)
   end
 end
 

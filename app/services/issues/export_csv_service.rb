@@ -18,7 +18,7 @@ module Issues
     private
 
     def associations_to_preload
-      [:author, :assignees, :timelogs, :milestone, { project: { namespace: :route } }]
+      [:work_item_type, :author, :assignees, :timelogs, :milestone, { project: { namespace: :route } }]
     end
 
     def header_to_value_hash

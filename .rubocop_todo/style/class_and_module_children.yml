@@ -98,7 +98,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/jira_connect/installations_controller.rb'
     - 'app/controllers/jira_connect/oauth_callbacks_controller.rb'
     - 'app/controllers/jira_connect/subscriptions_controller.rb'
-    - 'app/controllers/jira_connect/users_controller.rb'
     - 'app/controllers/ldap/omniauth_callbacks_controller.rb'
     - 'app/controllers/oauth/applications_controller.rb'
     - 'app/controllers/oauth/authorizations_controller.rb'

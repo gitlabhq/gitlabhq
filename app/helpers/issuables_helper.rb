@@ -144,9 +144,9 @@ module IssuablesHelper
   def issuable_meta(issuable, project)
     output = []
 
-    if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issue_type_for(issuable))
+    if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.issue_type)
       output << content_tag(:span, sprite_icon(issuable.work_item_type.icon_name.to_s, css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
-      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: IntegrationsHelper.integration_issue_type(issue_type_for(issuable)), created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
+      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: IntegrationsHelper.integration_issue_type(issuable.issue_type), created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     else
       output << content_tag(:span, s_('IssuableStatus|Created %{created_at} by').html_safe % { created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     end
@@ -263,7 +263,7 @@ module IssuablesHelper
 
     {
       hasClosingMergeRequest: issuable.merge_requests_count(current_user) != 0,
-      issueType: issue_type_for(issuable),
+      issueType: issuable.issue_type,
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,
@@ -329,7 +329,7 @@ module IssuablesHelper
   def issuable_display_type(issuable)
     case issuable
     when Issue
-      issue_type_for(issuable).downcase
+      issuable.issue_type.downcase
     when MergeRequest
       issuable.model_name.human.downcase
     end
@@ -388,7 +388,7 @@ module IssuablesHelper
 
   def issuable_type_selector_data(issuable)
     {
-      selected_type: issue_type_for(issuable),
+      selected_type: issuable.issue_type,
       is_issue_allowed: create_issue_type_allowed?(@project, :issue).to_s,
       is_incident_allowed: create_issue_type_allowed?(@project, :incident).to_s,
       issue_path: new_project_issue_path(@project),

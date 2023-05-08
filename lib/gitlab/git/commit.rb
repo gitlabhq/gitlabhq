@@ -464,7 +464,8 @@ module Gitlab
       end
 
       def fetch_body_from_gitaly
-        self.class.get_message(@repository, id)
+        # #to_s is required to ensure BatchLoader is not returned.
+        self.class.get_message(@repository, id).to_s
       end
 
       def self.valid?(commit_id)

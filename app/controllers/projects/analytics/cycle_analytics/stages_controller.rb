@@ -6,7 +6,7 @@ class Projects::Analytics::CycleAnalytics::StagesController < Projects::Applicat
 
   respond_to :json
 
-  feature_category :planning_analytics
+  feature_category :team_planning
 
   before_action :authorize_read_cycle_analytics!
   before_action :only_default_value_stream_is_allowed!

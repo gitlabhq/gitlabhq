@@ -97,7 +97,7 @@ module IssuableActions
     index_path = polymorphic_path([parent, issuable.class])
 
     respond_to do |format|
-      format.html { redirect_to index_path }
+      format.html { redirect_to index_path, status: :see_other }
       format.json do
         render json: {
           web_url: index_path

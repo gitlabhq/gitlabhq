@@ -292,7 +292,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/issues_list.css"
     config.assets.precompile << "page_bundles/issues_show.css"
     config.assets.precompile << "page_bundles/jira_connect.css"
-    config.assets.precompile << "page_bundles/jira_connect_users.css"
     config.assets.precompile << "page_bundles/learn_gitlab.css"
     config.assets.precompile << "page_bundles/login.css"
     config.assets.precompile << "page_bundles/marketing_popover.css"

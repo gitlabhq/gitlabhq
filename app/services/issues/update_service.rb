@@ -39,7 +39,8 @@ module Issues
     def change_work_item_type(issue)
       return unless issue.changed_attributes['issue_type']
 
-      type_id = find_work_item_type_id(issue.issue_type)
+      issue_type = params[:issue_type] || ::Issue::DEFAULT_ISSUE_TYPE
+      type_id = find_work_item_type_id(issue_type)
 
       issue.work_item_type_id = type_id
     end

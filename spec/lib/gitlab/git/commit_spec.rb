@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Commit do
+RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
   let(:repository) { create(:project, :repository).repository.raw }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
 
@@ -61,8 +61,39 @@ RSpec.describe Gitlab::Git::Commit do
       context 'body_size greater than threshold' do
         let(:body_size) { described_class::MAX_COMMIT_MESSAGE_DISPLAY_SIZE + 1 }
 
-        it 'returns the suject plus a notice about message size' do
+        it 'returns the subject plus a notice about message size' do
           expect(commit.safe_message).to eq("My commit\n\n--commit message is too big")
+        end
+      end
+
+      context "large commit message" do
+        let(:user) { create(:user) }
+        let(:sha) { create_commit_with_large_message }
+        let(:commit) { repository.commit(sha) }
+
+        def create_commit_with_large_message
+          repository.commit_files(
+            user,
+            branch_name: 'HEAD',
+            message: "Repeat " * 10 * 1024,
+            actions: []
+          ).newrev
+        end
+
+        it 'returns a String' do
+          # When #message is called, its encoding is forced from
+          # ASCII-8BIT to UTF-8, and the method returns a
+          # string. Calling #message again may cause BatchLoader to
+          # return since the encoding has been modified to UTF-8, and
+          # the encoding helper will return the original object unmodified.
+          #
+          # To ensure #fetch_body_from_gitaly returns a String, invoke
+          # #to_s. In the test below, do a strict type check to ensure
+          # that a String is always returned. Note that the Rspec
+          # matcher be_instance_of(String) appears to evaluate the
+          # BatchLoader result, so we have to do a strict comparison
+          # here.
+          2.times { expect(String === commit.message).to be true }
         end
       end
     end

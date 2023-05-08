@@ -480,6 +480,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
   context 'when fetching escalation status' do
     let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue_a) }
+    let_it_be(:incident_type) { WorkItems::Type.default_by_type(:incident) }
 
     let(:fields) do
       <<~QUERY
@@ -491,7 +492,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
 
     before do
-      issue_a.update_columns(issue_type: Issue.issue_types[:incident])
+      issue_a.update_columns(issue_type: WorkItems::Type.base_types[:incident], work_item_type_id: incident_type.id)
     end
 
     it 'returns the escalation status values' do

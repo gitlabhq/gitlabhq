@@ -23,8 +23,6 @@ describe('Shortcuts', () => {
     new Shortcuts(); // eslint-disable-line no-new
     new MarkdownPreview(); // eslint-disable-line no-new
 
-    jest.spyOn(document.querySelector('.js-new-note-form .js-md-preview-button'), 'focus');
-    jest.spyOn(document.querySelector('.edit-note .js-md-preview-button'), 'focus');
     jest.spyOn(document.querySelector('#search'), 'focus');
 
     jest.spyOn(Mousetrap.prototype, 'stopCallback');
@@ -34,31 +32,6 @@ describe('Shortcuts', () => {
 
   afterEach(() => {
     resetHTMLFixture();
-  });
-
-  describe('toggleMarkdownPreview', () => {
-    it('focuses preview button in form', () => {
-      Shortcuts.toggleMarkdownPreview(
-        createEvent('KeyboardEvent', document.querySelector('.js-new-note-form .js-note-text')),
-      );
-
-      expect(
-        document.querySelector('.js-new-note-form .js-md-preview-button').focus,
-      ).toHaveBeenCalled();
-    });
-
-    it('focuses preview button inside edit comment form', () => {
-      document.querySelector('.js-note-edit').click();
-
-      Shortcuts.toggleMarkdownPreview(
-        createEvent('KeyboardEvent', document.querySelector('.edit-note .js-note-text')),
-      );
-
-      expect(
-        document.querySelector('.js-new-note-form .js-md-preview-button').focus,
-      ).not.toHaveBeenCalled();
-      expect(document.querySelector('.edit-note .js-md-preview-button').focus).toHaveBeenCalled();
-    });
   });
 
   describe('markdown shortcuts', () => {

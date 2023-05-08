@@ -532,7 +532,7 @@ RSpec.describe Groups::GroupMembersController do
       it 'is successful' do
         delete :destroy, params: { group_id: group, id: membership }
 
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to have_gitlab_http_status(:see_other)
       end
     end
 

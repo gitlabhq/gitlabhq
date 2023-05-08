@@ -18,10 +18,12 @@ class Implementation < GitlabUploader
   end
 end
 
-RSpec.describe ObjectStorage do
+# TODO: Update feature_category once object storage group ownership has been determined.
+RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category: :shared do
   let(:uploader_class) { Implementation }
   let(:object) { build_stubbed(:user) }
-  let(:uploader) { uploader_class.new(object, :file) }
+  let(:file_column) { :file }
+  let(:uploader) { uploader_class.new(object, file_column) }
 
   describe '#object_store=' do
     before do
@@ -101,6 +103,34 @@ RSpec.describe ObjectStorage do
 
           it 'uses the prefix and store_dir' do
             expect(subject).to eq("my/prefix/user/#{object.id}/filename")
+          end
+        end
+
+        context 'when model has final path defined for the file column' do
+          # Changing this to `foo` to make a point that not all uploaders are mounted
+          # as `file`. They can be mounted as different names, for example, `avatar`.
+          let(:file_column) { :foo }
+
+          before do
+            allow(object).to receive(:foo_final_path).and_return('123-final-path')
+          end
+
+          it 'uses the final path instead' do
+            expect(subject).to eq('123-final-path')
+          end
+
+          context 'and a bucket prefix is configured' do
+            before do
+              allow(uploader_class).to receive(:object_store_options) do
+                double(
+                  bucket_prefix: 'my/prefix'
+                )
+              end
+            end
+
+            it 'uses the prefix with the final path' do
+              expect(subject).to eq("my/prefix/123-final-path")
+            end
           end
         end
       end
@@ -494,8 +524,15 @@ RSpec.describe ObjectStorage do
   describe '.workhorse_authorize' do
     let(:has_length) { true }
     let(:maximum_size) { nil }
+    let(:use_final_store_path) { false }
 
-    subject { uploader_class.workhorse_authorize(has_length: has_length, maximum_size: maximum_size) }
+    subject do
+      uploader_class.workhorse_authorize(
+        has_length: has_length,
+        maximum_size: maximum_size,
+        use_final_store_path: use_final_store_path
+      )
+    end
 
     context 'when FIPS is enabled', :fips_mode do
       it 'response enables FIPS' do
@@ -528,18 +565,23 @@ RSpec.describe ObjectStorage do
 
     shared_examples 'uses remote storage' do
       it_behaves_like 'returns the maximum size given' do
-        it "returns remote store" do
+        it "returns remote object properties for a temporary upload" do
           is_expected.to have_key(:RemoteObject)
 
           expect(subject[:RemoteObject]).to have_key(:ID)
           expect(subject[:RemoteObject]).to include(Timeout: a_kind_of(Integer))
           expect(subject[:RemoteObject][:Timeout]).to be(ObjectStorage::DirectUpload::TIMEOUT)
-          expect(subject[:RemoteObject]).to have_key(:GetURL)
-          expect(subject[:RemoteObject]).to have_key(:DeleteURL)
-          expect(subject[:RemoteObject]).to have_key(:StoreURL)
-          expect(subject[:RemoteObject][:GetURL]).to include(described_class::TMP_UPLOAD_PATH)
-          expect(subject[:RemoteObject][:DeleteURL]).to include(described_class::TMP_UPLOAD_PATH)
-          expect(subject[:RemoteObject][:StoreURL]).to include(described_class::TMP_UPLOAD_PATH)
+
+          upload_path = File.join(described_class::TMP_UPLOAD_PATH, subject[:RemoteObject][:ID])
+
+          expect(subject[:RemoteObject][:GetURL]).to include(upload_path)
+          expect(subject[:RemoteObject][:DeleteURL]).to include(upload_path)
+          expect(subject[:RemoteObject][:StoreURL]).to include(upload_path)
+          expect(subject[:RemoteObject][:SkipDelete]).to eq(false)
+
+          ::Gitlab::Redis::SharedState.with do |redis|
+            expect(redis.hlen(ObjectStorage::PendingDirectUpload::KEY)).to be_zero
+          end
         end
       end
     end
@@ -551,12 +593,12 @@ RSpec.describe ObjectStorage do
 
           expect(subject[:RemoteObject]).to have_key(:MultipartUpload)
           expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:PartSize)
-          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:PartURLs)
-          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:CompleteURL)
-          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:AbortURL)
-          expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(described_class::TMP_UPLOAD_PATH))
-          expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(described_class::TMP_UPLOAD_PATH)
-          expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(described_class::TMP_UPLOAD_PATH)
+
+          upload_path = File.join(described_class::TMP_UPLOAD_PATH, subject[:RemoteObject][:ID])
+
+          expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(upload_path))
+          expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(upload_path)
+          expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(upload_path)
         end
       end
     end
@@ -567,6 +609,80 @@ RSpec.describe ObjectStorage do
           is_expected.to have_key(:RemoteObject)
           expect(subject[:RemoteObject]).not_to have_key(:MultipartUpload)
         end
+      end
+    end
+
+    shared_examples 'handling object storage final upload path' do |multipart|
+      context 'when use_final_store_path is true' do
+        let(:use_final_store_path) { true }
+        let(:final_store_path) { File.join('@final', 'abc', '123', 'somefilename') }
+        let(:escaped_path) { escape_path(final_store_path) }
+
+        before do
+          stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{final_store_path}") if multipart
+
+          allow(uploader_class).to receive(:generate_final_store_path).and_return(final_store_path)
+        end
+
+        it 'uses the full path instead of the temporary one' do
+          expect(subject[:RemoteObject][:ID]).to eq(final_store_path)
+
+          expect(subject[:RemoteObject][:GetURL]).to include(escaped_path)
+          expect(subject[:RemoteObject][:StoreURL]).to include(escaped_path)
+
+          if multipart
+            expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(escaped_path))
+            expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(escaped_path)
+            expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(escaped_path)
+          end
+
+          expect(subject[:RemoteObject][:SkipDelete]).to eq(true)
+
+          expect(
+            ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
+          ).to eq(true)
+        end
+
+        context 'and bucket prefix is configured' do
+          let(:prefixed_final_store_path) { "my/prefix/#{final_store_path}" }
+          let(:escaped_path) { escape_path(prefixed_final_store_path) }
+
+          before do
+            allow(uploader_class.object_store_options).to receive(:bucket_prefix).and_return('my/prefix')
+
+            if multipart
+              stub_object_storage_multipart_init_with_final_store_path("#{storage_url}#{prefixed_final_store_path}")
+            end
+          end
+
+          it 'sets the remote object ID to the final path without prefix' do
+            expect(subject[:RemoteObject][:ID]).to eq(final_store_path)
+          end
+
+          it 'returns the final path with prefix' do
+            expect(subject[:RemoteObject][:GetURL]).to include(escaped_path)
+            expect(subject[:RemoteObject][:StoreURL]).to include(escaped_path)
+
+            if multipart
+              expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(escaped_path))
+              expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(escaped_path)
+              expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(escaped_path)
+            end
+          end
+
+          it 'creates the pending upload entry without the prefix' do
+            is_expected.to have_key(:RemoteObject)
+
+            expect(
+              ObjectStorage::PendingDirectUpload.exists?(uploader_class.storage_location_identifier, final_store_path)
+            ).to eq(true)
+          end
+        end
+      end
+
+      def escape_path(path)
+        # This is what the private method Fog::AWS::Storage#object_to_path will do to the object name
+        Fog::AWS.escape(path).gsub('%2F', '/')
       end
     end
 
@@ -613,6 +729,8 @@ RSpec.describe ObjectStorage do
                 expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
               end
             end
+
+            it_behaves_like 'handling object storage final upload path'
           end
 
           context 'for unknown length' do
@@ -633,6 +751,8 @@ RSpec.describe ObjectStorage do
                 expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to start_with(storage_url)
               end
             end
+
+            it_behaves_like 'handling object storage final upload path', :multipart
           end
         end
 
@@ -660,6 +780,8 @@ RSpec.describe ObjectStorage do
                 expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
               end
             end
+
+            it_behaves_like 'handling object storage final upload path'
           end
 
           context 'for unknown length' do
@@ -673,6 +795,8 @@ RSpec.describe ObjectStorage do
                 expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
               end
             end
+
+            it_behaves_like 'handling object storage final upload path'
           end
         end
 
@@ -701,6 +825,8 @@ RSpec.describe ObjectStorage do
                 expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
               end
             end
+
+            it_behaves_like 'handling object storage final upload path'
           end
 
           context 'for unknown length' do
@@ -721,6 +847,8 @@ RSpec.describe ObjectStorage do
                 expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to start_with(storage_url)
               end
             end
+
+            it_behaves_like 'handling object storage final upload path', :multipart
           end
         end
       end
@@ -880,9 +1008,10 @@ RSpec.describe ObjectStorage do
 
             expect(uploader).to be_exists
             expect(uploader).to be_cached
+            expect(uploader.cache_only).to be_falsey
             expect(uploader).not_to be_file_storage
             expect(uploader.path).not_to be_nil
-            expect(uploader.path).not_to include('tmp/cache')
+            expect(uploader.path).to include('tmp/uploads')
             expect(uploader.path).not_to include('tmp/cache')
             expect(uploader.object_store).to eq(described_class::Store::REMOTE)
           end
@@ -905,38 +1034,164 @@ RSpec.describe ObjectStorage do
               expect(uploader.object_store).to eq(described_class::Store::REMOTE)
             end
           end
+
+          context 'when uploaded file remote_id matches a pending direct upload entry' do
+            let(:object) { build_stubbed(:ci_job_artifact) }
+            let(:final_path) { '@final/test/123123' }
+            let(:fog_config) { Gitlab.config.uploads.object_store }
+            let(:bucket) { 'uploads' }
+            let(:uploaded_file) { UploadedFile.new(temp_file.path, filename: "my_file.txt", remote_id: final_path) }
+            let(:fog_file_path) { final_path }
+
+            let(:fog_connection_2) do
+              stub_object_storage_uploader(
+                config: fog_config,
+                uploader: uploader_class,
+                direct_upload: true
+              )
+            end
+
+            let!(:fog_file_2) do
+              fog_connection_2.directories.new(key: bucket).files.create( # rubocop:disable Rails/SaveBang
+                key: fog_file_path,
+                body: 'content'
+              )
+            end
+
+            before do
+              ObjectStorage::PendingDirectUpload.prepare(
+                uploader_class.storage_location_identifier,
+                final_path
+              )
+            end
+
+            it 'file to be cached and remote stored with final path set' do
+              expect { subject }.not_to raise_error
+
+              expect(uploader).to be_exists
+              expect(uploader).to be_cached
+              expect(uploader.cache_only).to be_falsey
+              expect(uploader).not_to be_file_storage
+              expect(uploader.path).to eq(uploaded_file.remote_id)
+              expect(uploader.object_store).to eq(described_class::Store::REMOTE)
+
+              expect(object.file_final_path).to eq(uploaded_file.remote_id)
+            end
+
+            context 'when bucket prefix is configured' do
+              let(:fog_config) do
+                Gitlab.config.uploads.object_store.tap do |config|
+                  config[:remote_directory] = 'main-bucket'
+                  config[:bucket_prefix] = 'uploads'
+                end
+              end
+
+              let(:bucket) { 'main-bucket' }
+              let(:fog_file_path) { "uploads/#{final_path}" }
+
+              it 'stores the file final path in the db without the prefix' do
+                expect { subject }.not_to raise_error
+
+                expect(uploader.store_path).to eq("uploads/#{final_path}")
+                expect(object.file_final_path).to eq(final_path)
+              end
+            end
+
+            context 'when file is stored' do
+              subject do
+                uploader.store!(uploaded_file)
+              end
+
+              it 'file to be remotely stored in permament location' do
+                subject
+
+                expect(uploader).to be_exists
+                expect(uploader).not_to be_cached
+                expect(uploader.path).to eq(uploaded_file.remote_id)
+              end
+
+              it 'does not trigger Carrierwave copy and delete because it is already in the final location' do
+                expect_next_instance_of(CarrierWave::Storage::Fog::File) do |instance|
+                  expect(instance).not_to receive(:copy_to)
+                  expect(instance).not_to receive(:delete)
+                end
+
+                subject
+              end
+            end
+          end
         end
       end
     end
   end
 
   describe '#retrieve_from_store!' do
-    [:group, :project, :user].each do |model|
-      context "for #{model}s" do
-        let(:models) { create_list(model, 3, :with_avatar).map(&:reload) }
-        let(:avatars) { models.map(&:avatar) }
+    context 'uploaders that includes the RecordsUploads extension' do
+      [:group, :project, :user].each do |model|
+        context "for #{model}s" do
+          let(:models) { create_list(model, 3, :with_avatar).map(&:reload) }
+          let(:avatars) { models.map(&:avatar) }
 
-        it 'batches fetching uploads from the database' do
-          # Ensure that these are all created and fully loaded before we start
-          # running queries for avatars
-          models
+          it 'batches fetching uploads from the database' do
+            # Ensure that these are all created and fully loaded before we start
+            # running queries for avatars
+            models
 
-          expect { avatars }.not_to exceed_query_limit(1)
-        end
+            expect { avatars }.not_to exceed_query_limit(1)
+          end
 
-        it 'does not attempt to replace methods' do
-          models.each do |model|
-            expect(model.avatar.upload).to receive(:method_missing).and_call_original
+          it 'does not attempt to replace methods' do
+            models.each do |model|
+              expect(model.avatar.upload).to receive(:method_missing).and_call_original
 
-            model.avatar.upload.path
+              model.avatar.upload.path
+            end
+          end
+
+          it 'fetches a unique upload for each model' do
+            expect(avatars.map(&:url).uniq).to eq(avatars.map(&:url))
+            expect(avatars.map(&:upload).uniq).to eq(avatars.map(&:upload))
           end
         end
+      end
+    end
 
-        it 'fetches a unique upload for each model' do
-          expect(avatars.map(&:url).uniq).to eq(avatars.map(&:url))
-          expect(avatars.map(&:upload).uniq).to eq(avatars.map(&:upload))
+    describe 'filename' do
+      let(:model) { create(:ci_job_artifact, :remote_store, :archive) }
+
+      before do
+        stub_artifacts_object_storage
+      end
+
+      shared_examples 'ensuring correct filename' do
+        it 'uses the original filename' do
+          expect(model.reload.file.filename).to eq('ci_build_artifacts.zip')
         end
       end
+
+      context 'when model has final path defined for the file column' do
+        before do
+          model.update_column(:file_final_path, 'some/final/path/abc-123')
+        end
+
+        it_behaves_like 'ensuring correct filename'
+      end
+
+      context 'when model has no final path defined for the file column' do
+        it_behaves_like 'ensuring correct filename'
+      end
+    end
+  end
+
+  describe '.generate_final_store_path' do
+    subject(:final_path) { uploader_class.generate_final_store_path }
+
+    before do
+      allow(Digest::SHA2).to receive(:hexdigest).and_return('somehash1234')
+    end
+
+    it 'returns the generated hashed path' do
+      expect(final_path).to eq('@final/so/me/hash1234')
     end
   end
 

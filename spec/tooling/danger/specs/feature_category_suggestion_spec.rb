@@ -27,7 +27,7 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
     [
       " require 'spec_helper'",
       " \n",
-      " RSpec.describe Projects::SummaryController, feature_category: :planning_analytics do",
+      " RSpec.describe Projects::SummaryController, feature_category: :team_planning do",
       " end",
       "RSpec.describe Projects::SummaryController do",
       "  let_it_be(:user) { create(:user) }",
@@ -41,7 +41,7 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
       " end",
       " \n",
       "RSpec.describe Projects :aggregate_failures,",
-      "  feature_category: planning_analytics do",
+      "  feature_category :team_planning do",
       " \n",
       "RSpec.describe Epics :aggregate_failures,",
       "  ee: true do",
@@ -57,14 +57,14 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
 
   let(:changed_lines) do
     [
-      "+ RSpec.describe Projects::SummaryController, feature_category: :planning_analytics do",
+      "+ RSpec.describe Projects::SummaryController, feature_category: :team_planning do",
       "+RSpec.describe Projects::SummaryController do",
       "+ let_it_be(:user) { create(:user) }",
       "- end",
       "+ describe 'GET \"time_summary\"' do",
       "+ RSpec.describe Projects::SummaryController do",
       "+RSpec.describe Projects :aggregate_failures,",
-      "+  feature_category: planning_analytics do",
+      "+  feature_category: :team_planning do",
       "+RSpec.describe Epics :aggregate_failures,",
       "+  ee: true do",
       "+RSpec.describe Issues :aggregate_failures,",

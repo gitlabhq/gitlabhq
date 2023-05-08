@@ -3,7 +3,7 @@ table_name: resource_label_events
 classes:
 - ResourceLabelEvent
 feature_categories:
-- planning_analytics
+- team_planning
 description: Records the addition and removal of labels from resources that can be labelled; such as issues, MRs and epics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6697
 milestone: '11.2'

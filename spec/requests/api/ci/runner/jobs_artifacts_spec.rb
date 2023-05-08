@@ -174,7 +174,20 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   expect(json_response['RemoteObject']).to have_key('StoreURL')
                   expect(json_response['RemoteObject']).to have_key('DeleteURL')
                   expect(json_response['RemoteObject']).to have_key('MultipartUpload')
+                  expect(json_response['RemoteObject']['SkipDelete']).to eq(true)
                   expect(json_response['MaximumSize']).not_to be_nil
+                end
+
+                context 'when ci_artifacts_upload_to_final_location flag is disabled' do
+                  before do
+                    stub_feature_flags(ci_artifacts_upload_to_final_location: false)
+                  end
+
+                  it 'does not skip delete' do
+                    subject
+
+                    expect(json_response['RemoteObject']['SkipDelete']).to eq(false)
+                  end
                 end
               end
 
@@ -374,29 +387,53 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 let(:object) do
                   fog_connection.directories.new(key: 'artifacts').files.create( # rubocop:disable Rails/SaveBang
-                    key: 'tmp/uploads/12312300',
+                    key: remote_path,
                     body: 'content'
                   )
                 end
 
                 let(:file_upload) { fog_to_uploaded_file(object) }
 
-                before do
-                  upload_artifacts(file_upload, headers_with_token, 'file.remote_id' => remote_id)
-                end
+                context 'when uploaded file has matching pending remote upload to its final location' do
+                  let(:remote_path) { '12345/foo-bar-123' }
+                  let(:object_remote_id) { remote_path }
+                  let(:remote_id) { remote_path }
 
-                context 'when valid remote_id is used' do
-                  let(:remote_id) { '12312300' }
+                  before do
+                    allow(JobArtifactUploader).to receive(:generate_final_store_path).and_return(remote_path)
+
+                    ObjectStorage::PendingDirectUpload.prepare(
+                      JobArtifactUploader.storage_location_identifier,
+                      remote_path
+                    )
+
+                    upload_artifacts(file_upload, headers_with_token, 'file.remote_id' => remote_path)
+                  end
 
                   it_behaves_like 'successful artifacts upload'
                 end
 
-                context 'when invalid remote_id is used' do
-                  let(:remote_id) { 'invalid id' }
+                context 'when uploaded file is uploaded to temporary location' do
+                  let(:object_remote_id) { JobArtifactUploader.generate_remote_id }
+                  let(:remote_path) { File.join(ObjectStorage::TMP_UPLOAD_PATH, object_remote_id) }
 
-                  it 'responds with bad request' do
-                    expect(response).to have_gitlab_http_status(:internal_server_error)
-                    expect(json_response['message']).to eq("Missing file")
+                  before do
+                    upload_artifacts(file_upload, headers_with_token, 'file.remote_id' => remote_id)
+                  end
+
+                  context 'and matching temporary remote_id is used' do
+                    let(:remote_id) { object_remote_id }
+
+                    it_behaves_like 'successful artifacts upload'
+                  end
+
+                  context 'and invalid remote_id is used' do
+                    let(:remote_id) { JobArtifactUploader.generate_remote_id }
+
+                    it 'responds with internal server error' do
+                      expect(response).to have_gitlab_http_status(:internal_server_error)
+                      expect(json_response['message']).to eq("Missing file")
+                    end
                   end
                 end
               end

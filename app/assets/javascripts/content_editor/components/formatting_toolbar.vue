@@ -32,7 +32,7 @@ export default {
       class="gl-w-full gl-display-flex gl-align-items-center gl-flex-wrap gl-bg-gray-50 gl-px-2 gl-rounded-base gl-justify-content-space-between"
       data-testid="formatting-toolbar"
     >
-      <div class="gl-py-2 gl-display-flex gl-flex-wrap-wrap">
+      <div class="gl-py-2 gl-display-flex gl-flex-wrap">
         <toolbar-text-style-dropdown
           data-testid="text-styles"
           @execute="trackToolbarControlExecution"

@@ -27,14 +27,7 @@ module IssueAvailableFeatures
       raise ArgumentError, 'invalid feature'
     end
 
-    type_for_issue = if Feature.enabled?(:issue_type_uses_work_item_types_table)
-                       # The default will only be used in places where an issue is only build and not saved
-                       work_item_type_with_default.base_type
-                     else
-                       issue_type
-                     end
-
-    self.class.available_features_for_issue_types[feature].include?(type_for_issue)
+    self.class.available_features_for_issue_types[feature].include?(issue_type)
   end
 end
 

@@ -8639,7 +8639,6 @@
 - './spec/requests/jira_connect/oauth_application_ids_controller_spec.rb'
 - './spec/requests/jira_connect/oauth_callbacks_controller_spec.rb'
 - './spec/requests/jira_connect/subscriptions_controller_spec.rb'
-- './spec/requests/jira_connect/users_controller_spec.rb'
 - './spec/requests/jira_routing_spec.rb'
 - './spec/requests/jwks_controller_spec.rb'
 - './spec/requests/jwt_controller_spec.rb'

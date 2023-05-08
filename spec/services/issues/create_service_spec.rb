@@ -145,7 +145,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           expect(issue).to be_persisted
           expect(issue).to be_a(::Issue)
           expect(issue.work_item_type.base_type).to eq('issue')
-          expect(issue.issue_type).to eq('issue')
         end
       end
 
@@ -686,7 +685,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
           created_issue = Issue.last
 
-          expect(created_issue.issue_type).to eq('incident')
           expect(created_issue.work_item_type).to eq(WorkItems::Type.default_by_type('incident'))
         end
       end

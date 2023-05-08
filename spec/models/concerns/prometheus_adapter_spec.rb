@@ -6,7 +6,7 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
   include PrometheusHelpers
   include ReactiveCachingHelpers
 
-  let(:project) { create(:project, :with_prometheus_integration) }
+  let_it_be(:project) { create(:project, :with_prometheus_integration) }
   let(:integration) { project.prometheus_integration }
 
   let(:described_class) do

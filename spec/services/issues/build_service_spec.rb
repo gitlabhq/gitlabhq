@@ -175,31 +175,37 @@ RSpec.describe Issues::BuildService, feature_category: :team_planning do
 
     describe 'setting issue type' do
       context 'with a corresponding WorkItems::Type' do
+        let_it_be(:type_task) { WorkItems::Type.default_by_type(:task) }
+        let_it_be(:type_task_id) { type_task.id }
         let_it_be(:type_issue_id) { WorkItems::Type.default_issue_type.id }
         let_it_be(:type_incident_id) { WorkItems::Type.default_by_type(:incident).id }
+        let(:combined_params) { { work_item_type: type_task, issue_type: 'issue' } }
+        let(:work_item_params) { { work_item_type_id: type_task_id } }
 
-        where(:issue_type, :current_user, :work_item_type_id, :resulting_issue_type) do
-          nil           | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'issue'       | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'incident'    | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'incident'    | ref(:reporter) | ref(:type_incident_id)    | 'incident'
+        where(:issue_params, :current_user, :work_item_type_id, :resulting_issue_type) do
+          { issue_type: nil }           | ref(:guest)    | ref(:type_issue_id)    | 'issue'
+          { issue_type: 'issue' }       | ref(:guest)    | ref(:type_issue_id)    | 'issue'
+          { issue_type: 'incident' }    | ref(:guest)    | ref(:type_issue_id)    | 'issue'
+          { issue_type: 'incident' }    | ref(:reporter) | ref(:type_incident_id) | 'incident'
+          ref(:combined_params)         | ref(:reporter) | ref(:type_task_id)     | 'task'
+          ref(:work_item_params)        | ref(:reporter) | ref(:type_task_id)     | 'task'
           # update once support for test_case is enabled
-          'test_case'   | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          { issue_type: 'test_case' }   | ref(:guest)    | ref(:type_issue_id)    | 'issue'
           # update once support for requirement is enabled
-          'requirement' | ref(:guest)    | ref(:type_issue_id)       | 'issue'
-          'invalid'     | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          { issue_type: 'requirement' } | ref(:guest)    | ref(:type_issue_id)    | 'issue'
+          { issue_type: 'invalid' }     | ref(:guest)    | ref(:type_issue_id)    | 'issue'
           # ensure that we don't set a value which has a permission check but is an invalid issue type
-          'project'     | ref(:guest)    | ref(:type_issue_id)       | 'issue'
+          { issue_type: 'project' }     | ref(:guest)    | ref(:type_issue_id)    | 'issue'
         end
 
         with_them do
           let(:user) { current_user }
 
           it 'builds an issue' do
-            issue = build_issue(issue_type: issue_type)
+            issue = build_issue(**issue_params)
 
-            expect(issue.issue_type).to eq(resulting_issue_type)
             expect(issue.work_item_type_id).to eq(work_item_type_id)
+            expect(issue.attributes['issue_type']).to eq(resulting_issue_type)
           end
         end
       end

@@ -13343,7 +13343,8 @@ CREATE TABLE ci_job_artifacts (
     partition_id bigint DEFAULT 100 NOT NULL,
     accessibility smallint DEFAULT 0 NOT NULL,
     file_final_path text,
-    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL))
+    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
+    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
 );
 
 CREATE SEQUENCE ci_job_artifacts_id_seq
@@ -26634,9 +26635,6 @@ ALTER TABLE ONLY chat_teams
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE ci_job_artifacts
-    ADD CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;

@@ -3,7 +3,7 @@ table_name: resource_iteration_events
 classes:
 - ResourceIterationEvent
 feature_categories:
-- planning_analytics
+- team_planning
 description: Records the addition and removal of issues to iterations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37617
 milestone: '13.3'

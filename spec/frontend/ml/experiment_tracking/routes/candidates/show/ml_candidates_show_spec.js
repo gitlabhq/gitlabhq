@@ -1,7 +1,8 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MlCandidatesShow from '~/ml/experiment_tracking/routes/candidates/show';
+import { TITLE_LABEL } from '~/ml/experiment_tracking/routes/candidates/show/translations';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
-import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 
 describe('MlCandidatesShow', () => {
   let wrapper;
@@ -36,12 +37,8 @@ describe('MlCandidatesShow', () => {
 
   beforeEach(createWrapper);
 
-  const findAlert = () => wrapper.findComponent(IncubationAlert);
   const findDeleteButton = () => wrapper.findComponent(DeleteButton);
-
-  it('shows incubation warning', () => {
-    expect(findAlert().exists()).toBe(true);
-  });
+  const findHeader = () => wrapper.findComponent(ModelExperimentsHeader);
 
   it('shows delete button', () => {
     expect(findDeleteButton().exists()).toBe(true);
@@ -49,6 +46,10 @@ describe('MlCandidatesShow', () => {
 
   it('passes the delete path to delete button', () => {
     expect(findDeleteButton().props('deletePath')).toBe('path_to_candidate');
+  });
+
+  it('passes the right title', () => {
+    expect(findHeader().props('pageTitle')).toBe(TITLE_LABEL);
   });
 
   it('renders correctly', () => {

@@ -2,33 +2,16 @@
 
 exports[`MlCandidatesShow renders correctly 1`] = `
 <div>
-  <incubation-alert-stub
-    featurename="Machine learning experiment tracking"
-    linktofeedbackissue="https://gitlab.com/gitlab-org/gitlab/-/issues/381660"
-  />
-   
-  <div
-    class="detail-page-header gl-flex-wrap"
+  <model-experiments-header-stub
+    pagetitle="Model candidate details"
   >
-    <div
-      class="detail-page-header-body"
-    >
-      <h1
-        class="page-title gl-font-size-h-display flex-fill"
-      >
-        
-        Model candidate details
-      
-      </h1>
-       
-      <delete-button-stub
-        actionprimarytext="Delete candidate"
-        deleteconfirmationtext="Deleting this candidate will delete the associated parameters, metrics, and metadata."
-        deletepath="path_to_candidate"
-        modaltitle="Delete candidate?"
-      />
-    </div>
-  </div>
+    <delete-button-stub
+      actionprimarytext="Delete candidate"
+      deleteconfirmationtext="Deleting this candidate will delete the associated parameters, metrics, and metadata."
+      deletepath="path_to_candidate"
+      modaltitle="Delete candidate?"
+    />
+  </model-experiments-header-stub>
    
   <table
     class="candidate-details gl-w-full"

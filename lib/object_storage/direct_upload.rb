@@ -23,9 +23,9 @@ module ObjectStorage
     MINIMUM_MULTIPART_SIZE = 5.megabytes
 
     attr_reader :config, :credentials, :bucket_name, :object_name
-    attr_reader :has_length, :maximum_size
+    attr_reader :has_length, :maximum_size, :skip_delete
 
-    def initialize(config, object_name, has_length:, maximum_size: nil)
+    def initialize(config, object_name, has_length:, maximum_size: nil, skip_delete: false)
       unless has_length
         raise ArgumentError, 'maximum_size has to be specified if length is unknown' unless maximum_size
       end
@@ -36,6 +36,7 @@ module ObjectStorage
       @object_name = object_name
       @has_length = has_length
       @maximum_size = maximum_size
+      @skip_delete = skip_delete
     end
 
     def to_hash
@@ -44,7 +45,7 @@ module ObjectStorage
         GetURL: get_url,
         StoreURL: store_url,
         DeleteURL: delete_url,
-        SkipDelete: false,
+        SkipDelete: skip_delete,
         MultipartUpload: multipart_upload_hash,
         CustomPutHeaders: true,
         PutHeaders: upload_options

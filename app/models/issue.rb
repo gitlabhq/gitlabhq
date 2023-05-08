@@ -127,7 +127,6 @@ class Issue < ApplicationRecord
   accepts_nested_attributes_for :incident_management_issuable_escalation_status, update_only: true
 
   validates :project, presence: true, if: -> { !namespace || namespace.is_a?(Namespaces::ProjectNamespace) }
-  validates :issue_type, presence: true
   validates :namespace, presence: true
   validates :work_item_type, presence: true
   validates :confidential, inclusion: { in: [true, false], message: 'must be a boolean' }
@@ -135,6 +134,8 @@ class Issue < ApplicationRecord
   validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
+  # using a custom validation since we are overwriting the `issue_type` method to use the work_item_types table
+  validate :issue_type_attribute_present
 
   enum issue_type: WorkItems::Type.base_types
 
@@ -191,8 +192,8 @@ class Issue < ApplicationRecord
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
-    preload(:timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity, namespace: [{ parent: :route }, :route],
-      milestone: { project: [:route, { namespace: :route }] },
+    preload(:work_item_type, :timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
+      namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },
       project: [:project_namespace, :project_feature, :route, { group: :route }, { namespace: :route }],
       duplicated_to: { project: [:project_feature] })
   }
@@ -726,6 +727,14 @@ class Issue < ApplicationRecord
     work_item_type || WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
   end
 
+  def issue_type
+    if ::Feature.enabled?(:issue_type_uses_work_item_types_table)
+      work_item_type_with_default.base_type
+    else
+      super
+    end
+  end
+
   private
 
   def check_issue_type_in_sync!
@@ -734,7 +743,8 @@ class Issue < ApplicationRecord
     # https://gitlab.com/gitlab-org/gitlab/-/work_items/403158
     return unless (changes.keys & %w[issue_type work_item_type_id]).any?
 
-    if issue_type != work_item_type.base_type
+    # Do not replace the use of attributes with `issue_type` here
+    if attributes['issue_type'] != work_item_type.base_type
       error = IssueTypeOutOfSyncError.new(
         <<~ERROR
           Issue `issue_type` out of sync with `work_item_type_id` column.
@@ -749,10 +759,16 @@ class Issue < ApplicationRecord
 
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
         error,
-        issue_type: issue_type,
+        issue_type: attributes['issue_type'],
         work_item_type_id: work_item_type_id
       )
     end
+  end
+
+  def issue_type_attribute_present
+    return if attributes['issue_type'].present?
+
+    errors.add(:issue_type, 'Must be present')
   end
 
   def due_date_after_start_date
@@ -825,7 +841,7 @@ class Issue < ApplicationRecord
 
     # TODO: We should switch to DEFAULT_ISSUE_TYPE here when the issue_type column is dropped
     # https://gitlab.com/gitlab-org/gitlab/-/work_items/402700
-    self.work_item_type = WorkItems::Type.default_by_type(issue_type)
+    self.work_item_type = WorkItems::Type.default_by_type(attributes['issue_type'])
   end
 
   def allowed_work_item_type_change

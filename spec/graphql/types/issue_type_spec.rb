@@ -266,7 +266,7 @@ RSpec.describe GitlabSchema.types['Issue'] do
     context 'for an incident' do
       before do
         issue.update!(
-          issue_type: Issue.issue_types[:incident],
+          issue_type: WorkItems::Type.base_types[:incident],
           work_item_type: WorkItems::Type.default_by_type(:incident)
         )
       end
@@ -277,46 +277,6 @@ RSpec.describe GitlabSchema.types['Issue'] do
         let!(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue) }
 
         it { is_expected.to eq(escalation_status.status_name.to_s.upcase) }
-      end
-    end
-  end
-
-  describe 'type' do
-    let_it_be(:issue) { create(:issue, project: project) }
-
-    let(:query) do
-      %(
-        query {
-          issue(id: "#{issue.to_gid}") {
-            type
-          }
-        }
-      )
-    end
-
-    subject(:execute) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
-
-    context 'when the issue_type_uses_work_item_types_table feature flag is enabled' do
-      it 'gets the type field from the work_item_types table' do
-        expect_next_instance_of(::IssuePresenter) do |presented_issue|
-          expect(presented_issue).to receive_message_chain(:work_item_type, :base_type)
-        end
-
-        execute
-      end
-    end
-
-    context 'when the issue_type_uses_work_item_types_table feature flag is disabled' do
-      before do
-        stub_feature_flags(issue_type_uses_work_item_types_table: false)
-      end
-
-      it 'does not get the type field from the work_item_types table' do
-        expect_next_instance_of(::IssuePresenter) do |presented_issue|
-          expect(presented_issue).not_to receive(:work_item_type)
-        end
-
-        execute
       end
     end
   end

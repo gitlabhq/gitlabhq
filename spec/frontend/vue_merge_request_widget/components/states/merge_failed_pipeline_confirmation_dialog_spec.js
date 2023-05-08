@@ -3,6 +3,8 @@ import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/co
 import { trimText } from 'helpers/text_helper';
 
 describe('MergeFailedPipelineConfirmationDialog', () => {
+  const mockModalHide = jest.fn();
+
   let wrapper;
 
   const GlModal = {
@@ -13,7 +15,7 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
       </div>
     `,
     methods: {
-      hide: jest.fn(),
+      hide: mockModalHide,
     },
   };
 
@@ -37,6 +39,10 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
     createComponent();
   });
 
+  afterEach(() => {
+    mockModalHide.mockReset();
+  });
+
   it('should render informational text explaining why merging immediately can be dangerous', () => {
     expect(trimText(wrapper.text())).toContain(
       'The latest pipeline for this merge request did not succeed. The latest changes are unverified. Are you sure you want to attempt to merge?',
@@ -50,12 +56,10 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
   });
 
   it('when the cancel button is clicked should emit cancel and call hide', () => {
-    jest.spyOn(findModal().vm, 'hide');
-
     findCancelBtn().vm.$emit('click');
 
     expect(wrapper.emitted('cancel')).toHaveLength(1);
-    expect(findModal().vm.hide).toHaveBeenCalled();
+    expect(mockModalHide).toHaveBeenCalled();
   });
 
   it('should emit cancel when the hide event is emitted', () => {

@@ -84,15 +84,17 @@ module Issues
                        end
 
       base_type = work_item_type&.base_type
+
       if create_issue_type_allowed?(container, base_type)
         issue.work_item_type = work_item_type
         # Up to this point issue_type might be set to the default, so we need to sync if a work item type is provided
-        issue.issue_type = work_item_type.base_type
+        issue.issue_type = base_type
+      else
+        # If no work item type was provided or not allowed, we need to set it to issue_type,
+        # and that includes the column default
+        issue_type = issue_params[:issue_type] || ::Issue::DEFAULT_ISSUE_TYPE
+        issue.work_item_type = WorkItems::Type.default_by_type(issue_type)
       end
-
-      # If no work item type was provided, we need to set it to whatever issue_type was up to this point,
-      # and that includes the column default
-      issue.work_item_type = WorkItems::Type.default_by_type(issue.issue_type)
     end
 
     def model_klass

@@ -284,7 +284,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       context 'cluster belongs to projects group' do
         let_it_be(:group) { create(:group) }
 
-        let(:project) { create(:project, :with_prometheus_integration, group: group) }
+        let_it_be(:project) { create(:project, :with_prometheus_integration, group: group) }
         let_it_be(:cluster) { create(:cluster_for_group, groups: [group]) }
 
         it 'returns true' do

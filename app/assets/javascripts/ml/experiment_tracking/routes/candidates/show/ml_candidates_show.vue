@@ -1,7 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
-import IncubationAlert from '~/vue_shared/components/incubation/incubation_alert.vue';
+import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import {
   TITLE_LABEL,
@@ -22,7 +21,7 @@ import {
 export default {
   name: 'MlCandidatesShow',
   components: {
-    IncubationAlert,
+    ModelExperimentsHeader,
     DeleteButton,
     GlLink,
   },
@@ -65,32 +64,19 @@ export default {
       ];
     },
   },
-  FEATURE_NAME,
-  FEATURE_FEEDBACK_ISSUE,
 };
 </script>
 
 <template>
   <div>
-    <incubation-alert
-      :feature-name="$options.FEATURE_NAME"
-      :link-to-feedback-issue="$options.FEATURE_FEEDBACK_ISSUE"
-    />
-
-    <div class="detail-page-header gl-flex-wrap">
-      <div class="detail-page-header-body">
-        <h1 class="page-title gl-font-size-h-display flex-fill">
-          {{ $options.i18n.TITLE_LABEL }}
-        </h1>
-
-        <delete-button
-          :delete-path="candidate.info.path"
-          :delete-confirmation-text="$options.i18n.DELETE_CANDIDATE_CONFIRMATION_MESSAGE"
-          :action-primary-text="$options.i18n.DELETE_CANDIDATE_PRIMARY_ACTION_LABEL"
-          :modal-title="$options.i18n.DELETE_CANDIDATE_MODAL_TITLE"
-        />
-      </div>
-    </div>
+    <model-experiments-header :page-title="$options.i18n.TITLE_LABEL">
+      <delete-button
+        :delete-path="candidate.info.path"
+        :delete-confirmation-text="$options.i18n.DELETE_CANDIDATE_CONFIRMATION_MESSAGE"
+        :action-primary-text="$options.i18n.DELETE_CANDIDATE_PRIMARY_ACTION_LABEL"
+        :modal-title="$options.i18n.DELETE_CANDIDATE_MODAL_TITLE"
+      />
+    </model-experiments-header>
 
     <table class="candidate-details gl-w-full">
       <tbody>

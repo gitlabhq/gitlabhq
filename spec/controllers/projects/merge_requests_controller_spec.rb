@@ -851,7 +851,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       it "deletes the merge request" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid, destroy_confirm: true }
 
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to have_gitlab_http_status(:see_other)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
       end
 

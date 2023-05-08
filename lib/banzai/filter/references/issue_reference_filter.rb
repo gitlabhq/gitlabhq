@@ -22,7 +22,7 @@ module Banzai
         end
 
         def parent_records(parent, ids)
-          parent.issues.where(iid: ids.to_a).includes(:project, :namespace)
+          parent.issues.where(iid: ids.to_a).includes(:project, :namespace, :work_item_type)
         end
 
         def object_link_text_extras(issue, matches)
@@ -40,7 +40,7 @@ module Banzai
         private
 
         def additional_object_attributes(issue)
-          { issue_type: issue.issue_type }
+          { issue_type: issue.work_item_type.base_type }
         end
 
         def issue_path(issue, project)

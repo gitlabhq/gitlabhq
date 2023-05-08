@@ -17,6 +17,8 @@ module Mutations
             description: 'Updated work item.'
 
       def resolve(id:, **attributes)
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/408575')
+
         work_item = authorized_find!(id: id)
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])

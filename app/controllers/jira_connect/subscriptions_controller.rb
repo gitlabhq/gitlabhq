@@ -30,7 +30,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: JiraConnect::AppDataSerializer.new(@subscriptions, !!current_user).as_json
+        render json: JiraConnect::AppDataSerializer.new(@subscriptions).as_json
       end
     end
   end

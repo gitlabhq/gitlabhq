@@ -66,7 +66,6 @@ RSpec.describe 'Create an issue', feature_category: :team_planning do
         created_issue = Issue.last
 
         expect(created_issue.work_item_type.base_type).to eq('task')
-        expect(created_issue.issue_type).to eq('task')
       end
     end
 

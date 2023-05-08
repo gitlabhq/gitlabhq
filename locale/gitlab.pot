@@ -24000,9 +24000,6 @@ msgstr ""
 msgid "Integrations|Restrict to branch (optional)"
 msgstr ""
 
-msgid "Integrations|Return to GitLab for Jira"
-msgstr ""
-
 msgid "Integrations|SSL verification"
 msgstr ""
 
@@ -25329,9 +25326,6 @@ msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu t
 msgstr ""
 
 msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}"
-msgstr ""
-
-msgid "JiraService|You can now close this window and%{br}return to the GitLab for Jira application."
 msgstr ""
 
 msgid "JiraService|You must configure Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}"
@@ -51147,9 +51141,6 @@ msgid "You are on a read-only GitLab instance."
 msgstr ""
 
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
-msgstr ""
-
-msgid "You are signed in to GitLab as:"
 msgstr ""
 
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."

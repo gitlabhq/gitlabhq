@@ -243,7 +243,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
         get :new, params: { namespace_id: project.namespace, project_id: project }
 
         expect(assigns(:issue)).to be_a_new(Issue)
-        expect(assigns(:issue).issue_type).to eq('issue')
+        expect(assigns(:issue).work_item_type.base_type).to eq('issue')
       end
 
       where(:conf_value, :conf_result) do
@@ -280,7 +280,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
           get :new, params: { namespace_id: project.namespace, project_id: project, issue: { issue_type: issue_type } }
         end
 
-        subject { assigns(:issue).issue_type }
+        subject { assigns(:issue).work_item_type.base_type }
 
         it { is_expected.to eq('issue') }
 
@@ -619,7 +619,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(issue.reload.issue_type).to eql('incident')
+          expect(issue.reload.work_item_type.base_type).to eq('incident')
         end
       end
 
@@ -1075,7 +1075,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'sets the correct issue_type' do
         issue = post_new_issue(issue_type: 'incident')
 
-        expect(issue.issue_type).to eq('incident')
         expect(issue.work_item_type.base_type).to eq('incident')
       end
     end
@@ -1084,7 +1083,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'defaults to issue type' do
         issue = post_new_issue(issue_type: 'task')
 
-        expect(issue.issue_type).to eq('issue')
         expect(issue.work_item_type.base_type).to eq('issue')
       end
     end
@@ -1093,7 +1091,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'defaults to issue type' do
         issue = post_new_issue(issue_type: 'objective')
 
-        expect(issue.issue_type).to eq('issue')
         expect(issue.work_item_type.base_type).to eq('issue')
       end
     end
@@ -1102,7 +1099,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it 'defaults to issue type' do
         issue = post_new_issue(issue_type: 'key_result')
 
-        expect(issue.issue_type).to eq('issue')
         expect(issue.work_item_type.base_type).to eq('issue')
       end
     end
@@ -1152,7 +1148,6 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
 
       expect(issue).to be_a(Issue)
       expect(issue.persisted?).to eq(true)
-      expect(issue.issue_type).to eq('issue')
       expect(issue.work_item_type.base_type).to eq('issue')
     end
 
@@ -1403,7 +1398,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     context 'setting issue type' do
       let(:issue_type) { 'issue' }
 
-      subject { post_new_issue(issue_type: issue_type)&.issue_type }
+      subject { post_new_issue(issue_type: issue_type)&.work_item_type&.base_type }
 
       it { is_expected.to eq('issue') }
 
@@ -1468,7 +1463,7 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
       it "deletes the issue" do
         delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
 
-        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to have_gitlab_http_status(:see_other)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 

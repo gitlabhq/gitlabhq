@@ -4,11 +4,9 @@ require 'spec_helper'
 
 RSpec.describe JiraConnect::AppDataSerializer do
   describe '#as_json' do
-    subject(:app_data_json) { described_class.new(subscriptions, signed_in).as_json }
+    subject(:app_data_json) { described_class.new(subscriptions).as_json }
 
     let_it_be(:subscriptions) { create_list(:jira_connect_subscription, 2) }
-
-    let(:signed_in) { false }
 
     it 'uses the subscription entity' do
       expect(JiraConnect::SubscriptionEntity).to receive(:represent).with(subscriptions)
@@ -23,12 +21,5 @@ RSpec.describe JiraConnect::AppDataSerializer do
     end
 
     it { is_expected.to include(subscriptions_path: '/-/jira_connect/subscriptions') }
-    it { is_expected.to include(login_path: '/-/jira_connect/users') }
-
-    context 'when signed in' do
-      let(:signed_in) { true }
-
-      it { is_expected.to include(login_path: nil) }
-    end
   end
 end

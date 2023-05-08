@@ -290,7 +290,7 @@ RSpec.describe MigrateIncidentIssuesToIncidentType do
         .from(issue_type)
         .to(incident_type)
 
-      expect(other_issue.reload.issue_type).to eql(issue_type)
+      expect(other_issue.reload.issue_type).to eq(issue_type)
     end
   end
 

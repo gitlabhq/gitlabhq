@@ -76,9 +76,7 @@ module TodosHelper
                   elsif todo.member_access_requested?
                     _('Group')
                   elsif todo.for_issue_or_work_item?
-                    IntegrationsHelper.integration_issue_type(
-                      issue_type_for(todo.target)
-                    )
+                    IntegrationsHelper.integration_issue_type(todo.target.issue_type)
                   else
                     IntegrationsHelper.integration_todo_target_type(todo.target_type)
                   end

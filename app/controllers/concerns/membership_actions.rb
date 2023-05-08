@@ -51,7 +51,7 @@ module MembershipActions
             _("User was successfully removed from project.")
           end
 
-        redirect_to members_page_url, notice: message
+        redirect_to members_page_url, notice: message, status: :see_other
       end
 
       format.js { head :ok }

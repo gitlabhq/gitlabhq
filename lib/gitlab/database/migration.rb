@@ -53,6 +53,7 @@ module Gitlab
 
       class V2_1 < V2_0 # rubocop:disable Naming/ClassAndModuleCamelCase
         include Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables
+        include Gitlab::Database::Migrations::RunnerBackoff::MigrationHelpers
       end
 
       def self.[](version)

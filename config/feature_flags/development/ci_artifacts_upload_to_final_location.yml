@@ -1,0 +1,8 @@
+---
+name: ci_artifacts_upload_to_final_location
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106740'
+rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/385447'
+milestone: '16.0'
+type: development
+group: group::pipeline security
+default_enabled: false

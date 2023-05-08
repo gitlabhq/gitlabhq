@@ -14,9 +14,6 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
-    # NOTE: Temporarily ignore. This will will be used in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106740
-    ignore_column :file_final_path, remove_with: '16.1', remove_after: '2023-05-23'
-
     enum accessibility: { public: 0, private: 1 }, _suffix: true
 
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze

@@ -78,11 +78,39 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
     context 'when object storage is enabled' do
       context 'and direct upload is enabled' do
+        let(:final_store_path) { '12/34/abc-123' }
+
         before do
           stub_artifacts_object_storage(JobArtifactUploader, direct_upload: true)
+          allow(JobArtifactUploader).to receive(:generate_final_store_path).and_return(final_store_path)
         end
 
-        it_behaves_like 'uploading to temp location', :object_storage
+        it 'includes the authorize headers' do
+          expect(authorize[:status]).to eq(:success)
+
+          expect(authorize[:headers][:RemoteObject][:ID]).to eq(final_store_path)
+
+          # We are not testing the entire headers here because this is fully tested
+          # in workhorse_authorize's spec. We just want to confirm that it indeed used the final path
+          # by checking some indicators in the headers returned.
+          expect(authorize[:headers][:RemoteObject][:StoreURL])
+            .to include(final_store_path)
+
+          # We have to ensure to tell Workhorse to skip deleting the file after upload
+          # because we are uploading the file to its final location
+          expect(authorize[:headers][:RemoteObject][:SkipDelete]).to eq(true)
+        end
+
+        it_behaves_like 'handling lsif artifact'
+        it_behaves_like 'validating requirements'
+
+        context 'with ci_artifacts_upload_to_final_location feature flag disabled' do
+          before do
+            stub_feature_flags(ci_artifacts_upload_to_final_location: false)
+          end
+
+          it_behaves_like 'uploading to temp location', :object_storage
+        end
       end
 
       context 'and direct upload is disabled' do
@@ -401,7 +429,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
       end
     end
 
-    shared_examples_for 'handling remote uploads to temporary location' do
+    shared_examples_for 'handling uploads' do
       context 'when artifacts file is uploaded' do
         it 'creates a new job artifact' do
           expect { execute }.to change { Ci::JobArtifact.count }.by(1)
@@ -469,7 +497,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
       let(:remote_id) { 'generated-remote-id-12345' }
       let(:remote_store_path) { ObjectStorage::TMP_UPLOAD_PATH }
 
-      it_behaves_like 'handling remote uploads to temporary location'
+      it_behaves_like 'handling uploads'
       it_behaves_like 'handling dotenv', :object_storage
       it_behaves_like 'handling object storage errors'
       it_behaves_like 'validating requirements'
@@ -480,7 +508,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
         file_to_upload('spec/fixtures/ci_build_artifacts.zip', sha256: artifacts_sha256)
       end
 
-      it_behaves_like 'handling remote uploads to temporary location'
+      it_behaves_like 'handling uploads'
       it_behaves_like 'handling dotenv', :local_storage
       it_behaves_like 'validating requirements'
     end

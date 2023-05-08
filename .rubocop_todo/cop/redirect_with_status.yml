@@ -1,6 +1,0 @@
----
-Cop/RedirectWithStatus:
-  Details: grace period
-  Exclude:
-    - 'app/controllers/concerns/issuable_actions.rb'
-    - 'app/controllers/concerns/membership_actions.rb'

@@ -30,7 +30,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
       created_work_item = WorkItem.last
       expect(response).to have_gitlab_http_status(:success)
-      expect(created_work_item.issue_type).to eq('task')
       expect(created_work_item).to be_confidential
       expect(created_work_item.work_item_type.base_type).to eq('task')
       expect(mutation_response['workItem']).to include(
