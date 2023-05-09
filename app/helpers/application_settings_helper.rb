@@ -349,6 +349,7 @@ module ApplicationSettingsHelper
       :repository_storages_weighted,
       :require_admin_approval_after_user_signup,
       :require_two_factor_authentication,
+      :remember_me_enabled,
       :restricted_visibility_levels,
       :rsa_key_restriction,
       :session_expire_delay,

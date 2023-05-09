@@ -184,10 +184,6 @@ ci_variables:
   - table: projects
     column: project_id
     on_delete: async_delete
-clusters_applications_runners:
-  - table: ci_runners
-    column: runner_id
-    on_delete: async_nullify
 dast_pre_scan_verifications:
   - table: ci_pipelines
     column: ci_pipeline_id

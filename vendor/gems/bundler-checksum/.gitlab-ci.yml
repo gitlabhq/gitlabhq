@@ -26,3 +26,11 @@ test-2.7:
 test-3.0:
   image: "ruby:3.0"
   extends: .test
+
+rspec-3.1:
+  image: "ruby:3.1"
+  extends: .test
+
+rspec-3.2:
+  image: "ruby:3.2"
+  extends: .test

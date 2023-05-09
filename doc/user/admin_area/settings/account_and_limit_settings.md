@@ -176,17 +176,32 @@ wiki, packages, or snippets. The repository size limit applies to both private a
 
 For details on manually purging files, see [reducing the repository size using Git](../../project/repository/reducing_the_repo_size_using_git.md).
 
-## Customize the default session duration
+## Session duration
 
-You can change how long users can remain signed in.
+### Customize the default session duration
+
+You can change how long users can remain signed in without activity.
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Account and limit**. The set duration is in **Session duration (minutes)**.
 
+If [Remember me](#turn-remember-me-on-or-off) is enabled, users' sessions can remain active for an indefinite period of time.
+
 For details, see [cookies used for sign-in](../../profile/index.md#cookies-used-for-sign-in).
 
-## Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
+### Turn **Remember me** on or off
+
+> Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
+
+Users can select the **Remember me** checkbox on sign-in, and their session will remain active for an indefinite period of time when accessed from that specific browser. You can turn off this setting if you need sessions to expire for security or compliance purposes. Turning off this setting will ensure users' sessions expire after the number of minutes of inactivity set when you [customize your session duration](#customize-the-default-session-duration).
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Account and limit**.
+1. Select or clear the **Remember me** checkbox to turn this setting on or off.
+
+### Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
 > - It's deployed behind a feature flag, disabled by default.

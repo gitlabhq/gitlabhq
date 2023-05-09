@@ -1654,29 +1654,28 @@ GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application
 We're reducing the number of supported analyzers used by default in GitLab SAST.
 This is part of our long-term strategy to deliver a faster, more consistent user experience across different programming languages.
 
-Starting in GitLab 16.0, the GitLab SAST CI/CD template will no longer use the following analyzers, and they will enter End of Support status:
+Starting in GitLab 16.0, the GitLab SAST CI/CD template will no longer use the [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)-based analyzer for .NET, and it will enter End of Support status.
+We'll remove this analyzer from the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replace it with GitLab-supported detection rules for C# in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 
-- [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (.NET)
-- [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP)
+Effective immediately, this analyzer will receive only security updates; other routine improvements or updates are not guaranteed.
+After this analyzer reaches End of Support in GitLab 16.0, no further updates will be provided.
+However, we won't delete container images previously published for this analyzer or remove the ability to run it by using a custom CI/CD pipeline job.
 
-We'll remove these analyzers from the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replace them with GitLab-supported detection rules and the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
-Effective immediately, these analyzers will receive only security updates; other routine improvements or updates are not guaranteed.
-After these analyzers reach End of Support, no further updates will be provided.
-However, we won't delete container images previously published for these analyzers or remove the ability to run them by using a custom CI/CD pipeline job.
-
-We will also remove Scala from the scope of the [SpotBugs-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
-This change will make it simpler to scan Scala code; compilation will no longer be required.
-This change will be reflected in the automatic language detection portion of the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml).
-Note that the SpotBugs-based analyzer will continue to cover Groovy and Kotlin.
-
-If you've already dismissed a vulnerability finding from one of the deprecated analyzers, the replacement attempts to respect your previous dismissal. The system behavior depends on:
+If you've already dismissed a vulnerability finding from the deprecated analyzer, the replacement attempts to respect your previous dismissal. The system behavior depends on:
 
 - whether you've excluded the Semgrep-based analyzer from running in the past.
 - which analyzer first discovered the vulnerabilities shown in the project's Vulnerability Report.
 
 See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
 
-If you applied customizations to any of the affected analyzers or if you currently disable the Semgrep analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change).
+If you applied customizations to the affected analyzer, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change).
+
+**Update:** We've reduced the scope of this change. We will no longer make the following changes in GitLab 16.0:
+
+1. Remove support for the analyzer based on [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) and replace it with GitLab-managed detection rules in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+1. Remove Scala from the scope of the [SpotBugs-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) and replace it with GitLab-managed detection rules in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+
+Work to replace the PHPCS Security Audit-based analyzer is tracked in [issue 364060](https://gitlab.com/gitlab-org/gitlab/-/issues/364060) and work to migrate Scala scanning to the Semgrep-based analyzer is tracked in [issue 362958](https://gitlab.com/gitlab-org/gitlab/-/issues/362958).
 
 </div>
 

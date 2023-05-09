@@ -205,7 +205,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
     end
 
     context 'boolean attributes' do
-      shared_examples_for 'updates booolean attribute' do |attribute|
+      shared_examples_for 'updates boolean attribute' do |attribute|
         specify do
           existing_value = ApplicationSetting.current.public_send(attribute)
           new_value = !existing_value
@@ -217,10 +217,11 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         end
       end
 
-      it_behaves_like 'updates booolean attribute', :user_defaults_to_private_profile
-      it_behaves_like 'updates booolean attribute', :can_create_group
-      it_behaves_like 'updates booolean attribute', :admin_mode
-      it_behaves_like 'updates booolean attribute', :require_admin_approval_after_user_signup
+      it_behaves_like 'updates boolean attribute', :user_defaults_to_private_profile
+      it_behaves_like 'updates boolean attribute', :can_create_group
+      it_behaves_like 'updates boolean attribute', :admin_mode
+      it_behaves_like 'updates boolean attribute', :require_admin_approval_after_user_signup
+      it_behaves_like 'updates boolean attribute', :remember_me_enabled
     end
 
     context "personal access token prefix settings" do

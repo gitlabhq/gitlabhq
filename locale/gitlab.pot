@@ -4532,6 +4532,9 @@ msgstr ""
 msgid "Allow use of licensed EE features"
 msgstr ""
 
+msgid "Allow users to extend their session"
+msgstr ""
+
 msgid "Allow users to register any application to use GitLab as an OAuth provider"
 msgstr ""
 
@@ -48770,6 +48773,9 @@ msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Te
 msgstr ""
 
 msgid "Users can request access (if visibility is public or internal)"
+msgstr ""
+
+msgid "Users can select 'Remember me' on sign-in to keep their session active beyond the session duration. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Users cannot be added to projects in this group"

@@ -441,14 +441,14 @@ module Gitlab
       # revision exists, or `false` otherwise. This function accepts all revisions as specified by
       # gitrevisions(1).
       def object_existence_map(revisions, gitaly_repo: @gitaly_repo)
-        enum = Enumerator.new do |y|
-          # This is a bug in Gitaly: revisions of the initial request are ignored. This will be fixed in v15.0 via
-          # https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4510, so we can merge initial request and the initial
-          # set of revisions starting with v15.1.
-          y.yield Gitaly::CheckObjectsExistRequest.new(repository: gitaly_repo)
+        return {} unless revisions.present?
 
-          revisions.each_slice(100) do |revisions_subset|
-            y.yield Gitaly::CheckObjectsExistRequest.new(revisions: revisions_subset)
+        enum = Enumerator.new do |y|
+          revisions.each_slice(100).with_index do |revisions_subset, i|
+            params = { revisions: revisions_subset }
+            params[:repository] = gitaly_repo if i == 0
+
+            y.yield Gitaly::CheckObjectsExistRequest.new(**params)
           end
         end
 

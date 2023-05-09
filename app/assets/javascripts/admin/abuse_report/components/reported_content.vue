@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TruncatedText from '~/vue_shared/components/truncated_text/truncated_text.vue';
 import { REPORTED_CONTENT_I18N } from '../constants';
 
 export default {
@@ -15,6 +16,7 @@ export default {
     GlLink,
     GlAvatar,
     TimeAgoTooltip,
+    TruncatedText,
   },
   modalId: 'abuse-report-screenshot-modal',
   directives: {
@@ -107,11 +109,13 @@ export default {
       footer-class="gl-bg-white js-test-card-footer"
     >
       <template v-if="report.content" #header>
-        <div
-          ref="gfmContent"
-          v-safe-html:[$options.safeHtmlConfig]="report.content"
-          class="md"
-        ></div>
+        <truncated-text>
+          <div
+            ref="gfmContent"
+            v-safe-html:[$options.safeHtmlConfig]="report.content"
+            class="md"
+          ></div>
+        </truncated-text>
       </template>
       {{ $options.i18n.reportedBy }}
       <template #footer>

@@ -153,3 +153,21 @@
 .gl-fill-red-500 {
   fill: $red-500;
 }
+
+/**
+  Note: used by app/assets/javascripts/vue_shared/components/truncated_text/truncated_text.vue
+  Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab/-/issues/408643
+
+  Although this solution uses vendor-prefixes, it is supported by all browsers and it is
+  currently the only way to truncate text by lines. See https://caniuse.com/css-line-clamp
+**/
+.gl-truncate-text-by-line {
+  // stylelint-disable-next-line value-no-vendor-prefix
+  display: -webkit-box;
+  -webkit-line-clamp: var(--lines);
+  -webkit-box-orient: vertical;
+
+  @include gl-media-breakpoint-down(sm) {
+    -webkit-line-clamp: var(--mobile-lines);
+  }
+}

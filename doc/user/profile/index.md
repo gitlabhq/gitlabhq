@@ -318,25 +318,27 @@ To view a summary of your activity, or the activity of other users:
 1. In the GitLab menu, select **Activity**.
 1. Select the **Followed users** tab.
 
-## Stay signed in for two weeks
+## Session duration
 
-By default, you are signed out of GitLab every seven days, or 10080 minutes.
+### Stay signed in for two weeks
+
+By default, you are signed out of GitLab after seven days (10080 minutes) of inactivity or until you close your browser
+window, whichever comes first.
+
 GitLab administrators can
 [change this default](../admin_area/settings/account_and_limit_settings.md#customize-the-default-session-duration).
 
-To extend the duration to two weeks:
+### Stay signed in indefinitely
 
-- On the GitLab sign-in page, select the **Remember me** checkbox.
+> Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
 
-## Stay signed in indefinitely
+To remain signed in indefinitely, select the **Remember me** checkbox on the GitLab sign-in page.
 
-To remain signed in indefinitely:
+You remain signed in because, although the server sets a session time of one week, your browser stores a secure token
+that enables automatic reauthentication.
 
-1. On the GitLab sign-in page, select the **Remember me** checkbox.
-1. Access GitLab at least once every two weeks, and leave your browser open.
-
-You remain signed in because, although the server sets a time-to-live (TTL) of one week on your browser session,
-the server continues to reset the TTL, regardless of whether 2FA is installed.
+GitLab administrators can [turn off the **Remember me** setting](../admin_area/settings/account_and_limit_settings.md) for environments
+that require sessions to expire periodically for security or compliance purposes.
 
 ### Cookies used for sign-in
 

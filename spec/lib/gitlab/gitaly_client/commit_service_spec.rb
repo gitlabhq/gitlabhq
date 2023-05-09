@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::CommitService do
+RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:storage_name) { project.repository_storage }
@@ -406,6 +406,18 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
     end
 
     shared_examples 'a #list_all_commits message' do
+      let(:objects_exist_repo) do
+        # The object directory of the repository must not be set so that we
+        # don't use the quarantine directory.
+        repository.gitaly_repository.dup.tap do |repo|
+          repo.git_object_directory = ''
+        end
+      end
+
+      let(:expected_object_exist_requests) do
+        [gitaly_request_with_params(repository: objects_exist_repo, revisions: gitaly_commits.map(&:id))]
+      end
+
       it 'sends a list_all_commits message' do
         expected_repository = repository.gitaly_repository.dup
         expected_repository.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
@@ -415,24 +427,12 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
             .with(gitaly_request_with_params(repository: expected_repository), kind_of(Hash))
             .and_return([Gitaly::ListAllCommitsResponse.new(commits: gitaly_commits)])
 
-          # The object directory of the repository must not be set so that we
-          # don't use the quarantine directory.
-          objects_exist_repo = repository.gitaly_repository.dup
-          objects_exist_repo.git_object_directory = ""
-
-          # The first request contains the repository, the second request the
-          # commit IDs we want to check for existence.
-          objects_exist_request = [
-            gitaly_request_with_params(repository: objects_exist_repo),
-            gitaly_request_with_params(revisions: gitaly_commits.map(&:id))
-          ]
-
           objects_exist_response = Gitaly::CheckObjectsExistResponse.new(revisions: revision_existence.map do
             |rev, exists| Gitaly::CheckObjectsExistResponse::RevisionExistence.new(name: rev, exists: exists)
           end)
 
           expect(service).to receive(:check_objects_exist)
-            .with(objects_exist_request, kind_of(Hash))
+            .with(expected_object_exist_requests, kind_of(Hash))
             .and_return([objects_exist_response])
         end
 
@@ -494,6 +494,20 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
         let(:expected_commits) { [Gitlab::Git::Commit.new(repository, gitaly_commits[1])] }
 
         it_behaves_like 'a #list_all_commits message'
+      end
+
+      context 'with more than 100 commits' do
+        let(:gitaly_commits) { build_list(:gitaly_commit, 101) }
+        let(:revision_existence) { gitaly_commits.to_h { |c| [c.id, false] } }
+
+        it_behaves_like 'a #list_all_commits message' do
+          let(:expected_object_exist_requests) do
+            [
+              gitaly_request_with_params(repository: objects_exist_repo, revisions: gitaly_commits[0...100].map(&:id)),
+              gitaly_request_with_params(revisions: gitaly_commits[100..].map(&:id))
+            ]
+          end
+        end
       end
     end
 
@@ -588,9 +602,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
 
       it 'returns expected results' do
         expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
-          expect(service)
-            .to receive(:check_objects_exist)
-            .and_call_original
+          expect(service).to receive(:check_objects_exist).and_call_original
         end
 
         expect(client.object_existence_map(revisions.keys)).to eq(revisions)
@@ -600,7 +612,11 @@ RSpec.describe Gitlab::GitalyClient::CommitService do
     context 'with empty request' do
       let(:revisions) { {} }
 
-      it_behaves_like 'a CheckObjectsExistRequest'
+      it 'doesnt call for Gitaly' do
+        expect(Gitaly::CommitService::Stub).not_to receive(:new)
+
+        expect(client.object_existence_map(revisions.keys)).to eq(revisions)
+      end
     end
 
     context 'when revision exists' do
