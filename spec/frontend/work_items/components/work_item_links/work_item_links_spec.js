@@ -76,7 +76,7 @@ describe('WorkItemLinks', () => {
         };
       },
       provide: {
-        projectPath: 'project/path',
+        fullPath: 'project/path',
         hasIterationsFeature,
         reportAbusePath: '/report/abuse/path',
       },

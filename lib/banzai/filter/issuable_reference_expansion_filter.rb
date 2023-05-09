@@ -90,7 +90,7 @@ module Banzai
       end
 
       def moved_issue?(issuable)
-        issuable.instance_of?(Issue) && issuable.moved?
+        issuable.is_a?(Issue) && issuable.moved?
       end
 
       def should_expand?(node, issuable)

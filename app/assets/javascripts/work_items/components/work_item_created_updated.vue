@@ -10,13 +10,9 @@ export default {
     GlSprintf,
     TimeAgoTooltip,
   },
+  inject: ['fullPath'],
   props: {
     workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    fullPath: {
       type: String,
       required: false,
       default: null,

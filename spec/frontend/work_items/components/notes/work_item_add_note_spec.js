@@ -36,8 +36,8 @@ describe('Work item add note', () => {
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
     canUpdate = true,
+    workItemIid = '1',
     workItemResponse = workItemByIidResponseFactory({ canUpdate }),
-    queryVariables = { iid: '1' },
     signedIn = true,
     isEditing = true,
     workItemType = 'Task',
@@ -56,10 +56,12 @@ describe('Work item add note', () => {
     const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMountExtended(WorkItemAddNote, {
       apolloProvider,
+      provide: {
+        fullPath: 'test-project-path',
+      },
       propsData: {
         workItemId: id,
-        fullPath: 'test-project-path',
-        queryVariables,
+        workItemIid,
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
@@ -114,11 +116,7 @@ describe('Work item add note', () => {
     });
 
     it('emits `replied` event and hides form after successful mutation', async () => {
-      await createComponent({
-        isEditing: true,
-        signedIn: true,
-        queryVariables: { iid: '1' },
-      });
+      await createComponent({ isEditing: true, signedIn: true });
 
       findCommentForm().vm.$emit('submitForm', 'some text');
       await waitForPromises();
@@ -226,8 +224,8 @@ describe('Work item add note', () => {
     expect(workItemResponseHandler).toHaveBeenCalled();
   });
 
-  it('skips calling the work item query when missing queryVariables', async () => {
-    await createComponent({ queryVariables: {}, isEditing: false });
+  it('skips calling the work item query when missing workItemIid', async () => {
+    await createComponent({ workItemIid: null, isEditing: false });
 
     expect(workItemResponseHandler).not.toHaveBeenCalled();
   });

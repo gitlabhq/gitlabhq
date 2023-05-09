@@ -20,7 +20,7 @@ module Mentionable
     def self.default_pattern
       strong_memoize(:default_pattern) do
         issue_pattern = Issue.reference_pattern
-        link_patterns = Regexp.union([Issue, Commit, MergeRequest, Epic, Vulnerability].map(&:link_reference_pattern).compact)
+        link_patterns = Regexp.union([Issue, WorkItem, Commit, MergeRequest, Epic, Vulnerability].map(&:link_reference_pattern).compact)
         reference_pattern(link_patterns, issue_pattern)
       end
     end

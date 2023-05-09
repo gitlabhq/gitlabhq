@@ -36,7 +36,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['projectPath', 'reportAbusePath'],
+  inject: ['fullPath', 'reportAbusePath'],
   props: {
     issuableId: {
       type: Number,
@@ -226,7 +226,7 @@ export default {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
         query: workItemByIidQuery,
         variables: {
-          fullPath: this.projectPath,
+          fullPath: this.fullPath,
           iid,
         },
         update(data) {
@@ -335,7 +335,6 @@ export default {
         />
         <work-item-children-wrapper
           :children="children"
-          :project-path="projectPath"
           :can-update="canUpdate"
           :work-item-id="issuableGid"
           @removeChild="removeChild"

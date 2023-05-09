@@ -86,6 +86,7 @@ export default {
         { key: 'user', label: this.$options.i18n.USER_LABEL },
         ...this.paramNames,
         ...this.metricNames,
+        { key: 'ci_job', label: this.$options.i18n.CI_JOB_LABEL },
         { key: 'artifact', label: this.$options.i18n.ARTIFACTS_LABEL },
       ];
     },
@@ -225,6 +226,15 @@ export default {
         <template #cell(user)="data">
           <gl-link v-if="data.value" :href="data.value.path">@{{ data.value.username }}</gl-link>
           <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
+        </template>
+
+        <template #cell(ci_job)="data">
+          <gl-link v-if="data.value" :href="data.value.path" target="_blank">{{
+            data.value.name
+          }}</gl-link>
+          <div v-else class="gl-font-style-italic gl-text-gray-500">
+            {{ $options.i18n.NO_JOB }}
+          </div>
         </template>
       </gl-table-lite>
     </div>

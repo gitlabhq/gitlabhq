@@ -28,16 +28,16 @@ describe('Work Item Discussion', () => {
   const createComponent = ({
     discussion = [mockWorkItemCommentNote],
     workItemId = mockWorkItemId,
-    queryVariables = { iid: '1' },
-    fullPath = 'gitlab-org',
     workItemType = 'Task',
   } = {}) => {
     wrapper = shallowMount(WorkItemDiscussion, {
+      provide: {
+        fullPath: 'gitlab-org',
+      },
       propsData: {
         discussion,
         workItemId,
-        queryVariables,
-        fullPath,
+        workItemIid: '1',
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},

@@ -411,7 +411,7 @@ lib/gitlab/checks/**
 /doc/administration/environment_variables.md @axil
 /doc/administration/external_pipeline_validation.md @drcatherinepope
 /doc/administration/feature_flags.md @axil
-/doc/administration/file_hooks.md @ashrafkhamis
+/doc/administration/file_hooks.md @eread @ashrafkhamis
 /doc/administration/geo/ @axil
 /doc/administration/get_started.md @kpaizee
 /doc/administration/git_protocol.md @aqualls
@@ -436,7 +436,7 @@ lib/gitlab/checks/**
 /doc/administration/logs/index.md @msedlakjakubowski
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls
-/doc/administration/monitoring/github_imports.md @eread
+/doc/administration/monitoring/github_imports.md @eread @ashrafkhamis
 /doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
 /doc/administration/monitoring/index.md @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
@@ -480,7 +480,7 @@ lib/gitlab/checks/**
 /doc/administration/smime_signing_email.md @axil
 /doc/administration/snippets/ @aqualls
 /doc/administration/static_objects_external_storage.md @ashrafkhamis
-/doc/administration/system_hooks.md @ashrafkhamis
+/doc/administration/system_hooks.md @eread @ashrafkhamis
 /doc/administration/terraform_state.md @phillipwells
 /doc/administration/timezone.md @axil
 /doc/administration/troubleshooting/ @axil
@@ -490,7 +490,7 @@ lib/gitlab/checks/**
 /doc/api/access_requests.md @jglassman1
 /doc/api/admin_sidekiq_queues.md @axil
 /doc/api/alert_management_alerts.md @msedlakjakubowski
-/doc/api/api_resources.md @ashrafkhamis
+/doc/api/api_resources.md @eread @ashrafkhamis
 /doc/api/appearance.md @jglassman1
 /doc/api/applications.md @jglassman1
 /doc/api/audit_events.md @eread
@@ -498,7 +498,7 @@ lib/gitlab/checks/**
 /doc/api/award_emoji.md @msedlakjakubowski
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @aqualls
-/doc/api/bulk_imports.md @eread
+/doc/api/bulk_imports.md @eread @ashrafkhamis
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/commits.md @aqualls
 /doc/api/container_registry.md @marcel.amirault
@@ -522,13 +522,14 @@ lib/gitlab/checks/**
 /doc/api/features.md @phillipwells
 /doc/api/freeze_periods.md @phillipwells
 /doc/api/geo_nodes.md @axil
+/doc/api/geo_sites.md @axil
 /doc/api/graphql/audit_report.md @eread
 /doc/api/graphql/branch_rules.md @aqualls
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
-/doc/api/graphql/getting_started.md @ashrafkhamis
-/doc/api/graphql/index.md @ashrafkhamis
-/doc/api/graphql/reference/ @ashrafkhamis
-/doc/api/graphql/removed_items.md @ashrafkhamis
+/doc/api/graphql/getting_started.md @eread @ashrafkhamis
+/doc/api/graphql/index.md @eread @ashrafkhamis
+/doc/api/graphql/reference/ @eread @ashrafkhamis
+/doc/api/graphql/removed_items.md @eread @ashrafkhamis
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
 /doc/api/graphql/users_example.md @jglassman1
 /doc/api/group_access_tokens.md @jglassman1
@@ -537,22 +538,22 @@ lib/gitlab/checks/**
 /doc/api/group_boards.md @msedlakjakubowski
 /doc/api/group_clusters.md @phillipwells
 /doc/api/group_epic_boards.md @msedlakjakubowski
-/doc/api/group_import_export.md @eread
+/doc/api/group_import_export.md @eread @ashrafkhamis
 /doc/api/group_iterations.md @msedlakjakubowski
 /doc/api/group_labels.md @msedlakjakubowski
 /doc/api/group_level_variables.md @marcel.amirault
 /doc/api/group_milestones.md @msedlakjakubowski
 /doc/api/group_protected_branches.md @aqualls
 /doc/api/group_protected_environments.md @phillipwells
-/doc/api/group_relations_export.md @eread
+/doc/api/group_relations_export.md @eread @ashrafkhamis
 /doc/api/group_releases.md @phillipwells
 /doc/api/group_repository_storage_moves.md @ashrafkhamis
 /doc/api/groups.md @lciutacu
-/doc/api/import.md @eread
-/doc/api/index.md @ashrafkhamis
+/doc/api/import.md @eread @ashrafkhamis
+/doc/api/index.md @eread @ashrafkhamis
 /doc/api/instance_clusters.md @phillipwells
 /doc/api/instance_level_ci_variables.md @marcel.amirault
-/doc/api/integrations.md @ashrafkhamis
+/doc/api/integrations.md @eread @ashrafkhamis
 /doc/api/issue_links.md @msedlakjakubowski
 /doc/api/issues.md @msedlakjakubowski
 /doc/api/issues_statistics.md @msedlakjakubowski
@@ -580,7 +581,7 @@ lib/gitlab/checks/**
 /doc/api/notes.md @msedlakjakubowski
 /doc/api/notification_settings.md @msedlakjakubowski
 /doc/api/oauth2.md @jglassman1
-/doc/api/openapi/ @ashrafkhamis
+/doc/api/openapi/ @eread @ashrafkhamis
 /doc/api/packages.md @marcel.amirault
 /doc/api/packages/ @marcel.amirault
 /doc/api/personal_access_tokens.md @eread
@@ -595,7 +596,7 @@ lib/gitlab/checks/**
 /doc/api/project_clusters.md @phillipwells
 /doc/api/project_import_export.md @aqualls
 /doc/api/project_level_variables.md @marcel.amirault
-/doc/api/project_relations_export.md @eread
+/doc/api/project_relations_export.md @eread @ashrafkhamis
 /doc/api/project_repository_storage_moves.md @eread
 /doc/api/project_snippets.md @aqualls
 /doc/api/project_statistics.md @aqualls
@@ -616,7 +617,7 @@ lib/gitlab/checks/**
 /doc/api/resource_milestone_events.md @msedlakjakubowski
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
-/doc/api/rest/ @ashrafkhamis
+/doc/api/rest/ @eread @ashrafkhamis
 /doc/api/runners.md @fneill
 /doc/api/saml.md @jglassman1
 /doc/api/scim.md @jglassman1
@@ -629,7 +630,7 @@ lib/gitlab/checks/**
 /doc/api/statistics.md @jglassman1
 /doc/api/status_checks.md @eread
 /doc/api/suggestions.md @aqualls
-/doc/api/system_hooks.md @ashrafkhamis
+/doc/api/system_hooks.md @eread @ashrafkhamis
 /doc/api/tags.md @aqualls
 /doc/api/templates/dockerfiles.md @aqualls
 /doc/api/templates/gitignores.md @aqualls
@@ -649,7 +650,7 @@ lib/gitlab/checks/**
 /doc/architecture/blueprints/database_scaling/ @aqualls
 /doc/ci/ @drcatherinepope
 /doc/ci/caching/ @marcel.amirault
-/doc/ci/chatops/ @eread
+/doc/ci/chatops/ @eread @ashrafkhamis
 /doc/ci/cloud_deployment/ @phillipwells
 /doc/ci/cloud_services/ @marcel.amirault
 /doc/ci/directed_acyclic_graph/ @marcel.amirault
@@ -690,10 +691,10 @@ lib/gitlab/checks/**
 /doc/development/backend/ @sselhorn
 /doc/development/backend/create_source_code_be/ @aqualls
 /doc/development/build_test_package.md @axil
-/doc/development/bulk_import.md @eread
+/doc/development/bulk_import.md @eread @ashrafkhamis
 /doc/development/cached_queries.md @jglassman1
 /doc/development/cascading_settings.md @jglassman1
-/doc/development/chatops_on_gitlabcom.md @eread
+/doc/development/chatops_on_gitlabcom.md @eread @ashrafkhamis
 /doc/development/cicd/ @marcel.amirault
 /doc/development/cicd/cicd_tables.md @drcatherinepope
 /doc/development/cicd/index.md @drcatherinepope
@@ -709,7 +710,7 @@ lib/gitlab/checks/**
 /doc/development/distributed_tracing.md @msedlakjakubowski
 /doc/development/distribution/ @axil
 /doc/development/documentation/ @sselhorn
-/doc/development/export_csv.md @eread
+/doc/development/export_csv.md @eread @ashrafkhamis
 /doc/development/fe_guide/customizable_dashboards.md @lciutacu
 /doc/development/fe_guide/dark_mode.md @sselhorn
 /doc/development/fe_guide/graphql.md @sselhorn
@@ -726,13 +727,13 @@ lib/gitlab/checks/**
 /doc/development/gitaly.md @eread
 /doc/development/gitlab_flavored_markdown/ @ashrafkhamis
 /doc/development/gitlab_shell/ @aqualls
-/doc/development/graphql_guide/ @ashrafkhamis
+/doc/development/graphql_guide/ @eread @ashrafkhamis
 /doc/development/graphql_guide/batchloader.md @aqualls
-/doc/development/i18n/ @eread
+/doc/development/i18n/ @eread @ashrafkhamis
 /doc/development/image_scaling.md @lciutacu
-/doc/development/import_export.md @eread
+/doc/development/import_export.md @eread @ashrafkhamis
 /doc/development/index.md @sselhorn
-/doc/development/integrations/ @ashrafkhamis
+/doc/development/integrations/ @eread @ashrafkhamis
 /doc/development/integrations/secure.md @rdickenson
 /doc/development/integrations/secure_partner_integration.md @rdickenson
 /doc/development/internal_api/ @aqualls
@@ -778,21 +779,21 @@ lib/gitlab/checks/**
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/akismet.md @phillipwells
 /doc/integration/arkose.md @phillipwells
-/doc/integration/datadog.md @ashrafkhamis
-/doc/integration/external-issue-tracker.md @ashrafkhamis
+/doc/integration/datadog.md @eread @ashrafkhamis
+/doc/integration/external-issue-tracker.md @eread @ashrafkhamis
 /doc/integration/gitpod.md @ashrafkhamis
 /doc/integration/glab/ @aqualls
-/doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
-/doc/integration/index.md @ashrafkhamis
-/doc/integration/jenkins.md @ashrafkhamis
-/doc/integration/jira/ @ashrafkhamis
+/doc/integration/gmail_action_buttons_for_gitlab.md @eread @ashrafkhamis
+/doc/integration/index.md @eread @ashrafkhamis
+/doc/integration/jenkins.md @eread @ashrafkhamis
+/doc/integration/jira/ @eread @ashrafkhamis
 /doc/integration/mattermost/ @axil
 /doc/integration/partner_marketplace.md @fneill
 /doc/integration/recaptcha.md @phillipwells
 /doc/integration/security_partners/ @rdickenson
-/doc/integration/slash_commands.md @ashrafkhamis
+/doc/integration/slash_commands.md @eread @ashrafkhamis
 /doc/integration/sourcegraph.md @aqualls
-/doc/integration/trello_power_up.md @ashrafkhamis
+/doc/integration/trello_power_up.md @eread @ashrafkhamis
 /doc/integration/vault.md @phillipwells
 /doc/operations/error_tracking.md @drcatherinepope
 /doc/operations/feature_flags.md @phillipwells
@@ -811,21 +812,23 @@ lib/gitlab/checks/**
 /doc/subscriptions/gitlab_dedicated/ @drcatherinepope
 /doc/topics/authentication/ @jglassman1
 /doc/topics/autodevops/ @phillipwells
-/doc/topics/awesome_co.md @sselhorn
+/doc/topics/data_seeder.md @sselhorn
 /doc/topics/git/ @aqualls
 /doc/topics/gitlab_flow.md @aqualls
 /doc/topics/offline/ @axil
 /doc/topics/plan_and_track.md @msedlakjakubowski
-/doc/topics/your_work.md @sselhorn
 /doc/tutorials/ @kpaizee
-/doc/tutorials/create_compliance_pipeline.md @eread
-/doc/tutorials/fuzz_testing_tutorial.md @rdickenson
-/doc/tutorials/scan_result_policy.md @rdickenson
+/doc/tutorials/boards_for_teams/ @msedlakjakubowski
+/doc/tutorials/compliance_pipeline/ @eread
+/doc/tutorials/convert_personal_namespace_to_group/ @lciutacu
+/doc/tutorials/fuzz_testing/ @rdickenson
+/doc/tutorials/move_personal_project_to_group/ @lciutacu
+/doc/tutorials/scan_result_policy/ @rdickenson
 /doc/update/ @axil
 /doc/update/background_migrations.md @aqualls
 /doc/user/admin_area/analytics/ @lciutacu
 /doc/user/admin_area/credentials_inventory.md @jglassman1
-/doc/user/admin_area/custom_project_templates.md @eread
+/doc/user/admin_area/custom_project_templates.md @aqualls
 /doc/user/admin_area/diff_limits.md @aqualls
 /doc/user/admin_area/external_users.md @jglassman1
 /doc/user/admin_area/geo_sites.md @axil
@@ -846,12 +849,12 @@ lib/gitlab/checks/**
 /doc/user/admin_area/settings/files_api_rate_limits.md @aqualls
 /doc/user/admin_area/settings/git_lfs_rate_limits.md @aqualls
 /doc/user/admin_area/settings/gitaly_timeouts.md @eread
-/doc/user/admin_area/settings/import_export_rate_limits.md @eread
+/doc/user/admin_area/settings/import_export_rate_limits.md @eread @ashrafkhamis
 /doc/user/admin_area/settings/incident_management_rate_limits.md @msedlakjakubowski
 /doc/user/admin_area/settings/index.md @aqualls
 /doc/user/admin_area/settings/instance_template_repository.md @aqualls
 /doc/user/admin_area/settings/package_registry_rate_limits.md @marcel.amirault
-/doc/user/admin_area/settings/project_integration_management.md @ashrafkhamis
+/doc/user/admin_area/settings/project_integration_management.md @eread @ashrafkhamis
 /doc/user/admin_area/settings/push_event_activities_limit.md @aqualls
 /doc/user/admin_area/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
 /doc/user/admin_area/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
@@ -881,10 +884,10 @@ lib/gitlab/checks/**
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
-/doc/user/group/custom_project_templates.md @eread
+/doc/user/group/custom_project_templates.md @aqualls
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
-/doc/user/group/import/ @eread
+/doc/user/group/import/ @eread @ashrafkhamis
 /doc/user/group/index.md @lciutacu
 /doc/user/group/insights/ @lciutacu
 /doc/user/group/issues_analytics/ @msedlakjakubowski
@@ -930,16 +933,16 @@ lib/gitlab/checks/**
 /doc/user/project/file_lock.md @aqualls
 /doc/user/project/git_attributes.md @aqualls
 /doc/user/project/highlighting.md @aqualls
-/doc/user/project/import/ @eread
+/doc/user/project/import/ @eread @ashrafkhamis
 /doc/user/project/import/jira.md @msedlakjakubowski
 /doc/user/project/index.md @lciutacu
 /doc/user/project/insights/ @lciutacu
-/doc/user/project/integrations/ @ashrafkhamis
+/doc/user/project/integrations/ @eread @ashrafkhamis
 /doc/user/project/integrations/prometheus.md @msedlakjakubowski
 /doc/user/project/integrations/prometheus_library/ @msedlakjakubowski
 /doc/user/project/issue_board.md @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski
-/doc/user/project/issues/csv_import.md @eread
+/doc/user/project/issues/csv_import.md @eread @ashrafkhamis
 /doc/user/project/labels.md @msedlakjakubowski
 /doc/user/project/members/ @lciutacu
 /doc/user/project/merge_requests/ @aqualls
@@ -962,14 +965,13 @@ lib/gitlab/checks/**
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk.md @msedlakjakubowski
-/doc/user/project/settings/import_export.md @eread
-/doc/user/project/settings/import_export_troubleshooting.md @eread
+/doc/user/project/settings/import_export.md @eread @ashrafkhamis
+/doc/user/project/settings/import_export_troubleshooting.md @eread @ashrafkhamis
 /doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/system_notes.md @aqualls
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/web_ide/ @ashrafkhamis
-/doc/user/project/web_ide_beta/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
 /doc/user/public_access.md @lciutacu
 /doc/user/report_abuse.md @phillipwells
@@ -981,7 +983,6 @@ lib/gitlab/checks/**
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
-/doc/user/workspace/quick_start/ @ashrafkhamis
 # End rake-managed-docs-block
 
 [Authentication and Authorization] @gitlab-org/manage/authentication-and-authorization/approvers

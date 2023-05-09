@@ -594,6 +594,10 @@ module Gitlab
       @issue ||= /(?<issue>\d+)(?<format>\+s{,1})?(?=\W|\z)/
     end
 
+    def work_item
+      @work_item ||= /(?<work_item>\d+)(?<format>\+s{,1})?(?=\W|\z)/
+    end
+
     def merge_request
       @merge_request ||= /(?<merge_request>\d+)(?<format>\+s{,1})?/
     end

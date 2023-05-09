@@ -5,6 +5,7 @@ let presets = [
     '@babel/preset-env',
     {
       useBuiltIns: 'usage',
+      bugfixes: true,
       corejs: { version: coreJSVersion, proposals: true },
       modules: false,
     },

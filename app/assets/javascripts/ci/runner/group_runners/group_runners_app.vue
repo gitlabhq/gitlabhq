@@ -270,6 +270,7 @@ export default {
       v-if="noRunnersFound"
       :registration-token="registrationToken"
       :is-search-filtered="isSearchFiltered"
+      :new-runner-path="newRunnerPath"
       :svg-path="emptyStateSvgPath"
       :filtered-svg-path="emptyStateFilteredSvgPath"
     />

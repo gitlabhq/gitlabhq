@@ -2414,9 +2414,33 @@ module Gitlab
         end
 
         context 'duplicate needs' do
-          let(:needs) { %w(build1 build1) }
+          context 'when needs are specified in an array' do
+            let(:needs) { %w(build1 build1) }
 
-          it_behaves_like 'returns errors', 'test1 has duplicate entries in the needs section.'
+            it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build1.'
+          end
+
+          context 'when a job is specified multiple times' do
+            let(:needs) do
+              [
+                { job: "build2", artifacts: true, optional: false },
+                { job: "build2", artifacts: true, optional: false }
+              ]
+            end
+
+            it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build2.'
+          end
+
+          context 'when job is specified multiple times with different attributes' do
+            let(:needs) do
+              [
+                { job: "build2", artifacts: false, optional: true },
+                { job: "build2", artifacts: true, optional: false }
+              ]
+            end
+
+            it_behaves_like 'returns errors', 'test1 has the following needs duplicated: build2.'
+          end
         end
 
         context 'needs and dependencies that are mismatching' do

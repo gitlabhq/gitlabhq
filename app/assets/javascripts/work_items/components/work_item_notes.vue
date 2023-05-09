@@ -45,20 +45,13 @@ export default {
     WorkItemNotesActivityHeader,
     WorkItemHistoryOnlyFilterNote,
   },
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
       required: true,
     },
     workItemIid: {
-      type: String,
-      required: true,
-    },
-    queryVariables: {
-      type: Object,
-      required: true,
-    },
-    fullPath: {
       type: String,
       required: true,
     },
@@ -122,9 +115,9 @@ export default {
     },
     workItemCommentFormProps() {
       return {
-        queryVariables: this.queryVariables,
         fullPath: this.fullPath,
         workItemId: this.workItemId,
+        workItemIid: this.workItemIid,
         workItemType: this.workItemType,
         sortOrder: this.sortOrder,
         isNewDiscussion: true,
@@ -169,7 +162,8 @@ export default {
       },
       variables() {
         return {
-          ...this.queryVariables,
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
           after: this.after,
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
         };
@@ -179,7 +173,7 @@ export default {
         return widgets?.find((widget) => widget.type === 'NOTES')?.discussions || [];
       },
       skip() {
-        return !this.queryVariables.iid;
+        return !this.workItemIid;
       },
       error() {
         this.$emit('error', i18n.fetchError);
@@ -264,7 +258,8 @@ export default {
       await this.$apollo.queries.workItemNotes
         .fetchMore({
           variables: {
-            ...this.queryVariables,
+            fullPath: this.fullPath,
+            iid: this.workItemIid,
             after: this.pageInfo?.endCursor,
           },
         })
@@ -359,9 +354,8 @@ export default {
               <work-item-discussion
                 :key="getDiscussionKey(discussion)"
                 :discussion="discussion.notes.nodes"
-                :query-variables="queryVariables"
-                :full-path="fullPath"
                 :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
                 :work-item-type="workItemType"
                 :is-modal="isModal"
                 :autocomplete-data-sources="autocompleteDataSources"

@@ -19,6 +19,7 @@ export default {
     WorkItemLinkChild,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['fullPath'],
   props: {
     workItemType: {
       type: String,
@@ -42,10 +43,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    projectPath: {
-      type: String,
-      required: true,
     },
     fetchByIid: {
       type: Boolean,
@@ -86,7 +83,7 @@ export default {
     queryVariables() {
       return this.fetchByIid
         ? {
-            fullPath: this.projectPath,
+            fullPath: this.fullPath,
             iid: this.workItemIid,
           }
         : {
@@ -98,7 +95,7 @@ export default {
     addWorkItemQuery({ id, iid }) {
       const variables = this.fetchByIid
         ? {
-            fullPath: this.projectPath,
+            fullPath: this.fullPath,
             iid,
           }
         : {
@@ -232,7 +229,6 @@ export default {
     <work-item-link-child
       v-for="child in children"
       :key="child.id"
-      :project-path="projectPath"
       :can-update="canUpdate"
       :issuable-gid="workItemId"
       :child-item="child"

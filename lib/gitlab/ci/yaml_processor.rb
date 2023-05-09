@@ -104,8 +104,14 @@ module Gitlab
       end
 
       def validate_duplicate_needs!(name, needs)
-        unless needs.uniq == needs
-          error!("#{name} has duplicate entries in the needs section.")
+        duplicated_needs =
+          needs
+          .group_by { |need| need[:name] }
+          .select { |_, items| items.count > 1 }
+          .keys
+
+        unless duplicated_needs.empty?
+          error!("#{name} has the following needs duplicated: #{duplicated_needs.join(', ')}.")
         end
       end
 

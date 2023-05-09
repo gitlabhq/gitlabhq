@@ -1319,6 +1319,12 @@ msgstr ""
 msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr ""
 
+msgid "'projects' is not yet supported"
+msgstr ""
+
+msgid "'starterProjects' is not yet supported"
+msgstr ""
+
 msgid "(%d closed)"
 msgid_plural "(%d closed)"
 msgstr[0] ""
@@ -5073,6 +5079,9 @@ msgstr ""
 msgid "Analytics|Browser Family"
 msgstr ""
 
+msgid "Analytics|Cancel"
+msgstr ""
+
 msgid "Analytics|Choose a chart type on the right"
 msgstr ""
 
@@ -5086,6 +5095,9 @@ msgid "Analytics|Column Chart"
 msgstr ""
 
 msgid "Analytics|Configure Dashboard Project"
+msgstr ""
+
+msgid "Analytics|Create dashboard %{dashboardId}"
 msgstr ""
 
 msgid "Analytics|Custom dashboards"
@@ -5112,7 +5124,7 @@ msgstr ""
 msgid "Analytics|Edit"
 msgstr ""
 
-msgid "Analytics|Error while saving Dashboard!"
+msgid "Analytics|Error while saving dashboard"
 msgstr ""
 
 msgid "Analytics|Host"
@@ -5125,6 +5137,9 @@ msgid "Analytics|Line Chart"
 msgstr ""
 
 msgid "Analytics|New Analytics Visualization Title"
+msgstr ""
+
+msgid "Analytics|New dashboard"
 msgstr ""
 
 msgid "Analytics|No dashboard matches the specified URL path."
@@ -9245,6 +9260,9 @@ msgid "Checkout|Number of users"
 msgstr ""
 
 msgid "Checkout|Payment method"
+msgstr ""
+
+msgid "Checkout|Pricing reflective of %{linkStart}limited-time offer%{linkEnd}."
 msgstr ""
 
 msgid "Checkout|Purchase details"
@@ -23674,7 +23692,7 @@ msgstr ""
 msgid "Inherited:"
 msgstr ""
 
-msgid "Inheriting from parent is not yet supported"
+msgid "Inheriting from 'parent' is not yet supported"
 msgstr ""
 
 msgid "Initial default branch name"
@@ -24768,6 +24786,9 @@ msgid "IssueTracker|Use a custom issue tracker that is not in the integration li
 msgstr ""
 
 msgid "Issues"
+msgstr ""
+
+msgid "Issues Completed"
 msgstr ""
 
 msgid "Issues Rate Limits"
@@ -28751,6 +28772,9 @@ msgid "MlExperimentTracking|Artifacts"
 msgstr ""
 
 msgid "MlExperimentTracking|Author"
+msgstr ""
+
+msgid "MlExperimentTracking|CI Job"
 msgstr ""
 
 msgid "MlExperimentTracking|Candidate removed"
@@ -34009,9 +34033,6 @@ msgstr ""
 msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
-msgid "ProductAnalytics|Cancel Edit"
-msgstr ""
-
 msgid "ProductAnalytics|Click Events"
 msgstr ""
 
@@ -37165,6 +37186,9 @@ msgid "Release title"
 msgstr ""
 
 msgid "Release with tag \"%{tag}\" was not found"
+msgstr ""
+
+msgid "Release:"
 msgstr ""
 
 msgid "ReleaseAssetLinkType|Image"
@@ -53300,7 +53324,9 @@ msgid "is too long (maximum is 1000 entries)"
 msgstr ""
 
 msgid "issue"
-msgstr ""
+msgid_plural "issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "issues at risk"
 msgstr ""

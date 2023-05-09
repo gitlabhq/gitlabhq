@@ -31,7 +31,6 @@ describe('WorkItemMilestone component', () => {
 
   const workItemId = 'gid://gitlab/WorkItem/1';
   const workItemType = 'Task';
-  const fullPath = 'full-path';
 
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
@@ -67,12 +66,14 @@ describe('WorkItemMilestone component', () => {
         [projectMilestonesQuery, searchQueryHandler],
         [updateWorkItemMutation, mutationHandler],
       ]),
+      provide: {
+        fullPath: 'full-path',
+      },
       propsData: {
         canUpdate,
         workItemMilestone: milestone,
         workItemId,
         workItemType,
-        fullPath,
       },
       stubs: {
         GlDropdown,

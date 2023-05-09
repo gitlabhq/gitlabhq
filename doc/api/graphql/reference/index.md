@@ -13184,7 +13184,7 @@ A software dependency used by a project.
 | <a id="dependencyid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
 | <a id="dependencylocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
 | <a id="dependencyname"></a>`name` | [`String!`](#string) | Name of the dependency. |
-| <a id="dependencypackager"></a>`packager` | [`String`](#string) | Description of the tool used to manage the dependency. |
+| <a id="dependencypackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
 | <a id="dependencyversion"></a>`version` | [`String`](#string) | Version of the dependency. |
 
 ### `DependencyProxyBlob`
@@ -15819,6 +15819,24 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
 | <a id="groupvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Before the date. |
+
+##### `GroupValueStreamAnalyticsFlowMetrics.issuesCompletedCount`
+
+Number of open issues closed (completed) in the given period. Maximum value is 10,001.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountfrom"></a>`from` | [`Time!`](#time) | After the date. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountprojectids"></a>`projectIds` | [`[ID!]`](#id) | Project IDs within the group hierarchy. |
+| <a id="groupvaluestreamanalyticsflowmetricsissuescompletedcountto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `GroupValueStreamAnalyticsFlowMetrics.leadTime`
 
@@ -19229,6 +19247,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectdependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="projectdependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
 
 ##### `Project.deployment`
@@ -20459,6 +20478,23 @@ Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
 | <a id="projectvaluestreamanalyticsflowmetricsissuecountto"></a>`to` | [`Time!`](#time) | Before the date. |
+
+##### `ProjectValueStreamAnalyticsFlowMetrics.issuesCompletedCount`
+
+Number of open issues closed (completed) in the given period. Maximum value is 10,001.
+
+Returns [`ValueStreamAnalyticsMetric`](#valuestreamanalyticsmetric).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountfrom"></a>`from` | [`Time!`](#time) | After the date. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountlabelnames"></a>`labelNames` | [`[String!]`](#string) | Labels applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue. |
+| <a id="projectvaluestreamanalyticsflowmetricsissuescompletedcountto"></a>`to` | [`Time!`](#time) | Before the date. |
 
 ##### `ProjectValueStreamAnalyticsFlowMetrics.leadTime`
 
@@ -24746,6 +24782,27 @@ Values for sorting group packages.
 | <a id="packagegroupsorttype_desc"></a>`TYPE_DESC` | Ordered by type in descending order. |
 | <a id="packagegroupsortversion_asc"></a>`VERSION_ASC` | Ordered by version in ascending order. |
 | <a id="packagegroupsortversion_desc"></a>`VERSION_DESC` | Ordered by version in descending order. |
+
+### `PackageManager`
+
+Values for package manager.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="packagemanagerbundler"></a>`BUNDLER` | Package manager: bundler. |
+| <a id="packagemanagercomposer"></a>`COMPOSER` | Package manager: composer. |
+| <a id="packagemanagerconan"></a>`CONAN` | Package manager: conan. |
+| <a id="packagemanagergo"></a>`GO` | Package manager: go. |
+| <a id="packagemanagergradle"></a>`GRADLE` | Package manager: gradle. |
+| <a id="packagemanagermaven"></a>`MAVEN` | Package manager: maven. |
+| <a id="packagemanagernpm"></a>`NPM` | Package manager: npm. |
+| <a id="packagemanagernuget"></a>`NUGET` | Package manager: nuget. |
+| <a id="packagemanagerpip"></a>`PIP` | Package manager: pip. |
+| <a id="packagemanagerpipenv"></a>`PIPENV` | Package manager: pipenv. |
+| <a id="packagemanagerpnpm"></a>`PNPM` | Package manager: pnpm. |
+| <a id="packagemanagersbt"></a>`SBT` | Package manager: sbt. |
+| <a id="packagemanagersetuptools"></a>`SETUPTOOLS` | Package manager: setuptools. |
+| <a id="packagemanageryarn"></a>`YARN` | Package manager: yarn. |
 
 ### `PackageSort`
 

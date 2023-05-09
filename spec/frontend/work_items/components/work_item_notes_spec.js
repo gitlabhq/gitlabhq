@@ -97,11 +97,12 @@ describe('WorkItemNotes component', () => {
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
         [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
       ]),
+      provide: {
+        fullPath: 'test-path',
+      },
       propsData: {
         workItemId,
         workItemIid,
-        queryVariables: { iid: '1' },
-        fullPath: 'test-path',
         workItemType: 'task',
         reportAbusePath: '/report/abuse/path',
         isModal,
@@ -139,6 +140,7 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
       expect(workItemNotesQueryHandler).toHaveBeenCalledWith({
         after: undefined,
+        fullPath: 'test-path',
         iid: '1',
         pageSize: 30,
       });
@@ -163,15 +165,17 @@ describe('WorkItemNotes component', () => {
 
       it('fetch more notes should be called', async () => {
         expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
-          pageSize: DEFAULT_PAGE_SIZE_NOTES,
+          fullPath: 'test-path',
           iid: '1',
+          pageSize: DEFAULT_PAGE_SIZE_NOTES,
         });
 
         await nextTick();
 
         expect(workItemMoreNotesQueryHandler).toHaveBeenCalledWith({
-          pageSize: DEFAULT_PAGE_SIZE_NOTES,
+          fullPath: 'test-path',
           iid: '1',
+          pageSize: DEFAULT_PAGE_SIZE_NOTES,
           after: mockMoreNotesWidgetResponse.discussions.pageInfo.endCursor,
         });
       });

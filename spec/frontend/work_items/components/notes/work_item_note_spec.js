@@ -69,19 +69,20 @@ describe('Work Item Note', () => {
     workItemId = mockWorkItemId,
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
-    queryVariables = { iid: '1' },
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
+      provide: {
+        fullPath: 'test-project-path',
+      },
       propsData: {
         workItemId,
+        workItemIid: '1',
         note,
         isFirstNote,
         workItemType: 'Task',
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
         assignees,
-        queryVariables,
-        fullPath: 'test-project-path',
       },
       apolloProvider: mockApollo([
         [workItemByIidQuery, workItemResponseHandler],

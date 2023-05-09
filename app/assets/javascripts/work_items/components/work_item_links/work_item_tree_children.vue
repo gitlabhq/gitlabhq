@@ -3,6 +3,7 @@ export default {
   components: {
     WorkItemLinkChild: () => import('./work_item_link_child.vue'),
   },
+  inject: ['fullPath'],
   props: {
     workItemType: {
       type: String,
@@ -22,10 +23,6 @@ export default {
       required: false,
       default: false,
     },
-    projectPath: {
-      type: String,
-      required: true,
-    },
   },
 };
 </script>
@@ -35,7 +32,6 @@ export default {
     <work-item-link-child
       v-for="child in children"
       :key="child.id"
-      :project-path="projectPath"
       :can-update="canUpdate"
       :issuable-gid="workItemId"
       :child-item="child"

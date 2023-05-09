@@ -48,4 +48,4 @@ Are there any other stages or teams involved that need to be kept in the loop?
 - [ ] Close this rollout issue.
 
 
-/label ~"feature flag" ~"type::feature" ~"feature::addition"
+/label ~"feature flag" ~"type::maintenance" ~"maintenance::removal"

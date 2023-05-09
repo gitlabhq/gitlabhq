@@ -132,11 +132,15 @@ trigger-omnibus-env:
       echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
       echo "TRIGGER_BRANCH=$([[ "${target_branch_name}" =~ ^[0-9-]+-stable(-ee)?$ ]] && echo ${target_branch_name%-ee} || echo 'master')" >> $BUILD_ENV
+    - |
       echo "Built environment file for omnibus build:"
       cat $BUILD_ENV
   artifacts:
+    expire_in: 3 days
     reports:
       dotenv: $BUILD_ENV
+    paths:
+      - $BUILD_ENV
 
 trigger-omnibus-env-ce:
   extends:

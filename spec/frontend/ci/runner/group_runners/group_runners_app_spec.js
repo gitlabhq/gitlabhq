@@ -420,7 +420,13 @@ describe('GroupRunnersApp', () => {
     });
 
     it('shows an empty state', () => {
-      expect(findRunnerListEmptyState().exists()).toBe(true);
+      expect(findRunnerListEmptyState().props()).toMatchObject({
+        isSearchFiltered: false,
+        newRunnerPath,
+        registrationToken: mockRegistrationToken,
+        svgPath: 'emptyStateSvgPath.svg',
+        filteredSvgPath: 'emptyStateFilteredSvgPath.svg',
+      });
     });
   });
 

@@ -41,7 +41,7 @@ export default {
     GlFormCheckbox,
     GlTooltip,
   },
-  inject: ['projectPath', 'hasIterationsFeature'],
+  inject: ['fullPath', 'hasIterationsFeature'],
   props: {
     issuableGid: {
       type: String,
@@ -88,7 +88,7 @@ export default {
       query: projectWorkItemTypesQuery,
       variables() {
         return {
-          fullPath: this.projectPath,
+          fullPath: this.fullPath,
         };
       },
       update(data) {
@@ -99,7 +99,7 @@ export default {
       query: projectWorkItemsQuery,
       variables() {
         return {
-          projectPath: this.projectPath,
+          fullPath: this.fullPath,
           searchTerm: this.search?.title || this.search,
           types: [this.childrenType],
           in: this.search ? 'TITLE' : undefined,
@@ -131,7 +131,7 @@ export default {
     workItemInput() {
       let workItemInput = {
         title: this.search?.title || this.search,
-        projectPath: this.projectPath,
+        projectPath: this.fullPath,
         workItemTypeId: this.childWorkItemType,
         hierarchyWidget: {
           parentId: this.issuableGid,

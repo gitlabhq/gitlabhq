@@ -115,7 +115,16 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-issue', count: 6)
+      expect(actual).to have_selector('a.gfm.gfm-issue', count: 9)
+    end
+  end
+
+  # WorkItemReferenceFilter
+  matcher :reference_work_items do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('a.gfm.gfm-work_item', count: 2)
     end
   end
 

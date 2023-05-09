@@ -89,7 +89,9 @@ module Gitlab
 
               return if project.nil?
 
-              # with `itself`, we are force-loading the project
+              # We are force-loading the project with the `itself` method
+              # because the `project` variable can be a `BatchLoader` object and we should not
+              # pass a `BatchLoader` object in the `for` method to prevent unwanted behaviors.
               BatchLoader.for(project.itself)
                          .batch(key: context.user) do |projects, loader, args|
                 projects.uniq.each do |project|

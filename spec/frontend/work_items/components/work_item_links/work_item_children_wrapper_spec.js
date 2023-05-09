@@ -28,12 +28,14 @@ describe('WorkItemChildrenWrapper', () => {
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemChildrenWrapper, {
       apolloProvider: createMockApollo([[workItemByIidQuery, getWorkItemQueryHandler]]),
+      provide: {
+        fullPath: 'test/project',
+      },
       propsData: {
         workItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
         confidential,
         children,
-        projectPath: 'test/project',
         fetchByIid: true,
       },
     });

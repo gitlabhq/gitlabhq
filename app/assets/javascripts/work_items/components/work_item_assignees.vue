@@ -54,6 +54,7 @@ export default {
     GlIntersectionObserver,
   },
   mixins: [Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
@@ -80,10 +81,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    fullPath: {
-      type: String,
-      required: true,
     },
   },
   data() {

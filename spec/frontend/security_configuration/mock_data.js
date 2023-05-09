@@ -9,10 +9,11 @@ import { REPORT_TYPE_SAST } from '~/vue_shared/security_reports/constants';
 
 export const testProjectPath = 'foo/bar';
 export const testProviderIds = [101, 102, 103];
-export const testProviderName = ['Kontra', 'Secure Code Warrior', 'Other Vendor'];
+export const testProviderName = ['Kontra', 'Secure Code Warrior', 'SecureFlag'];
 export const testTrainingUrls = [
   'https://www.vendornameone.com/url',
   'https://www.vendornametwo.com/url',
+  'https://www.vendornamethree.com/url',
 ];
 
 const createSecurityTrainingProviders = ({ providerOverrides = {} }) => [

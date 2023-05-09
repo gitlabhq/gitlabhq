@@ -18,4 +18,22 @@ module Capybara
 
     prepend WaitForAllRequestsAfterVisitPage
   end
+
+  module Node
+    module Actions
+      include CapybaraHelpers
+      include WaitHelpers
+      include WaitForRequests
+
+      module WaitForAllRequestsAfterClickButton
+        def click_button(locator = nil, **options)
+          super
+
+          wait_for_all_requests
+        end
+      end
+
+      prepend WaitForAllRequestsAfterClickButton
+    end
+  end
 end

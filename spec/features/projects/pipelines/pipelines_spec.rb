@@ -302,7 +302,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
             click_button('manual build')
           end
 
-          it 'enqueues manual action job' do
+          it 'enqueues manual action job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409984' do
             expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] .gl-dropdown-toggle:disabled')
           end
         end
@@ -369,7 +369,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
             wait_for_requests
           end
 
-          it 'enqueues the delayed job', :js do
+          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410129' do
             expect(delayed_job.reload).to be_pending
           end
         end

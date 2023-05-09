@@ -527,6 +527,12 @@ RSpec/AvoidTestProf:
     - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
 
+RSpec/AvoidConditionalStatements:
+  Enabled: true
+  Include:
+    - 'spec/features/**/*.rb'
+    - 'ee/spec/features/**/*.rb'
+
 RSpec/FactoriesInMigrationSpecs:
   Enabled: true
   Include:

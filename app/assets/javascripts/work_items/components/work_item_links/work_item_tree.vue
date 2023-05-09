@@ -23,6 +23,7 @@ export default {
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
   },
+  inject: ['fullPath'],
   props: {
     workItemType: {
       type: String,
@@ -56,10 +57,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    projectPath: {
-      type: String,
-      required: true,
     },
   },
   data() {
@@ -106,7 +103,7 @@ export default {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
         query: workItemByIidQuery,
         variables: {
-          fullPath: this.projectPath,
+          fullPath: this.fullPath,
           iid,
         },
         update(data) {
@@ -164,7 +161,6 @@ export default {
       />
       <work-item-children-wrapper
         :children="children"
-        :project-path="projectPath"
         :can-update="canUpdate"
         :work-item-id="workItemId"
         :work-item-iid="workItemIid"

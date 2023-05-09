@@ -58,6 +58,7 @@ module Banzai
           Filter::References::ProjectReferenceFilter,
           Filter::References::DesignReferenceFilter,
           Filter::References::IssueReferenceFilter,
+          Filter::References::WorkItemReferenceFilter,
           Filter::References::ExternalIssueReferenceFilter,
           Filter::References::MergeRequestReferenceFilter,
           Filter::References::SnippetReferenceFilter,

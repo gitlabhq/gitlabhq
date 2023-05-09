@@ -46,7 +46,7 @@ describe('WorkItemLabels component', () => {
     workItemQueryHandler = workItemQuerySuccess,
     searchQueryHandler = successSearchQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
-    queryVariables = { iid: '1' },
+    workItemIid = '1',
   } = {}) => {
     wrapper = mountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
@@ -55,11 +55,13 @@ describe('WorkItemLabels component', () => {
         [updateWorkItemMutation, updateWorkItemMutationHandler],
         [workItemLabelsSubscription, subscriptionHandler],
       ]),
+      provide: {
+        fullPath: 'test-project-path',
+      },
       propsData: {
         workItemId,
+        workItemIid,
         canUpdate,
-        fullPath: 'test-project-path',
-        queryVariables,
       },
       attachTo: document.body,
     });
@@ -263,8 +265,8 @@ describe('WorkItemLabels component', () => {
     expect(workItemQuerySuccess).toHaveBeenCalled();
   });
 
-  it('skips calling the work item query when missing queryVariables', async () => {
-    createComponent({ queryVariables: {} });
+  it('skips calling the work item query when missing workItemIid', async () => {
+    createComponent({ workItemIid: null });
     await waitForPromises();
 
     expect(workItemQuerySuccess).not.toHaveBeenCalled();

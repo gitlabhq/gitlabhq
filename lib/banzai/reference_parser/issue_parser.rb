@@ -57,7 +57,17 @@ module Banzai
       end
 
       def records_for_nodes(nodes)
-        node_includes = [
+        @issues_for_nodes ||= grouped_objects_for_nodes(
+          nodes,
+          Issue.all.includes(node_includes),
+          self.class.data_attribute
+        )
+      end
+
+      private
+
+      def node_includes
+        includes = [
           :work_item_type,
           :namespace,
           :author,
@@ -69,13 +79,9 @@ module Banzai
             project: [:namespace, :project_feature, :route]
           }
         ]
-        node_includes << :milestone if context.options[:extended_preload]
+        includes << :milestone if context.options[:extended_preload]
 
-        @issues_for_nodes ||= grouped_objects_for_nodes(
-          nodes,
-          Issue.all.includes(node_includes),
-          self.class.data_attribute
-        )
+        includes
       end
     end
   end

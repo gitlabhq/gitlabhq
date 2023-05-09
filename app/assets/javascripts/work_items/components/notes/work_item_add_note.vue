@@ -21,17 +21,14 @@ export default {
     WorkItemCommentForm,
   },
   mixins: [Tracking.mixin()],
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
       required: true,
     },
-    fullPath: {
+    workItemIid: {
       type: String,
-      required: true,
-    },
-    queryVariables: {
-      type: Object,
       required: true,
     },
     discussionId: {
@@ -85,13 +82,16 @@ export default {
     workItem: {
       query: workItemByIidQuery,
       variables() {
-        return this.queryVariables;
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
       },
       update(data) {
         return data.workspace.workItems.nodes[0];
       },
       skip() {
-        return !this.queryVariables.iid;
+        return !this.workItemIid;
       },
       error() {
         this.$emit('error', i18n.fetchError);

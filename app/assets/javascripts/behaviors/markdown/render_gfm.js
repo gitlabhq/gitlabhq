@@ -39,7 +39,7 @@ export function renderGFM(element) {
     '.js-render-mermaid',
     '[lang="json"][data-lang-params="table"]',
     '.gfm-project_member',
-    '.gfm-issue, .gfm-merge_request',
+    '.gfm-issue, .gfm-work_item, .gfm-merge_request',
     '.js-render-metrics',
     '.js-render-observability',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));
@@ -50,7 +50,9 @@ export function renderGFM(element) {
   renderSandboxedMermaid(mermaidEls);
   renderJSONTable(tableEls.map((e) => e.parentNode));
   highlightCurrentUser(userEls);
-  renderMetrics(metricsEls);
+  if (!window.gon?.features?.removeMonitorMetrics) {
+    renderMetrics(metricsEls);
+  }
   renderObservability(observabilityEls);
   initPopovers(popoverEls);
 }

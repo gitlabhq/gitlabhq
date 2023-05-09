@@ -77,6 +77,13 @@ module ServiceDesk
         verification.error = error
         verification.token = nil
       end
+
+      # Supress warning:
+      # both enum and its state_machine have defined a different default for "state".
+      # State machine uses `nil` and the enum should use the same.
+      def owner_class_attribute_default
+        nil
+      end
     end
 
     # Needs to be below `state_machine` definition to suppress

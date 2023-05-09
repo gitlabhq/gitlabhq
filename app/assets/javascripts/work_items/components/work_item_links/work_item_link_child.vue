@@ -38,11 +38,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['fullPath'],
   props: {
-    projectPath: {
-      type: String,
-      required: true,
-    },
     canUpdate: {
       type: Boolean,
       required: true,
@@ -121,9 +118,7 @@ export default {
       return this.isItemOpen ? __('Created') : __('Closed');
     },
     childPath() {
-      return `${gon?.relative_url_root || ''}/${this.projectPath}/-/work_items/${
-        this.childItem.iid
-      }`;
+      return `${gon?.relative_url_root || ''}/${this.fullPath}/-/work_items/${this.childItem.iid}`;
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -353,7 +348,6 @@ export default {
     </div>
     <work-item-tree-children
       v-if="isExpanded"
-      :project-path="projectPath"
       :can-update="canUpdate"
       :work-item-id="issuableGid"
       :work-item-type="workItemType"

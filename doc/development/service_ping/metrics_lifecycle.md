@@ -14,57 +14,21 @@ Follow the [Implement Service Ping](implement.md) guide.
 
 ## Change an existing metric
 
-See [this video tutorial](https://youtu.be/bYf3c01KCls) for help with the update of metric attributes.
+WARNING:
+We want to **PREVENT** changes to the calculation logic or important attributes on any metric as this invalidates comparisons of the same metric across different versions of GitLab.
 
-NOTE:
-The `key_path` attribute represents the location of the metric in Service Ping payload and must not be changed.
+If you change a metric, you have to consider that not all instances of GitLab are running on the newest version. Old instances will still report the old version of the metric.
+Additionally, a metric's reported numbers are primarily interesting compared to previously reported numbers.
+As a result, if you need to change one of the following parts of a metric, you need to add a new metric instead. It's your choice whether to keep the old metric alongside the new one or [remove it](#remove-a-metric).
 
-Because we do not control when customers update their self-managed instances of GitLab,
-we **STRONGLY DISCOURAGE** changes to the logic used to calculate any metric.
-Any such changes lead to inconsistent reports from multiple GitLab instances.
-If there is a problem with an existing metric, it's best to deprecate the existing metric,
-and use it, side by side, with the desired new metric.
+- **calculation logic**: This means any changes that can produce a different value than the previous implementation
+- **YAML attributes**: The following attributes are directly used for analysis or calculation: `key_path`, `time_frame`, `value_type`, `data_source`.
 
-If you do need to change a metric, please notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) teams by `@` mentioning those groups in a comment on the MR.
-Many Service Ping metrics are relied upon for health score and XMAU reporting and
-unexpected changes to those metrics could break reporting.
+If you change the `performance_indicator_type` attribute of a metric or think your case needs an exception from the outlined rules then please notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) teams by `@` mentioning those groups in a comment on the merge request or issue.
 
-Example:
-Consider following change. Before GitLab 12.6, the `example_metric` was implemented as:
+You can change any other attributes without impact to the calculation or analysis. See [this video tutorial](https://youtu.be/bYf3c01KCls) for help updating metric attributes.
 
-```ruby
-{
-  ...
-  example_metric: distinct_count(Project, :creator_id)
-}
-```
-
-For GitLab 12.6, the metric was changed to filter out archived projects:
-
-```ruby
-{
-  ...
-  example_metric: distinct_count(Project.non_archived, :creator_id)
-}
-```
-
-In this scenario, all instances running up to GitLab 12.5 continue to report `example_metric`,
-including all archived projects, while all instances running GitLab 12.6 and higher filters
-out such projects. As Service Ping data is collected from all reporting instances, the
-resulting dataset includes mixed data, which distorts any following business analysis.
-
-The correct approach is to add a new metric for GitLab 12.6 release with updated logic:
-
-```ruby
-{
-  ...
-  example_metric_without_archived: distinct_count(Project.non_archived, :creator_id)
-}
-```
-
-and update existing business analysis artefacts to use `example_metric_without_archived` instead of `example_metric`
-
-Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automatically once a day. When a change to a metric is made in a YAML file, you can see the change in the dictionary within 24 hours.
+Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automatically once a day. You can see the change in the dictionary within 24 hours when you change the metric's YAML file.
 
 ## Remove a metric
 

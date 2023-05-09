@@ -29,13 +29,15 @@ describe('WorkItemTree', () => {
     canUpdate = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
+      provide: {
+        fullPath: 'test/project',
+      },
       propsData: {
         workItemType,
         parentWorkItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
         confidential,
         children,
-        projectPath: 'test/project',
         canUpdate,
       },
     });

@@ -1,10 +1,10 @@
 query projectWorkItems(
   $searchTerm: String
-  $projectPath: ID!
+  $fullPath: ID!
   $types: [IssueType!]
   $in: [IssuableSearchableField!]
 ) {
-  workspace: project(fullPath: $projectPath) {
+  workspace: project(fullPath: $fullPath) {
     id
     workItems(search: $searchTerm, types: $types, in: $in) {
       nodes {

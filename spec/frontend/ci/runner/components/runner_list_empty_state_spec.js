@@ -61,44 +61,52 @@ describe('RunnerListEmptyState', () => {
         expect(findEmptyState().text()).toMatchInterpolatedText(`${title} ${desc}`);
       });
 
-      describe('when create_runner_workflow_for_admin is enabled', () => {
-        beforeEach(() => {
-          createComponent({
-            provide: {
-              glFeatures: { createRunnerWorkflowForAdmin: true },
-            },
+      describe.each([
+        { createRunnerWorkflowForAdmin: true },
+        { createRunnerWorkflowForNamespace: true },
+      ])('when %o', (glFeatures) => {
+        describe('when newRunnerPath is defined', () => {
+          beforeEach(() => {
+            createComponent({
+              provide: {
+                glFeatures,
+              },
+            });
+          });
+
+          it('shows a link to the new runner page', () => {
+            expect(findLink().attributes('href')).toBe(newRunnerPath);
           });
         });
 
-        it('shows a link to the new runner page', () => {
-          expect(findLink().attributes('href')).toBe(newRunnerPath);
-        });
-      });
+        describe('when newRunnerPath not defined', () => {
+          beforeEach(() => {
+            createComponent({
+              props: {
+                newRunnerPath: null,
+              },
+              provide: {
+                glFeatures,
+              },
+            });
+          });
 
-      describe('when create_runner_workflow_for_admin is enabled and newRunnerPath not defined', () => {
-        beforeEach(() => {
-          createComponent({
-            props: {
-              newRunnerPath: null,
-            },
-            provide: {
-              glFeatures: { createRunnerWorkflowForAdmin: true },
-            },
+          it('opens a runner registration instructions modal with a link', () => {
+            const { value } = getBinding(findLink().element, 'gl-modal');
+
+            expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
           });
         });
-
-        it('opens a runner registration instructions modal with a link', () => {
-          const { value } = getBinding(findLink().element, 'gl-modal');
-
-          expect(findRunnerInstructionsModal().props('modalId')).toEqual(value);
-        });
       });
 
-      describe('when create_runner_workflow_for_admin is disabled', () => {
+      describe.each([
+        { createRunnerWorkflowForAdmin: false },
+        { createRunnerWorkflowForNamespace: false },
+      ])('when %o', (glFeatures) => {
         beforeEach(() => {
           createComponent({
             provide: {
-              glFeatures: { createRunnerWorkflowForAdmin: false },
+              glFeatures,
             },
           });
         });

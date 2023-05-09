@@ -17,6 +17,7 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
   let(:metrics_url) { urls.metrics_project_environment_url(project, environment) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     clear_host_from_memoized_variables
     stub_gitlab_domain
 
@@ -48,6 +49,20 @@ RSpec.describe 'Metrics rendering', :js, :kubeclient, :use_clean_rails_memory_st
         .to have_received(:new)
         .with(environment, 'GET', 'query_range', hash_including('start', 'end', 'step'))
         .at_least(:once)
+    end
+
+    context 'with remove_monitor_metrics flag enabled' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'does not show embedded metrics' do
+        visit project_issue_path(project, issue)
+
+        expect(page).not_to have_css('div.prometheus-graph')
+        expect(page).not_to have_text('Memory Usage (Total)')
+        expect(page).not_to have_text('Core Usage (Total)')
+      end
     end
 
     context 'when dashboard params are in included the url' do

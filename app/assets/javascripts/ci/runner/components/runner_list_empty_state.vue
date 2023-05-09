@@ -43,8 +43,12 @@ export default {
   },
   computed: {
     shouldShowCreateRunnerWorkflow() {
-      // create_runner_workflow_for_admin feature flag
-      return this.newRunnerPath && this.glFeatures?.createRunnerWorkflowForAdmin;
+      // create_runner_workflow_for_admin or create_runner_workflow_for_namespace
+      return (
+        this.newRunnerPath &&
+        (this.glFeatures?.createRunnerWorkflowForAdmin ||
+          this.glFeatures?.createRunnerWorkflowForNamespace)
+      );
     },
   },
   modalId: 'runners-empty-state-instructions-modal',

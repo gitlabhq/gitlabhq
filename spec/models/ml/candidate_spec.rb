@@ -157,6 +157,9 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       expect(subject.association_cached?(:latest_metrics)).to be(true)
       expect(subject.association_cached?(:params)).to be(true)
       expect(subject.association_cached?(:user)).to be(true)
+      expect(subject.association_cached?(:project)).to be(true)
+      expect(subject.association_cached?(:package)).to be(true)
+      expect(subject.association_cached?(:ci_build)).to be(true)
     end
   end
 
@@ -185,6 +188,22 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       it 'does not fetch any candidate' do
         expect(subject).to match_array([])
       end
+    end
+  end
+
+  describe 'from_ci?' do
+    subject { candidate }
+
+    it 'is false if candidate does not have ci_build_id' do
+      allow(candidate).to receive(:ci_build_id).and_return(nil)
+
+      is_expected.not_to be_from_ci
+    end
+
+    it 'is true if candidate does has ci_build_id' do
+      allow(candidate).to receive(:ci_build_id).and_return(1)
+
+      is_expected.to be_from_ci
     end
   end
 

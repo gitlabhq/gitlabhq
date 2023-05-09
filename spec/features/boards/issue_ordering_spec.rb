@@ -138,7 +138,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :team_planning do
       wait_for_requests
     end
 
-    it 'moves to end of list' do
+    it 'moves to end of list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410100' do
       expect(all('.board-card').first).to have_content(issue3.title)
 
       page.within(find('.board:nth-child(2)')) do
@@ -151,7 +151,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :team_planning do
       expect(all('.board-card').last).to have_content(issue3.title)
     end
 
-    it 'moves to start of list' do
+    it 'moves to start of list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410100' do
       expect(all('.board-card').last).to have_content(issue1.title)
 
       page.within(find('.board:nth-child(2)')) do

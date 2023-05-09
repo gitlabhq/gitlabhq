@@ -61,7 +61,7 @@ describe('WorkItemLinksForm', () => {
         formType,
       },
       provide: {
-        projectPath: 'project/path',
+        fullPath: 'project/path',
         hasIterationsFeature,
       },
     });

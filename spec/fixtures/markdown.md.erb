@@ -194,6 +194,19 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Link to issue by reference: [Issue](<%= issue.to_reference %>)
 - Link to issue by URL: [Issue](<%= urls.project_issue_url(issue.project, issue) %>)
 
+#### WorkItemReferenceFilter
+
+Note: work item references use `#`, which get built as an issue link.
+
+- Work item (counted as an issue reference): <%= work_item.to_reference %>
+- Work item in another project (counted as an issue reference): <%= xwork_item.to_reference(project) %>
+- Ignored in code: `<%= work_item.to_reference %>`
+- Ignored in links: [Link to <%= work_item.to_reference %>](#work_item-link)
+- Ignored when backslash escaped: \<%= work_item.to_reference %>
+- Work item by URL: <%= urls.project_work_item_url(work_item.project, work_item) %>
+- Link to work item by reference (counted as an issue reference): [Work item](<%= work_item.to_reference %>)
+- Link to work item by URL: [Work item](<%= urls.project_work_item_url(work_item.project, work_item) %>)
+
 #### MergeRequestReferenceFilter
 
 - Merge request: <%= merge_request.to_reference %>

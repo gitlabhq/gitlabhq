@@ -20,6 +20,13 @@ module Gitlab
             url: "https://integration-api.securecodewarrior.com/api/v1/trial"
           }.freeze
 
+          SECUREFLAG_DATA = {
+            name: 'SecureFlag',
+            description: "Get remediation advice with example code and recommended hands-on labs in a fully
+                          interactive virtualised environment.",
+            url: "https://knowledge-base-api.secureflag.com/gitlab"
+          }.freeze
+
           module Security
             class TrainingProvider < ApplicationRecord
               self.table_name = 'security_training_providers'
@@ -31,7 +38,7 @@ module Gitlab
             timestamps = { created_at: current_time, updated_at: current_time }
 
             Security::TrainingProvider.upsert_all(
-              [KONTRA_DATA.merge(timestamps), SCW_DATA.merge(timestamps)],
+              [KONTRA_DATA.merge(timestamps), SCW_DATA.merge(timestamps), SECUREFLAG_DATA.merge(timestamps)],
               unique_by: :index_security_training_providers_on_unique_name
             )
           end

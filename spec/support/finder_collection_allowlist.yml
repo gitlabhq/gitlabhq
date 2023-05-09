@@ -63,6 +63,7 @@
 - Security::TrainingUrlsFinder
 - Security::TrainingProviders::KontraUrlFinder
 - Security::TrainingProviders::SecureCodeWarriorUrlFinder
+- Security::TrainingProviders::SecureFlagUrlFinder
 - SentryIssueFinder
 - ServerlessDomainFinder
 - TagsFinder

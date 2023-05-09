@@ -58,7 +58,7 @@ describe('WorkItemDescription', () => {
     canUpdate = true,
     workItemResponse = workItemByIidResponseFactory({ canUpdate }),
     isEditing = false,
-    queryVariables = { iid: '1' },
+    workItemIid = '1',
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
 
@@ -71,10 +71,10 @@ describe('WorkItemDescription', () => {
       ]),
       propsData: {
         workItemId: id,
-        fullPath: 'test-project-path',
-        queryVariables,
+        workItemIid,
       },
       provide: {
+        fullPath: 'test-project-path',
         glFeatures: {
           workItemsMvc,
         },
@@ -304,8 +304,8 @@ describe('WorkItemDescription', () => {
         expect(workItemResponseHandler).toHaveBeenCalled();
       });
 
-      it('skips calling the work item query when missing queryVariables', async () => {
-        await createComponent({ queryVariables: {} });
+      it('skips calling the work item query when missing workItemIid', async () => {
+        await createComponent({ workItemIid: null });
 
         expect(workItemResponseHandler).not.toHaveBeenCalled();
       });

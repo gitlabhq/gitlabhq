@@ -669,19 +669,21 @@ In addition to this, links to some objects are also recognized and formatted. So
 
 ### Show the issue, merge request, or epic title in the reference
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15694) in GitLab 14.6.
+> - Support for issues, merge requests, and epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15694) in GitLab 14.6.
+> - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include the title in the rendered link of an issue, merge request, or epic, add a plus (`+`)
+To include the title in the rendered link of an issue, work item, merge request, or epic, add a plus (`+`)
 at the end of the reference. For example, a reference like `#123+` is rendered as
 `The issue title (#123)`.
 
 URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
 
-### Show the issue or merge request summary in the reference
+### Show the issue, work item or merge request summary in the reference
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
+> - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
+> - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include an extended summary in the rendered link of an issue or merge request, add a `+s`
+To include an extended summary in the rendered link of an issue, work item, or merge request, add a `+s`
 at the end of the reference. Summary includes information about **assignees**, **milestone**
 and **health status** of referenced item.
 

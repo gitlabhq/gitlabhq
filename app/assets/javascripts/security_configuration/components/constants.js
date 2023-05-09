@@ -17,6 +17,7 @@ import {
 
 import kontraLogo from 'images/vulnerability/kontra-logo.svg';
 import scwLogo from 'images/vulnerability/scw-logo.svg';
+import secureflagLogo from 'images/vulnerability/secureflag-logo.svg';
 import configureSastMutation from '../graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from '../graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from '../graphql/configure_secret_detection.mutation.graphql';
@@ -313,6 +314,9 @@ export const TEMP_PROVIDER_LOGOS = {
   [__('Secure Code Warrior')]: {
     svg: scwLogo,
   },
+  SecureFlag: {
+    svg: secureflagLogo,
+  },
 };
 
 // Use the `url` field from the GraphQL query once this issue is resolved
@@ -320,4 +324,5 @@ export const TEMP_PROVIDER_LOGOS = {
 export const TEMP_PROVIDER_URLS = {
   Kontra: 'https://application.security/',
   [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
+  SecureFlag: 'https://www.secureflag.com/',
 };

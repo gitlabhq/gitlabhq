@@ -8,7 +8,7 @@ RSpec.shared_examples 'security training providers importer' do
   end
 
   it 'upserts security training providers' do
-    expect { 2.times { subject } }.to change { security_training_providers.count }.from(0).to(2)
-    expect(security_training_providers.all.map(&:name)).to match_array(['Kontra', 'Secure Code Warrior'])
+    expect { 3.times { subject } }.to change { security_training_providers.count }.from(0).to(3)
+    expect(security_training_providers.all.map(&:name)).to match_array(['Kontra', 'Secure Code Warrior', 'SecureFlag'])
   end
 end

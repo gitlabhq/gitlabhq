@@ -42,7 +42,7 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
 
     shared_examples 'a page with a thread navigation' do
       context 'with active threads' do
-        it 'navigates to the first thread' do
+        it 'navigates to the first thread', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410144' do
           goto_next_thread
           expect(page).to have_selector(first_discussion_selector, obscured: false)
         end

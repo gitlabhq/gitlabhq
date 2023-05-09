@@ -40,6 +40,7 @@ module Projects
           {
             **candidate.params.to_h { |p| [p.name, p.value] },
             **candidate.latest_metrics.to_h { |m| [m.name, number_with_precision(m.value, precision: 4)] },
+            ci_job: job_info(candidate),
             artifact: link_to_artifact(candidate),
             details: link_to_details(candidate),
             name: candidate.name,
@@ -90,6 +91,17 @@ module Projects
 
       def link_to_details(candidate)
         project_ml_candidate_path(candidate.project, candidate.iid)
+      end
+
+      def job_info(candidate)
+        return unless candidate.from_ci?
+
+        build = candidate.ci_build
+
+        {
+          path: project_job_path(build.project, build),
+          name: build.name
+        }
       end
 
       def link_to_experiment(project, experiment)

@@ -140,7 +140,10 @@ export default {
     workItem: {
       query: workItemByIidQuery,
       variables() {
-        return this.queryVariables;
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
       },
       skip() {
         return !this.workItemIid;
@@ -314,12 +317,6 @@ export default {
     workItemNotes() {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
     },
-    queryVariables() {
-      return {
-        fullPath: this.fullPath,
-        iid: this.workItemIid,
-      };
-    },
     children() {
       return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
     },
@@ -398,10 +395,12 @@ export default {
       this.toggleChildFromCache(child, child.id, client);
     },
     toggleChildFromCache(workItem, childId, store) {
-      const sourceData = store.readQuery({
+      const query = {
         query: workItemByIidQuery,
-        variables: this.queryVariables,
-      });
+        variables: { fullPath: this.fullPath, iid: this.workItemIid },
+      };
+
+      const sourceData = store.readQuery(query);
 
       const newData = produce(sourceData, (draftState) => {
         const { widgets } = draftState.workspace.workItems.nodes[0];
@@ -416,11 +415,7 @@ export default {
         }
       });
 
-      store.writeQuery({
-        query: workItemByIidQuery,
-        variables: this.queryVariables,
-        data: newData,
-      });
+      store.writeQuery({ ...query, data: newData });
     },
     async updateWorkItem(workItem, childId, parentId) {
       return this.$apollo.mutate({
@@ -603,7 +598,7 @@ export default {
           :can-update="canUpdate"
           @error="updateError = $event"
         />
-        <work-item-created-updated :work-item-iid="workItemIid" :full-path="fullPath" />
+        <work-item-created-updated :work-item-iid="workItemIid" />
         <work-item-state
           :work-item="workItem"
           :work-item-parent-id="workItemParentId"
@@ -618,15 +613,13 @@ export default {
           :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
           :work-item-type="workItemType"
           :can-invite-members="workItemAssignees.canInviteMembers"
-          :full-path="fullPath"
           @error="updateError = $event"
         />
         <work-item-labels
           v-if="workItemLabels"
-          :work-item-id="workItem.id"
           :can-update="canUpdate"
-          :full-path="fullPath"
-          :query-variables="queryVariables"
+          :work-item-id="workItem.id"
+          :work-item-iid="workItem.iid"
           @error="updateError = $event"
         />
         <work-item-due-date
@@ -644,7 +637,6 @@ export default {
           :work-item-milestone="workItemMilestone.milestone"
           :work-item-type="workItemType"
           :can-update="canUpdate"
-          :full-path="fullPath"
           @error="updateError = $event"
         />
         <work-item-weight
@@ -653,8 +645,8 @@ export default {
           :can-update="canUpdate"
           :weight="workItemWeight.weight"
           :work-item-id="workItem.id"
+          :work-item-iid="workItem.iid"
           :work-item-type="workItemType"
-          :query-variables="queryVariables"
           @error="updateError = $event"
         />
         <work-item-progress
@@ -664,7 +656,6 @@ export default {
           :progress="workItemProgress.progress"
           :work-item-id="workItem.id"
           :work-item-type="workItemType"
-          :query-variables="queryVariables"
           @error="updateError = $event"
         />
         <work-item-iteration
@@ -673,9 +664,8 @@ export default {
           :iteration="workItemIteration.iteration"
           :can-update="canUpdate"
           :work-item-id="workItem.id"
+          :work-item-iid="workItem.iid"
           :work-item-type="workItemType"
-          :query-variables="queryVariables"
-          :full-path="fullPath"
           @error="updateError = $event"
         />
         <work-item-health-status
@@ -684,16 +674,14 @@ export default {
           :health-status="workItemHealthStatus.healthStatus"
           :can-update="canUpdate"
           :work-item-id="workItem.id"
+          :work-item-iid="workItem.iid"
           :work-item-type="workItemType"
-          :query-variables="queryVariables"
-          :full-path="fullPath"
           @error="updateError = $event"
         />
         <work-item-description
           v-if="hasDescriptionWidget"
           :work-item-id="workItem.id"
-          :full-path="fullPath"
-          :query-variables="queryVariables"
+          :work-item-iid="workItem.iid"
           class="gl-pt-5"
           @error="updateError = $event"
         />
@@ -705,7 +693,6 @@ export default {
           :work-item-iid="workItemIid"
           :children="children"
           :can-update="canUpdate"
-          :project-path="fullPath"
           :confidential="workItem.confidential"
           @addWorkItemChild="addChild"
           @removeChild="removeChild"
@@ -715,8 +702,6 @@ export default {
           v-if="workItemNotes"
           :work-item-id="workItem.id"
           :work-item-iid="workItem.iid"
-          :query-variables="queryVariables"
-          :full-path="fullPath"
           :work-item-type="workItemType"
           :is-modal="isModal"
           :assignees="workItemAssignees && workItemAssignees.assignees.nodes"

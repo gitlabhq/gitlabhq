@@ -329,6 +329,20 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#link_reference_pattern' do
+    let(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
+
+    context 'with work item url' do
+      let(:link_reference_url) { 'http://localhost/namespace/project/-/work_items/1' }
+
+      it 'matches with expected attributes' do
+        expect(match_data['namespace']).to eq('namespace')
+        expect(match_data['project']).to eq('project')
+        expect(match_data['work_item']).to eq('1')
+      end
+    end
+  end
+
   context 'with hierarchy' do
     let_it_be(:type1) { create(:work_item_type, namespace: reusable_project.namespace) }
     let_it_be(:type2) { create(:work_item_type, namespace: reusable_project.namespace) }

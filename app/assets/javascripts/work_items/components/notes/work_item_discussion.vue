@@ -18,16 +18,13 @@ export default {
     DiscussionNotesRepliesWrapper,
     WorkItemNoteReplying,
   },
+  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
       required: true,
     },
-    queryVariables: {
-      type: Object,
-      required: true,
-    },
-    fullPath: {
+    workItemIid: {
       type: String,
       required: true,
     },
@@ -161,8 +158,7 @@ export default {
     :assignees="assignees"
     :can-set-work-item-metadata="canSetWorkItemMetadata"
     :work-item-id="workItemId"
-    :query-variables="queryVariables"
-    :full-path="fullPath"
+    :work-item-iid="workItemIid"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
     @reportAbuse="$emit('reportAbuse', note)"
@@ -192,9 +188,8 @@ export default {
                   :markdown-preview-path="markdownPreviewPath"
                   :assignees="assignees"
                   :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
                   :can-set-work-item-metadata="canSetWorkItemMetadata"
-                  :query-variables="queryVariables"
-                  :full-path="fullPath"
                   @startReplying="showReplyForm"
                   @deleteNote="$emit('deleteNote', note)"
                   @reportAbuse="$emit('reportAbuse', note)"
@@ -219,9 +214,8 @@ export default {
                         :markdown-preview-path="markdownPreviewPath"
                         :assignees="assignees"
                         :work-item-id="workItemId"
+                        :work-item-iid="workItemIid"
                         :can-set-work-item-metadata="canSetWorkItemMetadata"
-                        :query-variables="queryVariables"
-                        :full-path="fullPath"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @reportAbuse="$emit('reportAbuse', reply)"
@@ -233,9 +227,8 @@ export default {
                       v-if="shouldShowReplyForm"
                       :notes-form="false"
                       :autofocus="autofocus"
-                      :query-variables="queryVariables"
-                      :full-path="fullPath"
                       :work-item-id="workItemId"
+                      :work-item-iid="workItemIid"
                       :discussion-id="discussionId"
                       :work-item-type="workItemType"
                       :sort-order="sortOrder"

@@ -14,6 +14,19 @@ FactoryBot.define do
       confidential { true }
     end
 
+    trait :opened do
+      state_id { WorkItem.available_states[:opened] }
+    end
+
+    trait :locked do
+      discussion_locked { true }
+    end
+
+    trait :closed do
+      state_id { WorkItem.available_states[:closed] }
+      closed_at { Time.now }
+    end
+
     trait :task do
       issue_type { :task }
       association :work_item_type, :default, :task

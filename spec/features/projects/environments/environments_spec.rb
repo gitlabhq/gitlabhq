@@ -370,7 +370,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
                             sha: project.commit.id)
       end
 
-      it 'does not show deployments' do
+      it 'does not show deployments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409990' do
         visit_environments(project)
 
         page.click_button _('Expand')

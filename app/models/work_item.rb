@@ -32,6 +32,14 @@ class WorkItem < Issue
       'issues.id'
     end
 
+    # def reference_pattern
+    #   # no-op: We currently only support link_reference_pattern parsing
+    # end
+
+    def link_reference_pattern
+      @link_reference_pattern ||= compose_link_reference_pattern('work_items', Gitlab::Regex.work_item)
+    end
+
     def work_item_children_keyset_order
       keyset_order = Gitlab::Pagination::Keyset::Order.build([
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(

@@ -29,7 +29,10 @@ describe('WorkItemCreatedUpdated component', () => {
 
     wrapper = shallowMount(WorkItemCreatedUpdated, {
       apolloProvider: createMockApollo([[workItemByIidQuery, successHandler]]),
-      propsData: { workItemIid, fullPath: '/some/project' },
+      provide: {
+        fullPath: '/some/project',
+      },
+      propsData: { workItemIid },
       stubs: {
         GlAvatarLink,
         GlSprintf,

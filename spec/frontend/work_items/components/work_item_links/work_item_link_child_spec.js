@@ -52,7 +52,6 @@ describe('WorkItemLinkChild', () => {
   Vue.use(VueApollo);
 
   const createComponent = ({
-    projectPath = 'gitlab-org/gitlab-test',
     canUpdate = true,
     issuableGid = WORK_ITEM_ID,
     childItem = workItemTask,
@@ -71,8 +70,10 @@ describe('WorkItemLinkChild', () => {
           [getWorkItemTreeQuery, getWorkItemTreeQueryHandler],
           [updateWorkItemMutation, mutationChangeParentHandler],
         ]),
+      provide: {
+        fullPath: 'gitlab-org/gitlab-test',
+      },
       propsData: {
-        projectPath,
         canUpdate,
         issuableGid,
         childItem,

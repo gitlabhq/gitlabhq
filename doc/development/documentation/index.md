@@ -151,6 +151,20 @@ change, you must update the `CODEOWNERS` file:
 1. Add and commit all your changes and push your branch up to `origin`.
 1. Create a merge request and assign it to a technical writing manager for review.
 
+When updating the `codeowners.rake` file:
+
+- To specify multiple writers for a single group, use a space between writer names:
+
+  ```plaintext
+  CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
+  ```
+
+- For a group that does not have an assigned writer, include the group name in the file and comment out the line:
+
+  ```plaintext
+  # CodeOwnerRule.new('Group Name', ''),
+  ```
+
 ## Move, rename, or delete a page
 
 See [redirects](redirects.md).

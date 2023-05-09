@@ -43,6 +43,8 @@ describe('MlExperimentsShow', () => {
 
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;
+  const linkTextInRowAndColumn = (row, col) =>
+    findColumnInRow(row, col).findComponent(GlLink).text();
 
   describe('default inputs', () => {
     beforeEach(() => {
@@ -242,6 +244,7 @@ describe('MlExperimentsShow', () => {
         'Rmse',
         'Auc',
         'Mae',
+        'CI Job',
         'Artifacts',
       ];
 
@@ -261,6 +264,26 @@ describe('MlExperimentsShow', () => {
         expect(findColumnInRow(secondCandidateIndex, artifactColumnIndex).text()).toBe(
           'No artifacts',
         );
+      });
+    });
+
+    describe('CI Job column', () => {
+      const jobColumnIndex = -2;
+
+      it('has a link to the job', () => {
+        expect(hrefInRowAndColumn(firstCandidateIndex, jobColumnIndex)).toBe(
+          firstCandidate.ci_job.path,
+        );
+      });
+
+      it('shows the name of the job', () => {
+        expect(linkTextInRowAndColumn(firstCandidateIndex, jobColumnIndex)).toBe(
+          firstCandidate.ci_job.name,
+        );
+      });
+
+      it('shows empty state when there is no job', () => {
+        expect(findColumnInRow(secondCandidateIndex, jobColumnIndex).text()).toBe('-');
       });
     });
 
