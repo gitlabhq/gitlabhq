@@ -345,12 +345,7 @@ module Ci
       [created_at, contacted_at].compact.max <= self.class.stale_deadline
     end
 
-    def status(legacy_mode = nil)
-      # TODO Deprecate legacy_mode in %16.0 and make it a no-op
-      #   (see https://gitlab.com/gitlab-org/gitlab/-/issues/360545)
-      # TODO Remove legacy_mode in %17.0
-      return deprecated_rest_status if legacy_mode == '14.5'
-
+    def status
       return :stale if stale?
       return :never_contacted unless contacted_at
 

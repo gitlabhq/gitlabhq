@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable snowplow and service ping events for given event params' do
   before do
     stub_application_setting(usage_ping_enabled: true)
   end
 
-  def count_unique(date_from: 1.minute.ago, date_to: 1.minute.from_now)
+  def count_unique(date_from: Date.today.beginning_of_week, date_to: 1.week.from_now)
     Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: action, start_date: date_from, end_date: date_to)
   end
 
@@ -29,8 +29,8 @@ RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events
   end
 end
 
-RSpec.shared_examples 'daily tracked issuable snowplow and service ping events with project' do
-  it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable snowplow and service ping events with project' do
+  it_behaves_like 'tracked issuable snowplow and service ping events for given event params' do
     let(:context) do
       Gitlab::Tracking::ServicePingContext
         .new(data_source: :redis_hll, event: event_property)
@@ -42,8 +42,8 @@ RSpec.shared_examples 'daily tracked issuable snowplow and service ping events w
   end
 end
 
-RSpec.shared_examples 'a daily tracked issuable snowplow and service ping events with namespace' do
-  it_behaves_like 'a daily tracked issuable snowplow and service ping events for given event params' do
+RSpec.shared_examples 'tracked issuable snowplow and service ping events with namespace' do
+  it_behaves_like 'tracked issuable snowplow and service ping events for given event params' do
     let(:context) do
       Gitlab::Tracking::ServicePingContext
         .new(data_source: :redis_hll, event: event_property)

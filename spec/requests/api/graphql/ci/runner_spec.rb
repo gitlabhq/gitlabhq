@@ -476,20 +476,12 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     let_it_be(:stale_runner) { create(:ci_runner, description: 'Stale runner 1', created_at: 3.months.ago) }
     let_it_be(:never_contacted_instance_runner) { create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil) }
 
-    let(:status_fragment) do
-      %(
-        status
-        legacyStatusWithExplicitVersion: status(legacyMode: "14.5")
-        newStatus: status(legacyMode: null)
-      )
-    end
-
     let(:query) do
       %(
         query {
-          staleRunner: runner(id: "#{stale_runner.to_global_id}") { #{status_fragment} }
-          pausedRunner: runner(id: "#{inactive_instance_runner.to_global_id}") { #{status_fragment} }
-          neverContactedInstanceRunner: runner(id: "#{never_contacted_instance_runner.to_global_id}") { #{status_fragment} }
+          staleRunner: runner(id: "#{stale_runner.to_global_id}") { status }
+          pausedRunner: runner(id: "#{inactive_instance_runner.to_global_id}") { status }
+          neverContactedInstanceRunner: runner(id: "#{never_contacted_instance_runner.to_global_id}") { status }
         }
       )
     end
@@ -499,55 +491,18 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       stale_runner_data = graphql_data_at(:stale_runner)
       expect(stale_runner_data).to match a_hash_including(
-        'status' => 'STALE',
-        'legacyStatusWithExplicitVersion' => 'STALE',
-        'newStatus' => 'STALE'
+        'status' => 'STALE'
       )
 
       paused_runner_data = graphql_data_at(:paused_runner)
       expect(paused_runner_data).to match a_hash_including(
-        'status' => 'OFFLINE',
-        'legacyStatusWithExplicitVersion' => 'OFFLINE',
-        'newStatus' => 'OFFLINE'
+        'status' => 'OFFLINE'
       )
 
       never_contacted_instance_runner_data = graphql_data_at(:never_contacted_instance_runner)
       expect(never_contacted_instance_runner_data).to match a_hash_including(
-        'status' => 'NEVER_CONTACTED',
-        'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
-        'newStatus' => 'NEVER_CONTACTED'
+        'status' => 'NEVER_CONTACTED'
       )
-    end
-
-    context 'when disable_runner_graphql_legacy_mode is enabled' do
-      before do
-        stub_feature_flags(disable_runner_graphql_legacy_mode: false)
-      end
-
-      it 'retrieves status fields with expected values' do
-        post_graphql(query, current_user: user)
-
-        stale_runner_data = graphql_data_at(:stale_runner)
-        expect(stale_runner_data).to match a_hash_including(
-          'status' => 'STALE',
-          'legacyStatusWithExplicitVersion' => 'STALE',
-          'newStatus' => 'STALE'
-        )
-
-        paused_runner_data = graphql_data_at(:paused_runner)
-        expect(paused_runner_data).to match a_hash_including(
-          'status' => 'PAUSED',
-          'legacyStatusWithExplicitVersion' => 'PAUSED',
-          'newStatus' => 'OFFLINE'
-        )
-
-        never_contacted_instance_runner_data = graphql_data_at(:never_contacted_instance_runner)
-        expect(never_contacted_instance_runner_data).to match a_hash_including(
-          'status' => 'NEVER_CONTACTED',
-          'legacyStatusWithExplicitVersion' => 'NEVER_CONTACTED',
-          'newStatus' => 'NEVER_CONTACTED'
-        )
-      end
     end
   end
 

@@ -196,7 +196,7 @@ Supported attributes:
 ]
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -400,7 +400,7 @@ Supported attributes:
 ]
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -587,7 +587,7 @@ Supported attributes:
 ]
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -821,7 +821,7 @@ Supported attributes:
   "user": {
     "can_merge": true
   },
-  "approvals_before_merge": { // Available for GitLab Premium and higher tiers only
+  "approvals_before_merge": { // Available for GitLab Premium and Ultimate tiers only
     "id": 1,
     "title": "test1",
     "approvals_before_merge": null
@@ -1421,7 +1421,7 @@ If `approvals_before_merge` is not provided, it inherits the value from the targ
 }
 ```
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -1604,7 +1604,7 @@ Must include at least one non-required attribute from above.
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -1793,7 +1793,7 @@ Supported attributes:
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -2006,7 +2006,7 @@ Supported attributes:
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -2318,7 +2318,7 @@ Example response:
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json
@@ -2489,7 +2489,7 @@ Example response:
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `approvals_before_merge` parameter:
 
 ```json

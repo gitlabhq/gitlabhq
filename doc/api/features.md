@@ -107,6 +107,9 @@ Set a feature's gate value. If a feature with the given name doesn't exist yet,
 it's created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
+WARNING:
+Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+
 ```plaintext
 POST /features/:name
 ```

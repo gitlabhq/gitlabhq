@@ -341,7 +341,7 @@ to be used with GitLab.
 
 ### Provide your own Redis instance
 
-Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or higher is required. Older Redis versions have reached end-of-life.
+Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or later is required. Older Redis versions have reached end-of-life.
 
 Managed Redis from cloud providers such as AWS ElastiCache will work. If these
 services support high availability, be sure it is not the Redis Cluster type.

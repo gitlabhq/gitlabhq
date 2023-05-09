@@ -174,7 +174,7 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.171.1'
+gem 'aws-sdk-core', '~> 3.172.0'
 gem 'aws-sdk-cloudformation', '~> 1'
 gem 'aws-sdk-s3', '~> 1.122.0'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
@@ -457,7 +457,7 @@ group :test do
 
   gem 'capybara', '~> 3.39'
   gem 'capybara-screenshot', '~> 1.0.26'
-  gem 'selenium-webdriver', '~> 4.9'
+  gem 'selenium-webdriver', '~> 4.9.0'
 
   gem 'graphlyte', '~> 1.0.0'
 

@@ -268,8 +268,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           it 'tracks code_intelligence usage ping' do
             tracking_params = {
               event_names: 'i_source_code_code_intelligence',
-              start_date: Date.yesterday,
-              end_date: Date.today
+              start_date: Date.today.beginning_of_week,
+              end_date: 1.week.from_now
             }
 
             expect { authorize_artifacts_with_token_in_headers(artifact_type: :lsif) }

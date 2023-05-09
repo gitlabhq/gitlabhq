@@ -478,10 +478,10 @@ checked each time a new subscription is created.
 If a new subscription would cause the total number of subscription to exceed the
 limit, the subscription is considered invalid.
 
-- GitLab SaaS subscribers have different limits [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
+- On GitLab SaaS: Limits are [defined per plan](../user/gitlab_com/index.md#gitlab-cicd),
   and they affect all projects under that plan.
-- On [GitLab Premium](https://about.gitlab.com/pricing/) self-managed
-  or higher installations, this limit is defined under a `default` plan that
+- On self-managed: On [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/),
+  this limit is defined under a `default` plan that
   affects all projects. By default, there is a limit of `2` subscriptions.
 
 To set this limit for a self-managed installation, run the following in the

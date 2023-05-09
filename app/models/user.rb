@@ -1040,12 +1040,28 @@ class User < ApplicationRecord
     password_allowed
   end
 
+  # Override Devise Rememberable#remember_me!
+  #
+  # In Devise this method sets `remember_created_at` and writes the session token
+  # to the session cookie. When remember me is disabled this method ensures these
+  # values aren't set.
   def remember_me!
-    super if ::Gitlab::Database.read_write?
+    super if ::Gitlab::Database.read_write? && ::Gitlab::CurrentSettings.remember_me_enabled?
   end
 
   def forget_me!
     super if ::Gitlab::Database.read_write?
+  end
+
+  # Override Devise Rememberable#remember_me?
+  #
+  # In Devise this method compares the remember me token received from the user session
+  # and compares to the stored value. When remember me is disabled this method ensures
+  # the upstream comparison does not happen.
+  def remember_me?(token, generated_at)
+    return false unless ::Gitlab::CurrentSettings.remember_me_enabled?
+
+    super
   end
 
   def disable_two_factor!

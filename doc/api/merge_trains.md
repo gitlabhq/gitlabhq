@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36146) in GitLab 12.9.
 > - Using this API you can consume [Merge Train](../ci/pipelines/merge_trains.md) entries.
 
-Every API call to merge trains must be authenticated with Developer or higher [permissions](../user/permissions.md).
+Every API call to merge trains must be authenticated with at lease the Developer [role](../user/permissions.md).
 
 If a user is not a member of a project and the project is private, a `GET` request on that project returns a `404` status code.
 

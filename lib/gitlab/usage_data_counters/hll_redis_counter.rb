@@ -24,7 +24,7 @@ module Gitlab
       # Event example:
       #
       # - name: g_compliance_dashboard # Unique event name
-      #   aggregation: daily           # Aggregation level, keys are stored daily or weekly
+      #   aggregation: weekly          # Aggregation level, keys are stored weekly
       #
       # Usage:
       #
@@ -94,7 +94,13 @@ module Gitlab
           return if event.blank?
           return unless Feature.enabled?(:redis_hll_tracking, type: :ops)
 
+          if event[:aggregation].to_sym == :daily
+            weekly_event = event.dup.tap { |e| e['aggregation'] = 'weekly' }
+            Gitlab::Redis::HLL.add(key: redis_key(weekly_event, time, context), value: values, expiry: expiry(weekly_event))
+          end
+
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))
+
         rescue StandardError => e
           # Ignore any exceptions unless is dev or test env
           # The application flow should not be blocked by erros in tracking
@@ -112,6 +118,11 @@ module Gitlab
           yield events if block_given?
 
           aggregation = events.first[:aggregation]
+
+          if Feature.disabled?(:revert_daily_hll_events_to_weekly_aggregation)
+            aggregation = :weekly
+            events.each { |e| e[:aggregation] = :weekly }
+          end
 
           keys = keys_for_aggregation(aggregation, events: events, start_date: start_date, end_date: end_date, context: context)
 
@@ -162,6 +173,8 @@ module Gitlab
         # Compose the key in order to store events daily or weekly
         def redis_key(event, time, context = '')
           raise UnknownEvent, "Unknown event #{event[:name]}" unless known_events_names.include?(event[:name].to_s)
+
+          # ToDo: remove during https://gitlab.com/groups/gitlab-org/-/epics/9542 cleanup
           raise UnknownAggregation, "Use :daily or :weekly aggregation" unless ALLOWED_AGGREGATIONS.include?(event[:aggregation].to_sym)
 
           key = "{#{REDIS_SLOT}}_#{event[:name]}"

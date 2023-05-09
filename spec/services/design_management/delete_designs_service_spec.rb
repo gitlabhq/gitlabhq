@@ -99,7 +99,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
           rescue StandardError
             nil
           end
-            .not_to change { redis_hll.unique_events(event_names: event, start_date: 1.day.ago, end_date: 1.day.from_now) }
+            .not_to change { redis_hll.unique_events(event_names: event, start_date: Date.today, end_date: 1.week.from_now) }
 
           begin
             run_service

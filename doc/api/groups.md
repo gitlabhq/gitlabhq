@@ -120,7 +120,7 @@ GET /groups?statistics=true
 ]
 ```
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 You can search for groups by name or path, see below.
 
@@ -191,7 +191,7 @@ GET /groups/:id/subgroups
 ]
 ```
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 ## List a group's descendant groups
 
@@ -276,7 +276,7 @@ GET /groups/:id/descendant_groups
 ]
 ```
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 ## List a group's projects
 
@@ -701,7 +701,7 @@ Example response:
 
 The `prevent_sharing_groups_outside_hierarchy` attribute is present only on top-level groups.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the attributes:
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the attributes:
 
 - `shared_runners_minutes_limit`
 - `extra_shared_runners_minutes_limit`
@@ -1070,7 +1070,7 @@ Example response:
 
 The `prevent_sharing_groups_outside_hierarchy` attribute is present in the response only for top-level groups.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
 ### Disable the results limit **(FREE SELF)**
 
@@ -1734,7 +1734,7 @@ GET /groups/:id/push_rule
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ```json

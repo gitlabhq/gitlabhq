@@ -12,19 +12,16 @@ module Resolvers
 
       argument :legacy_mode,
                type: GraphQL::Types::String,
-               default_value: '14.5',
+               default_value: nil,
                required: false,
-               description: 'Compatibility mode. A null value turns off compatibility mode.',
+               description: 'No-op, left for compatibility.',
                deprecated: {
-                 reason: 'Will be removed in 17.0. In GitLab 16.0 and later, ' \
-                         'the field will act as if `legacyMode` is null',
+                 reason: 'Will be removed in 17.0',
                  milestone: '15.0'
                }
 
-      def resolve(legacy_mode:, **args)
-        legacy_mode = nil if Feature.enabled?(:disable_runner_graphql_legacy_mode)
-
-        runner.status(legacy_mode)
+      def resolve(**args)
+        runner.status
       end
     end
   end

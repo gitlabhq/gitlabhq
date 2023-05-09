@@ -49,7 +49,7 @@ Example response:
 
 ## Project deploy tokens
 
-Project deploy token API endpoints require the Maintainer role or higher
+Project deploy token API endpoints require at least the Maintainer role
 for the project.
 
 ### List project deploy tokens

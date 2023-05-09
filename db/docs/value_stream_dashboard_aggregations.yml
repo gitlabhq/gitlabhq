@@ -1,0 +1,11 @@
+---
+table_name: value_stream_dashboard_aggregations
+classes:
+- Analytics::ValueStreamDashboard::Aggregation
+feature_categories:
+- value_stream_management
+description: Stores the top-level namespaces which are opted-in to the value stream
+  dashboard feature.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118908
+milestone: '16.0'
+gitlab_schema: gitlab_main

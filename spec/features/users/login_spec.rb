@@ -513,6 +513,43 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         gitlab_sign_in(user)
       end
 
+      context 'when the session expires' do
+        it 'signs the user out' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+
+          gitlab_sign_in(user)
+          expire_session
+          visit root_path
+
+          expect(page).to have_current_path new_user_session_path
+        end
+
+        it 'extends the session when using remember me' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter).twice
+
+          gitlab_sign_in(user, remember: true)
+          expire_session
+          visit root_path
+
+          expect(page).to have_current_path root_path
+        end
+
+        it 'does not extend the session when remember me is not enabled' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+
+          gitlab_sign_in(user, remember: true)
+          expire_session
+          stub_application_setting(remember_me_enabled: false)
+
+          visit root_path
+
+          expect(page).to have_current_path new_user_session_path
+        end
+      end
+
       context 'when the users password is expired' do
         before do
           user.update!(password_expires_at: Time.zone.parse('2018-05-08 11:29:46 UTC'))

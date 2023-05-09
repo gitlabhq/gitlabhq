@@ -6,13 +6,14 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
   include SnowplowHelpers
 
   let(:service) { described_class.new }
+  let(:dates) { { start_date: Date.today.beginning_of_week, end_date: Date.today.next_week } }
 
   let_it_be(:user, reload: true) { create :user }
   let_it_be(:project) { create(:project) }
 
   shared_examples 'it records the event in the event counter' do
     specify do
-      tracking_params = { event_names: event_action, start_date: Date.yesterday, end_date: Date.today }
+      tracking_params = { event_names: event_action, **dates }
 
       expect { subject }
         .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
@@ -22,7 +23,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
 
   shared_examples 'it records a git write event' do
     specify do
-      tracking_params = { event_names: 'git_write_action', start_date: Date.yesterday, end_date: Date.today }
+      tracking_params = { event_names: 'git_write_action', **dates }
 
       expect { subject }
         .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }

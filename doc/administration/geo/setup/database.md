@@ -21,7 +21,7 @@ NOTE:
 The stages of the setup process must be completed in the documented order.
 If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
 
-Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added the [premium or higher licenses](https://about.gitlab.com/pricing/) to your **primary** site.
+Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 
 Be sure to read and review all of these steps before you execute them in your
 testing or production environments.

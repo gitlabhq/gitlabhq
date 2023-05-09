@@ -455,7 +455,7 @@ to be used with GitLab. The following IPs will be used as an example:
 Managed Redis from cloud providers such as AWS ElastiCache will work. If these
 services support high availability, be sure it is **not** the Redis Cluster type.
 
-Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or higher is required. Older Redis versions have reached end-of-life.
+Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or later is required. Older Redis versions have reached end-of-life.
 
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary when configuring the
@@ -643,7 +643,7 @@ Now that the Redis servers are all set up, let's configure the Consul + Sentinel
 servers.
 
 NOTE:
-Consul and Redis Sentinel must be deployed in an odd number of 3 nodes or higher. This is to ensure the nodes can take votes as part of a quorum.
+Consul and Redis Sentinel must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 The following IPs will be used as an example:
 
@@ -1293,7 +1293,7 @@ Praefect is the router and transaction manager for Gitaly Cluster and all connec
 it. This section details how to configure it.
 
 NOTE:
-Praefect must be deployed in an odd number of 3 nodes or higher. This is to ensure the nodes can take votes as part of a quorum.
+Praefect must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 Praefect requires several secret tokens to secure communications across the Cluster:
 

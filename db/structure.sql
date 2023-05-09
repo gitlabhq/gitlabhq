@@ -14387,28 +14387,6 @@ CREATE TABLE clusters (
     helm_major_version integer DEFAULT 3 NOT NULL
 );
 
-CREATE TABLE clusters_applications_helm (
-    id integer NOT NULL,
-    cluster_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    status integer NOT NULL,
-    version character varying NOT NULL,
-    status_reason text,
-    encrypted_ca_key text,
-    encrypted_ca_key_iv text,
-    ca_cert text
-);
-
-CREATE SEQUENCE clusters_applications_helm_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_helm_id_seq OWNED BY clusters_applications_helm.id;
-
 CREATE TABLE clusters_applications_knative (
     id integer NOT NULL,
     cluster_id integer NOT NULL,
@@ -22560,18 +22538,6 @@ CREATE SEQUENCE sentry_issues_id_seq
 
 ALTER SEQUENCE sentry_issues_id_seq OWNED BY sentry_issues.id;
 
-CREATE TABLE serverless_domain_cluster (
-    uuid character varying(14) NOT NULL,
-    pages_domain_id bigint NOT NULL,
-    clusters_applications_knative_id bigint NOT NULL,
-    creator_id bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    encrypted_key text,
-    encrypted_key_iv character varying(255),
-    certificate text
-);
-
 CREATE TABLE service_desk_custom_email_credentials (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -23839,6 +23805,12 @@ CREATE SEQUENCE users_statistics_id_seq
 
 ALTER SEQUENCE users_statistics_id_seq OWNED BY users_statistics.id;
 
+CREATE TABLE value_stream_dashboard_aggregations (
+    namespace_id bigint NOT NULL,
+    last_run_at timestamp with time zone,
+    enabled boolean DEFAULT true NOT NULL
+);
+
 CREATE SEQUENCE value_stream_dashboard_counts_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -25058,8 +25030,6 @@ ALTER TABLE ONLY cluster_providers_aws ALTER COLUMN id SET DEFAULT nextval('clus
 ALTER TABLE ONLY cluster_providers_gcp ALTER COLUMN id SET DEFAULT nextval('cluster_providers_gcp_id_seq'::regclass);
 
 ALTER TABLE ONLY clusters ALTER COLUMN id SET DEFAULT nextval('clusters_id_seq'::regclass);
-
-ALTER TABLE ONLY clusters_applications_helm ALTER COLUMN id SET DEFAULT nextval('clusters_applications_helm_id_seq'::regclass);
 
 ALTER TABLE ONLY clusters_applications_knative ALTER COLUMN id SET DEFAULT nextval('clusters_applications_knative_id_seq'::regclass);
 
@@ -26964,9 +26934,6 @@ ALTER TABLE ONLY cluster_providers_aws
 ALTER TABLE ONLY cluster_providers_gcp
     ADD CONSTRAINT cluster_providers_gcp_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY clusters_applications_helm
-    ADD CONSTRAINT clusters_applications_helm_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY clusters_applications_knative
     ADD CONSTRAINT clusters_applications_knative_pkey PRIMARY KEY (id);
 
@@ -28155,9 +28122,6 @@ ALTER TABLE ONLY sentry_issues
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT sequence_is_unique_per_iterations_cadence_id UNIQUE (iterations_cadence_id, sequence) DEFERRABLE INITIALLY DEFERRED;
 
-ALTER TABLE ONLY serverless_domain_cluster
-    ADD CONSTRAINT serverless_domain_cluster_pkey PRIMARY KEY (uuid);
-
 ALTER TABLE ONLY service_desk_custom_email_credentials
     ADD CONSTRAINT service_desk_custom_email_credentials_pkey PRIMARY KEY (project_id);
 
@@ -28343,6 +28307,9 @@ ALTER TABLE ONLY users_star_projects
 
 ALTER TABLE ONLY users_statistics
     ADD CONSTRAINT users_statistics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY value_stream_dashboard_aggregations
+    ADD CONSTRAINT value_stream_dashboard_aggregations_pkey PRIMARY KEY (namespace_id);
 
 ALTER TABLE ONLY value_stream_dashboard_counts
     ADD CONSTRAINT value_stream_dashboard_counts_pkey PRIMARY KEY (namespace_id, metric, recorded_at, count, id);
@@ -29658,8 +29625,6 @@ CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans 
 
 CREATE INDEX idx_security_scans_on_scan_type ON security_scans USING btree (scan_type);
 
-CREATE UNIQUE INDEX idx_serverless_domain_cluster_on_clusters_applications_knative ON serverless_domain_cluster USING btree (clusters_applications_knative_id);
-
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_project_and_scan_policy ON software_license_policies USING btree (project_id, software_license_id, scan_result_policy_id);
 
 CREATE INDEX idx_streaming_headers_on_external_audit_event_destination_id ON audit_events_streaming_headers USING btree (external_audit_event_destination_id);
@@ -30429,8 +30394,6 @@ CREATE INDEX index_cluster_providers_aws_on_cluster_id_and_status ON cluster_pro
 CREATE INDEX index_cluster_providers_gcp_on_cloud_run ON cluster_providers_gcp USING btree (cloud_run);
 
 CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON cluster_providers_gcp USING btree (cluster_id);
-
-CREATE UNIQUE INDEX index_clusters_applications_helm_on_cluster_id ON clusters_applications_helm USING btree (cluster_id);
 
 CREATE UNIQUE INDEX index_clusters_applications_knative_on_cluster_id ON clusters_applications_knative USING btree (cluster_id);
 
@@ -31748,6 +31711,8 @@ CREATE INDEX index_on_users_lower_username ON users USING btree (lower((username
 
 CREATE INDEX index_on_users_name_lower ON users USING btree (lower((name)::text));
 
+CREATE INDEX index_on_value_stream_dashboard_aggregations_last_run_at_id ON value_stream_dashboard_aggregations USING btree (last_run_at, namespace_id) WHERE (enabled IS TRUE);
+
 CREATE INDEX index_onboarding_progresses_for_create_track ON onboarding_progresses USING btree (created_at) WHERE (git_write_at IS NULL);
 
 CREATE INDEX index_onboarding_progresses_for_team_track ON onboarding_progresses USING btree (GREATEST(git_write_at, pipeline_created_at, trial_started_at)) WHERE ((git_write_at IS NOT NULL) AND (pipeline_created_at IS NOT NULL) AND (trial_started_at IS NOT NULL) AND (user_added_at IS NULL));
@@ -32499,10 +32464,6 @@ CREATE UNIQUE INDEX index_sent_notifications_on_reply_key ON sent_notifications 
 CREATE UNIQUE INDEX index_sentry_issues_on_issue_id ON sentry_issues USING btree (issue_id);
 
 CREATE INDEX index_sentry_issues_on_sentry_issue_identifier ON sentry_issues USING btree (sentry_issue_identifier);
-
-CREATE INDEX index_serverless_domain_cluster_on_creator_id ON serverless_domain_cluster USING btree (creator_id);
-
-CREATE INDEX index_serverless_domain_cluster_on_pages_domain_id ON serverless_domain_cluster USING btree (pages_domain_id);
 
 CREATE INDEX index_service_desk_custom_email_verifications_on_triggerer_id ON service_desk_custom_email_verifications USING btree (triggerer_id);
 
@@ -36670,6 +36631,9 @@ ALTER TABLE ONLY zentao_tracker_data
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_rails_851fe1510a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY value_stream_dashboard_aggregations
+    ADD CONSTRAINT fk_rails_859b4f86f3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY deployment_merge_requests
     ADD CONSTRAINT fk_rails_86a6d8bf12 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

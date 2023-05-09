@@ -2153,6 +2153,59 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#remember_me!' do
+    let(:user) { create(:user) }
+
+    context 'when remember me application setting is enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: true)
+      end
+
+      it 'sets rememberable attributes' do
+        expect(user.remember_created_at).to be_nil
+
+        user.remember_me!
+
+        expect(user.remember_created_at).not_to be_nil
+      end
+    end
+
+    context 'when remember me application setting is not enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: false)
+      end
+
+      it 'sets rememberable attributes' do
+        expect(user.remember_created_at).to be_nil
+
+        user.remember_me!
+
+        expect(user.remember_created_at).to be_nil
+      end
+    end
+  end
+
+  describe '#forget_me!' do
+    let(:user) { create(:user) }
+
+    context 'when remember me application setting is disabled' do
+      before do
+        stub_application_setting(remember_me_enabled: true)
+      end
+
+      it 'allows user to be forgotten when previously remembered' do
+        user.remember_me!
+
+        expect(user.remember_created_at).not_to be_nil
+
+        stub_application_setting(remember_me_enabled: false)
+        user.forget_me!
+
+        expect(user.remember_created_at).to be_nil
+      end
+    end
+  end
+
   describe '#disable_two_factor!' do
     it 'clears all 2FA-related fields' do
       user = create(:user, :two_factor)

@@ -209,7 +209,7 @@ GET /users
 ]
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit`, `is_auditor`, and `using_license_seat` parameters.
 
 ```json
 [
@@ -225,7 +225,7 @@ Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see 
 ]
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `group_saml` provider option and `provisioned_by_group_id` parameter:
 
 ```json
@@ -409,7 +409,7 @@ Example Responses:
 NOTE:
 The `plan` and `trial` parameters are only available on GitLab Enterprise Edition.
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
 the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minutes_limit` parameters.
 
 ```json
@@ -423,7 +423,7 @@ the `shared_runners_minutes_limit`, `is_auditor`, and `extra_shared_runners_minu
 }
 ```
 
-Users on [GitLab.com Premium or higher](https://about.gitlab.com/pricing/) also
+Users on [GitLab.com Premium or Ultimate](https://about.gitlab.com/pricing/) also
 see the `group_saml` option and `provisioned_by_group_id` parameter:
 
 ```json
@@ -663,7 +663,7 @@ GET /user
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
 ### For administrators **(FREE SELF)**
 
@@ -727,7 +727,7 @@ Parameters:
 }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) also see these
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see these
 parameters:
 
 - `shared_runners_minutes_limit`

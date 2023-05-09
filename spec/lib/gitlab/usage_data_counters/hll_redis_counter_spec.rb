@@ -23,6 +23,72 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     described_class.clear_memoization(:known_events)
   end
 
+  describe '.track_event' do
+    # ToDo: remove during https://gitlab.com/groups/gitlab-org/-/epics/9542 cleanup
+    describe 'daily to weekly key migration precautions' do
+      let(:event_name) { 'example_event' }
+      let(:known_events) do
+        [
+          { name: event_name, aggregation: 'daily' }
+        ].map(&:with_indifferent_access)
+      end
+
+      let(:start_date) { (Date.current - 1.week).beginning_of_week }
+      let(:end_date) { Date.current }
+
+      let(:daily_event) { known_events.first }
+      let(:daily_key) { described_class.send(:redis_key, daily_event, start_date) }
+      let(:weekly_key) do
+        weekly_event = known_events.first.merge(aggregation: 'weekly')
+        described_class.send(:redis_key, weekly_event, start_date)
+      end
+
+      before do
+        allow(described_class).to receive(:known_events).and_return(known_events)
+      end
+
+      shared_examples 'writes daily events to daily and weekly keys' do
+        it :aggregate_failures do
+          expect(Gitlab::Redis::HLL).to receive(:add).with(expiry: 29.days, key: daily_key, value: 1).and_call_original
+          expect(Gitlab::Redis::HLL).to receive(:add).with(expiry: 6.weeks, key: weekly_key, value: 1).and_call_original
+
+          described_class.track_event(event_name, values: 1, time: start_date)
+        end
+      end
+
+      context 'when revert_daily_hll_events_to_weekly_aggregation FF is disabled' do
+        before do
+          stub_feature_flags(revert_daily_hll_events_to_weekly_aggregation: false)
+        end
+
+        it_behaves_like 'writes daily events to daily and weekly keys'
+
+        it 'aggregates weekly for daily keys', :aggregate_failures do
+          expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [weekly_key]).and_call_original
+          expect(Gitlab::Redis::HLL).not_to receive(:count).with(keys: [daily_key]).and_call_original
+
+          described_class.unique_events(event_names: [event_name], start_date: start_date, end_date: end_date)
+        end
+      end
+
+      context 'when revert_daily_hll_events_to_weekly_aggregation FF is enabled' do
+        before do
+          stub_feature_flags(revert_daily_hll_events_to_weekly_aggregation: true)
+        end
+
+        # we want to write events no matter of the feature state
+        it_behaves_like 'writes daily events to daily and weekly keys'
+
+        it 'aggregates daily for daily keys', :aggregate_failures do
+          expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [daily_key]).and_call_original
+          expect(Gitlab::Redis::HLL).not_to receive(:count).with(keys: [weekly_key]).and_call_original
+
+          described_class.unique_events(event_names: [event_name], start_date: start_date, end_date: start_date)
+        end
+      end
+    end
+  end
+
   describe '.known_events' do
     let(:ce_temp_dir) { Dir.mktmpdir }
     let(:ce_temp_file) { Tempfile.new(%w[common .yml], ce_temp_dir) }

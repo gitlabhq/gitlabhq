@@ -90,7 +90,7 @@ Example response:
 ]
 ```
 
-Users on GitLab Premium or higher also see
+Users on GitLab Premium or Ultimate also see
 the `user_id`, `group_id` and `inherited` parameters. If the `inherited` parameter
 exists, means the setting was inherited from the project's group.
 
@@ -177,7 +177,7 @@ Example response:
 }
 ```
 
-Users on GitLab Premium or higher also see
+Users on GitLab Premium or Ultimate also see
 the `user_id` and `group_id` parameters:
 
 Example response:
@@ -267,7 +267,7 @@ Example response:
 }
 ```
 
-Users on GitLab Premium or higher also see
+Users on GitLab Premium or Ultimate also see
 the `user_id` and `group_id` parameters:
 
 Example response:

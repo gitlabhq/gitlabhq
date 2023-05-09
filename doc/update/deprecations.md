@@ -1735,10 +1735,7 @@ GitLab-managed CI/CD templates for security scanning will be updated in the GitL
 The updates will include improvements already released in the Latest versions of the CI/CD templates.
 We released these changes in the Latest template versions because they have the potential to disrupt customized CI/CD pipeline configurations.
 
-In all updated templates, we're:
-
-- Adding support for running scans in merge request (MR) pipelines.
-- Updating the definition of variables like `SAST_DISABLED` and `DEPENDENCY_SCANNING_DISABLED` to disable scanning only if the value is `"true"`. Previously, even if the value were `"false"`, scanning would be disabled.
+In all updated templates, we're updating the definition of variables like `SAST_DISABLED` and `DEPENDENCY_SCANNING_DISABLED` to disable scanning only if the value is `"true"`. Previously, even if the value were `"false"`, scanning would be disabled.
 
 The following templates will be updated:
 
@@ -1752,10 +1749,10 @@ The following templates will be updated:
 - SAST: [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
 - Secret Detection: [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detction.gitlab-ci.yml)
 
-We recommend that you test your pipelines before the 16.0 release if you use one of the templates listed above and you do any of the following:
+We recommend that you test your pipelines before the 16.0 release if you use one of the templates listed above and you use the `_DISABLED` variables but set a value other than `"true"`.
 
-  1. You override `rules` for your security scanning jobs.
-  1. You use the `_DISABLED` variables but set a value other than `"true"`.
+**Update:** We previously announced that we would update the `rules` on the affected templates to run in [merge request pipelines](https://docs.gitlab.com/ee/ci/pipelines/merge_request_pipelines.html) by default.
+However, due to compatibility issues [discussed in the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388988#note_1372629948), we will no longer make this change in GitLab 16.0. We will still release the changes to the `_DISABLED` variables as described above.
 
 </div>
 

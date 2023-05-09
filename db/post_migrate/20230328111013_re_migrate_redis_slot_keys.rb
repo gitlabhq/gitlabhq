@@ -39,7 +39,7 @@ class ReMigrateRedisSlotKeys < Gitlab::Database::Migration[2.1]
 
   def rename_key(event, date)
     old_key = old_redis_key(event, date)
-    new_key = Gitlab::UsageDataCounters::HLLRedisCounter.send(:redis_key, event, date)
+    new_key = new_redis_key(event, date)
 
     # cannot simply rename due to different slots
     Gitlab::Redis::SharedState.with do |redis|
@@ -68,6 +68,21 @@ class ReMigrateRedisSlotKeys < Gitlab::Database::Migration[2.1]
                        "{#{event[:name]}}"
                      end
 
-    Gitlab::UsageDataCounters::HLLRedisCounter.send(:apply_time_aggregation, name_with_slot, time, event)
+    apply_time_aggregation(name_with_slot, time, event)
+  end
+
+  def new_redis_key(event, time)
+    key = "{hll_counters}_#{event[:name]}"
+    apply_time_aggregation(key, time, event)
+  end
+
+  def apply_time_aggregation(key, time, event)
+    if event[:aggregation].to_sym == :daily
+      year_day = time.strftime('%G-%j')
+      "#{year_day}-#{key}"
+    else
+      year_week = time.strftime('%G-%V')
+      "#{key}-#{year_week}"
+    end
   end
 end

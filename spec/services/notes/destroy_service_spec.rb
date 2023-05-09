@@ -38,7 +38,9 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
                                                                            .and_call_original
         expect do
           service_action
-        end.to change { counter.unique_events(event_names: property, start_date: 1.day.ago, end_date: 1.day.from_now) }.by(1)
+        end.to change {
+                 counter.unique_events(event_names: property, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
+               }.by(1)
       end
 
       it_behaves_like 'issue_edit snowplow tracking' do

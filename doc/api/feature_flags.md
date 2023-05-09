@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 API for accessing resources of [GitLab feature flags](../operations/feature_flags.md).
 
-Users with Developer or higher [permissions](../user/permissions.md) can access the feature flag API.
+Users with at least the Developer [role](../user/permissions.md) can access the feature flag API.
 
 ## Feature flags pagination
 

@@ -76,7 +76,7 @@ Example response:
 ]
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) see
 different parameters, due to the ability to have multiple group boards.
 
 Example response:
@@ -192,7 +192,7 @@ Example response:
   }
 ```
 
-Users on [GitLab Premium or higher](https://about.gitlab.com/pricing/) see
+Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) see
 different parameters, due to the ability to have multiple group issue boards.
 
 Example response:

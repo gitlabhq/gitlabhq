@@ -18,10 +18,9 @@ RSpec.describe Gitlab::UsageDataCounters::EditorUniqueCounter, :clean_gitlab_red
       aggregate_failures do
         expect(track_action(author: user1, project: project)).to be_truthy
         expect(track_action(author: user2, project: project)).to be_truthy
-        expect(track_action(author: user3, time: time - 3.days, project: project)).to be_truthy
+        expect(track_action(author: user3, time: time.end_of_week - 3.days, project: project)).to be_truthy
 
-        expect(count_unique(date_from: time, date_to: Date.today)).to eq(2)
-        expect(count_unique(date_from: time - 5.days, date_to: Date.tomorrow)).to eq(3)
+        expect(count_unique(date_from: time.beginning_of_week, date_to: 1.week.from_now)).to eq(3)
       end
     end
 

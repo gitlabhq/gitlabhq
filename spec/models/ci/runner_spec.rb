@@ -889,24 +889,15 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
   describe '#status', :freeze_time do
     let(:runner) { build(:ci_runner, :instance, created_at: 3.months.ago) }
-    let(:legacy_mode) {}
 
-    subject { runner.status(legacy_mode) }
+    subject { runner.status }
 
     context 'never connected' do
       before do
         runner.contacted_at = nil
       end
 
-      context 'with legacy_mode enabled' do
-        let(:legacy_mode) { '14.5' }
-
-        it { is_expected.to eq(:stale) }
-      end
-
-      context 'with legacy_mode disabled' do
-        it { is_expected.to eq(:stale) }
-      end
+      it { is_expected.to eq(:stale) }
 
       context 'created recently' do
         before do
@@ -923,15 +914,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         runner.active = false
       end
 
-      context 'with legacy_mode enabled' do
-        let(:legacy_mode) { '14.5' }
-
-        it { is_expected.to eq(:paused) }
-      end
-
-      context 'with legacy_mode disabled' do
-        it { is_expected.to eq(:online) }
-      end
+      it { is_expected.to eq(:online) }
     end
 
     context 'contacted 1s ago' do
@@ -955,15 +938,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         runner.contacted_at = 3.months.ago
       end
 
-      context 'with legacy_mode enabled' do
-        let(:legacy_mode) { '14.5' }
-
-        it { is_expected.to eq(:stale) }
-      end
-
-      context 'with legacy_mode disabled' do
-        it { is_expected.to eq(:stale) }
-      end
+      it { is_expected.to eq(:stale) }
     end
   end
 

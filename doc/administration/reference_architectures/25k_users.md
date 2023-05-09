@@ -439,7 +439,7 @@ spread connections equally in practice.
 Next, we set up the Consul servers.
 
 NOTE:
-Consul must be deployed in an odd number of 3 nodes or higher. This is to ensure the nodes can take votes as part of a quorum.
+Consul must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 The following IPs will be used as an example:
 
@@ -826,7 +826,7 @@ topology with a [Redis Sentinel](https://redis.io/docs/manual/sentinel/) service
 start the failover procedure.
 
 NOTE:
-Redis clusters must each be deployed in an odd number of 3 nodes or higher. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
+Redis clusters must each be deployed in an odd number of 3 nodes or more. This is to ensure Redis Sentinel can take votes as part of a quorum. This does not apply when configuring Redis externally, such as a cloud provider service.
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/manual/security/) documentation for more
@@ -862,7 +862,7 @@ to be used with GitLab. The following IPs will be used as an example:
 Managed Redis from cloud providers (such as AWS ElastiCache) will work. If these
 services support high availability, be sure it _isn't_ of the Redis Cluster type.
 
-Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or higher is required. Older Redis versions have reached end-of-life.
+Because Omnibus GitLab packages ship with Redis 6.0 or later, Redis 6.0 or later is required. Older Redis versions have reached end-of-life.
 
 Note the Redis node's IP address or hostname, port, and password (if required).
 These will be necessary later when configuring the [GitLab application servers](#configure-gitlab-rails).
@@ -1364,7 +1364,7 @@ Praefect is the router and transaction manager for Gitaly Cluster and all connec
 it. This section details how to configure it.
 
 NOTE:
-Praefect must be deployed in an odd number of 3 nodes or higher. This is to ensure the nodes can take votes as part of a quorum.
+Praefect must be deployed in an odd number of 3 nodes or more. This is to ensure the nodes can take votes as part of a quorum.
 
 Praefect requires several secret tokens to secure communications across the Cluster:
 
