@@ -19634,7 +19634,9 @@ CREATE TABLE packages_npm_metadata_caches (
     size integer NOT NULL,
     file text NOT NULL,
     package_name text NOT NULL,
-    CONSTRAINT check_57aa07a4b2 CHECK ((char_length(file) <= 255))
+    object_storage_key character varying(255) NOT NULL,
+    CONSTRAINT check_57aa07a4b2 CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_f97c15aa60 CHECK ((char_length((object_storage_key)::text) <= 255))
 );
 
 CREATE SEQUENCE packages_npm_metadata_caches_id_seq

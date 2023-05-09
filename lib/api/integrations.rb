@@ -238,3 +238,7 @@ module API
     end
   end
 end
+
+# Added for JiHu
+# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118289#note_1379334692
+API::Integrations.prepend_mod

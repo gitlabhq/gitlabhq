@@ -12,9 +12,11 @@ RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
 
     context 'for user achievements' do
       let_it_be(:group) { create(:group, :public) }
+      let_it_be(:private_group) { create(:group, :private) }
       let_it_be(:achievement1) { create(:achievement, namespace: group) }
       let_it_be(:achievement2) { create(:achievement, namespace: group) }
       let_it_be(:achievement3) { create(:achievement, namespace: group) }
+      let_it_be(:achievement_from_private_group) { create(:achievement, namespace: private_group) }
       let_it_be(:achievement_with_avatar_and_description) do
         create(:achievement,
           namespace: group,
@@ -45,6 +47,14 @@ RSpec.describe 'Users (GraphQL fixtures)', feature_category: :user_profile do
 
       it "graphql/get_user_achievements_without_avatar_or_description_response.json" do
         create(:user_achievement, user: user, achievement: achievement1)
+
+        post_graphql(query, current_user: user, variables: { id: user.to_global_id })
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it 'graphql/get_user_achievements_from_private_group.json' do
+        create(:user_achievement, user: user, achievement: achievement_from_private_group)
 
         post_graphql(query, current_user: user, variables: { id: user.to_global_id })
 

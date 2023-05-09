@@ -12,7 +12,10 @@ Then, install the packages whenever you need to use them as a dependency.
 For documentation of the specific API endpoints that the Maven package manager
 client uses, see the [Maven API documentation](../../../api/packages/maven.md).
 
-Learn how to build a [Maven](../workflows/build_packages.md#maven) package.
+Supported clients:
+
+- `mvn`. Learn how to build a [Maven](../workflows/build_packages.md#maven) package.
+- `gradle`. Learn how to build a [Gradle](../workflows/build_packages.md#gradle) package.
 
 ## Publish to the GitLab Package Registry
 
@@ -24,19 +27,26 @@ Create a token and save it to use later in the process.
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
-### Edit the `settings.xml`
+#### Edit the client configuration
 
-Add the following section to your
-[`settings.xml`](https://maven.apache.org/settings.html) file.
+You must add the authentication details to the configuration file
+for your client.
 
-NOTE:
-The `<name>` field must be named to match the token you chose.
+::Tabs
+
+:::TabTitle `mvn`
 
 | Token type            | Name must be    | Token                                                                  |
 | --------------------- | --------------- | ---------------------------------------------------------------------- |
 | Personal access token | `Private-Token` | Paste token as-is, or define an environment variable to hold the token |
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                      |
+
+NOTE:
+The `<name>` field must be named to match the token you chose.
+
+Add the following section to your
+[`settings.xml`](https://maven.apache.org/settings.html) file.
 
 ```xml
 <settings>
@@ -55,6 +65,66 @@ The `<name>` field must be named to match the token you chose.
   </servers>
 </settings>
 ```
+
+:::TabTitle `gradle`
+
+| Token type            | Name must be    | Token                                                                  |
+| --------------------- | --------------- | ---------------------------------------------------------------------- |
+| Personal access token | `Private-Token` | Paste token as-is, or define an environment variable to hold the token |
+| Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
+| CI Job token          | `Job-Token`     | `System.getenv("CI_JOB_TOKEN")`                                        |
+
+NOTE:
+The `<name>` field must be named to match the token you chose.
+
+In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
+create a file `gradle.properties` with the following content:
+
+```properties
+gitLabPrivateToken=REPLACE_WITH_YOUR_TOKEN
+```
+
+Add a `repositories` section to your
+[`build.gradle`](https://docs.gradle.org/current/userguide/tutorial_using_tasks.html)
+file:
+
+- In Groovy DSL:
+
+  ```groovy
+  repositories {
+      maven {
+          url "https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven"
+          name "GitLab"
+          credentials(HttpHeaderCredentials) {
+              name = 'REPLACE_WITH_NAME'
+              value = gitLabPrivateToken
+          }
+          authentication {
+              header(HttpHeaderAuthentication)
+          }
+      }
+  }
+  ```
+
+- In Kotlin DSL:
+
+  ```kotlin
+  repositories {
+      maven {
+          url = uri("https://gitlab.example.com/api/v4/groups/<group>/-/packages/maven")
+          name = "GitLab"
+          credentials(HttpHeaderCredentials::class) {
+              name = "REPLACE_WITH_NAME"
+              value = findProperty("gitLabPrivateToken") as String?
+          }
+          authentication {
+              create("header", HttpHeaderAuthentication::class)
+          }
+      }
+  }
+  ```
+
+::EndTabs
 
 ### Naming convention
 
@@ -89,7 +159,13 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 | Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage.      |
 | Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name.                                                                                |
 
-### Edit the `pom.xml` for publishing
+### Edit the configuration file for publishing
+
+You must add publishing details to the configuration file for your client.
+
+::Tabs
+
+:::TabTitle `mvn`
 
 No matter which endpoint you choose, you must have:
 
@@ -117,15 +193,96 @@ The relevant `repository` section of your `pom.xml` in Maven should look like th
 </distributionManagement>
 ```
 
-- The `id` is what you [defined in `settings.xml`](#edit-the-settingsxml).
+- The `id` is what you [defined in `settings.xml`](#edit-the-client-configuration).
 - The `<your_endpoint_url>` depends on which [endpoint](#endpoint-urls) you choose.
 - Replace `gitlab.example.com` with your domain name.
+
+:::TabTitle `gradle`
+
+To publish a package by using Gradle:
+
+1. Add the Gradle plugin [`maven-publish`](https://docs.gradle.org/current/userguide/publishing_maven.html) to the plugins section:
+
+   - In Groovy DSL:
+
+     ```groovy
+     plugins {
+         id 'java'
+         id 'maven-publish'
+     }
+     ```
+
+   - In Kotlin DSL:
+
+     ```kotlin
+     plugins {
+         java
+         `maven-publish`
+     }
+     ```
+
+1. Add a `publishing` section:
+
+   - In Groovy DSL:
+
+     ```groovy
+     publishing {
+         publications {
+             library(MavenPublication) {
+                 from components.java
+             }
+         }
+         repositories {
+             maven {
+                 url "https://gitlab.example.com/api/v4/projects/<PROJECT_ID>/packages/maven"
+                 credentials(HttpHeaderCredentials) {
+                     name = "REPLACE_WITH_TOKEN_NAME"
+                     value = gitLabPrivateToken // the variable resides in $GRADLE_USER_HOME/gradle.properties
+                 }
+                 authentication {
+                     header(HttpHeaderAuthentication)
+                 }
+             }
+         }
+     }
+     ```
+
+   - In Kotlin DSL:
+
+     ```kotlin
+     publishing {
+         publications {
+             create<MavenPublication>("library") {
+                 from(components["java"])
+             }
+         }
+         repositories {
+             maven {
+                 url = uri("https://gitlab.example.com/api/v4/projects/<PROJECT_ID>/packages/maven")
+                 credentials(HttpHeaderCredentials::class) {
+                     name = "REPLACE_WITH_TOKEN_NAME"
+                     value =
+                         findProperty("gitLabPrivateToken") as String? // the variable resides in $GRADLE_USER_HOME/gradle.properties
+                 }
+                 authentication {
+                     create("header", HttpHeaderAuthentication::class)
+                 }
+             }
+         }
+     }
+     ```
+
+::EndTabs
 
 ## Publish a package
 
 After you have set up the [authentication](#authenticate-to-the-package-registry)
 and [chosen an endpoint for publishing](#naming-convention),
 publish a Maven package to your project.
+
+::Tabs
+
+:::TabTitle `mvn`
 
 To publish a package by using Maven:
 
@@ -147,6 +304,18 @@ The message should also show that the package was published to the correct locat
 Uploading to gitlab-maven: https://example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.jar
 ```
 
+:::TabTitle `gradle`
+
+Run the publish task:
+
+```shell
+gradle publish
+```
+
+Go to your project's **Packages and registries** page and view the published packages.
+
+::EndTabs
+
 ## Install a package
 
 To install a package from the GitLab Package Registry, you must configure
@@ -157,7 +326,9 @@ group, or namespace.
 If multiple packages have the same name and version, when you install
 a package, the most recently-published package is retrieved.
 
-### Use Maven with `mvn install`
+::Tabs
+
+:::TabTitle `mvn`
 
 To install a package by using `mvn install`:
 
@@ -184,9 +355,7 @@ The message should show that the package is downloading from the Package Registr
 Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
 ```
 
-### Use Maven with `mvn dependency:get`
-
-You can install packages by using the Maven `dependency:get` [command](https://maven.apache.org/plugins/maven-dependency-plugin/get-mojo.html) directly.
+You can also install packages by using the Maven [`dependency:get` command](https://maven.apache.org/plugins/maven-dependency-plugin/get-mojo.html) directly.
 
 1. In your project directory, run:
 
@@ -195,7 +364,7 @@ You can install packages by using the Maven `dependency:get` [command](https://m
    ```
 
    - `<gitlab endpoint url>` is the URL of the GitLab [endpoint](#endpoint-urls).
-   - `<path to settings.xml>` is the path to the `settings.xml` file that contains the [authentication details](#edit-the-settingsxml).
+   - `<path to settings.xml>` is the path to the `settings.xml` file that contains the [authentication details](#edit-the-client-configuration).
 
 NOTE:
 The repository IDs in the command(`gitlab-maven`) and the `settings.xml` file must match.
@@ -205,6 +374,36 @@ The message should show that the package is downloading from the Package Registr
 ```shell
 Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
 ```
+
+:::TabTitle `gradle`
+
+To install a package by using `gradle`:
+
+1. Add a [dependency](https://docs.gradle.org/current/userguide/declaring_dependencies.html) to `build.gradle` in the dependencies section:
+
+   - In Groovy DSL:
+
+     ```groovy
+     dependencies {
+         implementation 'com.mycompany.mydepartment:my-project:1.0-SNAPSHOT'
+     }
+     ```
+
+   - In Kotlin DSL:
+
+     ```kotlin
+     dependencies {
+         implementation("com.mycompany.mydepartment:my-project:1.0-SNAPSHOT")
+     }
+     ```
+
+1. In your project, run the following:
+
+   ```shell
+   gradle install
+   ```
+
+::EndTabs
 
 ## Helpful hints
 
@@ -241,22 +440,19 @@ to [Maven Central](https://search.maven.org/).
 When the feature flag is enabled, administrators can disable this behavior in the
 [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
 
-There are many ways to configure your Maven project so that it requests packages
-in Maven Central from GitLab. Maven repositories are queried in a
-[specific order](https://maven.apache.org/guides/mini/guide-multiple-repositories.html#repository-order).
-By default, maven-central is usually checked first through the
-[Super POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Super_POM), so
-GitLab needs to be configured to be queried before maven-central.
-
-[Using GitLab as a mirror of the central proxy](#setting-gitlab-as-a-mirror-for-the-central-proxy) is one
-way to force GitLab to be queried in place of maven-central.
-
 Maven forwarding is restricted to only the project level and
 group level [endpoints](#naming-convention). The instance level endpoint
 has naming restrictions that prevent it from being used for packages that don't follow that convention and also
 introduces too much security risk for supply-chain style attacks.
 
-#### Setting GitLab as a mirror for the central proxy
+#### Additional configuration for `mvn`
+
+When using `mvn`, there are many ways to configure your Maven project so that it requests packages
+in Maven Central from GitLab. Maven repositories are queried in a
+[specific order](https://maven.apache.org/guides/mini/guide-multiple-repositories.html#repository-order).
+By default, Maven Central is usually checked first through the
+[Super POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Super_POM), so
+GitLab needs to be configured to be queried before maven-central.
 
 To ensure all package requests are sent to GitLab instead of Maven Central,
 you can override Maven Central as the central repository by adding a `<mirror>`
@@ -293,9 +489,11 @@ section to your `settings.xml`:
 After you have configured your repository to use the Package Repository for Maven,
 you can configure GitLab CI/CD to build new packages automatically.
 
-### Create Maven packages with GitLab CI/CD using Maven
+::Tabs
 
-You can create a new package each time the `main` branch is updated.
+:::TabTitle `mvn`
+
+You can create a new package each time the default branch is updated.
 
 1. Create a `ci_settings.xml` file that serves as Maven's `settings.xml` file.
 
@@ -351,8 +549,8 @@ You can create a new package each time the `main` branch is updated.
      image: maven:3.6-jdk-11
      script:
        - 'mvn deploy -s ci_settings.xml'
-     only:
-       - main
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
    ```
 
 1. Push those files to your repository.
@@ -362,6 +560,30 @@ user's home location. In this example:
 
 - The user is `root`, because the job runs in a Docker container.
 - Maven uses the configured CI/CD variables.
+
+:::TabTitle `gradle`
+
+You can create a package each time the default branch
+is updated.
+
+1. Authenticate with [a CI job token in Gradle](#edit-the-client-configuration).
+
+1. Add a `deploy` job to your `.gitlab-ci.yml` file:
+
+   ```yaml
+   deploy:
+     image: gradle:6.5-jdk11
+     script:
+       - 'gradle publish'
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+   ```
+
+1. Commit files to your repository.
+
+When the pipeline is successful, the Maven package is created.
+
+::EndTabs
 
 ### Version validation
 
@@ -403,26 +625,43 @@ that you can use when performing tasks with GitLab CI/CD.
 
 ### Supported CLI commands
 
-The GitLab Maven repository supports the following Maven CLI commands:
+The GitLab Maven repository supports the following CLI commands:
+
+::Tabs
+
+:::TabTitle `mvn`
 
 - `mvn deploy`: Publish your package to the Package Registry.
 - `mvn install`: Install packages specified in your Maven project.
 - `mvn dependency:get`: Install a specific package.
 
+:::TabTitle `gradle`
+
+- `gradle publish`: Publish your package to the Package Registry.
+- `gradle install`: Install packages specified in your Gradle project.
+
+::EndTabs
+
 ## Troubleshooting
 
-To improve performance, Maven caches files related to a package. If you encounter issues, clear
+To improve performance, clients cache files related to a package. If you encounter issues, clear
 the cache with these commands:
+
+::Tabs
+
+:::TabTitle `mvn`
 
 ```shell
 rm -rf ~/.m2/repository
 ```
 
-If you're using Gradle, run this command to clear the cache:
+:::TabTitle `gradle`
 
 ```shell
 rm -rf ~/.gradle/caches # Or replace ~/.gradle with your custom GRADLE_USER_HOME
 ```
+
+::EndTabs
 
 ### Review network trace logs
 

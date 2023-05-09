@@ -30,6 +30,10 @@ class CommitCollection
     User.by_any_email(emails)
   end
 
+  def committer_user_ids
+    committers.pluck(:id)
+  end
+
   def without_merge_commits
     strong_memoize(:without_merge_commits) do
       # `#enrich!` the collection to ensure all commits contain

@@ -67,6 +67,10 @@ class Label < ApplicationRecord
       .with_preloaded_container
   end
 
+  def self.pluck_titles
+    pluck(:title)
+  end
+
   def self.prioritized(project)
     joins(:priorities)
       .where(label_priorities: { project_id: project })

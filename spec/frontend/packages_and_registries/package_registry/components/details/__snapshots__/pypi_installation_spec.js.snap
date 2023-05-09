@@ -42,7 +42,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
             role="img"
           >
             <use
-              href="#chevron-down"
+              href="file-mock#chevron-down"
             />
           </svg>
         </button>
@@ -122,7 +122,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
                   role="img"
                 >
                   <use
-                    href="#copy-to-clipboard"
+                    href="file-mock#copy-to-clipboard"
                   />
                 </svg>
                   

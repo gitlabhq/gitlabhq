@@ -76,7 +76,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           role="img"
         >
           <use
-            href="#arrow-right"
+            href="file-mock#arrow-right"
           />
         </svg>
       </td>
@@ -113,7 +113,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
               role="img"
             >
               <use
-                href="#chevron-down"
+                href="file-mock#chevron-down"
               />
             </svg>
           </button>
@@ -144,7 +144,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                     role="img"
                   >
                     <use
-                      href="#search"
+                      href="file-mock#search"
                     />
                   </svg>
                    
@@ -201,7 +201,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
           role="img"
         >
           <use
-            href="#arrow-right"
+            href="file-mock#arrow-right"
           />
         </svg>
       </td>
@@ -238,7 +238,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
               role="img"
             >
               <use
-                href="#chevron-down"
+                href="file-mock#chevron-down"
               />
             </svg>
           </button>
@@ -269,7 +269,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                     role="img"
                   >
                     <use
-                      href="#search"
+                      href="file-mock#search"
                     />
                   </svg>
                    

@@ -257,4 +257,15 @@ RSpec.describe Label do
       end
     end
   end
+
+  describe '.pluck_titles' do
+    subject(:pluck_titles) { described_class.pluck_titles }
+
+    it 'returns the audit event type of the event type filter' do
+      label1 =  create(:label, title: "TITLE1")
+      label2 = create(:label, title: "TITLE2")
+
+      expect(pluck_titles).to contain_exactly(label1.title, label2.title)
+    end
+  end
 end

@@ -166,7 +166,7 @@ graph TD
 ```
 
 This flow is clean and straightforward, and many organizations have adopted it with great success.
-Atlassian recommends [a similar strategy](https://www.atlassian.com/blog/git/simple-git-workflow-is-simple), although they rebase feature branches.
+Another way to integrate change from one branch to another is [rebasing](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 Merging everything into the `main` branch and frequently deploying means you minimize the amount of unreleased code. This approach is in line with lean and continuous delivery best practices.
 However, this flow still leaves a lot of questions unanswered regarding deployments, environments, releases, and integrations with issues.
 
@@ -179,9 +179,9 @@ and [feature branches](https://martinfowler.com/bliki/FeatureBranch.html) with i
 While this workflow used at GitLab, you can choose whichever workflow
 suits your organization best.
 
-With GitLab flow, we offer additional guidance for these questions.
+With GitLab Flow, we offer additional guidance for these questions.
 
-## Production branch with GitLab flow
+## Production branch with GitLab Flow
 
 GitHub flow assumes you can deploy to production every time you merge a feature branch.
 While this is possible in some cases, such as SaaS applications, there are some cases where this is not possible, such as:
@@ -216,7 +216,7 @@ This time is pretty accurate if you automatically deploy your production branch.
 If you need a more exact time, you can have your deployment script create a tag on each deployment.
 This flow prevents the overhead of releasing, tagging, and merging that happens with Git flow.
 
-## Environment branches with GitLab flow
+## Environment branches with GitLab Flow
 
 It might be a good idea to have an environment that is automatically updated to the `staging` branch.
 Only, in this case, the name of this environment might differ from the branch name.
@@ -255,7 +255,7 @@ In this case, do not delete the feature branch yet.
 If `production` passes automatic testing, you then merge the feature branch into the other branches.
 If this is not possible because more manual testing is required, you can send merge requests from the feature branch to the downstream branches.
 
-## Release branches with GitLab flow
+## Release branches with GitLab Flow
 
 You should work with release branches only if you need to release software to
 the outside world. In this case, each branch contains a minor version, such as
@@ -288,7 +288,7 @@ Every time you include a bug fix in a release branch, increase the patch version
 Some projects also have a stable branch that points to the same commit as the latest released branch.
 In this flow, it is not common to have a production branch (or Git flow `main` branch).
 
-## Merge/pull requests with GitLab flow
+## Merge/pull requests with GitLab Flow
 
 ![Merge request with inline comments](img/gitlab_flow_mr_inline_comments.png)
 
@@ -306,11 +306,16 @@ The merge request serves as a code review tool, and no separate code review tool
 If the review reveals shortcomings, anyone can commit and push a fix.
 Usually, the person to do this is the creator of the merge request.
 The diff in the merge request automatically updates when new commits are pushed to the branch.
+In GitLab Flow, you can configure your pipeline to run every time you commit changes to a branch. This type of pipeline is called a branch pipeline. Alternatively, you can configure your pipeline to run every time you make changes to the source branch for a merge request. This type of pipeline is called a [merge request pipeline](../ci/pipelines/merge_request_pipelines.md). In GitLab Flow, you can also take advantage of our [Review Apps](../ci/review_apps/index.md) capability, which are a collaboration tool that provide an environment to showcase product changes. Review Apps provide an automatic live preview of changes made in a feature branch by spinning up a dynamic environment for your merge requests allowing stakeholders to see your changes without needing to check out your branch and run your changes in a sandbox environment. When your changes are merged, Review Apps clean up the dynamic environment and related resources preventing environment sprawl.
 
 When you are ready to merge your feature branch, assign the merge request to a maintainer for the project.
 Also, mention any other people from whom you would like feedback.
 After the assigned person feels comfortable with the result, they can merge the branch.
+In GitLab Flow, a [merged results pipeline](../ci/pipelines/merged_results_pipelines.md) runs against the results of the source and target branches merged together. 
 If the assigned person does not feel comfortable, they can request more changes or close the merge request without merging.
+
+NOTE:
+In your pipelines, you can include any automated CI tests for unit, security vulnerabilities, code quality, performance, dependency, etc. Information related to the pipeline runs as well as results of tests are all displayed as widgets in the merge request window, so that you can access and visualize all these from a central location.
 
 In GitLab, it is common to protect the long-lived branches, such as the `main` branch, so [most developers can't modify them](../user/permissions.md).
 So, if you want to merge into a protected branch, assign your merge request to someone with the
@@ -326,9 +331,9 @@ When you reopen an issue you need to create a new merge request.
 
 ![Remove checkbox for branch in merge requests](img/gitlab_flow_remove_checkbox.png)
 
-## Issue tracking with GitLab flow
+## Issue tracking with GitLab Flow
 
-GitLab flow is a way to make the relation between the code and the issue tracker more transparent.
+GitLab Flow is a way to make the relation between the code and the issue tracker more transparent.
 
 Any significant change to the code should start with an issue that describes the goal.
 Having a reason for every code change helps to inform the rest of the team and to keep the scope of a feature branch small.
@@ -365,12 +370,16 @@ In this case, it is no problem to reuse the same branch name, because the first 
 At any time, there is at most one branch for every issue.
 It is possible that one feature branch solves more than one issue.
 
+In GitLab Flow, you can create a merge request from the issue itself. When you do it this way, a feature branch and its related merge request are automatically created and associated to each other and the merge request is automatically related to the issue. In addition, when the merge request is merged the issue is automatically closed for you.
+
 ## Linking and closing issues from merge requests
 
 Link to issues by mentioning them in commit messages or the description of a merge request, for example, "Fixes #16" or "Duck typing is preferred. See #12."
 GitLab then creates links to the mentioned issues and creates comments in the issues linking back to the merge request.
 
 To automatically close linked issues, mention them with the words "fixes" or "closes," for example, "fixes #14" or "closes #67." GitLab closes these issues when the code is merged into the default branch.
+
+Like mentioned in the previous section, in GitLab Flow, you can create a merge request from the issue itself. When you do it this way, a feature branch and its related merge request are automatically created and associated to each other and the merge request is automatically related to the issue. In addition, when the merge request is merged the issue is automatically closed for you.
 
 If you have an issue that spans across multiple repositories, create an issue for each repository and link all issues to a parent issue.
 
@@ -435,7 +444,7 @@ However, as discussed in [the section about rebasing](#squashing-commits-with-re
 
 Rebasing could create more work, as every time you rebase, you may need to resolve the same conflicts.
 Sometimes you can reuse recorded resolutions (`rerere`), but merging is better, because you only have to resolve conflicts once.
-Atlassian has [a more thorough explanation of the tradeoffs between merging and rebasing](https://www.atlassian.com/blog/git/git-team-workflows-merge-or-rebase) on their blog.
+You can read a more thorough explanation of the tradeoffs between merging and rebasing [here](https://git-scm.com/book/en/v2/Git-Branching-Rebasing#:~:text=Final%20commit%20history-,The,-Perils%20of%20Rebasing).
 
 A good way to prevent creating many merge commits is to not frequently merge `main` into the feature branch.
 Three reasons to merge in `main`:
@@ -460,7 +469,7 @@ If your feature branches often take more than a day of work, try to split your f
 If you need to keep a feature branch open for more than a day, there are a few strategies to keep it up-to-date.
 One option is to use continuous integration (CI) to merge in `main` at the start of the day.
 Another option is to only merge in from well-defined points in time, for example, a tagged release.
-You could also use [feature toggles](https://martinfowler.com/bliki/FeatureToggle.html) to hide incomplete features so you can still merge back into `main` every day.
+You could also use [feature toggles](https://martinfowler.com/bliki/FeatureToggle.html)  or [feature flags](../operations/feature_flags.md) to hide incomplete features so you can still merge back into `main` every day.
 
 NOTE:
 Don't confuse automatic branch testing with continuous integration.
@@ -519,9 +528,9 @@ Issue: gitlab.com/gitlab-org/gitlab/-/issues/1
 
 In old workflows, the continuous integration (CI) server commonly ran tests on the `main` branch only.
 Developers had to ensure their code did not break the `main` branch.
-When using GitLab flow, developers create their branches from this `main` branch, so it is essential that it never breaks.
+When using GitLab Flow, developers create their branches from this `main` branch, so it is essential that it never breaks.
 Therefore, each merge request must be tested before it is accepted.
-CI software like Travis CI and GitLab CI/CD show the build results right in the merge request itself to simplify the process.
+CI software like GitLab CI/CD shows the build results right in the merge request itself to simplify the process.
 
 There is one drawback to testing merge requests: the CI server only tests the feature branch itself, not the merged result.
 Ideally, the server could also test the `main` branch after each change.
@@ -529,6 +538,8 @@ However, retesting on every commit to `main` is computationally expensive and me
 Because feature branches should be short-lived, testing just the branch is an acceptable risk.
 If new commits in `main` cause merge conflicts with the feature branch, merge `main` back into the branch to make the CI server re-run the tests.
 As said before, if you often have feature branches that last for more than a few days, you should make your issues smaller.
+
+In GitLab Flow, your can include automated CI tests in your branch or merge request pipelines, which can run when you commit changes to a branch.
 
 ## Working with feature branches
 

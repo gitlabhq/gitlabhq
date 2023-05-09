@@ -38,7 +38,7 @@ exports[`Comment templates list item component renders list item 1`] = `
             role="img"
           >
             <use
-              href="#ellipsis_v"
+              href="file-mock#ellipsis_v"
             />
           </svg>
             

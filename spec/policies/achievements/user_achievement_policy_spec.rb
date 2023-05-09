@@ -56,8 +56,8 @@ RSpec.describe Achievements::UserAchievementPolicy, feature_category: :user_prof
     context 'for achievement owner' do
       let(:current_user) { achievement_owner }
 
-      it 'is hidden' do
-        is_expected.not_to be_allowed(:read_user_achievement)
+      it 'is visible' do
+        is_expected.to be_allowed(:read_user_achievement)
       end
     end
 
@@ -70,8 +70,8 @@ RSpec.describe Achievements::UserAchievementPolicy, feature_category: :user_prof
     end
 
     context 'for others' do
-      it 'is hidden' do
-        is_expected.not_to be_allowed(:read_user_achievement)
+      it 'is visible' do
+        is_expected.to be_allowed(:read_user_achievement)
       end
     end
   end

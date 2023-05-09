@@ -150,7 +150,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_counts
   end
 
-  rule { can?(:read_group) & achievements_enabled }.policy do
+  rule { achievements_enabled }.policy do
     enable :read_achievement
   end
 

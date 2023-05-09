@@ -150,6 +150,7 @@ export default {
     :title="$options.i18n.modalTitle"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
+    no-focus-on-show
     @primary="submitImport"
     @hidden="resetFields"
   >

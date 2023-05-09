@@ -14,7 +14,6 @@ module Types
 
       field :namespace,
             ::Types::NamespaceType,
-            null: false,
             description: 'Namespace of the achievement.'
 
       field :name,

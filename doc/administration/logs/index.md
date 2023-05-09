@@ -1052,8 +1052,12 @@ For Omnibus GitLab installations, NGINX logs are in:
 Below is the default GitLab NGINX access log format:
 
 ```plaintext
-$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
+'$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"'
 ```
+
+The `$request` and `$http_referer` are
+[filtered](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/support/nginx/gitlab)
+for sensitive query string parameters such as secret tokens.
 
 ## Pages logs
 

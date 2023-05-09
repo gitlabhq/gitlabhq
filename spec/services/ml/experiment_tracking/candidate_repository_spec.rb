@@ -299,5 +299,15 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
         expect { subject }.to change { candidate.reload.metadata.size }.by(1)
       end
     end
+
+    context 'when tags is nil' do
+      let(:tags) { nil }
+
+      it 'does not handle gitlab tags' do
+        expect(repository).not_to receive(:handle_gitlab_tags)
+
+        subject
+      end
+    end
   end
 end

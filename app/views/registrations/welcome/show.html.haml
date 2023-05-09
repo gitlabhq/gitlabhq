@@ -29,7 +29,7 @@
             .row
               .form-group.col-sm-12
                 = f.label :role, _('Role'), class: 'label-bold'
-                = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { include_blank: _('Select a role') }, class: 'form-control js-user-role-dropdown', autofocus: true, required: true, data: { qa_selector: 'role_dropdown' }
+                = f.select :role, ::User.roles.keys.map { |role| [role.titleize, role] }, { include_blank: _('Select a role') }, class: 'form-control js-user-role-dropdown', required: true, data: { qa_selector: 'role_dropdown' }
             = render_if_exists "registrations/welcome/jobs_to_be_done", f: f
             = render_if_exists "registrations/welcome/setup_for_company", f: f
             = render_if_exists "registrations/welcome/joining_project"

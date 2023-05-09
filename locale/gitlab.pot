@@ -2381,6 +2381,9 @@ msgstr ""
 msgid "Achievements|Awarded %{timeAgo} by %{namespace}"
 msgstr ""
 
+msgid "Achievements|Awarded %{timeAgo} by a private namespace"
+msgstr ""
+
 msgid "Achievements|View your achievements on your %{link_start}profile%{link_end}."
 msgstr ""
 

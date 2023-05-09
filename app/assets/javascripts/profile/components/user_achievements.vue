@@ -29,31 +29,29 @@ export default {
   },
   methods: {
     processNodes(nodes) {
-      return nodes.slice(0, 3).map(
-        ({
-          achievement,
-          createdAt,
-          achievement: {
-            namespace: { fullPath },
+      return nodes.slice(0, 3).map(({ achievement, createdAt, achievement: { namespace } }) => {
+        return {
+          id: `user-achievement-${getIdFromGraphQLId(achievement.id)}`,
+          name: achievement.name,
+          timeAgo: this.timeFormatted(createdAt),
+          avatarUrl: achievement.avatarUrl || gon.gitlab_logo,
+          description: achievement.description,
+          namespace: namespace && {
+            fullPath: namespace.fullPath,
+            webUrl: this.rootUrl + namespace.fullPath,
           },
-        }) => {
-          return {
-            id: `user-achievement-${getIdFromGraphQLId(achievement.id)}`,
-            name: achievement.name,
-            timeAgo: this.timeFormatted(createdAt),
-            avatarUrl: achievement.avatarUrl || gon.gitlab_logo,
-            description: achievement.description,
-            namespace: {
-              fullPath,
-              webUrl: this.rootUrl + fullPath,
-            },
-          };
-        },
-      );
+        };
+      });
+    },
+    achievementAwardedMessage(userAchievement) {
+      return userAchievement.namespace
+        ? this.$options.i18n.awardedBy
+        : this.$options.i18n.awardedByUnknownNamespace;
     },
   },
   i18n: {
     awardedBy: s__('Achievements|Awarded %{timeAgo} by %{namespace}'),
+    awardedByUnknownNamespace: s__('Achievements|Awarded %{timeAgo} by a private namespace'),
   },
 };
 </script>
@@ -76,11 +74,11 @@ export default {
       <gl-popover triggers="hover focus" placement="top" :target="userAchievement.id">
         <div class="gl-font-weight-bold">{{ userAchievement.name }}</div>
         <div>
-          <gl-sprintf :message="$options.i18n.awardedBy">
+          <gl-sprintf :message="achievementAwardedMessage(userAchievement)">
             <template #timeAgo>
               <span>{{ userAchievement.timeAgo }}</span>
             </template>
-            <template #namespace>
+            <template v-if="userAchievement.namespace" #namespace>
               <a :href="userAchievement.namespace.webUrl">{{
                 userAchievement.namespace.fullPath
               }}</a>

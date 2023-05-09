@@ -45,6 +45,24 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
     end
   end
 
+  describe '#committer_user_ids' do
+    subject(:collection) { described_class.new(project, [commit]) }
+
+    it 'returns an array of committer user IDs' do
+      user = create(:user, email: commit.committer_email)
+
+      expect(collection.committer_user_ids).to contain_exactly(user.id)
+    end
+
+    context 'when there are no committers' do
+      subject(:collection) { described_class.new(project, []) }
+
+      it 'returns an empty array' do
+        expect(collection.committer_user_ids).to be_empty
+      end
+    end
+  end
+
   describe '#without_merge_commits' do
     it 'returns all commits except merge commits' do
       merge_commit = project.commit("60ecb67744cb56576c30214ff52294f8ce2def98")

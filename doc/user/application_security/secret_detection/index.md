@@ -30,7 +30,7 @@ With GitLab Ultimate, Secret Detection results are also processed so you can:
 - See them in the [merge request widget](../index.md#view-security-scan-information-in-merge-requests), [pipeline security report](../vulnerability_report/pipeline.md), and [Vulnerability Report](../vulnerability_report/index.md).
 - Use them in approval workflows.
 - Review them in the security dashboard.
-- [Automatically respond](post_processing.md) to leaks in public repositories.
+- [Automatically respond](automatic_response.md) to leaks in public repositories.
 
 ## Detected secrets
 
@@ -50,7 +50,7 @@ To search for other types of secrets in your repositories, you can configure a [
 
 To propose a new detection rule for all users of Secret Detection, create a merge request against the [file containing the default rules](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml).
 
-If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about our [partner program for leaked credential notifications](post_processing.md#partner-program-for-leaked-credential-notifications).
+If you operate a cloud or SaaS product and you're interested in partnering with GitLab to better protect your users, learn more about our [partner program for leaked credential notifications](automatic_response.md#partner-program-for-leaked-credential-notifications).
 
 ## Features per tier
 
@@ -199,7 +199,7 @@ Pipelines now include a Secret Detection job.
 ## Responding to a leaked secret
 
 When a secret is detected, you should rotate it immediately. GitLab attempts to
-[automatically revoke](post_processing.md) some types of leaked secrets. For those that are not
+[automatically revoke](automatic_response.md) some types of leaked secrets. For those that are not
 automatically revoked, you must do so manually.
 
 [Purging a secret from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history)

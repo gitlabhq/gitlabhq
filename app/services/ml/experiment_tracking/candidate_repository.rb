@@ -63,6 +63,8 @@ module Ml
       end
 
       def add_tags(candidate, tag_definitions)
+        return unless tag_definitions.present?
+
         handle_gitlab_tags(candidate, tag_definitions)
 
         insert_many(candidate, tag_definitions, ::Ml::CandidateMetadata)

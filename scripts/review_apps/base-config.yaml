@@ -1,6 +1,12 @@
 safe-to-evict: &safe-to-evict
   cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
+# We disabled the upgrade checks, as they were giving too many false positives
+#
+# See https://gitlab.com/gitlab-org/quality/engineering-productivity/review-apps-broken-incidents/-/issues/33
+upgradeCheck:
+  enabled: false
+
 global:
   appConfig:
     enableUsagePing: false

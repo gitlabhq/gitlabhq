@@ -26,7 +26,7 @@ It's easier and faster to use an existing image and run it as an additional cont
 than to install `mysql`, for example, every time the project is built.
 
 You're not limited to only database services. You can add as many
-services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
+services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
 Any image found at [Docker Hub](https://hub.docker.com/) or your private Container Registry can be
 used as a service.
 

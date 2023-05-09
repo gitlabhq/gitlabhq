@@ -259,6 +259,7 @@ export default {
     dialog-class="gl-mx-5"
     :title="modalTitle"
     :header-close-label="$options.HEADER_CLOSE_LABEL"
+    no-focus-on-show
     @shown="onShowModal"
     @close="onClose"
     @hidden="onReset"

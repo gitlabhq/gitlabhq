@@ -11334,7 +11334,7 @@ Representation of a GitLab user.
 | <a id="achievementdescription"></a>`description` | [`String`](#string) | Description or notes for the achievement. |
 | <a id="achievementid"></a>`id` | [`AchievementsAchievementID!`](#achievementsachievementid) | ID of the achievement. |
 | <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
-| <a id="achievementnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace of the achievement. |
+| <a id="achievementnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace of the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
 | <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Recipients for the achievement. |
 

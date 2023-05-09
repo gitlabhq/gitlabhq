@@ -3,12 +3,13 @@ import VueApollo from 'vue-apollo';
 import getUserAchievementsEmptyResponse from 'test_fixtures/graphql/get_user_achievements_empty_response.json';
 import getUserAchievementsLongResponse from 'test_fixtures/graphql/get_user_achievements_long_response.json';
 import getUserAchievementsResponse from 'test_fixtures/graphql/get_user_achievements_with_avatar_and_description_response.json';
+import getUserAchievementsPrivateGroupResponse from 'test_fixtures/graphql/get_user_achievements_from_private_group.json';
 import getUserAchievementsNoAvatarResponse from 'test_fixtures/graphql/get_user_achievements_without_avatar_or_description_response.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import UserAchievements from '~/profile/components/user_achievements.vue';
 import getUserAchievements from '~/profile/components//graphql/get_user_achievements.query.graphql';
-import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { getTimeago, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 const USER_ID = 123;
@@ -62,6 +63,25 @@ describe('UserAchievements', () => {
     expect(wrapper.findAllByTestId('user-achievement').length).toBe(3);
   });
 
+  it('renders correctly if the achievement is from a private namespace', async () => {
+    createComponent({
+      queryHandler: jest.fn().mockResolvedValue(getUserAchievementsPrivateGroupResponse),
+    });
+
+    await waitForPromises();
+
+    const userAchievement =
+      getUserAchievementsPrivateGroupResponse.data.user.userAchievements.nodes[0];
+
+    expect(achievement().text()).toContain(userAchievement.achievement.name);
+    expect(achievement().text()).toContain(
+      `Awarded ${getTimeago().format(
+        userAchievement.createdAt,
+        timeagoLanguageCode,
+      )} by a private namespace`,
+    );
+  });
+
   it('renders achievement correctly', async () => {
     createComponent();
 
@@ -69,7 +89,7 @@ describe('UserAchievements', () => {
 
     expect(achievement().text()).toContain(userAchievement1.achievement.name);
     expect(achievement().text()).toContain(
-      `Awarded ${timeagoMixin.methods.timeFormatted(userAchievement1.createdAt)} by`,
+      `Awarded ${getTimeago().format(userAchievement1.createdAt, timeagoLanguageCode)} by`,
     );
     expect(achievement().text()).toContain(userAchievement1.achievement.namespace.fullPath);
     expect(achievement().text()).toContain(userAchievement1.achievement.description);

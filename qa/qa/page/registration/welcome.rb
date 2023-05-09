@@ -9,8 +9,8 @@ module QA
           element :role_dropdown
         end
 
-        def has_get_started_button?
-          has_element?(:get_started_button)
+        def has_get_started_button?(wait: Capybara.default_max_wait_time)
+          has_element?(:get_started_button, wait: wait)
         end
 
         def select_role(role)

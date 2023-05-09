@@ -55,9 +55,12 @@
       = render_if_exists 'devise/shared/signup_email_additional_info'
     .form-group.gl-mb-5
       = f.label :password, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
-      %input.form-control.gl-form-input.js-password{ data: { resource_name: form_resource_name,
+      %input.form-control.gl-form-input.js-password{ data: { id: "#{form_resource_name}_password",
+        title: s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length },
         minimum_password_length: @minimum_password_length,
-        qa_selector: 'new_user_password_field' } }
+        qa_selector: 'new_user_password_field',
+        autocomplete: 'new-password',
+        name: "#{form_resource_name}[password]" } }
       %p.gl-field-hint-valid.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
       = render_if_exists 'shared/password_requirements_list'
     = render_if_exists 'devise/shared/phone_verification', form: f

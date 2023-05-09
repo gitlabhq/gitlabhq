@@ -5,22 +5,35 @@ import { SHOW_PASSWORD, HIDE_PASSWORD } from '~/authentication/password/constant
 
 describe('PasswordInput', () => {
   let wrapper;
+  const propsData = {
+    title: 'This field is required',
+    id: 'new_user_password',
+    minimumPasswordLength: '8',
+    qaSelector: 'new_user_password_field',
+    autocomplete: 'new-password',
+    name: 'new_user',
+  };
 
   const findPasswordInput = () => wrapper.findComponent(GlFormInput);
   const findToggleButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = () => {
     return shallowMount(PasswordInput, {
-      propsData: {
-        resourceName: 'new_user',
-        minimumPasswordLength: '8',
-        qaSelector: 'new_user_password_field',
-      },
+      propsData,
     });
   };
 
   beforeEach(() => {
     wrapper = createComponent();
+  });
+
+  it('sets password input attributes correctly', () => {
+    expect(findPasswordInput().attributes('id')).toBe(propsData.id);
+    expect(findPasswordInput().attributes('autocomplete')).toBe(propsData.autocomplete);
+    expect(findPasswordInput().attributes('name')).toBe(propsData.name);
+    expect(findPasswordInput().attributes('minlength')).toBe(propsData.minimumPasswordLength);
+    expect(findPasswordInput().attributes('data-qa-selector')).toBe(propsData.qaSelector);
+    expect(findPasswordInput().attributes('title')).toBe(propsData.title);
   });
 
   describe('when the show password button is clicked', () => {

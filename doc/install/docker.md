@@ -458,9 +458,10 @@ A `docker-compose.yml` example that uses different ports can be found in the
 
 ### Configure multiple database connections
 
-In GitLab 16.0, GitLab will default to using two database connections that point to the same PostgreSQL database.
+In [GitLab 16.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6850),
+GitLab defaults to using two database connections that point to the same PostgreSQL database.
 
-If you want to opt-in for this feature:
+If, for any reason, you wish to switch back to single database connection:
 
 1. Edit `/etc/gitlab/gitlab.rb` inside the container:
 
@@ -471,7 +472,7 @@ If you want to opt-in for this feature:
 1. Add the following line:
 
    ```ruby
-   gitlab_rails['databases']['ci']['enable'] = true
+   gitlab_rails['databases']['ci']['enable'] = false
    ```
 
 1. Restart the container:

@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'rejects package tags access' do |status:|
-  before do
-    package.update!(name: package_name) unless package_name == 'non-existing-package'
-  end
-
-  it_behaves_like 'returning response status', status
-end
-
 RSpec.shared_examples 'accept package tags request' do |status:|
   using RSpec::Parameterized::TableSyntax
   include_context 'dependency proxy helpers context'

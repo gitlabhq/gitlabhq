@@ -1,2 +1,4 @@
 - name: project_created_analytics_dashboard
   aggregation: weekly
+- name: project_initialized_product_analytics
+  aggregation: weekly

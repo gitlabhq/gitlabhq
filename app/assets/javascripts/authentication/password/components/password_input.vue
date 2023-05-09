@@ -1,14 +1,9 @@
 <script>
 import { GlFormInput, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { sprintf } from '~/locale';
-import { SHOW_PASSWORD, HIDE_PASSWORD, PASSWORD_TITLE } from '../constants';
+import { SHOW_PASSWORD, HIDE_PASSWORD } from '../constants';
 
 export default {
   name: 'PasswordInput',
-  i18n: {
-    showPassword: SHOW_PASSWORD,
-    hidePassword: HIDE_PASSWORD,
-  },
   components: {
     GlFormInput,
     GlButton,
@@ -17,15 +12,32 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    resourceName: {
+    title: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    id: {
+      type: String,
+      required: false,
+      default: '',
     },
     minimumPasswordLength: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     qaSelector: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    autocomplete: {
+      type: String,
+      required: false,
+      default: 'current-password',
+    },
+    name: {
       type: String,
       required: true,
     },
@@ -36,14 +48,11 @@ export default {
     };
   },
   computed: {
-    passwordTitle() {
-      return sprintf(PASSWORD_TITLE, { minimum_password_length: this.minimumPasswordLength });
-    },
     type() {
       return this.isMasked ? 'password' : 'text';
     },
     toggleVisibilityLabel() {
-      return this.isMasked ? this.$options.i18n.showPassword : this.$options.i18n.hidePassword;
+      return this.isMasked ? SHOW_PASSWORD : HIDE_PASSWORD;
     },
     toggleVisibilityIcon() {
       return this.isMasked ? 'eye' : 'eye-slash';
@@ -60,14 +69,14 @@ export default {
 <template>
   <div class="gl-field-error-anchor input-icon-wrapper">
     <gl-form-input
-      :id="`${resourceName}_password`"
+      :id="id"
       class="js-password-complexity-validation gl-pr-8!"
       required
-      autocomplete="new-password"
-      :name="`${resourceName}[password]`"
+      :autocomplete="autocomplete"
+      :name="name"
       :minlength="minimumPasswordLength"
       :data-qa-selector="qaSelector"
-      :title="passwordTitle"
+      :title="title"
       :type="type"
     />
     <gl-button

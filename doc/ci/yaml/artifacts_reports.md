@@ -142,9 +142,10 @@ following the [CycloneDX](https://cyclonedx.org/docs/1.4) protocol format.
 You can specify multiple CycloneDX reports per job. These can be either supplied
 as a list of filenames, a filename pattern, or both:
 
-- List of filenames: `cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`.
-- A filename pattern: `cyclonedx: gl-sbom-*.json`.
-- Combination of both of the above: `cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`.
+- A filename pattern (`cyclonedx: gl-sbom-*.json`, `junit: test-results/**/*.json`).
+- An array of filenames (`cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`).
+- A combination of both (`cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`).
+- Directories are not supported(`cyclonedx: test-results`, `cyclonedx: test-results/**`).
 
 Below is an example of a job exposing CycloneDX artifacts:
 
@@ -239,9 +240,10 @@ GitLab can display the results of one or more reports in:
 Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to
 concatenate them into a single file. Use either:
 
-- A filename pattern (`junit: rspec-*.xml`).
-- an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`).
-- A Combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
+- A filename pattern (`junit: rspec-*.xml`, `junit: test-results/**/*.xml`).
+- An array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`).
+- A combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
+- Directories are not supported(`junit: test-results`, `junit: test-results/**`).
 
 ## `artifacts:reports:license_scanning` **(ULTIMATE)**
 
