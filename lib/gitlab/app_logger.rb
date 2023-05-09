@@ -2,8 +2,14 @@
 
 module Gitlab
   class AppLogger < Gitlab::MultiDestinationLogger
+    LOGGERS = [Gitlab::AppTextLogger, Gitlab::AppJsonLogger].freeze
+
     def self.loggers
-      [Gitlab::AppJsonLogger]
+      if Gitlab::Utils.to_boolean(ENV.fetch('UNSTRUCTURED_RAILS_LOG', 'false'))
+        LOGGERS
+      else
+        [Gitlab::AppJsonLogger]
+      end
     end
 
     def self.primary_logger
