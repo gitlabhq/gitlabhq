@@ -172,7 +172,12 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
         end
       end
 
-      it 'does not requests a lot from Gitaly', :request_store do
+      it 'does not request a lot from Gitaly', :request_store, :clean_gitlab_redis_cache do
+        merge_request
+        position
+
+        Gitlab::GitalyClient.reset_counts
+
         # NOTE: This should be reduced as we work on reducing Gitaly calls.
         # Gitaly requests shouldn't go above this threshold as much as possible
         # as it may add more to the Gitaly N+1 issue we are experiencing.
