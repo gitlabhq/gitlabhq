@@ -78,6 +78,7 @@ The following stage events are available:
 - Issue closed
 - Issue created
 - Issue first added to board
+- Issue first assigned
 - Issue first associated with milestone
 - Issue first mentioned
 - Issue label added
@@ -86,6 +87,7 @@ The following stage events are available:
 - MR merged
 - MR created
 - MR first commit time
+- MR first assigned
 - MR first deployed
 - MR label added
 - MR label removed

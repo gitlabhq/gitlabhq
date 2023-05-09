@@ -10,6 +10,7 @@ module Gitlab
     ALL_CLASSES = [
       Gitlab::Redis::Cache,
       Gitlab::Redis::DbLoadBalancing,
+      Gitlab::Redis::FeatureFlag,
       Gitlab::Redis::Queues,
       Gitlab::Redis::RateLimiting,
       Gitlab::Redis::RepositoryCache,

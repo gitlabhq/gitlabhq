@@ -144,8 +144,8 @@ describe('MessageForm', () => {
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await waitForPromises();
 
-      expect(axiosMock.history.post).toHaveLength(1);
-      expect(axiosMock.history.post[0]).toMatchObject({
+      expect(axiosMock.history.post).toHaveLength(2);
+      expect(axiosMock.history.post[1]).toMatchObject({
         url: messagesPath,
         data: JSON.stringify(defaultPayload),
       });

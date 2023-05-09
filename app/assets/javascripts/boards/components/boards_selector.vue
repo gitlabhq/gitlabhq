@@ -144,6 +144,9 @@ export default {
   },
   methods: {
     ...mapActions(['setError', 'fetchBoard', 'unsetActiveId']),
+    fullBoardId(boardId) {
+      return fullBoardId(boardId);
+    },
     showPage(page) {
       this.currentPage = page;
     },
@@ -254,7 +257,8 @@ export default {
       if (isMetaKey(e)) {
         window.open(`${this.boardBaseUrl}/${boardId}`, '_blank');
       } else if (this.isApolloBoard) {
-        this.$emit('switchBoard', fullBoardId(boardId));
+        // Epic board ID is supported in EE version of this file
+        this.$emit('switchBoard', this.fullBoardId(boardId));
         updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
       } else {
         this.unsetActiveId();

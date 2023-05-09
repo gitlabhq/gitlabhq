@@ -72,30 +72,11 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         end
 
         context "when params[:search] is less than #{described_class::MIN_SEARCH_LENGTH} characters" do
-          before do
-            stub_feature_flags(environment_search_api_min_chars: false)
-          end
-
-          it 'returns a normal response' do
+          it 'returns with status 400' do
             get api("/projects/#{project.id}/environments?search=ab", user)
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an Array
-            expect(json_response.size).to eq(0)
-          end
-
-          context 'and environment_search_api_min_chars flag is enabled for the project' do
-            before do
-              stub_feature_flags(environment_search_api_min_chars: project)
-            end
-
-            it 'returns with status 400' do
-              get api("/projects/#{project.id}/environments?search=ab", user)
-
-              expect(response).to have_gitlab_http_status(:bad_request)
-              expect(json_response['message']).to include("Search query is less than #{described_class::MIN_SEARCH_LENGTH} characters")
-            end
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to include("Search query is less than #{described_class::MIN_SEARCH_LENGTH} characters")
           end
         end
 

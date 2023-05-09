@@ -65,7 +65,7 @@ sequenceDiagram
     Note right of Cloud: Create role with conditionals
     Note left of GitLab: CI/CD job with ID token
     GitLab->>+Cloud: Call cloud API with ID token
-    Note right of Cloud: Decode & verify JWT with public key (https://gitlab/-/jwks)
+    Note right of Cloud: Decode & verify JWT with public key (https://gitlab.com/oauth/discovery/keys)
     Note right of Cloud: Validate audience defined in OIDC
     Note right of Cloud: Validate conditional (sub, aud) role
     Note right of Cloud: Generate credential or fetch secret

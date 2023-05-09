@@ -130,8 +130,11 @@ export default {
     },
   },
   watch: {
-    message() {
-      this.renderPreview();
+    message: {
+      handler() {
+        this.renderPreview();
+      },
+      immediate: true,
     },
   },
   methods: {

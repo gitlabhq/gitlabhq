@@ -24,11 +24,6 @@
         sorted_by: @sort }
     }
 
-    - if can_push_code
-      .js-delete-merged-branches{ data: {
-          default_branch: @project.repository.root_ref,
-          form_path: project_merged_branches_path(@project) }
-        }
     - if is_branch_rules_available
       = link_to project_settings_repository_path(@project, anchor: 'js-branch-rules'), class: 'gl-button btn btn-default' do
         = s_('Branches|View branch rules')
@@ -36,6 +31,10 @@
     - if can_push_code
       = link_to new_project_branch_path(@project), class: 'gl-button btn btn-confirm' do
         = s_('Branches|New branch')
+      .js-delete-merged-branches{ data: {
+          default_branch: @project.repository.root_ref,
+          form_path: project_merged_branches_path(@project) }
+        }
 
 = render_if_exists 'projects/commits/mirror_status'
 

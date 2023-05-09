@@ -7903,9 +7903,6 @@ msgstr ""
 msgid "Branches|Compare"
 msgstr ""
 
-msgid "Branches|Delete all branches that are merged into '%{defaultBranch}'"
-msgstr ""
-
 msgid "Branches|Delete all merged branches?"
 msgstr ""
 

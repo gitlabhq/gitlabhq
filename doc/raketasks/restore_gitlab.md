@@ -29,12 +29,11 @@ restore. This is because the system user performing the restore actions (`git`)
 is usually not allowed to create or delete the SQL database needed to import
 data into (`gitlabhq_production`). All existing data is either erased
 (SQL) or moved to a separate directory (such as repositories and uploads).
+Restoring SQL data skips views owned by PostgreSQL extensions.
 
 To restore a backup, **you must also restore the GitLab secrets**.
-
 These include the database encryption key, [CI/CD variables](../ci/variables/index.md), and
 variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
-
 Without the keys, [multiple issues occur](backup_restore.md#when-the-secrets-file-is-lost),
 including loss of access by users with [two-factor authentication enabled](../user/profile/account/two_factor_authentication.md),
 and GitLab Runners cannot log in.

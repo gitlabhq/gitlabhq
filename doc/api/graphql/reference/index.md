@@ -1031,6 +1031,7 @@ Input type: `AiActionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationaiactionrequestid"></a>`requestId` | [`String`](#string) | ID of the request. |
 
 ### `Mutation.alertSetAssignees`
 
@@ -11367,6 +11368,7 @@ Information about a connected Agent.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
+| <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
 | <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |
 
 ### `AlertManagementAlert`

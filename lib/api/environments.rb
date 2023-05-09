@@ -48,7 +48,7 @@ module API
       get ':id/environments' do
         authorize! :read_environment, user_project
 
-        if Feature.enabled?(:environment_search_api_min_chars, user_project) && params[:search].present? && params[:search].length < MIN_SEARCH_LENGTH
+        if params[:search].present? && params[:search].length < MIN_SEARCH_LENGTH
           bad_request!("Search query is less than #{MIN_SEARCH_LENGTH} characters")
         end
 

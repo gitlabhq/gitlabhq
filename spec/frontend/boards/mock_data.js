@@ -997,4 +997,13 @@ export const updateBoardListResponse = {
   },
 };
 
+export const destroyBoardListMutationResponse = {
+  data: {
+    destroyBoardList: {
+      errors: [],
+      __typename: 'DestroyBoardListPayload',
+    },
+  },
+};
+
 export const DEFAULT_COLOR = '#1068bf';

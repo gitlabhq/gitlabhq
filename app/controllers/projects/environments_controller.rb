@@ -9,6 +9,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   include MetricsDashboard
   include ProductAnalyticsTracking
+  include KasCookie
 
   layout 'project'
 
@@ -32,6 +33,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
+  before_action :set_kas_cookie, only: [:index], if: -> { current_user }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,

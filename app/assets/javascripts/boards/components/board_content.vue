@@ -5,20 +5,13 @@ import { sortBy, throttle } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapActions } from 'vuex';
 import { contentTop } from '~/lib/utils/common_utils';
-import { s__ } from '~/locale';
 import eventHub from '~/boards/eventhub';
-import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
-import { DraggableItemTypes, listsQuery } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes } from 'ee_else_ce/boards/constants';
 import BoardColumn from './board_column.vue';
 
 export default {
-  i18n: {
-    fetchError: s__(
-      'Boards|An error occurred while fetching the board lists. Please reload the page.',
-    ),
-  },
   draggableItemTypes: DraggableItemTypes,
   components: {
     BoardAddNewColumn,
@@ -29,17 +22,7 @@ export default {
     EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
     GlAlert,
   },
-  inject: [
-    'canAdminList',
-    'boardType',
-    'fullPath',
-    'issuableType',
-    'isIssueBoard',
-    'isEpicBoard',
-    'isGroupBoard',
-    'disabled',
-    'isApolloBoard',
-  ],
+  inject: ['canAdminList', 'isIssueBoard', 'isEpicBoard', 'disabled', 'isApolloBoard'],
   props: {
     boardId: {
       type: String,
@@ -53,55 +36,26 @@ export default {
       type: Boolean,
       required: true,
     },
+    boardListsApollo: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
+    apolloError: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       boardHeight: null,
-      boardListsApollo: {},
-      apolloError: null,
-      updatedBoardId: this.boardId,
     };
-  },
-  apollo: {
-    boardListsApollo: {
-      query() {
-        return listsQuery[this.issuableType].query;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      skip() {
-        return !this.isApolloBoard;
-      },
-      update(data) {
-        const { lists } = data[this.boardType].board;
-        return formatBoardLists(lists);
-      },
-      result() {
-        // this allows us to delay fetching lists when we switch a board to fetch the actual board lists
-        // instead of fetching lists for the "previous" board
-        this.updatedBoardId = this.boardId;
-      },
-      error() {
-        this.apolloError = this.$options.i18n.fetchError;
-      },
-    },
   },
   computed: {
     ...mapState(['boardLists', 'error', 'addColumnForm']),
     addColumnFormVisible() {
       return this.addColumnForm?.visible;
-    },
-    queryVariables() {
-      return {
-        ...(this.isIssueBoard && {
-          isGroup: this.isGroupBoard,
-          isProject: !this.isGroupBoard,
-        }),
-        fullPath: this.fullPath,
-        boardId: this.boardId,
-        filters: this.filterParams,
-      };
     },
     boardListsToUse() {
       const lists = this.isApolloBoard ? this.boardListsApollo : this.boardLists;

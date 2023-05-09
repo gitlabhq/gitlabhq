@@ -326,7 +326,7 @@ module Feature
     end
 
     def l2_cache_backend
-      Rails.cache
+      ::Gitlab::Redis::FeatureFlag.cache_store
     end
 
     def log(key:, action:, **extra)

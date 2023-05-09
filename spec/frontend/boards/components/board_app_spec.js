@@ -6,12 +6,14 @@ import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import BoardApp from '~/boards/components/board_app.vue';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
-import { rawIssue } from '../mock_data';
+import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
+import { rawIssue, boardListsQueryResponse } from '../mock_data';
 
 describe('BoardApp', () => {
   let wrapper;
   let store;
-  const mockApollo = createMockApollo();
+  const boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse);
+  const mockApollo = createMockApollo([[boardListsQuery, boardListQueryHandler]]);
 
   Vue.use(Vuex);
   Vue.use(VueApollo);
@@ -41,9 +43,13 @@ describe('BoardApp', () => {
       apolloProvider: mockApollo,
       store,
       provide: {
+        fullPath: 'gitlab-org',
         initialBoardId: 'gid://gitlab/Board/1',
         initialFilterParams: {},
+        issuableType: 'issue',
+        boardType: 'group',
         isIssueBoard: true,
+        isGroupBoard: true,
         isApolloBoard,
       },
     });
@@ -71,6 +77,10 @@ describe('BoardApp', () => {
     beforeEach(async () => {
       createComponent({ isApolloBoard: true });
       await nextTick();
+    });
+
+    it('fetches lists', () => {
+      expect(boardListQueryHandler).toHaveBeenCalled();
     });
 
     it('should have is-compact class when a card is selected', () => {

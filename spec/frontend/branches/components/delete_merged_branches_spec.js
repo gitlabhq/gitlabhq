@@ -1,9 +1,8 @@
-import { GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DeleteMergedBranches, { i18n } from '~/branches/components/delete_merged_branches.vue';
 import { formPath, propsDataMock } from '../mock_data';
 
@@ -22,6 +21,7 @@ const stubsData = {
       hide: modalHideSpy,
     },
   }),
+  GlDisclosureDropdown,
   GlButton,
   GlFormInput,
   GlSprintf,
@@ -32,14 +32,12 @@ const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
     propsData: {
       ...propsDataMock,
     },
-    directives: {
-      GlTooltip: createMockDirective('gl-tooltip'),
-    },
     stubs,
   });
 };
 
-const findDeleteButton = () => wrapper.findComponent(GlButton);
+const findDeleteButton = () =>
+  wrapper.findComponent('[data-qa-selector="delete_merged_branches_button"]');
 const findModal = () => wrapper.findComponent(GlModal);
 const findConfirmationButton = () =>
   wrapper.findByTestId('delete-merged-branches-confirmation-button');
@@ -54,20 +52,9 @@ describe('Delete merged branches component', () => {
   });
 
   describe('Delete merged branches button', () => {
-    it('has correct attributes, text and tooltip', () => {
-      expect(findDeleteButton().attributes()).toMatchObject({
-        category: 'secondary',
-        variant: 'danger',
-      });
-
+    it('has correct text', () => {
+      createComponent(mount, stubsData);
       expect(findDeleteButton().text()).toBe(i18n.deleteButtonText);
-    });
-
-    it('displays a tooltip', () => {
-      const tooltip = getBinding(findDeleteButton().element, 'gl-tooltip');
-
-      expect(tooltip).toBeDefined();
-      expect(tooltip.value).toBe(wrapper.vm.buttonTooltipText);
     });
 
     it('opens modal when clicked', () => {
@@ -130,7 +117,6 @@ describe('Delete merged branches component', () => {
     it('submits form when correct amount is provided and the confirm button is clicked', async () => {
       findFormInput().vm.$emit('input', 'delete');
       await waitForPromises();
-      expect(findDeleteButton().props('disabled')).not.toBe(true);
       findConfirmationButton().trigger('click');
       expect(submitFormSpy()).toHaveBeenCalled();
     });

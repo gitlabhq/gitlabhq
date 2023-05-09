@@ -1,23 +1,19 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
 
 import eventHub from '~/boards/eventhub';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import EpicsSwimlanes from 'ee_component/boards/components/epics_swimlanes.vue';
 import getters from 'ee_else_ce/boards/stores/getters';
-import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import BoardColumn from '~/boards/components/board_column.vue';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardContentSidebar from '~/boards/components/board_content_sidebar.vue';
-import { mockLists, boardListsQueryResponse } from '../mock_data';
+import { mockLists, mockListsById } from '../mock_data';
 
-Vue.use(VueApollo);
 Vue.use(Vuex);
 
 const actions = {
@@ -26,7 +22,6 @@ const actions = {
 
 describe('BoardContent', () => {
   let wrapper;
-  let fakeApollo;
 
   const defaultState = {
     isShowingEpicsSwimlanes: false,
@@ -51,26 +46,21 @@ describe('BoardContent', () => {
     issuableType = 'issue',
     isIssueBoard = true,
     isEpicBoard = false,
-    boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse),
   } = {}) => {
-    fakeApollo = createMockApollo([[boardListsQuery, boardListQueryHandler]]);
-
     const store = createStore({
       ...defaultState,
       ...state,
     });
     wrapper = shallowMount(BoardContent, {
-      apolloProvider: fakeApollo,
       propsData: {
         boardId: 'gid://gitlab/Board/1',
         filterParams: {},
         isSwimlanesOn: false,
+        boardListsApollo: mockListsById,
         ...props,
       },
       provide: {
         canAdminList,
-        boardType: 'group',
-        fullPath: 'gitlab-org/gitlab',
         issuableType,
         isIssueBoard,
         isEpicBoard,
@@ -108,10 +98,6 @@ describe('BoardContent', () => {
         this.callback(this.entries);
       }
     };
-  });
-
-  afterEach(() => {
-    fakeApollo = null;
   });
 
   describe('default', () => {

@@ -1,8 +1,15 @@
 <script>
-import { GlButton, GlDrawer, GlLabel, GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
+import produce from 'immer';
+import { GlButton, GlDrawer, GlLabel, GlModal, GlModalDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { LIST, ListType, ListTypeTitles, listsQuery } from 'ee_else_ce/boards/constants';
+import {
+  LIST,
+  ListType,
+  ListTypeTitles,
+  listsQuery,
+  deleteListQueries,
+} from 'ee_else_ce/boards/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
@@ -21,7 +28,6 @@ export default {
     GlModal,
     GlDrawer,
     GlLabel,
-    GlLoadingIcon,
     MountingPortal,
     BoardSettingsSidebarWipLimit: () =>
       import('ee_component/boards/components/board_settings_wip_limit.vue'),
@@ -35,11 +41,9 @@ export default {
   inject: [
     'boardType',
     'canAdminList',
-    'fullPath',
     'issuableType',
     'scopedLabelsAvailable',
     'isIssueBoard',
-    'isGroupBoard',
     'isApolloBoard',
   ],
   inheritAttrs: false,
@@ -52,57 +56,33 @@ export default {
       type: String,
       required: true,
     },
+    list: {
+      type: Object,
+      required: false,
+      default: () => null,
+    },
+    queryVariables: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       ListType,
-      list: {},
     };
   },
   modalId: 'board-settings-sidebar-modal',
-  apollo: {
-    list: {
-      query() {
-        return listsQuery[this.issuableType].query;
-      },
-      variables() {
-        return this.queryVariables;
-      },
-      update(data) {
-        const { lists } = data[this.boardType].board;
-        return lists.nodes[0];
-      },
-      skip() {
-        return !this.isApolloBoard || !this.listId;
-      },
-      error() {
-        this.error = this.$options.i18n.fetchError;
-      },
-    },
-  },
   computed: {
     ...mapGetters(['isSidebarOpen']),
     ...mapState(['activeId', 'sidebarType', 'boardLists']),
     isWipLimitsOn() {
       return this.glFeatures.wipLimits && this.isIssueBoard;
     },
-    queryVariables() {
-      return {
-        ...(this.isIssueBoard && {
-          isGroup: this.isGroupBoard,
-          isProject: !this.isGroupBoard,
-        }),
-        fullPath: this.fullPath,
-        boardId: this.boardId,
-        filters: this.filterParams,
-        listId: this.activeListId,
-      };
-    },
     activeListId() {
       return this.isApolloBoard ? this.listId : this.activeId;
     },
     activeList() {
-      return this.isApolloBoard ? this.list : this.boardLists[this.activeId] || {};
+      return (this.isApolloBoard ? this.list : this.boardLists[this.activeId]) || {};
     },
     activeListLabel() {
       return this.activeList.label;
@@ -119,9 +99,6 @@ export default {
       }
       return this.sidebarType === LIST && this.isSidebarOpen;
     },
-    isLoading() {
-      return this.isApolloBoard && this.$apollo.queries.list.loading;
-    },
   },
   created() {
     eventHub.$on('sidebar.closeAll', this.unsetActiveListId);
@@ -132,14 +109,18 @@ export default {
   methods: {
     ...mapActions(['unsetActiveId', 'removeList']),
     handleModalPrimary() {
-      this.deleteBoard();
+      this.deleteBoardList();
     },
     showScopedLabels(label) {
       return this.scopedLabelsAvailable && isScopedLabel(label);
     },
-    deleteBoard() {
+    async deleteBoardList() {
       this.track('click_button', { label: 'remove_list' });
-      this.removeList(this.activeId);
+      if (this.isApolloBoard) {
+        await this.deleteList(this.activeListId);
+      } else {
+        this.removeList(this.activeId);
+      }
       this.unsetActiveListId();
     },
     unsetActiveListId() {
@@ -148,6 +129,25 @@ export default {
       } else {
         this.unsetActiveId();
       }
+    },
+    async deleteList(listId) {
+      await this.$apollo.mutate({
+        mutation: deleteListQueries[this.issuableType].mutation,
+        variables: {
+          listId,
+        },
+        update: (store) => {
+          store.updateQuery(
+            { query: listsQuery[this.issuableType].query, variables: this.queryVariables },
+            (sourceData) =>
+              produce(sourceData, (draftData) => {
+                draftData[this.boardType].board.lists.nodes = draftData[
+                  this.boardType
+                ].board.lists.nodes.filter((list) => list.id !== listId);
+              }),
+          );
+        },
+      });
     },
   },
 };
@@ -166,9 +166,8 @@ export default {
         <h2 class="gl-my-0 gl-font-size-h2 gl-line-height-24">
           {{ $options.listSettingsText }}
         </h2>
-        <gl-loading-icon v-if="isLoading" />
       </template>
-      <template v-if="!isLoading" #header>
+      <template #header>
         <div v-if="canAdminList && activeList.id" class="gl-mt-3">
           <gl-button
             v-gl-modal="$options.modalId"
@@ -179,7 +178,7 @@ export default {
           </gl-button>
         </div>
       </template>
-      <template v-if="showSidebar && !isLoading">
+      <template v-if="showSidebar">
         <div v-if="boardListType === ListType.label">
           <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>
           <gl-label

@@ -1,8 +1,0 @@
----
-name: environment_search_api_min_chars
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108277
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387244
-milestone: '15.8'
-type: development
-group: group::configure
-default_enabled: false

@@ -1,11 +1,10 @@
 <script>
-import { GlButton, GlFormInput, GlModal, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { sprintf, s__, __ } from '~/locale';
 
 export const i18n = {
   deleteButtonText: s__('Branches|Delete merged branches'),
-  buttonTooltipText: s__("Branches|Delete all branches that are merged into '%{defaultBranch}'"),
   modalTitle: s__('Branches|Delete all merged branches?'),
   modalMessage: s__(
     'Branches|You are about to %{strongStart}delete all branches%{strongEnd} that were merged into %{codeStart}%{defaultBranch}%{codeEnd}.',
@@ -28,13 +27,11 @@ export const i18n = {
 export default {
   csrf,
   components: {
-    GlModal,
+    GlDisclosureDropdown,
     GlButton,
+    GlModal,
     GlFormInput,
     GlSprintf,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     formPath: {
@@ -53,9 +50,6 @@ export default {
     };
   },
   computed: {
-    buttonTooltipText() {
-      return sprintf(this.$options.i18n.buttonTooltipText, { defaultBranch: this.defaultBranch });
-    },
     modalMessage() {
       return sprintf(this.$options.i18n.modalMessage, {
         defaultBranch: this.defaultBranch,
@@ -66,6 +60,20 @@ export default {
     },
     isDeleteButtonDisabled() {
       return !this.isDeletingConfirmed;
+    },
+    dropdownItems() {
+      return [
+        {
+          text: this.$options.i18n.deleteButtonText,
+          action: () => {
+            this.openModal();
+          },
+          extraAttrs: {
+            'data-qa-selector': 'delete_merged_branches_button',
+            class: 'gl-text-red-500!',
+          },
+        },
+      ];
     },
   },
   methods: {
@@ -87,15 +95,15 @@ export default {
 
 <template>
   <div>
-    <gl-button
-      v-gl-tooltip="buttonTooltipText"
-      class="gl-mr-3"
-      data-qa-selector="delete_merged_branches_button"
-      category="secondary"
-      variant="danger"
-      @click="openModal"
-      >{{ $options.i18n.deleteButtonText }}
-    </gl-button>
+    <gl-disclosure-dropdown
+      :toggle-text="$options.i18n.actionsToggleText"
+      text-sr-only
+      icon="ellipsis_v"
+      category="tertiary"
+      no-caret
+      placement="right"
+      :items="dropdownItems"
+    />
     <gl-modal
       ref="modal"
       size="sm"

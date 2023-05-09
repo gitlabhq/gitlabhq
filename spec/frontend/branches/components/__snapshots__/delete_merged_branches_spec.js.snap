@@ -2,25 +2,33 @@
 
 exports[`Delete merged branches component Delete merged branches confirmation modal matches snapshot 1`] = `
 <div>
-  <b-button-stub
-    class="gl-mr-3 gl-button btn-danger-secondary"
-    data-qa-selector="delete_merged_branches_button"
-    size="md"
-    tag="button"
-    type="button"
-    variant="danger"
+  <gl-base-dropdown-stub
+    category="tertiary"
+    class="gl-disclosure-dropdown"
+    icon="ellipsis_v"
+    nocaret="true"
+    placement="right"
+    popperoptions="[object Object]"
+    size="medium"
+    textsronly="true"
+    toggleid="dropdown-toggle-btn-25"
+    toggletext=""
+    variant="default"
   >
-    <!---->
-     
-    <!---->
       
-    <span
-      class="gl-button-text"
+    <ul
+      aria-labelledby="dropdown-toggle-btn-25"
+      class="gl-new-dropdown-contents"
+      data-testid="disclosure-content"
+      id="disclosure-26"
+      tabindex="-1"
     >
-      Delete merged branches
-  
-    </span>
-  </b-button-stub>
+      <gl-disclosure-dropdown-item-stub
+        item="[object Object]"
+      />
+    </ul>
+     
+  </gl-base-dropdown-stub>
    
   <div>
     <form
