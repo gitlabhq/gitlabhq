@@ -65,6 +65,11 @@ export default {
     },
   },
   props: {
+    projectId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     status: {
       type: String,
       required: true,
@@ -111,7 +116,19 @@ export default {
     },
 
     showDetails() {
-      return Boolean(this.detailsPath) && this.glFeatures.importDetailsPage && this.isIncomplete;
+      return (
+        Boolean(this.detailsPathForProject) &&
+        this.glFeatures.importDetailsPage &&
+        this.isIncomplete
+      );
+    },
+
+    detailsPathForProject() {
+      if (!this.projectId || !this.detailsPath) {
+        return null;
+      }
+
+      return `${this.detailsPath}?project_id=${this.projectId}`;
     },
   },
 
@@ -163,7 +180,9 @@ export default {
             </div>
           </li>
         </ul>
-        <gl-link v-if="showDetails" :href="detailsPath">{{ $options.i18n.detailsLink }}</gl-link>
+        <gl-link v-if="showDetails" :href="detailsPathForProject">{{
+          $options.i18n.detailsLink
+        }}</gl-link>
       </gl-accordion-item>
     </gl-accordion>
   </div>

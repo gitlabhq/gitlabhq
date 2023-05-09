@@ -1,7 +1,7 @@
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0' }) do |c|
-  - c.header do
+  - c.with_header do
     = _('Profile')
-  - c.body do
+  - c.with_body do
     %ul.content-list
       %li
         %span.light= _('Member since')

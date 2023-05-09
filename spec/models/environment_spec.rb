@@ -126,7 +126,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
           expect(environment.errors[:external_url].first).to eq(expected_error_message)
         else
           expect(environment.errors[:external_url]).to be_empty,
-              "There were unexpected errors: #{environment.errors.full_messages}"
+            "There were unexpected errors: #{environment.errors.full_messages}"
           expect(environment.external_url).to eq(source_external_url)
         end
       end
@@ -660,15 +660,17 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       let(:build) { create(:ci_build, :success) }
 
       let!(:deployment) do
-        create(:deployment, :success,
-                            environment: environment,
-                            deployable: build,
-                            on_stop: 'close_app')
+        create(
+          :deployment,
+          :success,
+          environment: environment,
+          deployable: build,
+          on_stop: 'close_app'
+        )
       end
 
       let!(:close_action) do
-        create(:ci_build, :manual, pipeline: build.pipeline,
-                                   name: 'close_app')
+        create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app')
       end
 
       context 'when environment is available' do
@@ -750,8 +752,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
         before do
           project.add_developer(user)
 
-          create(:protected_branch, :developers_can_merge,
-                 name: 'master', project: project)
+          create(:protected_branch, :developers_can_merge, name: 'master', project: project)
         end
 
         context 'when action did not yet finish' do
@@ -774,8 +775,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
         context 'if action did finish' do
           let!(:close_action) do
-            create(:ci_build, :manual, :success,
-                   pipeline: pipeline, name: 'close_app_a')
+            create(:ci_build, :manual, :success, pipeline: pipeline, name: 'close_app_a')
           end
 
           it 'returns a new action of the same type' do
@@ -1258,8 +1258,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   describe '#deployment_platform' do
     context 'when there is a deployment platform for environment' do
       let!(:cluster) do
-        create(:cluster, :provided_by_gcp,
-               environment_scope: '*', projects: [project])
+        create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project])
       end
 
       it 'finds a deployment platform' do

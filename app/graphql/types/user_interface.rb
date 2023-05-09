@@ -164,7 +164,7 @@ module Types
 
     definition_methods do
       def resolve_type(object, context)
-        # in the absense of other information, we cannot tell - just default to
+        # in the absence of other information, we cannot tell - just default to
         # the core user type.
         ::Types::UserType
       end

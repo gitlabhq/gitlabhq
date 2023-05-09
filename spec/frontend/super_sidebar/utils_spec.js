@@ -2,6 +2,7 @@ import {
   getTopFrequentItems,
   trackContextAccess,
   formatContextSwitcherItems,
+  ariaCurrent,
 } from '~/super_sidebar/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -155,6 +156,16 @@ describe('Super sidebar utils spec', () => {
           link: projects[0].webUrl,
         },
       ]);
+    });
+  });
+
+  describe('ariaCurrent', () => {
+    it.each`
+      isActive | expected
+      ${true}  | ${'page'}
+      ${false} | ${null}
+    `('returns `$expected` when `isActive` is `$isActive`', ({ isActive, expected }) => {
+      expect(ariaCurrent(isActive)).toBe(expected);
     });
   });
 });

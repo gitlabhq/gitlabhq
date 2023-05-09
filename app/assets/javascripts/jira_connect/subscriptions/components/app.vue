@@ -100,12 +100,7 @@ export default {
       <gl-link :href="gitlabUrl" target="_blank">
         <img :src="gitlabLogo" class="gl-h-6" :alt="__('GitLab')" />
       </gl-link>
-      <user-link
-        :user-signed-in="userSignedIn"
-        :has-subscriptions="hasSubscriptions"
-        :user="currentUser"
-        class="gl-fixed gl-right-4"
-      />
+      <user-link v-if="userSignedIn" :user="currentUser" class="gl-fixed gl-right-4" />
     </header>
 
     <main class="jira-connect-app gl-px-5 gl-pt-7 gl-mx-auto">

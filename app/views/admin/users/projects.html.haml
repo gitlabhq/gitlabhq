@@ -5,9 +5,9 @@
 
 - if @user.groups.any?
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
-    - c.header do
+    - c.with_header do
       = _('Groups')
-    - c.body do
+    - c.with_body do
       %ul.hover-list
         - @user.group_members.includes(:source).each do |group_member| # rubocop: disable CodeReuse/ActiveRecord
           - group = group_member.group
@@ -31,9 +31,9 @@
 
   .col-md-6
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
-      - c.header do
+      - c.with_header do
         = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
-      - c.body do
+      - c.with_body do
         %ul.hover-list
           - @joined_projects.sort_by(&:full_name).each do |project|
             - member = project.team.find_member(@user.id)

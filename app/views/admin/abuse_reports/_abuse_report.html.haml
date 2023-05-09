@@ -11,26 +11,29 @@
     - else
       = _('(removed)')
   %td
-    %strong.subheading.d-block.d-sm-none
-      = _('Reported by %{reporter}').html_safe % { reporter: reporter ? link_to(reporter.name, reporter) : _('(removed)') }
-    .light.gl-display-none.gl-sm-display-block
-      = link_to(reporter.name, reporter)
-    .light.small
-      = time_ago_with_tooltip(abuse_report.created_at)
+    - if reporter
+      %strong.subheading.d-block.d-sm-none
+        = _('Reported by %{reporter}').html_safe % { reporter: reporter ? link_to(reporter.name, reporter) : _('(removed)') }
+      .light.gl-display-none.gl-sm-display-block
+        = link_to(reporter.name, reporter)
+      .light.small
+        = time_ago_with_tooltip(abuse_report.created_at)
+    - else
+      = _('(removed)')
   %td
     %strong.subheading.d-block.d-sm-none
       = _('Message')
     .message
       = markdown_field(abuse_report, :message)
   %td
-    - if user
+    - if user && user != current_user
       = render Pajamas::ButtonComponent.new(href: admin_abuse_report_path(abuse_report, remove_user: true), variant: :danger, block: true, button_options: { data: { confirm: _("USER %{user} WILL BE REMOVED! Are you sure?") % { user: user.name }, confirm_btn_variant: "danger", remote: true, method: :delete }, class: "js-remove-tr" }) do
         = _('Remove user & report')
-    - if user && !user.blocked?
-      = render Pajamas::ButtonComponent.new(href: block_admin_user_path(user), block: true, button_options: { data: { confirm: _('USER WILL BE BLOCKED! Are you sure?'), method: :put } }) do
-        = _('Block user')
-    - else
-      = render Pajamas::ButtonComponent.new(href: block_admin_user_path(user), block: true, disabled: true, button_options: { data: { confirm: _('USER WILL BE BLOCKED! Are you sure?'), method: :put } }) do
-        = _('Already blocked')
-    = render Pajamas::ButtonComponent.new(href: [:admin, abuse_report], block: true, button_options: { data: { remote: true, method: :delete }, class: "js-remove-tr" }) do
-      = _('Remove report')
+      - if user.blocked?
+        = render Pajamas::ButtonComponent.new(href: block_admin_user_path(user), block: true, disabled: true, button_options: { data: { confirm: _('USER WILL BE BLOCKED! Are you sure?'), method: :put } }) do
+          = _('Already blocked')
+      - else
+        = render Pajamas::ButtonComponent.new(href: block_admin_user_path(user), block: true, button_options: { data: { confirm: _('USER WILL BE BLOCKED! Are you sure?'), method: :put } }) do
+          = _('Block user')
+      = render Pajamas::ButtonComponent.new(href: [:admin, abuse_report], block: true, button_options: { data: { remote: true, method: :delete }, class: "js-remove-tr" }) do
+        = _('Remove report')

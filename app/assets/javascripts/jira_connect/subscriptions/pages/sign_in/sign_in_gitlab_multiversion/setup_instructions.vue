@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-max-w-62 gl-mx-auto gl-mt-7">
+  <div class="gl-mt-5">
     <h3>{{ s__('JiraService|Continue setup in GitLab') }}</h3>
     <p>
       {{
@@ -28,8 +28,9 @@ export default {
       >
     </p>
 
-    <gl-button variant="confirm" @click="$emit('next')">
-      {{ __('Next') }}
-    </gl-button>
+    <div class="gl-display-flex gl-justify-content-space-between">
+      <gl-button @click="$emit('back')">{{ __('Back') }}</gl-button>
+      <gl-button variant="confirm" @click="$emit('next')">{{ __('Next') }}</gl-button>
+    </div>
   </div>
 </template>

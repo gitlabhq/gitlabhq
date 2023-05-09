@@ -86,15 +86,5 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
         expect(execute.payload[:job]).to eq(job)
       end
     end
-
-    it 'locks pipelines and stages before persisting builds', :aggregate_failures do
-      expect(job).not_to be_persisted
-
-      recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { execute }
-      entries = recorder.log.select { |query| query.match(/LOCK|INSERT INTO ".{0,2}ci_builds"/) }
-
-      expect(entries.size).to eq(2)
-      expect(entries.first).to match(/LOCK "ci_pipelines", "ci_stages" IN ROW SHARE MODE;/)
-    end
   end
 end

@@ -1,32 +1,34 @@
 - page_title _("Labels")
 
-%div
-  = render Pajamas::ButtonComponent.new(variant: :confirm,
-    href: new_admin_label_path,
-    button_options: { class: 'float-right' }) do
-    = _('New label')
-  %h1.page-title.gl-font-size-h-display
-    = _('Labels')
-- if @labels.present?
-  .labels.labels-container.admin-labels.js-admin-labels-container
-    %ul.manage-labels-list
-      = render @labels
+.gl-sm-display-flex.gl-border-bottom-0.gl-mt-4.gl-lg-align-items-center
+  .gl-text-gray-600.gl-flex-grow-1
+    = s_('AdminLabels|Labels created here will be automatically added to new projects.')
+  .nav-controls.gl-mt-2.gl-sm-mt-0.gl-display-flex.gl-align-items-center
+    = render Pajamas::ButtonComponent.new(variant: :confirm,
+      href: new_admin_label_path) do
+      = _('New label')
 
-    = paginate @labels, theme: 'gitlab'
+.labels.labels-container.admin-labels.js-admin-labels-container.gl-mt-4
+  .other-labels.gl-rounded-base.gl-border.gl-bg-gray-10
+    .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-base.gl-border-b{ class: 'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!' }
+      %h3.card-title.h5.gl-m-0.gl-relative.gl-line-height-24
+        = _('Labels')
+    %ul.manage-labels-list.js-other-labels.gl-px-3.gl-rounded-base
+      - if @labels.present?
+        = render @labels
+    .js-admin-labels-empty-state{ class: ('gl-display-none' if @labels.present?) }
+      %section.row.empty-state.gl-text-center
+        .col-12
+          .svg-content.svg-150
+            = image_tag 'illustrations/empty-state/empty-labels-md.svg'
+        .col-12
+          .gl-mx-auto.gl-my-0.gl-p-5
+            %h1.gl-font-size-h-display.gl-line-height-36.h4
+              = s_('AdminLabels|Define your default set of project labels')
+            %p
+              = s_('AdminLabels|They can be used to categorize issues and merge requests.')
+            .gl-display-flex.gl-flex-wrap.gl-justify-content-center
+              = render Pajamas::ButtonComponent.new(href: new_admin_label_path) do
+                = _('New label')
 
-.js-admin-labels-empty-state{ class: ('gl-display-none' if @labels.present?) }
-  %section.row.empty-state.gl-text-center
-    .col-12
-      .svg-content.svg-150
-        = image_tag 'illustrations/empty-state/empty-labels-md.svg'
-    .col-12
-      .gl-mx-auto.gl-my-0.gl-p-5
-        %h1.gl-font-size-h-display.gl-line-height-36.h4
-          = s_('AdminLabels|Define your default set of project labels')
-        %p.gl-mb-0
-          = s_('AdminLabels|Labels created here will be automatically added to new projects.')
-        %p
-          = s_('AdminLabels|They can be used to categorize issues and merge requests.')
-        .gl-display-flex.gl-flex-wrap.gl-justify-content-center
-          = render Pajamas::ButtonComponent.new(href: new_admin_label_path) do
-            = _('New label')
+  = paginate @labels, theme: 'gitlab'

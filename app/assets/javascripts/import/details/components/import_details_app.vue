@@ -4,13 +4,6 @@ import ImportDetailsTable from './import_details_table.vue';
 
 export default {
   components: { ImportDetailsTable },
-  props: {
-    project: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-  },
   i18n: {
     pageTitle: s__('Import|GitHub import details'),
   },

@@ -1,7 +1,17 @@
-%li.label-list-item.gl-border-b.gl-py-3{ id: dom_id(label) }
-  = render "shared/label_row", label: label.present(issuable_subject: nil)
-  .label-actions-list
-    = link_to edit_admin_label_path(label), class: 'btn btn-default gl-button btn-default-tertiary label-action has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria: { label: _('Edit') } do
-      = sprite_icon('pencil')
-    = link_to admin_label_path(label), class: 'btn btn-default gl-button btn-default-tertiary hover-red js-remove-label label-action has-tooltip', title: _('Delete'), data: { placement: 'bottom', confirm: _('Are you sure you want to delete this label?'), confirm_btn_variant: 'danger' }, aria: { label: _('Delete label') }, method: :delete, remote: true do
-      = sprite_icon('remove')
+%li.label-list-item.gl-list-style-none.gl-py-3{ id: dom_id(label) }
+  .label-content.gl-px-3.gl-py-2.gl-rounded-base
+    = render "shared/label_row", label: label.present(issuable_subject: nil)
+    .label-actions-list.gl-display-inline-block
+      .dropdown
+        = render Pajamas::ButtonComponent.new(category: :tertiary,
+          size: :small,
+          icon: 'ellipsis_v',
+          button_options: { class: 'js-label-options-dropdown gl-ml-3', 'aria_label': _('Label actions dropdown'), title: _('Label actions dropdown'), data: { toggle: 'dropdown' } })
+        .dropdown-menu.dropdown-menu-right
+          %ul
+            %li
+              = link_to edit_admin_label_path(label), class: 'btn gl-btn label-action dropdown-item btn-link' do
+                = _('Edit')
+            %li
+              = link_to admin_label_path(label), class: 'btn gl-btn js-remove-label dropdown-item btn-link gl-text-red-500!', data: { confirm: _('Are you sure you want to delete this label?'), confirm_btn_variant: 'danger' }, aria: { label: _('Delete label') }, method: :delete, remote: true do
+                = _('Delete')

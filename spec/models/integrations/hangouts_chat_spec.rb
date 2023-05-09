@@ -116,10 +116,13 @@ RSpec.describe Integrations::HangoutsChat do
 
     context 'when commit comment event executed' do
       let(:commit_note) do
-        create(:note_on_commit, author: user,
-                                project: project,
-                                commit_id: project.repository.commit.id,
-                                note: 'a comment on a commit')
+        create(
+          :note_on_commit,
+          author: user,
+          project: project,
+          commit_id: project.repository.commit.id,
+          note: 'a comment on a commit'
+        )
       end
 
       it "adds thread key" do
@@ -135,8 +138,7 @@ RSpec.describe Integrations::HangoutsChat do
 
     context 'when merge request comment event executed' do
       let(:merge_request_note) do
-        create(:note_on_merge_request, project: project,
-                                       note: "merge request note")
+        create(:note_on_merge_request, project: project, note: "merge request note")
       end
 
       it "adds thread key" do
@@ -168,8 +170,7 @@ RSpec.describe Integrations::HangoutsChat do
 
     context 'when snippet comment event executed' do
       let(:snippet_note) do
-        create(:note_on_project_snippet, project: project,
-                                         note: "snippet note")
+        create(:note_on_project_snippet, project: project, note: "snippet note")
       end
 
       it "adds thread key" do

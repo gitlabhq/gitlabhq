@@ -41,8 +41,8 @@ RSpec.describe Integrations::AppleAppStore, feature_category: :mobile_devops do
       end
 
       it 'returns false for an invalid request' do
-        allow(AppStoreConnect::Client).to receive_message_chain(:new,
-:apps).and_return({ errors: [title: "error title"] })
+        allow(AppStoreConnect::Client).to receive_message_chain(:new, :apps)
+          .and_return({ errors: [title: "error title"] })
         expect(apple_app_store_integration.test[:success]).to be false
       end
     end

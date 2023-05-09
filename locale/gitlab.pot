@@ -22783,6 +22783,9 @@ msgstr ""
 msgid "Importing..."
 msgstr ""
 
+msgid "Import|An error occurred while fetching import details."
+msgstr ""
+
 msgid "Import|GitHub import details"
 msgstr ""
 
@@ -25217,6 +25220,9 @@ msgstr ""
 msgid "JiraService|An error occurred while fetching issue list"
 msgstr ""
 
+msgid "JiraService|Are you a GitLab administrator?"
+msgstr ""
+
 msgid "JiraService|Automatically transitions Jira issues to the \"Done\" category. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
@@ -25329,6 +25335,9 @@ msgid "JiraService|Select issue type"
 msgstr ""
 
 msgid "JiraService|Set a custom final state by using transition IDs. %{linkStart}Learn about transition IDs%{linkEnd}"
+msgstr ""
+
+msgid "JiraService|Setting up this integration is only possible if you're a GitLab administrator."
 msgstr ""
 
 msgid "JiraService|Sign in to GitLab to get started."
@@ -48116,6 +48125,9 @@ msgstr ""
 msgid "UsageQuota|Pending Members"
 msgstr ""
 
+msgid "UsageQuota|Pipeline artifacts and job artifacts, created with CI/CD."
+msgstr ""
+
 msgid "UsageQuota|Pipeline artifacts created by CI/CD."
 msgstr ""
 
@@ -48192,6 +48204,9 @@ msgid "UsageQuota|Transfer data used"
 msgstr ""
 
 msgid "UsageQuota|Transfer data used by month"
+msgstr ""
+
+msgid "UsageQuota|Transfer type"
 msgstr ""
 
 msgid "UsageQuota|Transfer usage breakout"

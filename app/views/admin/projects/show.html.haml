@@ -24,9 +24,9 @@
 .row
   .col-md-6
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.header do
+      - c.with_header do
         = _('Project info:')
-      - c.body do
+      - c.with_body do
         %ul.content-list
           %li{ class: 'gl-px-5!' }
             %span.light
@@ -134,9 +134,9 @@
     = render_if_exists 'admin/projects/geo_status_widget', locals: { project: @project }
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
-      - c.header do
+      - c.with_header do
         = s_('ProjectSettings|Transfer project')
-      - c.body do
+      - c.with_body do
         = gitlab_ui_form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
           .form-group.row
             .col-sm-3.col-form-label
@@ -149,9 +149,9 @@
               = f.submit _('Transfer'), pajamas_button: true
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5 repository-check' }) do |c|
-      - c.header do
+      - c.with_header do
         = _("Repository check")
-      - c.body do
+      - c.with_body do
         = gitlab_ui_form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
           .form-group
             - if @project.last_repository_check_at.nil?
@@ -171,35 +171,35 @@
   .col-md-6
     - if @group
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }, footer_options: { class: 'gl-p-4' }) do |c|
-        - c.header do
+        - c.with_header do
           %strong= @group.name
           = _('group members')
           = gl_badge_tag @group_members.size
           = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
-        - c.body do
+        - c.with_body do
           %ul.content-list.members-list
             = render partial: 'shared/members/member',
                     collection: @group_members, as: :member,
                     locals: { membership_source: @project,
                               group: @group,
                               current_user_is_group_owner: current_user_is_group_owner }
-        - c.footer do
+        - c.with_footer do
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
     = render 'shared/members/requests', membership_source: @project, group: @group, requesters: @requesters
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }, footer_options: { class: 'gl-p-4' }) do |c|
-      - c.header do
+      - c.with_header do
         %strong= @project.name
         = _('project members')
         = gl_badge_tag @project.users.size
         = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
-      - c.body do
+      - c.with_body do
         %ul.content-list.project_members.members-list
           = render partial: 'shared/members/member',
                   collection: @project_members, as: :member,
                   locals: { membership_source: @project,
                             group: @group,
                             current_user_is_group_owner: current_user_is_group_owner }
-      - c.footer do
+      - c.with_footer do
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

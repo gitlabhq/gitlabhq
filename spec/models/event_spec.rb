@@ -203,9 +203,7 @@ RSpec.describe Event, feature_category: :user_profile do
     let(:target) { nil }
 
     let(:event) do
-      described_class.new(project: project,
-                          target: target,
-                          author_id: author.id)
+      described_class.new(project: project, target: target, author_id: author.id)
     end
 
     context 'for an issue' do
@@ -304,9 +302,7 @@ RSpec.describe Event, feature_category: :user_profile do
     let(:note_on_design) { create(:note_on_design, author: author, noteable: design, project: project) }
     let(:milestone_on_project) { create(:milestone, project: project) }
     let(:event) do
-      described_class.new(project: project,
-                          target: target,
-                          author_id: author.id)
+      described_class.new(project: project, target: target, author_id: author.id)
     end
 
     before do
@@ -902,8 +898,10 @@ RSpec.describe Event, feature_category: :user_profile do
 
       it "deletes the redis key for if the project was inactive" do
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis).to receive(:hdel).with('inactive_projects_deletion_warning_email_notified',
-                                               "project:#{project.id}")
+          expect(redis).to receive(:hdel).with(
+            'inactive_projects_deletion_warning_email_notified',
+            "project:#{project.id}"
+          )
         end
 
         project.touch(:last_activity_at, time: 1.year.ago)
@@ -1138,11 +1136,13 @@ RSpec.describe Event, feature_category: :user_profile do
   def create_push_event(project, user)
     event = create(:push_event, project: project, author: user)
 
-    create(:push_event_payload,
-           event: event,
-           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-           commit_count: 0,
-           ref: 'master')
+    create(
+      :push_event_payload,
+      event: event,
+      commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+      commit_count: 0,
+      ref: 'master'
+    )
 
     event
   end

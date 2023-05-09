@@ -104,10 +104,14 @@ module QA
         end
 
         def go_to_groups
-          return click_element(:nav_item_link, submenu_item: 'Groups') if Runtime::Env.super_sidebar_enabled?
-
-          # Use new functionality to visit Groups where possible
-          if has_element?(:sidebar_menu_link, menu_item: 'Groups')
+          # This needs to be fixed in the tests themselves. Fullfillment tests try to go to groups view from the
+          # group. Instead of having a global hack, explicit test should navigate to correct view first.
+          # see: https://gitlab.com/gitlab-org/gitlab/-/issues/403589#note_1383040061
+          if Runtime::Env.super_sidebar_enabled?
+            go_to_your_work unless has_element?(:nav_item_link, submenu_item: 'Groups', wait: 0)
+            click_element(:nav_item_link, submenu_item: 'Groups')
+          elsif has_element?(:sidebar_menu_link, menu_item: 'Groups')
+            # Use new functionality to visit Groups where possible
             click_element(:sidebar_menu_link, menu_item: 'Groups')
           else
             # Otherwise fallback to previous functionality

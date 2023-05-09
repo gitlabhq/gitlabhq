@@ -7,8 +7,9 @@ import SetupInstructions from '~/jira_connect/subscriptions/pages/sign_in/sign_i
 describe('SetupInstructions', () => {
   let wrapper;
 
-  const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlLink = () => wrapper.findComponent(GlLink);
+  const findBackButton = () => wrapper.findAllComponents(GlButton).at(0);
+  const findNextButton = () => wrapper.findAllComponents(GlButton).at(1);
 
   const createComponent = () => {
     wrapper = shallowMount(SetupInstructions);
@@ -23,12 +24,23 @@ describe('SetupInstructions', () => {
       expect(findGlLink().attributes('href')).toBe(OAUTH_SELF_MANAGED_DOC_LINK);
     });
 
-    describe('when button is clicked', () => {
+    describe('when "Next" button is clicked', () => {
       it('emits "next" event', () => {
         expect(wrapper.emitted('next')).toBeUndefined();
-        findGlButton().vm.$emit('click');
+        findNextButton().vm.$emit('click');
 
         expect(wrapper.emitted('next')).toHaveLength(1);
+        expect(wrapper.emitted('back')).toBeUndefined();
+      });
+    });
+
+    describe('when "Back" button is clicked', () => {
+      it('emits "back" event', () => {
+        expect(wrapper.emitted('back')).toBeUndefined();
+        findBackButton().vm.$emit('click');
+
+        expect(wrapper.emitted('back')).toHaveLength(1);
+        expect(wrapper.emitted('next')).toBeUndefined();
       });
     });
   });

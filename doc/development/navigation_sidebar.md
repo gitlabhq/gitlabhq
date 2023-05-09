@@ -35,8 +35,9 @@ Only one instance of this component on a given page is supported. This is to
 avoid ordering issues and cluttering the sidebar.
 
 NOTE:
-Arbitrary content is allowed, but nav items should be implemented by
-subclassing `::Sidebars::Panel`.
+You can use arbitrary content. You should implement nav items by subclassing `::Sidebars::Panel`.
+If you must use Vue to render nav items (for example, if you need to use Vue Router) you can make an exception.
+However, in the corresponding `panel.rb` file, you must add a comment that explains how the nav items are rendered.
 
 NOTE:
 Do not use the `SidebarPortalTarget` component. It is internal to the sidebar.

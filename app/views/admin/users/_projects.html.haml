@@ -1,17 +1,17 @@
 - if local_assigns.has_key?(:contributed_projects) && contributed_projects.present?
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }) do |c|
-    - c.header do
+    - c.with_header do
       = _('Projects contributed to')
-    - c.body do
+    - c.with_body do
       = render 'shared/projects/list',
         projects: contributed_projects.sort_by(&:star_count).reverse,
         projects_limit: 5, stars: true, avatar: false, compact_mode: true
 
 - if local_assigns.has_key?(:projects) && projects.present?
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }) do |c|
-    - c.header do
+    - c.with_header do
       = _('Personal projects')
-    - c.body do
+    - c.with_body do
       = render 'shared/projects/list',
         projects: projects.sort_by(&:star_count).reverse,
         projects_limit: 10, stars: true, avatar: false, compact_mode: true

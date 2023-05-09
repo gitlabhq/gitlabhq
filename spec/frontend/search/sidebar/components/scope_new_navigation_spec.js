@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import ScopeNewNavigation from '~/search/sidebar/components/scope_new_navigation.vue';
@@ -30,7 +30,7 @@ describe('ScopeNewNavigation', () => {
       getters: getterSpies,
     });
 
-    wrapper = shallowMount(ScopeNewNavigation, {
+    wrapper = mount(ScopeNewNavigation, {
       store,
       stubs: {
         NavItem,

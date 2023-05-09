@@ -19,8 +19,7 @@ RSpec.describe EventCollection do
     context 'with project events' do
       let_it_be(:push_event_payloads) do
         Array.new(9) do
-          create(:push_event_payload,
-                 event: create(:push_event, project: project, author: user))
+          create(:push_event_payload, event: create(:push_event, project: project, author: user))
         end
       end
 

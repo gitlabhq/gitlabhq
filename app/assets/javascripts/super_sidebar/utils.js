@@ -83,3 +83,5 @@ export const formatContextSwitcherItems = (items) =>
     avatar,
     link,
   }));
+
+export const ariaCurrent = (isActive) => (isActive ? 'page' : null);

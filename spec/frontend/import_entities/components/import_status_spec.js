@@ -155,6 +155,7 @@ describe('Import entities status component', () => {
 
   describe('show details link', () => {
     const mockDetailsPath = 'details_path';
+    const mockProjectId = 29;
     const mockCompleteStats = {
       fetched: { ...mockStatItems },
       imported: { ...mockStatItems },
@@ -180,6 +181,7 @@ describe('Import entities status component', () => {
         beforeEach(() => {
           createComponent(
             {
+              projectId: mockProjectId,
               status: STATUSES.FINISHED,
               stats: partialImport ? mockIncompleteStats : mockCompleteStats,
             },
@@ -195,7 +197,9 @@ describe('Import entities status component', () => {
         it(`${expectLink ? 'renders' : 'does not render'} import details link`, () => {
           expect(findGlLink().exists()).toBe(expectLink);
           if (expectLink) {
-            expect(findGlLink().attributes('href')).toBe(mockDetailsPath);
+            expect(findGlLink().attributes('href')).toBe(
+              `${mockDetailsPath}?project_id=${mockProjectId}`,
+            );
           }
         });
       },

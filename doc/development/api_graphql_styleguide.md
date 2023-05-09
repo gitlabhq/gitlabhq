@@ -604,7 +604,7 @@ description 'Mutates an object. Does not mutate the object if ' \
 def resolve(id: )
   object = authorized_find!(id: id)
 
-  raise Gitlab::Graphql::Errors::ResourceNotAvailable, '`my_feature_flag` feature flag is disabled.' \
+  raise_resource_not_available_error! '`my_feature_flag` feature flag is disabled.' \
     if Feature.disabled?(:my_feature_flag, object)
   # ...
 end

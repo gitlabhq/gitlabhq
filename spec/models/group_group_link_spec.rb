@@ -8,8 +8,7 @@ RSpec.describe GroupGroupLink do
 
   describe 'validation' do
     let_it_be(:group_group_link) do
-      create(:group_group_link, shared_group: shared_group,
-                                shared_with_group: group)
+      create(:group_group_link, shared_group: shared_group, shared_with_group: group)
     end
 
     it { is_expected.to validate_presence_of(:shared_group) }
@@ -46,18 +45,18 @@ RSpec.describe GroupGroupLink do
       describe '.non_guests' do
         it 'returns all records which are greater than Guests access' do
           expect(described_class.non_guests).to match_array([
-                                                              group_group_link_reporter, group_group_link_developer,
-                                                              group_group_link_maintainer, group_group_link_owner
-                                                            ])
+            group_group_link_reporter, group_group_link_developer,
+            group_group_link_maintainer, group_group_link_owner
+          ])
         end
       end
 
       describe '.with_owner_or_maintainer_access' do
         it 'returns all records which have OWNER or MAINTAINER access' do
           expect(described_class.with_owner_or_maintainer_access).to match_array([
-                                                                                   group_group_link_maintainer,
-                                                                                   group_group_link_owner
-                                                                                 ])
+            group_group_link_maintainer,
+            group_group_link_owner
+          ])
         end
       end
 

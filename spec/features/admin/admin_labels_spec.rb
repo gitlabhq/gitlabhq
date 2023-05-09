@@ -37,8 +37,11 @@ RSpec.describe 'admin issues labels', feature_category: :team_planning do
     end
 
     it 'deletes all labels', :js do
-      page.all('.labels .js-remove-label').each do |remove|
-        accept_gl_confirm(button_text: 'Delete label') { remove.click }
+      page.all('.labels .label-actions-list').each do |label|
+        label.click
+        accept_gl_confirm(button_text: 'Delete label') do
+          click_link 'Delete'
+        end
         wait_for_requests
       end
 

@@ -4,6 +4,9 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { loadBranches } from '~/projects/commit_box/info/load_branches';
+import { initDetailsButton } from '~/projects/commit_box/info/init_details_button';
+
+jest.mock('~/projects/commit_box/info/init_details_button');
 
 const mockCommitPath = '/commit/abcd/branches';
 const mockBranchesRes =
@@ -24,6 +27,13 @@ describe('~/projects/commit_box/info/load_branches', () => {
 
     mock = new MockAdapter(axios);
     mock.onGet(mockCommitPath).reply(HTTP_STATUS_OK, mockBranchesRes);
+  });
+
+  it('initializes the details button', async () => {
+    loadBranches();
+    await waitForPromises();
+
+    expect(initDetailsButton).toHaveBeenCalled();
   });
 
   it('loads and renders branches info', async () => {

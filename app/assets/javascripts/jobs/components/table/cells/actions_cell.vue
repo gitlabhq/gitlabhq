@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlButtonGroup, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlButtonGroup,
+  GlModal,
+  GlModalDirective,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 import {
@@ -49,6 +56,7 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     admin: {
@@ -178,11 +186,12 @@ export default {
     <template v-if="canReadJob && canUpdateJob">
       <gl-button
         v-if="isActive"
-        data-testid="cancel-button"
+        v-gl-tooltip
         icon="cancel"
         :title="$options.CANCEL"
         :aria-label="$options.CANCEL"
         :disabled="cancelBtnDisabled"
+        data-testid="cancel-button"
         @click="cancelJob()"
       />
       <template v-else-if="isScheduled">
@@ -191,6 +200,7 @@ export default {
         </gl-button>
         <gl-button
           v-gl-modal-directive="$options.playJobModalId"
+          v-gl-tooltip
           icon="play"
           :title="$options.ACTIONS_START_NOW"
           :aria-label="$options.ACTIONS_START_NOW"
@@ -206,6 +216,7 @@ export default {
           </gl-sprintf>
         </gl-modal>
         <gl-button
+          v-gl-tooltip
           icon="time-out"
           :title="$options.ACTIONS_UNSCHEDULE"
           :aria-label="$options.ACTIONS_UNSCHEDULE"
@@ -218,6 +229,7 @@ export default {
         <!--Note: This is the manual job play button -->
         <gl-button
           v-if="manualJobPlayable"
+          v-gl-tooltip
           icon="play"
           :title="$options.ACTIONS_PLAY"
           :aria-label="$options.ACTIONS_PLAY"
@@ -227,6 +239,7 @@ export default {
         />
         <gl-button
           v-else-if="isRetryable"
+          v-gl-tooltip
           icon="retry"
           :title="retryButtonTitle"
           :aria-label="retryButtonTitle"
@@ -239,6 +252,7 @@ export default {
     </template>
     <gl-button
       v-if="shouldDisplayArtifacts"
+      v-gl-tooltip
       icon="download"
       :title="$options.ACTIONS_DOWNLOAD_ARTIFACTS"
       :aria-label="$options.ACTIONS_DOWNLOAD_ARTIFACTS"

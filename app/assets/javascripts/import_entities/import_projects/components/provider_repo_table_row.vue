@@ -70,7 +70,7 @@ export default {
     ...mapGetters(['getImportTarget']),
 
     displayFullPath() {
-      return this.repo.importedProject.fullPath.replace(/^\//, '');
+      return this.repo.importedProject?.fullPath.replace(/^\//, '');
     },
 
     isFinished() {
@@ -103,6 +103,10 @@ export default {
 
     importTarget() {
       return this.getImportTarget(this.repo.importSource.id);
+    },
+
+    importedProjectId() {
+      return this.repo.importedProject?.id;
     },
 
     importButtonText() {
@@ -220,7 +224,7 @@ export default {
       </div>
     </td>
     <td data-qa-selector="import_status_indicator">
-      <import-status :status="importStatus" :stats="stats" />
+      <import-status :project-id="importedProjectId" :status="importStatus" :stats="stats" />
     </td>
     <td data-testid="actions" class="gl-white-space-nowrap">
       <gl-tooltip :target="() => $refs.cancelButton.$el">

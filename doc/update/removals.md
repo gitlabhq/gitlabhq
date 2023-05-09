@@ -120,6 +120,22 @@ In GitLab 13.9, we updated the Omnibus GitLab package and GitLab Helm chart 4.9 
 GitLab 16.0, we have removed support for Redis 5. If you are using your own Redis 5.0 instance, you must upgrade it to Redis 6.0 or later before upgrading to GitLab 16.0
 or later.
 
+### Removed `external` field from GraphQL `ReleaseAssetLink` type
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+From GitLab 15.9, all Release links are external. The `external` field of the `ReleaseAssetLink` type was deprecated in 15.9, and removed in GitLab 16.0.
+
+### Removed `external` field from Releases and Release link APIs
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+From GitLab 15.9, all Release links are external. The `external` field in the Releases and Release link APIs was deprecated in 15.9, and removed in GitLab 16.0.
+
 ### Use of `id` field in vulnerabilityFindingDismiss mutation
 
 WARNING:

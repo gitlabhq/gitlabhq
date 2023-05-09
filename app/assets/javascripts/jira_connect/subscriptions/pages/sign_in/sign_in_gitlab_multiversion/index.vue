@@ -12,7 +12,6 @@ import {
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 
 import SignInOauthButton from '../../../components/sign_in_oauth_button.vue';
-import SetupInstructions from './setup_instructions.vue';
 import VersionSelectForm from './version_select_form.vue';
 
 export default {
@@ -20,31 +19,23 @@ export default {
   components: {
     GlButton,
     SignInOauthButton,
-    SetupInstructions,
     VersionSelectForm,
   },
   data() {
     return {
       gitlabBasePath: null,
       loadingVersionSelect: false,
-      showSetupInstructions: false,
     };
   },
   computed: {
     hasSelectedVersion() {
       return this.gitlabBasePath !== null;
     },
-    subtitle() {
-      return this.hasSelectedVersion
-        ? this.$options.i18n.signInSubtitle
-        : this.$options.i18n.versionSelectSubtitle;
-    },
   },
   mounted() {
     this.gitlabBasePath = retrieveBaseUrl();
     if (this.gitlabBasePath !== GITLAB_COM_BASE_PATH) {
       setApiBaseURL(this.gitlabBasePath);
-      this.showSetupInstructions = true;
     }
   },
   methods: {
@@ -70,9 +61,6 @@ export default {
           this.loadingVersionSelect = false;
         });
     },
-    onSetupNext() {
-      this.showSetupInstructions = false;
-    },
     onSignInError() {
       this.$emit('error');
     },
@@ -80,7 +68,6 @@ export default {
   i18n: {
     title: s__('JiraService|Welcome to GitLab for Jira'),
     signInSubtitle: s__('JiraService|Sign in to GitLab to link namespaces.'),
-    versionSelectSubtitle: s__('JiraService|What version of GitLab are you using?'),
     changeVersionButtonText: s__('JiraService|Change GitLab version'),
   },
 };
@@ -90,7 +77,6 @@ export default {
   <div>
     <div class="gl-text-center">
       <h2>{{ $options.i18n.title }}</h2>
-      <p data-testid="subtitle">{{ subtitle }}</p>
     </div>
 
     <version-select-form
@@ -101,9 +87,8 @@ export default {
     />
 
     <template v-else>
-      <setup-instructions v-if="showSetupInstructions" @next="onSetupNext" />
-
-      <div v-else class="gl-text-center">
+      <div class="gl-text-center">
+        <p data-testid="subtitle">{{ $options.i18n.signInSubtitle }}</p>
         <sign-in-oauth-button
           class="gl-mb-5"
           :gitlab-base-path="gitlabBasePath"

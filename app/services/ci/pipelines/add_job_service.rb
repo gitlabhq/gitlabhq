@@ -18,12 +18,6 @@ module Ci
 
         in_lock("ci:pipelines:#{pipeline.id}:add-job", ttl: LOCK_TIMEOUT, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRIES) do
           Ci::Pipeline.transaction do
-            # This is used to reduce the deadlocks when partitioning `ci_builds`
-            # since inserting into this table requires locks on all foreign keys
-            # and we need to lock all the tables in a specific order for the
-            # migration to succeed.
-            Ci::Pipeline.connection.execute('LOCK "ci_pipelines", "ci_stages" IN ROW SHARE MODE;')
-
             yield(job)
 
             job.update_older_statuses_retried!

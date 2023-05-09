@@ -15,9 +15,9 @@
 .row
   .col-md-6
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.header do
+      - c.with_header do
         = _('Group info:')
-      - c.body do
+      - c.with_body do
         %ul.content-list.content-list-items-padding
           %li
             = render Pajamas::AvatarComponent.new(@group, size: 64, alt: '')
@@ -69,10 +69,10 @@
     = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.header do
+      - c.with_header do
         = _('Projects')
         = gl_badge_tag @group.projects.count
-      - c.body do
+      - c.with_body do
         %ul.content-list.content-list-items-padding
           - @projects.each do |project|
             %li
@@ -82,16 +82,16 @@
               %span.float-right.light
                 %span.monospace= project.full_path + '.git'
         - unless @projects.size < Kaminari.config.default_per_page
-          - c.footer do
+          - c.with_footer do
             = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
     - shared_projects = @group.shared_projects.sort_by(&:name)
     - unless shared_projects.empty?
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-        - c.header do
+        - c.with_header do
           = _('Projects shared with %{group_name}') % { group_name: @group.name }
           = gl_badge_tag shared_projects.size
-        - c.body do
+        - c.with_body do
           %ul.content-list.content-list-items-padding
             - shared_projects.each do |project|
               %li
@@ -108,11 +108,11 @@
       = render 'shared/members/requests', membership_source: @group, group: @group, requesters: @requesters, force_mobile_view: true
 
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.header do
+      - c.with_header do
         = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
         = gl_badge_tag @group.users_count
         = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
-      - c.body do
+      - c.with_body do
         %ul.content-list.group-users-list.members-list
           = render partial: 'shared/members/member',
                   collection: @members, as: :member,
@@ -120,5 +120,5 @@
                             group: @group,
                             current_user_is_group_owner: current_user_is_group_owner }
       - unless @members.size < Kaminari.config.default_per_page
-        - c.footer do
+        - c.with_footer do
           = paginate @members, param_name: 'members_page', theme: 'gitlab'

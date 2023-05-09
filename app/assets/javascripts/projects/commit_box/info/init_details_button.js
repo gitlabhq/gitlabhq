@@ -1,7 +1,17 @@
 export const initDetailsButton = () => {
-  document.querySelector('.commit-info').addEventListener('click', function expand(e) {
-    e.preventDefault();
-    this.querySelector('.js-details-content').classList.remove('hide');
-    this.querySelector('.js-details-expand').classList.add('gl-display-none');
+  const expandButton = document.querySelector('.js-details-expand');
+
+  if (!expandButton) {
+    return;
+  }
+
+  expandButton.addEventListener('click', (event) => {
+    const btn = event.target;
+    const contentEl = btn.parentElement.querySelector('.js-details-content');
+
+    if (contentEl) {
+      contentEl.classList.remove('hide');
+      btn.classList.add('gl-display-none');
+    }
   });
 };

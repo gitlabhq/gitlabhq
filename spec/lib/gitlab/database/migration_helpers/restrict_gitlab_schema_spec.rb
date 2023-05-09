@@ -78,13 +78,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             }
           }
         },
-        "does add column to p_ci_builds in gitlab_main and gitlab_ci" => {
+        "does add column to ci_builds in gitlab_main and gitlab_ci" => {
           migration: ->(klass) do
             def change
-              add_column :p_ci_builds, :__test_column, :integer
+              add_column :ci_builds, :__test_column, :integer
             end
           end,
-          query_matcher: /ALTER TABLE "p_ci_builds" ADD "__test_column" integer/,
+          query_matcher: /ALTER TABLE "ci_builds" ADD "__test_column" integer/,
           expected: {
             no_gitlab_schema: {
               main: :success,

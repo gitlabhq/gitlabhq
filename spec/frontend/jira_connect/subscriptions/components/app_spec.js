@@ -50,18 +50,6 @@ describe('JiraConnectApp', () => {
       jest.spyOn(AccessorUtilities, 'canUseCrypto').mockReturnValue(true);
     });
 
-    it('renders UserLink component', () => {
-      createComponent();
-
-      const userLink = findUserLink();
-      expect(userLink.exists()).toBe(true);
-      expect(userLink.props()).toEqual({
-        hasSubscriptions: true,
-        user: null,
-        userSignedIn: false,
-      });
-    });
-
     it('renders only Jira Connect app', () => {
       createComponent();
 
@@ -79,12 +67,12 @@ describe('JiraConnectApp', () => {
     });
 
     describe.each`
-      scenario                   | currentUser        | shouldRenderSignInPage | shouldRenderSubscriptionsPage
-      ${'user is not signed in'} | ${undefined}       | ${true}                | ${false}
-      ${'user is signed in'}     | ${mockCurrentUser} | ${false}               | ${true}
+      scenario                   | currentUser        | expectUserLink | expectSignInPage | expectSubscriptionsPage
+      ${'user is not signed in'} | ${undefined}       | ${false}       | ${true}          | ${false}
+      ${'user is signed in'}     | ${mockCurrentUser} | ${true}        | ${false}         | ${true}
     `(
       'when $scenario',
-      ({ currentUser, shouldRenderSignInPage, shouldRenderSubscriptionsPage }) => {
+      ({ currentUser, expectUserLink, expectSignInPage, expectSubscriptionsPage }) => {
         beforeEach(() => {
           createComponent({
             initialState: {
@@ -93,18 +81,23 @@ describe('JiraConnectApp', () => {
           });
         });
 
-        it(`${shouldRenderSignInPage ? 'renders' : 'does not render'} sign in page`, () => {
-          expect(findSignInPage().isVisible()).toBe(shouldRenderSignInPage);
-          if (shouldRenderSignInPage) {
+        it(`${expectUserLink ? 'renders' : 'does not render'} user link`, () => {
+          expect(findUserLink().exists()).toBe(expectUserLink);
+          if (expectUserLink) {
+            expect(findUserLink().props('user')).toBe(mockCurrentUser);
+          }
+        });
+
+        it(`${expectSignInPage ? 'renders' : 'does not render'} sign in page`, () => {
+          expect(findSignInPage().isVisible()).toBe(expectSignInPage);
+          if (expectSignInPage) {
             expect(findSignInPage().props('hasSubscriptions')).toBe(true);
           }
         });
 
-        it(`${
-          shouldRenderSubscriptionsPage ? 'renders' : 'does not render'
-        } subscriptions page`, () => {
-          expect(findSubscriptionsPage().exists()).toBe(shouldRenderSubscriptionsPage);
-          if (shouldRenderSubscriptionsPage) {
+        it(`${expectSubscriptionsPage ? 'renders' : 'does not render'} subscriptions page`, () => {
+          expect(findSubscriptionsPage().exists()).toBe(expectSubscriptionsPage);
+          if (expectSubscriptionsPage) {
             expect(findSubscriptionsPage().props('hasSubscriptions')).toBe(true);
           }
         });

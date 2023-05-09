@@ -7,6 +7,8 @@ import {
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
+import NavItemLink from './nav_item_link.vue';
+import NavItemRouterLink from './nav_item_router_link.vue';
 
 export default {
   i18n: {
@@ -18,6 +20,8 @@ export default {
     GlButton,
     GlIcon,
     GlBadge,
+    NavItemLink,
+    NavItemRouterLink,
   },
   inject: {
     pinnedItemIds: { default: { ids: [] } },
@@ -55,9 +59,6 @@ export default {
         (typeof this.pillData === 'string' && this.pillData !== '')
       );
     },
-    isActive() {
-      return this.item.is_active;
-    },
     isPinnable() {
       return this.panelSupportsPins && !this.isStatic;
     },
@@ -86,19 +87,20 @@ export default {
       return {
         ...this.$attrs,
         ...this.trackingProps,
-        href: this.item.link,
-        'aria-current': this.isActive ? 'page' : null,
+        item: this.item,
         'data-qa-submenu-item': this.item.title,
       };
     },
     computedLinkClasses() {
       return {
-        'gl-bg-t-gray-a-08': this.isActive,
         'gl-py-2': this.isPinnable,
         'gl-py-3': !this.isPinnable,
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
+    },
+    navItemLinkComponent() {
+      return this.item.to ? NavItemRouterLink : NavItemLink;
     },
   },
 };
@@ -106,7 +108,9 @@ export default {
 
 <template>
   <li>
-    <a
+    <component
+      :is="navItemLinkComponent"
+      #default="{ isActive }"
       v-bind="linkProps"
       class="nav-item-link gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-0 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus"
       :class="computedLinkClasses"
@@ -118,6 +122,7 @@ export default {
         class="gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
         style="width: 3px; border-radius: 3px; margin-right: 1px"
+        data-testid="active-indicator"
       ></div>
       <div class="gl-flex-shrink-0 gl-w-6 gl-mx-3">
         <slot name="icon">
@@ -162,6 +167,6 @@ export default {
           @click.prevent="$emit('pin-remove', item.id)"
         />
       </span>
-    </a>
+    </component>
   </li>
 </template>

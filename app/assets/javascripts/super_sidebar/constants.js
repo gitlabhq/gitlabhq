@@ -50,3 +50,5 @@ export const SIDEBAR_PINS_EXPANDED_COOKIE = 'sidebar_pinned_section_expanded';
 export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;
 
 export const DROPDOWN_Y_OFFSET = 4;
+
+export const NAV_ITEM_LINK_ACTIVE_CLASS = 'gl-bg-t-gray-a-08';

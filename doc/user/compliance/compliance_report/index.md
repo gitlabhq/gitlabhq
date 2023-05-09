@@ -225,6 +225,28 @@ To remove a compliance framework from projects in a group:
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
 1. Select **Remove**.
 
+### Export a report of compliance frameworks on projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
+
+Export a report of compliance frameworks that are applied to projects in a group. Reports:
+
+- Do not use filters on the framework report.
+- Are truncated at 15 MB so the email attachment too large.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export a report of compliance frameworks on projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
+
+A report is compiled and delivered to your email inbox as an attachment.
+
 #### Filter the compliance frameworks report
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.

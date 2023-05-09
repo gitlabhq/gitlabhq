@@ -143,24 +143,61 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
       end
 
       describe 'if a user has been reported for abuse' do
-        let!(:abuse_report) { create(:abuse_report, user: user) }
+        let_it_be(:abuse_report) { create(:abuse_report, user: user) }
 
         describe 'in the abuse report view' do
-          it 'presents information about abuse report' do
+          before do
             visit admin_abuse_reports_path
+          end
 
+          it 'presents information about abuse report' do
             expect(page).to have_content('Abuse Reports')
+
+            expect(page).to have_content(user.name)
+            expect(page).to have_content(abuse_report.reporter.name)
             expect(page).to have_content(abuse_report.message)
             expect(page).to have_link(user.name, href: user_path(user))
+          end
+
+          it 'present actions items' do
+            expect(page).to have_link('Remove user & report')
+            expect(page).to have_link('Block user')
             expect(page).to have_link('Remove user')
           end
         end
 
         describe 'in the profile page of the user' do
-          it 'shows a link to the admin view of the user' do
+          it 'shows a link to view user in the admin area' do
             visit user_path(user)
 
-            expect(page).to have_link '', href: admin_user_path(user)
+            expect(page).to have_link 'View user in admin area', href: admin_user_path(user)
+          end
+        end
+      end
+
+      describe 'if an admin has been reported for abuse' do
+        let_it_be(:admin_abuse_report) { create(:abuse_report, user: admin) }
+
+        describe 'in the abuse report view' do
+          before do
+            visit admin_abuse_reports_path
+          end
+
+          it 'presents information about abuse report' do
+            page.within(:table_row, { "User" => admin.name }) do
+              expect(page).to have_content(admin.name)
+              expect(page).to have_content(admin_abuse_report.reporter.name)
+              expect(page).to have_content(admin_abuse_report.message)
+              expect(page).to have_link(admin.name, href: user_path(admin))
+            end
+          end
+
+          it 'does not present actions items' do
+            page.within(:table_row, { "User" => admin.name }) do
+              expect(page).not_to have_link('Remove user & report')
+              expect(page).not_to have_link('Block user')
+              expect(page).not_to have_link('Remove user')
+            end
           end
         end
       end

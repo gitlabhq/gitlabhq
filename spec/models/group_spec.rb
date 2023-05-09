@@ -2456,8 +2456,7 @@ RSpec.describe Group, feature_category: :subgroups do
     let(:shared_with_group) { create(:group, parent: group) }
 
     before do
-      create(:group_group_link, shared_group: nested_group,
-                                shared_with_group: shared_with_group)
+      create(:group_group_link, shared_group: nested_group, shared_with_group: shared_with_group)
     end
 
     subject(:related_group_ids) { nested_group.related_group_ids }

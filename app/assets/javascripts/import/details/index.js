@@ -8,9 +8,14 @@ export default () => {
     return null;
   }
 
+  const { failuresPath } = el.dataset;
+
   return new Vue({
     el,
     name: 'ImportDetailsRoot',
+    provide: {
+      failuresPath,
+    },
     render(createElement) {
       return createElement(ImportDetailsApp);
     },
