@@ -11279,8 +11279,8 @@ CREATE TABLE appearances (
     email_header_and_footer_enabled boolean DEFAULT false NOT NULL,
     profile_image_guidelines text,
     profile_image_guidelines_html text,
-    pwa_icon text,
     pwa_short_name text,
+    pwa_icon text,
     pwa_name text,
     pwa_description text,
     CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
@@ -11694,6 +11694,10 @@ CREATE TABLE application_settings (
     database_grafana_api_url text,
     database_grafana_tag text,
     public_runner_releases_url text DEFAULT 'https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases'::text NOT NULL,
+    password_uppercase_required boolean DEFAULT false NOT NULL,
+    password_lowercase_required boolean DEFAULT false NOT NULL,
+    password_number_required boolean DEFAULT false NOT NULL,
+    password_symbol_required boolean DEFAULT false NOT NULL,
     encrypted_arkose_labs_public_api_key bytea,
     encrypted_arkose_labs_public_api_key_iv bytea,
     encrypted_arkose_labs_private_api_key bytea,
@@ -11704,14 +11708,14 @@ CREATE TABLE application_settings (
     inactive_projects_min_size_mb integer DEFAULT 0 NOT NULL,
     inactive_projects_send_warning_email_after_months integer DEFAULT 1 NOT NULL,
     delayed_group_deletion boolean DEFAULT true NOT NULL,
+    maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
     arkose_labs_namespace text DEFAULT 'client'::text NOT NULL,
     max_export_size integer DEFAULT 0,
+    encrypted_slack_app_signing_secret bytea,
+    encrypted_slack_app_signing_secret_iv bytea,
     container_registry_pre_import_timeout integer DEFAULT 1800 NOT NULL,
     container_registry_import_timeout integer DEFAULT 600 NOT NULL,
     pipeline_limit_per_project_user_sha integer DEFAULT 0 NOT NULL,
-    encrypted_slack_app_signing_secret bytea,
-    encrypted_slack_app_signing_secret_iv bytea,
-    globally_allowed_ips text DEFAULT ''::text NOT NULL,
     dingtalk_integration_enabled boolean DEFAULT false NOT NULL,
     encrypted_dingtalk_corpid bytea,
     encrypted_dingtalk_corpid_iv bytea,
@@ -11719,11 +11723,8 @@ CREATE TABLE application_settings (
     encrypted_dingtalk_app_key_iv bytea,
     encrypted_dingtalk_app_secret bytea,
     encrypted_dingtalk_app_secret_iv bytea,
-    password_uppercase_required boolean DEFAULT false NOT NULL,
-    password_lowercase_required boolean DEFAULT false NOT NULL,
-    password_number_required boolean DEFAULT false NOT NULL,
-    password_symbol_required boolean DEFAULT false NOT NULL,
     jira_connect_application_key text,
+    globally_allowed_ips text DEFAULT ''::text NOT NULL,
     container_registry_pre_import_tags_rate numeric(6,2) DEFAULT 0.5 NOT NULL,
     license_usage_data_exported boolean DEFAULT false NOT NULL,
     phone_verification_code_enabled boolean DEFAULT false NOT NULL,
@@ -11738,34 +11739,33 @@ CREATE TABLE application_settings (
     error_tracking_api_url text,
     git_rate_limit_users_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     error_tracking_access_token_encrypted text,
+    invitation_flow_enforcement boolean DEFAULT false NOT NULL,
     package_registry_cleanup_policies_worker_capacity integer DEFAULT 2 NOT NULL,
     deactivate_dormant_users_period integer DEFAULT 90 NOT NULL,
     auto_ban_user_on_excessive_projects_download boolean DEFAULT false NOT NULL,
-    invitation_flow_enforcement boolean DEFAULT false NOT NULL,
     max_pages_custom_domains_per_project integer DEFAULT 0 NOT NULL,
     cube_api_base_url text,
     encrypted_cube_api_key bytea,
     encrypted_cube_api_key_iv bytea,
-    maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
-    dashboard_limit_enabled boolean DEFAULT false NOT NULL,
-    dashboard_limit integer DEFAULT 0 NOT NULL,
-    dashboard_notification_limit integer DEFAULT 0 NOT NULL,
-    dashboard_enforcement_limit integer DEFAULT 0 NOT NULL,
-    dashboard_limit_new_namespace_creation_enforcement_date date,
     jitsu_host text,
     jitsu_project_xid text,
     jitsu_administrator_email text,
     encrypted_jitsu_administrator_password bytea,
     encrypted_jitsu_administrator_password_iv bytea,
+    dashboard_limit_enabled boolean DEFAULT false NOT NULL,
+    dashboard_limit integer DEFAULT 0 NOT NULL,
+    dashboard_notification_limit integer DEFAULT 0 NOT NULL,
+    dashboard_enforcement_limit integer DEFAULT 0 NOT NULL,
+    dashboard_limit_new_namespace_creation_enforcement_date date,
     can_create_group boolean DEFAULT true NOT NULL,
     lock_maven_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_pypi_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_npm_package_requests_forwarding boolean DEFAULT false NOT NULL,
+    jira_connect_proxy_url text,
     password_expiration_enabled boolean DEFAULT false NOT NULL,
     password_expires_in_days integer DEFAULT 90 NOT NULL,
     password_expires_notice_before_days integer DEFAULT 7 NOT NULL,
     product_analytics_enabled boolean DEFAULT false NOT NULL,
-    jira_connect_proxy_url text,
     email_confirmation_setting smallint DEFAULT 0,
     disable_admin_oauth_scopes boolean DEFAULT false NOT NULL,
     default_preferred_language text DEFAULT 'en'::text NOT NULL,
@@ -11774,37 +11774,37 @@ CREATE TABLE application_settings (
     encrypted_telesign_customer_xid_iv bytea,
     encrypted_telesign_api_key bytea,
     encrypted_telesign_api_key_iv bytea,
-    max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
     disable_personal_access_tokens boolean DEFAULT false NOT NULL,
+    max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
     bulk_import_enabled boolean DEFAULT false NOT NULL,
-    user_defaults_to_private_profile boolean DEFAULT false NOT NULL,
     allow_runner_registration_token boolean DEFAULT true NOT NULL,
+    user_defaults_to_private_profile boolean DEFAULT false NOT NULL,
+    allow_possible_spam boolean DEFAULT false NOT NULL,
+    default_syntax_highlighting_theme integer DEFAULT 1 NOT NULL,
     encrypted_product_analytics_clickhouse_connection_string bytea,
     encrypted_product_analytics_clickhouse_connection_string_iv bytea,
-    allow_possible_spam boolean DEFAULT false NOT NULL,
     search_max_shard_size_gb integer DEFAULT 50 NOT NULL,
     search_max_docs_denominator integer DEFAULT 5000000 NOT NULL,
     search_min_docs_before_rollover integer DEFAULT 100000 NOT NULL,
     deactivation_email_additional_text text,
-    git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     jira_connect_public_key_storage_enabled boolean DEFAULT false NOT NULL,
-    security_policy_global_group_approvers_enabled boolean DEFAULT true NOT NULL,
-    default_syntax_highlighting_theme integer DEFAULT 1 NOT NULL,
+    git_rate_limit_users_alertlist integer[] DEFAULT '{}'::integer[] NOT NULL,
     allow_deploy_tokens_and_keys_with_external_authn boolean DEFAULT false NOT NULL,
+    security_policy_global_group_approvers_enabled boolean DEFAULT true NOT NULL,
     projects_api_rate_limit_unauthenticated integer DEFAULT 400 NOT NULL,
     deny_all_requests_except_allowed boolean DEFAULT false NOT NULL,
     product_analytics_data_collector_host text,
     lock_memberships_to_saml boolean DEFAULT false NOT NULL,
-    update_runner_versions_enabled boolean DEFAULT true NOT NULL,
     gitlab_dedicated_instance boolean DEFAULT false NOT NULL,
+    update_runner_versions_enabled boolean DEFAULT true NOT NULL,
     database_apdex_settings jsonb,
     encrypted_openai_api_key bytea,
     encrypted_openai_api_key_iv bytea,
     database_max_running_batched_background_migrations integer DEFAULT 2 NOT NULL,
-    silent_mode_enabled boolean DEFAULT false NOT NULL,
-    package_metadata_purl_types smallint[] DEFAULT '{}'::smallint[],
     encrypted_product_analytics_configurator_connection_string bytea,
     encrypted_product_analytics_configurator_connection_string_iv bytea,
+    silent_mode_enabled boolean DEFAULT false NOT NULL,
+    package_metadata_purl_types smallint[] DEFAULT '{}'::smallint[],
     ci_max_includes integer DEFAULT 150 NOT NULL,
     encrypted_tofa_credentials bytea,
     encrypted_tofa_credentials_iv bytea,
@@ -14386,28 +14386,6 @@ CREATE TABLE clusters (
     cleanup_status_reason text,
     helm_major_version integer DEFAULT 3 NOT NULL
 );
-
-CREATE TABLE clusters_applications_knative (
-    id integer NOT NULL,
-    cluster_id integer NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    status integer NOT NULL,
-    version character varying NOT NULL,
-    hostname character varying,
-    status_reason text,
-    external_ip character varying,
-    external_hostname character varying
-);
-
-CREATE SEQUENCE clusters_applications_knative_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE clusters_applications_knative_id_seq OWNED BY clusters_applications_knative.id;
 
 CREATE TABLE clusters_applications_runners (
     id integer NOT NULL,
@@ -18702,13 +18680,13 @@ CREATE TABLE namespace_settings (
     runner_token_expiration_interval integer,
     subgroup_runner_token_expiration_interval integer,
     project_runner_token_expiration_interval integer,
+    show_diff_preview_in_email boolean DEFAULT true NOT NULL,
     enabled_git_access_protocol smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit smallint DEFAULT 0 NOT NULL,
     unique_project_download_limit_interval_in_seconds integer DEFAULT 0 NOT NULL,
     project_import_level smallint DEFAULT 50 NOT NULL,
     unique_project_download_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     auto_ban_user_on_excessive_projects_download boolean DEFAULT false NOT NULL,
-    show_diff_preview_in_email boolean DEFAULT true NOT NULL,
     only_allow_merge_if_pipeline_succeeds boolean DEFAULT false NOT NULL,
     allow_merge_on_skipped_pipeline boolean DEFAULT false NOT NULL,
     only_allow_merge_if_all_discussions_are_resolved boolean DEFAULT false NOT NULL,
@@ -20095,7 +20073,6 @@ CREATE TABLE plan_limits (
     helm_max_file_size bigint DEFAULT 5242880 NOT NULL,
     ci_registered_group_runners integer DEFAULT 1000 NOT NULL,
     ci_registered_project_runners integer DEFAULT 1000 NOT NULL,
-    web_hook_calls integer DEFAULT 0 NOT NULL,
     ci_daily_pipeline_schedule_triggers integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_running_container_scanning integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_cluster_image_scanning integer DEFAULT 0 NOT NULL,
@@ -20120,6 +20097,7 @@ CREATE TABLE plan_limits (
     enforcement_limit integer DEFAULT 0 NOT NULL,
     notification_limit integer DEFAULT 0 NOT NULL,
     dashboard_limit_enabled_at timestamp with time zone,
+    web_hook_calls integer DEFAULT 0 NOT NULL,
     project_access_token_limit integer DEFAULT 0 NOT NULL
 );
 
@@ -21164,11 +21142,11 @@ CREATE TABLE project_settings (
     target_platforms character varying[] DEFAULT '{}'::character varying[] NOT NULL,
     enforce_auth_checks_on_uploads boolean DEFAULT true NOT NULL,
     selective_code_owner_removals boolean DEFAULT false NOT NULL,
-    show_diff_preview_in_email boolean DEFAULT true NOT NULL,
-    suggested_reviewers_enabled boolean DEFAULT false NOT NULL,
-    jitsu_key text,
-    only_allow_merge_if_all_status_checks_passed boolean DEFAULT false NOT NULL,
     issue_branch_template text,
+    show_diff_preview_in_email boolean DEFAULT true NOT NULL,
+    jitsu_key text,
+    suggested_reviewers_enabled boolean DEFAULT false NOT NULL,
+    only_allow_merge_if_all_status_checks_passed boolean DEFAULT false NOT NULL,
     mirror_branch_regex text,
     allow_pipeline_trigger_approve_deployment boolean DEFAULT false NOT NULL,
     emails_enabled boolean DEFAULT true NOT NULL,
@@ -25031,8 +25009,6 @@ ALTER TABLE ONLY cluster_providers_gcp ALTER COLUMN id SET DEFAULT nextval('clus
 
 ALTER TABLE ONLY clusters ALTER COLUMN id SET DEFAULT nextval('clusters_id_seq'::regclass);
 
-ALTER TABLE ONLY clusters_applications_knative ALTER COLUMN id SET DEFAULT nextval('clusters_applications_knative_id_seq'::regclass);
-
 ALTER TABLE ONLY clusters_applications_runners ALTER COLUMN id SET DEFAULT nextval('clusters_applications_runners_id_seq'::regclass);
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces ALTER COLUMN id SET DEFAULT nextval('clusters_kubernetes_namespaces_id_seq'::regclass);
@@ -26933,9 +26909,6 @@ ALTER TABLE ONLY cluster_providers_aws
 
 ALTER TABLE ONLY cluster_providers_gcp
     ADD CONSTRAINT cluster_providers_gcp_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY clusters_applications_knative
-    ADD CONSTRAINT clusters_applications_knative_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY clusters_applications_runners
     ADD CONSTRAINT clusters_applications_runners_pkey PRIMARY KEY (id);
@@ -30395,8 +30368,6 @@ CREATE INDEX index_cluster_providers_gcp_on_cloud_run ON cluster_providers_gcp U
 
 CREATE UNIQUE INDEX index_cluster_providers_gcp_on_cluster_id ON cluster_providers_gcp USING btree (cluster_id);
 
-CREATE UNIQUE INDEX index_clusters_applications_knative_on_cluster_id ON clusters_applications_knative USING btree (cluster_id);
-
 CREATE UNIQUE INDEX index_clusters_applications_runners_on_cluster_id ON clusters_applications_runners USING btree (cluster_id);
 
 CREATE INDEX index_clusters_applications_runners_on_runner_id ON clusters_applications_runners USING btree (runner_id);
@@ -31388,8 +31359,6 @@ CREATE INDEX index_merge_request_metrics_on_target_project_id ON merge_request_m
 CREATE UNIQUE INDEX index_merge_request_reviewers_on_merge_request_id_and_user_id ON merge_request_reviewers USING btree (merge_request_id, user_id);
 
 CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers USING btree (user_id);
-
-CREATE UNIQUE INDEX index_merge_request_user_mentions_note_id_convert_to_bigint ON merge_request_user_mentions USING btree (note_id_convert_to_bigint) WHERE (note_id_convert_to_bigint IS NOT NULL);
 
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
@@ -35740,9 +35709,6 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_geo_event_log_on_geo_event_id FOREIGN KEY (geo_event_id) REFERENCES geo_events(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY merge_request_user_mentions
-    ADD CONSTRAINT fk_merge_request_user_mentions_note_id_convert_to_bigint FOREIGN KEY (note_id_convert_to_bigint) REFERENCES notes(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ml_candidate_metrics
     ADD CONSTRAINT fk_ml_candidate_metrics_on_candidate_id FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;

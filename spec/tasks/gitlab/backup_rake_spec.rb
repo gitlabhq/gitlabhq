@@ -94,7 +94,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         expect { run_rake_task('gitlab:backup:create') }.to raise_error(SystemExit).and output(
           <<~MESSAGE
             Backup and restore in progress:
-              There is a backup and restore task in progress (PID 123456). Try to run the current task once the previous one ends.
+              There is a backup and restore task in progress (PID 123456).
+              Try to run the current task once the previous one ends.
           MESSAGE
         ).to_stdout
       end

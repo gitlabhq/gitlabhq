@@ -71,6 +71,14 @@ module Clusters
       ).exists?
     end
 
+    def user_access_authorized_for?(user)
+      return false unless user
+      return false unless ::Feature.enabled?(:expose_authorized_cluster_agents, project)
+
+      Clusters::Agents::Authorizations::UserAccess::Finder
+        .new(user, agent: self, preload: false, limit: 1).execute.any?
+    end
+
     # As of today, all config values of associated authorization rows have the same value.
     # See `UserAccess::RefreshService` for more information.
     def user_access_config

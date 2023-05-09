@@ -5328,7 +5328,7 @@ msgstr ""
 msgid "ApplicationSettings|After sign-up text"
 msgstr ""
 
-msgid "ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{projectSharingLinkStart}project sharing%{projectSharingLinkEnd} and %{groupSharingLinkStart}group sharing%{groupSharingLinkEnd}."
+msgid "ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for unlimited."
 msgstr ""
 
 msgid "ApplicationSettings|Allowed domains for sign-ups"
@@ -29114,6 +29114,9 @@ msgid "NamespaceLimits|Free Tier"
 msgstr ""
 
 msgid "NamespaceLimits|Storage Phased Notification"
+msgstr ""
+
+msgid "NamespaceLimits|These namespaces won't receive any notifications nor any degraded functionality while they remain on this list"
 msgstr ""
 
 msgid "NamespaceLimits|This will limit the amount of notifications your namespace receives, this can be removed in the future."

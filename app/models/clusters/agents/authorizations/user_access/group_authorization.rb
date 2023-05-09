@@ -22,6 +22,10 @@ module Clusters
               .order('id, access_level DESC')
           }
 
+          scope :for_project, ->(project) {
+            where('all_groups_with_membership.traversal_ids @> ARRAY[?]', project.namespace_id)
+          }
+
           validates :config, json_schema: { filename: 'clusters_agents_authorizations_user_access_config' }
 
           def config_project
@@ -44,7 +48,9 @@ module Clusters
             def all_groups_with_membership
               ::Group.joins('INNER JOIN groups_with_direct_membership ON ' \
                             'namespaces.traversal_ids @> ARRAY[groups_with_direct_membership.id]')
-                     .select('namespaces.id AS id, groups_with_direct_membership.access_level AS access_level')
+                     .select('namespaces.id AS id, ' \
+                             'namespaces.traversal_ids AS traversal_ids, ' \
+                             'groups_with_direct_membership.access_level AS access_level')
             end
 
             def groups_with_direct_membership_cte(user)

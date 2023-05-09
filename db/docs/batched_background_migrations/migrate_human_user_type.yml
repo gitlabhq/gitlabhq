@@ -1,0 +1,6 @@
+---
+migration_job_name: MigrateHumanUserType
+description: Migrates human user type from old value (nil) to new value (0) for better indexing
+feature_category: user_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849
+milestone: 16.0

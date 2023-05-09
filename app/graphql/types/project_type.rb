@@ -528,6 +528,12 @@ module Types
           resolver: ::Resolvers::Clusters::Agents::Authorizations::CiAccessResolver,
           authorize: :read_cluster_agent
 
+    field :user_access_authorized_agents, ::Types::Clusters::Agents::Authorizations::UserAccessType.connection_type,
+          null: true,
+          description: 'Authorized cluster agents for the project through user_access keyword.',
+          resolver: ::Resolvers::Clusters::Agents::Authorizations::UserAccessResolver,
+          authorize: :read_cluster_agent
+
     field :merge_commit_template, GraphQL::Types::String,
           null: true,
           description: 'Template used to create merge commit message in merge requests.'

@@ -58,8 +58,6 @@ export default {
     'emailRestrictions',
     'afterSignUpText',
     'pendingUserCount',
-    'projectSharingHelpLink',
-    'groupSharingHelpLink',
   ],
   data() {
     return {
@@ -83,8 +81,6 @@ export default {
         supportedSyntaxLinkUrl: this.supportedSyntaxLinkUrl,
         emailRestrictions: this.emailRestrictions,
         afterSignUpText: this.afterSignUpText,
-        projectSharingHelpLink: this.projectSharingHelpLink,
-        groupSharingHelpLink: this.groupSharingHelpLink,
       },
     };
   },
@@ -224,7 +220,7 @@ export default {
     ),
     userCapLabel: s__('ApplicationSettings|User cap'),
     userCapDescription: s__(
-      'ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{projectSharingLinkStart}project sharing%{projectSharingLinkEnd} and %{groupSharingLinkStart}group sharing%{groupSharingLinkEnd}.',
+      'ApplicationSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave blank for unlimited.',
     ),
     domainDenyListGroupLabel: s__('ApplicationSettings|Domain denylist'),
     domainDenyListLabel: s__('ApplicationSettings|Enable domain denylist for sign-ups'),
@@ -313,7 +309,6 @@ export default {
       <gl-form-group
         :label="$options.i18n.userCapLabel"
         :description="$options.i18n.userCapDescription"
-        data-testid="user-cap-form-group"
       >
         <gl-form-input
           v-model="form.userCap"
@@ -321,17 +316,6 @@ export default {
           name="application_setting[new_user_signups_cap]"
           data-testid="user-cap-input"
         />
-
-        <template #description>
-          <gl-sprintf :message="$options.i18n.userCapDescription">
-            <template #projectSharingLink="{ content }">
-              <gl-link :href="projectSharingHelpLink" target="_blank">{{ content }}</gl-link>
-            </template>
-            <template #groupSharingLink="{ content }">
-              <gl-link :href="groupSharingHelpLink" target="_blank">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </template>
       </gl-form-group>
 
       <gl-form-group :label="$options.i18n.minimumPasswordLengthLabel">

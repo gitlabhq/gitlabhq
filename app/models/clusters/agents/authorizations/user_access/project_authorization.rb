@@ -19,6 +19,8 @@ module Clusters
               .select('agent_user_access_project_authorizations.*, project_authorizations.access_level AS access_level')
           }
 
+          scope :for_project, ->(project) { where(project: project) }
+
           validates :config, json_schema: { filename: 'clusters_agents_authorizations_user_access_config' }
 
           def config_project

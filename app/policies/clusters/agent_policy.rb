@@ -12,7 +12,11 @@ module Clusters
       @subject.ci_access_authorized_for?(@user)
     end
 
-    rule { ci_access_authorized_agent }.policy do
+    condition(:user_access_authorized_agent, score: 10) do
+      @subject.user_access_authorized_for?(@user)
+    end
+
+    rule { ci_access_authorized_agent | user_access_authorized_agent }.policy do
       enable :read_cluster_agent
     end
   end

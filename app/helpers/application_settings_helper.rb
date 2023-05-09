@@ -580,9 +580,7 @@ module ApplicationSettingsHelper
       supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
       email_restrictions: @application_setting.email_restrictions.to_s,
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-      pending_user_count: pending_user_count,
-      project_sharing_help_link: help_page_path('user/group/access_and_permissions', anchor: 'prevent-a-project-from-being-shared-with-groups'),
-      group_sharing_help_link: help_page_path('user/group/access_and_permissions', anchor: 'prevent-group-sharing-outside-the-group-hierarchy')
+      pending_user_count: pending_user_count
     }
   end
 end

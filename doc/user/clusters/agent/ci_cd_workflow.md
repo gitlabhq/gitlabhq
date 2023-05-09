@@ -366,3 +366,15 @@ Unable to connect to the server: x509: certificate signed by unknown authority
 The error occurs because the job does not trust the certificate authority (CA) that signed the KAS certificate.
 
 To resolve the issue, [configure `kubectl` to trust the CA](#environments-with-kas-that-use-self-signed-certificates).
+
+### Validation errors
+
+If you use `kubectl` versions v1.27.0 or v.1.27.1, you might get the following error:
+
+```plaintext
+error: error validating "file.yml": error validating data: the server responded with the status code 426 but did not return more information; if you choose to ignore these errors, turn validation off with --validate=false
+```
+
+This issue is caused by [a bug](https://github.com/kubernetes/kubernetes/issues/117463) with `kubectl` and other tools that use the shared Kubernetes libraries.
+
+To resolve the issue, use another version of `kubectl`.

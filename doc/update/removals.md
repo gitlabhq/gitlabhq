@@ -78,6 +78,14 @@ Review the details carefully before upgrading.
 
 The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) was deprecated in GitLab 15.8 and removed in GitLab 16.0. This feature is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution) but we are removing that code in favor of the GitLab Dependency Proxy. Use the GitLab Dependency Proxy to proxy and cache container images from Docker Hub.
 
+### PipelineSecurityReportFinding name GraphQL field
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/335372) to include a new `title` field. This field is an alias for the current `name` field, making the less specific `name` field redundant. The `name` field is removed from the PipelineSecurityReportFinding type in GitLab 16.0.
+
 ### Project REST API field `operations_access_level` removed
 
 WARNING:
@@ -104,6 +112,14 @@ In GitLab 13.9, we updated the Omnibus GitLab package and GitLab Helm chart 4.9 
 GitLab 16.0, we have removed support for Redis 5. If you are using your own Redis 5.0 instance, you must upgrade it to Redis 6.0 or later before upgrading to GitLab 16.0
 or later.
 
+### Use of `id` field in vulnerabilityFindingDismiss mutation
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status of a vulnerability finding to `Dismissed`. Previously, this mutation used the `id` field to identify findings uniquely. However, this did not work for dismissing findings from the pipeline security tab. Therefore, using the `id` field as an identifier has been dropped in favor of the `uuid` field. Using the 'uuid' field as an identifier allows you to dismiss the finding from the pipeline security tab.
+
 ### Vulnerability confidence field
 
 WARNING:
@@ -113,6 +129,14 @@ Review the details carefully before upgrading.
 In GitLab 15.3, [security report schemas below version 15 were deprecated](https://docs.gitlab.com/ee/update/deprecations.html#security-report-schemas-version-14xx).
 The `confidence` attribute on vulnerability findings exists only in schema versions before `15-0-0` and in GitLab prior to 15.4.  To maintain consistency
 between the reports and our public APIs, the `confidence` attribute on any vulnerability-related components of our GraphQL API is now removed.
+
+### vulnerabilityFindingDismiss GraphQL mutation
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `VulnerabilityFindingDismiss` GraphQL mutation has been removed. This mutation was not used often as the Vulnerability Finding ID was not available to users (this field was [deprecated in 15.3](https://docs.gitlab.com/ee/update/deprecations.html#use-of-id-field-in-vulnerabilityfindingdismiss-mutation)). Instead of `VulnerabilityFindingDismiss`, you should use `VulnerabilityDismiss` to dismiss vulnerabilities in the Vulnerability Report or `SecurityFindingDismiss` for security findings in the CI Pipeline Security tab.
 
 ## Removed in 15.11
 

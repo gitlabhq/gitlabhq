@@ -7770,6 +7770,29 @@ The edge type for [`ClusterAgentAuthorizationCiAccess`](#clusteragentauthorizati
 | <a id="clusteragentauthorizationciaccessedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="clusteragentauthorizationciaccessedgenode"></a>`node` | [`ClusterAgentAuthorizationCiAccess`](#clusteragentauthorizationciaccess) | The item at the end of the edge. |
 
+#### `ClusterAgentAuthorizationUserAccessConnection`
+
+The connection type for [`ClusterAgentAuthorizationUserAccess`](#clusteragentauthorizationuseraccess).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentauthorizationuseraccessconnectionedges"></a>`edges` | [`[ClusterAgentAuthorizationUserAccessEdge]`](#clusteragentauthorizationuseraccessedge) | A list of edges. |
+| <a id="clusteragentauthorizationuseraccessconnectionnodes"></a>`nodes` | [`[ClusterAgentAuthorizationUserAccess]`](#clusteragentauthorizationuseraccess) | A list of nodes. |
+| <a id="clusteragentauthorizationuseraccessconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ClusterAgentAuthorizationUserAccessEdge`
+
+The edge type for [`ClusterAgentAuthorizationUserAccess`](#clusteragentauthorizationuseraccess).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentauthorizationuseraccessedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="clusteragentauthorizationuseraccessedgenode"></a>`node` | [`ClusterAgentAuthorizationUserAccess`](#clusteragentauthorizationuseraccess) | The item at the end of the edge. |
+
 #### `ClusterAgentConnection`
 
 The connection type for [`ClusterAgent`](#clusteragent).
@@ -12505,6 +12528,15 @@ GitLab CI/CD configuration template.
 | ---- | ---- | ----------- |
 | <a id="clusteragentauthorizationciaccessagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Authorized cluster agent. |
 | <a id="clusteragentauthorizationciaccessconfig"></a>`config` | [`JSON`](#json) | Configuration for the authorized project. |
+
+### `ClusterAgentAuthorizationUserAccess`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="clusteragentauthorizationuseraccessagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Authorized cluster agent. |
+| <a id="clusteragentauthorizationuseraccessconfig"></a>`config` | [`JSON`](#json) | Configuration for the authorized project. |
 
 ### `ClusterAgentToken`
 
@@ -18870,6 +18902,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
 | <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the project. |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
+| <a id="projectuseraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |

@@ -1,4 +1,4 @@
-import { GlButton, GlModal, GlLink } from '@gitlab/ui';
+import { GlButton, GlModal } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { shallowMount, mount, createWrapper } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
@@ -36,7 +36,6 @@ describe('Signup Form', () => {
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
   const findUserCapInput = () => wrapper.findByTestId('user-cap-input');
-  const findUserCapFormGroup = () => wrapper.findByTestId('user-cap-form-group');
   const findModal = () => wrapper.findComponent(GlModal);
 
   afterEach(() => {
@@ -210,21 +209,6 @@ describe('Signup Form', () => {
 
         expect(formSubmitSpy).toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('rendering help links within user cap description', () => {
-    beforeEach(() => {
-      mountComponent({ mountFn: mount });
-    });
-
-    it('renders projectSharingHelpLink and groupSharingHelpLink', () => {
-      const [projectSharingLink, groupSharingLink] = findUserCapFormGroup().findAllComponents(
-        GlLink,
-      ).wrappers;
-
-      expect(projectSharingLink.attributes('href')).toBe(mockData.projectSharingHelpLink);
-      expect(groupSharingLink.attributes('href')).toBe(mockData.groupSharingHelpLink);
     });
   });
 });
