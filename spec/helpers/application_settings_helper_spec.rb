@@ -68,6 +68,12 @@ RSpec.describe ApplicationSettingsHelper do
         ))
     end
 
+    it 'contains GitLab for Slack app parameters' do
+      params = %i(slack_app_enabled slack_app_id slack_app_secret slack_app_signing_secret slack_app_verification_token)
+
+      expect(helper.visible_attributes).to include(*params)
+    end
+
     context 'when on SaaS', :saas do
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)

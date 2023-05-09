@@ -69,6 +69,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['default_syntax_highlighting_theme']).to eq(1)
       expect(json_response['projects_api_rate_limit_unauthenticated']).to eq(400)
       expect(json_response['silent_mode_enabled']).to be(false)
+      expect(json_response['slack_app_enabled']).to be(false)
+      expect(json_response['slack_app_id']).to be_nil
+      expect(json_response['slack_app_secret']).to be_nil
+      expect(json_response['slack_app_signing_secret']).to be_nil
+      expect(json_response['slack_app_verification_token']).to be_nil
       expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
       expect(json_response['ci_max_includes']).to eq(150)
     end
@@ -178,6 +183,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             default_syntax_highlighting_theme: 2,
             projects_api_rate_limit_unauthenticated: 100,
             silent_mode_enabled: true,
+            slack_app_enabled: true,
+            slack_app_id: 'SLACK_APP_ID',
+            slack_app_secret: 'SLACK_APP_SECRET',
+            slack_app_signing_secret: 'SLACK_APP_SIGNING_SECRET',
+            slack_app_verification_token: 'SLACK_APP_VERIFICATION_TOKEN',
             valid_runner_registrars: ['group']
           }
 
@@ -249,6 +259,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_syntax_highlighting_theme']).to eq(2)
         expect(json_response['projects_api_rate_limit_unauthenticated']).to be(100)
         expect(json_response['silent_mode_enabled']).to be(true)
+        expect(json_response['slack_app_enabled']).to be(true)
+        expect(json_response['slack_app_id']).to eq('SLACK_APP_ID')
+        expect(json_response['slack_app_secret']).to eq('SLACK_APP_SECRET')
+        expect(json_response['slack_app_signing_secret']).to eq('SLACK_APP_SIGNING_SECRET')
+        expect(json_response['slack_app_verification_token']).to eq('SLACK_APP_VERIFICATION_TOKEN')
         expect(json_response['valid_runner_registrars']).to eq(['group'])
       end
     end

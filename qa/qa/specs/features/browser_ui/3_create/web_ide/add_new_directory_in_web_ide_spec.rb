@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :ide do
+  RSpec.describe 'Create', product_group: :ide,
+    quarantine: {
+      only: { job: 'slow-network' },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/387609',
+      type: :flaky
+    } do
     describe 'Add a directory in Web IDE' do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
@@ -52,7 +57,7 @@ module QA
         end
 
         it 'shows successfully but not able to be committed',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.wait_for_ide_to_load
             ide.create_new_folder(directory_name)

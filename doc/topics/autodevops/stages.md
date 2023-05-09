@@ -491,7 +491,7 @@ deletion).
 
 You can configure database initialization and migrations for PostgreSQL to run
 within the application pod by setting the project CI/CD variables `DB_INITIALIZE` and
-`DB_MIGRATE` respectively.
+`DB_MIGRATE`.
 
 If present, `DB_INITIALIZE` is run as a shell command within an application pod
 as a Helm post-install hook. As some applications can't run without a successful

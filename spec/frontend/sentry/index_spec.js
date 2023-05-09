@@ -54,4 +54,49 @@ describe('Sentry init', () => {
       expect(LegacySentryConfig.init).not.toHaveBeenCalled();
     });
   });
+
+  describe('with "data-page" attr in body', () => {
+    const mockPage = 'projects:show';
+
+    beforeEach(() => {
+      document.body.dataset.page = mockPage;
+
+      index();
+    });
+
+    afterEach(() => {
+      delete document.body.dataset.page;
+    });
+
+    it('configures sentry with a "page" tag', () => {
+      expect(SentryConfig.init).toHaveBeenCalledTimes(1);
+      expect(SentryConfig.init).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: {
+            revision,
+            page: mockPage,
+            feature_category: featureCategory,
+          },
+        }),
+      );
+    });
+  });
+
+  describe('with no tags configuration', () => {
+    beforeEach(() => {
+      window.gon.revision = undefined;
+      window.gon.feature_category = undefined;
+
+      index();
+    });
+
+    it('configures sentry with no tags', () => {
+      expect(SentryConfig.init).toHaveBeenCalledTimes(1);
+      expect(SentryConfig.init).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tags: {},
+        }),
+      );
+    });
+  });
 });

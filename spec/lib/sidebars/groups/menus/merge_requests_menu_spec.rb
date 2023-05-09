@@ -38,10 +38,9 @@ RSpec.describe Sidebars::Groups::Menus::MergeRequestsMenu, feature_category: :na
     let(:extra_attrs) do
       {
         item_id: :group_merge_request_list,
-        sprite_icon: 'git-merge',
         pill_count: menu.pill_count,
         has_pill: menu.has_pill?,
-        super_sidebar_parent: ::Sidebars::StaticMenu
+        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::CodeMenu
       }
     end
   end

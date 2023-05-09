@@ -23,14 +23,13 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
 
 #### Note to the merge request author and maintainer
 
-The process of backporting bug fixes into stable branches is tracked as part of an
-[internal pilot]. If you have questions about this process, please:
+If you have questions about the patch release process, please:
 
-* Refer to the [internal pilot] issue for feedback or questions.
 * Refer to the [patch release runbook for engineers and maintainers] for guidance.
+* Ask questions on the [`#releases`] Slack channel (internal only).
 
 [severity label]: https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity
-[internal pilot]: https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2886
 [patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/process_new.md
+[`#releases`]: https://gitlab.slack.com/archives/C0XM5UU6B
 
 /assign me

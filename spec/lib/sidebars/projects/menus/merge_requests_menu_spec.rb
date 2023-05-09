@@ -15,10 +15,9 @@ RSpec.describe Sidebars::Projects::Menus::MergeRequestsMenu, feature_category: :
     let(:extra_attrs) do
       {
         item_id: :project_merge_request_list,
-        sprite_icon: 'git-merge',
         pill_count: menu.pill_count,
         has_pill: menu.has_pill?,
-        super_sidebar_parent: ::Sidebars::StaticMenu
+        super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::CodeMenu
       }
     end
   end

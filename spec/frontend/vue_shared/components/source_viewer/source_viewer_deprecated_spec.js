@@ -11,6 +11,7 @@ import {
   EVENT_LABEL_FALLBACK,
   ROUGE_TO_HLJS_LANGUAGE_MAP,
   LINES_PER_CHUNK,
+  LEGACY_FALLBACKS,
 } from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -89,14 +90,16 @@ describe('Source Viewer component', () => {
   });
 
   describe('legacy fallbacks', () => {
-    it('tracks a fallback event and emits an error when viewing python files', () => {
-      const fallbackLanguage = 'python';
-      const eventData = { label: EVENT_LABEL_FALLBACK, property: fallbackLanguage };
-      createComponent({ language: fallbackLanguage });
+    it.each(LEGACY_FALLBACKS)(
+      'tracks a fallback event and emits an error when viewing %s files',
+      (fallbackLanguage) => {
+        const eventData = { label: EVENT_LABEL_FALLBACK, property: fallbackLanguage };
+        createComponent({ language: fallbackLanguage });
 
-      expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
-      expect(wrapper.emitted('error')).toHaveLength(1);
-    });
+        expect(Tracking.event).toHaveBeenCalledWith(undefined, EVENT_ACTION, eventData);
+        expect(wrapper.emitted('error')).toHaveLength(1);
+      },
+    );
   });
 
   describe('highlight.js', () => {

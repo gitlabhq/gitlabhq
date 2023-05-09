@@ -136,12 +136,17 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasPill || isPinnable" class="gl-flex-grow-1 gl-text-right gl-mr-3">
-        <gl-badge v-if="hasPill" size="sm" variant="neutral">
+      <span v-if="hasPill || isPinnable" class="gl-flex-grow-1 gl-text-right gl-mr-3 gl-relative">
+        <gl-badge
+          v-if="hasPill"
+          size="sm"
+          variant="neutral"
+          class="count-pill gl-absolute gl-right-0"
+        >
           {{ pillData }}
         </gl-badge>
         <gl-button
-          v-else-if="isPinnable && !isPinned"
+          v-if="isPinnable && !isPinned"
           size="small"
           category="tertiary"
           icon="thumbtack"

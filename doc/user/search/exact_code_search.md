@@ -7,7 +7,7 @@ type: reference
 
 # Exact Code Search **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt` which enables indexing and searching respectively. Both are disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `index_code_with_zoekt` for indexing and `search_code_with_zoekt` for searching. Both are disabled by default.
 
 WARNING:
 We are still actively making changes to the Exact Code Search feature. GitLab will dogfood it first, and roll it out only to specific customers on GitLab.com who request access to it. We will make an announcement when it's available for GitLab.com customers to tryout. You can follow our development progress by checking [the Exact Code Search feature roadmap](https://gitlab.com/groups/gitlab-org/-/epics/9404).

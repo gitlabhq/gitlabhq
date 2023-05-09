@@ -250,7 +250,7 @@ For the "Tasks by type" chart, only the Date range and Project selector filters 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210315) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in GitLab 13.12.
 
-The **Overview** page in value stream analytics displays key metrics and DORA metrics of group performance.
+The **Overview** page in value stream analytics displays key metrics of the DevSecOps lifecycle performance for projects and groups.
 
 ### Key metrics
 
@@ -296,22 +296,31 @@ Prerequisite:
 - To view deployment metrics, you must have a
 [production environment configured](#how-value-stream-analytics-identifies-the-production-environment).
 
-To view the DORA metrics and key metrics:
+To view key lifecycle metrics:
 
 1. On the top bar, select **Main menu**, and:
    - For a project, select **Projects** and find your project.
    - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Analytics > Value stream**.
-   Key metrics and DORA metrics display below the **Filter results** text box.
+   Key metrics display below the **Filter results** text box.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
-      Based on the filter you select, the dashboard automatically aggregates DORA metrics and displays the status of the value stream.
+      Based on the filter you select, the dashboard automatically aggregates key metrics and displays the status of the value stream.
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.
-1. Select a DORA metric to view its chart.
+
+To view the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) and [DORA metrics](../../analytics/dora_metrics.md):
+
+1. On the top bar, select **Main menu**, and:
+    - For a project, select **Projects** and find your project.
+    - For a group, select **Groups** and find your group.
+1. On the left sidebar, select **Analytics > Value stream**.
+1. Below the **Filter results** text box, in the **Key metrics** row, select **Value Streams Dashboard / DORA**.
+1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
+   (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
 ## View metrics for each development stage
 

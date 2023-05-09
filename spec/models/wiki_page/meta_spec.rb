@@ -167,10 +167,12 @@ RSpec.describe WikiPage::Meta do
     end
 
     def create_previous_version(title: old_title, slug: last_known_slug, date: wiki_page.version.commit.committed_date)
-      create(:wiki_page_meta,
-             title: title, project: project,
-             created_at: date, updated_at: date,
-             canonical_slug: slug)
+      create(
+        :wiki_page_meta,
+        title: title, project: project,
+        created_at: date, updated_at: date,
+        canonical_slug: slug
+      )
     end
 
     def create_context

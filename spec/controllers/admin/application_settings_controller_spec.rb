@@ -204,6 +204,27 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       expect(ApplicationSetting.current.valid_runner_registrars).to eq(['project'])
     end
 
+    it 'updates GitLab for Slack app settings' do
+      settings = {
+        slack_app_enabled: true,
+        slack_app_id: 'slack_app_id',
+        slack_app_secret: 'slack_app_secret',
+        slack_app_signing_secret: 'slack_app_signing_secret',
+        slack_app_verification_token: 'slack_app_verification_token'
+      }
+
+      put :update, params: { application_setting: settings }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current).to have_attributes(
+        slack_app_enabled: true,
+        slack_app_id: 'slack_app_id',
+        slack_app_secret: 'slack_app_secret',
+        slack_app_signing_secret: 'slack_app_signing_secret',
+        slack_app_verification_token: 'slack_app_verification_token'
+      )
+    end
+
     context 'boolean attributes' do
       shared_examples_for 'updates boolean attribute' do |attribute|
         specify do

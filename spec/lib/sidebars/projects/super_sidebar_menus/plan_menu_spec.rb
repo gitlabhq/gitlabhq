@@ -15,6 +15,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::PlanMenu, feature_category
   it 'defines list of NilMenuItem placeholders' do
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
+      :project_issue_list,
       :boards,
       :project_wiki,
       :service_desk,

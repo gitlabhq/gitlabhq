@@ -153,7 +153,7 @@ RSpec.describe Ci::SecureFile do
 
       file.reload
 
-      expect(file.expires_at).to eq(DateTime.parse('2022-04-26 19:20:40'))
+      expect(file.expires_at).to eq(DateTime.parse('2023-04-26 19:20:39'))
       expect(file.metadata['id']).to eq('33669367788748363528491290218354043267')
       expect(file.metadata['issuer']['CN']).to eq('Apple Worldwide Developer Relations Certification Authority')
       expect(file.metadata['subject']['OU']).to eq('N7SYAN8PX8')
@@ -169,7 +169,7 @@ RSpec.describe Ci::SecureFile do
 
       file.reload
 
-      expect(file.expires_at).to eq(DateTime.parse('2022-09-21 14:56:00'))
+      expect(file.expires_at).to eq(DateTime.parse('2023-09-21 14:55:59'))
       expect(file.metadata['id']).to eq('75949910542696343243264405377658443914')
       expect(file.metadata['issuer']['CN']).to eq('Apple Worldwide Developer Relations Certification Authority')
       expect(file.metadata['subject']['OU']).to eq('N7SYAN8PX8')

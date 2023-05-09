@@ -9,8 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Usernames and group names fall under a special category called
 [namespaces](../user/namespace/index.md).
 
-For users and groups supported API calls see the [users](users.md) and
-[groups](groups.md) documentation respectively.
+You might also want to view documentation for:
+
+- [Users](users.md)
+- [Groups](groups.md)
 
 [Pagination](rest/index.md#pagination) is used.
 

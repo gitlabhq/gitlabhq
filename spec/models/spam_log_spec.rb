@@ -30,8 +30,7 @@ RSpec.describe SpamLog do
         end
 
         expect(
-          Users::GhostUserMigration.where(user: user,
-                                          initiator_user: admin)
+          Users::GhostUserMigration.where(user: user, initiator_user: admin)
         ).to be_exists
       end
     end

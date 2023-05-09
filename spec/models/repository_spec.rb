@@ -20,10 +20,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
 
-    merge_commit_id = repository.merge(user,
-                                       merge_request.diff_head_sha,
-                                       merge_request,
-                                       message)
+    merge_commit_id = repository.merge(
+      user,
+      merge_request.diff_head_sha,
+      merge_request,
+      message
+    )
 
     repository.commit(merge_commit_id)
   end
@@ -963,9 +965,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe "#create_file" do
     it 'commits new file successfully' do
       expect do
-        repository.create_file(user, 'NEWCHANGELOG', 'Changelog!',
-                               message: 'Create changelog',
-                               branch_name: 'master')
+        repository.create_file(
+          user, 'NEWCHANGELOG', 'Changelog!',
+          message: 'Create changelog',
+          branch_name: 'master'
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'NEWCHANGELOG')
@@ -975,9 +979,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it 'creates new file and dir when file_path has a forward slash' do
       expect do
-        repository.create_file(user, 'new_dir/new_file.txt', 'File!',
-                               message: 'Create new_file with new_dir',
-                               branch_name: 'master')
+        repository.create_file(
+          user, 'new_dir/new_file.txt', 'File!',
+          message: 'Create new_file with new_dir',
+          branch_name: 'master'
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
@@ -985,9 +991,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'respects the autocrlf setting' do
-      repository.create_file(user, 'hello.txt', "Hello,\r\nWorld",
-                             message: 'Add hello world',
-                             branch_name: 'master')
+      repository.create_file(
+        user, 'hello.txt', "Hello,\r\nWorld",
+        message: 'Add hello world',
+        branch_name: 'master'
+      )
 
       blob = repository.blob_at('master', 'hello.txt')
 
@@ -997,11 +1005,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.create_file(user, 'NEWREADME', 'README!',
-                                 message: 'Add README',
-                                 branch_name: 'master',
-                                 author_email: author_email,
-                                 author_name: author_name)
+          repository.create_file(
+            user, 'NEWREADME', 'README!',
+            message: 'Add README',
+            branch_name: 'master',
+            author_email: author_email,
+            author_name: author_name
+          )
         end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
@@ -1015,9 +1025,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe "#update_file" do
     it 'updates file successfully' do
       expect do
-        repository.update_file(user, 'CHANGELOG', 'Changelog!',
-                               message: 'Update changelog',
-                               branch_name: 'master')
+        repository.update_file(
+          user, 'CHANGELOG', 'Changelog!',
+          message: 'Update changelog',
+          branch_name: 'master'
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       blob = repository.blob_at('master', 'CHANGELOG')
@@ -1027,10 +1039,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it 'updates filename successfully' do
       expect do
-        repository.update_file(user, 'NEWLICENSE', 'Copyright!',
-                                     branch_name: 'master',
-                                     previous_path: 'LICENSE',
-                                     message: 'Changes filename')
+        repository.update_file(
+          user, 'NEWLICENSE', 'Copyright!',
+          branch_name: 'master',
+          previous_path: 'LICENSE',
+          message: 'Changes filename'
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       files = repository.ls_files('master')
@@ -1042,12 +1056,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.update_file(user, 'README', 'Updated README!',
-                                 branch_name: 'master',
-                                 previous_path: 'README',
-                                 message: 'Update README',
-                                 author_email: author_email,
-                                 author_name: author_name)
+          repository.update_file(
+            user, 'README', 'Updated README!',
+            branch_name: 'master',
+            previous_path: 'README',
+            message: 'Update README',
+            author_email: author_email,
+            author_name: author_name
+          )
         end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
@@ -1061,11 +1077,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe "#move_dir_files" do
     it 'move directory files successfully' do
       expect do
-        repository.move_dir_files(user, 'files/new_js', 'files/js',
-                                  branch_name: 'master',
-                                  message: 'move directory images to new_images',
-                                  author_email: author_email,
-                                  author_name: author_name)
+        repository.move_dir_files(
+          user, 'files/new_js', 'files/js',
+          branch_name: 'master',
+          message: 'move directory images to new_images',
+          author_email: author_email,
+          author_name: author_name
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(1)
       files = repository.ls_files('master')
 
@@ -1075,11 +1093,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it 'skips commit with same path' do
       expect do
-        repository.move_dir_files(user, 'files/js', 'files/js',
-                                  branch_name: 'master',
-                                  message: 'no commit',
-                                  author_email: author_email,
-                                  author_name: author_name)
+        repository.move_dir_files(
+          user, 'files/js', 'files/js',
+          branch_name: 'master',
+          message: 'no commit',
+          author_email: author_email,
+          author_name: author_name
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(0)
     end
   end
@@ -1089,8 +1109,10 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it 'removes file successfully' do
       expect do
-        repository.delete_file(user, 'README',
-          message: 'Remove README', branch_name: 'master')
+        repository.delete_file(
+          user, 'README',
+          message: 'Remove README', branch_name: 'master'
+        )
       end.to change { repository.count_commits(ref: 'master') }.by(1)
 
       expect(repository.blob_at('master', 'README')).to be_nil
@@ -1099,9 +1121,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.delete_file(user, 'README',
+          repository.delete_file(
+            user, 'README',
             message: 'Remove README', branch_name: 'master',
-            author_email: author_email, author_name: author_name)
+            author_email: author_email, author_name: author_name
+          )
         end.to change { repository.count_commits(ref: 'master') }.by(1)
 
         last_commit = repository.commit
@@ -1219,10 +1243,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:path) { '*.md' }
 
       it 'returns files matching the path in the root folder' do
-        expect(result).to contain_exactly('CONTRIBUTING.md',
-                                          'MAINTENANCE.md',
-                                          'PROCESS.md',
-                                          'README.md')
+        expect(result).to contain_exactly(
+          'CONTRIBUTING.md',
+          'MAINTENANCE.md',
+          'PROCESS.md',
+          'README.md'
+        )
       end
     end
 
@@ -1230,12 +1256,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:path) { '**.md' }
 
       it 'returns all matching files in all folders' do
-        expect(result).to contain_exactly('CONTRIBUTING.md',
-                                          'MAINTENANCE.md',
-                                          'PROCESS.md',
-                                          'README.md',
-                                          'files/markdown/ruby-style-guide.md',
-                                          'with space/README.md')
+        expect(result).to contain_exactly(
+          'CONTRIBUTING.md',
+          'MAINTENANCE.md',
+          'PROCESS.md',
+          'README.md',
+          'files/markdown/ruby-style-guide.md',
+          'with space/README.md'
+        )
       end
     end
 
@@ -1267,10 +1295,12 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:path) { '**/*.rb' }
 
       it 'returns all matched files in all subfolders' do
-        expect(result).to contain_exactly('encoding/russian.rb',
-                                          'files/ruby/popen.rb',
-                                          'files/ruby/regex.rb',
-                                          'files/ruby/version_info.rb')
+        expect(result).to contain_exactly(
+          'encoding/russian.rb',
+          'files/ruby/popen.rb',
+          'files/ruby/regex.rb',
+          'files/ruby/version_info.rb'
+        )
       end
     end
 
@@ -1490,8 +1520,11 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let(:project) { create(:project, :repository) }
 
     before do
-      repository.delete_file(user, 'LICENSE',
-                             message: 'Remove LICENSE', branch_name: 'master')
+      repository.delete_file(
+        user, 'LICENSE',
+        message: 'Remove LICENSE',
+        branch_name: 'master'
+      )
     end
 
     it 'returns nil when no license is detected' do
@@ -1505,17 +1538,23 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'returns other when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
-                             message: 'Add LICENSE', branch_name: 'master')
+      repository.create_file(
+        user, 'LICENSE', 'Gitlab B.V.',
+        message: 'Add LICENSE',
+        branch_name: 'master'
+      )
 
       expect(repository.license_key).to eq('other')
     end
 
     it 'returns the license' do
       license = Licensee::License.new('mit')
-      repository.create_file(user, 'LICENSE',
-                             license.content,
-                             message: 'Add LICENSE', branch_name: 'master')
+      repository.create_file(
+        user, 'LICENSE',
+        license.content,
+        message: 'Add LICENSE',
+        branch_name: 'master'
+      )
 
       expect(repository.license_key).to eq(license.key)
     end
@@ -2043,19 +2082,23 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#merge_to_ref' do
     let(:merge_request) do
-      create(:merge_request, source_branch: 'feature',
-                             target_branch: 'master',
-                             source_project: project)
+      create(
+        :merge_request,
+        source_branch: 'feature',
+        target_branch: 'master',
+        source_project: project
+      )
     end
 
     it 'writes merge of source SHA and first parent ref to MR merge_ref_path' do
-      merge_commit_id =
-        repository.merge_to_ref(user,
-          source_sha: merge_request.diff_head_sha,
-          branch: merge_request.target_branch,
-          target_ref: merge_request.merge_ref_path,
-          message: 'Custom message',
-          first_parent_ref: merge_request.target_branch_ref)
+      merge_commit_id = repository.merge_to_ref(
+        user,
+        source_sha: merge_request.diff_head_sha,
+        branch: merge_request.target_branch,
+        target_ref: merge_request.merge_ref_path,
+        message: 'Custom message',
+        first_parent_ref: merge_request.target_branch_ref
+      )
 
       merge_commit = repository.commit(merge_commit_id)
 
@@ -2077,11 +2120,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'merges the code and return the commit id' do
-      merge_commit_id = repository.ff_merge(user,
-                                            merge_request.diff_head_sha,
-                                            merge_request.target_branch,
-                                            target_sha: repository.commit(merge_request.target_branch).sha,
-                                            merge_request: merge_request)
+      merge_commit_id = repository.ff_merge(
+        user,
+        merge_request.diff_head_sha,
+        merge_request.target_branch,
+        target_sha: repository.commit(merge_request.target_branch).sha,
+        merge_request: merge_request
+      )
       merge_commit = repository.commit(merge_commit_id)
 
       expect(merge_commit).to be_present
@@ -2089,11 +2134,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = repository.ff_merge(user,
-                                            merge_request.diff_head_sha,
-                                            merge_request.target_branch,
-                                            target_sha: repository.commit(merge_request.target_branch).sha,
-                                            merge_request: merge_request)
+      merge_commit_id = repository.ff_merge(
+        user,
+        merge_request.diff_head_sha,
+        merge_request.target_branch,
+        target_sha: repository.commit(merge_request.target_branch).sha,
+        merge_request: merge_request
+      )
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end

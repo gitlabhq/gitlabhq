@@ -295,10 +295,9 @@ world. Custom domains are supported, but no TLS.
      external_http: 192.0.2.2:80
    ```
 
-1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
-   order to enable the pages daemon. In `gitlab_pages_options`, the
-   `-pages-domain` must match the `host` setting that you set above and
-   `-listen-http` must match the `external_http` setting:
+1. To enable the daemon, edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true`.
+   In `gitlab_pages_options`, the value for `-pages-domain` must match the `host` and `-listen-http` must match
+   the `external_http`:
 
    ```ini
    gitlab_pages_enabled=true

@@ -53,7 +53,7 @@ Starting in [version 12.8](https://gitlab.com/gitlab-org/gitlab/-/issues/202696)
 
 To add an anomaly chart panel type to a dashboard, add a panel with *exactly* 3 metrics.
 
-The first metric represents the current state, and the second and third metrics represent the upper and lower limit respectively:
+The first metric represents the current state, and the second and third metrics represent the upper and lower limit:
 
 ```yaml
 dashboard: 'Dashboard Title'

@@ -2461,9 +2461,11 @@ RSpec.describe User, feature_category: :user_profile do
 
         it 'includes groups where the user has access via group shares to create projects' do
           shared_group = create(:group)
-          create(:group_group_link, :maintainer,
-                shared_with_group: group,
-                shared_group: shared_group
+          create(
+            :group_group_link,
+            :maintainer,
+            shared_with_group: group,
+            shared_group: shared_group
           )
 
           expect(user.forkable_namespaces).to contain_exactly(
@@ -5968,8 +5970,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         all_projects = projects + [second_maintainer_project.id, second_developer_project.id]
 
-        expected_all = expected.merge(second_maintainer_project.id => Gitlab::Access::MAINTAINER,
-                                      second_developer_project.id => Gitlab::Access::DEVELOPER)
+        expected_all = expected.merge(
+          second_maintainer_project.id => Gitlab::Access::MAINTAINER,
+          second_developer_project.id => Gitlab::Access::DEVELOPER
+        )
 
         access_levels(projects)
 
@@ -6047,8 +6051,10 @@ RSpec.describe User, feature_category: :user_profile do
 
         all_groups = groups + [second_maintainer_group.id, second_developer_group.id]
 
-        expected_all = expected.merge(second_maintainer_group.id => Gitlab::Access::MAINTAINER,
-                                      second_developer_group.id => Gitlab::Access::DEVELOPER)
+        expected_all = expected.merge(
+          second_maintainer_group.id => Gitlab::Access::MAINTAINER,
+          second_developer_group.id => Gitlab::Access::DEVELOPER
+        )
 
         access_levels(groups)
 
@@ -6757,11 +6763,13 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when dismissed callout exists' do
       before_all do
-        create(:group_callout,
-               user: user,
-               group_id: group.id,
-               feature_name: feature_name,
-               dismissed_at: 4.months.ago)
+        create(
+          :group_callout,
+          user: user,
+          group_id: group.id,
+          feature_name: feature_name,
+          dismissed_at: 4.months.ago
+        )
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
@@ -6791,11 +6799,13 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when dismissed callout exists' do
       before_all do
-        create(:project_callout,
-              user: user,
-              project_id: project.id,
-              feature_name: feature_name,
-              dismissed_at: 4.months.ago)
+        create(
+          :project_callout,
+          user: user,
+          project_id: project.id,
+          feature_name: feature_name,
+          dismissed_at: 4.months.ago
+        )
       end
 
       it 'returns true when no ignore_dismissal_earlier_than provided' do
@@ -7694,9 +7704,11 @@ RSpec.describe User, feature_category: :user_profile do
 
         context 'with a defined project namespace_commit_email' do
           it 'returns the defined namespace_commit_email' do
-            project_commit_email = create(:namespace_commit_email,
-                                          user: user,
-                                          namespace: project.project_namespace)
+            project_commit_email = create(
+              :namespace_commit_email,
+              user: user,
+              namespace: project.project_namespace
+            )
 
             expect(emails).to eq(project_commit_email)
           end
@@ -7716,9 +7728,11 @@ RSpec.describe User, feature_category: :user_profile do
 
         context 'with a defined project namespace_commit_email' do
           it 'returns the defined namespace_commit_email' do
-            project_commit_email = create(:namespace_commit_email,
-                                          user: user,
-                                          namespace: project.project_namespace)
+            project_commit_email = create(
+              :namespace_commit_email,
+              user: user,
+              namespace: project.project_namespace
+            )
 
             expect(emails).to eq(project_commit_email)
           end
@@ -7737,9 +7751,11 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'with a defined project namespace_commit_email' do
         it 'returns the defined namespace_commit_email' do
-          project_commit_email = create(:namespace_commit_email,
-                                        user: user,
-                                        namespace: project.project_namespace)
+          project_commit_email = create(
+            :namespace_commit_email,
+            user: user,
+            namespace: project.project_namespace
+          )
 
           expect(emails).to eq(project_commit_email)
         end

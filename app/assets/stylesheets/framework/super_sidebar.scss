@@ -189,6 +189,13 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
       }
     }
 
+    &:hover,
+    &:focus-within {
+      .count-pill {
+        display: none;
+      }
+    }
+
     &:focus button,
     button:focus {
       opacity: 1;

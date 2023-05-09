@@ -460,7 +460,7 @@ describe('UserMenu component', () => {
       expect(item.find('a').attributes()).toMatchObject({
         'data-track-property': 'nav_user_menu',
         'data-track-action': 'click_link',
-        'data-track-label': 'provide_nav_beta_feedback',
+        'data-track-label': 'provide_nav_feedback',
       });
     });
   });

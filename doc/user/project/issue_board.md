@@ -446,7 +446,6 @@ When you hover over the blocked icon (**{issue-block}**), a detailed information
 - [Remove an existing list](#remove-a-list).
 - [Remove an issue from a list](#remove-an-issue-from-a-list).
 - [Filter issues](#filter-issues) that appear across your issue board.
-- [Create workflows](#create-workflows).
 - [Move issues and lists](#move-issues-and-lists).
 - [Multi-select issue cards](#multi-select-issue-cards).
 - Drag and reorder the lists.
@@ -573,44 +572,6 @@ When [filtering issues](#filter-issues) in a **group** board, keep this behavior
 
 When you edit issues individually using the right sidebar, you can additionally select the
 milestones and labels from the **project** that the issue is from.
-
-### Create workflows
-
-By reordering your lists, you can create workflows. As lists in issue boards are
-based on labels, it works out of the box with your existing issues.
-
-So if you've already labeled things with **Backend** and **Frontend**, the issue appears in
-the lists as you create them. In addition, this means you can move something between lists by
-changing a label.
-
-A typical workflow of using an issue board would be:
-
-1. You [create](labels.md#create-a-label) and [prioritize](labels.md#set-label-priority)
-   labels to categorize your issues.
-1. You have a bunch of issues (ideally labeled).
-1. You visit the issue board and start [creating lists](#create-a-new-list) to
-   create a workflow.
-1. You move issues around in lists so that your team knows who should be working
-   on what issue.
-1. When the work by one team is done, the issue can be dragged to the next list
-   so someone else can pick it up.
-1. When the issue is finally resolved, the issue is moved to the **Done** list
-   and gets automatically closed.
-
-For example, you can create a list based on the label of **Frontend** and one for
-**Backend**. A designer can start working on an issue by adding it to the
-**Frontend** list. That way, everyone knows that this issue is now being
-worked on by the designers.
-
-Then, when they're done, all they have to do is
-drag it to the next list, **Backend**. Then, a backend developer can
-eventually pick it up. When they're done, they move it to **Done**, to close the
-issue.
-
-This process can be seen clearly when visiting an issue. With every move
-to another list, the label changes and a [system note](system_notes.md) is recorded.
-
-![issue board system notes](img/issue_board_system_notes_v13_6.png)
 
 ### Move issues and lists
 

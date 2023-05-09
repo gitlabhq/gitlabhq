@@ -71,7 +71,7 @@ Prerequisite:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
-1. Expand the **Product analytics** section.
+1. Expand the **Analytics** tab and find the **Product analytics** section.
 1. Select **Enable product analytics** and enter the configuration values.
    The following table shows the required configuration parameters and example values:
 

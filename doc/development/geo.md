@@ -48,8 +48,8 @@ for new events and creates background jobs for each specific event type.
 For example when a repository is updated, the Geo **primary** site creates
 a Geo event with an associated repository updated event. The Geo Log Cursor daemon
 picks the event up and schedules a `Geo::ProjectSyncWorker` job which
-uses the `Geo::RepositorySyncService` and `Geo::WikiSyncService` classes
-to update the repository and the wiki respectively.
+uses the `Geo::RepositorySyncService` to update the repository
+and `Geo::WikiSyncService` classes to update the wiki.
 
 The Geo Log Cursor daemon can operate in High Availability mode automatically.
 The daemon tries to acquire a lock from time to time and once acquired, it

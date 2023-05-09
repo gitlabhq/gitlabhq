@@ -21224,6 +21224,9 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
+msgid "GroupSettings|Analytics"
+msgstr ""
+
 msgid "GroupSettings|Analytics Dashboards"
 msgstr ""
 
@@ -21258,6 +21261,9 @@ msgid "GroupSettings|Choose the merge request checks for projects in this group.
 msgstr ""
 
 msgid "GroupSettings|Compliance frameworks"
+msgstr ""
+
+msgid "GroupSettings|Configure analytics features for this group"
 msgstr ""
 
 msgid "GroupSettings|Configure compliance frameworks to make them available to projects in this group. %{linkStart}What are compliance frameworks?%{linkEnd}"
@@ -30007,9 +30013,6 @@ msgstr ""
 msgid "Normal text"
 msgstr ""
 
-msgid "NorthstarNavigation|Beta"
-msgstr ""
-
 msgid "NorthstarNavigation|Could not update the new navigation preference. Please try again later."
 msgstr ""
 
@@ -35192,6 +35195,9 @@ msgid "ProjectSettings|Collector host"
 msgstr ""
 
 msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
+msgstr ""
+
+msgid "ProjectSettings|Configure analytics features for this project"
 msgstr ""
 
 msgid "ProjectSettings|Configure product analytics to track events within your project applications."

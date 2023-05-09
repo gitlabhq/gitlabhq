@@ -63,6 +63,51 @@ The OpenID Connect provides you with a client's details and secret for you to us
    ]
    ```
 
+   For Omnibus GitLab with multiple identity providers:
+
+   ```ruby
+   { 'name' => 'openid_connect',
+     'label' => '...',
+     'icon' => '...',
+     'args' => {
+       'name' => 'openid_connect',
+       'strategy_class': 'OmniAuth::Strategies::OpenIDConnect',
+       'scope' => ['openid', 'profile', 'email'],
+       'discovery' => true,
+       'response_type' => 'code',
+       'issuer' => 'https://...',
+       'client_auth_method' => 'query',
+       'uid_field' => '...',
+       'client_options' => {
+         `identifier`: "<your_oidc_client_id>",
+         `secret`: "<your_oidc_client_secret>",
+         'redirect_uri' => 'https://.../users/auth/openid_connect/callback'
+      }
+    }
+   },
+   { 'name' => 'openid_connect_2fa',
+     'label' => '...',
+     'icon' => '...',
+     'args' => {
+       'name' => 'openid_connect_2fa',
+       'strategy_class': 'OmniAuth::Strategies::OpenIDConnect',
+       'scope' => ['openid', 'profile', 'email'],
+       'discovery' => true,
+       'response_type' => 'code',
+       'issuer' => 'https://...',
+       'client_auth_method' => 'query',
+       'uid_field' => '...',
+       'client_options' => {
+        ...
+        'redirect_uri' => 'https://.../users/auth/openid_connect_2fa/callback'
+      }
+    }
+   }
+   ```
+
+   NOTE:
+   For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
+
    For installation from source:
 
    ```yaml

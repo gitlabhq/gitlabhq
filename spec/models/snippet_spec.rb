@@ -41,8 +41,8 @@ RSpec.describe Snippet do
 
       is_expected
         .to validate_length_of(:content)
-              .is_at_most(Gitlab::CurrentSettings.snippet_size_limit)
-              .with_message("is too long (2 Bytes). The maximum size is 1 Byte.")
+        .is_at_most(Gitlab::CurrentSettings.snippet_size_limit)
+        .with_message("is too long (2 Bytes). The maximum size is 1 Byte.")
     end
 
     context 'content validations' do
@@ -492,17 +492,21 @@ RSpec.describe Snippet do
     let_it_be(:snippet) { create(:snippet, content: 'foo', project: project) }
 
     let_it_be(:note1) do
-      create(:note_on_project_snippet,
-             noteable: snippet,
-             project: project,
-             note: 'a')
+      create(
+        :note_on_project_snippet,
+        noteable: snippet,
+        project: project,
+        note: 'a'
+      )
     end
 
     let_it_be(:note2) do
-      create(:note_on_project_snippet,
-             noteable: snippet,
-             project: project,
-             note: 'b')
+      create(
+        :note_on_project_snippet,
+        noteable: snippet,
+        project: project,
+        note: 'b'
+      )
     end
 
     it 'includes the snippet author and note authors' do

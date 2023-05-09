@@ -250,8 +250,8 @@ unauthorized access from other machines, and block traffic from the
 outside ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png)).
 
 For this example, **Sentinel 1** is configured in the same machine as the
-**Redis Primary**, **Sentinel 2** and **Sentinel 3** in the same machines as the
-**Replica 1** and **Replica 2** respectively.
+**Redis Primary**, **Sentinel 2** in the same machine as **Replica 1**, and
+**Sentinel 3** in the same machine as **Replica 2**.
 
 Here is a list and description of each **machine** and the assigned **IP**:
 

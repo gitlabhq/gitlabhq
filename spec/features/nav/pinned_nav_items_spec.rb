@@ -35,6 +35,12 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       visit project_path(project)
     end
 
+    it 'adds sensible defaults' do
+      within '[data-testid="pinned-nav-items"]' do
+        expect(page).to have_link 'Issues'
+      end
+    end
+
     it 'shows the Pinned section' do
       within '#super-sidebar' do
         expect(page).to have_content 'Pinned'
@@ -49,12 +55,17 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
 
       within '[data-testid="pinned-nav-items"]' do
+        expect(page).to have_link 'Issues'
         expect(page).to have_link 'Activity'
         expect(page).to have_link 'Members'
       end
     end
 
-    describe 'collapsible section' do
+    describe 'when all pins are removed' do
+      before do
+        remove_pin('Issues')
+      end
+
       it 'shows the Pinned section as expanded by default' do
         within '#super-sidebar' do
           expect(page).to have_content 'Your pinned items appear here.'
@@ -106,14 +117,13 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       it 'can be reordered' do
         within '[data-testid="pinned-nav-items"]' do
           pinned_items = page.find_all('a').map(&:text)
-          item1 = page.find('a', text: 'Package Registry')
-          item2 = page.find('a', text: 'Terraform modules')
-          expect(pinned_items).to eq [item1.text, item2.text]
-
-          drag_item(item2, to: item1)
+          item2 = page.find('a', text: 'Package Registry')
+          item3 = page.find('a', text: 'Terraform modules')
+          expect(pinned_items[1..2]).to eq [item2.text, item3.text]
+          drag_item(item3, to: item2)
 
           pinned_items = page.find_all('a').map(&:text)
-          expect(pinned_items).to eq [item2.text, item1.text]
+          expect(pinned_items[1..2]).to eq [item3.text, item2.text]
         end
       end
     end
@@ -148,8 +158,10 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
     it 'keeps pins of non-available features' do
       within '[data-testid="pinned-nav-items"]' do
-        pinned_items = page.find_all('a').map(&:text)
-        expect(pinned_items).to eq %w[Commits Members Activity]
+        pinned_items = page.find_all('a')
+          .map(&:text)
+          .map { |text| text.split("\n").first } # to drop the counter badge text from "Issues\n0"
+        expect(pinned_items).to eq ["Issues", "Merge requests", "Commits", "Members", "Activity"]
       end
     end
   end

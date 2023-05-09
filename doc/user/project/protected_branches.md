@@ -22,6 +22,8 @@ The [default branch](repository/branches/default.md) for your repository is prot
 
 ## Who can modify a protected branch
 
+> Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **allowed** permission in GitLab 16.0.
+
 When a branch is protected, the default behavior enforces these restrictions on the branch.
 
 | Action                   | Who can do it                                                     |

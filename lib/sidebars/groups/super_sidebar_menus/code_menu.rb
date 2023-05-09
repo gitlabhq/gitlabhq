@@ -3,28 +3,21 @@
 module Sidebars
   module Groups
     module SuperSidebarMenus
-      class PlanMenu < ::Sidebars::Menu
+      class CodeMenu < ::Sidebars::Menu
         override :title
         def title
-          s_('Navigation|Plan')
+          s_('Navigation|Code')
         end
 
         override :sprite_icon
         def sprite_icon
-          'planning'
+          'code'
         end
 
         override :configure_menu_items
         def configure_menu_items
           [
-            :group_issue_list,
-            :group_epic_list,
-            :issue_boards,
-            :epic_boards,
-            :roadmap,
-            :group_wiki,
-            :crm_contacts,
-            :crm_organizations
+            :group_merge_request_list
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

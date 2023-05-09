@@ -67,7 +67,7 @@ To configure group insights:
 in a project that belongs to your group.
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
-1. Expand **Insights**.
+1. Expand the **Analytics** tab and find the **Insights** section.
 1. Select the project that contains your `.gitlab/insights.yml` configuration file.
 1. Select **Save changes**.
 

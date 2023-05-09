@@ -15,8 +15,9 @@ const index = function index() {
         : [gon.gitlab_url, 'webpack-internal://'],
     release: gon.revision,
     tags: {
-      revision: gon.revision,
-      feature_category: gon.feature_category,
+      revision: gon?.revision,
+      feature_category: gon?.feature_category,
+      page: document?.body?.dataset?.page,
     },
   });
 };

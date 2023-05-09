@@ -68,8 +68,13 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   end
 
   def integration_name
+    return s_('Integrations|GitLab for Slack app') if slack_app_params?
+
     s_('Integrations|Mattermost slash commands')
   end
-end
 
-Profiles::ChatNamesController.prepend_mod
+  def slack_app_params?
+    chat_name_params[:team_id].start_with?('T') &&
+      chat_name_params[:chat_id].start_with?('U', 'W')
+  end
+end

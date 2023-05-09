@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -7,7 +7,6 @@ import Tracking from '~/tracking';
 
 export default {
   i18n: {
-    badgeLabel: s__('NorthstarNavigation|Beta'),
     sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
     toggleMenuItemLabel: s__('NorthstarNavigation|New navigation'),
     toggleLabel: s__('NorthstarNavigation|Toggle new navigation'),
@@ -16,7 +15,6 @@ export default {
     ),
   },
   components: {
-    GlBadge,
     GlToggle,
     GlDisclosureDropdownItem,
   },
@@ -83,7 +81,6 @@ export default {
       class="gl-px-4 gl-py-2 gl-display-flex gl-justify-content-space-between gl-align-items-center"
     >
       <b>{{ $options.i18n.sectionTitle }}</b>
-      <gl-badge variant="info">{{ $options.i18n.badgeLabel }}</gl-badge>
     </div>
 
     <div

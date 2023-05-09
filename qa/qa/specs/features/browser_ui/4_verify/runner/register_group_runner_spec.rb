@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :runner do
+  RSpec.describe 'Verify', :runner, product_group: :runner,
+    quarantine: {
+      only: { job: 'airgapped' },
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/390184',
+      type: :stale
+    } do
     describe 'Group runner registration' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 

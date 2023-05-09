@@ -16,7 +16,7 @@ Each rule allows you to match either:
 - An individual tag name.
 - Wildcards to control multiple tags at once.
 
-This feature evolved out of [protected branches](protected_branches.md)
+This feature evolved out of [protected branches](protected_branches.md).
 
 ## Who can modify a protected tag
 
@@ -27,22 +27,22 @@ By default:
 
 ## Configuring protected tags
 
-To protect a tag, you must have at least the Maintainer role.
+Prerequisites:
 
-1. Go to the project's **Settings > Repository**.
+- You must have at least the Maintainer role for the project.
 
-1. From the **Tag** dropdown list, select the tag you want to protect or type and select **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Protected tags**.
+1. To protect a single tag, select **Tag**, then choose your tag from the dropdown list.
+1. To protect all tags with names matching a string:
+   1. Select **Tag**.
+   1. Enter the string to use for tag matching. Wildcards (`*`) are supported.
+   1. Select **Create wildcard**.
+1. In **Allowed to create** , select either the users or roles that may create protected tags.
+1. Select **Protect**.
 
-   ![Protected tags page](img/protected_tags_page_v12_3.png)
-
-1. From the **Allowed to create** dropdown list, select users with permission to create
-   matching tags, and select **Protect**:
-
-   ![Allowed to create tags dropdown list](img/protected_tags_permissions_dropdown_v12_3.png)
-
-1. After done, the protected tag displays in the **Protected tags** list:
-
-   ![Protected tags list](img/protected_tags_list_v12_3.png)
+The protected tag (or wildcard) displays in the **Protected tags** list.
 
 ## Wildcard protected tags
 

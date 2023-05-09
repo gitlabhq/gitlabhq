@@ -84,7 +84,7 @@ module SidebarsHelper
       current_context: super_sidebar_current_context(project: project, group: group),
       context_switcher_links: context_switcher_links,
       search: search_data,
-      pinned_items: user.pinned_nav_items[panel_type] || [],
+      pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type),
       panel_type: panel_type,
       update_pins_url: pins_url,
       is_impersonating: impersonating?,
@@ -359,6 +359,17 @@ module SidebarsHelper
     end
 
     shortcut_links
+  end
+
+  def super_sidebar_default_pins(panel_type)
+    case panel_type
+    when 'project'
+      [:project_issue_list, :project_merge_request_list]
+    when 'group'
+      [:group_issue_list, :group_merge_request_list]
+    else
+      []
+    end
   end
 end
 

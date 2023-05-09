@@ -73,7 +73,7 @@ To delete the active epic board:
 - [Create a new list](#create-a-new-list).
 - [Remove an existing list](#remove-a-list).
 - [Filter epics](#filter-epics).
-- Create workflows, like when using [issue boards](../../project/issue_board.md#create-workflows).
+- Create workflows, like when using [issue boards](../../project/issue_board.md#issue-board-workflow-between-teams).
 - [Move epics and lists](#move-epics-and-lists).
 - Change epic labels (by dragging an epic between lists).
 - Close an epic (by dragging it to the **Closed** list).

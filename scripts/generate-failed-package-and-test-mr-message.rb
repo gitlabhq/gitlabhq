@@ -19,7 +19,7 @@ class GenerateFailedPackageAndTestMrMessage
   end
 
   def execute
-    return unless failed_package_and_test_job
+    return unless failed_package_and_test_pipeline
 
     add_discussion_to_mr
   end
@@ -34,8 +34,8 @@ class GenerateFailedPackageAndTestMrMessage
     ).execute(content)
   end
 
-  def failed_package_and_test_job
-    @failed_package_and_test_job ||= GetPackageAndTestJob.new(API::DEFAULT_OPTIONS).execute
+  def failed_package_and_test_pipeline
+    @failed_package_and_test_pipeline ||= GetPackageAndTestJob.new(API::DEFAULT_OPTIONS).execute
   end
 
   def merge_request
@@ -48,8 +48,10 @@ class GenerateFailedPackageAndTestMrMessage
     <<~MARKDOWN
     :warning: @#{author_username} The `e2e:package-and-test-ee` job has failed.
 
-    - Pipeline: #{pipeline_link}
-    - `package-and-test` pipeline: #{failed_package_and_test_job['web_url']}
+    - `e2e:package-and-test-ee` pipeline: #{failed_package_and_test_pipeline['web_url']}
+
+    `e2e:package-and-test-ee` pipeline is allowed to fail due its [flakiness](#{package_and_test_link}). Failures should be
+    investigated to guarantee this backport complies with the Quality standards.
 
     Ping your team's associated Software Engineer in Test (SET) to confirm the failures are unrelated to the merge request.
     If there's no SET assigned, ask for assistance on the `#quality` Slack channel.
@@ -60,8 +62,8 @@ class GenerateFailedPackageAndTestMrMessage
     merge_request['author']['username'] if merge_request
   end
 
-  def pipeline_link
-    "[##{ENV['CI_PIPELINE_ID']}](#{ENV['CI_PIPELINE_URL']})"
+  def package_and_test_link
+    "https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-metrics-dashboards/#package-and-test"
   end
 end
 

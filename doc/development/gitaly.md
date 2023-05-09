@@ -168,7 +168,8 @@ can replace `tmp/tests/gitaly` with a symlink. This is much faster
 because it avoids a Gitaly re-install each time you run `rspec`.
 
 Make sure this directory contains the files `config.toml` and `praefect.config.toml`.
-You can copy them from `config.toml.example` and `config.praefect.toml.example` respectively.
+You can copy `config.toml` from `config.toml.example`, and `praefect.config.toml`
+from `config.praefect.toml.example`.
 After copying, make sure to edit them so everything points to the correct paths.
 
 ```shell

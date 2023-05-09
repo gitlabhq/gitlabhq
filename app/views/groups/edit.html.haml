@@ -30,8 +30,7 @@
 
 = render_if_exists 'groups/merge_requests', expanded: expanded, group: @group
 = render_if_exists 'groups/merge_request_approval_settings', expanded: expanded, group: @group, user: current_user
-= render_if_exists 'groups/insights', expanded: expanded
-= render_if_exists 'groups/analytics_dashboards', expanded: expanded
+= render_if_exists 'groups/analytics', expanded: expanded
 
 %section.settings.no-animate#js-badge-settings{ class: ('expanded' if expanded) }
   .settings-header

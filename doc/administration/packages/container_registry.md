@@ -108,11 +108,12 @@ for the first time.
 
 ### Configure Container Registry under an existing GitLab domain
 
-If the Registry is configured to use the existing GitLab domain, you can
-expose the Registry on a port. This way you can reuse the existing GitLab TLS
+If the Container Registry is configured to use the existing GitLab domain, you can
+expose the Container Registry on a port. This way you can reuse the existing GitLab TLS
 certificate.
 
-If the GitLab domain is `https://gitlab.example.com` and the port to the outside world is `5050` you need to configure the Registry:
+If the GitLab domain is `https://gitlab.example.com` and the port to the outside world is `5050`,
+to configure the Container Registry:
 
 - Edit `gitlab.rb` if you are using Omnibus GitLab.
 - Edit `gitlab.yml` if you installed GitLab from source.

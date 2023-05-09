@@ -72,10 +72,9 @@ module Sidebars
         override :serialize_as_menu_item_args
         def serialize_as_menu_item_args
           super.merge({
-            sprite_icon: sprite_icon,
             pill_count: pill_count,
             has_pill: has_pill?,
-            super_sidebar_parent: ::Sidebars::StaticMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             item_id: :project_issue_list
           })
         end

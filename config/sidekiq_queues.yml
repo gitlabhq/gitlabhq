@@ -187,6 +187,8 @@
   - 1
 - - elastic_project_transfer
   - 1
+- - elastic_wiki_indexer
+  - 1
 - - email_receiver
   - 2
 - - emails_on_push

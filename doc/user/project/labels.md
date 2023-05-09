@@ -381,7 +381,7 @@ issue is now under review, they assign the `workflow::review`, and the `workflow
 is removed.
 
 The same happens when you move issues across label lists in an
-[issue board](issue_board.md#create-workflows). With scoped labels, team members not working in an
+[issue board](issue_board.md). With scoped labels, team members not working in an
 issue board can also advance workflow states consistently in issues themselves.
 
 For a video explanation, see:

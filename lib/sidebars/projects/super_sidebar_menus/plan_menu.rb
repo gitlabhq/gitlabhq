@@ -17,6 +17,7 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           [
+            :project_issue_list,
             :boards,
             :project_wiki,
             :service_desk,

@@ -249,7 +249,7 @@ section, along with statistics about the issues in the milestones.
 Releases are also visible on the **Issues > Milestones** page, and when you select a milestone
 on this page.
 
-Here is an example of milestones with no releases, one release, and two releases, respectively.
+Here is an example of milestones with no releases, one release, and two releases.
 
 ![Milestones with and without Release associations](img/milestone_list_with_releases_v12_5.png)
 

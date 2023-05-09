@@ -168,7 +168,7 @@ After verifying the Docusaurus site builds in `build-job`, you can add a job tha
 
 This step introduces:
 
-- [`stage`](../yaml/index.md#stage) and [`stages](../yaml/index.md#stage): The most common
+- [`stage`](../yaml/index.md#stage) and [`stages`](../yaml/index.md#stage): The most common
   pipeline configurations group jobs into stages. Jobs in the same stage can run in parallel,
   while jobs in later stages wait for jobs in earlier stages to complete. If a job fails,
   the whole stage is considered failed and jobs in later stages do not start running.

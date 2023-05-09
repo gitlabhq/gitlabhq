@@ -57,10 +57,9 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
       {
         item_id: :group_issue_list,
         active_routes: { path: 'groups#issues' },
-        sprite_icon: 'issues',
         pill_count: menu.pill_count,
         has_pill: menu.has_pill?,
-        super_sidebar_parent: ::Sidebars::StaticMenu
+        super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::PlanMenu
       }
     end
   end

@@ -45,8 +45,11 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
     describe '#issue_usage_metrics' do
       describe 'when an issue is closed' do
         subject(:close_issue) do
-          create(described_class.name.underscore.to_sym, issue: issue,
-                                                         state: described_class.states[:closed])
+          create(
+            described_class.name.underscore.to_sym,
+            issue: issue,
+            state: described_class.states[:closed]
+          )
         end
 
         it 'tracks closed issues' do
@@ -65,8 +68,11 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
 
       describe 'when an issue is reopened' do
         subject(:reopen_issue) do
-          create(described_class.name.underscore.to_sym, issue: issue,
-                                                         state: described_class.states[:reopened])
+          create(
+            described_class.name.underscore.to_sym,
+            issue: issue,
+            state: described_class.states[:reopened]
+          )
         end
 
         it 'tracks reopened issues' do

@@ -24,7 +24,7 @@ export const secureFiles = [
     checksum_algorithm: 'sha256',
     created_at: '2022-02-22T22:22:22.222Z',
     file_extension: 'cer',
-    expires_at: '2022-04-26T19:20:40.000Z',
+    expires_at: '2023-04-26T19:20:39.000Z',
     metadata: {
       id: '33669367788748363528491290218354043267',
       issuer: {
@@ -40,7 +40,7 @@ export const secureFiles = [
         OU: 'ABC123XYZ',
         UID: 'ABC123XYZ',
       },
-      expires_at: '2022-04-26T19:20:40.000Z',
+      expires_at: '2023-04-26T19:20:39.000Z',
     },
   },
   {

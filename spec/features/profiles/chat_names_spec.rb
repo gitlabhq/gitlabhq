@@ -26,11 +26,34 @@ RSpec.describe 'Profile > Chat', feature_category: :integrations do
       visit authorize_path
     end
 
-    it 'names the integration correctly' do
+    it 'names the Mattermost integration correctly' do
       expect(page).to have_content(
         'An application called Mattermost slash commands is requesting access to your GitLab account'
       )
       expect(page).to have_content('Authorize Mattermost slash commands')
+    end
+
+    context 'when params are of the GitLab for Slack app' do
+      let(:params) do
+        { team_id: 'T00', team_domain: 'my_chat_team', user_id: 'U01', user_name: 'my_chat_user' }
+      end
+
+      shared_examples 'names the GitLab for Slack app integration correctly' do
+        specify do
+          expect(page).to have_content(
+            'An application called GitLab for Slack app is requesting access to your GitLab account'
+          )
+          expect(page).to have_content('Authorize GitLab for Slack app')
+        end
+      end
+
+      include_examples 'names the GitLab for Slack app integration correctly'
+
+      context 'with a Slack enterprise-enabled team' do
+        let(:params) { super().merge(user_id: 'W01') }
+
+        include_examples 'names the GitLab for Slack app integration correctly'
+      end
     end
 
     context 'clicks authorize' do

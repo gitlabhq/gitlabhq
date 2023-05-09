@@ -1,7 +1,6 @@
 <script>
 import {
   GlAvatar,
-  GlBadge,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -19,10 +18,9 @@ import UserNameGroup from './user_name_group.vue';
 const DROPDOWN_X_OFFSET = -211;
 
 export default {
-  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403059',
+  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409005',
   i18n: {
     newNavigation: {
-      badgeLabel: s__('NorthstarNavigation|Beta'),
       sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
     },
     setStatus: s__('SetStatusModal|Set status'),
@@ -38,7 +36,6 @@ export default {
   },
   components: {
     GlAvatar,
-    GlBadge,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -140,7 +137,7 @@ export default {
         extraAttrs: {
           target: '_blank',
           ...USER_MENU_TRACKING_DEFAULTS,
-          'data-track-label': 'provide_nav_beta_feedback',
+          'data-track-label': 'provide_nav_feedback',
         },
       };
     },
@@ -320,9 +317,6 @@ export default {
       <gl-disclosure-dropdown-group bordered>
         <template #group-label>
           <span class="gl-font-sm">{{ $options.i18n.newNavigation.sectionTitle }}</span>
-          <gl-badge size="sm" variant="info"
-            >{{ $options.i18n.newNavigation.badgeLabel }}
-          </gl-badge>
         </template>
         <new-nav-toggle :endpoint="toggleNewNavEndpoint" enabled new-navigation />
         <gl-disclosure-dropdown-item :item="feedbackItem" data-testid="feedback-item" />

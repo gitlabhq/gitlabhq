@@ -27,7 +27,7 @@ Parameters:
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.|
-| `search`  | string         | no       | Return list of branches containing the search string. You can use `^term` and `term$` to find branches that begin and end with `term` respectively. |
+| `search`  | string         | no       | Return list of branches containing the search string. You can use `^term` to find branches that begin with `term`, and `term$` to find branches that end with `term`. |
 | `regex`   | string         | no       | Return list of branches with names matching a [re2](https://github.com/google/re2/wiki/Syntax) regular expression. |
 
 Example request:

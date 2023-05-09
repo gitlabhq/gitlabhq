@@ -360,8 +360,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
       end
 
-      context 'GitLab for Jira App settings' do
-        it 'changes the setting' do
+      context 'GitLab for Jira App settings', feature_category: :integrations do
+        it 'changes the settings' do
           page.within('#js-jira_connect-settings') do
             fill_in 'Jira Connect Application ID', with: '1234'
             fill_in 'Jira Connect Proxy URL', with: 'https://example.com'
@@ -373,6 +373,28 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           expect(current_settings.jira_connect_proxy_url).to eq('https://example.com')
           expect(current_settings.jira_connect_public_key_storage_enabled).to eq(true)
           expect(page).to have_content "Application settings saved successfully"
+        end
+      end
+
+      context 'GitLab for Slack app settings', feature_category: :integrations do
+        it 'changes the settings' do
+          page.within('.as-slack') do
+            check 'Enable Slack application'
+            fill_in 'Client ID', with: 'slack_app_id'
+            fill_in 'Client secret', with: 'slack_app_secret'
+            fill_in 'Signing secret', with: 'slack_app_signing_secret'
+            fill_in 'Verification token', with: 'slack_app_verification_token'
+            click_button 'Save changes'
+          end
+
+          expect(current_settings).to have_attributes(
+            slack_app_enabled: true,
+            slack_app_id: 'slack_app_id',
+            slack_app_secret: 'slack_app_secret',
+            slack_app_signing_secret: 'slack_app_signing_secret',
+            slack_app_verification_token: 'slack_app_verification_token'
+          )
+          expect(page).to have_content 'Application settings saved successfully'
         end
       end
     end

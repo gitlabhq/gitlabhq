@@ -23,9 +23,9 @@ For software leaders, tracking velocity alongside quality metrics ensures they'r
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video explanation, see [DORA metrics: User analytics](https://www.youtube.com/watch?v=lM_FbVYuN8s) and [GitLab speed run: DORA metrics](https://www.youtube.com/watch?v=1BrcMV6rCDw).
 
-## DORA metrics dashboard in Value Stream Analytics
+## DORA metrics in Value Stream Analytics
 
-The four DORA metrics are available out-of-the-box in the [Value Stream Analytics (VSA) overview dashboard](../group/value_stream_analytics/index.md#view-value-stream-analytics).
+The four DORA metrics are available out-of-the-box in the [Value Streams Dashboard](value_streams_dashboard.md).
 This helps you visualize the engineering work in the context of end-to-end value delivery.
 
 The One DevOps Platform [Value Stream Management](https://gitlab.com/gitlab-org/gitlab/-/value_stream_analytics) provides end-to-end visibility to the entire software delivery lifecycle.
@@ -133,17 +133,16 @@ The DORA metrics are displayed on the following charts:
 
 - [Value Streams Dashboard](value_streams_dashboard.md), which helps you identify trends, patterns, and opportunities for improvement.
 - [CI/CD analytics charts](ci_cd_analytics.md), which show pipeline success rates and duration, and the history of DORA metrics over time.
-- Value stream analytics for [groups](../group/value_stream_analytics/index.md) and [projects](value_stream_analytics.md), which provide metrics about each stage of your software development process
 - Insights reports for [groups](../group/insights/index.md) and [projects](value_stream_analytics.md), where you can also use [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters) to create custom charts.
 
 The table below provides an overview of the DORA metrics' data aggregation in different charts.
 
-| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in Value stream analytics | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
-|---------------------------|-------------------|-----------------------------------------------------|------------------------|-----------------------|----------|
-| Deployment frequency | Number of successful deployments | daily average per month | daily average | daily average | `day` (default) or `month` |
-| Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  median time |  `day` (default) or `month` |
-| Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | median time | `day` (default) or `month` |
-| Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | percentage of failed deployments | `day` (default) or `month` |
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../../user/project/insights/index.md#dora-query-parameters) |
+|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
+| Deployment frequency | Number of successful deployments | daily average per month | daily average | `day` (default) or `month` |
+| Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |
+| Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | `day` (default) or `month` |
+| Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | `day` (default) or `month` |
 
 ## Retrieve DORA metrics data
 
