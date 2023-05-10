@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.3 (2023-05-10)
+
+### Fixed (2 changes)
+
+- [Fix issue description keeping autosave after save](gitlab-org/security/gitlab@9a2d98b24c1ed9416ef672635aae27997b99a8b6)
+- [Backport MR 119319 changes to 15-11-stable-ee](gitlab-org/security/gitlab@7f54f28a839efeebdea9030ae41975c9059a5f4e)
+
+### Changed (1 change)
+
+- [Restrict cleanup migrations only for GitLab.com](gitlab-org/security/gitlab@d6d1c3a650277a0f4acb777f0b123cc0b9c57ea4)
+
 ## 15.11.2 (2023-05-03)
 
 ### Security (2 changes)
