@@ -276,6 +276,8 @@ Replace `<full-project-path>` with a valid project path, you can find it in the 
 
 WARNING:
 Deleting the job log and artifacts is a destructive action that cannot be reverted. Use with caution.
+Deleting certain files, including report artifacts, job logs, and metadata files, affects
+GitLab features that use these files as data sources.
 
 You can delete a job's artifacts and log.
 
@@ -287,6 +289,24 @@ To delete a job:
 
 1. Go to a job's detail page.
 1. In the upper-right corner of the job's log, select **Erase job log and artifacts** (**{remove}**).
+
+You can also delete individual artifacts from the [**Artifacts** page](#bulk-delete-artifacts).
+
+### Bulk delete artifacts
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`.
+The feature is not ready for production use.
+
+You can delete multiple artifacts at the same time:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **CI/CD > Artifacts**.
+1. Select the checkboxes next to the artifacts you want to delete. You can select up to 50 artifacts.
+1. Select **Delete selected**.
 
 ## Link to job artifacts in the merge request UI
 

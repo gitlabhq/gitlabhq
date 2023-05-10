@@ -279,7 +279,7 @@ Example response:
 }
 ```
 
-When the [unified approval setting](../ci/environments/deployment_approvals.md#unified-approval-setting) is configured, deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+When the [unified approval setting](../ci/environments/deployment_approvals.md#unified-approval-setting) is configured, deployments created by users on GitLab Premium or Ultimate include the `approvals` and `pending_approval_count` properties:
 
 ```json
 {
@@ -304,7 +304,7 @@ When the [unified approval setting](../ci/environments/deployment_approvals.md#u
 }
 ```
 
-When the [multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) is configured, deployments created by users on GitLab Premium or higher include the `approval_summary` property:
+When the [multiple approval rules](../ci/environments/deployment_approvals.md#multiple-approval-rules) is configured, deployments created by users on GitLab Premium or Ultimate include the `approval_summary` property:
 
 ```json
 {
@@ -393,7 +393,7 @@ Example response:
 }
 ```
 
-Deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+Deployments created by users on GitLab Premium or Ultimate include the `approvals` and `pending_approval_count` properties:
 
 ```json
 {
@@ -447,7 +447,7 @@ Example response:
 }
 ```
 
-Deployments created by users on GitLab Premium or higher include the `approvals` and `pending_approval_count` properties:
+Deployments created by users on GitLab Premium or Ultimate include the `approvals` and `pending_approval_count` properties:
 
 ```json
 {

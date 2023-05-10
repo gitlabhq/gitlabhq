@@ -34,8 +34,8 @@ module Gitlab
           #
           # @param subscription_plan [String]
           def wait_for_subscription(subscription_plan, page:)
-            ::QA::Support::Waiter.wait_until(max_duration: 30, sleep_interval: 2, reload_page: page) do
-              billing_plan_header.match?(/currently using the #{subscription_plan} plan/i)
+            ::QA::Support::Waiter.wait_until(max_duration: 30, sleep_interval: 3, reload_page: page) do
+              billing_plan_header.match?(/currently using the #{subscription_plan} saas plan/i)
             end
           end
         end

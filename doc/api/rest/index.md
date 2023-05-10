@@ -94,8 +94,8 @@ You can authenticate with the GitLab API in several ways:
 
 Project access tokens are supported by:
 
-- Self-managed GitLab Free and higher.
-- GitLab SaaS Premium and higher.
+- Self-managed GitLab: Free, Premium, and Ultimate.
+- GitLab SaaS: Premium and Ultimate.
 
 If you are an administrator, you or your application can authenticate as a specific user.
 To do so, use:

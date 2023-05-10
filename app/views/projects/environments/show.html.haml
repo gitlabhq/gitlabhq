@@ -21,7 +21,7 @@
               = html_escape(_("Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
             .text-center
               = render Pajamas::ButtonComponent.new(variant: :confirm, href: help_page_path("ci/environments/index.md")) do
-                = s_('Read more')
+                = _('Read more')
 
       - else
         .table-holder.gl-overflow-visible

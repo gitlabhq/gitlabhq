@@ -8,13 +8,15 @@ RSpec.describe Gitlab::Database::SchemaValidation::Adapters::ColumnDatabaseAdapt
   let(:column_name) { 'email' }
   let(:column_default) { "'no-reply@gitlab.com'::character varying" }
   let(:not_null) { true }
+  let(:partition_key) { false }
   let(:db_result) do
     {
       'table_name' => 'projects',
       'column_name' => column_name,
       'data_type' => 'character varying',
       'column_default' => column_default,
-      'not_null' => not_null
+      'not_null' => not_null,
+      'partition_key' => partition_key
     }
   end
 
@@ -62,5 +64,9 @@ RSpec.describe Gitlab::Database::SchemaValidation::Adapters::ColumnDatabaseAdapt
 
       it { expect(adapter.nullable).to be_nil }
     end
+  end
+
+  describe '#partition_key?' do
+    it { expect(adapter.partition_key?).to be(false) }
   end
 end

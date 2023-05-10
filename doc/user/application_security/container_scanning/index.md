@@ -82,7 +82,7 @@ To enable container scanning in your pipeline, you need the following:
 - GitLab CI/CD pipeline must include the `test` stage, which is available unless overridden with the [`stages`](../../../ci/yaml/index.md#stages) keyword.
 - [GitLab Runner](https://docs.gitlab.com/runner/) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html)
   or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor on Linux/amd64.
-- Docker `18.09.03` or higher installed on the same computer as the runner. If you're using the
+- Docker `18.09.03` or later installed on the same computer as the runner. If you're using the
   shared runners on GitLab.com, then this is already the case.
 - An image matching the [supported distributions](#supported-distributions).
 - [Build and push](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
@@ -184,7 +184,7 @@ container_scanning:
 include:
   - template: Security/Container-Scanning.gitlab-ci.yml
 
-variables: 
+variables:
     CS_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
     CS_REGISTRY_USER: AWS
     CS_REGISTRY_PASSWORD: "$AWS_ECR_PASSWORD"
@@ -257,7 +257,7 @@ including a large number of false positives.
 | `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. | All |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:5` | Docker image of the analyzer. | All |
+| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:6` | Docker image of the analyzer. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
@@ -305,9 +305,9 @@ standard tag plus the `-fips` extension.
 
 | Scanner name    | `CS_ANALYZER_IMAGE` |
 | --------------- | ------------------- |
-| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:5-fips` |
-| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:5-fips` |
-| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:5-fips` |
+| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:6-fips` |
+| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:6-fips` |
+| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:6-fips` |
 
 NOTE:
 Prior to GitLab 15.0, the `-ubi` image extension is also available. GitLab 15.0 and later only
@@ -364,9 +364,9 @@ The following options are available:
 
 | Scanner name                                             | `CS_ANALYZER_IMAGE`                                                |
 |----------------------------------------------------------|--------------------------------------------------------------------|
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5`       |
-| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:5` |
-| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:5` |
+| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:6`       |
+| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:6` |
+| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:6` |
 
 ### Setting the default branch image
 
@@ -557,9 +557,9 @@ For container scanning, import the following images from `registry.gitlab.com` i
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/container-scanning:5
-registry.gitlab.com/security-products/container-scanning/grype:5
-registry.gitlab.com/security-products/container-scanning/trivy:5
+registry.gitlab.com/security-products/container-scanning:6
+registry.gitlab.com/security-products/container-scanning/grype:6
+registry.gitlab.com/security-products/container-scanning/trivy:6
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -599,7 +599,7 @@ following `.gitlab-ci.yml` example as a template.
 
 ```yaml
 variables:
-  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:5
+  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:6
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
 image: docker:stable

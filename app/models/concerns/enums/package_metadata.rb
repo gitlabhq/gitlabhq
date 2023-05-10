@@ -22,6 +22,16 @@ module Enums
       trivy: 2
     }.with_indifferent_access.freeze
 
+    DATA_TYPES = {
+      advisories: 1,
+      licenses: 2
+    }.with_indifferent_access.freeze
+
+    VERSION_FORMATS = {
+      v1: 1,
+      v2: 2
+    }.with_indifferent_access.freeze
+
     def self.purl_types
       PURL_TYPES
     end
@@ -32,6 +42,14 @@ module Enums
 
     def self.advisory_sources
       ADVISORY_SOURCES
+    end
+
+    def self.data_types
+      DATA_TYPES
+    end
+
+    def self.version_formats
+      VERSION_FORMATS
     end
   end
 end

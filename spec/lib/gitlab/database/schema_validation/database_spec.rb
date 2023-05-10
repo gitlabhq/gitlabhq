@@ -74,6 +74,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Database, feature_category: :
           'column_name' => 'id',
           'not_null' => true,
           'data_type' => 'bigint',
+          'partition_key' => false,
           'column_default' => "nextval('audit_events_id_seq'::regclass)"
         },
         {
@@ -81,6 +82,7 @@ RSpec.describe Gitlab::Database::SchemaValidation::Database, feature_category: :
           'column_name' => 'details',
           'not_null' => false,
           'data_type' => 'text',
+          'partition_key' => false,
           'column_default' => nil
         }
       ]

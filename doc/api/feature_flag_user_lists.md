@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 API for accessing GitLab feature flag user lists.
 
-Users with Developer or higher [permissions](../user/permissions.md) can access the feature flag user lists API.
+Users with at least the Developer [role](../user/permissions.md) can access the feature flag user lists API.
 
 NOTE:
 `GET` requests return twenty results at a time because the API results

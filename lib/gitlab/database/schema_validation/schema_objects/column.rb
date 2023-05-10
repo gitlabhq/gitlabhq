@@ -11,7 +11,7 @@ module Gitlab
 
           attr_reader :adapter
 
-          delegate :name, :table_name, to: :adapter
+          delegate :name, :table_name, :partition_key?, to: :adapter
 
           def statement
             [name, adapter.data_type, adapter.default, adapter.nullable].compact.join(' ')

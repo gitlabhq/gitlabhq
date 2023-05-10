@@ -9,11 +9,15 @@ module Gitlab
 
       def event(category, action, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
         action = action.to_s
+
+        project_id = project.is_a?(Integer) ? project : project&.id
+
         contexts = [
           Tracking::StandardContext.new(
-            project: project,
-            user: user,
-            namespace: namespace,
+            namespace_id: namespace&.id,
+            plan_name: namespace&.actual_plan_name,
+            project_id: project_id,
+            user_id: user&.id,
             **extra).to_context, *context
         ]
 
@@ -25,9 +29,10 @@ module Gitlab
         destination = Gitlab::Tracking::Destinations::DatabaseEventsSnowplow.new
         contexts = [
           Tracking::StandardContext.new(
-            project: project,
-            user: user,
-            namespace: namespace,
+            namespace_id: namespace&.id,
+            plan_name: namespace&.actual_plan_name,
+            project_id: project&.id,
+            user_id: user&.id,
             **extra).to_context, *context
         ]
 

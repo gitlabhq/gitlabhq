@@ -15,12 +15,12 @@
     .gl-max-w-full.gl-m-auto
       %h1.h4.gl-font-size-h-display= s_('AdminArea|No applications found')
       = render Pajamas::ButtonComponent.new(href: new_admin_application_path, variant: :confirm, button_options: { data: { qa_selector: 'new_application_button' } }) do
-        = s_('New application')
+        = _('New application')
 
 - else
   %hr
     = render Pajamas::ButtonComponent.new(href: new_admin_application_path, variant: :confirm, button_options: { data: { qa_selector: 'new_application_button' } }) do
-      = s_('New application')
+      = _('New application')
 
   .table-responsive
     %table.b-table.gl-table.gl-w-full{ role: 'table' }

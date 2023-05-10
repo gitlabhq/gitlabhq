@@ -6,15 +6,16 @@ module Gitlab
       GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-8'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
-      def initialize(namespace: nil, project: nil, user: nil, **extra)
-        check_argument_type(:namespace, namespace, [Namespace])
-        check_argument_type(:project, project, [Project, Integer])
-        check_argument_type(:user, user, [User, DeployToken])
+      def initialize(namespace_id: nil, plan_name: nil, project_id: nil, user_id: nil, **extra)
+        check_argument_type(:namespace_id, namespace_id, [Integer])
+        check_argument_type(:plan_name, plan_name, [String])
+        check_argument_type(:project_id, project_id, [Integer])
+        check_argument_type(:user_id, user_id, [Integer])
 
-        @namespace = namespace
-        @plan = namespace&.actual_plan_name
-        @project = project
-        @user = user
+        @namespace_id = namespace_id
+        @plan_name = plan_name
+        @project_id = project_id
+        @user_id = user_id
         @extra = extra
       end
 
@@ -40,23 +41,19 @@ module Gitlab
 
       private
 
-      attr_accessor :namespace, :project, :extra, :plan, :user
+      attr_accessor :namespace_id, :project_id, :extra, :plan_name, :user_id
 
       def to_h
         {
           environment: environment,
           source: source,
-          plan: plan,
+          plan: plan_name,
           extra: extra,
-          user_id: user&.id,
-          namespace_id: namespace&.id,
+          user_id: user_id,
+          namespace_id: namespace_id,
           project_id: project_id,
           context_generated_at: Time.current
         }
-      end
-
-      def project_id
-        project.is_a?(Integer) ? project : project&.id
       end
 
       def check_argument_type(argument_name, argument_value, allowed_classes)

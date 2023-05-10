@@ -105,12 +105,14 @@ module Gitlab
               table_information.relname  AS table_name,
               col_information.attname AS column_name,
               col_information.attnotnull AS not_null,
+              col_information.attnum = ANY(pg_partitioned_table.partattrs) as partition_key,
               format_type(col_information.atttypid, col_information.atttypmod) AS data_type,
               pg_get_expr(col_default_information.adbin, col_default_information.adrelid) AS column_default
             FROM pg_attribute AS col_information
             JOIN pg_class     AS table_information  ON col_information.attrelid = table_information.oid
             JOIN pg_namespace AS schema_information ON table_information.relnamespace = schema_information.oid
-            LEFT JOIN pg_attrdef   AS col_default_information ON col_information.attrelid = col_default_information.adrelid
+            LEFT JOIN pg_partitioned_table ON pg_partitioned_table.partrelid = table_information.oid
+            LEFT JOIN pg_attrdef AS col_default_information ON col_information.attrelid = col_default_information.adrelid
               AND col_information.attnum = col_default_information.adnum
             WHERE NOT col_information.attisdropped
             AND col_information.attnum > 0

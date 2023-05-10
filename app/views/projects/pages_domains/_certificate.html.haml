@@ -32,7 +32,7 @@
       .col-sm-10.offset-sm-2
         = render Pajamas::CardComponent.new(body_options: { class: 'gl-display-flex gl-align-items-center gl-justify-content-space-between gl-p-5' }) do |c|
           - c.header do
-            = s_('Certificate')
+            = _('Certificate')
           - c.body do
             %span
               = domain_presenter.pages_domain.subject || _('missing')

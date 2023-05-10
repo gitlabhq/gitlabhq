@@ -31,7 +31,7 @@ metrics about the [deployed application](../index.md#configure-prometheus-to-gat
 
 ## Kubernetes pod health dashboard
 
-This dashboard requires Kubernetes v1.14 or higher, due to the
+This dashboard requires Kubernetes v1.14 or later, due to the
 [change in metric labels](https://github.com/kubernetes/kubernetes/pull/69099)
 in Kubernetes 1.14.
 

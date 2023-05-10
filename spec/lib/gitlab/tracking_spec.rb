@@ -134,7 +134,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
 
         expect(Gitlab::Tracking::StandardContext)
           .to receive(:new)
-                .with(project: project, user: user, namespace: namespace, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
+                .with(project_id: project.id, user_id: user.id, namespace_id: namespace.id, plan_name: namespace.actual_plan_name, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
                 .and_call_original
 
         expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|

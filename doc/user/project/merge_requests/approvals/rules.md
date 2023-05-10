@@ -53,7 +53,7 @@ To add a merge request approval rule:
 
 1. Select **Add approval rule**.
 
-Users of GitLab Premium and higher tiers can create [additional approval rules](#add-multiple-approval-rules).
+Users of GitLab Premium and Ultimate tiers can create [additional approval rules](#add-multiple-approval-rules).
 
 Your configuration for approval rule overrides determines if the new rule is applied
 to existing merge requests:
@@ -91,7 +91,7 @@ To edit a merge request approval rule:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in GitLab 11.10.
 
-In GitLab Premium and higher tiers, you can enforce multiple approval rules on a
+In GitLab Premium and Ultimate tiers, you can enforce multiple approval rules on a
 merge request, and multiple default approval rules for a project. If your tier
 supports multiple default rules:
 
@@ -134,7 +134,7 @@ who commented on the merge request. It helps authors and reviewers identify who 
 contact with questions about the merge request's content.
 
 If the number of required approvals is greater than the number of assigned approvers,
-approvals from other users with Developer [permissions](../../../permissions.md) or higher
+approvals from other users with at least the Developer [role](../../../permissions.md)
 in the project counts toward meeting the required number of approvals, even if the
 users were not explicitly listed in the approval rules.
 

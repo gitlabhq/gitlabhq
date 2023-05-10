@@ -7,7 +7,7 @@
       = c.body do
         %h4
           = sprite_icon('pod', size: 18, css_class: 'gl-text-gray-700')
-          = s_('CPU')
+          = _('CPU')
         .data
           - if @cpus
             %h2= _('%{cores} cores') % { cores: @cpus.length }
@@ -19,7 +19,7 @@
       = c.body do
         %h4
           = sprite_icon('status-health', size: 18, css_class: 'gl-text-gray-700')
-          = s_('Memory Usage')
+          = _('Memory Usage')
         .data
           - if @memory
             %h2 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
@@ -31,7 +31,7 @@
       = c.body do
         %h4
           = sprite_icon('clock', size: 18, css_class: 'gl-text-gray-700')
-          = s_('System started')
+          = _('System started')
         .data
           %h2= time_ago_with_tooltip(Rails.application.config.booted_at)
   .col-sm
@@ -39,7 +39,7 @@
       = c.body do
         %h4
           = sprite_icon('disk', size: 18, css_class: 'gl-text-gray-700')
-          = s_('Disk Usage')
+          = _('Disk Usage')
         .data
           - @disks.each do |disk|
             %h2 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}

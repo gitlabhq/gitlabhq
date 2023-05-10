@@ -85,7 +85,7 @@ other specific work merges, even if the merge request is in a different project.
 Prerequisites:
 
 - You must have at least the Developer role or be allowed to create merge requests in the project.
-- The dependent merge request must be in a project in a **PREMIUM** or higher tier.
+- The dependent merge request must be in a project in the Premium or Ultimate tier.
 
 To create a new merge request and mark it as dependent on another:
 

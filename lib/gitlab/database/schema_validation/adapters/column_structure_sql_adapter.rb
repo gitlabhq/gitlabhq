@@ -17,9 +17,10 @@ module Gitlab
 
           attr_reader :table_name
 
-          def initialize(table_name, pg_query_stmt)
+          def initialize(table_name, pg_query_stmt, partitioning_stmt)
             @table_name = table_name
             @pg_query_stmt = pg_query_stmt
+            @partitioning_stmt = partitioning_stmt
           end
 
           def name
@@ -44,9 +45,13 @@ module Gitlab
             'NOT NULL' if constraints.any? { |node| node.constraint.contype == NOT_NULL_CONSTR }
           end
 
+          def partition_key?
+            partition_keys.include?(name)
+          end
+
           private
 
-          attr_reader :pg_query_stmt
+          attr_reader :pg_query_stmt, :partitioning_stmt
 
           def constraints
             @constraints ||= pg_query_stmt.constraints
@@ -81,6 +86,7 @@ module Gitlab
           # Parses PGQuery nodes recursively
           #
           # :constraint:: nodes that groups column default info
+          # :partition_elem:: node that store partition key info
           # :func_cal:: nodes that stores functions, like +now()+
           # :a_const:: nodes that stores constant values, like +t+, +f+, +0.0.0.0+, +255+, +1.0+
           # :type_cast:: nodes that stores casting values, like +'name'::text+, +'0.0.0.0'::inet+
@@ -93,6 +99,8 @@ module Gitlab
             case node.node
             when :constraint
               parse_node(node.constraint.raw_expr)
+            when :partition_elem
+              node.partition_elem.name
             when :func_call
               "#{parse_node(node.func_call.funcname.first)}()"
             when :a_const
@@ -106,6 +114,12 @@ module Gitlab
             else
               node.to_h[node.node].values.last
             end
+          end
+
+          def partition_keys
+            return [] unless partitioning_stmt
+
+            @partition_keys ||= partitioning_stmt.part_params.map { |key_stmt| parse_node(key_stmt) }
           end
         end
       end

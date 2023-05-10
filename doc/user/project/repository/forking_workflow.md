@@ -49,7 +49,7 @@ A fork can fall out of sync with its upstream repository, and require an update:
   your changes up, and pull the upstream repository's new changes into your fork.
 
 To sync your fork with its upstream repository, update it from the GitLab UI
-or the command line. GitLab Premium and higher tiers can also automate updates by
+or the command line. GitLab Premium and Ultimate tiers can also automate updates by
 [configuring forks as pull mirrors](#with-repository-mirroring) of the upstream repository.
 
 ### From the UI
@@ -142,7 +142,7 @@ an `upstream` remote repository for your fork:
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 
-1. Your subscription is **Premium** or higher.
+1. Your subscription is **Premium** or **Ultimate**.
 1. You create all changes in branches (not `main`).
 1. You do not work on [merge requests for confidential issues](../merge_requests/confidential.md),
    which requires changes to `main`.

@@ -195,8 +195,7 @@ Suggested workflow for shared projects:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab 8.9.
 
 This process allows you to lock one file at a time through the GitLab UI and
-requires access to [GitLab Premium](https://about.gitlab.com/pricing/)
-or higher tiers.
+requires access to the [GitLab Premium or Ultimate tier](https://about.gitlab.com/pricing/).
 
 Default branch file and directory locks only apply to the
 [default branch](repository/branches/default.md) set in the project's settings.

@@ -20122,7 +20122,9 @@ CREATE TABLE pm_checkpoints (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     purl_type smallint NOT NULL,
-    chunk smallint NOT NULL
+    chunk smallint NOT NULL,
+    data_type smallint DEFAULT 1 NOT NULL,
+    version_format smallint DEFAULT 1 NOT NULL
 );
 
 CREATE TABLE pm_licenses (
@@ -27699,7 +27701,7 @@ ALTER TABLE ONLY pm_affected_packages
     ADD CONSTRAINT pm_affected_packages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY pm_checkpoints
-    ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (purl_type);
+    ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (purl_type, data_type, version_format);
 
 ALTER TABLE ONLY pm_licenses
     ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);

@@ -60,7 +60,7 @@ GET /projects
 | `simple`                                   | boolean  | **{dotted-circle}** No | Return only limited fields for each project. This operation is a no-op without authentication where only simple fields are returned. |
 | `sort`                                     | string   | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                                  | boolean  | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                               | boolean  | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `topic`                                    | string   | **{dotted-circle}** No | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
 | `topic_id`                                 | integer  | **{dotted-circle}** No | Limit results to projects with the assigned topic given by the topic ID. |
 | `visibility`                               | string   | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
@@ -271,11 +271,11 @@ The `tag_list` attribute has been deprecated
 and is removed in API v5 in favor of the `topics` attribute.
 
 NOTE:
-For users of [GitLab Premium or higher](https://about.gitlab.com/pricing/),
+For users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/),
 the `marked_for_deletion_at` attribute has been deprecated, and is removed
 in API v5 in favor of the `marked_for_deletion_on` attribute.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
 can also see the `approvals_before_merge` parameter:
 
 ```json
@@ -341,7 +341,7 @@ GET /users/:user_id/projects
 | `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `visibility`                  | string  | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean | **{dotted-circle}** No | Limit by enabled issues feature. |
@@ -614,7 +614,7 @@ GET /users/:user_id/starred_projects
 | `simple`                      | boolean | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string  | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                  | boolean | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `visibility`                  | string  | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
 | `with_issues_enabled`         | boolean | **{dotted-circle}** No | Limit by enabled issues feature. |
@@ -864,7 +864,7 @@ GET /projects/:id
 |--------------------------|----------------|------------------------|-------------|
 | `id`                     | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `license`                | boolean        | **{dotted-circle}** No | Include project license data. |
-| `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`             | boolean        | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `with_custom_attributes` | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 
 ```json
@@ -1038,7 +1038,7 @@ NOTE:
 The `tag_list` attribute has been deprecated
 and is removed in API v5 in favor of the `topics` attribute.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
 can also see the `approvals_before_merge` parameter:
 
 ```json
@@ -1120,7 +1120,7 @@ target the upstream project by default.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718) in GitLab 13.10.
 
-Users of [GitLab Premium or higher](https://about.gitlab.com/pricing/)
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
 can also see the `issues_template` and `merge_requests_template` parameters for managing
 [issue and merge request description templates](../user/project/description_templates.md).
 
@@ -1586,7 +1586,7 @@ GET /projects/:id/forks
 | `simple`                      | boolean        | **{dotted-circle}** No | Return only limited fields for each project. Without authentication, this operation is a no-op; only simple fields are returned. |
 | `sort`                        | string         | **{dotted-circle}** No | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
 | `starred`                     | boolean        | **{dotted-circle}** No | Limit by projects starred by the current user. |
-| `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Only available to Reporter or higher level role members. |
+| `statistics`                  | boolean        | **{dotted-circle}** No | Include project statistics. Available only to users with at least the Reporter role. |
 | `visibility`                  | string         | **{dotted-circle}** No | Limit by visibility `public`, `internal`, or `private`. |
 | `with_custom_attributes`      | boolean        | **{dotted-circle}** No | Include [custom attributes](custom_attributes.md) in response. _(administrators only)_ |
 | `with_issues_enabled`         | boolean        | **{dotted-circle}** No | Limit by enabled issues feature. |
@@ -2241,17 +2241,17 @@ This endpoint:
 - Deletes a project including all associated resources (including issues and
   merge requests).
 - In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) and later, on
-  [Premium or higher](https://about.gitlab.com/pricing/) tiers,
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
   [delayed project deletion](../user/project/settings/index.md#delayed-project-deletion)
   is applied if enabled.
 - From [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
-  [Premium or higher](https://about.gitlab.com/pricing/) tiers, group
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, group
   administrators can [configure](../user/group/manage.md#enable-delayed-project-deletion)
   projects within a group to be deleted after a delayed period. When enabled,
   actual deletion happens after the number of days specified in the
   [default deletion delay](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
 - From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
-  [Premium or higher](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already
+  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if the project is already
   marked for deletion, and the `permanently_remove` and `full_path` parameters are passed.
 
 WARNING:

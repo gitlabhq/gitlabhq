@@ -353,20 +353,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'schema inconsistencies' do
-    let(:expected_value) do
-      [
-        { inconsistency_type: 'wrong_indexes', object_name: 'index_1' },
-        { inconsistency_type: 'missing_indexes', object_name: 'index_2' }
-      ]
-    end
-
     let(:runner) { instance_double(Gitlab::Database::SchemaValidation::Runner, execute: inconsistencies) }
     let(:inconsistency_class) { Gitlab::Database::SchemaValidation::Inconsistency }
 
     let(:inconsistencies) do
       [
-        instance_double(inconsistency_class, inspect: 'index_statement_1'),
-        instance_double(inconsistency_class, inspect: 'index_statement_2')
+        instance_double(inconsistency_class, inspect: 'index_statement_1', type: 'wrong_indexes'),
+        instance_double(inconsistency_class, inspect: 'index_statement_2', type: 'missing_indexes'),
+        instance_double(inconsistency_class, inspect: 'table_statement_1', type: 'extra_tables',
+          table_name: 'test_replication'),
+        instance_double(inconsistency_class, inspect: 'trigger_statement', type: 'missing_triggers',
+          object_name: 'gitlab_schema_write_trigger_for_users')
       ]
     end
 

@@ -1136,7 +1136,7 @@ Only available to group owners and administrators.
 
 This endpoint:
 
-- On Premium and higher tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+- On Premium and Ultimate tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../user/admin_area/settings/visibility_and_access_controls.md#deletion-protection).
 - On Free tier, removes the group immediately and queues a background job to delete all projects in the group.
 - Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 

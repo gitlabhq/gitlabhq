@@ -378,6 +378,6 @@
 - - :approve
   - elkjs
   - :who: John T Skarbek
-    :why: https://github.com/mermaid-js/mermaid/pull/3984
-    :versions: []
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/1505
+    :versions: ["0.8.2"]
     :when: 2023-04-07 09:15:33.00004000 Z

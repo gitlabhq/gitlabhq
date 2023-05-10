@@ -33,6 +33,10 @@ module Gitlab
             'NOT NULL' if query_result['not_null']
           end
 
+          def partition_key?
+            query_result['partition_key']
+          end
+
           private
 
           attr_reader :query_result

@@ -321,13 +321,14 @@ For a web developer writing a webpage for your company's website:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available per user, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `mr_activity_filters` for individual or groups of users.
-On GitLab.com, this feature is enabled for all GitLab team members.
+On GitLab.com, this feature unavailable.
 
 To understand the history of a merge request, filter its activity feed to show you
 only the items that are relevant to you.
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Merge requests**.
+1. Select a merge request.
 1. Scroll to **Activity**.
 1. On the right side of the page, select **Activity filter** to show the filter options.
    If you've selected filter options previously, this field shows a summary of your

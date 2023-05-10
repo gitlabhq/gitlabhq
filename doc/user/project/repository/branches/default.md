@@ -134,7 +134,7 @@ groups and subgroups can override this instance-wide setting for their projects.
 
 Instance-level protections for default branches
 can be overridden on a per-group basis by the group's owner. In
-[GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can
+[GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can
 disable this privilege for group owners, enforcing the instance-level protection rule:
 
 1. On the top bar, select **Main menu > Admin**.
@@ -153,7 +153,7 @@ GitLab administrators can still update the default branch protection of a group.
 
 Instance-level protections for [default branch](#default-branch)
 can be overridden on a per-group basis by the group's owner. In
-[GitLab Premium or higher](https://about.gitlab.com/pricing/), GitLab administrators can
+[GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can
 [enforce protection of initial default branches](#prevent-overrides-of-default-branch-protection)
 which locks this setting for group owners.
 

@@ -36,8 +36,8 @@ occurs on self-managed instances when they are upgraded to GitLab 16.0. This cha
 
 You can use group access tokens:
 
-- On GitLab SaaS if you have the Premium license tier or higher. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
-- On self-managed instances of GitLab, with any license tier. If you have the Free tier:
+- On GitLab SaaS: If you have the Premium or Ultimate license tier. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
+- On self-managed instances: With any license tier. If you have the Free tier:
   - Review your security and compliance policies around
     [user self-enrollment](../../admin_area/settings/sign_up_restrictions.md#disable-new-sign-ups).
   - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to

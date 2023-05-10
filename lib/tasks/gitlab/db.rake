@@ -449,6 +449,11 @@ namespace :gitlab do
     end
 
     namespace :schema_checker do
+      # TODO: Remove `test_replication` after PG 14 upgrade is finished
+      # https://gitlab.com/gitlab-com/gl-infra/db-migration/-/merge_requests/406#note_1369214728
+      IGNORED_TABLES = %w[test_replication].freeze
+      IGNORED_TRIGGERS = ['gitlab_schema_write_trigger_for_'].freeze
+
       desc 'Checks schema inconsistencies'
       task run: :environment do
         database_model = Gitlab::Database.database_base_models[Gitlab::Database::MAIN_DATABASE_NAME]
@@ -457,7 +462,10 @@ namespace :gitlab do
         stucture_sql_path = Rails.root.join('db/structure.sql')
         structure_sql = Gitlab::Database::SchemaValidation::StructureSql.new(stucture_sql_path)
 
-        inconsistencies = Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute
+        filter = Gitlab::Database::SchemaValidation::InconsistencyFilter.new(IGNORED_TABLES, IGNORED_TRIGGERS)
+
+        inconsistencies =
+          Gitlab::Database::SchemaValidation::Runner.new(structure_sql, database).execute.filter_map(&filter)
 
         gitlab_url = 'gitlab-org/gitlab'
 

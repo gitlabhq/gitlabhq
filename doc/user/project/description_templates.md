@@ -153,7 +153,7 @@ To set a default description template for merge requests, either:
 - [In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302), [create a merge request template](#create-a-merge-request-template) named `Default.md` (case insensitive)
   and save it in `.gitlab/merge_request_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
-- Users on GitLab Premium and higher: set the default template in project settings:
+- Users on GitLab Premium and Ultimate: set the default template in project settings:
 
   1. On the top bar, select **Main menu > Projects** and find your project.
   1. On the left sidebar, select **Settings > Merge requests**.
@@ -165,7 +165,7 @@ To set a default description template for issues, either:
 - [In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302), [create an issue template](#create-an-issue-template) named `Default.md` (case insensitive)
   and save it in `.gitlab/issue_templates/`.
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
-- Users on GitLab Premium and higher: set the default template in project settings:
+- Users on GitLab Premium and Ultimate: set the default template in project settings:
 
   1. On the top bar, select **Main menu > Projects** and find your project.
   1. On the left sidebar, select **Settings > General**.

@@ -1538,7 +1538,7 @@ The following upgrade path also works around the bug:
 1. [Ensure batched background migrations](background_migrations.md#batched-background-migrations) are complete.
 1. Upgrade to an earlier GitLab 15.9 patch release that doesn't have the bug fix.
 
-It is not then required to upgrade to 15.9.3 or higher for this issue.
+It is not then required to upgrade to 15.9.3 or later for this issue.
 
 [Read the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393216) for more information.
 

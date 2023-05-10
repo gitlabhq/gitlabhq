@@ -31,7 +31,7 @@ module Gitlab
           private
 
           def columns_statement
-            columns.map(&:statement).join(', ')
+            columns.reject(&:partition_key?).map(&:statement).join(', ')
           end
         end
       end

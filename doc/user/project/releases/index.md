@@ -45,8 +45,8 @@ To view a list of releases:
   ![Number of Releases](img/releases_count_v13_2.png "Incremental counter of Releases")
 
   - On public projects, this number is visible to all users.
-  - On private projects, this number is visible to users with Reporter
-    [permissions](../../permissions.md#project-members-permissions) or higher.
+  - On private projects, this number is visible to users with at least the Reporter
+    [role](../../permissions.md#project-members-permissions).
 
 ### Sort releases
 

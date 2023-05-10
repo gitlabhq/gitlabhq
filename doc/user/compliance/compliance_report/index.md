@@ -18,7 +18,7 @@ See reports about compliance violations and compliance frameworks for the group.
 > - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/5237) in GitLab 14.10. [Feature flag `compliance_violations_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/346266) removed.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) ability to create/edit compliance frameworks in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `manage_compliance_frameworks_modals_refactor`. Disabled by default.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) ability to create/edit compliance frameworks in GitLab 16.0.
 
 With compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
 
@@ -171,8 +171,7 @@ passing in an optional value to the `commit_sha` query parameter.
 
 ## Compliance frameworks report
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
-> - Support for applying/removing compliance framework [added](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
 
 With compliance frameworks report, you can see the compliance frameworks that are applied to projects in a group. Each row of the report shows:
 
@@ -196,6 +195,10 @@ To view the compliance frameworks report:
 
 ### Apply a compliance framework to projects in a group
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+
+You can apply a compliance framework to selected projects in a group.
+
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -211,6 +214,10 @@ To apply a compliance framework to projects in a group:
 1. Select **Apply**.
 
 ### Remove a compliance framework from projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+
+You can remove a compliance framework from selected projects in a group.
 
 Prerequisites:
 

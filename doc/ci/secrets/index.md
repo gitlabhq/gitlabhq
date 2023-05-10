@@ -53,7 +53,7 @@ and supports multiple secrets engines.
 
 To configure your Vault server:
 
-1. Ensure your Vault server is running on version 1.2.0 or higher.
+1. Ensure your Vault server is running on version 1.2.0 or later.
 1. Enable the authentication method by running these commands. They provide your Vault
    server the [JSON Web Key Set](https://www.rfc-editor.org/rfc/rfc7517) (JWKS) endpoint for your GitLab instance, so Vault
    can fetch the public signing key and verify the JSON Web Token (JWT) when authenticating:

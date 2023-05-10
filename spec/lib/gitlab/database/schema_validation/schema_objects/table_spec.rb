@@ -9,8 +9,9 @@ RSpec.describe Gitlab::Database::SchemaValidation::SchemaObjects::Table, feature
   let(:column_class) { 'Gitlab::Database::SchemaValidation::SchemaObjects::Column' }
   let(:columns) do
     [
-      instance_double(column_class, name: 'id', statement: 'id bigint NOT NULL'),
-      instance_double(column_class, name: 'col', statement: 'col text')
+      instance_double(column_class, name: 'id', statement: 'id bigint NOT NULL', partition_key?: false),
+      instance_double(column_class, name: 'col', statement: 'col text', partition_key?: false),
+      instance_double(column_class, name: 'partition', statement: 'partition integer DEFAULT 1', partition_key?: true)
     ]
   end
 
@@ -24,6 +25,10 @@ RSpec.describe Gitlab::Database::SchemaValidation::SchemaObjects::Table, feature
 
   describe '#statement' do
     it { expect(table.statement).to eq('CREATE TABLE my_table (id bigint NOT NULL, col text)') }
+
+    it 'ignores the partition column' do
+      expect(table.statement).not_to include('partition integer DEFAULT 1')
+    end
   end
 
   describe '#fetch_column_by_name' do

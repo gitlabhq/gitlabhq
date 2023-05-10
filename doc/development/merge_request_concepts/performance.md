@@ -211,7 +211,7 @@ By default, this `Gitlab::SQL::CTE` class forces materialization through adding 
 (this behavior is implemented using a custom Arel node `Gitlab::Database::AsWithMaterialized` under the surface).
 
 WARNING:
-Upgrading to GitLab 14.0 requires PostgreSQL 12 or higher.
+Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
 
 ## Cached Queries
 

@@ -165,7 +165,7 @@ To delete a task:
 To show who is responsible for a task, you can assign users to it.
 
 Users on GitLab Free can assign one user per task.
-Users on GitLab Premium and higher can assign multiple users to a single task.
+Users on GitLab Premium and Ultimate can assign multiple users to a single task.
 See also [multiple assignees for issues](project/issues/multiple_assignees_for_issues.md).
 
 Prerequisites:

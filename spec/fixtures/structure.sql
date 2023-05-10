@@ -49,8 +49,10 @@ CREATE TABLE test_table (
   uuid_with_default_column uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
   bytea_column bytea,
   bytea_with_default_column bytea DEFAULT '\xDEADBEEF'::bytea,
-  unmapped_column_type anyarray
-);
+  unmapped_column_type anyarray,
+  partition_key bigint DEFAULT 1 NOT NULL,
+  created_at timestamp with time zone DEFAULT now() NOT NULL
+) PARTITION BY HASH (partition_key, created_at);
 
 CREATE TABLE ci_project_mirrors (
     id bigint NOT NULL,

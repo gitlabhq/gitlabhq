@@ -37,7 +37,7 @@ The following projects demonstrate API Discovery:
 - Java: 11, 17 (LTS versions)
 - Executable JARs
 
-API Discovery supports Spring Boot major version 2, minor versions 1 and higher. Versions 2.0.X are not supported due to known bugs which affect API Discovery and were fixed in 2.1.
+API Discovery supports Spring Boot major version 2, minor versions 1 and later. Versions 2.0.X are not supported due to known bugs which affect API Discovery and were fixed in 2.1.
 
 Major version 3 is planned to be supported in the future. Support for major version 1 is not planned.
 

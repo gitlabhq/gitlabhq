@@ -22,7 +22,7 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
-  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:5"
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:6"
   CS_SCHEMA_MODEL: 15
 
 container_scanning:

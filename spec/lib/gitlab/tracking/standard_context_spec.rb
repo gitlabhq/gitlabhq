@@ -70,7 +70,9 @@ RSpec.describe Gitlab::Tracking::StandardContext do
       end
 
       context 'when namespace is available' do
-        subject { described_class.new(namespace: create(:namespace)) }
+        let(:namespace) { create(:namespace) }
+
+        subject { described_class.new(namespace_id: namespace.id, plan_name: namespace.actual_plan_name) }
 
         it 'contains plan name' do
           expect(snowplow_context.to_json.dig(:data, :plan)).to eq(Plan::DEFAULT)
@@ -93,7 +95,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
     end
 
     context 'with incorrect argument type' do
-      subject { described_class.new(project: create(:group)) }
+      subject { described_class.new(project_id: create(:group)) }
 
       it 'does call `track_and_raise_for_dev_exception`' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)

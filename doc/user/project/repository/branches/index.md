@@ -66,7 +66,7 @@ When viewing an issue, you can create an associated branch directly from that pa
 
 Prerequisites:
 
-- You must have the Developer or higher role in the project.
+- You must have at least the Developer role in the project.
 
 To create a branch from an issue:
 

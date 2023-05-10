@@ -52,7 +52,7 @@ The following table explains the version compatibility between GitLab and Auto D
 | GitLab version   | `auto-deploy-image` version | Notes |
 |------------------|-----------------------------|-------|
 | v10.0 to v14.0   | v0.1.0 to v2.0.0            | v0 and v1 auto-deploy-image are backwards compatible. |
-| v13.4 and higher | v2.0.0 and higher           | v2 auto-deploy-image contains breaking changes, as explained in the [upgrade guide](#upgrade-deployments-to-the-v2-auto-deploy-image). |
+| v13.4 and later  | v2.0.0 and later            | v2 auto-deploy-image contains breaking changes, as explained in the [upgrade guide](#upgrade-deployments-to-the-v2-auto-deploy-image). |
 
 You can find the current stable version of auto-deploy-image in the [Auto Deploy stable template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml).
 

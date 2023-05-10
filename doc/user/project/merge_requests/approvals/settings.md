@@ -121,7 +121,7 @@ permission enables an electronic signature for approvals, such as the one define
 ## Remove all approvals when commits are added to the source branch
 
 By default, an approval on a merge request is removed when you add more changes
-after the approval. In GitLab Premium and higher tiers, to keep existing approvals
+after the approval. In GitLab Premium and Ultimate tiers, to keep existing approvals
 after more changes are added to the merge request:
 
 1. On the left sidebar, select **Settings > Merge requests**.

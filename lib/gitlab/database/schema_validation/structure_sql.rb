@@ -38,9 +38,11 @@ module Gitlab
         def tables
           @tables ||= table_statements.map do |stmt|
             table_name = stmt.relation.relname
+            partition_stmt = stmt.partspec
 
             columns = stmt.table_elts.select { |n| n.node == :column_def }.map do |column|
-              SchemaObjects::Column.new(Adapters::ColumnStructureSqlAdapter.new(table_name, column.column_def))
+              adapter = Adapters::ColumnStructureSqlAdapter.new(table_name, column.column_def, partition_stmt)
+              SchemaObjects::Column.new(adapter)
             end
 
             SchemaObjects::Table.new(table_name, columns)
