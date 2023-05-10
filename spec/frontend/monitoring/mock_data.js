@@ -206,32 +206,6 @@ export const dashboardGitResponse = [
   ...customDashboardsData,
 ];
 
-export const selfMonitoringDashboardGitResponse = [
-  {
-    default: true,
-    display_name: 'Default',
-    can_edit: false,
-    system_dashboard: true,
-    out_of_the_box_dashboard: true,
-    project_blob_path: null,
-    path: 'config/prometheus/self_monitoring_default.yml',
-    starred: false,
-    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=config/prometheus/self_monitoring_default.yml`,
-  },
-  {
-    default: false,
-    display_name: 'dashboard.yml',
-    can_edit: true,
-    system_dashboard: false,
-    out_of_the_box_dashboard: false,
-    project_blob_path: `${mockProjectDir}/-/blob/main/.gitlab/dashboards/dashboard.yml`,
-    path: '.gitlab/dashboards/dashboard.yml',
-    starred: true,
-    user_starred_path: `${mockProjectDir}/metrics_user_starred_dashboards?dashboard_path=.gitlab/dashboards/dashboard.yml`,
-  },
-  ...customDashboardsData,
-];
-
 // Metrics mocks
 
 export const metricsResult = [

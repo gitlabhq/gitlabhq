@@ -36,5 +36,4 @@ cd qa
 bundle install --jobs=$(nproc) --retry=3 --quiet
 
 # Run the tests
-bundle exec rake "knapsack:download[test]"
 bundle exec bin/qa Test::Instance::All http://gdk.test:3000 -- $RSPEC_ARGS

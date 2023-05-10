@@ -40,7 +40,6 @@ import InlineDiff from '../extensions/inline_diff';
 import Italic from '../extensions/italic';
 import Link from '../extensions/link';
 import ListItem from '../extensions/list_item';
-import Loading from '../extensions/loading';
 import MathInline from '../extensions/math_inline';
 import OrderedList from '../extensions/ordered_list';
 import Paragraph from '../extensions/paragraph';
@@ -136,7 +135,6 @@ export const createContentEditor = ({
     ExternalKeydownHandler.configure({ eventHub }),
     Link,
     ListItem,
-    Loading,
     MathInline,
     OrderedList,
     Paragraph,

@@ -34,7 +34,6 @@ export default {
   <editor-state-observer @alert="displayAlert">
     <gl-alert
       v-if="message"
-      class="gl-mb-6"
       :variant="variant"
       :primary-button-text="actionLabel"
       @dismiss="dismissAlert"

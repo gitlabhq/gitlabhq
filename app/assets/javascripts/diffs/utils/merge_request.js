@@ -1,6 +1,6 @@
 import { ZERO_CHANGES_ALT_DISPLAY } from '../constants';
 
-const endpointRE = /^(\/?(.+?)\/(.+?)\/-\/merge_requests\/(\d+)).*$/i;
+const endpointRE = /^(\/?(.+\/)+(.+)\/-\/merge_requests\/(\d+)).*$/i;
 
 function getVersionInfo({ endpoint } = {}) {
   const dummyRoot = 'https://gitlab.com';
@@ -28,7 +28,7 @@ export function updateChangesTabCount({
 
 export function getDerivedMergeRequestInformation({ endpoint } = {}) {
   let mrPath;
-  let userOrGroup;
+  let namespace;
   let project;
   let id;
   let diffId;
@@ -36,13 +36,15 @@ export function getDerivedMergeRequestInformation({ endpoint } = {}) {
   const matches = endpointRE.exec(endpoint);
 
   if (matches) {
-    [, mrPath, userOrGroup, project, id] = matches;
+    [, mrPath, namespace, project, id] = matches;
     ({ diffId, startSha } = getVersionInfo({ endpoint }));
+
+    namespace = namespace.replace(/\/$/, '');
   }
 
   return {
     mrPath,
-    userOrGroup,
+    namespace,
     project,
     id,
     diffId,

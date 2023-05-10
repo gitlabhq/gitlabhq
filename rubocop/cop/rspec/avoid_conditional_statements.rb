@@ -21,11 +21,11 @@ module RuboCop
       #     find('[data-testid="begin-commit-button"]').click
       #   end
       class AvoidConditionalStatements < RuboCop::Cop::Base
-        MESSAGE = "Don't use `%{conditional}` conditional statments in specs, it might create flakiness. " \
+        MESSAGE = "Don't use `%{conditional}` conditional statement in specs, it might create flakiness. " \
                   "See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109"
 
         def on_if(node)
-          conditional = node.ternary? ? "#{node.condition.to_s.delete!("\n")} ? (ternary)" : node.keyword
+          conditional = node.ternary? ? node.source : node.keyword
 
           add_offense(node, message: format(MESSAGE, conditional: conditional))
         end

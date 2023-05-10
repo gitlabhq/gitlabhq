@@ -18644,6 +18644,9 @@ msgstr ""
 msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
 msgstr ""
 
+msgid "File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB."
+msgstr ""
+
 msgid "File mode changed from %{a_mode} to %{b_mode}"
 msgstr ""
 
@@ -47997,6 +48000,9 @@ msgid "Uploading changes to terminal"
 msgstr ""
 
 msgid "Uploading..."
+msgstr ""
+
+msgid "Uploading: %{progress}"
 msgstr ""
 
 msgid "Upstream"

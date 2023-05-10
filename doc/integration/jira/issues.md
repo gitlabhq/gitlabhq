@@ -10,12 +10,14 @@ You can [manage Jira issues directly in GitLab](configure.md).
 You can then refer to Jira issues by ID in GitLab commits and merge requests.
 The Jira issue IDs must be in uppercase.
 
-## Reference Jira issues
+## Cross-reference GitLab activity and Jira issues
 
 With this integration, you can cross-reference Jira issues while you work in
-GitLab issues and merge requests. Mention a Jira issue in a GitLab issue,
-merge request, or comment, and GitLab adds a formatted comment to the Jira issue.
-The comment links back to your work in GitLab.
+GitLab issues, merge requests, and Git.
+When you mention a Jira issue in a GitLab issue, merge request, comment, or commit:
+
+- GitLab links to the Jira issue from the mention in GitLab.
+- GitLab adds a formatted comment to the Jira issue that links back to the issue, merge request, or commit in GitLab.
 
 For example, when this commit refers to a `GIT-1` Jira issue:
 
@@ -23,9 +25,9 @@ For example, when this commit refers to a `GIT-1` Jira issue:
 git commit -m "GIT-1 this is a test commit"
 ```
 
-GitLab adds to that issue:
+GitLab adds to that Jira issue:
 
-- A reference in the **Issue links** section
+- A reference in the **Web links** section
 - A comment in the **Activity** section that follows this format:
 
   ```plaintext
@@ -33,11 +35,15 @@ GitLab adds to that issue:
   ENTITY_TITLE
   ```
 
-- `USER`: The name of the user who mentioned the issue, linked to their GitLab user profile.
-- `COMMENTLINK`: A link to where the Jira issue was mentioned.
-- `RESOURCE_NAME`: The type of resource, such as a commit or merge request, which referenced the issue.
-- `PROJECT_NAME`: The GitLab project name.
-- `ENTITY_TITLE`: The title of the merge request, or the first line of the commit.
+  - `USER`: Name of the user who has mentioned the Jira issue with a link to their GitLab user profile.
+  - `RESOURCE_NAME`: Type of resource (for example, a GitLab commit, issue, or merge request) that has referenced the Jira issue.
+  - `PROJECT_NAME`: GitLab project name.
+  - `COMMENTLINK`: Link to where the Jira issue is mentioned.
+  - `ENTITY_TITLE`: Title of the GitLab commit (first line), issue, or merge request.
+
+Only a single cross-reference comment appears in Jira per GitLab issue, merge request, or commit.
+For example, multiple comments on a GitLab merge request that reference a Jira issue
+create only a single cross-reference comment back to that merge request in Jira.
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 

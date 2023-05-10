@@ -7858,7 +7858,7 @@
   static: |-
     <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
+    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga" class="with-attachment-icon">audio</a></span></p>
 08_01_00__gitlab_internal_extension_markdown__audio__002:
   canonical: |
     <p><audio src="audio.oga" title="audio title"></audio></p>
@@ -7866,14 +7866,14 @@
     <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio title"></audio><a href="audio.oga" target="_blank" rel="noopener noreferrer" title="Download 'audio title'">audio title</a></span></p>
   wysiwyg: |-
     <pre>[audio]: audio.oga "audio title"</pre>
-    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga">audio</a></span></p>
+    <p><span class="media-container audio-container"><audio src="audio.oga" controls="true" data-setup="{}" data-title="audio"></audio><a href="audio.oga" class="with-attachment-icon">audio</a></span></p>
 08_02_00__gitlab_internal_extension_markdown__video__001:
   canonical: |
     <p><video src="video.m4v" title="video title"></video></p>
   static: |-
     <p data-sourcepos="1:1-1:33" dir="auto"><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video title" preload="metadata" width="400"></video><a href="video.m4v" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video"></video><a href="video.m4v">video</a></span></p>
+    <p><span class="media-container video-container"><video src="video.m4v" controls="true" data-setup="{}" data-title="video"></video><a href="video.m4v" class="with-attachment-icon">video</a></span></p>
 08_02_00__gitlab_internal_extension_markdown__video__002:
   canonical: |
     <p><video src="video.mov" title="video title"></video></p>
@@ -7881,7 +7881,7 @@
     <p data-sourcepos="3:1-3:15" dir="auto"><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video title" preload="metadata" width="400"></video><a href="video.mov" target="_blank" rel="noopener noreferrer" title="Download 'video title'">video title</a></span></p>
   wysiwyg: |-
     <pre>[video]: video.mov "video title"</pre>
-    <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov">video</a></span></p>
+    <p><span class="media-container video-container"><video src="video.mov" controls="true" data-setup="{}" data-title="video"></video><a href="video.mov" class="with-attachment-icon">video</a></span></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__001:
   canonical: |
     <p><a href="groups-test-file">groups-test-file</a></p>
@@ -7965,7 +7965,7 @@
   static: |-
     <p data-sourcepos="1:1-1:46" dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3">Sample Audio</a></span></p>
+    <p><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3" class="with-attachment-icon">Sample Audio</a></span></p>
 08_04_09__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio_and_video_in_lists__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -7990,9 +7990,9 @@
     </li>
     </ul>
   wysiwyg: |-
-    <ul bullet="*"><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3">Sample Audio</a></span></p></li><li><p><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/2.mp4">Sample Video</a></span></p></li></ul>
-    <ol parens="false"><li><p><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/1.mp4">Sample Video</a></span></p></li><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3">Sample Audio</a></span></p></li></ol>
-    <ul start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4">Sample Video</a></span></p></div></li></ul>
+    <ul bullet="*"><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></li><li><p><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/2.mp4" class="with-attachment-icon">Sample Video</a></span></p></li></ul>
+    <ol parens="false"><li><p><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/1.mp4" class="with-attachment-icon">Sample Video</a></span></p></li><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></li></ol>
+    <ul start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" class="with-attachment-icon">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4" class="with-attachment-icon">Sample Video</a></span></p></div></li></ul>
 08_04_10__gitlab_internal_extension_markdown__migrated_golden_master_examples__blockquote__001:
   canonical: |
     TODO: Write canonical HTML for this example
@@ -8581,7 +8581,7 @@
   static: |-
     <p data-sourcepos="1:1-1:46" dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video" preload="metadata" width="400"></video><a href="https://gitlab.com/gitlab.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span></p>
   wysiwyg: |-
-    <p><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/gitlab.mp4">Sample Video</a></span></p>
+    <p><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/gitlab.mp4" class="with-attachment-icon">Sample Video</a></span></p>
 08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001:
   canonical: |
     TODO: Write canonical HTML for this example

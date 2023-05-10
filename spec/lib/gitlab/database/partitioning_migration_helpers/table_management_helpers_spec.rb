@@ -547,10 +547,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       it 'deletes those pertaining to the given table' do
         expect { migration.cleanup_partitioning_data_migration(source_table) }
-          .to change { ::Gitlab::Database::BackgroundMigration::BatchedMigration.count }.from(2).to(1)
+          .to change { ::Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(-1)
 
-        remaining_record = ::Gitlab::Database::BackgroundMigration::BatchedMigration.first
-        expect(remaining_record.table_name).to eq('other_table')
+        expect(::Gitlab::Database::BackgroundMigration::BatchedMigration.where(table_name: 'other_table').any?)
+          .to be_truthy
+
+        expect(::Gitlab::Database::BackgroundMigration::BatchedMigration.where(table_name: source_table).any?)
+          .to be_falsy
       end
     end
   end

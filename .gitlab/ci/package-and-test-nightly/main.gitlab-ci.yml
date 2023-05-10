@@ -1,0 +1,89 @@
+include:
+  - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
+  - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
+  - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+
+.ce:
+  variables:
+    RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${CI_COMMIT_SHA}
+
+.ee:
+  variables:
+    RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}
+
+# ==========================================
+# Prepare stage
+# ==========================================
+# TODO: enable once ee jobs are added
+# trigger-omnibus-env:
+#   extends:
+#     - .trigger-omnibus-env
+
+trigger-omnibus-env-ce:
+  extends:
+    - .trigger-omnibus-env-ce
+  variables:
+    FOSS_ONLY: "1" # set FOSS_ONLY because we don't pass it via trigger job
+
+# TODO: enable once ee jobs are added
+# trigger-omnibus:
+#   extends:
+#     - .trigger-omnibus
+#   needs:
+#     - trigger-omnibus-env
+
+trigger-omnibus-ce:
+  extends:
+    - .trigger-omnibus-ce
+  needs:
+    - trigger-omnibus-env-ce
+
+# TODO: enable when first parallel job is added
+# download-knapsack-report:
+#   extends:
+#     - .download-knapsack-report
+#     - .rules:download-knapsack
+
+# ==========================================
+# Test stage
+# ==========================================
+update-ee-to-ce:
+  extends:
+    - .qa
+    - .update-script
+    - .ce
+  variables:
+    UPDATE_TYPE: minor
+    UPDATE_FROM_EDITION: ee
+    QA_RSPEC_TAGS: --tag smoke
+
+# ==========================================
+# Post test stage
+# ==========================================
+e2e-test-report:
+  extends:
+    - .e2e-test-report
+
+# TODO: enable when first parallel job is added
+# upload-knapsack-report:
+#   extends:
+#     - .upload-knapsack-report
+#     - .rules:report:process-results
+
+export-test-metrics:
+  extends:
+    - .export-test-metrics
+
+relate-test-failures:
+  extends:
+    - .relate-test-failures
+
+notify-slack:
+  extends:
+    - .notify-slack
+  variables:
+    TYPE: "(nightly) "

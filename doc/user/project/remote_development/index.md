@@ -4,7 +4,7 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Remote development **(FREE)**
+# Remote development (Beta) **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -14,15 +14,12 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
-This feature is an [Experiment](../../../policy/alpha-beta-support.md#experiment) and subject to change without notice.
+This feature is in [Beta](../../../policy/alpha-beta-support.md#beta) and subject to change without notice.
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+You can use remote development to write and compile code hosted on GitLab. With remote development, you can:
+
+- Create a secure development environment in the cloud.
+- Connect to that environment from your local machine through a web browser or client-based solution.
 
 ## Web IDE as a frontend
 

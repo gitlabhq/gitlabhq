@@ -5,6 +5,7 @@ import { Text } from '@tiptap/extension-text';
 import { Editor } from '@tiptap/vue-2';
 import { builders, eq } from 'prosemirror-test-builder';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import Audio from '~/content_editor/extensions/audio';
 import Blockquote from '~/content_editor/extensions/blockquote';
 import Bold from '~/content_editor/extensions/bold';
@@ -61,6 +62,12 @@ export const emitEditorEvent = ({ tiptapEditor, event, params = {} }) => {
   tiptapEditor.emit(event, { editor: tiptapEditor, ...params });
 
   return nextTick();
+};
+
+export const createTransactionWithMeta = (metaKey, metaValue) => {
+  return {
+    getMeta: (key) => (key === metaKey ? metaValue : null),
+  };
 };
 
 /**
@@ -198,6 +205,24 @@ export const waitUntilNextDocTransaction = ({ tiptapEditor, action = () => {} })
     const handleTransaction = () => {
       tiptapEditor.off('update', handleTransaction);
       resolve();
+    };
+
+    tiptapEditor.on('update', handleTransaction);
+    action();
+  });
+};
+
+export const expectDocumentAfterTransaction = ({ tiptapEditor, number, expectedDoc, action }) => {
+  return new Promise((resolve) => {
+    let counter = 0;
+    const handleTransaction = async () => {
+      counter += 1;
+      if (counter === number) {
+        expect(tiptapEditor.state.doc.toJSON()).toEqual(expectedDoc.toJSON());
+        tiptapEditor.off('update', handleTransaction);
+        await waitForPromises();
+        resolve();
+      }
     };
 
     tiptapEditor.on('update', handleTransaction);

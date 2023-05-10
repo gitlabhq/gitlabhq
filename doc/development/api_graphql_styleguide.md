@@ -1713,8 +1713,8 @@ object on the mutation. This would allow you to use the
 
 When a user is not allowed to perform the action, or an object is not
 found, we should raise a
-`Gitlab::Graphql::Errors::ResourceNotAvailable` error which is
-correctly rendered to the clients.
+`Gitlab::Graphql::Errors::ResourceNotAvailable` by calling `raise_resource_not_available_error!`
+from in the `resolve` method.
 
 ### Errors in mutations
 

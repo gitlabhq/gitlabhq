@@ -163,8 +163,6 @@ e2e-test-pipeline-generate:
   stage: prepare
   variables:
     ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
-    OMNIBUS_PIPELINE_YML: package-and-test-pipeline.yml
-    REVIEW_PIPELINE_YML: review-app-pipeline.yml
     COLORIZED_LOGS: "true"
   script:
     - bundle exec rake "ci:detect_changes[$ENV_FILE]"
@@ -172,5 +170,4 @@ e2e-test-pipeline-generate:
   artifacts:
     expire_in: 1 day
     paths:
-      - $OMNIBUS_PIPELINE_YML
-      - $REVIEW_PIPELINE_YML
+      - '*-pipeline.yml'

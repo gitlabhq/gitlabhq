@@ -309,6 +309,21 @@ You can follow or unfollow users from either:
 In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
 the maximum number of users you can follow is 300.
 
+### Disable following and being followed by other users
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`. Disabled by default.
+
+You can disable following and being followed by other users.
+
+1. On the top bar, in the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. Select **Preferences**.
+1. Clear the **Enable follow users** checkbox.
+1. Select **Save changes**.
+
+NOTE:
+When this feature is being disabled, all current followed/following connections are deleted.
+
 ## View your activity
 
 GitLab tracks [user contribution activity](contributions_calendar.md).

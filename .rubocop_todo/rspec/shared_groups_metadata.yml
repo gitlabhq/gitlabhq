@@ -4,4 +4,3 @@ RSpec/SharedGroupsMetadata:
   Exclude:
     - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
     - 'spec/lib/gitlab/git/merge_base_spec.rb'
-    - 'spec/models/container_repository_spec.rb'

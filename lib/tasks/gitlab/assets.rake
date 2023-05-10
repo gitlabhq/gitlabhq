@@ -97,9 +97,9 @@ namespace :gitlab do
       if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.master_assets_sha256
         FileUtils.rm_rf([Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR] + Dir.glob('app/assets/javascripts/locale/**/app.js'))
 
-        # gettext:po_to_json needs to run before rake:assets:precompile because
+        # gettext:compile needs to run before rake:assets:precompile because
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
-        Gitlab::TaskHelpers.invoke_and_time_task('gettext:po_to_json')
+        Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']

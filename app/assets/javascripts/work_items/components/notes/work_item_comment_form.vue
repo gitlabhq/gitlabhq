@@ -208,7 +208,7 @@ export default {
           :form-field-props="formFieldProps"
           :add-spacing-classes="false"
           data-testid="work-item-add-comment"
-          class="gl-mb-3"
+          class="gl-mb-5"
           use-bottom-toolbar
           supports-quick-actions
           :autofocus="autofocus"

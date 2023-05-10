@@ -7,7 +7,7 @@ import eventHubFactory from '~/helpers/event_hub_factory';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import Link from '~/content_editor/extensions/link';
-import { createTestEditor } from '../../test_utils';
+import { createTestEditor, emitEditorEvent, createTransactionWithMeta } from '../../test_utils';
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
@@ -64,7 +64,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
     tiptapEditor
       .chain()
-      .insertContent(
+      .setContent(
         'Download <a href="/path/to/project/-/wikis/uploads/my_file.pdf" data-canonical-src="uploads/my_file.pdf">PDF File</a>',
       )
       .setTextSelection(14) // put cursor in the middle of the link
@@ -88,6 +88,36 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       }),
     );
     expect(findLink().text()).toBe('uploads/my_file.pdf');
+  });
+
+  it('shows a loading percentage for a file being uploaded', async () => {
+    const setUploadProgress = async (progress) => {
+      const transaction = createTransactionWithMeta('uploadProgress', {
+        filename: 'my_file.pdf',
+        progress,
+      });
+      await emitEditorEvent({ event: 'transaction', tiptapEditor, params: { transaction } });
+    };
+
+    tiptapEditor
+      .chain()
+      .extendMarkRange('link')
+      .updateAttributes('link', { uploading: 'my_file.pdf' })
+      .run();
+
+    await buildWrapperAndDisplayMenu();
+
+    expect(findLink().exists()).toBe(false);
+    expect(wrapper.text()).toContain('Uploading: 0%');
+
+    await setUploadProgress(0.4);
+    expect(wrapper.text()).toContain('Uploading: 40%');
+
+    await setUploadProgress(0.7);
+    expect(wrapper.text()).toContain('Uploading: 70%');
+
+    await setUploadProgress(1);
+    expect(wrapper.text()).toContain('Uploading: 100%');
   });
 
   it('updates the bubble menu state when @selectionUpdate event is triggered', async () => {

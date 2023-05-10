@@ -281,17 +281,18 @@ hi
     ).toBe('![GitLab][gitlab-url]');
   });
 
-  it('omits image data urls when serializing', () => {
+  it.each`
+    src
+    ${'data:image/png;base64,iVBORw0KGgoAAAAN'}
+    ${'blob:https://gitlab.com/1234-5678-9012-3456'}
+  `('omits images with data/blob urls when serializing', ({ src }) => {
+    expect(serialize(paragraph(image({ src, alt: 'image' })))).toBe('');
+  });
+
+  it('does not escape url in an image', () => {
     expect(
-      serialize(
-        paragraph(
-          image({
-            src: 'data:image/png;base64,iVBORw0KGgoAAAAN',
-            alt: 'image',
-          }),
-        ),
-      ),
-    ).toBe('![image]()');
+      serialize(paragraph(image({ src: 'https://example.com/image__1_.png', alt: 'image' }))),
+    ).toBe('![image](https://example.com/image__1_.png)');
   });
 
   it('correctly serializes strikethrough', () => {

@@ -9,12 +9,7 @@ import RefreshButton from '~/monitoring/components/refresh_button.vue';
 import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import DateTimePicker from '~/vue_shared/components/date_time_picker/date_time_picker.vue';
-import {
-  environmentData,
-  dashboardGitResponse,
-  selfMonitoringDashboardGitResponse,
-  dashboardHeaderProps,
-} from '../mock_data';
+import { environmentData, dashboardGitResponse, dashboardHeaderProps } from '../mock_data';
 import { setupAllDashboards, setupStoreWithDashboard, setupStoreWithData } from '../store_utils';
 
 const mockProjectPath = 'https://path/to/project';
@@ -267,14 +262,8 @@ describe('Dashboard header', () => {
   });
 
   describe('actions menu', () => {
-    const ootbDashboards = [
-      dashboardGitResponse[0].path,
-      selfMonitoringDashboardGitResponse[0].path,
-    ];
-    const customDashboards = [
-      dashboardGitResponse[1].path,
-      selfMonitoringDashboardGitResponse[1].path,
-    ];
+    const ootbDashboards = [dashboardGitResponse[0].path];
+    const customDashboards = [dashboardGitResponse[1].path];
 
     it('is rendered', () => {
       createShallowWrapper();

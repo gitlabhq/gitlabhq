@@ -39,12 +39,12 @@ function collapsed(file) {
 }
 
 function identifier(file) {
-  const { userOrGroup, project, id } = getDerivedMergeRequestInformation({
+  const { namespace, project, id } = getDerivedMergeRequestInformation({
     endpoint: file.load_collapsed_diff_url,
   });
 
   return uuids({
-    seeds: [userOrGroup, project, id, file.file_identifier_hash, file.blob?.id],
+    seeds: [namespace, project, id, file.file_identifier_hash, file.blob?.id],
   })[0];
 }
 

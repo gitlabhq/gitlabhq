@@ -39,7 +39,7 @@ The following tools are used:
 - [`gettext_i18n_rails_js`](https://github.com/webhippie/gettext_i18n_rails_js):
   this gem makes the translations available in JavaScript. It provides the following Rake task:
 
-  - `rake gettext:po_to_json`: reads the contents of the PO files and generates JSON files that
+  - `rake gettext:compile`: reads the contents of the PO files and generates JS files which
     contain all the available translations.
 
 - PO editor: there are multiple applications that can help us work with PO files. A good option is
@@ -1006,4 +1006,4 @@ Suppose you want to add translations for a new language, for example, French:
 To manually test Vue translations:
 
 1. Change the GitLab localization to another language than English.
-1. Generate JSON files using `bin/rake gettext:po_to_json` or `bin/rake gettext:compile`.
+1. Generate JSON files using `bin/rake gettext:compile`.

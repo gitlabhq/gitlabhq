@@ -2,6 +2,20 @@ import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { handleFileEvent } from '../services/upload_helpers';
 
+const processFiles = ({ files, uploadsPath, renderMarkdown, eventHub, editor }) => {
+  if (!files.length) {
+    return false;
+  }
+
+  let handled = true;
+
+  for (const file of files) {
+    handled = handled && handleFileEvent({ editor, file, uploadsPath, renderMarkdown, eventHub });
+  }
+
+  return handled;
+};
+
 export default Extension.create({
   name: 'attachment',
 
@@ -36,25 +50,17 @@ export default Extension.create({
         key: new PluginKey('attachment'),
         props: {
           handlePaste: (_, event) => {
-            const { uploadsPath, renderMarkdown, eventHub } = this.options;
-
-            return handleFileEvent({
+            return processFiles({
+              files: event.clipboardData.files,
               editor,
-              file: event.clipboardData.files[0],
-              uploadsPath,
-              renderMarkdown,
-              eventHub,
+              ...this.options,
             });
           },
           handleDrop: (_, event) => {
-            const { uploadsPath, renderMarkdown, eventHub } = this.options;
-
-            return handleFileEvent({
+            return processFiles({
+              files: event.dataTransfer.files,
               editor,
-              file: event.dataTransfer.files[0],
-              uploadsPath,
-              renderMarkdown,
-              eventHub,
+              ...this.options,
             });
           },
         },

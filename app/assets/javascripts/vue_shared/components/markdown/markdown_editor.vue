@@ -218,7 +218,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="md-area gl-px-0! gl-overflow-hidden">
     <local-storage-sync
       :value="editingMode"
       as-string

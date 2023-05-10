@@ -69,9 +69,6 @@ export default {
       update(data) {
         return data.workspace.workItems.nodes[0];
       },
-      skip() {
-        return !this.workItemIid;
-      },
       result() {
         if (this.isEditing) {
           this.checkForConflicts();

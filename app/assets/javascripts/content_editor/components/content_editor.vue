@@ -220,7 +220,7 @@ export default {
       <div
         data-testid="content-editor"
         data-qa-selector="content_editor_container"
-        class="md-area"
+        class="md-area gl-border-none! gl-shadow-none!"
         :class="{ 'is-focused': focused }"
       >
         <formatting-toolbar ref="toolbar" @enableMarkdownEditor="$emit('enableMarkdownEditor')" />

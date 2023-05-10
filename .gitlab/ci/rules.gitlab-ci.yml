@@ -1477,7 +1477,16 @@
         KNAPSACK_GENERATE_REPORT: "false"
         UPDATE_QA_CACHE: "false"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
+        QA_EXPORT_TEST_METRICS: "false"
+
+.qa:rules:package-and-test-nightly:
+  rules:
+    - <<: *if-default-branch-schedule-nightly
+      variables:
+        KNAPSACK_GENERATE_REPORT: "true"
+        SKIP_REPORT_IN_ISSUES: "false"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false"
 
 ###############
 # Rails rules #
@@ -1576,6 +1585,8 @@
 
 .rails:rules:rspec-predictive:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-approved
@@ -1654,6 +1665,8 @@
 .rails:rules:ee-only-migration:
   rules:
     - <<: *if-not-ee
+      when: never
+    - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never

@@ -3198,6 +3198,7 @@
                       "href": "bar",
                       "target": "_blank",
                       "class": null,
+                      "uploading": false,
                       "title": null,
                       "canonicalSrc": "bar",
                       "isReference": false
@@ -3284,6 +3285,7 @@
                   "href": "foo",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": false
@@ -3805,6 +3807,7 @@
                   "href": "bar",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "bar",
                   "isReference": false
@@ -3965,6 +3968,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4007,6 +4011,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "the title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4049,6 +4054,7 @@
                   "href": "my_(url)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title (with parens)",
                   "canonicalSrc": "foo*bar\\]",
                   "isReference": true
@@ -4091,6 +4097,7 @@
                   "href": "my%20url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo bar",
                   "isReference": true
@@ -4133,6 +4140,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "\ntitle\nline1\nline2\n",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4208,6 +4216,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4274,6 +4283,7 @@
                   "href": "",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4340,6 +4350,7 @@
                   "href": "/url%5Cbar*baz",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "foo\"bar\\baz",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4368,6 +4379,7 @@
                   "href": "url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4410,6 +4422,7 @@
                   "href": "first",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4480,6 +4493,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4522,6 +4536,7 @@
                   "href": "/%CF%86%CE%BF%CF%85",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "αγω",
                   "isReference": true
@@ -4728,6 +4743,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4813,6 +4829,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4859,6 +4876,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4929,6 +4947,7 @@
                   "href": "/foo-url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "foo",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -4950,6 +4969,7 @@
                   "href": "/bar-url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "bar",
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -4971,6 +4991,7 @@
                   "href": "/baz-url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "baz",
                   "isReference": true
@@ -4999,6 +5020,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -10797,6 +10819,7 @@
                   "href": "http://example.com?find=%5C*",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com?find=%5C*",
                   "isReference": false
@@ -10834,6 +10857,7 @@
                   "href": "/bar*",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "ti*tle",
                   "canonicalSrc": "/bar*",
                   "isReference": false
@@ -10862,6 +10886,7 @@
                   "href": "/bar*",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "ti*tle",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -11023,6 +11048,7 @@
                   "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "föö",
                   "canonicalSrc": "/f%C3%B6%C3%B6",
                   "isReference": false
@@ -11051,6 +11077,7 @@
                   "href": "/f%C3%B6%C3%B6",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "föö",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -11588,6 +11615,7 @@
                   "href": "`",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "`",
                   "isReference": false
@@ -11640,6 +11668,7 @@
                   "href": "http://foo.bar.%60baz",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar.%60baz",
                   "isReference": false
@@ -12797,6 +12826,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -13268,6 +13298,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -13338,6 +13369,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -13698,6 +13730,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -14605,6 +14638,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -14637,6 +14671,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -14791,6 +14826,7 @@
                   "href": "http://foo.bar/?q=**",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar/?q=**",
                   "isReference": false
@@ -14823,6 +14859,7 @@
                   "href": "http://foo.bar/?q=__",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar/?q=__",
                   "isReference": false
@@ -14899,6 +14936,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -14927,6 +14965,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -14955,6 +14994,7 @@
                   "href": "",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "",
                   "isReference": false
@@ -14983,6 +15023,7 @@
                   "href": "",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "",
                   "isReference": false
@@ -15026,6 +15067,7 @@
                   "href": "/my%20uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/my%20uri",
                   "isReference": false
@@ -15084,6 +15126,7 @@
                   "href": "b)c",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "b)c",
                   "isReference": false
@@ -15151,6 +15194,7 @@
                   "href": "(foo)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "(foo)",
                   "isReference": false
@@ -15179,6 +15223,7 @@
                   "href": "foo(and(bar))",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo(and(bar))",
                   "isReference": false
@@ -15207,6 +15252,7 @@
                   "href": "foo(and(bar)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo(and(bar)",
                   "isReference": false
@@ -15235,6 +15281,7 @@
                   "href": "foo(and(bar)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo(and(bar)",
                   "isReference": false
@@ -15263,6 +15310,7 @@
                   "href": "foo):",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo):",
                   "isReference": false
@@ -15291,6 +15339,7 @@
                   "href": "#fragment",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "#fragment",
                   "isReference": false
@@ -15313,6 +15362,7 @@
                   "href": "http://example.com#fragment",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com#fragment",
                   "isReference": false
@@ -15335,6 +15385,7 @@
                   "href": "http://example.com?foo=3#frag",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com?foo=3#frag",
                   "isReference": false
@@ -15363,6 +15414,7 @@
                   "href": "foo%5Cbar",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo%5Cbar",
                   "isReference": false
@@ -15391,6 +15443,7 @@
                   "href": "foo%20b%C3%A4",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo%20b%C3%A4",
                   "isReference": false
@@ -15419,6 +15472,7 @@
                   "href": "%22title%22",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "%22title%22",
                   "isReference": false
@@ -15447,6 +15501,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -15475,6 +15530,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title \"\"",
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -15503,6 +15559,7 @@
                   "href": "/url%C2%A0%22title%22",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/url%C2%A0%22title%22",
                   "isReference": false
@@ -15546,6 +15603,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title \"and\" title",
                   "canonicalSrc": "/url",
                   "isReference": false
@@ -15574,6 +15632,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15617,6 +15676,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15664,6 +15724,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15692,6 +15753,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15720,6 +15782,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15737,6 +15800,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15757,6 +15821,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15780,6 +15845,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15827,6 +15893,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15858,6 +15925,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15903,6 +15971,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -15975,6 +16044,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -16003,6 +16073,7 @@
                   "href": "baz*",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "baz*",
                   "isReference": false
@@ -16098,6 +16169,7 @@
                   "href": "http://example.com/?search=%5D(uri)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com/?search=%5D(uri)",
                   "isReference": false
@@ -16126,6 +16198,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -16168,6 +16241,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16210,6 +16284,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16252,6 +16327,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16269,6 +16345,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16289,6 +16366,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16312,6 +16390,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16373,6 +16452,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16418,6 +16498,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uri",
                   "isReference": false
@@ -16439,6 +16520,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16494,6 +16576,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16518,6 +16601,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16564,6 +16648,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16606,6 +16691,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref",
                   "isReference": true
@@ -16719,6 +16805,7 @@
                   "href": "http://example.com/?search=%5D%5Bref%5D",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com/?search=%5D%5Bref%5D",
                   "isReference": false
@@ -16761,6 +16848,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -16803,6 +16891,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "толпой",
                   "isReference": true
@@ -16863,6 +16952,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo bar",
                   "isReference": true
@@ -16895,6 +16985,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -16941,6 +17032,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -17011,6 +17103,7 @@
                   "href": "/url1",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17140,6 +17233,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "ref\\[",
                   "isReference": true
@@ -17196,6 +17290,7 @@
                   "href": "/uri",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "bar\\\\",
                   "isReference": true
@@ -17272,6 +17367,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17314,6 +17410,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
@@ -17334,6 +17431,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
@@ -17376,6 +17474,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17418,6 +17517,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17464,6 +17564,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17506,6 +17607,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
@@ -17526,6 +17628,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
@@ -17572,6 +17675,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
@@ -17592,6 +17696,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "*foo* bar",
                   "isReference": true
@@ -17642,6 +17747,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17684,6 +17790,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17726,6 +17833,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17819,6 +17927,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo*",
                   "isReference": true
@@ -17847,6 +17956,7 @@
                   "href": "/url2",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -17903,6 +18013,7 @@
                   "href": "/url1",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -17945,6 +18056,7 @@
                   "href": "",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "",
                   "isReference": false
@@ -17987,6 +18099,7 @@
                   "href": "/url1",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -18037,6 +18150,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "baz",
                   "isReference": true
@@ -18079,6 +18193,7 @@
                   "href": "/url2",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "bar",
                   "isReference": true
@@ -18096,6 +18211,7 @@
                   "href": "/url1",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "baz",
                   "isReference": true
@@ -18156,6 +18272,7 @@
                   "href": "/url1",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "baz",
                   "isReference": true
@@ -18901,6 +19018,7 @@
                   "href": "/url",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": "title",
                   "canonicalSrc": "foo",
                   "isReference": true
@@ -18943,6 +19061,7 @@
                   "href": "http://foo.bar.baz",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar.baz",
                   "isReference": false
@@ -18971,6 +19090,7 @@
                   "href": "http://foo.bar.baz/test?q=hello&id=22&boolean",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar.baz/test?q=hello&id=22&boolean",
                   "isReference": false
@@ -18999,6 +19119,7 @@
                   "href": null,
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": null,
                   "isReference": false
@@ -19027,6 +19148,7 @@
                   "href": "MAILTO:FOO@BAR.BAZ",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "MAILTO:FOO@BAR.BAZ",
                   "isReference": false
@@ -19055,6 +19177,7 @@
                   "href": null,
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": null,
                   "isReference": false
@@ -19083,6 +19206,7 @@
                   "href": null,
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": null,
                   "isReference": false
@@ -19111,6 +19235,7 @@
                   "href": "http://../",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://../",
                   "isReference": false
@@ -19139,6 +19264,7 @@
                   "href": null,
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": null,
                   "isReference": false
@@ -19171,6 +19297,7 @@
                   "href": "http://foo.bar/baz",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar/baz",
                   "isReference": false
@@ -19203,6 +19330,7 @@
                   "href": "http://example.com/%5C%5B%5C",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com/%5C%5B%5C",
                   "isReference": false
@@ -19231,6 +19359,7 @@
                   "href": "mailto:foo@bar.example.com",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:foo@bar.example.com",
                   "isReference": false
@@ -19259,6 +19388,7 @@
                   "href": "mailto:foo+special@Bar.baz-bar0.com",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:foo+special@Bar.baz-bar0.com",
                   "isReference": false
@@ -19291,6 +19421,7 @@
                   "href": "mailto:foo+@bar.example.com",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:foo+@bar.example.com",
                   "isReference": false
@@ -19342,6 +19473,7 @@
                   "href": "http://foo.bar",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://foo.bar",
                   "isReference": false
@@ -19404,6 +19536,7 @@
                   "href": "http://example.com",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://example.com",
                   "isReference": false
@@ -19432,6 +19565,7 @@
                   "href": "mailto:foo@bar.example.com",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:foo@bar.example.com",
                   "isReference": false
@@ -19460,6 +19594,7 @@
                   "href": "http://www.commonmark.org",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.commonmark.org",
                   "isReference": false
@@ -19492,6 +19627,7 @@
                   "href": "http://www.commonmark.org/help",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.commonmark.org/help",
                   "isReference": false
@@ -19528,6 +19664,7 @@
                   "href": "http://www.commonmark.org",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.commonmark.org",
                   "isReference": false
@@ -19558,6 +19695,7 @@
                   "href": "http://www.commonmark.org/a.b",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.commonmark.org/a.b",
                   "isReference": false
@@ -19590,6 +19728,7 @@
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
@@ -19612,6 +19751,7 @@
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
@@ -19642,6 +19782,7 @@
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
@@ -19672,6 +19813,7 @@
                   "href": "http://www.google.com/search?q=Markup+(business)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=Markup+(business)",
                   "isReference": false
@@ -19700,6 +19842,7 @@
                   "href": "http://www.google.com/search?q=(business))+ok",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=(business))+ok",
                   "isReference": false
@@ -19728,6 +19871,7 @@
                   "href": "http://www.google.com/search?q=commonmark&hl=en",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=commonmark&hl=en",
                   "isReference": false
@@ -19750,6 +19894,7 @@
                   "href": "http://www.google.com/search?q=commonmark",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.google.com/search?q=commonmark",
                   "isReference": false
@@ -19782,6 +19927,7 @@
                   "href": "http://www.commonmark.org/he",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://www.commonmark.org/he",
                   "isReference": false
@@ -19814,6 +19960,7 @@
                   "href": "http://commonmark.org",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "http://commonmark.org",
                   "isReference": false
@@ -19840,6 +19987,7 @@
                   "href": "https://encrypted.google.com/search?q=Markup+(business)",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "https://encrypted.google.com/search?q=Markup+(business)",
                   "isReference": false
@@ -19881,6 +20029,7 @@
                   "href": "mailto:foo@bar.baz",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:foo@bar.baz",
                   "isReference": false
@@ -19913,6 +20062,7 @@
                   "href": "mailto:hello+xyz@mail.example",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:hello+xyz@mail.example",
                   "isReference": false
@@ -19945,6 +20095,7 @@
                   "href": "mailto:a.b-c_d@a.b",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:a.b-c_d@a.b",
                   "isReference": false
@@ -19967,6 +20118,7 @@
                   "href": "mailto:a.b-c_d@a.b",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "mailto:a.b-c_d@a.b",
                   "isReference": false
@@ -21198,6 +21350,7 @@
                   "href": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "isReference": false
@@ -21226,6 +21379,7 @@
                   "href": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip",
                   "isReference": false
@@ -21282,6 +21436,7 @@
                   "href": "test-file.zip",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "test-file.zip",
                   "isReference": false
@@ -22966,6 +23121,7 @@
                   "href": "https://gitlab.com",
                   "target": "_blank",
                   "class": null,
+                  "uploading": false,
                   "title": null,
                   "canonicalSrc": "https://gitlab.com",
                   "isReference": false

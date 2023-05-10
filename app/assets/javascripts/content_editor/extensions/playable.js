@@ -61,7 +61,11 @@ export default Node.create({
           ...this.extraElementAttrs,
         },
       ],
-      ['a', { href: node.attrs.src }, node.attrs.title || node.attrs.alt || ''],
+      [
+        'a',
+        { href: node.attrs.src, class: 'with-attachment-icon' },
+        node.attrs.title || node.attrs.alt || '',
+      ],
     ];
   },
 });

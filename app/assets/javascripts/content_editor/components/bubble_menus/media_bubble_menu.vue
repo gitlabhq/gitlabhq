@@ -1,6 +1,7 @@
 <script>
 import {
   GlLink,
+  GlSprintf,
   GlForm,
   GlFormGroup,
   GlFormInput,
@@ -48,6 +49,7 @@ export default {
   },
   components: {
     BubbleMenu,
+    GlSprintf,
     GlForm,
     GlFormGroup,
     GlFormInput,
@@ -71,7 +73,10 @@ export default {
 
       isEditing: false,
       isUpdating: false,
-      isUploading: false,
+
+      uploading: false,
+
+      uploadProgress: 0,
     };
   },
   computed: {
@@ -88,7 +93,7 @@ export default {
       return this.$options.i18n.deleteLabels[this.mediaType];
     },
     showProgressIndicator() {
-      return this.isUploading || this.isUpdating;
+      return this.uploading || this.isUpdating;
     },
     isDrawioDiagram() {
       return this.mediaType === DrawioDiagram.name;
@@ -157,17 +162,27 @@ export default {
       this.mediaTitle = title;
       this.mediaAlt = alt;
       this.mediaCanonicalSrc = canonicalSrc || src;
-      this.isUploading = uploading;
+      this.uploading = uploading;
+
       this.mediaSrc = await this.contentEditor.resolveUrl(this.mediaCanonicalSrc);
 
       this.isUpdating = false;
+    },
+
+    onTransaction({ transaction }) {
+      const { filename = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
+      if (this.uploading === filename) {
+        this.uploadProgress = Math.round(progress * 100);
+      }
     },
 
     resetMediaInfo() {
       this.mediaTitle = null;
       this.mediaAlt = null;
       this.mediaCanonicalSrc = null;
-      this.isUploading = false;
+      this.uploading = false;
+
+      this.uploadProgress = 0;
     },
 
     replaceMedia() {
@@ -204,17 +219,26 @@ export default {
 };
 </script>
 <template>
-  <bubble-menu
-    data-testid="media-bubble-menu"
-    class="gl-shadow gl-rounded-base gl-bg-white"
-    plugin-key="bubbleMenuMedia"
-    :should-show="shouldShow"
-    @show="updateMediaInfoToState"
-    @hidden="resetMediaInfo"
+  <editor-state-observer
+    :debounce="0"
+    @selectionUpdate="updateMediaInfoToState"
+    @transaction="onTransaction"
   >
-    <editor-state-observer :debounce="0" @transaction="updateMediaInfoToState">
+    <bubble-menu
+      data-testid="media-bubble-menu"
+      class="gl-shadow gl-rounded-base gl-bg-white"
+      plugin-key="bubbleMenuMedia"
+      :should-show="shouldShow"
+      @show="updateMediaInfoToState"
+      @hidden="resetMediaInfo"
+    >
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
         <gl-loading-icon v-if="showProgressIndicator" class="gl-pl-4 gl-pr-3" />
+        <span v-if="uploading" class="gl-text-secondary gl-pr-3">
+          <gl-sprintf :message="__('Uploading: %{progress}')">
+            <template #progress>{{ uploadProgress }}&percnt;</template>
+          </gl-sprintf>
+        </span>
         <input
           ref="fileSelector"
           type="file"
@@ -280,7 +304,7 @@ export default {
           data-testid="replace-media"
           :aria-label="replaceLabel"
           :title="replaceLabel"
-          icon="upload"
+          icon="retry"
           @click="replaceMedia"
         />
         <gl-button
@@ -315,6 +339,6 @@ export default {
           <gl-button variant="confirm" type="submit">{{ __('Apply') }}</gl-button>
         </div>
       </gl-form>
-    </editor-state-observer>
-  </bubble-menu>
+    </bubble-menu>
+  </editor-state-observer>
 </template>

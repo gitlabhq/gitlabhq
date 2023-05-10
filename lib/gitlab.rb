@@ -60,6 +60,10 @@ module Gitlab
     simulate_com? || Gitlab.config.gitlab.url == Gitlab::Saas.com_url || gl_subdomain?
   end
 
+  def self.com_except_jh?
+    com? && !jh?
+  end
+
   def self.com
     yield if com?
   end

@@ -24,9 +24,19 @@
     }
   }
 
-  img.ProseMirror-selectednode {
-    outline: 3px solid rgba($blue-400, 0.48);
+  img.ProseMirror-selectednode,
+  .ProseMirror-selectednode audio,
+  .ProseMirror-selectednode video {
+    outline: 3px solid $blue-200;
     outline-offset: -3px;
+  }
+
+  video {
+    max-width: 400px;
+  }
+
+  img {
+    max-width: 100%;
   }
 
   ul[data-type='taskList'] {

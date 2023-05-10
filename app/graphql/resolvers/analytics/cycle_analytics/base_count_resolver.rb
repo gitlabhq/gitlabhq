@@ -8,11 +8,11 @@ module Resolvers
 
         argument :from, Types::TimeType,
           required: true,
-          description: 'After the date.'
+          description: 'Timestamp marking the start date and time.'
 
         argument :to, Types::TimeType,
           required: true,
-          description: 'Before the date.'
+          description: 'Timestamp marking the end date and time.'
 
         def ready?(**args)
           start_date = args[:from]

@@ -303,12 +303,6 @@ describe('WorkItemDescription', () => {
 
         expect(workItemResponseHandler).toHaveBeenCalled();
       });
-
-      it('skips calling the work item query when missing workItemIid', async () => {
-        await createComponent({ workItemIid: null });
-
-        expect(workItemResponseHandler).not.toHaveBeenCalled();
-      });
     },
   );
 });

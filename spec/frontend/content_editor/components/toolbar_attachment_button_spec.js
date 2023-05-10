@@ -16,11 +16,11 @@ describe('content_editor/components/toolbar_attachment_button', () => {
     });
   };
 
-  const selectFile = async (file) => {
+  const selectFiles = async (...files) => {
     const input = wrapper.findComponent({ ref: 'fileSelector' });
 
     // override the property definition because `input.files` isn't directly modifyable
-    Object.defineProperty(input.element, 'files', { value: [file], writable: true });
+    Object.defineProperty(input.element, 'files', { value: files, writable: true });
     await input.trigger('change');
   };
 
@@ -28,6 +28,7 @@ describe('content_editor/components/toolbar_attachment_button', () => {
     editor = createTestEditor({
       extensions: [
         Link,
+        Image,
         Attachment.configure({
           renderMarkdown: jest.fn(),
           uploadsPath: '/uploads/',
@@ -44,12 +45,14 @@ describe('content_editor/components/toolbar_attachment_button', () => {
 
   it('uploads the selected attachment when file input changes', async () => {
     const commands = mockChainedCommands(editor, ['focus', 'uploadAttachment', 'run']);
-    const file = new File(['foo'], 'foo.png', { type: 'image/png' });
+    const file1 = new File(['foo'], 'foo.png', { type: 'image/png' });
+    const file2 = new File(['bar'], 'bar.png', { type: 'image/png' });
 
-    await selectFile(file);
+    await selectFiles(file1, file2);
 
     expect(commands.focus).toHaveBeenCalled();
-    expect(commands.uploadAttachment).toHaveBeenCalledWith({ file });
+    expect(commands.uploadAttachment).toHaveBeenCalledWith({ file: file1 });
+    expect(commands.uploadAttachment).toHaveBeenCalledWith({ file: file2 });
     expect(commands.run).toHaveBeenCalled();
 
     expect(wrapper.emitted().execute[0]).toEqual([{ contentType: 'link', value: 'upload' }]);

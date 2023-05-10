@@ -1,7 +1,33 @@
 import { VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
-import { extractFilename, readFileAsDataURL } from './utils';
+import { __, sprintf } from '~/locale';
+import { bytesToMiB } from '~/lib/utils/number_utils';
+import TappablePromise from '~/lib/utils/tappable_promise';
+import { ALERT_EVENT } from '../constants';
+
+const chain = (editor) => editor.chain().setMeta('preventAutolink', true);
+
+const findUploadedFilePosition = (editor, filename) => {
+  let position;
+
+  editor.view.state.doc.descendants((descendant, pos) => {
+    if (descendant.attrs.uploading === filename) {
+      position = pos;
+      return false;
+    }
+
+    for (const mark of descendant.marks) {
+      if (mark.type.name === 'link' && mark.attrs.uploading === filename) {
+        position = pos + 1;
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  return position;
+};
 
 export const acceptedMimes = {
   drawioDiagram: {
@@ -47,6 +73,18 @@ const extractAttachmentLinkUrl = (html) => {
   return { src, canonicalSrc };
 };
 
+class UploadError extends Error {}
+
+const notifyUploadError = (eventHub, error) => {
+  eventHub.$emit(ALERT_EVENT, {
+    message:
+      error instanceof UploadError
+        ? error.message
+        : __('An error occurred while uploading the file. Please try again.'),
+    variant: VARIANT_DANGER,
+  });
+};
+
 /**
  * Uploads a file with a post request to the URL indicated
  * in the uploadsPath parameter. The expected response of the
@@ -64,85 +102,147 @@ const extractAttachmentLinkUrl = (html) => {
  * and returns a rendered version in HTML format.
  * @param {File} params.file The file to upload
  *
- * @returns Returns an object with two properties:
+ * @returns {TappablePromise} Returns an object with two properties:
  *
  * canonicalSrc: The URL as defined in the Markdown
  * src: The absolute URL that points to the resource in the server
  */
-export const uploadFile = async ({ uploadsPath, renderMarkdown, file }) => {
-  const formData = new FormData();
-  formData.append('file', file, file.name);
+export const uploadFile = ({ uploadsPath, renderMarkdown, file }) => {
+  return new TappablePromise(async (tap) => {
+    const maxFileSize = (gon.max_file_size || 10).toFixed(0);
+    const fileSize = bytesToMiB(file.size);
+    if (fileSize > maxFileSize) {
+      throw new UploadError(
+        sprintf(__('File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB.'), {
+          fileSize: fileSize.toFixed(2),
+          maxFileSize,
+        }),
+      );
+    }
 
-  const { data } = await axios.post(uploadsPath, formData);
-  const { markdown } = data.link;
-  const rendered = await renderMarkdown(markdown);
+    const formData = new FormData();
+    formData.append('file', file, file.name);
 
-  return extractAttachmentLinkUrl(rendered);
+    const { data } = await axios.post(uploadsPath, formData, {
+      onUploadProgress: (e) => tap(e.loaded / e.total),
+    });
+    const { markdown } = data.link;
+    const rendered = await renderMarkdown(markdown);
+
+    return extractAttachmentLinkUrl(rendered);
+  });
 };
 
-const uploadContent = async ({ type, editor, file, uploadsPath, renderMarkdown, eventHub }) => {
-  const encodedSrc = await readFileAsDataURL(file);
-  const { view } = editor;
+const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, eventHub }) => {
+  // needed to avoid mismatched transaction error
+  await Promise.resolve();
 
-  editor.commands.insertContent({ type, attrs: { uploading: true, src: encodedSrc } });
+  const objectUrl = URL.createObjectURL(file);
+  const { selection } = editor.view.state;
+  const currentNode = selection.$to.node();
 
-  const { state } = view;
-  const position = state.selection.from - 1;
-  const { tr } = state;
+  let position = selection.to;
+  let content = {
+    type,
+    attrs: { uploading: file.name, src: objectUrl, alt: file.name },
+  };
+  let selectionIncrement = 0;
 
-  editor.commands.setNodeSelection(position);
-
-  try {
-    const { src, canonicalSrc } = await uploadFile({ file, uploadsPath, renderMarkdown });
-
-    view.dispatch(
-      tr.setNodeMarkup(position, undefined, {
-        uploading: false,
-        src: encodedSrc,
-        alt: extractFilename(src),
-        canonicalSrc,
-      }),
-    );
-
-    editor.commands.setNodeSelection(position);
-  } catch (e) {
-    editor.commands.deleteRange({ from: position, to: position + 1 });
-    eventHub.$emit('alert', {
-      message: __('An error occurred while uploading the file. Please try again.'),
-      variant: VARIANT_DANGER,
-    });
+  // if the current node is not empty, we need to wrap the content in a new paragraph
+  if (currentNode.content.size > 0 || currentNode.type.name === 'doc') {
+    content = {
+      type: 'paragraph',
+      content: [content],
+    };
+    selectionIncrement = 1;
   }
+
+  chain(editor)
+    .insertContentAt(position, content)
+    .setNodeSelection(position + selectionIncrement)
+    .run();
+
+  uploadFile({ file, uploadsPath, renderMarkdown })
+    .tap((progress) => {
+      chain(editor).setMeta('uploadProgress', { filename: file.name, progress }).run();
+    })
+    .then(({ canonicalSrc }) => {
+      // the position might have changed while uploading, so we need to find it again
+      position = findUploadedFilePosition(editor, file.name);
+
+      editor.view.dispatch(
+        editor.state.tr.setMeta('preventAutolink', true).setNodeMarkup(position, undefined, {
+          uploading: false,
+          src: objectUrl,
+          alt: file.name,
+          canonicalSrc,
+        }),
+      );
+
+      chain(editor).setNodeSelection(position).run();
+    })
+    .catch((e) => {
+      position = findUploadedFilePosition(editor, file.name);
+
+      chain(editor)
+        .deleteRange({ from: position, to: position + 1 })
+        .run();
+
+      notifyUploadError(eventHub, e);
+    });
 };
 
 const uploadAttachment = async ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
+  // needed to avoid mismatched transaction error
   await Promise.resolve();
 
-  const { view } = editor;
+  const objectUrl = URL.createObjectURL(file);
+  const { selection } = editor.view.state;
+  const currentNode = selection.$to.node();
 
-  const text = extractFilename(file.name);
+  let position = selection.to;
+  let content = {
+    type: 'text',
+    text: file.name,
+    marks: [{ type: 'link', attrs: { href: objectUrl, uploading: file.name } }],
+  };
 
-  const { state } = view;
-  const { from } = state.selection;
-
-  editor.commands.insertContent({
-    type: 'loading',
-    attrs: { label: text },
-  });
-
-  try {
-    const { src, canonicalSrc } = await uploadFile({ file, uploadsPath, renderMarkdown });
-
-    editor.commands.insertContentAt(
-      { from, to: from + 1 },
-      { type: 'text', text, marks: [{ type: 'link', attrs: { href: src, canonicalSrc } }] },
-    );
-  } catch (e) {
-    editor.commands.deleteRange({ from, to: from + 1 });
-    eventHub.$emit('alert', {
-      message: __('An error occurred while uploading the file. Please try again.'),
-      variant: VARIANT_DANGER,
-    });
+  // if the current node is not empty, we need to wrap the content in a new paragraph
+  if (currentNode.content.size > 0 || currentNode.type.name === 'doc') {
+    content = {
+      type: 'paragraph',
+      content: [content],
+    };
   }
+
+  chain(editor).insertContentAt(position, content).extendMarkRange('link').run();
+
+  uploadFile({ file, uploadsPath, renderMarkdown })
+    .tap((progress) => {
+      chain(editor).setMeta('uploadProgress', { filename: file.name, progress }).run();
+    })
+    .then(({ src, canonicalSrc }) => {
+      // the position might have changed while uploading, so we need to find it again
+      position = findUploadedFilePosition(editor, file.name);
+
+      chain(editor)
+        .setTextSelection(position)
+        .extendMarkRange('link')
+        .updateAttributes('link', { href: src, canonicalSrc, uploading: false })
+        .run();
+    })
+    .catch((e) => {
+      position = findUploadedFilePosition(editor, file.name);
+
+      chain(editor)
+        .setTextSelection(position)
+        .extendMarkRange('link')
+        .unsetLink()
+        .deleteSelection()
+        .run();
+
+      notifyUploadError(eventHub, e);
+    });
 };
 
 export const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown, eventHub }) => {
@@ -150,7 +250,7 @@ export const handleFileEvent = ({ editor, file, uploadsPath, renderMarkdown, eve
 
   for (const [type, { mimes, ext }] of Object.entries(acceptedMimes)) {
     if (mimes.includes(file?.type) && (!ext || file?.name.endsWith(ext))) {
-      uploadContent({ type, editor, file, uploadsPath, renderMarkdown, eventHub });
+      uploadMedia({ type, editor, file, uploadsPath, renderMarkdown, eventHub });
 
       return true;
     }

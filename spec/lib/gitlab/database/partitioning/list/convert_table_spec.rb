@@ -74,9 +74,11 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
       it 'adds a PostgresAsyncConstraintValidation record' do
         expect { prepare }.to change {
           Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation.count
-        }.from(0).to(1)
+        }.by(1)
 
-        record = Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation.last
+        record = Gitlab::Database::AsyncConstraints::PostgresAsyncConstraintValidation
+          .where(table_name: table_name).last
+
         expect(record.name).to eq described_class::PARTITIONING_CONSTRAINT_NAME
         expect(record).to be_check_constraint
       end

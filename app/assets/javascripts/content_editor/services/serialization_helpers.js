@@ -309,15 +309,13 @@ export function renderHardBreak(state, node, parent, index) {
 
 export function renderImage(state, node) {
   const { alt, canonicalSrc, src, title, width, height, isReference } = node.attrs;
-  let realSrc = canonicalSrc || src || '';
+  const realSrc = canonicalSrc || src || '';
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  if (realSrc.startsWith('data:')) realSrc = '';
+  if (realSrc.startsWith('data:') || realSrc.startsWith('blob:')) return;
 
   if (isString(src) || isString(canonicalSrc)) {
     const quotedTitle = title ? ` ${state.quote(title)}` : '';
-    const sourceExpression = isReference
-      ? `[${canonicalSrc}]`
-      : `(${state.esc(realSrc)}${quotedTitle})`;
+    const sourceExpression = isReference ? `[${canonicalSrc}]` : `(${realSrc}${quotedTitle})`;
 
     const sizeAttributes = [];
     if (width) {

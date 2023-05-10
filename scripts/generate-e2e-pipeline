@@ -5,21 +5,34 @@ set -e
 # Script to generate e2e test child pipeline
 # This is required because environment variables that are generated dynamically are not picked up by rules in child pipelines
 
+source "$(dirname "$0")/utils.sh"
 source $ENV_FILE
 
-echo "Generating child pipeline yml definitions for review-app and package-and-test child pipelines"
+echoinfo "Generating child pipeline yml definitions for e2e test pipelines child pipelines"
+
+declare -A qa_pipelines
+
+# key/value pairs for qa pipeline yml definitions
+qa_pipelines["package-and-test-pipeline.yml"]="package-and-test/main.gitlab-ci.yml"
+qa_pipelines["package-and-test-nightly-pipeline.yml"]="package-and-test-nightly/main.gitlab-ci.yml"
+qa_pipelines["review-app-pipeline.yml"]="review-apps/main.gitlab-ci.yml"
+qa_pipelines["test-on-gdk-pipeline.yml"]="test-on-gdk/main.gitlab-ci.yml"
 
 if [ "$QA_SKIP_ALL_TESTS" == "true" ]; then
   skip_pipeline=".gitlab/ci/_skip.yml"
 
-  echo "Using ${skip_pipeline} due to QA_SKIP_ALL_TESTS set to 'true'"
-  cp $skip_pipeline "$OMNIBUS_PIPELINE_YML"
-  cp $skip_pipeline "$REVIEW_PIPELINE_YML"
+  echoinfo "Using ${skip_pipeline} for all e2e test pipelines due to QA_SKIP_ALL_TESTS set to 'true'"
+  for key in "${!qa_pipelines[@]}"; do
+    cp $skip_pipeline "$key"
+  done
+
   exit
 fi
 
 # set custom cache key to override default cache in pipeline-common because we use bundle to install gitlab-qa gem
 qa_cache_key="qa-e2e-ruby-${RUBY_VERSION}-$(md5sum qa/Gemfile.lock | awk '{ print $1 }')"
+# these variables are used across all qa child pipelines
+# it allows to use all features across all child pipelines like skipping all tests, selective test execution etc
 variables=$(cat <<YML
 variables:
   GIT_DEPTH: "20"
@@ -39,12 +52,14 @@ variables:
 YML
 )
 
-echo "Using .gitlab/ci/review-apps/main.gitlab-ci.yml and .gitlab/ci/package-and-test/main.gitlab-ci.yml"
-cp .gitlab/ci/review-apps/main.gitlab-ci.yml "$REVIEW_PIPELINE_YML"
-echo "$variables" >>"$REVIEW_PIPELINE_YML"
+echo "***Saving generated qa pipeline files***"
+for key in "${!qa_pipelines[@]}"; do
+  echo "Generating $key"
 
-cp .gitlab/ci/package-and-test/main.gitlab-ci.yml "$OMNIBUS_PIPELINE_YML"
-echo "$variables" >>"$OMNIBUS_PIPELINE_YML"
+  cp ".gitlab/ci/${qa_pipelines[$key]}" "$key"
 
-echo "Successfully generated review-app and package-and-test pipeline with following variables section:"
-echo "$variables"
+  echo >>"$key" # add empty line so it's easier to read if debugging
+  echo "$variables" >>"$key"
+done
+
+echoinfo "Successfully generated qa pipeline files"

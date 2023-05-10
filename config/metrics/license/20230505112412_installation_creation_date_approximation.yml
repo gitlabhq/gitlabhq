@@ -1,0 +1,22 @@
+---
+key_path: installation_creation_date_approximation
+description: "The approximate date and time the instance was installed. Based on the first created user or application setting"
+product_section: analytics
+product_stage: analytics
+product_group: product_intelligence
+value_type: string
+status: active
+milestone: "16.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119588
+time_frame: none
+data_source: database
+data_category: operational
+instrumentation_class: InstallationCreationDateApproximationMetric
+performance_indicator_type: []
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate

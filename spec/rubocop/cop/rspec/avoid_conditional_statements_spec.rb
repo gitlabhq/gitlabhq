@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::RSpec::AvoidConditionalStatements, feature_category
     it 'flags if conditional' do
       expect_offense(<<~RUBY)
         if page.has_css?('[data-testid="begin-commit-button"]')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use `if` conditional statments in specs, it might create flakiness. See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use `if` conditional statement in specs, it might create flakiness. See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109
           find('[data-testid="begin-commit-button"]').click
         end
       RUBY
@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::RSpec::AvoidConditionalStatements, feature_category
         RSpec.describe 'Multi-file editor new directory', :js, feature_category: :web_ide do
           it 'creates directory in current directory' do
             unless page.has_css?('[data-testid="begin-commit-button"]')
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use `unless` conditional statments in specs, it might create flakiness. See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use `unless` conditional statement in specs, it might create flakiness. See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109
               find('[data-testid="begin-commit-button"]').click
             end
           end
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::RSpec::AvoidConditionalStatements, feature_category
         RSpec.describe 'Multi-file editor new directory', :js, feature_category: :web_ide do
           it 'creates directory in current directory' do
             user.present ? user : nil
-            ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use `(send  (send nil :user) :present) ? (ternary)` conditional statments in specs, it might create flakiness. See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use `user.present ? user : nil` conditional statement in specs, it might create flakiness. See https://gitlab.com/gitlab-org/gitlab/-/issues/385304#note_1345437109
           end
         end
       RUBY

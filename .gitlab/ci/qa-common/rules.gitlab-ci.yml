@@ -48,14 +48,6 @@
   rules:
     - when: always
 
-.rules:dont-interrupt:
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
-      allow_failure: true
-    - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
-      when: manual
-      allow_failure: true
-
 .rules:omnibus-build:
   rules:
     - if: $SKIP_OMNIBUS_TRIGGER == "true"

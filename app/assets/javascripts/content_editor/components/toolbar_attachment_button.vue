@@ -23,13 +23,9 @@ export default {
       this.$refs.fileSelector.click();
     },
     onFileSelect(e) {
-      this.tiptapEditor
-        .chain()
-        .focus()
-        .uploadAttachment({
-          file: e.target.files[0],
-        })
-        .run();
+      for (const file of e.target.files) {
+        this.tiptapEditor.chain().focus().uploadAttachment({ file }).run();
+      }
 
       // Reset the file input so that the same file can be uploaded again
       this.$refs.fileSelector.value = '';
@@ -53,6 +49,7 @@ export default {
     <input
       ref="fileSelector"
       type="file"
+      multiple
       name="content_editor_image"
       class="gl-display-none"
       data-qa-selector="file_upload_field"

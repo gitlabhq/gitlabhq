@@ -197,6 +197,7 @@ Coursier
 CPU
 CPUs
 CRAN
+CRI-O
 cron
 crond
 cronjob
@@ -275,6 +276,8 @@ desugar
 desugars
 desynchronized
 Dev
+devfile
+devfiles
 DevOps
 Dhall
 dialogs

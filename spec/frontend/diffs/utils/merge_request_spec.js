@@ -8,7 +8,7 @@ import { diffMetadata } from '../mock_data/diff_metadata';
 describe('Merge Request utilities', () => {
   const derivedBaseInfo = {
     mrPath: '/gitlab-org/gitlab-test/-/merge_requests/4',
-    userOrGroup: 'gitlab-org',
+    namespace: 'gitlab-org',
     project: 'gitlab-test',
     id: '4',
   };
@@ -22,7 +22,7 @@ describe('Merge Request utilities', () => {
   };
   const unparseableEndpoint = {
     mrPath: undefined,
-    userOrGroup: undefined,
+    namespace: undefined,
     project: undefined,
     id: undefined,
     ...noVersion,
@@ -79,29 +79,41 @@ describe('Merge Request utilities', () => {
   });
 
   describe('getDerivedMergeRequestInformation', () => {
-    let endpoint = `${diffMetadata.latest_version_path}.json?searchParam=irrelevant`;
+    const bare = diffMetadata.latest_version_path;
 
     it.each`
-      argument                   | response
-      ${{ endpoint }}            | ${{ ...derivedBaseInfo, ...noVersion }}
-      ${{}}                      | ${unparseableEndpoint}
-      ${{ endpoint: undefined }} | ${unparseableEndpoint}
-      ${{ endpoint: null }}      | ${unparseableEndpoint}
+      argument                                               | response
+      ${{ endpoint: `${bare}.json?searchParam=irrelevant` }} | ${{ ...derivedBaseInfo, ...noVersion }}
+      ${{}}                                                  | ${unparseableEndpoint}
+      ${{ endpoint: undefined }}                             | ${unparseableEndpoint}
+      ${{ endpoint: null }}                                  | ${unparseableEndpoint}
     `('generates the correct derived results based on $argument', ({ argument, response }) => {
       expect(getDerivedMergeRequestInformation(argument)).toStrictEqual(response);
     });
 
-    describe('version information', () => {
-      const bare = diffMetadata.latest_version_path;
-      endpoint = diffMetadata.merge_request_diffs[0].compare_path;
+    describe('sub-group namespace', () => {
+      it('extracts the entire namespace plus the project name', () => {
+        const { namespace, project } = getDerivedMergeRequestInformation({
+          endpoint: `/some/deep/path/of/groups${bare}`,
+        });
 
+        expect(namespace).toBe('some/deep/path/of/groups/gitlab-org');
+        expect(project).toBe('gitlab-test');
+      });
+    });
+
+    describe('version information', () => {
       it('still gets the correct derived information', () => {
-        expect(getDerivedMergeRequestInformation({ endpoint })).toMatchObject(derivedBaseInfo);
+        expect(
+          getDerivedMergeRequestInformation({
+            endpoint: diffMetadata.merge_request_diffs[0].compare_path,
+          }),
+        ).toMatchObject(derivedBaseInfo);
       });
 
       it.each`
         url                                                   | versionPart
-        ${endpoint}                                           | ${derivedVersionInfo}
+        ${diffMetadata.merge_request_diffs[0].compare_path}   | ${derivedVersionInfo}
         ${`${bare}?diff_id=${derivedVersionInfo.diffId}`}     | ${{ ...derivedVersionInfo, startSha: undefined }}
         ${`${bare}?start_sha=${derivedVersionInfo.startSha}`} | ${{ ...derivedVersionInfo, diffId: undefined }}
       `(

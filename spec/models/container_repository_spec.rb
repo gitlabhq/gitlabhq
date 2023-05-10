@@ -92,7 +92,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    shared_examples 'transitioning to pre_importing', skip_pre_import_success: true do
+    shared_examples 'transitioning to pre_importing' do
       before do
         repository.update_column(:migration_pre_import_done_at, Time.zone.now)
       end
@@ -145,7 +145,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    shared_examples 'transitioning to importing', skip_import_success: true do
+    shared_examples 'transitioning to importing' do
       before do
         repository.update_columns(migration_import_done_at: Time.zone.now)
       end
@@ -219,9 +219,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.start_pre_import }
 
       before do |example|
-        unless example.metadata[:skip_pre_import_success]
-          allow(repository).to receive(:migration_pre_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_pre_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing import_aborted]
@@ -234,9 +232,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.retry_pre_import }
 
       before do |example|
-        unless example.metadata[:skip_pre_import_success]
-          allow(repository).to receive(:migration_pre_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_pre_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
@@ -264,9 +260,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.start_import }
 
       before do |example|
-        unless example.metadata[:skip_import_success]
-          allow(repository).to receive(:migration_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_import_done pre_importing importing import_aborted]
@@ -279,9 +273,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.retry_import }
 
       before do |example|
-        unless example.metadata[:skip_import_success]
-          allow(repository).to receive(:migration_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]
@@ -374,9 +366,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.finish_pre_import_and_start_import }
 
       before do |example|
-        unless example.metadata[:skip_import_success]
-          allow(repository).to receive(:migration_import).and_return(:ok)
-        end
+        allow(repository).to receive(:migration_import).and_return(:ok)
       end
 
       it_behaves_like 'transitioning from allowed states', %w[pre_importing importing import_aborted]

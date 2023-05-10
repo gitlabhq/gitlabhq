@@ -350,8 +350,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    :class="{ 'gl-mt-3 gl-mb-3': addSpacingClasses }"
-    class="js-vue-markdown-field md-area position-relative gfm-form"
+    class="js-vue-markdown-field md-area position-relative gfm-form gl-border-none! gl-shadow-none!"
     :data-uploads-path="uploadsPath"
   >
     <markdown-header

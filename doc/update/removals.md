@@ -136,6 +136,16 @@ In GitLab 13.9, we updated the Omnibus GitLab package and GitLab Helm chart 4.9 
 GitLab 16.0, we have removed support for Redis 5. If you are using your own Redis 5.0 instance, you must upgrade it to Redis 6.0 or later before upgrading to GitLab 16.0
 or later.
 
+### Remove the deprecated `environment_tier` parameter from the DORA API
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `environment_tier` parameter has been superseded by the `environment_tiers` parameter.
+
+If you use the `environment_tier` parameter in your integration (REST or GraphQL) then you need to replace it with the `environment_tiers` parameter which accepts an array of strings.
+
 ### Removed `external` field from GraphQL `ReleaseAssetLink` type
 
 WARNING:

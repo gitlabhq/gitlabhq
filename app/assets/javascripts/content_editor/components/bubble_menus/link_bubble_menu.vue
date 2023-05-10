@@ -1,11 +1,13 @@
 <script>
 import {
   GlLink,
+  GlSprintf,
   GlForm,
   GlFormGroup,
   GlFormInput,
   GlButton,
   GlButtonGroup,
+  GlLoadingIcon,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { getMarkType, getMarkRange } from '@tiptap/core';
@@ -16,12 +18,14 @@ import BubbleMenu from './bubble_menu.vue';
 export default {
   components: {
     BubbleMenu,
+    GlSprintf,
     GlForm,
     GlFormGroup,
     GlFormInput,
     GlLink,
     GlButton,
     GlButtonGroup,
+    GlLoadingIcon,
     EditorStateObserver,
   },
   directives: {
@@ -35,6 +39,9 @@ export default {
       linkText: undefined,
 
       isEditing: false,
+
+      uploading: false,
+      uploadProgress: 0,
     };
   },
   methods: {
@@ -129,8 +136,10 @@ export default {
 
     updateLinkToState() {
       const editor = this.tiptapEditor;
-      const { href, canonicalSrc } = editor.getAttributes(Link.name);
+      const { href, canonicalSrc, uploading } = editor.getAttributes(Link.name);
       const text = this.linkTextInDoc();
+
+      this.uploading = uploading;
 
       if (
         canonicalSrc === this.linkCanonicalSrc &&
@@ -149,6 +158,11 @@ export default {
       this.linkText = this.linkTextInDoc();
       if (transaction.getMeta('creatingLink')) {
         this.isEditing = true;
+      }
+
+      const { filename = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
+      if (this.uploading === filename) {
+        this.uploadProgress = Math.round(progress * 100);
       }
     },
 
@@ -203,7 +217,14 @@ export default {
       @hidden="resetBubbleMenuState"
     >
       <gl-button-group v-if="!isEditing" class="gl-display-flex gl-align-items-center">
+        <gl-loading-icon v-if="uploading" class="gl-pl-4 gl-pr-3" />
+        <span v-if="uploading" class="gl-text-secondary gl-pr-3">
+          <gl-sprintf :message="__('Uploading: %{progress}')">
+            <template #progress>{{ uploadProgress }}&percnt;</template>
+          </gl-sprintf>
+        </span>
         <gl-link
+          v-else
           v-gl-tooltip
           :href="linkHref"
           :aria-label="linkCanonicalSrc"

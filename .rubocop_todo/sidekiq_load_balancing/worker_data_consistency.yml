@@ -271,8 +271,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/run_pipeline_schedule_worker.rb'
     - 'app/workers/schedule_merge_request_cleanup_refs_worker.rb'
     - 'app/workers/schedule_migrate_external_diffs_worker.rb'
-    - 'app/workers/self_monitoring_project_create_worker.rb'
-    - 'app/workers/self_monitoring_project_delete_worker.rb'
     - 'app/workers/service_desk_email_receiver_worker.rb'
     - 'app/workers/snippets/schedule_bulk_repository_shard_moves_worker.rb'
     - 'app/workers/ssh_keys/expired_notification_worker.rb'
