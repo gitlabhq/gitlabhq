@@ -42,13 +42,23 @@ dast:
     reports:
       dast: gl-dast-report.json
   rules:
-    - if: $DAST_DISABLED
+    - if: $DAST_DISABLED == 'true' || $DAST_DISABLED == '1'
       when: never
-    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH &&
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
           $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
     - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
-          $REVIEW_DISABLED
+          $REVIEW_DISABLED == 'true'
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED == '1'
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/
+  after_script:
+    # Remove any debug.log files because they might contain secrets.
+    - rm -f /zap/wrk/**/debug.log
+    - cp -r /zap/wrk dast_artifacts

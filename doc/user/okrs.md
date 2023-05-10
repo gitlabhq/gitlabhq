@@ -292,3 +292,14 @@ To add an existing key result to an objective:
 
    To add multiple objectives, repeat this step.
 1. Select **Add key result**.
+
+### Reorder objective and key result children
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+By default, child OKRs are ordered by creation date.
+To reorder them, drag them around.

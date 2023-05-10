@@ -75,7 +75,7 @@ gemnasium-dependency_scanning:
     DS_ANALYZER_NAME: "gemnasium"
     GEMNASIUM_LIBRARY_SCAN_ENABLED: "true"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/
       when: never
@@ -104,7 +104,7 @@ gemnasium-maven-dependency_scanning:
   variables:
     DS_ANALYZER_NAME: "gemnasium-maven"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-maven/
       when: never
@@ -135,7 +135,7 @@ gemnasium-python-dependency_scanning:
   variables:
     DS_ANALYZER_NAME: "gemnasium-python"
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/
       when: never

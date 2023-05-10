@@ -151,7 +151,7 @@ Read how to [upgrade without downtime](zero_downtime.md).
 ## Upgrading to a new major version
 
 Upgrading the *major* version requires more attention.
-Backward-incompatible changes and migrations are reserved for major versions.
+Backward-incompatible changes are reserved for major versions.
 Follow the directions carefully as we
 cannot guarantee that upgrading between major versions is seamless.
 

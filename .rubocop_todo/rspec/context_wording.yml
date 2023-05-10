@@ -2778,7 +2778,6 @@ RSpec/ContextWording:
     - 'spec/services/metrics/dashboard/grafana_metric_embed_service_spec.rb'
     - 'spec/services/metrics/dashboard/panel_preview_service_spec.rb'
     - 'spec/services/metrics/dashboard/pod_dashboard_service_spec.rb'
-    - 'spec/services/metrics/dashboard/self_monitoring_dashboard_service_spec.rb'
     - 'spec/services/metrics/dashboard/system_dashboard_service_spec.rb'
     - 'spec/services/metrics/dashboard/transient_embed_service_spec.rb'
     - 'spec/services/metrics/dashboard/update_dashboard_service_spec.rb'

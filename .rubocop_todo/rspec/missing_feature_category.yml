@@ -3556,8 +3556,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/database_importers/common_metrics/importer_spec.rb'
     - 'spec/lib/gitlab/database_importers/common_metrics/prometheus_metric_spec.rb'
     - 'spec/lib/gitlab/database_importers/instance_administrators/create_group_spec.rb'
-    - 'spec/lib/gitlab/database_importers/self_monitoring/project/create_service_spec.rb'
-    - 'spec/lib/gitlab/database_importers/self_monitoring/project/delete_service_spec.rb'
     - 'spec/lib/gitlab/default_branch_spec.rb'
     - 'spec/lib/gitlab/dependency_linker/base_linker_spec.rb'
     - 'spec/lib/gitlab/dependency_linker/cargo_toml_linker_spec.rb'

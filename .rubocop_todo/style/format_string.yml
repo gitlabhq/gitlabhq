@@ -265,7 +265,6 @@ Style/FormatString:
     - 'lib/gitlab/database/postgres_hll/batch_distinct_counter.rb'
     - 'lib/gitlab/database/reindexing/reindex_concurrently.rb'
     - 'lib/gitlab/database_importers/instance_administrators/create_group.rb'
-    - 'lib/gitlab/database_importers/self_monitoring/project/create_service.rb'
     - 'lib/gitlab/email/message/in_product_marketing/base.rb'
     - 'lib/gitlab/email/message/in_product_marketing/create.rb'
     - 'lib/gitlab/email/message/in_product_marketing/helper.rb'

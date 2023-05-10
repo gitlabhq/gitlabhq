@@ -821,8 +821,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/run_pipeline_schedule_worker.rb'
     - 'app/workers/schedule_merge_request_cleanup_refs_worker.rb'
     - 'app/workers/schedule_migrate_external_diffs_worker.rb'
-    - 'app/workers/self_monitoring_project_create_worker.rb'
-    - 'app/workers/self_monitoring_project_delete_worker.rb'
     - 'app/workers/service_desk_email_receiver_worker.rb'
     - 'app/workers/stage_update_worker.rb'
     - 'app/workers/stuck_ci_jobs_worker.rb'

@@ -78,6 +78,14 @@ The `CiCdSettingsUpdate` mutation will be removed in GitLab 16.0.
 Any user scripts that use the `CiCdSettingsUpdate` mutation must be updated to use `ProjectCiCdSettingsUpdate`
 instead.
 
+### Conan project-level search returns only project-specific results"
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [GitLab Conan repository](https://docs.gitlab.com/ee/user/packages/conan_repository/) supports the `conan search` command, but when searching a project-level endpoint, instance-level Conan packages could have been returned. This unintended functionality is removed in GitLab 16.0. The search endpoint for the project level now only returns packages from the target project.
+
 ### Container Registry pull-through cache is removed
 
 WARNING:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Search, feature_category: :global_search do
+RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :wiki_repo, :public, name: 'awesome project', group: group) }
@@ -10,8 +10,6 @@ RSpec.describe API::Search, feature_category: :global_search do
 
   before do
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(0)
-    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
-    allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
   end
 
   shared_examples 'response is correct' do |schema:, size: 1|

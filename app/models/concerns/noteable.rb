@@ -198,7 +198,7 @@ module Noteable
   def creatable_note_email_address(author)
     return unless supports_creating_notes_by_email?
 
-    project_email = project.new_issuable_address(author, self.class.name.underscore)
+    project_email = project&.new_issuable_address(author, base_class_name.underscore)
     return unless project_email
 
     project_email.sub('@', "-#{iid}@")

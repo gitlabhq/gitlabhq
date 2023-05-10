@@ -49,6 +49,18 @@ API users are encouraged to switch to the new diffs endpoint instead.
 
 The `changes from a single merge request` endpoint will be removed in v5 of the GitLab REST API.
 
+## Managed Licenses API endpoint
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/397067).
+
+The endpoint to get
+[all managed licenses for a given project](../managed_licenses.md)
+has been deprecated in favor the
+[License Approval policy](../../user/compliance/license_approval_policies.md) feature.
+Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](../../user/compliance/license_approval_policies.md) instead.
+
+The `managed licenses` endpoint will be removed in v5 of the GitLab REST API.
+
 ## Approvers and Approver Group fields in Merge Request Approval API
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/353097).

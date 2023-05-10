@@ -158,6 +158,17 @@ To delete a task:
 1. In the task window, in the options menu (**{ellipsis_v}**), select **Delete task**.
 1. Select **OK**.
 
+## Reorder tasks
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+By default, tasks are ordered by creation date.
+To reorder them, drag them around.
+
 ## Assign users to a task
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.

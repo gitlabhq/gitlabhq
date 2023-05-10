@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['WorkItem'] do
+RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning do
   specify { expect(described_class.graphql_name).to eq('WorkItem') }
 
   specify { expect(described_class).to require_graphql_authorizations(:read_work_item) }
@@ -29,6 +29,8 @@ RSpec.describe GitlabSchema.types['WorkItem'] do
       updated_at
       closed_at
       web_url
+      create_note_email
+      reference
     ]
 
     expect(described_class).to have_graphql_fields(*fields)

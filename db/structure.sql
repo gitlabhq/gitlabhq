@@ -19585,9 +19585,9 @@ CREATE TABLE packages_npm_metadata_caches (
     size integer NOT NULL,
     file text NOT NULL,
     package_name text NOT NULL,
-    object_storage_key character varying(255) NOT NULL,
+    object_storage_key text NOT NULL,
     CONSTRAINT check_57aa07a4b2 CHECK ((char_length(file) <= 255)),
-    CONSTRAINT check_f97c15aa60 CHECK ((char_length((object_storage_key)::text) <= 255))
+    CONSTRAINT check_f97c15aa60 CHECK ((char_length(object_storage_key) <= 255))
 );
 
 CREATE SEQUENCE packages_npm_metadata_caches_id_seq
@@ -31643,6 +31643,8 @@ CREATE INDEX index_packages_helm_file_metadata_on_pf_id_and_channel ON packages_
 CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_maven_metadata USING btree (package_id, path);
 
 CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata USING btree (path);
+
+CREATE UNIQUE INDEX index_packages_npm_metadata_caches_on_object_storage_key ON packages_npm_metadata_caches USING btree (object_storage_key);
 
 CREATE INDEX index_packages_npm_metadata_caches_on_project_id ON packages_npm_metadata_caches USING btree (project_id);
 

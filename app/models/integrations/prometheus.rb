@@ -30,12 +30,9 @@ module Integrations
       help: -> { s_('PrometheusService|The contents of the credentials.json file of your service account.') },
       required: false
 
-    # We need to allow the self-monitoring project to connect to the internal
-    # Prometheus instance.
     # Since the internal Prometheus instance is usually a localhost URL, we need
     # to allow localhost URLs when the following conditions are true:
-    # 1. project is the self-monitoring project.
-    # 2. api_url is the internal Prometheus URL.
+    # 1. api_url is the internal Prometheus URL.
     with_options presence: true do
       validates :api_url, public_url: true, if: ->(object) { object.manual_configuration? && !object.allow_local_api_url? }
       validates :api_url, url: true, if: ->(object) { object.manual_configuration? && object.allow_local_api_url? }

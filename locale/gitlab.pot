@@ -5627,7 +5627,7 @@ msgstr ""
 msgid "ApprovalRule|Name"
 msgstr ""
 
-msgid "ApprovalRule|Needs Triage"
+msgid "ApprovalRule|Needs triage"
 msgstr ""
 
 msgid "ApprovalRule|New"
@@ -12394,9 +12394,6 @@ msgstr ""
 msgid "Could not access the Wiki Repository at this time."
 msgstr ""
 
-msgid "Could not add admins as members"
-msgstr ""
-
 msgid "Could not apply %{name} command."
 msgstr ""
 
@@ -12422,9 +12419,6 @@ msgid "Could not connect to Web IDE file mirror service."
 msgstr ""
 
 msgid "Could not create Wiki Repository at this time. Please try again later."
-msgstr ""
-
-msgid "Could not create group"
 msgstr ""
 
 msgid "Could not create issue"
@@ -12482,9 +12476,6 @@ msgid "Could not revoke personal access token %{personal_access_token_name}."
 msgstr ""
 
 msgid "Could not save configuration. Please refresh the page, or try again later."
-msgstr ""
-
-msgid "Could not save group ID"
 msgstr ""
 
 msgid "Could not update the LDAP settings"
@@ -23790,9 +23781,6 @@ msgstr ""
 msgid "Instance access request rejected"
 msgstr ""
 
-msgid "Instance administrators group already exists"
-msgstr ""
-
 msgid "Instance audit events"
 msgstr ""
 
@@ -25004,13 +24992,13 @@ msgstr ""
 msgid "Iterations|Error loading iteration cadences."
 msgstr ""
 
+msgid "Iterations|Incomplete issues will be added to the next iteration at %{strongStart}midnight, %{timezone}%{strongEnd}."
+msgstr ""
+
 msgid "Iterations|Iteration cadences"
 msgstr ""
 
 msgid "Iterations|Iterations are scheduled to start on %{weekday}s."
-msgstr ""
-
-msgid "Iterations|Move incomplete issues to the next iteration."
 msgstr ""
 
 msgid "Iterations|New iteration"
@@ -29696,13 +29684,7 @@ msgstr ""
 msgid "No access"
 msgstr ""
 
-msgid "No active admin user found"
-msgstr ""
-
 msgid "No activities found"
-msgstr ""
-
-msgid "No application_settings found"
 msgstr ""
 
 msgid "No approvers"
@@ -40328,6 +40310,9 @@ msgstr ""
 msgid "SecurityOrchestration|Description"
 msgstr ""
 
+msgid "SecurityOrchestration|Details"
+msgstr ""
+
 msgid "SecurityOrchestration|Direct"
 msgstr ""
 
@@ -40620,6 +40605,9 @@ msgid "SecurityOrchestration|Use a scan result policy to create rules that check
 msgstr ""
 
 msgid "SecurityOrchestration|View policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|YAML"
 msgstr ""
 
 msgid "SecurityOrchestration|You don't have any security policies yet"

@@ -35,9 +35,12 @@ apifuzzer_fuzz:
     image: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_IMAGE_SUFFIX
     allow_failure: true
     rules:
-        - if: $API_FUZZING_DISABLED
+        - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
           when: never
-        - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+        - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH == 'true'  &&
+                $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+          when: never
+        - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH == '1'  &&
                 $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
           when: never
         - if: $CI_COMMIT_BRANCH &&

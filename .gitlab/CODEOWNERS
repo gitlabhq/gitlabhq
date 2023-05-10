@@ -565,7 +565,6 @@ lib/gitlab/checks/**
 /doc/api/license.md @fneill
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
-/doc/api/managed_licenses.md @fneill
 /doc/api/markdown.md @msedlakjakubowski
 /doc/api/member_roles.md @jglassman1
 /doc/api/members.md @jglassman1

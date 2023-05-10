@@ -45,7 +45,7 @@ container_scanning:
   script:
     - gtcs scan
   rules:
-    - if: $CONTAINER_SCANNING_DISABLED
+    - if: $CONTAINER_SCANNING_DISABLED == 'true' || $CONTAINER_SCANNING_DISABLED == '1'
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $CI_GITLAB_FIPS_MODE == "true" &&

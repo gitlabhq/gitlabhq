@@ -218,7 +218,6 @@ RSpec/ExpectInHook:
     - 'spec/lib/gitlab/database/with_lock_retries_spec.rb'
     - 'spec/lib/gitlab/database_importers/common_metrics/importer_spec.rb'
     - 'spec/lib/gitlab/database_importers/instance_administrators/create_group_spec.rb'
-    - 'spec/lib/gitlab/database_importers/self_monitoring/project/create_service_spec.rb'
     - 'spec/lib/gitlab/diff/highlight_cache_spec.rb'
     - 'spec/lib/gitlab/email/service_desk_receiver_spec.rb'
     - 'spec/lib/gitlab/faraday/error_callback_spec.rb'

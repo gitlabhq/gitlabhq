@@ -36,9 +36,15 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   end
 
   context 'when the user can read the work item' do
+    let(:incoming_email_token) { current_user.incoming_email_token }
+    let(:work_item_email) do
+      "p+#{project.full_path_slug}-#{project.project_id}-#{incoming_email_token}-issue-#{work_item.iid}@gl.ab"
+    end
+
     before do
       project.add_developer(developer)
       project.add_guest(guest)
+      stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
       post_graphql(query, current_user: current_user)
     end
@@ -55,6 +61,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'title' => work_item.title,
         'confidential' => work_item.confidential,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
+        'reference' => work_item.to_reference,
+        'createNoteEmail' => work_item_email,
         'userPermissions' => {
           'readWorkItem' => true,
           'updateWorkItem' => true,

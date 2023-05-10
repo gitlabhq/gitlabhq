@@ -5,7 +5,6 @@ import Draggable from 'vuedraggable';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { defaultSortableOptions } from '~/sortable/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '../../constants';
 import { findHierarchyWidgets, getWorkItemQuery } from '../../utils';
@@ -18,7 +17,6 @@ export default {
   components: {
     WorkItemLinkChild,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
   props: {
     workItemType: {
@@ -57,7 +55,7 @@ export default {
   },
   computed: {
     canReorder() {
-      return this.glFeatures.workItemsMvc2 && isLoggedIn() && this.canUpdate;
+      return isLoggedIn() && this.canUpdate;
     },
     treeRootWrapper() {
       return this.canReorder ? Draggable : 'div';

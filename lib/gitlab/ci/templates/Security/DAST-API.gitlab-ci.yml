@@ -35,9 +35,12 @@ dast_api:
   image: $SECURE_ANALYZERS_PREFIX/$DAST_API_IMAGE:$DAST_API_VERSION$DAST_API_IMAGE_SUFFIX
   allow_failure: true
   rules:
-    - if: $DAST_API_DISABLED
+    - if: $DAST_API_DISABLED == 'true' || $DAST_API_DISABLED == '1'
       when: never
-    - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+    - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
           $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
     - if: $CI_COMMIT_BRANCH &&
