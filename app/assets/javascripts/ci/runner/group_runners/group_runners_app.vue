@@ -57,7 +57,6 @@ export default {
     RunnerJobStatusBadge,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
   props: {
     newRunnerPath: {
       type: String,
@@ -271,8 +270,6 @@ export default {
       :registration-token="registrationToken"
       :is-search-filtered="isSearchFiltered"
       :new-runner-path="newRunnerPath"
-      :svg-path="emptyStateSvgPath"
-      :filtered-svg-path="emptyStateFilteredSvgPath"
     />
     <template v-else>
       <runner-list

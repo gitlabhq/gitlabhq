@@ -1,0 +1,65 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/BAS.latest.gitlab-ci.yml
+
+# To use this template, add the following to your .gitlab-ci.yml file:
+#
+# include:
+#   template: BAS.latest.gitlab-ci.yml
+#
+# You also need to add a `dast` stage to your `stages:` configuration. A sample configuration for DAST:
+#
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - dast
+#
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/breach_and_attack_simulation/index.html#extend-dynamic-application-security-testing-dast
+
+# Include the DAST.latest template if $DAST_VERSION is null because this means a DAST template has not been included already.
+include:
+  - template: Security/DAST.latest.gitlab-ci.yml
+    rules:
+      - if: $DAST_VERSION == null
+
+variables:
+  BAS_CALLBACK_IMAGE_TAG: "latest"
+  BAS_DAST_IMAGE_TAG: "latest"
+  # Setting this variable will affect all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+
+dast_with_bas:
+  extends:
+    - dast
+    - .dast_with_bas
+  rules:
+    # Don't add if the DAST+BAS job is disabled.
+    - if: $DAST_BAS_DISABLED == 'true' || $DAST_BAS_DISABLED == '1'
+      when: never
+    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # If there's no open merge request, add it to a *branch* pipeline instead.
+    - if: $CI_COMMIT_BRANCH
+
+.dast_with_bas:
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/dast/breach-and-attack-simulation:$BAS_DAST_IMAGE_TAG"
+  variables:
+    DAST_BROWSER_SCAN: "true"
+    DAST_FF_ENABLE_BAS: "true"
+    DAST_FULL_SCAN_ENABLED: "true"
+
+.dast_with_bas_using_services:
+  extends: .dast_with_bas
+  services:
+    - name: "$SECURE_ANALYZERS_PREFIX/callback:$BAS_CALLBACK_IMAGE_TAG"
+      alias: callback
+  variables:
+    DAST_BROWSER_CALLBACK: "Address:http://callback"
+    FF_NETWORK_PER_BUILD: "true"

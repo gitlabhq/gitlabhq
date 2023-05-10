@@ -197,7 +197,6 @@ export default {
   },
   tippyOptions: {
     placement: 'bottom',
-    appendTo: () => document.body,
   },
 };
 </script>

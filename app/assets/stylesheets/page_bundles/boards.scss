@@ -6,6 +6,10 @@
 }
 
 .boards-app {
+  height: calc(#{$calc-application-viewport-height} - var(--header-height, 48px));
+  display: flex;
+  flex-direction: column;
+
   @include media-breakpoint-up(sm) {
     transition: width $gl-transition-duration-medium;
     width: 100%;
@@ -18,9 +22,14 @@
 
 .boards-list,
 .board-swimlanes {
-  overflow-x: scroll;
-  min-height: 200px;
+  flex-grow: 1;
   border-left: 8px solid var(--gray-10, $white);
+
+  min-height: calc(#{$calc-application-viewport-height} - var(--header-height));
+
+  @include media-breakpoint-up(sm) {
+    min-height: 0;
+  }
 }
 
 .board {
@@ -196,8 +205,8 @@
     padding-top: 10px;
   }
 
-  .boards-list {
-    height: calc(100vh - #{$issue-boards-filter-height});
+  .boards-app {
+    height: 100vh;
   }
 
   // Use !important for these as top and z-index are set on style attribute

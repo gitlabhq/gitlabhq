@@ -320,6 +320,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/prometheus.css"
     config.assets.precompile << "page_bundles/promotions.css"
     config.assets.precompile << "page_bundles/releases.css"
+    config.assets.precompile << "page_bundles/remote_development.css"
     config.assets.precompile << "page_bundles/reports.css"
     config.assets.precompile << "page_bundles/roadmap.css"
     config.assets.precompile << "page_bundles/requirements.css"

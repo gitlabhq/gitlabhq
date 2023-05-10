@@ -5,20 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, feature_category: :vulnerability_management do
   let_it_be(:project) { create(:project) }
 
-  let(:current_dast_versions) { described_class::CURRENT_VERSIONS[:dast].join(', ') }
   let(:supported_dast_versions) { described_class::SUPPORTED_VERSIONS[:dast].join(', ') }
-  let(:deprecated_schema_version_message) {}
-  let(:missing_schema_version_message) do
-    "Report version not provided, dast report type supports versions: #{supported_dast_versions}"
-  end
-
-  let(:scanner) do
-    {
-      'id' => 'gemnasium',
-      'name' => 'Gemnasium',
-      'version' => '2.1.0'
-    }
-  end
 
   let(:analyzer_vendor) do
     { 'name' => 'A DAST analyzer' }
@@ -28,7 +15,18 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     { 'name' => 'A DAST scanner' }
   end
 
-  let(:report_data) do
+  let(:scanner) do
+    {
+      'id' => 'my-dast-scanner',
+      'name' => 'My DAST scanner',
+      'version' => '0.2.0',
+      'vendor' => scanner_vendor
+    }
+  end
+
+  let(:report_type) { :dast }
+
+  let(:valid_data) do
     {
       'scan' => {
         'analyzer' => {
@@ -39,20 +37,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         },
         'end_time' => '2020-01-28T03:26:02',
         'scanned_resources' => [],
-        'scanner' => {
-          'id' => 'my-dast-scanner',
-          'name' => 'My DAST scanner',
-          'version' => '0.2.0',
-          'vendor' => scanner_vendor
-        },
+        'scanner' => scanner,
         'start_time' => '2020-01-28T03:26:01',
         'status' => 'success',
-        'type' => 'dast'
+        'type' => report_type.to_s
       },
       'version' => report_version,
       'vulnerabilities' => []
     }
   end
+
+  let(:report_data) { valid_data }
 
   let(:validator) { described_class.new(report_type, report_data, report_version, project: project, scanner: scanner) }
 
@@ -70,8 +65,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
         security_report_version: report_version,
         project_id: project.id,
         security_report_failure: security_report_failure,
-        security_report_scanner_id: 'gemnasium',
-        security_report_scanner_version: '2.1.0'
+        security_report_scanner_id: scanner['id'],
+        security_report_scanner_version: scanner['version']
       )
 
       subject
@@ -142,7 +137,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     subject { validator.valid? }
 
     context 'when given a supported MAJOR.MINOR schema version' do
-      let(:report_type) { :dast }
       let(:report_version) do
         latest_vendored_version = described_class::SUPPORTED_VERSIONS[report_type].last.split(".")
         (latest_vendored_version[0...2] << "34").join(".")
@@ -153,7 +147,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a supported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
       it_behaves_like 'report is valid'
@@ -161,7 +154,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a deprecated schema version' do
-      let(:report_type) { :dast }
       let(:deprecations_hash) do
         {
           dast: %w[10.0.0]
@@ -175,13 +167,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       context 'and the report passes schema validation' do
-        let(:report_data) do
-          {
-            'version' => '10.0.0',
-            'vulnerabilities' => []
-          }
-        end
-
         let(:security_report_failure) { 'using_deprecated_schema_version' }
 
         it { is_expected.to be_truthy }
@@ -191,9 +176,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
-          {
-            'version' => 'V2.7.0'
-          }
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         it { is_expected.to be_falsey }
@@ -201,17 +185,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given an unsupported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
 
       context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
         let(:security_report_failure) { 'using_unsupported_schema_version' }
 
         it { is_expected.to be_falsey }
@@ -259,8 +235,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when not given a schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { nil }
+
       let(:report_data) do
         {
           'vulnerabilities' => []
@@ -285,21 +261,19 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     subject { validator.errors }
 
     context 'when given a supported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
       it_behaves_like 'report is valid with no error'
 
       context 'and the report is invalid' do
         let(:report_data) do
-          {
-            'version' => report_version
-          }
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         let(:expected_errors) do
           [
-            'root is missing required keys: scan, vulnerabilities'
+            'root is missing required keys: vulnerabilities'
           ]
         end
 
@@ -308,7 +282,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a deprecated schema version' do
-      let(:report_type) { :dast }
       let(:deprecations_hash) do
         {
           dast: %w[10.0.0]
@@ -325,9 +298,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
-          {
-            'version' => 'V2.7.0'
-          }
+          valid_data['version'] = "V2.7.0"
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         let(:expected_errors) do
@@ -342,7 +315,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given an unsupported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
       let(:expected_unsupported_message) do
         "Version #{report_version} for report type #{report_type} is unsupported, supported versions for this report type are: "\
@@ -351,13 +323,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
         let(:expected_errors) do
           [
             expected_unsupported_message
@@ -369,9 +334,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
       context 'and the report is invalid' do
         let(:report_data) do
-          {
-            'version' => report_version
-          }
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         let(:expected_errors) do
@@ -386,7 +350,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when not given a schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { nil }
       let(:expected_missing_version_message) do
         "Report version not provided, #{report_type} report type supports versions: #{supported_dast_versions}. GitLab "\
@@ -395,9 +358,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       let(:report_data) do
-        {
-          'vulnerabilities' => []
-        }
+        valid_data.delete('version')
+        valid_data
       end
 
       let(:expected_errors) do
@@ -413,13 +375,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
   shared_examples 'report is valid with no warning' do
     context 'and the report is valid' do
-      let(:report_data) do
-        {
-          'version' => report_version,
-          'vulnerabilities' => []
-        }
-      end
-
       it { is_expected.to be_empty }
     end
   end
@@ -432,25 +387,16 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     subject { validator.deprecation_warnings }
 
     context 'when given a supported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
       context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
         it { is_expected.to be_empty }
       end
 
       context 'and the report is invalid' do
         let(:report_data) do
-          {
-            'version' => report_version
-          }
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         it { is_expected.to be_empty }
@@ -458,7 +404,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a deprecated schema version' do
-      let(:report_type) { :dast }
       let(:deprecations_hash) do
         {
           dast: %w[V2.7.0]
@@ -466,6 +411,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
+      let(:current_dast_versions) { described_class::CURRENT_VERSIONS[:dast].join(', ') }
       let(:expected_deprecation_message) do
         "version #{report_version} for report type #{report_type} is deprecated. "\
         "However, GitLab will still attempt to parse and ingest this report. "\
@@ -483,21 +429,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       context 'and the report passes schema validation' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
         it_behaves_like 'report with expected warnings'
       end
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
-          {
-            'version' => 'V2.7.0'
-          }
+          valid_data['version'] = "V2.7.0"
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         it_behaves_like 'report with expected warnings'
@@ -521,15 +460,8 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given an unsupported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { "21.37.0" }
       let(:expected_deprecation_warnings) { [] }
-      let(:report_data) do
-        {
-          'version' => report_version,
-          'vulnerabilities' => []
-        }
-      end
 
       it_behaves_like 'report with expected warnings'
     end
@@ -539,7 +471,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     subject { validator.warnings }
 
     context 'when given a supported MAJOR.MINOR schema version' do
-      let(:report_type) { :dast }
       let(:report_version) do
         latest_vendored_version = described_class::SUPPORTED_VERSIONS[report_type].last.split(".")
         (latest_vendored_version[0...2] << "34").join(".")
@@ -559,13 +490,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
 
       context 'and the report is valid' do
-        let(:report_data) do
-          {
-            'version' => report_version,
-            'vulnerabilities' => []
-          }
-        end
-
         it { is_expected.to match_array([message]) }
 
         context 'without license', unless: Gitlab.ee? do
@@ -607,7 +531,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a supported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { described_class::SUPPORTED_VERSIONS[report_type].last }
 
       it_behaves_like 'report is valid with no warning'
@@ -624,34 +547,26 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given a deprecated schema version' do
-      let(:report_type) { :dast }
+      let(:deprecated_version) { '14.1.3' }
+      let(:report_version) { deprecated_version }
       let(:deprecations_hash) do
         {
-          dast: %w[V2.7.0]
+          dast: %w[deprecated_version]
         }
       end
-
-      let(:report_version) { described_class::DEPRECATED_VERSIONS[report_type].last }
 
       before do
         stub_const("#{described_class}::DEPRECATED_VERSIONS", deprecations_hash)
       end
 
       context 'and the report passes schema validation' do
-        let(:report_data) do
-          {
-            'vulnerabilities' => []
-          }
-        end
-
         it { is_expected.to be_empty }
       end
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
-          {
-            'version' => 'V2.7.0'
-          }
+          valid_data.delete('vulnerabilities')
+          valid_data
         end
 
         it { is_expected.to be_empty }
@@ -659,7 +574,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when given an unsupported schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { "12.37.0" }
 
       it_behaves_like 'report is valid with no warning'
@@ -676,13 +590,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     end
 
     context 'when not given a schema version' do
-      let(:report_type) { :dast }
       let(:report_version) { nil }
-      let(:report_data) do
-        {
-          'vulnerabilities' => []
-        }
-      end
 
       it { is_expected.to be_empty }
     end

@@ -61,8 +61,6 @@ import {
   mockRegistrationToken,
   newRunnerPath,
   emptyPageInfo,
-  emptyStateSvgPath,
-  emptyStateFilteredSvgPath,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -123,8 +121,6 @@ describe('GroupRunnersApp', () => {
         localMutations,
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
-        emptyStateSvgPath,
-        emptyStateFilteredSvgPath,
         ...provide,
       },
       ...options,
@@ -424,8 +420,6 @@ describe('GroupRunnersApp', () => {
         isSearchFiltered: false,
         newRunnerPath,
         registrationToken: mockRegistrationToken,
-        svgPath: 'emptyStateSvgPath.svg',
-        filteredSvgPath: 'emptyStateFilteredSvgPath.svg',
       });
     });
   });

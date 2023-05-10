@@ -15,11 +15,13 @@ based on a manifest file like the one used by the
 Use the manifest to import a project with many
 repositories like the Android Open Source Project (AOSP).
 
-## Requirements
+## Prerequisites
+
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - [Manifest import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
-must be enabled. If not enabled, ask your GitLab administrator to enable it. The Manifest import source is enabled
-by default on GitLab.com.
+  must be enabled. If not enabled, ask your GitLab administrator to enable it. The Manifest import source is enabled
+  by default on GitLab.com.
 - GitLab must use PostgreSQL for its database, because [subgroups](../../group/subgroups/index.md) are needed for the manifest import
   to work. Read more about the [database requirements](../../../install/requirements.md#database).
 - At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was

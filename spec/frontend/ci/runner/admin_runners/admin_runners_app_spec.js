@@ -60,8 +60,6 @@ import {
   mockRegistrationToken,
   newRunnerPath,
   emptyPageInfo,
-  emptyStateSvgPath,
-  emptyStateFilteredSvgPath,
 } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
@@ -122,8 +120,6 @@ describe('AdminRunnersApp', () => {
         localMutations,
         onlineContactTimeoutSecs,
         staleTimeoutSecs,
-        emptyStateSvgPath,
-        emptyStateFilteredSvgPath,
         ...provide,
       },
       ...options,
@@ -448,9 +444,7 @@ describe('AdminRunnersApp', () => {
       expect(findRunnerListEmptyState().props()).toEqual({
         newRunnerPath,
         isSearchFiltered: false,
-        filteredSvgPath: emptyStateFilteredSvgPath,
         registrationToken: mockRegistrationToken,
-        svgPath: emptyStateSvgPath,
       });
     });
 

@@ -44,11 +44,6 @@
   &.devise-layout-html body hr.footer-fixed {
     bottom: $system-footer-height;
   }
-
-  .boards-list,
-  .board-swimlanes {
-    height: calc(100vh - (#{$header-height} + #{$top-bar-height} + #{$performance-bar-height} + #{$system-footer-height} + #{$gl-padding-32}));
-  }
 }
 
 .fullscreen-layout {

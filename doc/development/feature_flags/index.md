@@ -505,9 +505,12 @@ Feature.remove(:feature_flag_name)
 
 ## Changelog
 
+We want to avoid introducing a changelog when features are not accessible by an end-user either directly (example: ability to use the feature) or indirectly (examples: ability to take advantage of background jobs, performance improvements, or database migration updates).
+
+- Database migrations are always accessible by an end-user indirectly, as self-managed customers need to be aware of database changes before upgrading. For this reason, they **should** have a changelog entry.
 - Any change behind a feature flag **disabled** by default **should not** have a changelog entry.
-  - **Exception:** database migrations **should** have a changelog entry.
-- Any change related to a feature flag itself (flag removal, default-on setting) **should** have [a changelog entry](../changelog.md).
+- Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
+- Changing the feature flag itself (flag removal, default-on setting) **should** have [a changelog entry](../changelog.md).
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid
@@ -519,7 +522,6 @@ Feature.remove(:feature_flag_name)
       A -->|no changelog| D
   ```
 
-- Any change behind a feature flag that is **enabled** by default **should** have a changelog entry.
 - The changelog for a feature flag should describe the feature and not the
   flag, unless a default on feature flag is removed keeping the new code (`other` in the flowchart above).
 - A feature flag can also be used for rolling out a bug fix or a maintenance work. In this scenario, the changelog

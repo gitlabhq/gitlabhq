@@ -96,9 +96,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
         runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: 7200,
-        stale_timeout_secs: 7889238,
-        empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
-        empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+        stale_timeout_secs: 7889238
       )
     end
   end
@@ -168,9 +166,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :runner_fleet do
           group_full_path: group.full_path,
           runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
           online_contact_timeout_secs: 7200,
-          stale_timeout_secs: 7889238,
-          empty_state_svg_path: start_with('/assets/illustrations/pipelines_empty'),
-          empty_state_filtered_svg_path: start_with('/assets/illustrations/magnifying-glass')
+          stale_timeout_secs: 7889238
         )
       end
     end

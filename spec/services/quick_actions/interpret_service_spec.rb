@@ -1399,34 +1399,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { issue }
     end
 
-    # /draft is a toggle (ff disabled)
-    it_behaves_like 'draft command' do
-      let(:content) { '/draft' }
-      let(:issuable) { merge_request }
-
-      before do
-        stub_feature_flags(draft_quick_action_non_toggle: false)
-      end
-    end
-
-    # /draft is a toggle (ff disabled)
-    it_behaves_like 'ready command' do
-      let(:content) { '/draft' }
-      let(:issuable) { merge_request }
-
-      before do
-        stub_feature_flags(draft_quick_action_non_toggle: false)
-        issuable.update!(title: issuable.draft_title)
-      end
-    end
-
-    # /draft is one way (ff enabled)
     it_behaves_like 'draft command' do
       let(:content) { '/draft' }
       let(:issuable) { merge_request }
     end
 
-    # /draft is one way (ff enabled)
     it_behaves_like 'draft/ready command no action' do
       let(:content) { '/draft' }
       let(:issuable) { merge_request }
@@ -2751,27 +2728,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, explanations = service.explain(content, issue)
 
         expect(explanations).to eq(['Sets the due date to Apr 1, 2016.'])
-      end
-    end
-
-    describe 'draft command toggle (deprecated)' do
-      let(:content) { '/draft' }
-
-      before do
-        stub_feature_flags(draft_quick_action_non_toggle: false)
-      end
-
-      it 'includes the new status' do
-        _, explanations = service.explain(content, merge_request)
-
-        expect(explanations).to match_array(['Marks this merge request as a draft.'])
-      end
-
-      it 'sets the ready status on a draft' do
-        merge_request.update!(title: merge_request.draft_title)
-        _, explanations = service.explain(content, merge_request)
-
-        expect(explanations).to match_array(["Marks this merge request as ready."])
       end
     end
 

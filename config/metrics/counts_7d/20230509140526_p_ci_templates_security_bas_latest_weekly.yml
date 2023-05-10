@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_security_bas_latest_weekly
+description: Count of pipelines using the latest Breach and Attack Simulation template
+product_section: sec
+product_stage: secure
+product_group: dynamic_analysis
+value_type: number
+status: active
+milestone: "16.0"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119981
+time_frame: 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+  - p_ci_templates_security_bas_latest

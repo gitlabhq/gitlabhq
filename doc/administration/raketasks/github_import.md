@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitHub import Rake task **(FREE SELF)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390690) in GitLab 15.9, Rake task no longer automatically creates namespaces or groups that don't exist.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390690) in GitLab 15.9, Rake task no longer automatically creates namespaces or groups that don't exist.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 To retrieve and import GitHub repositories, you need a [GitHub personal access token](https://github.com/settings/tokens).
 A username should be passed as the second argument to the Rake task,

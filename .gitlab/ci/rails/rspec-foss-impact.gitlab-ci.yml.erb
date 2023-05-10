@@ -39,7 +39,7 @@ dont-interrupt-me:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
   script:
     - !reference [.base-script, script]
-    - rspec_paralellized_job "--tag ~quarantine --tag ~level:migration --tag ~zoekt"
+    - rspec_paralellized_job "--tag ~quarantine --tag ~level:background_migration --tag ~zoekt"
   artifacts:
     expire_in: 7d
     paths:

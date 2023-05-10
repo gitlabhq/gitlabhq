@@ -138,6 +138,8 @@ ls *export.tar.gz
 
 ## Import a file
 
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
 ```plaintext
 POST /projects/import
 ```

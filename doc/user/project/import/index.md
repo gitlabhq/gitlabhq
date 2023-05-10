@@ -14,11 +14,6 @@ If you want to bring existing projects to GitLab or copy GitLab projects to a di
   - Between a self-managed instance and GitLab.com in both directions.
   - In the same GitLab instance.
 
-Prerequisite:
-
-- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
-  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
-
 For any type of source and target, you can migrate GitLab projects:
 
 - When [migrating groups by direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended),

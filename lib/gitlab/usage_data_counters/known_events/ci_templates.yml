@@ -85,6 +85,8 @@
   aggregation: weekly
 - name: p_ci_templates_security_sast_iac_latest
   aggregation: weekly
+- name: p_ci_templates_security_bas_latest
+  aggregation: weekly
 - name: p_ci_templates_qualys_iac_security
   aggregation: weekly
 - name: p_ci_templates_ios_fastlane

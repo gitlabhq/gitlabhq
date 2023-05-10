@@ -1,4 +1,7 @@
 <script>
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
+import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/magnifying-glass.svg?url';
+
 import { GlEmptyState, GlLink, GlSprintf, GlModalDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
@@ -19,16 +22,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    svgPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    filteredSvgPath: {
-      type: String,
-      required: false,
-      default: '',
     },
     registrationToken: {
       type: String,
@@ -53,6 +46,8 @@ export default {
   },
   modalId: 'runners-empty-state-instructions-modal',
   svgHeight: 145,
+  EMPTY_STATE_SVG_URL,
+  FILTERED_SVG_URL,
 };
 </script>
 
@@ -60,14 +55,14 @@ export default {
   <gl-empty-state
     v-if="isSearchFiltered"
     :title="s__('Runners|No results found')"
-    :svg-path="filteredSvgPath"
+    :svg-path="$options.FILTERED_SVG_URL"
     :svg-height="$options.svgHeight"
     :description="s__('Runners|Edit your search and try again')"
   />
   <gl-empty-state
     v-else
     :title="s__('Runners|Get started with runners')"
-    :svg-path="svgPath"
+    :svg-path="$options.EMPTY_STATE_SVG_URL"
     :svg-height="$options.svgHeight"
   >
     <template v-if="registrationToken" #description>

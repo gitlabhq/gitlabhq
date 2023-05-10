@@ -7,8 +7,6 @@
     = render "layouts/init_client_detection_flags"
     - if Feature.enabled?(:restyle_login_page, @project)
       .page-wrap.borderless
-        .login-page-broadcast
-          = render "layouts/broadcast"
         .container.navless-container
           .content
             = render "layouts/flash"
@@ -29,8 +27,6 @@
     - else
       .page-wrap
         = render "layouts/header/empty"
-        .login-page-broadcast
-          = render "layouts/broadcast"
         .container.navless-container
           .content
             = render "layouts/flash"

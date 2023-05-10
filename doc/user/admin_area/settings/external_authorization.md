@@ -53,7 +53,8 @@ The external authorization service can be enabled by an administrator:
 
 ### Allow external authorization with deploy tokens and deploy keys
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386656) in GitLab 15.9.
+> - Deploy tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
 
 You can set your instance to allow external authorization for Git operations with
 [deploy tokens](../../project/deploy_tokens/index.md) or [deploy keys](../../project/deploy_keys/index.md).
@@ -70,6 +71,9 @@ To allow authorization with deploy tokens and keys:
    - Leave the service URL field empty.
    - Select **Allow deploy tokens and deploy keys to be used with external authorization**.
 1. Select **Save changes**.
+
+WARNING:
+If you enable external authorization, deploy tokens cannot access container or package registries. If you use deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
 
 ## How it works
 

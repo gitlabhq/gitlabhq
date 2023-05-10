@@ -270,11 +270,23 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 
+### 15.11.1
+
+- Many [project importers](../user/project/import/index.md) and [group importers](../user/group/import/index.md) now
+  require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
+  for any importers you use.
+
 ### 15.11.0
 
 - Upgrades to GitLab 15.11 directly from GitLab versions 15.5.0 and earlier on self-managed installs will fail due to a missing migration until the fix for [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) is released in an upcoming patch release. Affected users wanting to upgrade to 15.11.x can either:
   - Perform an intermediate upgrade to any version between 15.5 and 15.10 before upgrading to 15.11, or
   - Target the forthcoming patch release.
+
+### 15.10.5
+
+- Many [project importers](../user/project/import/index.md) and [group importers](../user/group/import/index.md) now
+  require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
+  for any importers you use.
 
 ### 15.10.0
 

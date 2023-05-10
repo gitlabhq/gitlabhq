@@ -1,15 +1,12 @@
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
+import FILTERED_SVG_URL from '@gitlab/svgs/dist/illustrations/magnifying-glass.svg?url';
 import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
 
-import {
-  mockRegistrationToken,
-  newRunnerPath,
-  emptyStateSvgPath,
-  emptyStateFilteredSvgPath,
-} from 'jest/ci/runner/mock_data';
+import { mockRegistrationToken, newRunnerPath } from 'jest/ci/runner/mock_data';
 
 import RunnerListEmptyState from '~/ci/runner/components/runner_list_empty_state.vue';
 
@@ -23,8 +20,6 @@ describe('RunnerListEmptyState', () => {
   const createComponent = ({ props, mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(RunnerListEmptyState, {
       propsData: {
-        svgPath: emptyStateSvgPath,
-        filteredSvgPath: emptyStateFilteredSvgPath,
         registrationToken: mockRegistrationToken,
         newRunnerPath,
         ...props,
@@ -50,7 +45,7 @@ describe('RunnerListEmptyState', () => {
       });
 
       it('renders an illustration', () => {
-        expect(findEmptyState().props('svgPath')).toBe(emptyStateSvgPath);
+        expect(findEmptyState().props('svgPath')).toBe(EMPTY_STATE_SVG_URL);
       });
 
       it('displays "no results" text with instructions', () => {
@@ -125,7 +120,7 @@ describe('RunnerListEmptyState', () => {
       });
 
       it('renders an illustration', () => {
-        expect(findEmptyState().props('svgPath')).toBe(emptyStateSvgPath);
+        expect(findEmptyState().props('svgPath')).toBe(EMPTY_STATE_SVG_URL);
       });
 
       it('displays "no results" text', () => {
@@ -148,7 +143,7 @@ describe('RunnerListEmptyState', () => {
     });
 
     it('renders a "filtered search" illustration', () => {
-      expect(findEmptyState().props('svgPath')).toBe(emptyStateFilteredSvgPath);
+      expect(findEmptyState().props('svgPath')).toBe(FILTERED_SVG_URL);
     });
 
     it('displays "no filtered results" text', () => {

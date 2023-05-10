@@ -57,6 +57,7 @@ options:
   - p_ci_templates_security_api_fuzzing
   - p_ci_templates_security_dast
   - p_ci_templates_security_api_discovery
+  - p_ci_templates_security_bas_latest
   - p_ci_templates_ios_fastlane
   - p_ci_templates_composer
   - p_ci_templates_c

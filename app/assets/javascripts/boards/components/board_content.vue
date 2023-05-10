@@ -1,10 +1,8 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { breakpoints } from '@gitlab/ui/dist/utils';
-import { sortBy, throttle } from 'lodash';
+import { sortBy } from 'lodash';
 import Draggable from 'vuedraggable';
 import { mapState, mapActions } from 'vuex';
-import { contentTop } from '~/lib/utils/common_utils';
 import eventHub from '~/boards/eventhub';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
 import { defaultSortableOptions } from '~/sortable/constants';
@@ -94,31 +92,11 @@ export default {
   beforeDestroy() {
     eventHub.$off('updateBoard', this.refetchLists);
   },
-  mounted() {
-    this.setBoardHeight();
-
-    this.resizeObserver = new ResizeObserver(
-      throttle(() => {
-        this.setBoardHeight();
-      }, 150),
-    );
-    this.resizeObserver.observe(document.body);
-  },
-  unmounted() {
-    this.resizeObserver.disconnect();
-  },
   methods: {
     ...mapActions(['moveList', 'unsetError']),
     afterFormEnters() {
       const el = this.canDragColumns ? this.$refs.list.$el : this.$refs.list;
       el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
-    },
-    setBoardHeight() {
-      if (window.innerWidth < breakpoints.md) {
-        this.boardHeight = `${window.innerHeight - contentTop()}px`;
-      } else {
-        this.boardHeight = `${window.innerHeight - this.$el.getBoundingClientRect().top}px`;
-      }
     },
     refetchLists() {
       this.$apollo.queries.boardListsApollo.refetch();
@@ -128,7 +106,11 @@ export default {
 </script>
 
 <template>
-  <div v-cloak data-qa-selector="boards_list">
+  <div
+    v-cloak
+    data-qa-selector="boards_list"
+    class="gl-flex-grow-1 gl-display-flex gl-flex-direction-column gl-min-h-0"
+  >
     <gl-alert v-if="errorToDisplay" variant="danger" :dismissible="true" @dismiss="unsetError">
       {{ errorToDisplay }}
     </gl-alert>
@@ -137,8 +119,7 @@ export default {
       v-if="!isSwimlanesOn"
       ref="list"
       v-bind="draggableOptions"
-      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-scroll"
-      :style="{ height: boardHeight }"
+      class="boards-list gl-w-full gl-py-5 gl-pr-3 gl-white-space-nowrap gl-overflow-x-auto"
       @end="moveList"
     >
       <board-column
@@ -165,7 +146,6 @@ export default {
       :lists="boardListsToUse"
       :can-admin-list="canAdminList"
       :filters="filterParams"
-      :style="{ height: boardHeight }"
       @setActiveList="$emit('setActiveList', $event)"
     />
 

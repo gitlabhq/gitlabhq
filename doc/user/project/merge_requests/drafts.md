@@ -30,7 +30,7 @@ There are several ways to flag a merge request as a draft:
   below the **Title** field.
 - **Commenting in an existing merge request**: Add the `/draft`
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
-  in a comment. GitLab 15.4 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654) the toggle behavior of `/draft`. To mark a merge request as ready, use `/ready`.
+  in a comment. To mark a merge request as ready, use `/ready`.
 - **Creating a commit**: Add `draft:`, `Draft:`, `fixup!`, or `Fixup!` to the
   beginning of a commit message targeting the merge request's source branch. This
   is not a toggle, and adding this text again in a later commit doesn't mark the

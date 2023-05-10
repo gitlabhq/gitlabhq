@@ -322,8 +322,6 @@ export const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 export const mockAuthenticationToken = 'MOCK_AUTHENTICATION_TOKEN';
 
 export const newRunnerPath = '/runners/new';
-export const emptyStateSvgPath = 'emptyStateSvgPath.svg';
-export const emptyStateFilteredSvgPath = 'emptyStateFilteredSvgPath.svg';
 
 export {
   allRunnersData,

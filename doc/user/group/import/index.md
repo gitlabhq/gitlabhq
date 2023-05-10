@@ -91,6 +91,8 @@ make sure to have a similar setup on the destination instance, or to import into
 
 ### Prerequisites
 
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
 To migrate groups by direct transfer:
 
 - The network connection between instances or GitLab.com must support HTTPS.

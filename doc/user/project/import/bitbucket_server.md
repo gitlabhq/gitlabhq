@@ -25,13 +25,19 @@ created as private in GitLab as well.
 
 > Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 
-Prerequisites:
+You can import Bitbucket repositories to GitLab.
+
+### Prerequisites
+
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - [Bitbucket Server import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
-must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
-by default on GitLab.com.
+  must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
+  by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
   [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
+### Import repositories
 
 To import your Bitbucket repositories:
 

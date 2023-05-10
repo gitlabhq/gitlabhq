@@ -10,8 +10,6 @@
     = render "layouts/header/empty"
     .layout-page
       .content-wrapper.gl-pt-6{ class: 'gl-md-pt-11!' }
-        .alert-wrapper.gl-force-block-formatting-context
-          = render "layouts/broadcast"
         %div{ class: container_class }
           %main#content-body.content
             = render "layouts/flash" unless @hide_flash

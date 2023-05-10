@@ -79,7 +79,7 @@ module MetricsDashboard
   end
 
   def starred_dashboards
-    @starred_dashboards ||= begin
+    @starred_dashboards ||=
       if project_for_dashboard.present?
         ::Metrics::UsersStarredDashboardsFinder
           .new(user: current_user, project: project_for_dashboard)
@@ -89,7 +89,6 @@ module MetricsDashboard
       else
         Set.new
       end
-    end
   end
 
   # Project is not defined for group and admin level clusters.

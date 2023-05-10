@@ -1,3 +1,5 @@
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
+
 import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';
 import RunnerJobsEmptyState from '~/ci/runner/components/runner_jobs_empty_state.vue';
@@ -12,11 +14,7 @@ describe('RunnerJobsEmptyStateComponent', () => {
   let wrapper;
 
   const mountComponent = () => {
-    wrapper = shallowMount(RunnerJobsEmptyState, {
-      provide: {
-        emptyStateImage: 'emptyStateImage',
-      },
-    });
+    wrapper = shallowMount(RunnerJobsEmptyState);
   };
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -29,7 +27,7 @@ describe('RunnerJobsEmptyStateComponent', () => {
     it('should show an empty state if it is empty', () => {
       const emptyState = findEmptyState();
 
-      expect(emptyState.props('svgPath')).toBe('emptyStateImage');
+      expect(emptyState.props('svgPath')).toBe(EMPTY_STATE_SVG_URL);
       expect(emptyState.props('title')).toBe(DEFAULT_PROPS.emptyTitle);
       expect(emptyState.text()).toContain(DEFAULT_PROPS.emptyDescription);
     });

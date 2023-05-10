@@ -8,22 +8,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
-## Prerequisites
-
-For information on prerequisites for using the Import API, see:
-
-- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
-- [Prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
-
 ## Import repository from GitHub
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 Import your projects from GitHub to GitLab using the API.
 
-The namespace set in `target_namespace` must exist. The namespace can be your user namespace or an existing group that
-you have at least the Maintainer role for. Using the Developer role for this purpose was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+Prerequisites:
+
+- [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
+- The namespace set in `target_namespace` must exist.
+- The namespace can be your user namespace or an existing group that you have at least the Maintainer role for. Using
+  the Developer role for this purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab
+  15.8 and will be removed in GitLab 16.0.
 
 ```plaintext
 POST /import/github
@@ -169,12 +167,15 @@ Returns the following status codes:
 
 ## Import repository from Bitbucket Server
 
-Import your projects from Bitbucket Server to GitLab via the API.
+Import your projects from Bitbucket Server to GitLab using the API.
 
-NOTE:
 The Bitbucket Project Key is only used for finding the repository in Bitbucket.
 You must specify a `target_namespace` if you want to import the repository to a GitLab group.
 If you do not specify `target_namespace`, the project imports to your personal user namespace.
+
+Prerequisites:
+
+- For more information, see [prerequisites for Bitbucket Server importer](../user/project/import/bitbucket_server.md#import-your-bitbucket-repositories).
 
 ```plaintext
 POST /import/bitbucket_server

@@ -36,6 +36,8 @@ For an overview of the import process, see [Migrating from GitHub to GitLab](htt
 
 ## Prerequisites
 
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
 To import projects from GitHub:
 
 - [GitHub import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)

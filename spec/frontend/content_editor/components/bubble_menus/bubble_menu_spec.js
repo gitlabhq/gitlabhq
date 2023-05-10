@@ -64,10 +64,12 @@ describe('content_editor/components/bubble_menus/bubble_menu', () => {
       tippyOptions: expect.objectContaining({
         onHidden: expect.any(Function),
         onShow: expect.any(Function),
+        appendTo: expect.any(Function),
         ...tippyOptions,
       }),
     });
 
+    expect(BubbleMenuPlugin.mock.calls[0][0].tippyOptions.appendTo()).toBe(document.body);
     expect(tiptapEditor.registerPlugin).toHaveBeenCalledWith(pluginInitializationResult);
   });
 

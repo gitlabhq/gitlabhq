@@ -189,11 +189,15 @@ Migrating projects with file exports uses the same export and import mechanisms 
 
 > Default maximum import file size [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8. Administrators of self-managed instances can [set maximum import file size](#set-maximum-import-file-size). On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
 
+You can import a project and its data.
+
 WARNING:
 Only import projects from sources you trust. If you import a project from an untrusted source, it
 may be possible for an attacker to steal your sensitive data.
 
-Prerequisites:
+### Prerequisites
+
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
@@ -201,6 +205,8 @@ Prerequisites:
 - Review [compatibility](#compatibility) for any issues.
 - At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
   [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+
+### Import a project
 
 To import a project:
 

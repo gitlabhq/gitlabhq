@@ -1,8 +1,0 @@
----
-name: draft_quick_action_non_toggle
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368610
-milestone: '15.4'
-type: development
-group: group::code review
-default_enabled: false

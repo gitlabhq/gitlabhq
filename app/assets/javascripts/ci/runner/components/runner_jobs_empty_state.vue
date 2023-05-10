@@ -1,4 +1,6 @@
 <script>
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/pipelines_empty.svg?url';
+
 import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
@@ -12,12 +14,12 @@ export default {
   components: {
     GlEmptyState,
   },
-  inject: ['emptyStateImage'],
+  EMPTY_STATE_SVG_URL,
 };
 </script>
 
 <template>
-  <gl-empty-state :svg-path="emptyStateImage" :title="$options.i18n.title">
+  <gl-empty-state :svg-path="$options.EMPTY_STATE_SVG_URL" :title="$options.i18n.title">
     <template #description>
       <p>{{ $options.i18n.description }}</p>
     </template>

@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/RedundantBegin:
-  Exclude:
-    - 'app/controllers/concerns/metrics_dashboard.rb'
-    - 'ee/lib/gem_extensions/elasticsearch/model/adapter/multiple/records.rb'

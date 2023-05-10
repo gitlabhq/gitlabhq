@@ -1,9 +1,8 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import Draggable from 'vuedraggable';
 import Vuex from 'vuex';
-
 import eventHub from '~/boards/eventhub';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -77,29 +76,6 @@ describe('BoardContent', () => {
     });
   };
 
-  beforeAll(() => {
-    global.ResizeObserver = class MockResizeObserver {
-      constructor(callback) {
-        this.callback = callback;
-
-        this.entries = [];
-      }
-
-      observe(entry) {
-        this.entries.push(entry);
-      }
-
-      disconnect() {
-        this.entries = [];
-        this.callback = null;
-      }
-
-      trigger() {
-        this.callback(this.entries);
-      }
-    };
-  });
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();
@@ -116,34 +92,6 @@ describe('BoardContent', () => {
     it('does not display EpicsSwimlanes component', () => {
       expect(wrapper.findComponent(EpicsSwimlanes).exists()).toBe(false);
       expect(wrapper.findComponent(GlAlert).exists()).toBe(false);
-    });
-
-    it('on small screens, sets board container height to full height', async () => {
-      window.innerHeight = 1000;
-      window.innerWidth = 767;
-      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-
-      wrapper.vm.resizeObserver.trigger();
-
-      await nextTick();
-
-      const style = wrapper.findComponent({ ref: 'list' }).attributes('style');
-
-      expect(style).toBe('height: 1000px;');
-    });
-
-    it('on large screens, sets board container height fill area below filters', async () => {
-      window.innerHeight = 1000;
-      window.innerWidth = 768;
-      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 100 });
-
-      wrapper.vm.resizeObserver.trigger();
-
-      await nextTick();
-
-      const style = wrapper.findComponent({ ref: 'list' }).attributes('style');
-
-      expect(style).toBe('height: 900px;');
     });
 
     it('sets delay and delayOnTouchOnly attributes on board list', () => {

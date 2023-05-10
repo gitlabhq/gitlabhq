@@ -32,6 +32,8 @@ When importing:
 
 ## Prerequisites
 
+> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
 - [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be enabled. If that integration is not enabled, ask your GitLab administrator
   to enable it. The Bitbucket Cloud integration is enabled by default on GitLab.com.
 - [Bitbucket Cloud import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
