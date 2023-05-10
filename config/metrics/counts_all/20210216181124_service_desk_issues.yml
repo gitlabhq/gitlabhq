@@ -2,9 +2,9 @@
 data_category: optional
 key_path: usage_activity_by_stage.plan.service_desk_issues
 description: Count of service desk issues
-product_section: dev
-product_stage: plan
-product_group: product_planning
+product_section: ops
+product_stage: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

@@ -17,11 +17,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
   let(:input) { { 'stateEvent' => work_item_event, 'title' => 'updated title' } }
   let(:fields) do
     <<~FIELDS
-    workItem {
-      state
-      title
-    }
-    errors
+      workItem {
+        state
+        title
+      }
+      errors
     FIELDS
   end
 
@@ -82,10 +82,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     context 'when updating confidentiality' do
       let(:fields) do
         <<~FIELDS
-        workItem {
-          confidential
-        }
-        errors
+          workItem {
+            confidential
+          }
+          errors
         FIELDS
       end
 
@@ -127,18 +127,18 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     context 'with description widget input' do
       let(:fields) do
         <<~FIELDS
-        workItem {
-          title
-          description
-          state
-          widgets {
-            type
-            ... on WorkItemWidgetDescription {
-                    description
+          workItem {
+            title
+            description
+            state
+            widgets {
+              type
+              ... on WorkItemWidgetDescription {
+                      description
+              }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 
@@ -446,25 +446,25 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       let(:widgets_response) { mutation_response['workItem']['widgets'] }
       let(:fields) do
         <<~FIELDS
-        workItem {
-          description
-          widgets {
-            type
-            ... on WorkItemWidgetHierarchy {
-              parent {
-                id
-              }
-              children {
-                edges {
-                  node {
-                    id
+          workItem {
+            description
+            widgets {
+              type
+              ... on WorkItemWidgetHierarchy {
+                parent {
+                  id
+                }
+                children {
+                  edges {
+                    node {
+                      id
+                    }
                   }
                 }
               }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 
@@ -741,23 +741,29 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     context 'when updating assignees' do
       let(:fields) do
         <<~FIELDS
-        workItem {
-          widgets {
-            type
-            ... on WorkItemWidgetAssignees {
-              assignees {
-                nodes {
-                  id
-                  username
+          workItem {
+            title
+            workItemType { name }
+            widgets {
+              type
+              ... on WorkItemWidgetAssignees {
+                assignees {
+                  nodes {
+                    id
+                    username
+                  }
                 }
               }
-            }
-            ... on WorkItemWidgetDescription {
-              description
+              ... on WorkItemWidgetDescription {
+                description
+              }
+              ... on WorkItemWidgetStartAndDueDate {
+                startDate
+                dueDate
+              }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 
@@ -830,6 +836,79 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             )
           end
         end
+
+        context 'when changing work item type' do
+          let_it_be(:work_item) { create(:work_item, :task, project: project) }
+          let(:description) { "/type Issue" }
+
+          let(:input) { { 'descriptionWidget' => { 'description' => description } } }
+
+          context 'with multiple commands' do
+            let_it_be(:work_item) { create(:work_item, :task, project: project) }
+
+            let(:description) { "Updating work item\n/type Issue\n/due tomorrow\n/title Foo" }
+
+            it 'updates the work item type and other attributes' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.to change { work_item.work_item_type.base_type }.from('task').to('issue')
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(mutation_response['workItem']['workItemType']['name']).to eq('Issue')
+              expect(mutation_response['workItem']['title']).to eq('Foo')
+              expect(mutation_response['workItem']['widgets']).to include(
+                'type' => 'START_AND_DUE_DATE',
+                'dueDate' => Date.tomorrow.strftime('%Y-%m-%d'),
+                'startDate' => nil
+              )
+            end
+          end
+
+          context 'when conversion is not permitted' do
+            let_it_be(:issue) { create(:work_item, project: project) }
+            let_it_be(:link) { create(:parent_link, work_item_parent: issue, work_item: work_item) }
+
+            let(:error_msg) { 'Work item type cannot be changed to Issue with Issue as parent type.' }
+
+            it 'does not update the work item type' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.not_to change { work_item.work_item_type.base_type }
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(mutation_response['errors']).to include(error_msg)
+            end
+          end
+
+          context 'when new type does not support a widget' do
+            before do
+              work_item.update!(start_date: Date.current, due_date: Date.tomorrow)
+              WorkItems::Type.default_by_type(:issue).widget_definitions
+                .find_by_widget_type(:start_and_due_date).update!(disabled: true)
+            end
+
+            it 'updates the work item type and clear widget attributes' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.to change { work_item.work_item_type.base_type }.from('task').to('issue')
+                 .and change { work_item.start_date }.to(nil)
+                 .and change { work_item.start_date }.to(nil)
+
+              expect(response).to have_gitlab_http_status(:success)
+              expect(mutation_response['workItem']['workItemType']['name']).to eq('Issue')
+              expect(mutation_response['workItem']['widgets']).to include(
+                {
+                  'type' => 'START_AND_DUE_DATE',
+                  'startDate' => nil,
+                  'dueDate' => nil
+                }
+              )
+            end
+          end
+        end
       end
 
       context 'when the work item type does not support the assignees widget' do
@@ -868,17 +947,17 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       let(:fields) do
         <<~FIELDS
-        workItem {
-          widgets {
-            type
-            ... on WorkItemWidgetMilestone {
-              milestone {
-                id
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetMilestone {
+                milestone {
+                  id
+                }
               }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 
@@ -951,15 +1030,15 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       let(:fields) do
         <<~FIELDS
-        workItem {
-          widgets {
-            type
-            ... on WorkItemWidgetNotifications {
-              subscribed
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetNotifications {
+                subscribed
+              }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 
@@ -1084,20 +1163,20 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       let(:fields) do
         <<~FIELDS
-        workItem {
-          widgets {
-            type
-            ... on WorkItemWidgetCurrentUserTodos {
-              currentUserTodos {
-                nodes {
-                  id
-                  state
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetCurrentUserTodos {
+                currentUserTodos {
+                  nodes {
+                    id
+                    state
+                  }
                 }
               }
             }
           }
-        }
-        errors
+          errors
         FIELDS
       end
 

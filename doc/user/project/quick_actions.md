@@ -160,6 +160,7 @@ The following quick actions can be applied through the description field when ed
 | `/clear_health_status`                                                                           | **{check-circle}** Yes | **{dotted-circle}** Yes | **{dotted-circle}** Yes | Clear [health status](issues/managing_issues.md#health-status).
 | `/weight <value>`                                                                                | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set weight. Valid options for `<value>` include `0`, `1`, and `2`.
 | `/clear_weight`                                                                                  | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Clear weight.
+| `/type`                                                                                          | **{check-circle}** Yes | **{dotted-circle}** Yes | **{dotted-circle}** Yes | Converts work item to specified type. Available options for `<type>` include `Issue`, `Task`, `Objective` and `Key Result`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385227) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 
 ## Commit messages
 

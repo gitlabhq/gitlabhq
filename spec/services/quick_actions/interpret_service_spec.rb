@@ -2507,6 +2507,55 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         expect(message).to eq("Added ~\"Bug\" label.")
       end
     end
+
+    describe 'type command' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:work_item) { create(:work_item, project: project) }
+
+      let(:command) { '/type Task' }
+
+      context 'when user has sufficient permissions to create new type' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(true)
+        end
+
+        it 'populates :issue_type: and :work_item_type' do
+          _, updates, message = service.execute(command, work_item)
+
+          expect(message).to eq(_('Type changed successfully.'))
+          expect(updates).to eq({ issue_type: 'task', work_item_type: WorkItems::Type.default_by_type(:task) })
+        end
+
+        it 'returns error with an invalid type' do
+          _, updates, message = service.execute('/type foo', work_item)
+
+          expect(message).to eq(_("Failed to convert this work item: Provided type is not supported."))
+          expect(updates).to eq({})
+        end
+
+        it 'returns error with same type' do
+          _, updates, message = service.execute('/type Issue', work_item)
+
+          expect(message).to eq(_("Failed to convert this work item: Types are the same."))
+          expect(updates).to eq({})
+        end
+      end
+
+      context 'when user has insufficient permissions to create new type' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :create_task, work_item).and_return(false)
+        end
+
+        it 'returns error' do
+          _, updates, message = service.execute(command, work_item)
+
+          expect(message).to eq(_("Failed to convert this work item: You have insufficient permissions."))
+          expect(updates).to eq({})
+        end
+      end
+    end
   end
 
   describe '#explain' do
@@ -2963,6 +3012,32 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
         expect(content_result).to eq('')
         expect(explanations).to eq(['Closes this issue.'])
+      end
+    end
+
+    describe 'type command' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:work_item) { create(:work_item, :task, project: project) }
+
+      let(:command) { '/type Issue' }
+
+      it 'has command available' do
+        _, explanations = service.explain(command, work_item)
+
+        expect(explanations)
+          .to contain_exactly("Converts work item to Issue. Widgets not supported in new type are removed.")
+      end
+
+      context 'when feature flag work_items_mvc_2 is disabled' do
+        before do
+          stub_feature_flags(work_items_mvc_2: false)
+        end
+
+        it 'does not have the command available' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to be_empty
+        end
       end
     end
   end

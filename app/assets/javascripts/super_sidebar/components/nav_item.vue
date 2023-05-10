@@ -146,7 +146,7 @@ export default {
           v-if="hasPill"
           size="sm"
           variant="neutral"
-          class="count-pill gl-absolute gl-right-0"
+          :class="{ 'nav-item-badge gl-absolute gl-right-0 gl-top-2': isPinnable }"
         >
           {{ pillData }}
         </gl-badge>

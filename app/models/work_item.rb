@@ -4,7 +4,7 @@ class WorkItem < Issue
   include Gitlab::Utils::StrongMemoize
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
-    :title, :reopen, :close, :cc, :tableflip, :shrug
+    :title, :reopen, :close, :cc, :tableflip, :shrug, :type
   ].freeze
 
   self.table_name = 'issues'
@@ -104,7 +104,7 @@ class WorkItem < Issue
   # Widgets have a set of quick action params that they must process.
   # Map them to widget_params so they can be picked up by widget services.
   def transform_quick_action_params(command_params)
-    common_params = command_params.deep_dup
+    common_params = command_params.dup
     widget_params = {}
 
     work_item_type.widgets

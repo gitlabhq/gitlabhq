@@ -152,3 +152,44 @@ RSpec.shared_examples 'work item does not support start and due date widget upda
     end.not_to change { noteable.due_date }
   end
 end
+
+RSpec.shared_examples 'work item supports type change via quick actions' do
+  let_it_be(:assignee) { create(:user) }
+  let_it_be(:task_type) { WorkItems::Type.default_by_type(:task) }
+
+  let(:body) { "Updating type.\n/type Issue" }
+
+  before do
+    noteable.update!(work_item_type: task_type, issue_type: task_type.base_type)
+  end
+
+  it 'updates type' do
+    expect do
+      post_graphql_mutation(mutation, current_user: current_user)
+      noteable.reload
+    end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
+
+    expect(response).to have_gitlab_http_status(:success)
+  end
+
+  context 'when quick command for unsupported widget is present' do
+    let(:body) { "\n/type Issue\n/assign @#{assignee.username}" }
+
+    before do
+      WorkItems::Type.default_by_type(:issue).widget_definitions
+        .find_by_widget_type(:assignees).update!(disabled: true)
+    end
+
+    it 'updates only type' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+        noteable.reload
+      end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
+          .and change { noteable.assignees }.to([])
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['errors'])
+        .to include("Commands only Type changed successfully. Assigned @#{assignee.username}.")
+    end
+  end
+end

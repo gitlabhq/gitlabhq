@@ -143,6 +143,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
           it_behaves_like 'work item does not support assignee widget updates via quick actions'
           it_behaves_like 'work item supports start and due date widget updates via quick actions'
           it_behaves_like 'work item does not support start and due date widget updates via quick actions'
+          it_behaves_like 'work item supports type change via quick actions'
         end
       end
     end

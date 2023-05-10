@@ -16,16 +16,6 @@ RSpec.describe DeploymentsFinder do
       end
     end
 
-    context 'when updated_at filter and id sorting' do
-      let(:params) { { updated_before: 1.day.ago, order_by: :id } }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(
-          described_class::InefficientQueryError,
-          '`updated_at` filter requires `updated_at` sort')
-      end
-    end
-
     context 'when finished_at filter and id sorting' do
       let(:params) { { finished_before: 1.day.ago, order_by: :id } }
 
@@ -262,11 +252,7 @@ RSpec.describe DeploymentsFinder do
       describe 'enforce sorting to `updated_at` sorting' do
         let(:params) { { **base_params, updated_before: 1.day.ago, order_by: 'id', sort: 'asc' } }
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(DeploymentsFinder::InefficientQueryError)
-        end
-
-        context 'when deployments_raise_updated_at_inefficient_error is disabled' do
+        context 'when the deployments_raise_updated_at_inefficient_error FF is disabled' do
           before do
             stub_feature_flags(deployments_raise_updated_at_inefficient_error: false)
           end
@@ -278,6 +264,37 @@ RSpec.describe DeploymentsFinder do
           it 'sorts by `updated_at`' do
             expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
             expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
+          end
+        end
+
+        context 'when the deployments_raise_updated_at_inefficient_error FF is enabled' do
+          before do
+            stub_feature_flags(deployments_raise_updated_at_inefficient_error: true)
+          end
+
+          context 'when the flag is overridden' do
+            before do
+              stub_feature_flags(deployments_raise_updated_at_inefficient_error_override: true)
+            end
+
+            it 'sorts by only one column' do
+              expect(subject.order_values.size).to eq(2)
+            end
+
+            it 'sorts by `updated_at`' do
+              expect(subject.order_values.first.to_sql).to eq(Deployment.arel_table[:updated_at].asc.to_sql)
+              expect(subject.order_values.second.to_sql).to eq(Deployment.arel_table[:id].asc.to_sql)
+            end
+          end
+
+          context 'when the flag is not overridden' do
+            before do
+              stub_feature_flags(deployments_raise_updated_at_inefficient_error_override: false)
+            end
+
+            it 'raises an error' do
+              expect { subject }.to raise_error(DeploymentsFinder::InefficientQueryError)
+            end
           end
         end
       end

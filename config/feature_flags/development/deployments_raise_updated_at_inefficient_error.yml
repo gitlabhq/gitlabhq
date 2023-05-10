@@ -1,8 +1,8 @@
 ---
 name: deployments_raise_updated_at_inefficient_error
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116656
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/328500
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409584
 milestone: '15.11'
 type: development
 group: group::environments
-default_enabled: false
+default_enabled: true

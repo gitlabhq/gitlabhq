@@ -325,4 +325,40 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
       end
     end
   end
+
+  describe 'notifying KAS' do
+    let(:kas_enabled) { true }
+
+    before do
+      allow(Gitlab::Kas).to receive(:enabled?).and_return(kas_enabled)
+    end
+
+    it 'enqueues the notification worker' do
+      expect(Clusters::Agents::NotifyGitPushWorker).to receive(:perform_async).with(project.id).once
+
+      subject.execute
+    end
+
+    context 'when KAS is disabled' do
+      let(:kas_enabled) { false }
+
+      it do
+        expect(Clusters::Agents::NotifyGitPushWorker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+
+    context 'when :notify_kas_on_git_push feature flag is disabled' do
+      before do
+        stub_feature_flags(notify_kas_on_git_push: false)
+      end
+
+      it do
+        expect(Clusters::Agents::NotifyGitPushWorker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+  end
 end

@@ -47,6 +47,10 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         end
 
         context 'when forbidden order_by is specified' do
+          before do
+            stub_feature_flags(deployments_raise_updated_at_inefficient_error_override: false)
+          end
+
           it 'returns an error' do
             perform_request({ updated_before: 30.minutes.ago, updated_after: 90.minutes.ago, order_by: :id })
 

@@ -1472,26 +1472,20 @@ ee/lib/ee/api/entities/project.rb
 
 [Compliance] @gitlab-org/govern/compliance
 /app/services/audit_events/build_service.rb
+/ee/app/services/ee/audit_events/build_service.rb
 /ee/spec/services/audit_events/custom_audit_event_service_spec.rb
 /app/models/audit_event.rb
 /app/services/audit_event_service.rb
 /app/services/concerns/audit_event_save_type.rb
 /app/views/profiles/audit_log.html.haml
-/ee/app/assets/javascripts/audit_events/components/audit_events_app.vue
-/ee/app/assets/javascripts/audit_events/components/audit_events_export_button.vue
-/ee/app/assets/javascripts/audit_events/components/audit_events_filter.vue
-/ee/app/assets/javascripts/audit_events/components/audit_events_log.vue
-/ee/app/assets/javascripts/audit_events/components/audit_events_stream.vue
-/ee/app/assets/javascripts/audit_events/components/audit_events_table.vue
-/ee/app/assets/javascripts/audit_events/components/tokens/shared/
-/ee/app/assets/javascripts/audit_events/init_audit_events.js
+/ee/app/assets/javascripts/audit_events/
 /ee/app/controllers/admin/audit_log_reports_controller.rb
 /ee/app/controllers/admin/audit_logs_controller.rb
 /ee/app/controllers/concerns/audit_events/audit_events_params.rb
 /ee/app/controllers/groups/audit_events_controller.rb
 /ee/app/controllers/projects/audit_events_controller.rb
 /ee/app/finders/audit_event_finder.rb
-/ee/app/graphql/types/audit_events/external_audit_event_destination_type.rb
+/ee/app/graphql/types/audit_events/
 /ee/app/helpers/audit_events_helper.rb
 /ee/app/helpers/auditor_user_helper.rb
 /ee/app/models/audit_events/external_audit_event_destination.rb
@@ -1531,6 +1525,13 @@ ee/lib/ee/api/entities/project.rb
 /ee/lib/ee/gitlab/audit/
 /lib/gitlab/audit/auditor.rb
 /lib/gitlab/audit_json_logger.rb
+/ee/app/graphql/mutations/audit_events/
+/ee/app/models/concerns/audit_events/
+/ee/app/views/projects/audit_events/
+/app/controllers/groups/releases_controller.rb
+/app/controllers/projects/releases/evidences_controller.rb
+/app/workers/releases/create_evidence_worker.rb
+/app/workers/releases/manage_evidence_worker.rb
 
 [Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
 /ee/app/assets/javascripts/usage_quotas/components/

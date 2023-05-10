@@ -127,3 +127,5 @@
   aggregation: weekly
 - name: i_quickactions_remove_contacts
   aggregation: weekly
+- name: i_quickactions_type
+  aggregation: weekly

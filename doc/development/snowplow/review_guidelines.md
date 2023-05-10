@@ -31,13 +31,13 @@ events or touches Snowplow related files.
   [Snowplow Micro](implementation.md#test-backend-events-with-snowplow-micro) good events
   `GET http://localhost:9090/micro/good` (it might be a good idea
   to reset with `GET http://localhost:9090/micro/reset` first).
-- Update the [Event Dictionary](event_dictionary_guide.md).
+- Add or update the event definition file according to the [Event Dictionary Guide](event_dictionary_guide.md).
 
 #### The Product Intelligence **reviewer** should
 
 - Check that the [event schema](index.md#event-schema) is correct.
 - Check the [usage recommendations](implementation.md#usage-recommendations).
-- Check that the [Event Dictionary](event_dictionary_guide.md) is up-to-date.
+- Check that an event definition file was created or updated in accordance with the [Event Dictionary Guide](event_dictionary_guide.md).
 - If needed, check that the events are firing locally using one of the
 [testing tools](implementation.md#develop-and-test-snowplow) available.
 - Approve the MR, and relabel the MR with `~"product intelligence::approved"`.

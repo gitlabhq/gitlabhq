@@ -191,8 +191,8 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 
     &:hover,
     &:focus-within {
-      .count-pill {
-        display: none;
+      .nav-item-badge {
+        opacity: 0;
       }
     }
 

@@ -8889,6 +8889,9 @@ msgstr ""
 msgid "Change title"
 msgstr ""
 
+msgid "Change work item type"
+msgstr ""
+
 msgid "Change your password"
 msgstr ""
 
@@ -12197,6 +12200,9 @@ msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access betwee
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
+msgstr ""
+
+msgid "Converts work item to %{type}. Widgets not supported in new type are removed."
 msgstr ""
 
 msgid "Cookie domain"
@@ -18145,6 +18151,9 @@ msgid "Failed to clone this issue because target project doesn't exist."
 msgstr ""
 
 msgid "Failed to clone this issue: wrong parameters."
+msgstr ""
+
+msgid "Failed to convert this work item: %{reason}."
 msgstr ""
 
 msgid "Failed to create a branch for this issue. Please try again."
@@ -47427,6 +47436,9 @@ msgid "Two-factor grace period"
 msgstr ""
 
 msgid "Type"
+msgstr ""
+
+msgid "Type changed successfully."
 msgstr ""
 
 msgid "Type to search"

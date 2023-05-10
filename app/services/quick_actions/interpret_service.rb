@@ -11,6 +11,7 @@ module QuickActions
     include Gitlab::QuickActions::CommitActions
     include Gitlab::QuickActions::CommonActions
     include Gitlab::QuickActions::RelateActions
+    include Gitlab::QuickActions::WorkItemActions
 
     attr_reader :quick_action_target
 

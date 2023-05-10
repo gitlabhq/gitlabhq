@@ -20,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
-  before_action :redirect_if_work_item, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :redirect_if_work_item, unless: ->(c) { work_item_redirect_except_actions.include?(c.action_name.to_sym) }
   before_action :require_incident_for_incident_routes, only: :show
 
   after_action :log_issue_show, only: :show
@@ -390,6 +390,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   private
+
+  def work_item_redirect_except_actions
+    ISSUES_EXCEPT_ACTIONS
+  end
 
   def render_by_create_result_error(result)
     Gitlab::AppLogger.warn(

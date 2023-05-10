@@ -64,7 +64,15 @@ class DeploymentsFinder
 
       Gitlab::ErrorTracking.log_exception(error)
 
-      raise error if Feature.enabled?(:deployments_raise_updated_at_inefficient_error)
+      # We are adding a Feature Flag to introduce the breaking change indicated in
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/328500
+      # We are also adding a way to override this flag for special case users that
+      # are running into large volume of errors when the flag is enabled.
+      # These Feature Flags must be removed by 16.1
+      if Feature.enabled?(:deployments_raise_updated_at_inefficient_error) &&
+          Feature.disabled?(:deployments_raise_updated_at_inefficient_error_override, params[:project])
+        raise error
+      end
     end
 
     if filter_by_finished_at? && !order_by_finished_at?
