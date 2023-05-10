@@ -18,7 +18,7 @@ retrieve-tests-metadata:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
   stage: prepare
   script:
-    - apt-get update && apt-get install -y curl # Not present in ruby-slim, so we add it manually
+    - apt-get update && apt-get install -y curl  # Not present in ruby-slim, so we add it manually
     - install_gitlab_gem
     - source ./scripts/rspec_helpers.sh
     - retrieve_tests_metadata

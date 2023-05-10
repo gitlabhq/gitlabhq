@@ -48,17 +48,6 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
     it_behaves_like 'legacy Web IDE'
   end
 
-  context 'with vscode feature flag on and use_legacy_web_ide=true' do
-    let(:vscode_ff) { true }
-    let(:user) { create(:user, use_legacy_web_ide: true) }
-
-    before do
-      ide_visit(project)
-    end
-
-    it_behaves_like 'legacy Web IDE'
-  end
-
   describe 'sub-groups' do
     let_it_be(:group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: group) }

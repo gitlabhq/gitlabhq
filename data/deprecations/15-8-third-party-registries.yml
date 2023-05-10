@@ -21,4 +21,4 @@
 # If an End of Support period applies, the announcement should be shared with GitLab Support
 # in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
 #
-  end_of_support_milestone: 16.0 # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone: 16.0  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

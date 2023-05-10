@@ -106,7 +106,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:group_runner_registration_allowed, scope: :subject) do
-    Gitlab::CurrentSettings.valid_runner_registrars.include?('group') && @subject.runner_registration_enabled?
+    @subject.runner_registration_enabled?
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do
@@ -321,10 +321,12 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { resource_access_token_creation_allowed & can?(:read_resource_access_tokens) }.policy do
     enable :create_resource_access_tokens
+    enable :manage_resource_access_tokens
   end
 
   rule { can?(:project_bot_access) }.policy do
     prevent :create_resource_access_tokens
+    prevent :manage_resource_access_tokens
   end
 
   rule { can?(:admin_group_member) }.policy do

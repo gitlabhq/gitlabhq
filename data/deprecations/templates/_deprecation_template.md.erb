@@ -59,7 +59,10 @@ and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) depreca
 - End of Support: GitLab <span class="milestone"><%= deprecation["end_of_support_milestone"]%></span>
 <% end -%>
 <% if deprecation["breaking_change"] -%>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+<%- end -%>
+<% if deprecation["issue_url"] -%>
+- To discuss this change or learn more, see the [deprecation issue](<%= deprecation["issue_url"]%>).
 <%- end -%>
 </div>
 

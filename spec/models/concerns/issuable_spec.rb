@@ -860,22 +860,16 @@ RSpec.describe Issuable do
     end
   end
 
-  describe '#first_contribution?' do
+  describe '#first_contribution?', feature_category: :code_review_workflow do
     let(:group) { create(:group) }
     let(:project) { create(:project, namespace: group) }
     let(:other_project) { create(:project) }
-    let(:owner) { create(:owner) }
-    let(:maintainer) { create(:user) }
-    let(:reporter) { create(:user) }
     let(:guest) { create(:user) }
 
     let(:contributor) { create(:user) }
     let(:first_time_contributor) { create(:user) }
 
     before do
-      group.add_owner(owner)
-      project.add_maintainer(maintainer)
-      project.add_reporter(reporter)
       project.add_guest(guest)
       project.add_guest(contributor)
       project.add_guest(first_time_contributor)
@@ -886,24 +880,6 @@ RSpec.describe Issuable do
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do
-      it "is false for MAINTAINER" do
-        mr = create(:merge_request, author: maintainer, target_project: project, source_project: project)
-
-        expect(mr).not_to be_first_contribution
-      end
-
-      it "is false for OWNER" do
-        mr = create(:merge_request, author: owner, target_project: project, source_project: project)
-
-        expect(mr).not_to be_first_contribution
-      end
-
-      it "is false for REPORTER" do
-        mr = create(:merge_request, author: reporter, target_project: project, source_project: project)
-
-        expect(mr).not_to be_first_contribution
-      end
-
       it "is true when you don't have any merged MR" do
         expect(open_mr).to be_first_contribution
         expect(merged_mr).not_to be_first_contribution

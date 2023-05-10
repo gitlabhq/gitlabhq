@@ -42,7 +42,7 @@ include:
     - cd qa && bundle install --jobs=$(nproc) --retry=3 --quiet
     - mkdir -p $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs/gdk $CI_PROJECT_DIR/logs/gitlab
     # This command matches the permissions of the user that runs GDK inside the container.
-    - chown -R 1000:1000 $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs
+    - chown -R 1000:1000 $CI_PROJECT_DIR/test_output $CI_PROJECT_DIR/logs $CI_PROJECT_DIR/qa/knapsack
     - |
       docker run --rm --name gdk --add-host gdk.test:127.0.0.1 --shm-size=2gb \
         --env-file <(bundle exec rake ci:env_var_name_list) \
@@ -120,4 +120,3 @@ notify-slack:
     - .rules:report:process-results
   variables:
     QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.json
-    TYPE: "(gdk) "

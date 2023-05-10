@@ -102,7 +102,7 @@ export default {
       :id="itemId"
       v-model="isExpanded"
       :aria-label="item.title"
-      class="gl-list-style-none gl-p-0 gl-m-0"
+      class="gl-list-style-none gl-p-0 gl-m-0 gl-transition-duration-medium gl-transition-timing-function-ease"
       data-qa-selector="menu_section"
       :data-qa-section-name="item.title"
       tag="ul"

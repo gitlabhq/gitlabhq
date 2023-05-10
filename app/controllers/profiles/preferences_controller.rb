@@ -56,7 +56,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :render_whitespace_in_code,
       :markdown_surround_selection,
       :markdown_automatic_lists,
-      :use_legacy_web_ide,
       :use_new_navigation
     ]
     preferences_param_names << :enabled_following if ::Feature.enabled?(:disable_follow_users, user)

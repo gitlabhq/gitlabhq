@@ -27,24 +27,6 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
     expect(field).not_to be_checked
   end
 
-  it 'allows the user to toggle using the legacy web ide' do
-    field = page.find_field("user[use_legacy_web_ide]")
-
-    expect(field).not_to be_checked
-
-    field.click
-
-    expect(field).to be_checked
-  end
-
-  describe 'when vscode_web_ide feature flag is disabled' do
-    let(:vscode_web_ide) { false }
-
-    it 'does not display the legacy web ide user preference' do
-      expect(page).not_to have_field("user[use_legacy_web_ide]")
-    end
-  end
-
   describe 'User changes tab width to acceptable value' do
     it 'shows success message' do
       fill_in 'Tab width', with: 9

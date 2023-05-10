@@ -7,11 +7,13 @@ type: tutorial
 
 # Authenticating and reading secrets with HashiCorp Vault (Deprecated) **(PREMIUM)**
 
-This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
-
-NOTE:
+WARNING:
 Authenticating with HashiCorp Vault by using `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and the token is scheduled to be removed in GitLab 16.0. Use [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault) instead.
+and the token is scheduled to be removed in GitLab 16.5. This change is a breaking change.
+Use [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
+instead.
+
+This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
 ## Prerequisites
 

@@ -10,6 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.
 > - [ID tokens](../yaml/index.md#id_tokens) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
+WARNING:
+`CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and are scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead.
+
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/connect/faq/) to
 give your build and deployment jobs access to cloud credentials and services.
 Historically, teams stored secrets in projects or applied permissions on the GitLab Runner
@@ -19,23 +23,17 @@ in the CI/CD job allowing you to follow a scalable and least-privilege security 
 In GitLab 15.6 and earlier, you must use `CI_JOB_JWT_V2` instead of an ID token,
 but it is not customizable. In GitLab 14.6 an earlier you must use the `CI_JOB_JWT`, which has limited support.
 
-NOTE:
-`CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and are scheduled to be removed in GitLab 16.5. Use [ID tokens](../yaml/index.md#id_tokens) instead.
-
 ## Prerequisites
 
 - Account on GitLab.
 - Access to a cloud provider that supports OIDC to configure authorization and create roles.
 
-ID tokens and `CI_JOB_JWT_V2` support cloud providers with OIDC, including:
+ID tokens support cloud providers with OIDC, including:
 
 - AWS
 - Azure
 - GCP
 - HashiCorp Vault
-
-The `CI_JOB_JWT` only supports the [HashiCorp Vault integration](../examples/authenticating-with-hashicorp-vault/index.md).
 
 NOTE:
 Configuring OIDC enables JWT token access to the target environments for all pipelines.

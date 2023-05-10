@@ -85,5 +85,3 @@ relate-test-failures:
 notify-slack:
   extends:
     - .notify-slack
-  variables:
-    TYPE: "(nightly) "

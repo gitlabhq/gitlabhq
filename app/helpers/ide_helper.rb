@@ -4,7 +4,6 @@ module IdeHelper
   # Overridden in EE
   def ide_data(project:, fork_info:, params:)
     base_data = {
-      'can-use-new-web-ide' => can_use_new_web_ide?.to_s,
       'use-new-web-ide' => use_new_web_ide?.to_s,
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
       'sign-in-path' => new_session_path(current_user),
@@ -24,12 +23,8 @@ module IdeHelper
     )
   end
 
-  def can_use_new_web_ide?
-    Feature.enabled?(:vscode_web_ide, current_user)
-  end
-
   def use_new_web_ide?
-    can_use_new_web_ide? && !current_user.use_legacy_web_ide
+    Feature.enabled?(:vscode_web_ide, current_user)
   end
 
   private

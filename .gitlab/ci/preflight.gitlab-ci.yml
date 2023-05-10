@@ -31,7 +31,7 @@ rails-production-server-boot:
   script:
     - source scripts/utils.sh
     - bundle exec rails server -e production &
-    - sleep 40 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114124#note_1309506358
+    - sleep 40  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114124#note_1309506358
     - retry_times_sleep 10 5 "curl http://0.0.0.0:3000"
     - kill $(jobs -p)
 

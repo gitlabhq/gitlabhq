@@ -54,7 +54,8 @@ and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) depreca
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390424).
 </div>
 
 Due to low customer usage, Accessibility Testing is deprecated and will be removed. There is no planned replacement and users should stop using Accessibility Testing before GitLab 17.0.
@@ -67,7 +68,8 @@ Due to low customer usage, Accessibility Testing is deprecated and will be remov
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369117).
 </div>
 
 The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
@@ -83,7 +85,8 @@ next major release, GitLab 16.0. This gem sees very little use and its
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/211643).
 </div>
 
 Auto DevOps support for Herokuish is deprecated in favor of [Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#auto-build-using-cloud-native-buildpacks). You should [migrate your builds from Herokuish to Cloud Native Buildpacks](https://docs.gitlab.com/ee/topics/autodevops/stages.html#moving-from-herokuish-to-cloud-native-buildpacks). From GitLab 14.0, Auto Build uses Cloud Native Buildpacks by default.
@@ -98,7 +101,8 @@ Because Cloud Native Buildpacks do not support automatic testing, the Auto Test 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388719).
 </div>
 
 Due to limited customer usage, Browser Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Browser Performance Testing before GitLab 17.0.
@@ -111,7 +115,8 @@ Due to limited customer usage, Browser Performance Testing is deprecated and wil
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372117).
 </div>
 
 The `CiRunner.projects`'s field default sort order value will change from `id_asc` to `id_desc`.
@@ -125,7 +130,8 @@ If you rely on the order of the returned projects to be `id_asc`, change your sc
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409332).
 </div>
 
 The `CiRunnerUpgradeStatusType` GraphQL type has been renamed to `CiRunnerUpgradeStatus`. In GitLab 17.0,
@@ -139,7 +145,8 @@ the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383467).
 </div>
 
 With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 17.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
@@ -155,6 +162,7 @@ These three variables will be removed in GitLab 17.0.
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.11</span>
 - End of Support: GitLab <span class="milestone">17.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/406679).
 </div>
 
 The runner's legacy escape sequence mechanism to handle variable expansion implements a sub-optimal implementation of Ansi-C quoting. This method means that the runner would expand arguments included in double quotes. As of 15.11, we are deprecating the legacy escaping and quoting methods in the runner shell executor.
@@ -167,7 +175,8 @@ The runner's legacy escape sequence mechanism to handle variable expansion imple
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390855).
 </div>
 
 The `omniauth-dingtalk` gem that provides GitLab with the DingTalk OmniAuth provider will be removed in our next
@@ -181,7 +190,8 @@ major release, GitLab 17.0. This gem sees very little use and is better suited f
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/9661).
 </div>
 
 Support for specifying a `filepath` for a direct asset link in the [Releases API](https://docs.gitlab.com/ee/api/releases)
@@ -206,7 +216,8 @@ To avoid any disruptions, you should replace `filepath` with `direct_asset_path`
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4097).
 </div>
 
 We introduced the `global.kas.tls.*` Helm values to facilitate TLS communication between KAS and your Helm chart components.
@@ -226,7 +237,8 @@ Because the new values provide a streamlined, comprehensive method to enable TLS
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387937).
 </div>
 
 The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
@@ -242,7 +254,8 @@ are deprecated and will be removed from the GraphQL API. For installation instru
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.6</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382077).
 </div>
 
 The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
@@ -263,7 +276,8 @@ This change is a breaking change. You should use an [authentication token](../ci
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409333).
 </div>
 
 The GraphQL type, `RunnerMembershipFilter`, has been renamed to `CiRunnerMembershipFilter`. In GitLab 17.0,
@@ -277,7 +291,8 @@ the aliasing for the `RunnerMembershipFilter` type will be removed.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/385636).
 </div>
 
 In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting` GraphQL enum type will be replaced with the value, `DISABLED_AND_OVERRIDABLE`.
@@ -290,7 +305,8 @@ In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting`
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388723).
 </div>
 
 Due to low customer usage, Load Performance Testing is deprecated and will be removed. There is no planned replacement and users should stop using Load Performance Testing before GitLab 17.0.
@@ -304,7 +320,8 @@ Due to low customer usage, Load Performance Testing is deprecated and will be re
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390787).
 </div>
 
 Running Sidekiq with a [queue selector](https://docs.gitlab.com/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors) (having multiple processes listening to a set of queues) and [negate settings](https://docs.gitlab.com/ee/administration/sidekiq/processing_specific_job_classes.html#negate-settings) is deprecated and will be fully removed in 17.0.
@@ -322,7 +339,8 @@ While the above approach is recommended for most instances, Sidekiq can also be 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.6</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379743).
 </div>
 
 The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
@@ -349,7 +367,8 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.6</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/380872).
 </div>
 
 Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
@@ -374,7 +393,8 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389467).
 </div>
 
 Required Pipeline Configuration will be removed in the 17.0 release. This impacts self-managed users on the Ultimate license.
@@ -390,7 +410,8 @@ that is available now. We recommend this alternative solution because it provide
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 </div>
 
 The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
@@ -415,7 +436,8 @@ For updates and details about this deprecation, follow [this epic](https://gitla
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
 </div>
 
 Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
@@ -436,7 +458,8 @@ automatically from GitLab 16.0 onwards.
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372411).
 </div>
 
 As we're consolidating all Slack capabilities into the
@@ -455,7 +478,8 @@ we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383341).
 </div>
 
 The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
@@ -481,7 +505,8 @@ From GitLab 17.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390263).
 </div>
 
 We will be transitioning to a new IID as a result of moving requirements to a [work item type](https://docs.gitlab.com/ee/development/work_items.html#work-items-and-work-item-types). Users should begin using the new IID as support for the legacy IID and existing formatting will end in GitLab 17.0. The legacy requirement IID remains available until its removal in GitLab 17.0.
@@ -494,7 +519,8 @@ We will be transitioning to a new IID as a result of moving requirements to a [w
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387751).
 </div>
 
 Due to limited customer usage and capabilities, the Visual Reviews feature for Review Apps is deprecated and will be removed. There is no planned replacement and users should stop using Visual Reviews before GitLab 17.0.
@@ -508,7 +534,8 @@ Due to limited customer usage and capabilities, the Visual Reviews feature for R
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/385235).
 </div>
 
 The [`gitlab-runner exec`](https://docs.gitlab.com/runner/commands/#gitlab-runner-exec) command is deprecated and will be fully removed from GitLab Runner in 16.0. The `gitlab-runner exec` feature was initially developed to provide the ability to validate a GitLab CI pipeline on a local system without needing to commit the updates to a GitLab instance. However, with the continued evolution of GitLab CI, replicating all GitLab CI features into `gitlab-runner exec` was no longer viable. Pipeline syntax and validation [simulation](https://docs.gitlab.com/ee/ci/pipeline_editor/#simulate-a-cicd-pipeline) are available in the GitLab pipeline editor.
@@ -521,7 +548,8 @@ The [`gitlab-runner exec`](https://docs.gitlab.com/runner/commands/#gitlab-runne
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/285493).
 </div>
 
 In some cases, like when a downstream pipeline had the `passed with warnings` status, trigger jobs that were using [`strategy: depend`](https://docs.gitlab.com/ee/ci/yaml/index.html#strategydepend) did not mirror the status of the downstream pipeline exactly. In GitLab 17.0 trigger jobs will show the exact same status as the the downstream pipeline. If your pipeline relied on this behavior, you should update your pipeline to handle the more accurate status.
@@ -535,7 +563,8 @@ In some cases, like when a downstream pipeline had the `passed with warnings` st
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.6</span>
 - End of Support: GitLab <span class="milestone">17.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381111).
 </div>
 
 The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
@@ -554,7 +583,8 @@ From GitLab 17.0 and later, the methods to register runners introduced by the ne
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.1</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343475).
 </div>
 
 Previous work helped [align the vulnerabilities calls for pipeline security tabs](https://gitlab.com/gitlab-org/gitlab/-/issues/343469) to match the vulnerabilities calls for project-level and group-level vulnerability reports. This helped the frontend have a more consistent interface. The old `project.pipeline.securityReportFindings` query was formatted differently than other vulnerability data calls. Now that it has been replaced with the new `project.pipeline.vulnerabilities` field, the old `project.pipeline.securityReportFindings` is being deprecated and will be removed in GitLab 17.0.
@@ -572,7 +602,8 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389991).
 </div>
 
 The [Error Tracking UI](https://docs.gitlab.com/ee/operations/error_tracking.html) is deprecated in 15.9 and will be removed in 16.6 (milestone might change) once GitLab Observability UI is made available. In future versions, you should use the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui/), which will gradually be made available on GitLab.com over the next few releases.
@@ -592,29 +623,72 @@ During the transition to the GitLab Observability UI, we will migrate the [GitLa
 
 <div class="deprecation breaking-change" data-milestone="16.5">
 
+### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
+</div>
+
+As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
+
+To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
+keyword and configure the `aud` claim. Ensure the bound audience is prefixed with `https://`.
+
+In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+setting, which prevents the old tokens from being exposed to any jobs and enables
+[ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+
+In GitLab 16.0 and later:
+
+- This setting will be removed.
+- CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
+  and will not have any `CI_JOB_JWT*` tokens available.
+- Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
+  tokens available until GitLab 16.5.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.5">
+
 ### Old versions of JSON web tokens are deprecated
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
 </div>
 
-Now that we have released [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html)
-with OIDC support, the old JSON web tokens are deprecated.
-Both the `CI_JOB_JWT` and `CI_JOB_JWT_V2` tokens, exposed to jobs as predefined variables, will:
+[ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html) with OIDC support
+were introduced in GitLab 15.7. These tokens are more configurable than the old JSON web tokens (JWTs), are OIDC compliant,
+and only available in CI/CD jobs that explictly have ID tokens configured.
+ID tokens are more secure than the old `CI_JOB_JWT*` JSON web tokens which are exposed in every job,
+and as a result these old JSON web tokens are deprecated:
 
-- Not be creatable in GitLab 16.0 and later.
-- Be removed in GitLab 16.5.
+- `CI_JOB_JWT`
+- `CI_JOB_JWT_V1`
+- `CI_JOB_JWT_V2`
 
-To prepare for this change:
+To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens)
+instead of the deprecated tokens. For OIDC compliance, the `iss` claim now uses
+the fully qualified domain name, for example `https://example.com`, previously
+introduced with the `CI_JOB_JWT_V2` token.
 
-- Before the release of GitLab 16.5, configure your pipelines to use the fully configurable and more secure
-  [`id_token`](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens) keyword instead.
-- [Enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
-  setting, which prevents the old tokens from being exposed to any jobs.
+In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+setting, which prevents the old tokens from being exposed to any jobs and enables
+[ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
 
-  In GitLab 16.0 and later, the ability to set this option will be removed and all new projects will have the option
-  enabled.
+In GitLab 16.0 and later:
+
+- This setting will be removed.
+- CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
+  and will not have any `CI_JOB_JWT*` tokens available.
+- Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
+  tokens available until GitLab 16.5.
+
+In GitLab 16.5, the deprecated tokens will be completely removed and will no longer
+be available in CI/CD jobs.
 
 </div>
 </div>
@@ -630,6 +704,7 @@ To prepare for this change:
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.11</span>
 - End of Support: GitLab <span class="milestone">16.1</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29639).
 </div>
 
 We will stop publishing runner images based on the following, end-of-life Alpine versions:
@@ -646,7 +721,8 @@ We will stop publishing runner images based on the following, end-of-life Alpine
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387561).
 </div>
 
 **Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) we will do this change in 16.1 instead.
@@ -672,7 +748,8 @@ The GitLab [License Compliance](https://docs.gitlab.com/ee/user/compliance/licen
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343988).
 </div>
 
 Currently, Auto DevOps provisions an in-cluster PostgreSQL database by default.
@@ -690,7 +767,8 @@ set the `POSTGRES_ENABLED` CI/CD variable to `true`.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/854).
 </div>
 
 The Azure Storage Driver writes to `//` as the default root directory. This default root directory appears in some places within the Azure UI as `/<no-name>/`. We have maintained this legacy behavior to support older deployments using this storage driver. However, when moving to Azure from another storage driver, this behavior hides all your data until you configure the storage driver to build root paths without an extra leading slash by setting `trimlegacyrootprefix: true`.
@@ -707,7 +785,8 @@ This breaking change will happen in GitLab 16.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4353).
 </div>
 
 The Grafana Helm chart that is bundled with the GitLab Helm Chart is deprecated and will be removed in the GitLab Helm Chart 7.0 release (releasing along with GitLab 16.0).
@@ -729,7 +808,8 @@ and [connect Grafana to the GitLab UI](https://docs.gitlab.com/ee/administration
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369127).
 </div>
 
 The `omniauth-cas3` gem that provides GitLab with the CAS OmniAuth provider will be removed in our next major
@@ -744,7 +824,8 @@ release, GitLab 16.0. This gem sees very little use and its lack of upstream mai
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/353080).
 </div>
 
 When using the native HashiCorp Vault integration, CI/CD jobs will fail when no secret is returned from Vault. Make sure your configuration always return a secret, or update your pipeline to handle this change, before GitLab 16.0.
@@ -757,7 +838,8 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408396).
 </div>
 
 We'll change how the MobSF-based analyzer in GitLab SAST handles multi-module Android projects.
@@ -782,7 +864,8 @@ This change doesn't affect scans you run in GitLab 15.11 or previous versions, s
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/353097).
 </div>
 
 To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 14.0.
@@ -797,7 +880,8 @@ Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/mer
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/384455).
 </div>
 
 You can use the GitLab Conan repository with [project-level](https://docs.gitlab.com/ee/user/packages/conan_repository/#add-a-remote-for-your-project) or [instance-level](https://docs.gitlab.com/ee/user/packages/conan_repository/#add-a-remote-for-your-instance) endpoints. Each level supports the conan search command. However, the search endpoint for the project level is also returning packages from outside the target project.
@@ -813,7 +897,8 @@ This unintended functionality is deprecated in GitLab 15.8 and will be removed i
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.6</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379064).
 </div>
 
 From GitLab 13.6, users can [specify any runner configuration in the GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html). When we implemented this feature, we deprecated values in the GitLab Helm Chart configuration that were specific to GitLab Runner. These fields are deprecated and we plan to remove them in v1.0 of the GitLab Runner Helm chart.
@@ -826,7 +911,8 @@ From GitLab 13.6, users can [specify any runner configuration in the GitLab Runn
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388255).
 </div>
 
 You can no longer specify Redis configuration file locations
@@ -843,7 +929,8 @@ config file locations instead, for example `config/redis.cache.yml` or
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
 </div>
 
 The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
@@ -856,7 +943,8 @@ The Container Registry [pull-through cache](https://docs.docker.com/registry/rec
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.4</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/371840).
 </div>
 
 All Container Scanning variables that are prefixed by `DOCKER_` in variable name are deprecated. This includes the `DOCKER_IMAGE`, `DOCKER_PASSWORD`, `DOCKER_USER`, and `DOCKERFILE_PATH` variables. Support for these variables will be removed in the GitLab 16.0 release. Use the [new variable names](https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-cicd-variables) `CS_IMAGE`, `CS_REGISTRY_PASSWORD`, `CS_REGISTRY_USER`, and `CS_DOCKERFILE_PATH` in place of the deprecated names.
@@ -869,7 +957,8 @@ All Container Scanning variables that are prefixed by `DOCKER_` in variable name
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387299).
 </div>
 
 Cookie authentication in the GitLab for Jira Cloud app is now deprecated in favor of OAuth authentication.
@@ -884,7 +973,8 @@ to continue to use the GitLab for Jira Cloud app. Without OAuth, you can't manag
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/384198).
 </div>
 
 With the move to the new DAST API analyzer and the `DAST-API.gitlab-ci.yml` template for DAST API scans, we will be removing the ability to scan APIs with the DAST analyzer. Use of the `DAST.gitlab-ci.yml` or `DAST-latest.gitlab-ci.yml` templates for API scans is deprecated as of GitLab 15.7 and will no longer work in GitLab 16.0. Please use `DAST-API.gitlab-ci.yml` template and refer to the [DAST API analyzer](https://docs.gitlab.com/ee/user/application_security/dast_api/#configure-dast-api-with-an-openapi-specification) documentation for configuration details.
@@ -897,7 +987,8 @@ With the move to the new DAST API analyzer and the `DAST-API.gitlab-ci.yml` temp
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383467).
 </div>
 
 With the switch to the new DAST API analyzer in GitLab 15.6, two legacy DAST API variables are being deprecated. The variables `DAST_API_HOST_OVERRIDE` and `DAST_API_SPECIFICATION` will no longer be used for DAST API scans.
@@ -916,7 +1007,8 @@ These two variables will be removed in GitLab 16.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/384340).
 </div>
 
 With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_HTML_REPORT`, `DAST_XML_REPORT`, and `DAST_MARKDOWN_REPORT`. These reports relied on the legacy DAST analyzer and we do not plan to implement them in the new browser-based analyzer. As of GitLab 16.0, these report artifacts will no longer be generated.
@@ -931,7 +1023,8 @@ These three variables will be removed in GitLab 16.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/395708).
 </div>
 
 In GitLab 14.4 we introduced the ability to [limit your project's CI/CD job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) (`CI_JOB_TOKEN`) access to make it more secure. You can prevent job tokens **from your project's** pipelines from being used to **access other projects**. When enabled with no other configuration, your pipelines cannot access other projects. To use the job token to access other projects from your pipeline, you must list those projects explicitly in the **Limit CI_JOB_TOKEN access** setting's allowlist, and you must be a maintainer in all the projects.
@@ -952,7 +1045,8 @@ To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or l
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387560).
 </div>
 
 GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, and 16 and plans to remove that support in the upcoming GitLab 16.0 release. This is consistent with [Oracle's support policy](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) as Oracle Premier and Extended Support for these versions has ended. This also allows GitLab to focus Dependency Scanning Java support on LTS versions moving forward.
@@ -965,7 +1059,8 @@ GitLab has deprecated Dependency Scanning support for Java versions 13, 14, 15, 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328500).
 </div>
 
 The Deployment API will now return an error when `updated_at` filtering and `updated_at` sorting are not used together. Some users were using filtering by `updated_at` to fetch "latest" deployment without using `updated_at` sorting, which may produce wrong results. You should instead use them together, or migrate to filtering by `finished_at` and sorting by `finished_at` which will give you "latest deployments" in a consistent way.
@@ -978,7 +1073,8 @@ The Deployment API will now return an error when `updated_at` filtering and `upd
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
 </div>
 
 Using environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352609).
@@ -995,7 +1091,8 @@ GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configu
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7278).
 </div>
 
 The Consul provided in the GitLab Omnibus package will no longer provide older deprecated Consul metrics starting in GitLab 16.0.
@@ -1015,7 +1112,8 @@ For more information, see [the deprecation notes for Consul 1.9.0](https://githu
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/391896).
 </div>
 
 The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script) supported by GitLab SaaS Runners is deprecated as of GitLab 15.9 and will be removed in 16.0. The `CI_PRE_CLONE_SCRIPT` variable enables you to run commands in your CI/CD job prior to the runner executing Git init and get fetch. For more information about how this feature works, see [Pre-clone script](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script). As an alternative, you can use the [`pre_get_sources_script`](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).
@@ -1028,7 +1126,8 @@ The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387891).
 </div>
 
 The ability for users with the Developer role for a group to import projects to that group is deprecated in GitLab
@@ -1043,7 +1142,8 @@ will be able to import projects to that group.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375505).
 </div>
 
 In GitLab 16.0 the GitLab Dependency Scanning analyzer will begin reporting development dependencies for both Python/pipenv and PHP/composer projects. Users who do not wish to have these development dependencies reported should set `DS_INCLUDE_DEV_DEPENDENCIES: false` in their CI/CD file.
@@ -1056,7 +1156,8 @@ In GitLab 16.0 the GitLab Dependency Scanning analyzer will begin reporting deve
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389477).
 </div>
 
 The ability to add Grafana panels in GitLab Flavored Markdown is deprecated in 15.9 and will be removed in 16.0.
@@ -1070,7 +1171,8 @@ We intend to replace this feature with the ability to [embed charts](https://git
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372770).
 </div>
 
 While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name-limitations) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
@@ -1091,7 +1193,8 @@ Users on self-managed instances should update their pipelines to ensure they do 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382532).
 </div>
 
 From GitLab 16.0, when you search for environments with the API, you must use at least three characters. This change helps us ensure the scalability of the search operation.
@@ -1104,7 +1207,7 @@ From GitLab 16.0, when you search for environments with the API, you must use at
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 In the [GraphQL API](https://docs.gitlab.com/ee/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/ee/api/graphql/reference/index.html#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/ee/user/project/releases/release_fields.html#links) is internal or external to your GitLab instance.
@@ -1119,7 +1222,7 @@ To avoid any disruptions to your workflow, please stop using the `external` fiel
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 In [Releases API](https://docs.gitlab.com/ee/api/releases/) and [Release Links API](https://docs.gitlab.com/ee/api/releases/links.html), the `external` field was used to indicate whether a [release link](https://docs.gitlab.com/ee/user/project/releases/release_fields.html#links) is internal or external to your GitLab instance.
@@ -1134,6 +1237,7 @@ To avoid any disruptions to your workflow, please stop using the `external` fiel
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.11</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388868).
 </div>
 
 In secondary Geo sites, the button to "Redownload" a project repository is
@@ -1149,7 +1253,8 @@ GitLab 16.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348909).
 </div>
 
 GitLab self-monitoring gives administrators of self-hosted GitLab instances the tools to monitor the health of their instances. This feature is deprecated in GitLab 14.9, and is scheduled for removal in 16.0.
@@ -1162,6 +1267,7 @@ GitLab self-monitoring gives administrators of self-hosted GitLab instances the 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/4895).
 </div>
 
 The [GitLab.com importer](https://docs.gitlab.com/ee/user/project/import/gitlab_com.html) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
@@ -1180,7 +1286,8 @@ See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrate
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/344648).
 </div>
 
 The GitLab Runner GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 16.0.
@@ -1200,7 +1307,8 @@ When checking if a runner is `paused`, API users are advised to check the boolea
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/360545).
 </div>
 
 The `legacyMode` argument to the `status` field in `RunnerType` will be rendered non-functional in the 16.0 release
@@ -1218,30 +1326,11 @@ be present during the 16.x cycle to avoid breaking the API signature, and will b
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/371485).
 </div>
 
 The `confidential` field for a `Note` will be deprecated and renamed to `internal`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
-</div>
-
-As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
-
-To be prepared for this change, you should do the following before GitLab 16.0:
-
-- [Disable the use of JSON web tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication) in the pipeline.
-- Ensure the bound audience is prefixed with `https://`.
-- Use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens) keyword
-  and configure the `aud` claim.
 
 </div>
 
@@ -1251,7 +1340,8 @@ To be prepared for this change, you should do the following before GitLab 16.0:
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.1</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/7508).
 </div>
 
 The [Jira DVCS connector](https://docs.gitlab.com/ee/integration/jira/dvcs/) for Jira Cloud has been deprecated and will be removed in GitLab 16.0. If you're using the Jira DVCS connector with Jira Cloud, migrate to the [GitLab for Jira Cloud app](https://docs.gitlab.com/ee/integration/jira/connect-app.html).
@@ -1267,7 +1357,8 @@ The Jira DVCS connector is also deprecated for Jira 8.13 and earlier. You can on
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383039).
 </div>
 
 The `gitlab.kas.metrics.port` has been deprecated in favor of the new `gitlab.kas.observability.port` configuration field for the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2839).
@@ -1281,7 +1372,8 @@ This port is used for much more than just metrics, which warranted this change t
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393574).
 </div>
 
 Gitaly configuration within Omnibus GitLab has been updated such that all Gitaly related configuration keys are in a single
@@ -1303,7 +1395,8 @@ You should update to the new configuration structure as soon as possible using
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390291).
 </div>
 
 Previously, Praefect configuration keys were scattered throughout the configuration file. Now, these are in a single configuration structure that matches
@@ -1324,7 +1417,8 @@ didn't match. The change improves consistency between Omnibus GitLab and source 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214217).
 </div>
 
 GitLab 16.0 removes legacy URLs from the GitLab application.
@@ -1343,7 +1437,8 @@ Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390417).
 </div>
 
 The [License-Check feature](https://docs.gitlab.com/ee/user/compliance/license_check_rules.html) is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the Policies tab on the License Compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html) instead.
@@ -1356,7 +1451,8 @@ The [License-Check feature](https://docs.gitlab.com/ee/user/compliance/license_c
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387721).
 </div>
 
 With external authorization enabled, personal access tokens (PATs) and deploy tokens must no longer be able to access container or package registries. This defense-in-depth security measure will be deployed in 16.0. For users that use PATs and deploy tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use tokens with container or package registries.
@@ -1369,7 +1465,8 @@ With external authorization enabled, personal access tokens (PATs) and deploy to
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/370471).
 </div>
 
 The ability for users with the Maintainer role to change the **Packages and registries** settings for a group using
@@ -1390,7 +1487,8 @@ settings for the group using either the GitLab UI or GraphQL API.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3442).
 </div>
 
 To coincide with GitLab 16.0, the GitLab Helm Chart will release the 7.0 major version. The following major bundled chart updates will be included:
@@ -1411,7 +1509,8 @@ The full GitLab Helm Chart 7.0 upgrade steps will be available in the [upgrade d
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390417).
 </div>
 
 The [Managed Licenses API](https://docs.gitlab.com/ee/api/managed_licenses.html) is now deprecated and is scheduled for removal in GitLab 16.0.
@@ -1424,6 +1523,7 @@ The [Managed Licenses API](https://docs.gitlab.com/ee/api/managed_licenses.html)
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/368195).
 </div>
 
 The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the Rails console under [`ci_active_pipelines`](https://docs.gitlab.com/ee/administration/instance_limits.html#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
@@ -1439,7 +1539,8 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/346541).
 </div>
 
 By displaying data stored in a Prometheus instance, GitLab allows users to view performance metrics. GitLab also displays visualizations of these metrics in dashboards. The user can connect to a previously-configured external Prometheus instance, or set up Prometheus as a GitLab Managed App.
@@ -1453,7 +1554,8 @@ However, since certificate-based integration with Kubernetes clusters is depreca
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.4</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 </div>
 
 Access tokens that have no expiration date are valid indefinitely, which presents a security risk if the access token
@@ -1479,7 +1581,8 @@ default is applied:
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388269).
 </div>
 
 If GitLab starts without any Redis configuration file present,
@@ -1499,7 +1602,8 @@ and `config/redis.shared_state.yml` files.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389557).
 </div>
 
 The group and project deletion protection setting in the Admin Area had an option to delete groups and projects immediately. Starting with 16.0, this option will no longer be available, and delayed group and project deletion will become the default behavior.
@@ -1516,7 +1620,8 @@ The option to delete groups and projects immediately by default was deprecated t
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/289956).
 </div>
 
 A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
@@ -1531,7 +1636,8 @@ In milestone 16.0, we will remove the `pipelines` attribute from the API respons
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.1</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/346335).
 </div>
 
 Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/335372) to include a new `title` field. This field is an alias for the current `name` field, making the less specific `name` field redundant. The `name` field will be removed from the PipelineSecurityReportFinding type in GitLab 16.0.
@@ -1544,7 +1650,8 @@ Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https:/
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.1</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343475).
 </div>
 
 The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 16.0.
@@ -1557,7 +1664,8 @@ The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) a
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/349185).
 </div>
 
 Support for PostgreSQL 12 is scheduled for removal in GitLab 16.0.
@@ -1576,7 +1684,8 @@ Support for PostgreSQL 13 was added to Geo in GitLab 15.2.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/385798).
 </div>
 
 We are deprecating the `operations_access_level` field in the Projects API. This field has been replaced by fields to control specific features: `releases_access_level`, `environments_access_level`, `feature_flags_access_level`, `infrastructure_access_level`, and `monitor_access_level`.
@@ -1589,6 +1698,7 @@ We are deprecating the `operations_access_level` field in the Projects API. This
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/5255).
 </div>
 
 The [Rake task for importing bare repositories](https://docs.gitlab.com/ee/raketasks/import.html) `gitlab:import:repos` is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
@@ -1618,7 +1728,8 @@ Alternatives to using the `gitlab:import:repos` Rake task include:
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
 - End of Support: GitLab <span class="milestone">15.6</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331468).
 </div>
 
 With GitLab 13.9, in the Omnibus GitLab package and GitLab Helm chart 4.9, the Redis version [was updated to Redis 6](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#omnibus-improvements).
@@ -1633,7 +1744,8 @@ If you are using your own Redis 5.0 instance, you should upgrade it to Redis 6.0
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.2</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334253).
 </div>
 
 The `job_age` parameter, returned from the `POST /jobs/request` API endpoint used in communication with GitLab Runner, was never used by any GitLab or Runner feature. This parameter will be removed in GitLab 16.0.
@@ -1648,7 +1760,8 @@ This could be a breaking change for anyone that developed their own runner that 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390416).
 </div>
 
 GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
@@ -1687,7 +1800,8 @@ Work to replace the PHPCS Security Audit-based analyzer is tracked in [issue 364
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390912).
 </div>
 
 The Secure stage will be bumping the major versions of its analyzers in tandem with the GitLab 16.0 release. This bump will enable a clear delineation for analyzers, between:
@@ -1729,7 +1843,8 @@ Specifically, the following are being deprecated and will no longer be updated a
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/391822).
 </div>
 
 GitLab-managed CI/CD templates for security scanning will be updated in the GitLab 16.0 release.
@@ -1763,7 +1878,8 @@ However, due to compatibility issues [discussed in the deprecation issue](https:
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366477).
 </div>
 
 Version 14.x.x [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) are deprecated.
@@ -1783,7 +1899,8 @@ For more information, refer to [security report validation](https://docs.gitlab.
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377824).
 </div>
 
 The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
@@ -1797,7 +1914,8 @@ and will be moved to the JiHu GitLab codebase.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.4</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/368828).
 </div>
 
 GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab Agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
@@ -1810,7 +1928,8 @@ GitLab's operational container scanning capabilities no longer require starboard
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390266).
 </div>
 
 Support for using the `prometheus_exclude_database_from_default_metrics` configuration value is deprecated in GitLab
@@ -1832,7 +1951,8 @@ This may require updating your metrics collection targets to also scrape `/db_me
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/385564).
 </div>
 
 Previously, Terraform state names containing periods were not supported. However, you could still use state names with periods via a workaround.
@@ -1855,7 +1975,8 @@ To use the full state name, including the period, [migrate to the full state fil
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382129).
 </div>
 
 Currently, GET requests to the [Cluster Agents API](https://docs.gitlab.com/ee/api/cluster_agents.html#list-tokens-for-an-agent)
@@ -1879,7 +2000,8 @@ This change affects the following REST and GraphQL API endpoints:
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/4894).
 </div>
 
 The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/phabricator.html) is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
@@ -1892,7 +2014,8 @@ The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/p
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/386001).
 </div>
 
 With every major GitLab version, we update the stable Terraform templates with the current latest templates.
@@ -1914,7 +2037,8 @@ To accommodate the changes, you might need to adjust the [`rules`](https://docs.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.4</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/365365).
 </div>
 
 In order to make the behavior of toggling the draft status of a merge request more clear via a quick action, we're deprecating and removing the toggle behavior of the `/draft` quick action. Beginning with the 16.0 release of GitLab, `/draft` will only set a merge request to Draft and a new `/ready` quick action will be used to remove the draft status.
@@ -1927,7 +2051,8 @@ In order to make the behavior of toggling the draft status of a merge request mo
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350670).
 </div>
 
 Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. Updating notes confidential attribute is no longer supported by any means. We are changing this to simplify the experience and prevent private information from being unintentionally exposed.
@@ -1940,7 +2065,8 @@ Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. U
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/367166).
 </div>
 
 You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status of a vulnerability finding to `Dismissed`. Previously, this mutation used the `id` field to identify findings uniquely. However, this did not work for dismissing findings from the pipeline security tab. Therefore, using the `id` field as an identifier has been dropped in favor of the `uuid` field. Using the 'uuid' field as an identifier allows you to dismiss the finding from the pipeline security tab.
@@ -1954,7 +2080,8 @@ You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status o
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376216).
 </div>
 
 Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts self-managed customers that have connected their external registry to the GitLab user interface to find, view, and delete container images.
@@ -1975,7 +2102,8 @@ Moving forward, we'll continue to invest in developing and releasing new feature
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.4</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372332).
 </div>
 
 In GitLab 15.3, [security report schemas below version 15 were deprecated](https://docs.gitlab.com/ee/update/deprecations.html#security-report-schemas-version-14xx).
@@ -1991,7 +2119,8 @@ removed in 16.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/393836).
 </div>
 
 Usage of global IDs in work item URLs is deprecated. In the future, only internal IDs (IID) will be supported.
@@ -2012,7 +2141,8 @@ In GitLab 16.0 we will remove the ability to use a global ID in the work items p
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
 - End of Support: GitLab <span class="milestone">16.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377825).
 </div>
 
 The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
@@ -2026,7 +2156,8 @@ and will be moved to the JiHu GitLab codebase.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352957).
 </div>
 
 The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and will be removed in GitLab 16.0. If you still use these variables, be sure to change to the replacement [predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are functionally identical:
@@ -2054,7 +2185,8 @@ The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in G
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381669).
 </div>
 
 The `POST ci/lint` API endpoint is deprecated in 15.7, and will be removed in 16.0. This endpoint does not validate the full range of CI/CD configuration options. Instead, use [`POST /projects/:id/ci/lint`](https://docs.gitlab.com/ee/api/lint.html#validate-a-ci-yaml-configuration-with-a-namespace), which properly validates CI/CD configuration.
@@ -2067,7 +2199,8 @@ The `POST ci/lint` API endpoint is deprecated in 15.7, and will be removed in 16
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/365939).
 </div>
 
 To avoid confusion and duplication, the `environment_tier` parameter is deprecated in favor of the `environment_tiers` parameter. The new `environment_tiers` parameter allows DORA APIs to return aggregated data for multiple tiers at the same time. The `environment_tier` parameter will be removed in GitLab 16.0.
@@ -2080,7 +2213,8 @@ To avoid confusion and duplication, the `environment_tier` parameter is deprecat
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375645).
 </div>
 
 The `VulnerabilityFindingDismiss` GraphQL mutation is being deprecated and will be removed in GitLab 16.0. This mutation was not used often as the Vulnerability Finding ID was not available to users (this field was [deprecated in 15.3](https://docs.gitlab.com/ee/update/deprecations.html#use-of-id-field-in-vulnerabilityfindingdismiss-mutation)). Users should instead use `VulnerabilityDismiss` to dismiss vulnerabilities in the Vulnerability Report or `SecurityFindingDismiss` for security findings in the CI Pipeline Security tab.
@@ -2098,6 +2232,7 @@ The `VulnerabilityFindingDismiss` GraphQL mutation is being deprecated and will 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7371).
 </div>
 
 Distribution support and security updates for openSUSE Leap 15.3 [ended December 2022](https://en.opensuse.org/Lifetime#Discontinued_distributions).
@@ -2120,7 +2255,8 @@ Starting in GitLab 15.7 we started providing packages for openSUSE Leap 15.4, an
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
 - End of Support: GitLab <span class="milestone">15.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387976).
 </div>
 
 We are deprecating support for [uploading backups to remote storage](https://docs.gitlab.com/ee/raketasks/backup_gitlab.html#upload-backups-to-a-remote-cloud-storage) using Openstack Swift and Rackspace APIs. The support for these APIs depends on third-party libraries that are no longer actively maintained and have not been updated for  Ruby 3. GitLab is switching over to Ruby 3 prior to EOL of Ruby 2 in order to stay up to date on security patches.
@@ -2141,7 +2277,8 @@ We are deprecating support for [uploading backups to remote storage](https://doc
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383889).
 </div>
 
 The Live Preview feature of the Web IDE was intended to provide a client-side preview of static web applications. However, complex configuration steps and a narrow set of supported project types have limited its utility. With the introduction of the Web IDE Beta in GitLab 15.7, you can now connect to a full server-side runtime environment. With upcoming support for installing extensions in the Web IDE, we'll also support more advanced workflows than those available with Live Preview. As of GitLab 15.9, Live Preview is no longer available in the Web IDE.
@@ -2154,7 +2291,8 @@ The Live Preview feature of the Web IDE was intended to provide a client-side pr
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 </div>
 
 The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab SaaS customer, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
@@ -2182,7 +2320,8 @@ GitLab self-managed customers can still use the feature [with a feature flag](ht
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/29407).
 </div>
 
 Previously, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. To leak secrets or sensitive information stored in `File` type variables, a user could run an $echo command with the variable as an input parameter.
@@ -2227,6 +2366,7 @@ We encourage customers currently using NFS for Git repositories to plan their mi
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.3</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6972).
 </div>
 
 In GitLab 15.4, we will be swapping the bundled Grafana to a fork of Grafana maintained by GitLab.
@@ -2243,7 +2383,8 @@ This is not expected to cause any incompatibilities with the previous version of
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352554).
 </div>
 
 GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
@@ -2292,6 +2433,7 @@ If you applied customizations to any of the affected analyzers or if you current
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/360516).
 </div>
 
 The ability to sort the Vulnerability Report by the `State` column was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
@@ -2306,6 +2448,7 @@ by this value remains performant. Due to very low usage of the `State` column fo
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">15.1</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/362962).
 </div>
 
 The ability to sort the Vulnerability Report by the `Tool` column (scan type) was disabled and put behind a feature flag in GitLab 14.10 due to a refactor
@@ -2343,7 +2486,8 @@ Long term service and support (LTSS) for [Debian 9 Stretch ends in July 2022](ht
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337993).
 </div>
 
 Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#removed-events) are now deprecated and will be removed in GitLab 15.0.
@@ -2360,7 +2504,8 @@ dramatically slow down GitLab instances. For this reason, they are being removed
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/26600).
 </div>
 
 To reduce the overall complexity and maintenance burden of GitLab's [object storage feature](https://docs.gitlab.com/ee/administration/object_storage.html), support for using `background_upload` to upload files is deprecated and will be fully removed in GitLab 15.0. Review the [15.0 specific changes](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html) for the [removed background uploads settings for object storage](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#removed-background-uploads-settings-for-object-storage).
@@ -2380,7 +2525,8 @@ GitLab will publish additional guidance to assist affected customers in migratin
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.6</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342800).
 </div>
 
 In GitLab 15.0 we are going to limit the number of characters in CI/CD job names to 255. Any pipeline with job names that exceed the 255 character limit will stop working after the 15.0 release.
@@ -2393,7 +2539,8 @@ In GitLab 15.0 we are going to limit the number of characters in CI/CD job names
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345347).
 </div>
 
 In GitLab 15.0, you can no longer change an instance (shared) runner to a project (specific) runner.
@@ -2410,7 +2557,7 @@ Administrators who need to add runners for multiple projects can register a runn
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 All functionality related to GitLab's Container Network Security and Container Host Security categories is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. Users who need a replacement for this functionality are encouraged to evaluate the following open source projects as potential solutions that can be installed and managed outside of GitLab: [AppArmor](https://gitlab.com/apparmor/apparmor), [Cilium](https://github.com/cilium/cilium), [Falco](https://github.com/falcosecurity/falco), [FluentD](https://github.com/fluent/fluentd), [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/). To integrate these technologies into GitLab, add the desired Helm charts into your copy of the [Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html). Deploy these Helm charts in production by calling commands through GitLab [CI/CD](https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html).
@@ -2501,7 +2648,8 @@ in the Vulnerability Report.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334060).
 </div>
 
 For those using Dependency Scanning for Python projects, we are deprecating the default `gemnasium-python:2` image which uses Python 3.6 as well as the custom `gemnasium-python:2-python-3.9` image which uses Python 3.9. The new default image as of GitLab 15.0 will be for Python 3.9 as it is a [supported version](https://endoflife.date/python) and 3.6 [is no longer supported](https://endoflife.date/python).
@@ -2532,7 +2680,7 @@ gemnasium-python-dependency_scanning:
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 In GitLab 15.0, for Dependency Scanning, the default version of Java that the scanner expects will be updated from 11 to 17. Java 17 is [the most up-to-date Long Term Support (LTS) version](https://en.wikipedia.org/wiki/Java_version_history). Dependency scanning continues to support the same [range of versions (8, 11, 13, 14, 15, 16, 17)](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#supported-languages-and-package-managers), only the default version is changing. If your project uses the previous default of Java 11, be sure to [set the `DS_Java_Version` variable to match](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning).
@@ -2569,6 +2717,7 @@ in the Vulnerability Report.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351345).
 </div>
 
 In GitLab 13.0, we introduced new project and design replication details routes in the Geo Admin UI. These routes are `/admin/geo/replication/projects` and `/admin/geo/replication/designs`. We kept the legacy routes and redirected them to the new routes. In GitLab 15.0, we will remove support for the legacy routes `/admin/geo/projects` and `/admin/geo/designs`. Please update any bookmarks or scripts that may use the legacy routes.
@@ -2581,6 +2730,7 @@ In GitLab 13.0, we introduced new project and design replication details routes 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351945).
 </div>
 
 In GitLab 14.8, we are [replacing the `geo:db:*` Rake tasks with built-in tasks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77269/diffs) that are now possible after [switching the Geo tracking database to use Rails' 6 support of multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6458).
@@ -2612,7 +2762,8 @@ The following `geo:db:*` tasks will be replaced with their corresponding `db:*:g
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/262019).
 </div>
 
 The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` is being removed in GitLab 15.0. Upon its removal, push rules will supersede Code Owners. Even if Code Owner approval is required, a push rule that explicitly allows a specific user to push code supersedes the Code Owners setting.
@@ -2625,7 +2776,8 @@ The feature flag `PUSH_RULES_SUPERSEDE_CODE_OWNERS` is being removed in GitLab 1
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350275).
 </div>
 
 Elasticsearch 6.8 is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
@@ -2642,6 +2794,7 @@ Elasticsearch 6.8 is also incompatible with Amazon OpenSearch, which we [plan to
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/6968).
 </div>
 
 [Security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases)
@@ -2666,7 +2819,7 @@ in the Vulnerability Report.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The [external status check API](https://docs.gitlab.com/ee/api/status_checks.html) was originally implemented to
@@ -2705,7 +2858,8 @@ In 15.0, support for daemon mode for GitLab Pages will be removed.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/6).
 </div>
 
 GitLab Serverless is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
@@ -2720,6 +2874,7 @@ We decided to remove the GitLab Serverless features as they never really resonat
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327057).
 </div>
 
 The Godep dependency manager for Golang was deprecated in 2020 by Go and
@@ -2735,7 +2890,8 @@ and will remove it in GitLab 15.0
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/257883).
 </div>
 
 We are removing a non-standard extension to our GraphQL processor, which we added for backwards compatibility. This extension modifies the validation of GraphQL queries, allowing the use of the `ID` type for arguments where it would normally be rejected.
@@ -2798,7 +2954,7 @@ an inline argument expression).
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The GitLab Package stage offers a Package Registry, Container Registry, and Dependency Proxy to help you manage all of your dependencies using GitLab. Each of these product categories has a variety of settings that can be adjusted using the API.
@@ -2818,7 +2974,8 @@ The permissions model for GraphQL is being updated. After 15.0, users with the G
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28192).
 </div>
 
 In [GitLab 14.3](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3074), we added a configuration setting in the GitLab Runner `config.toml` file. This setting, [`[runners.ssh.disable_strict_host_key_checking]`](https://docs.gitlab.com/runner/executors/ssh.html#security), controls whether or not to use strict host key checking with the SSH executor.
@@ -2833,7 +2990,8 @@ In GitLab 15.0 and later, the default value for this configuration option will c
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.6</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/335707).
 </div>
 
 We deprecated legacy names for approval status of license policy (blacklisted, approved) in the `managed_licenses` API but they are still used in our API queries and responses. They will be removed in 15.0.
@@ -2848,7 +3006,8 @@ If you are using our License Compliance API you should stop using the `approved`
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338182).
 </div>
 
 The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)
@@ -2865,7 +3024,8 @@ This deprecation mainly impacts users compiling GitLab from source because Omnib
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/346485).
 </div>
 
 The logging features in GitLab allow users to install the ELK stack (Elasticsearch, Logstash, and Kibana) to aggregate and manage application logs. Users can search for relevant logs in GitLab. However, since deprecating certificate-based integration with Kubernetes clusters and GitLab Managed Apps, we don't have a recommended solution for logging within GitLab. For more information, you can follow the issue for [integrating Opstrace with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
@@ -2890,7 +3050,7 @@ The [`custom_hooks_dir`](https://docs.gitlab.com/ee/administration/server_hooks.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.0</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The OAuth implicit grant authorization flow will be removed in our next major release, GitLab 15.0. Any applications that use OAuth implicit grant should switch to alternative [supported OAuth flows](https://docs.gitlab.com/ee/api/oauth2.html).
@@ -2903,7 +3063,7 @@ The OAuth implicit grant authorization flow will be removed in our next major re
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 By default, all new applications expire access tokens after 2 hours. In GitLab 14.2 and earlier, OAuth access tokens
@@ -2924,7 +3084,8 @@ tokens before GitLab 15.0 is released:
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.3</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337384).
 </div>
 
 The `omniauth-kerberos` gem will be removed in our next major release, GitLab 15.0.
@@ -2941,7 +3102,8 @@ Note that we are not deprecating the Kerberos SPNEGO integration, only the old p
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351962).
 </div>
 
 The feature to disable enforcement of PAT expiration is unusual from a security perspective.
@@ -2956,7 +3118,8 @@ Unexpected behavior in a security feature is inherently dangerous, so we have de
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351963).
 </div>
 
 The feature to disable enforcement of SSH expiration is unusual from a security perspective.
@@ -2971,7 +3134,8 @@ Unexpected behavior in a security feature is inherently dangerous, so we have de
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352549).
 </div>
 
 The [GitLab SAST SpotBugs analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) scans [Java, Scala, Groovy, and Kotlin code](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) for security vulnerabilities.
@@ -2995,7 +3159,8 @@ If you rely on Java 8 being present in the analyzer environment, you must take a
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.10</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/359133).
 </div>
 
 As Advanced Search migrations usually require support multiple code paths for a long period of time, it’s important to clean those up when we safely can. We use GitLab major version upgrades as a safe time to remove backward compatibility for indices that have not been fully migrated. See the [upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.
@@ -3008,6 +3173,7 @@ As Advanced Search migrations usually require support multiple code paths for a 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219952).
 </div>
 
 The Pseudonymizer feature is generally unused,
@@ -3023,7 +3189,8 @@ It is now considered deprecated, and will be removed in GitLab 15.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332323).
 </div>
 
 The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTrendsMeasurements` in 13.10 and the old field name has been marked as deprecated. To fix the existing GraphQL queries, replace `instanceStatisticsMeasurements` with `usageTrendsMeasurements`.
@@ -3036,7 +3203,8 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352488).
 </div>
 
 [Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/index.html) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
@@ -3055,7 +3223,7 @@ For more information, check the [summary section of the deprecation issue](https
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The [required pipeline configuration](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#required-pipeline-configuration) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
@@ -3073,7 +3241,8 @@ This change will also help GitLab remain consistent in its tiering strategy with
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350510).
 </div>
 
 As of 14.8 the retire.js job is being deprecated from Dependency Scanning. It will continue to be included in our CI/CD template while deprecated. We are removing retire.js from Dependency Scanning on May 22, 2022 in GitLab 15.0. JavaScript scanning functionality will not be affected as it is still being covered by Gemnasium.
@@ -3112,7 +3281,8 @@ in the Vulnerability Report.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352553).
 </div>
 
 The GitLab SAST Security Code Scan analyzer scans .NET code for security vulnerabilities.
@@ -3143,6 +3313,7 @@ If you rely on .NET 2.1 support being present in the analyzer image by default, 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352565).
 </div>
 
 To make it simpler and more reliable to [customize GitLab Secret Detection](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings), we're deprecating some of the variables that you could previously set in your CI/CD configuration.
@@ -3194,7 +3365,8 @@ in the Vulnerability Report.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564).
 </div>
 
 GitLab uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/terminology/#analyzer) to [scan for security vulnerabilities](https://docs.gitlab.com/ee/user/application_security/).
@@ -3221,7 +3393,8 @@ See the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350936).
 </div>
 
 The Secure and Protect stages will be bumping the major versions of their analyzers in tandem with the GitLab 15.0 release. This major bump will enable a clear delineation for analyzers, between:
@@ -3265,7 +3438,8 @@ Specifically, the following are being deprecated and will no longer be updated a
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
 </div>
 
 Exporting Sidekiq metrics and health checks using a single process and port is deprecated.
@@ -3296,6 +3470,7 @@ to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/347137).
 </div>
 
 The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver smiliar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the [Web IDE](https://docs.gitlab.com/ee/user/project/web_ide/index.html).
@@ -3310,7 +3485,7 @@ Current users of the Static Site Editor can view the [documentation](https://doc
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 SP2 [ended on March 31, 2021](https://www.suse.com/lifecycle/). The CA certificates on SP2 include the expired DST root certificate, and it's not getting new CA certificate package updates. We have implemented some [workarounds](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/merge_requests/191), but we will not be able to continue to keep the build running properly.
@@ -3323,7 +3498,7 @@ Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 12 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 Although not recommended or documented, it was possible to deploy a gRPC-aware proxy between Gitaly and
@@ -3346,7 +3521,7 @@ the [relevant epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/463).
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 To simplify setting a test coverage pattern, in GitLab 15.0 the
@@ -3364,7 +3539,8 @@ testing coverage results in merge requests.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/346540).
 </div>
 
 Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can navigate to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
@@ -3377,7 +3553,8 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336912).
 </div>
 
 In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the Container Registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
@@ -3392,7 +3569,8 @@ The `GET /groups/:id/registry/repositories` endpoint will remain, but won't retu
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343210).
 </div>
 
 We are changing how the date filter works in Value Stream Analytics. Instead of filtering by the time that the issue or merge request was created, the date filter will filter by the end event time of the given stage. This will result in completely different figures after this change has rolled out.
@@ -3407,7 +3585,7 @@ If you monitor Value Stream Analytics metrics and rely on the date filter, to av
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance > Policies** and creating a new Scan Result Policy.
@@ -3427,7 +3605,8 @@ The new security approvals feature is similar to vulnerability check. For exampl
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327453).
 </div>
 
 As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
@@ -3442,7 +3621,8 @@ In milestone 15.0, we will completely remove `Version` from `PackageType`.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.7</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/348980).
 </div>
 
 Currently, test coverage visualizations in GitLab only support Cobertura reports. Starting 15.0, the
@@ -3458,7 +3638,8 @@ only supported report file in 15.0, but this is the first step towards GitLab su
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345451).
 </div>
 
 The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprecated and will be removed in GitLab 15.0. For projects with a commit message template set, it will ignore the template.
@@ -3471,7 +3652,8 @@ The GraphQL API field `defaultMergeCommitMessageWithDescription` has been deprec
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/276777).
 </div>
 
 We added a feature flag because [GitLab-#11582](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) changed how public groups use the Dependency Proxy. Prior to this change, you could use the Dependency Proxy without authentication. The change requires authentication to use the Dependency Proxy.
@@ -3486,7 +3668,8 @@ In milestone 15.0, we will remove the feature flag entirely. Moving forward, you
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342882).
 </div>
 
 In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
@@ -3504,7 +3687,7 @@ To mitigate possible performance problems, we will remove the `versions` field's
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The `projectFingerprint` field in the [PipelineSecurityReportFinding](https://docs.gitlab.com/ee/api/graphql/reference/index.html#pipelinesecurityreportfinding)
@@ -3520,7 +3703,8 @@ exposed in the UUID field. Data previously available in the projectFingerprint f
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
 </div>
 
 In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-db` which is used to promote database nodes in multi-node Geo secondary sites. `gitlab-ctl promote-db` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
@@ -3533,7 +3717,8 @@ In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Ge
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/345207).
 </div>
 
 In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-to-primary-node` which was only usable for single-node Geo sites. `gitlab-ctl promote-to-primary-node` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
@@ -3546,7 +3731,8 @@ In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Ge
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334018).
 </div>
 
 The `started` field in the [iterations API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `current` field (already available) which aligns with the naming for other time-based entities, such as milestones.
@@ -3559,7 +3745,7 @@ The `started` field in the [iterations API](https://docs.gitlab.com/ee/api/itera
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.6</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The `type` and `types` CI/CD keywords will be removed in GitLab 15.0. Pipelines that use these keywords will stop working, so you must switch to `stage` and `stages`, which have the same behavior.
@@ -3572,7 +3758,8 @@ The `type` and `types` CI/CD keywords will be removed in GitLab 15.0. Pipelines 
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.6</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/333233).
 </div>
 
 The API Fuzzing configuration snippet is now being generated client-side and does not require an
@@ -3587,7 +3774,8 @@ which isn't being used in GitLab anymore.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.6</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/289832).
 </div>
 
 As of 14.6 bundler-audit is being deprecated from Dependency Scanning. It will continue to be in our CI/CD template while deprecated. We are removing bundler-audit from Dependency Scanning on May 22, 2022 in 15.0. After this removal Ruby scanning functionality will not be affected as it is still being covered by Gemnasium.
@@ -3602,7 +3790,7 @@ If you have explicitly excluded bundler-audit using DS_EXCLUDED_ANALYZERS you wi
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The Container Registry supports [authentication](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md#auth) with `htpasswd`. It relies on an [Apache `htpasswd` file](https://httpd.apache.org/docs/2.4/programs/htpasswd.html), with passwords hashed using `bcrypt`.
@@ -3617,7 +3805,7 @@ Since it isn't used in the context of GitLab (the product), `htpasswd` authentic
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated and will be removed in GitLab 15.0. Until GitLab 15.0, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows will continue to work.
@@ -3637,7 +3825,7 @@ Any API calls attempting to change the rate limits for `user_email_lookup_limit`
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.9</span>
-- [Breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 </div>
 
 The GitLab Composer repository can be used to push, search, fetch metadata about, and download PHP dependencies. All these actions require authentication, except for downloading dependencies.
@@ -3657,6 +3845,7 @@ Downloading Composer dependencies without authentication is deprecated in GitLab
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.8</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352612).
 </div>
 
 Configuring the `per_repository` Gitaly election strategy is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/352612).
@@ -3677,6 +3866,7 @@ This change is part of regular maintenance to keep our codebase clean.
 
 <div class="deprecation-notes">
 - Announced in: GitLab <span class="milestone">14.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6427).
 </div>
 
 Distribution support and security updates for openSUSE Leap 15.2 are [ending December 2021](https://en.opensuse.org/Lifetime#openSUSE_Leap).

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTableLite } from '@gitlab/ui';
+import { GlBroadcastMessage, GlButton, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime/date_format_utility';
@@ -9,6 +9,7 @@ const DEFAULT_TD_CLASSES = 'gl-vertical-align-middle!';
 export default {
   name: 'MessagesTable',
   components: {
+    GlBroadcastMessage,
     GlButton,
     GlTableLite,
   },
@@ -68,9 +69,6 @@ export default {
       tdClass: `${DEFAULT_TD_CLASSES} gl-white-space-nowrap`,
     },
   ],
-  safeHtmlConfig: {
-    ADD_TAGS: ['use'],
-  },
   methods: {
     formatDate(dateString) {
       return formatDate(new Date(dateString));
@@ -85,8 +83,10 @@ export default {
     :tbody-tr-attr="{ 'data-testid': 'message-row' }"
     stacked="md"
   >
-    <template #cell(preview)="{ item: { preview } }">
-      <div v-safe-html:[$options.safeHtmlConfig]="preview"></div>
+    <template #cell(preview)="{ item: { message, theme, broadcast_type, dismissable } }">
+      <gl-broadcast-message :theme="theme" :type="broadcast_type" :dismissible="dismissable">
+        {{ message }}
+      </gl-broadcast-message>
     </template>
 
     <template #cell(starts_at)="{ item: { starts_at } }">

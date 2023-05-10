@@ -1,13 +1,13 @@
 .base-image-build:
   extends: .use-kaniko
   variables:
-    GIT_LFS_SKIP_SMUDGE: 1 # disable pulling objects from lfs
+    GIT_LFS_SKIP_SMUDGE: 1  # disable pulling objects from lfs
   retry: 2
 
 .base-image-build-buildx:
   extends: .use-buildx
   variables:
-    GIT_LFS_SKIP_SMUDGE: 1 # disable pulling objects from lfs
+    GIT_LFS_SKIP_SMUDGE: 1  # disable pulling objects from lfs
   retry: 2
 
 # This image is used by:

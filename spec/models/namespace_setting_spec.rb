@@ -194,7 +194,7 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
     context 'when a group has parent groups' do
       let(:grandparent) { create(:group, namespace_settings: settings) }
       let(:parent)      { create(:group, parent: grandparent) }
-      let!(:group) { create(:group, parent: parent) }
+      let!(:group)      { create(:group, parent: parent) }
 
       context "when a parent group has disabled diff previews" do
         let(:settings) { create(:namespace_settings, show_diff_preview_in_email: false) }
@@ -214,60 +214,86 @@ RSpec.describe NamespaceSetting, feature_category: :subgroups, type: :model do
     end
   end
 
-  describe '#runner_registration_enabled?' do
-    context 'when not a subgroup' do
-      let_it_be(:settings) { create(:namespace_settings) }
-      let_it_be(:group) { create(:group, namespace_settings: settings) }
+  context 'runner registration settings' do
+    shared_context 'with runner registration settings changing in hierarchy' do
+      context 'when there are no parents' do
+        let_it_be(:group) { create(:group) }
 
-      before do
-        group.update!(runner_registration_enabled: runner_registration_enabled)
-      end
+        it { is_expected.to be_truthy }
 
-      context 'when :runner_registration_enabled is false' do
-        let(:runner_registration_enabled) { false }
+        context 'when no group can register runners' do
+          before do
+            stub_application_setting(valid_runner_registrars: [])
+          end
 
-        it 'returns false' do
-          expect(group.runner_registration_enabled?).to be_falsey
-        end
-
-        it 'does not query the db' do
-          expect { group.runner_registration_enabled? }.not_to exceed_query_limit(0)
+          it { is_expected.to be_falsey }
         end
       end
 
-      context 'when :runner_registration_enabled is true' do
-        let(:runner_registration_enabled) { true }
+      context 'when there are parents' do
+        let_it_be(:grandparent) { create(:group) }
+        let_it_be(:parent)      { create(:group, parent: grandparent) }
+        let_it_be(:group)       { create(:group, parent: parent) }
 
-        it 'returns true' do
-          expect(group.runner_registration_enabled?).to be_truthy
+        before do
+          grandparent.update!(runner_registration_enabled: grandparent_runner_registration_enabled)
+        end
+
+        context 'when a parent group has runner registration disabled' do
+          let(:grandparent_runner_registration_enabled) { false }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when all parent groups have runner registration enabled' do
+          let(:grandparent_runner_registration_enabled) { true }
+
+          it { is_expected.to be_truthy }
         end
       end
     end
 
-    context 'when a group has parent groups' do
-      let_it_be(:grandparent) { create(:group) }
-      let_it_be(:parent)      { create(:group, parent: grandparent) }
-      let_it_be(:group)       { create(:group, parent: parent) }
+    describe '#runner_registration_enabled?' do
+      subject(:group_setting) { group.runner_registration_enabled? }
+
+      let_it_be(:settings) { create(:namespace_settings) }
+      let_it_be(:group) { create(:group, namespace_settings: settings) }
 
       before do
-        grandparent.update!(runner_registration_enabled: runner_registration_enabled)
+        group.update!(runner_registration_enabled: group_runner_registration_enabled)
       end
 
-      context 'when a parent group has runner registration disabled' do
-        let(:runner_registration_enabled) { false }
+      context 'when runner registration is enabled' do
+        let(:group_runner_registration_enabled) { true }
 
-        it 'returns false' do
-          expect(group.runner_registration_enabled?).to be_falsey
+        it { is_expected.to be_truthy }
+
+        it_behaves_like 'with runner registration settings changing in hierarchy'
+      end
+
+      context 'when runner registration is disabled' do
+        let(:group_runner_registration_enabled) { false }
+
+        it { is_expected.to be_falsey }
+
+        it 'does not query the db' do
+          expect { group.runner_registration_enabled? }.not_to exceed_query_limit(0)
+        end
+
+        context 'when group runner registration is disallowed' do
+          before do
+            stub_application_setting(valid_runner_registrars: [])
+          end
+
+          it { is_expected.to be_falsey }
         end
       end
+    end
 
-      context 'when all parent groups have runner registration enabled' do
-        let(:runner_registration_enabled) { true }
+    describe '#all_ancestors_have_runner_registration_enabled?' do
+      subject(:group_setting) { group.all_ancestors_have_runner_registration_enabled? }
 
-        it 'returns true' do
-          expect(group.runner_registration_enabled?).to be_truthy
-        end
-      end
+      it_behaves_like 'with runner registration settings changing in hierarchy'
     end
   end
 

@@ -110,7 +110,7 @@ review-deploy:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}dtzar/helm-kubectl:3.9.3
   needs:
     - review-build-cng
-    - review-delete-deployment # We always want to start from a clean slate (i.e. no helm release, no k8s namespace)
+    - review-delete-deployment  # We always want to start from a clean slate (i.e. no helm release, no k8s namespace)
   cache:
     key: "review-deploy-dependencies-charts-${GITLAB_HELM_CHART_REF}-v1"
     paths:

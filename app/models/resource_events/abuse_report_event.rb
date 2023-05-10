@@ -11,7 +11,10 @@ module ResourceEvents
       ban_user: 1,
       block_user: 2,
       delete_user: 3,
-      close_report: 4
+      close_report: 4,
+      ban_user_and_close_report: 5,
+      block_user_and_close_report: 6,
+      delete_user_and_close_report: 7
     }
 
     enum reason: {
@@ -22,7 +25,8 @@ module ResourceEvents
       credentials: 5,
       copyright: 6,
       malware: 7,
-      other: 8
+      other: 8,
+      unconfirmed: 9
     }
   end
 end

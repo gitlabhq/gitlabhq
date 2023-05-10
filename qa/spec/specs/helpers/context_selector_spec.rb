@@ -75,7 +75,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
         QA::Runtime::Scenario.define(:gitlab_address, "https://jihulab.com/")
         expect(described_class.context_matches?(:production)).to be_truthy
 
-        QA::Runtime::Scenario.define(:gitlab_address, "https://jihulab.hk/")
+        QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.hk/")
         expect(described_class.context_matches?(:production)).to be_truthy
       end
 
@@ -101,12 +101,12 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
           expect(described_class.context_matches?(domain: 'jihulab')).to be_truthy
         end
 
-        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.hk')
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.hk')
 
         aggregate_failures do
           expect(described_class.context_matches?(:production)).to be_truthy
-          expect(described_class.context_matches?(domain: 'gitlab')).to be_falsey
-          expect(described_class.context_matches?(domain: 'jihulab')).to be_truthy
+          expect(described_class.context_matches?(domain: 'jihulab')).to be_falsey
+          expect(described_class.context_matches?(domain: 'gitlab')).to be_truthy
         end
       end
 
@@ -384,14 +384,14 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
   context 'jh hk production ' do
     before do
       allow(GitlabEdition).to receive(:jh?).and_return(true)
-      QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.hk/')
+      QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.hk/')
     end
 
     it 'runs on production' do
       group = describe_successfully do
         it('runs on prod', only: :production) {}
         it('does not run in prod', only: { subdomain: :staging }) {}
-        it('runs in prod and staging', only: { subdomain: /(staging.)?/, domain: 'jihulab' }) {}
+        it('runs in prod and staging', only: { subdomain: /(staging.)?/, domain: 'gitlab' }) {}
       end
 
       aggregate_failures do
@@ -406,7 +406,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
         group = describe_successfully do
           it('skips prod', except: :production) {}
           it('runs on prod', except: { subdomain: :staging }) {}
-          it('skips prod and staging', except: { subdomain: /(staging.)?/, domain: 'jihulab' }) {}
+          it('skips prod and staging', except: { subdomain: /(staging.)?/, domain: 'gitlab' }) {}
         end
 
         aggregate_failures do

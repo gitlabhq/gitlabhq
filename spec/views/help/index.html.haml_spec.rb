@@ -21,10 +21,6 @@ RSpec.describe 'help/index' do
     end
 
     context 'when logged in' do
-      def version_link_regexp(path)
-        %r{#{Regexp.escape(Gitlab::Saas.com_url)}/gitlab-org/(gitlab|gitlab-foss)/#{Regexp.escape(path)}}
-      end
-
       before do
         stub_user
       end
@@ -35,7 +31,7 @@ RSpec.describe 'help/index' do
         render
 
         expect(rendered).to match '8.0.2'
-        expect(rendered).to have_link('8.0.2', href: version_link_regexp('-/tags/v8.0.2'))
+        expect(rendered).to have_link('8.0.2', href: Gitlab::Source.release_url)
       end
 
       it 'shows a link to the commit for pre-releases' do
@@ -44,7 +40,7 @@ RSpec.describe 'help/index' do
         render
 
         expect(rendered).to match '8.0.2'
-        expect(rendered).to have_link('abcdefg', href: version_link_regexp('-/commits/abcdefg'))
+        expect(rendered).to have_link('abcdefg', href: Gitlab::Source.release_url)
       end
     end
   end

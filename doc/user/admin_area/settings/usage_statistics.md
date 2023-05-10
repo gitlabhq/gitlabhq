@@ -53,6 +53,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 ### Features available in 16.0 and later
 
 - [Maintenance mode](../../../administration/maintenance_mode/index.md).
+- [Configurable issue boards](../../project/issue_board.md#configurable-issue-boards).
 
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.

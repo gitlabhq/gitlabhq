@@ -1403,7 +1403,7 @@
       allow_failure: true
     - <<: *if-merge-request
       changes:
-        - qa/Gemfile.lock # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
+        - qa/Gemfile.lock  # qa/Gemfile.lock is a part of *qa-patterns, so this rule must be placed before the one with *qa-patterns changes
       variables:
         UPDATE_QA_CACHE: "true"
     - <<: *if-merge-request
@@ -1430,7 +1430,7 @@
         KNAPSACK_GENERATE_REPORT: "true"
         UPDATE_QA_CACHE: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
+        QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
 .qa:rules:package-and-test-ee:
   rules:
@@ -2287,7 +2287,7 @@
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
-        QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
+        QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
 # The following rules needs to be the same as the one for .review:rules:start-review-app-pipeline
 # except that:
@@ -2534,9 +2534,9 @@
     - !reference [".as-if-jh-default-exclusion-rules", rules]
     - <<: *if-merge-request-labels-as-if-jh
       changes: *dependency-patterns
-    # Ideally, we should be able to do this:
-    # - <<: *if-dot-com-gitlab-org-merge-request
-    #   changes: *feature-flag-development-config-patterns && *dependency-patterns
+      # Ideally, we should be able to do this:
+      # - <<: *if-dot-com-gitlab-org-merge-request
+      #   changes: *feature-flag-development-config-patterns && *dependency-patterns
 
 # This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
 # Because the jobs using this need jobs using the preparation rules

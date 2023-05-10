@@ -9,6 +9,9 @@ module Projects
     include Gitlab::Utils::StrongMemoize
 
     before_action :authorize_metrics_dashboard!
+    before_action :render_404, only: :show, if: -> do
+      Feature.enabled?(:remove_monitor_metrics)
+    end
 
     feature_category :metrics
     urgency :low

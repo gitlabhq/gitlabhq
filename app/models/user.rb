@@ -365,7 +365,6 @@ class User < ApplicationRecord
            :markdown_automatic_lists, :markdown_automatic_lists=,
            :diffs_deletion_color, :diffs_deletion_color=,
            :diffs_addition_color, :diffs_addition_color=,
-           :use_legacy_web_ide, :use_legacy_web_ide=,
            :use_new_navigation, :use_new_navigation=,
            :pinned_nav_items, :pinned_nav_items=,
            :achievements_enabled, :achievements_enabled=,

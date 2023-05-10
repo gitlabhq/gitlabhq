@@ -23,7 +23,7 @@
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: twk3  # (required) GitLab username of the person reporting the change
   stage: enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3442 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/3442  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     To coincide with GitLab 16.0, the GitLab Helm Chart will release the 7.0 major version. The following major bundled chart updates will be included:
 

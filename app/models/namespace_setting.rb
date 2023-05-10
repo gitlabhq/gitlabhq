@@ -64,6 +64,8 @@ class NamespaceSetting < ApplicationRecord
   end
 
   def all_ancestors_have_runner_registration_enabled?
+    return false unless Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+
     return true unless namespace.has_parent?
 
     !self.class.where(namespace_id: namespace.ancestors, runner_registration_enabled: false).exists?

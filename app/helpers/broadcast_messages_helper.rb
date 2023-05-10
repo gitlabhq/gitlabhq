@@ -67,7 +67,10 @@ module BroadcastMessagesHelper
       {
         id: message.id,
         status: broadcast_message_status(message),
-        preview: broadcast_message(message, preview: true),
+        message: message.message,
+        theme: message.theme,
+        broadcast_type: message.broadcast_type,
+        dismissable: message.dismissable,
         starts_at: message.starts_at.iso8601,
         ends_at: message.ends_at.iso8601,
         target_roles: target_access_levels_display(message.target_access_levels),

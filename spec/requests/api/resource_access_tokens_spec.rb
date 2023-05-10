@@ -468,10 +468,86 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
       end
     end
+
+    context "POST #{source_type}s/:id/access_tokens/:token_id/rotate" do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:token) { create(:personal_access_token, user: project_bot) }
+      let_it_be(:resource_id) { resource.id }
+      let_it_be(:token_id) { token.id }
+
+      let(:path) { "/#{source_type}s/#{resource_id}/access_tokens/#{token_id}/rotate" }
+
+      before do
+        resource.add_maintainer(project_bot)
+        resource.add_owner(user)
+      end
+
+      subject(:rotate_token) { post api(path, user) }
+
+      it "allows owner to rotate token", :freeze_time do
+        rotate_token
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['token']).not_to eq(token.token)
+        expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+      end
+
+      context 'without permission' do
+        it 'returns an error message' do
+          another_user = create(:user)
+          resource.add_developer(another_user)
+
+          post api(path, another_user)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'when service raises an error' do
+        let(:error_message) { 'boom!' }
+
+        before do
+          allow_next_instance_of(PersonalAccessTokens::RotateService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+          end
+        end
+
+        it 'returns the same error message' do
+          rotate_token
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq("400 Bad request - #{error_message}")
+        end
+      end
+
+      context 'when token does not exist' do
+        let(:invalid_path) { "/#{source_type}s/#{resource_id}/access_tokens/#{non_existing_record_id}/rotate" }
+
+        context 'for non-admin user' do
+          it 'returns unauthorized' do
+            user = create(:user)
+            resource.add_developer(user)
+
+            post api(invalid_path, user)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'for admin user', :enable_admin_mode do
+          it 'returns not found' do
+            admin = create(:admin)
+            post api(invalid_path, admin)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
   end
 
   context 'when the resource is a project' do
-    let_it_be(:resource) { create(:project) }
+    let_it_be(:resource) { create(:project, group: create(:group)) }
     let_it_be(:other_resource) { create(:project) }
     let_it_be(:unknown_resource) { create(:project) }
 

@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Configure OpenID Connect in Azure to retrieve temporary credentials **(FREE)**
 
+WARNING:
+`CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and is scheduled to be removed in GitLab 16.5. Use [ID tokens](../../yaml/index.md#id_tokens) instead.
+
 This tutorial demonstrates how to use a JSON web token (JWT) in a GitLab CI/CD job
 to retrieve temporary credentials from Azure without needing to store secrets.
 

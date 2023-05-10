@@ -29,5 +29,13 @@ module Ci
     def audit_details
       key
     end
+
+    def group_name
+      group.name
+    end
+
+    def group_ci_cd_settings_path
+      Gitlab::Routing.url_helpers.group_settings_ci_cd_path(group)
+    end
   end
 end

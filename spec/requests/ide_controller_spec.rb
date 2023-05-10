@@ -169,17 +169,14 @@ RSpec.describe IdeController, feature_category: :web_ide do
 
       # This indirectly tests that `minimal: true` was passed to the fullscreen layout
       describe 'layout' do
-        where(:ff_state, :use_legacy_web_ide, :expect_top_nav) do
-          false | false | true
-          false | true  | true
-          true  | true  | true
-          true  | false | false
+        where(:ff_state, :expect_top_nav) do
+          false | true
+          true  | false
         end
 
         with_them do
           before do
             stub_feature_flags(vscode_web_ide: ff_state)
-            allow(user).to receive(:use_legacy_web_ide).and_return(use_legacy_web_ide)
 
             subject
           end

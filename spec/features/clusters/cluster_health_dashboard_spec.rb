@@ -13,6 +13,8 @@ feature_category: :deployment_management do
   let_it_be(:cluster_path) { project_cluster_path(clusterable, cluster) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
+
     clusterable.add_maintainer(current_user)
 
     sign_in(current_user)
@@ -26,6 +28,24 @@ feature_category: :deployment_management do
     click_link 'Health'
 
     expect(page).to have_css('.cluster-health-graphs')
+  end
+
+  context 'feature remove_monitor_metrics enabled' do
+    before do
+      stub_feature_flags(remove_monitor_metrics: true)
+    end
+
+    it 'does not show the cluster health tab' do
+      visit cluster_path
+
+      expect(page).not_to have_text('Health')
+    end
+
+    it 'does not show the cluster health section' do
+      visit project_cluster_path(clusterable, cluster, { tab: 'health' })
+
+      expect(page).not_to have_text('you must first enable Prometheus in the Integrations tab')
+    end
   end
 
   context 'no prometheus available' do

@@ -48,13 +48,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       end
     end
 
-    describe 'use_legacy_web_ide' do
-      it { is_expected.to allow_value(true).for(:use_legacy_web_ide) }
-      it { is_expected.to allow_value(false).for(:use_legacy_web_ide) }
-      it { is_expected.not_to allow_value(nil).for(:use_legacy_web_ide) }
-      it { is_expected.not_to allow_value("").for(:use_legacy_web_ide) }
-    end
-
     describe 'pass_user_identities_to_ci_jwt' do
       it { is_expected.to allow_value(true).for(:pass_user_identities_to_ci_jwt) }
       it { is_expected.to allow_value(false).for(:pass_user_identities_to_ci_jwt) }

@@ -1917,7 +1917,6 @@ class MergeRequest < ApplicationRecord
 
   def first_contribution?
     return metrics&.first_contribution if merged? & metrics.present?
-    return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     !project.merge_requests.merged.exists?(author_id: author_id)
   end

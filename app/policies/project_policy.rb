@@ -827,6 +827,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:admin_project) & resource_access_token_feature_available & resource_access_token_creation_allowed }.policy do
     enable :create_resource_access_tokens
+    enable :manage_resource_access_tokens
   end
 
   rule { can?(:admin_project) }.policy do
@@ -835,6 +836,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:project_bot_access) }.policy do
     prevent :create_resource_access_tokens
+    prevent :manage_resource_access_tokens
   end
 
   rule { user_defined_variables_allowed | can?(:maintainer_access) }.policy do

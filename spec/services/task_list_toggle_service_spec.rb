@@ -18,6 +18,8 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
         with an embedded paragraph
 
       + [ ] No-break space (U+00A0)
+
+      2) [ ] Another item
     EOT
   end
 
@@ -53,6 +55,11 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
           <input type="checkbox" class="task-list-item-checkbox" disabled=""> No-break space (U+00A0)
         </li>
       </ul>
+      <ol start="2" data-sourcepos="15:1-15:19" class="task-list" dir="auto">
+        <li data-sourcepos="15:1-15:19" class="task-list-item">
+          <input type="checkbox" class="task-list-item-checkbox" disabled> Another item
+        </li>
+      </ol>
     EOT
   end
 
@@ -92,8 +99,18 @@ RSpec.describe TaskListToggleService, feature_category: :team_planning do
                                   line_source: '+ [ ] No-break space (U+00A0)', line_number: 13)
 
     expect(toggler.execute).to be_truthy
-    expect(toggler.updated_markdown.lines[12]).to eq "+ [x] No-break space (U+00A0)"
+    expect(toggler.updated_markdown.lines[12]).to eq "+ [x] No-break space (U+00A0)\n"
     expect(toggler.updated_markdown_html).to include('disabled checked> No-break space (U+00A0)')
+  end
+
+  it 'checks Another item' do
+    toggler = described_class.new(markdown, markdown_html,
+                                  toggle_as_checked: true,
+                                  line_source: '2) [ ] Another item', line_number: 15)
+
+    expect(toggler.execute).to be_truthy
+    expect(toggler.updated_markdown.lines[14]).to eq "2) [x] Another item"
+    expect(toggler.updated_markdown_html).to include('disabled checked> Another item')
   end
 
   it 'returns false if line_source does not match the text' do

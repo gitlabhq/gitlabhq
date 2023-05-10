@@ -8989,6 +8989,29 @@ The edge type for [`IncidentManagementOncallShift`](#incidentmanagementoncallshi
 | <a id="incidentmanagementoncallshiftedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="incidentmanagementoncallshiftedgenode"></a>`node` | [`IncidentManagementOncallShift`](#incidentmanagementoncallshift) | The item at the end of the edge. |
 
+#### `InheritedCiVariableConnection`
+
+The connection type for [`InheritedCiVariable`](#inheritedcivariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="inheritedcivariableconnectionedges"></a>`edges` | [`[InheritedCiVariableEdge]`](#inheritedcivariableedge) | A list of edges. |
+| <a id="inheritedcivariableconnectionnodes"></a>`nodes` | [`[InheritedCiVariable]`](#inheritedcivariable) | A list of nodes. |
+| <a id="inheritedcivariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InheritedCiVariableEdge`
+
+The edge type for [`InheritedCiVariable`](#inheritedcivariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="inheritedcivariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="inheritedcivariableedgenode"></a>`node` | [`InheritedCiVariable`](#inheritedcivariable) | The item at the end of the edge. |
+
 #### `InstanceExternalAuditEventDestinationConnection`
 
 The connection type for [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination).
@@ -16009,6 +16032,24 @@ A block of time for which a participant is on-call.
 | <a id="incidentmanagementoncallshiftparticipant"></a>`participant` | [`OncallParticipantType`](#oncallparticipanttype) | Participant assigned to the on-call shift. |
 | <a id="incidentmanagementoncallshiftstartsat"></a>`startsAt` | [`Time`](#time) | Start time of the on-call shift. |
 
+### `InheritedCiVariable`
+
+CI/CD variables a project inherites from its parent group and ancestors.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="inheritedcivariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="inheritedcivariablegroupcicdsettingspath"></a>`groupCiCdSettingsPath` | [`String`](#string) | Indicates the path to the CI/CD settings of the group the variable belongs to. |
+| <a id="inheritedcivariablegroupname"></a>`groupName` | [`String`](#string) | Indicates group the variable belongs to. |
+| <a id="inheritedcivariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="inheritedcivariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="inheritedcivariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
+| <a id="inheritedcivariableprotected"></a>`protected` | [`Boolean`](#boolean) | Indicates whether the variable is protected. |
+| <a id="inheritedcivariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="inheritedcivariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
+
 ### `InstanceExternalAuditEventDestination`
 
 Represents an external resource to send instance audit events to.
@@ -18914,6 +18955,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
+| <a id="projectinheritedcivariables"></a>`inheritedCiVariables` | [`InheritedCiVariableConnection`](#inheritedcivariableconnection) | List of CI/CD variables the project inherited from its parent group and ancestors. (see [Connections](#connections)) |
 | <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. Indicates if a project is a catalog resource. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |

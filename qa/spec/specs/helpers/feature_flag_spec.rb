@@ -187,7 +187,7 @@ RSpec.describe QA::Specs::Helpers::FeatureFlag do
       end
 
       before(:context) do
-        QA::Runtime::Scenario.define(:gitlab_address, 'https://jihulab.hk')
+        QA::Runtime::Scenario.define(:gitlab_address, 'https://gitlab.hk')
       end
 
       context 'when no scope is defined' do

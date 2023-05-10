@@ -52,4 +52,41 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
       expect(assigns(:abuse_report)).to eq report
     end
   end
+
+  describe 'PUT #update' do
+    let(:report) { create(:abuse_report) }
+    let(:params) { { user_action: 'block_user', close: 'true', reason: 'spam', comment: 'obvious spam' } }
+    let(:expected_params) { ActionController::Parameters.new(params).permit! }
+
+    it 'invokes the Admin::AbuseReportUpdateService' do
+      expect_next_instance_of(Admin::AbuseReportUpdateService, report, admin, expected_params) do |service|
+        expect(service).to receive(:execute)
+      end
+
+      put admin_abuse_report_path(report, params)
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let!(:report) { create(:abuse_report) }
+    let(:params) { {} }
+
+    subject { delete admin_abuse_report_path(report, params) }
+
+    it 'destroys the report' do
+      expect { subject }.to change { AbuseReport.count }.by(-1)
+    end
+
+    context 'when passing the `remove_user` parameter' do
+      let(:params) { { remove_user: true } }
+
+      it 'calls the `remove_user` method' do
+        expect_next_found_instance_of(AbuseReport) do |report|
+          expect(report).to receive(:remove_user).with(deleted_by: admin)
+        end
+
+        subject
+      end
+    end
+  end
 end

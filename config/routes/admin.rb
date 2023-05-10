@@ -35,7 +35,7 @@ namespace :admin do
 
   resource :impersonation, only: :destroy
 
-  resources :abuse_reports, only: [:index, :show, :destroy]
+  resources :abuse_reports, only: [:index, :show, :update, :destroy]
   resources :gitaly_servers, only: [:index]
 
   resources :spam_logs, only: [:index, :destroy] do

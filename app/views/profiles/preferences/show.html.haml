@@ -140,21 +140,6 @@
         = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select'
     .col-sm-12
       %hr
-  - if Feature.enabled?(:vscode_web_ide, current_user)
-    .row.js-preferences-form.js-search-settings-section
-      .col-lg-4.profile-settings-sidebar#web-ide
-        %h4.gl-mt-0
-          = s_('Preferences|Web IDE')
-        %p
-          = s_('Preferences|The Web IDE Beta is the default Web IDE experience.')
-          = link_to _('Learn more'), help_page_path('user/project/web_ide_beta/index.md'), target: '_blank', rel: 'noopener noreferrer'
-      .col-lg-8
-        .form-group
-          = f.gitlab_ui_checkbox_component :use_legacy_web_ide,
-            s_('Preferences|Opt out of the Web IDE Beta'),
-            help_text: s_('Preferences|The Web IDE remains available alongside the Beta.')
-      .col-sm-12
-        %hr
   .row.js-preferences-form.js-search-settings-section
     .col-lg-4.profile-settings-sidebar#time-preferences
       %h4.gl-mt-0
@@ -172,17 +157,17 @@
     .row.js-preferences-form.js-search-settings-section
       .col-sm-12
         %hr
-      .col-lg-4.profile-settings-sidebar#disabled_following
+      .col-lg-4.profile-settings-sidebar#enabled_following
         %h4.gl-mt-0
-          = s_('Preferences|Disable follow users feature')
+          = s_('Preferences|Enable follow users feature')
         %p
-          = s_('Preferences|Turns off the ability to follow or be followed by other users.')
+          = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
           = succeed '.' do
             = link_to _('Learn more'), help_page_path('user/profile/index', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
       .col-lg-8
         .form-group
           = f.gitlab_ui_checkbox_component :enabled_following,
-          s_('Preferences|Disable follow users')
+          s_('Preferences|Enable follow users')
 
 
   #js-profile-preferences-app{ data: data_attributes }

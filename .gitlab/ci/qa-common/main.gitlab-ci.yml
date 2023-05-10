@@ -256,6 +256,7 @@ stages:
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
+    TYPE: "($QA_RUN_TYPE) "
   when: always
   script:
     - |

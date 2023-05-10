@@ -7,6 +7,8 @@ type: tutorial
 
 # OpenID Connect (OIDC) Authentication Using ID Tokens **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+
 You can authenticate with third party services using GitLab CI/CD's
 [ID tokens](../yaml/index.md#id_tokens).
 
@@ -130,23 +132,6 @@ manual_authentication:
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-### Enable automatic ID token authentication (deprecated)
-
-WARNING:
-This setting was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/391886) in GitLab 16.0.
-ID token authentication is now always available, and JSON Web Token access is always limited.
-
-To enable automatic ID token authentication:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Token Access**.
-1. Toggle **Limit JSON Web Token (JWT) access** to enabled.
-
-<!--- end_remove -->
-
 ### Configure automatic ID Token authentication
 
 If one ID token is defined, the `secrets` keyword automatically uses it to authenticate with Vault. For example:
@@ -183,3 +168,20 @@ job_with_secrets:
     - access-first-db.sh --token $FIRST_DB_PASSWORD
     - access-second-db.sh --token $SECOND_DB_PASSWORD
 ```
+
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
+
+### Enable automatic ID token authentication (deprecated)
+
+WARNING:
+This setting was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/391886) in GitLab 16.0.
+ID token authentication is now always available, and JSON Web Token access is always limited.
+
+To enable automatic ID token authentication:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **Token Access**.
+1. Toggle **Limit JSON Web Token (JWT) access** to enabled.
+
+<!--- end_remove -->

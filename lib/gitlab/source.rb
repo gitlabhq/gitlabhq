@@ -16,7 +16,7 @@ module Gitlab
                  url_helpers.namespace_project_tag_path(group, project, ref)
                end
 
-        host_url + path
+        Gitlab::Utils.append_path(host_url, path)
       end
 
       private

@@ -437,7 +437,7 @@
         docker run --rm --privileged ${QEMU_IMAGE} --uninstall qemu-*;
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
       fi
-    - docker buildx create --use # creates and set's to active buildkit builder
+    - docker buildx create --use  # creates and set's to active buildkit builder
 
 .use-kube-context:
   before_script:

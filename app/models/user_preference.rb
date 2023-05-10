@@ -22,7 +22,6 @@ class UserPreference < ApplicationRecord
   validates :diffs_deletion_color, :diffs_addition_color,
             format: { with: ColorsHelper::HEX_COLOR_PATTERN },
             allow_blank: true
-  validates :use_legacy_web_ide, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
 

@@ -119,6 +119,38 @@ module API
             bad_request!(token_response.message)
           end
         end
+
+        desc 'Rotate a resource access token' do
+          detail 'This feature was introduced in GitLab 16.0.'
+          tags ["#{source_type}_access_tokens"]
+          success Entities::ResourceAccessTokenWithToken
+        end
+        params do
+          requires :id, type: String, desc: "The #{source_type} ID"
+          requires :token_id, type: String, desc: "The ID of the token"
+        end
+        post ':id/access_tokens/:token_id/rotate' do
+          resource = find_source(source_type, params[:id])
+
+          resource_accessible = Ability.allowed?(current_user, :manage_resource_access_tokens, resource)
+          token = find_token(resource, params[:token_id]) if resource_accessible
+
+          if token
+            response = ::PersonalAccessTokens::RotateService.new(current_user, token).execute
+
+            if response.success?
+              status :ok
+
+              new_token = response.payload[:personal_access_token]
+              present new_token, with: Entities::ResourceAccessTokenWithToken, resource: resource
+            else
+              bad_request!(response.message)
+            end
+          else
+            # Only admins should be informed if the token doesn't exist
+            current_user.can_admin_all_resources? ? not_found! : unauthorized!
+          end
+        end
       end
     end
 

@@ -4647,18 +4647,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .to(false)
       end
 
-      it 'sets first_contribution to false' do
-        subject.mark_as_merged
-
-        expect(subject.state).to eq('merged')
-        expect(subject.first_contribution?).to be_falsey
-      end
-
-      context 'when it is a contribution from a project non-member' do
-        let(:non_member) { create(:user) }
+      context 'when it is a first contribution' do
+        let(:new_user) { create(:user) }
 
         before do
-          subject.update!(author: non_member)
+          subject.update!(author: new_user)
         end
 
         it 'sets first_contribution' do
@@ -4669,7 +4662,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
 
         it "doesn't set first_contribution not first contribution" do
-          create(:merged_merge_request, author: non_member)
+          create(:merged_merge_request, author: new_user)
 
           subject.mark_as_merged
 

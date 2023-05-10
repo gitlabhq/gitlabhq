@@ -75,9 +75,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:diffs_addition_color).to(:user_preference) }
     it { is_expected.to delegate_method(:diffs_addition_color=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:use_legacy_web_ide).to(:user_preference) }
-    it { is_expected.to delegate_method(:use_legacy_web_ide=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:use_new_navigation).to(:user_preference) }
     it { is_expected.to delegate_method(:use_new_navigation=).to(:user_preference).with_arguments(:args) }
 

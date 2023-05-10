@@ -1,0 +1,11 @@
+- title: "Removal of job_age parameter in `POST /jobs/request` Runner endpoint"
+  announcement_milestone: "15.2"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jreporter  # (required) GitLab username of the person reporting the removal
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/334253  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The `job_age` parameter, returned from the `POST /jobs/request` API endpoint used in communication with GitLab Runner, has been removed in GitLab 16.0.
+
+    This could be a breaking change for anyone that developed their own runner that relies on this parameter being returned by the endpoint. This is not a breaking change for anyone using an officially released version of GitLab Runner, including public shared runners on GitLab.com.

@@ -56,7 +56,11 @@ module ClustersHelper
     when 'environments'
       render_if_exists 'clusters/clusters/environments'
     when 'health'
-      render_if_exists 'clusters/clusters/health'
+      if Feature.enabled?(:remove_monitor_metrics)
+        render('details', expanded: expanded)
+      else
+        render_if_exists 'clusters/clusters/health'
+      end
     when 'apps'
       render 'applications'
     when 'integrations'

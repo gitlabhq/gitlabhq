@@ -141,7 +141,20 @@ RSpec.describe BroadcastMessagesHelper, feature_category: :onboarding do
     subject(:single_broadcast_message) { Gitlab::Json.parse(admin_broadcast_messages_data([message])).first }
 
     it 'returns the expected messages data attributes' do
-      keys = %w[id status preview starts_at ends_at target_roles target_path type edit_path delete_path]
+      keys = %w[
+        id
+        status
+        message
+        theme
+        broadcast_type
+        dismissable
+        starts_at
+        ends_at
+        target_roles
+        target_path
+        type edit_path
+        delete_path
+      ]
 
       expect(single_broadcast_message.keys).to match(keys)
     end

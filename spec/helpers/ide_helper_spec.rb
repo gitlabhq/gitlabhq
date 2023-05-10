@@ -18,7 +18,6 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
 
     let(:base_data) do
       {
-        'can-use-new-web-ide' => 'false',
         'use-new-web-ide' => 'false',
         'user-preferences-path' => profile_preferences_path,
         'sign-in-path' => 'test-sign-in-path',
@@ -98,7 +97,6 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
     context 'with vscode_web_ide=true' do
       let(:base_data) do
         {
-          'can-use-new-web-ide' => 'true',
           'use-new-web-ide' => 'true',
           'user-preferences-path' => profile_preferences_path,
           'sign-in-path' => 'test-sign-in-path',
@@ -121,8 +119,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           .to include(base_data)
       end
 
-      it 'does not use new web ide if user.use_legacy_web_ide' do
-        allow(user).to receive(:use_legacy_web_ide).and_return(true)
+      it 'does not use new web ide if feature flag is disabled' do
+        stub_feature_flags(vscode_web_ide: false)
 
         expect(helper.ide_data(project: nil, fork_info: fork_info, params: params))
           .to include('use-new-web-ide' => 'false')

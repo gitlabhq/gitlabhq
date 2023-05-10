@@ -32,8 +32,7 @@
   .form-group.gl-form-group
     %legend.col-form-label.col-form-label
       = s_('Runners|Runner Registration')
-    - parent_disabled = Gitlab::CurrentSettings.valid_runner_registrars.exclude?('group') || !@group.all_ancestors_have_runner_registration_enabled?
     = f.gitlab_ui_checkbox_component :runner_registration_enabled,
       s_('Runners|New group runners can be registered'),
-      checkbox_options: { checked: @group.runner_registration_enabled && !parent_disabled, disabled: parent_disabled },
+      checkbox_options: { checked: @group.runner_registration_enabled?, disabled: !@group.all_ancestors_have_runner_registration_enabled? },
       help_text: s_('Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt; CI/CD.').html_safe

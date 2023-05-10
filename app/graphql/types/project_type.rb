@@ -352,6 +352,12 @@ module Types
           authorize: :admin_build,
           resolver: Resolvers::Ci::VariablesResolver
 
+    field :inherited_ci_variables, Types::Ci::InheritedCiVariableType.connection_type,
+          null: true,
+          description: "List of CI/CD variables the project inherited from its parent group and ancestors.",
+          authorize: :admin_build,
+          resolver: Resolvers::Ci::InheritedVariablesResolver
+
     field :ci_cd_settings, Types::Ci::CiCdSettingType,
           null: true,
           description: 'CI/CD settings for the project.'

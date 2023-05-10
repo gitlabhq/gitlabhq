@@ -7,7 +7,7 @@
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the change
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372117 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372117  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The `CiRunner.projects`'s field default sort order value will change from `id_asc` to `id_desc`.
     If you rely on the order of the returned projects to be `id_asc`, change your scripts to make the choice explicit.
@@ -22,6 +22,6 @@
   # OTHER OPTIONAL FIELDS
   #
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/index.html#cirunnerprojects # (optional) This is a link to the current documentation page
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/index.html#cirunnerprojects  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature
   video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

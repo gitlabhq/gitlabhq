@@ -106,7 +106,7 @@ detect-tests:
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
   before_script:
-    - apt-get update && apt-get install -y curl # Not present in ruby-slim, so we add it manually
+    - apt-get update && apt-get install -y curl  # Not present in ruby-slim, so we add it manually
   script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh

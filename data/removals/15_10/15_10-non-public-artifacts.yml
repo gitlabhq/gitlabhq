@@ -19,7 +19,7 @@
 #
 # OPTIONAL FIELDS
 #
-  tiers: Free # (optional - may be required in the future) An array of tiers that the feature is available in currently. e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic # (optional) This is a link to the current documentation page
+  tiers: Free  # (optional - may be required in the future) An array of tiers that the feature is available in currently. e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic  # (optional) This is a link to the current documentation page
   image_url:  # (optional) This is a link to a thumbnail image depicting the feature
   video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -33778,13 +33778,13 @@ msgstr ""
 msgid "Preferences|Diff colors"
 msgstr ""
 
-msgid "Preferences|Disable follow users"
-msgstr ""
-
-msgid "Preferences|Disable follow users feature"
-msgstr ""
-
 msgid "Preferences|Enable Gitpod integration"
+msgstr ""
+
+msgid "Preferences|Enable follow users"
+msgstr ""
+
+msgid "Preferences|Enable follow users feature"
 msgstr ""
 
 msgid "Preferences|Enable integrated code intelligence on code views"
@@ -33817,9 +33817,6 @@ msgstr ""
 msgid "Preferences|Note: You have the new navigation enabled, so only Dark Mode theme significantly changes GitLab's appearance."
 msgstr ""
 
-msgid "Preferences|Opt out of the Web IDE Beta"
-msgstr ""
-
 msgid "Preferences|Preview"
 msgstr ""
 
@@ -33847,25 +33844,16 @@ msgstr ""
 msgid "Preferences|Tab width"
 msgstr ""
 
-msgid "Preferences|The Web IDE Beta is the default Web IDE experience."
-msgstr ""
-
-msgid "Preferences|The Web IDE remains available alongside the Beta."
-msgstr ""
-
 msgid "Preferences|This feature is experimental and translations are not yet complete."
 msgstr ""
 
 msgid "Preferences|Time preferences"
 msgstr ""
 
-msgid "Preferences|Turns off the ability to follow or be followed by other users."
+msgid "Preferences|Turns on or off the ability to follow or be followed by other users."
 msgstr ""
 
 msgid "Preferences|Use relative times"
-msgstr ""
-
-msgid "Preferences|Web IDE"
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below."

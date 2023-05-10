@@ -28,10 +28,12 @@ module QA
           opts[:domain] = '.+'
           opts[:tld] = opts_tld
 
+          # get uri_tld to decide gitlab or jihulab
           uri = URI(Runtime::Scenario.gitlab_address)
+          uri_tld = get_tld(uri.host)
 
           options.each do |option|
-            opts[:domain] = production_domain if option == :production
+            opts[:domain] = production_domain(uri_tld) if option == :production
 
             next unless option.is_a?(Hash)
 
@@ -102,12 +104,22 @@ module QA
           project_name.to_s.start_with?('gitlab-qa') ? Runtime::Env.default_branch : project_name
         end
 
-        def production_domain
-          GitlabEdition.jh? ? 'jihulab' : 'gitlab'
+        # Get production domain value based on GitLab edition and URI's top level domain
+        #
+        # @param tld [String] top level domain, e.g. 'hk', 'com'
+        # @return [String] 'gitlab' or 'jihulab'
+        def production_domain(tld)
+          return 'gitlab' unless GitlabEdition.jh?
+          return 'gitlab' if tld == 'hk'
+          return 'jihulab' if tld == 'com'
         end
 
         def opts_tld
           GitlabEdition.jh? ? '(.com|.hk)' : '.com'
+        end
+
+        def get_tld(host)
+          host.split('.').last
         end
       end
     end
