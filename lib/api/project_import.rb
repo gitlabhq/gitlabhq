@@ -33,16 +33,14 @@ module API
       end
     end
 
-    before do
-      forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
-    end
-
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the project import upload' do
         detail 'This feature was introduced in GitLab 12.9'
         tags ['project_import']
       end
       post 'import/authorize' do
+        forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+
         require_gitlab_workhorse!
 
         status 200
@@ -90,6 +88,8 @@ module API
         consumes ['multipart/form-data']
       end
       post 'import' do
+        forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+
         require_gitlab_workhorse!
 
         check_rate_limit! :project_import, scope: [current_user, :project_import]
@@ -164,6 +164,8 @@ module API
         ]
       end
       post 'remote-import' do
+        forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+
         check_rate_limit! :project_import, scope: [current_user, :project_import]
 
         response = ::Import::GitlabProjects::CreateProjectService.new(
@@ -217,6 +219,8 @@ module API
         ]
       end
       post 'remote-import-s3' do
+        forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+
         check_rate_limit! :project_import, scope: [current_user, :project_import]
 
         response = ::Import::GitlabProjects::CreateProjectService.new(

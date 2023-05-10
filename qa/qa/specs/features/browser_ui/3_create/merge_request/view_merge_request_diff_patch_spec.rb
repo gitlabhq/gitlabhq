@@ -11,6 +11,8 @@ module QA
       end
 
       before do
+        QA::Support::Helpers::ImportSource.enable(%w[gitlab_project])
+
         Flow::Login.sign_in
         merge_request.visit!
       end

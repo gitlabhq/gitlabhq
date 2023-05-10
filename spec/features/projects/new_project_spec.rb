@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'New project', :js, feature_category: :projects do
   include Features::TopNavSpecHelpers
 
+  before do
+    stub_application_setting(import_sources: Gitlab::ImportSources.values)
+  end
+
   context 'as a user' do
     let_it_be(:user) { create(:user) }
 

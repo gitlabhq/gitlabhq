@@ -25,6 +25,8 @@ module QA
       end
 
       before do
+        QA::Support::Helpers::ImportSource.enable('git')
+
         Flow::Login.sign_in
 
         imported_project

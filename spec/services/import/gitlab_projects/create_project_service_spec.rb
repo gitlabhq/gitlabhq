@@ -35,6 +35,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
 
   before do
     stub_const('FakeStrategy', fake_file_acquisition_strategy)
+    stub_application_setting(import_sources: ['gitlab_project'])
   end
 
   describe 'validation' do

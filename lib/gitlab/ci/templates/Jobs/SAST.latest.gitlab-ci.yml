@@ -253,26 +253,12 @@ pmd-apex-sast:
 
 security-code-scan-sast:
   extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 3
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
+  script:
+    - echo "This job was deprecated in GitLab 15.9 and removed in GitLab 16.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/390416"
+    - exit 1
   rules:
-    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-      when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
+    - when: never
 
 semgrep-sast:
   extends: .sast-analyzer

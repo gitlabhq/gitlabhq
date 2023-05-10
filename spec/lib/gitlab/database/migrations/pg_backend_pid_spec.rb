@@ -40,5 +40,13 @@ RSpec.describe Gitlab::Database::Migrations::PgBackendPid, feature_category: :da
 
       expect { described_class.say(conn) }.to output(expected_output).to_stdout
     end
+
+    it 'outputs nothing if ActiveRecord::Migration.verbose is false' do
+      conn = ActiveRecord::Base.connection
+
+      allow(ActiveRecord::Migration).to receive(:verbose).and_return(false)
+
+      expect { described_class.say(conn) }.not_to output.to_stdout
+    end
   end
 end

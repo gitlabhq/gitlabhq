@@ -127,8 +127,8 @@ production: &base
     # username_changing_enabled: false # default: true - User can change their username/namespace
     ## Default theme ID
     ##   1 - Indigo
-    ##   2 - Dark
-    ##   3 - Light
+    ##   2 - Gray
+    ##   3 - Light Gray
     ##   4 - Blue
     ##   5 - Green
     ##   6 - Light Indigo
@@ -136,6 +136,7 @@ production: &base
     ##   8 - Light Green
     ##   9 - Red
     ##   10 - Light Red
+    ##   11 - Dark Mode (alpha)
     # default_theme: 1 # default: 1
 
     ## Automatic issue closing
@@ -1001,7 +1002,7 @@ production: &base
     # auto_sign_in_with_provider: saml
 
     # Sync user's profile from the specified Omniauth providers every time the user logs in (default: empty).
-    # Define the allowed providers using an array, e.g. ["cas3", "saml", "twitter"],
+    # Define the allowed providers using an array, e.g. ["saml", "twitter"],
     # or as true/false to allow all providers or none.
     # When authenticating using LDAP, the user's email is always synced.
     # sync_profile_from_provider: []
@@ -1067,15 +1068,6 @@ production: &base
       # - { name: 'alicloud',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      # See omniauth-cas3 for more configuration details
-      # - { name: 'cas3',
-      #     label: 'cas3',
-      #     args: {
-      #             url: 'https://sso.example.com',
-      #             disable_ssl_verification: false,
-      #             login_url: '/cas/login',
-      #             service_validate_url: '/cas/p3/serviceValidate',
-      #             logout_url: '/cas/logout' } }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -1138,10 +1130,6 @@ production: &base
       #       client_id: 'YOUR_AUTH0_CLIENT_ID',
       #       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
       #       namespace: 'YOUR_AUTH0_DOMAIN' } }
-
-    # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
-    # cas3:
-    #   session_duration: 28800
 
   # FortiAuthenticator settings
   forti_authenticator:
@@ -1583,13 +1571,6 @@ test:
       - { name: 'alicloud',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'cas3',
-          label: 'cas3',
-          args: { url: 'https://sso.example.com',
-                  disable_ssl_verification: false,
-                  login_url: '/cas/login',
-                  service_validate_url: '/cas/p3/serviceValidate',
-                  logout_url: '/cas/logout' } }
       - { name: 'github',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',

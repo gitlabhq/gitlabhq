@@ -24,6 +24,8 @@ module Gitlab
         end
 
         def self.say(conn)
+          return unless ActiveRecord::Migration.verbose
+
           pg_backend_pid = conn.select_value('SELECT pg_backend_pid()')
           db_name = Gitlab::Database.db_config_name(conn)
 

@@ -29,6 +29,8 @@ module QA
         end
 
         before do
+          QA::Support::Helpers::ImportSource.enable('github')
+
           Flow::Login.sign_in(as: user)
           Page::Main::Menu.perform(&:go_to_create_project)
           Page::Project::New.perform do |project_page|

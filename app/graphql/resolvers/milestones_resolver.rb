@@ -40,8 +40,6 @@ module Resolvers
     NON_STABLE_CURSOR_SORTS = %i[expired_last_due_date_asc expired_last_due_date_desc].freeze
 
     def resolve_with_lookahead(**args)
-      validate_timeframe_params!(args)
-
       milestones = apply_lookahead(MilestonesFinder.new(milestones_finder_params(args)).execute)
 
       if non_stable_cursor_sort?(args[:sort])

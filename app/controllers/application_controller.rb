@@ -29,7 +29,6 @@ class ApplicationController < ActionController::Base
   before_action :limit_session_time, if: -> { !current_user }
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?
-  before_action :validate_user_service_ticket!
   before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
   before_action :default_headers
@@ -324,20 +323,6 @@ class ApplicationController < ActionController::Base
 
     headers['Content-Type'] = 'text/csv; charset=utf-8; header=present'
     headers['Content-Disposition'] = "attachment; filename=\"#{csv_filename}\""
-  end
-
-  def validate_user_service_ticket!
-    return unless signed_in? && session[:service_tickets]
-
-    valid = session[:service_tickets].all? do |provider, ticket|
-      Gitlab::Auth::OAuth::Session.valid?(provider, ticket)
-    end
-
-    unless valid
-      session[:service_tickets] = nil
-      sign_out current_user
-      redirect_to new_user_session_path
-    end
   end
 
   def check_password_expiration

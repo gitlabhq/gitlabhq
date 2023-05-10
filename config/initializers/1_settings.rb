@@ -112,10 +112,6 @@ if Settings.omniauth['sync_email_from_provider']
 end
 
 Settings.omniauth['providers'] ||= []
-Settings.omniauth['cas3'] ||= {}
-Settings.omniauth.cas3['session_duration'] ||= 8.hours
-Settings.omniauth['session_tickets'] ||= {}
-Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
 # Handle backward compatibility with the renamed kerberos_spnego provider
 # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335#note_1094265436
@@ -232,7 +228,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.__send__(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_allowlist'] ||= []
-Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
+Settings.gitlab['import_sources'] ||= []
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['content_security_policy'] ||= {}
 Settings.gitlab['allowed_hosts'] ||= []

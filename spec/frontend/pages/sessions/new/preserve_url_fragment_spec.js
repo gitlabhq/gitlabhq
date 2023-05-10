@@ -31,18 +31,12 @@ describe('preserve_url_fragment', () => {
   it('does not add an empty query parameter to OmniAuth login buttons', () => {
     preserveUrlFragment();
 
-    expect(findFormAction('#oauth-login-cas3')).toBe('http://test.host/users/auth/cas3');
-
     expect(findFormAction('#oauth-login-auth0')).toBe('http://test.host/users/auth/auth0');
   });
 
   describe('adds "redirect_fragment" query parameter to OmniAuth login buttons', () => {
     it('when "remember_me" is not present', () => {
       preserveUrlFragment('#L65');
-
-      expect(findFormAction('#oauth-login-cas3')).toBe(
-        'http://test.host/users/auth/cas3?redirect_fragment=L65',
-      );
 
       expect(findFormAction('#oauth-login-auth0')).toBe(
         'http://test.host/users/auth/auth0?redirect_fragment=L65',
@@ -55,10 +49,6 @@ describe('preserve_url_fragment', () => {
         .attr('action', (i, href) => `${href}?remember_me=1`);
 
       preserveUrlFragment('#L65');
-
-      expect(findFormAction('#oauth-login-cas3')).toBe(
-        'http://test.host/users/auth/cas3?remember_me=1&redirect_fragment=L65',
-      );
 
       expect(findFormAction('#oauth-login-auth0')).toBe(
         'http://test.host/users/auth/auth0?remember_me=1&redirect_fragment=L65',

@@ -53,17 +53,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'modify import sources' do
-        expect(current_settings.import_sources).not_to be_empty
-
-        page.within('[data-testid="admin-visibility-access-settings"]') do
-          Gitlab::ImportSources.options.map do |name, _|
-            uncheck name
-          end
-
-          click_button 'Save changes'
-        end
-
-        expect(page).to have_content "Application settings saved successfully"
         expect(current_settings.import_sources).to be_empty
 
         page.within('[data-testid="admin-visibility-access-settings"]') do

@@ -23,6 +23,8 @@ RSpec.describe Gitlab::LegacyGithubImport::ProjectCreator do
     allow_next_instance_of(Project) do |project|
       allow(project).to receive(:add_import_job)
     end
+
+    stub_application_setting(import_sources: ['github'])
   end
 
   describe '#execute' do

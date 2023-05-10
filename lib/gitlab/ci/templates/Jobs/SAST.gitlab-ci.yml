@@ -198,20 +198,12 @@ pmd-apex-sast:
 
 security-code-scan-sast:
   extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: '3'
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/security-code-scan:$SAST_ANALYZER_IMAGE_TAG"
+  script:
+    - echo "This job was deprecated in GitLab 15.9 and removed in GitLab 16.0"
+    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/390416"
+    - exit 1
   rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /security-code-scan/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.csproj'
-        - '**/*.vbproj'
+    - when: never
 
 semgrep-sast:
   extends: .sast-analyzer

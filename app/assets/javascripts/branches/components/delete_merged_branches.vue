@@ -102,6 +102,7 @@ export default {
       category="tertiary"
       no-caret
       placement="right"
+      data-qa-selector="delete_merged_branches_dropdown_button"
       :items="dropdownItems"
     />
     <gl-modal

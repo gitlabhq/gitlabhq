@@ -256,6 +256,10 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :projects 
     it_behaves_like 'has sync-ed traversal_ids'
 
     context 'when project is an import' do
+      before do
+        stub_application_setting(import_sources: ['gitlab_project'])
+      end
+
       context 'when user is not allowed to import projects' do
         let(:group) do
           create(:group).tap do |group|

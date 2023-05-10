@@ -354,7 +354,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
             wait_for_requests
           end
 
-          it 'enqueues the delayed job', :js do
+          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409990' do
             expect(delayed_job.reload).to be_pending
           end
         end

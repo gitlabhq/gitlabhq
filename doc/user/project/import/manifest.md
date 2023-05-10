@@ -17,6 +17,9 @@ repositories like the Android Open Source Project (AOSP).
 
 ## Requirements
 
+- [Manifest import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+must be enabled. If not enabled, ask your GitLab administrator to enable it. The Manifest import source is enabled
+by default on GitLab.com.
 - GitLab must use PostgreSQL for its database, because [subgroups](../../group/subgroups/index.md) are needed for the manifest import
   to work. Read more about the [database requirements](../../../install/requirements.md#database).
 - At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was

@@ -14,6 +14,8 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
   before do
     namespace.add_owner(user) if user
+
+    stub_application_setting(import_sources: ['gitlab_project'])
   end
 
   shared_examples 'requires authentication' do
@@ -23,6 +25,20 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       subject
 
       expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
+  shared_examples 'requires import source to be enabled' do
+    context 'when gitlab_project import_sources is disabled' do
+      before do
+        stub_application_setting(import_sources: [])
+      end
+
+      it 'returns 403' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 
@@ -43,6 +59,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
 
     it_behaves_like 'requires authentication'
+    it_behaves_like 'requires import source to be enabled'
 
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
@@ -337,6 +354,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
 
     it_behaves_like 'requires authentication'
+    it_behaves_like 'requires import source to be enabled'
 
     context 'when the response is successful' do
       it 'schedules the import successfully' do
@@ -402,6 +420,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
 
     it_behaves_like 'requires authentication'
+    it_behaves_like 'requires import source to be enabled'
 
     context 'when the response is successful' do
       it 'schedules the import successfully' do
@@ -496,6 +515,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     subject { post api('/projects/import/authorize', user), headers: workhorse_headers }
 
     it_behaves_like 'requires authentication'
+    it_behaves_like 'requires import source to be enabled'
 
     it 'authorizes importing project with workhorse header' do
       subject

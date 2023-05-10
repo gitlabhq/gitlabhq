@@ -62,14 +62,6 @@ PATH
       omniauth-oauth2 (~> 1.4)
 
 PATH
-  remote: vendor/gems/omniauth-cas3
-  specs:
-    omniauth-cas3 (1.1.4)
-      addressable (~> 2.3)
-      nokogiri (~> 1.7, >= 1.7.1)
-      omniauth (~> 2.0)
-
-PATH
   remote: vendor/gems/omniauth-gitlab
   specs:
     omniauth-gitlab (4.0.0)
@@ -1849,7 +1841,6 @@ DEPENDENCIES
   omniauth-auth0 (~> 3.1)
   omniauth-azure-activedirectory-v2 (~> 2.0)
   omniauth-azure-oauth2 (~> 0.0.9)!
-  omniauth-cas3 (~> 1.1.4)!
   omniauth-dingtalk-oauth2 (~> 1.0)
   omniauth-facebook (~> 4.0.0)
   omniauth-github (= 2.0.1)
@@ -1920,7 +1911,7 @@ DEPENDENCIES
   sassc-rails (~> 2.1.0)
   sd_notify (~> 0.1.0)
   seed-fu (~> 2.3.7)
-  selenium-webdriver (~> 4.9.0)
+  selenium-webdriver (= 4.9.0)
   semver_dialects (~> 1.2.1)
   sentry-rails (~> 5.8.0)
   sentry-raven (~> 3.1)

@@ -13,6 +13,8 @@ RSpec.describe Import::ManifestController, :clean_gitlab_redis_shared_state, fea
   end
 
   before do
+    stub_application_setting(import_sources: ['manifest'])
+
     sign_in(user)
   end
 

@@ -294,6 +294,9 @@ module Projects
 
       return if INTERNAL_IMPORT_SOURCES.include?(import_type)
 
+      # Skip validation when creating project from a built in template
+      return if @params[:import_export_upload].present? && import_type == 'gitlab_project'
+
       unless ::Gitlab::CurrentSettings.import_sources&.include?(import_type)
         raise ImportSourceDisabledError, "#{import_type} import source is disabled"
       end

@@ -10,6 +10,10 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
 
   include_context 'a GitHub-ish import controller'
 
+  before do
+    stub_application_setting(import_sources: ['gitea'])
+  end
+
   def assign_host_url
     session[:gitea_host_url] = host_url
   end

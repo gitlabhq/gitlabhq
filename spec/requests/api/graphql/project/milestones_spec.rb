@@ -137,18 +137,6 @@ RSpec.describe 'getting milestone listings nested in a project', feature_categor
     it_behaves_like 'searching with parameters'
   end
 
-  context 'searching by custom range' do
-    let(:expected) { [no_end, fully_future] }
-    let(:search_params) do
-      {
-        start_date: (today + 6.days).iso8601,
-        end_date: (today + 7.days).iso8601
-      }
-    end
-
-    it_behaves_like 'searching with parameters'
-  end
-
   context 'using timeframe argument' do
     let(:expected) { [no_end, fully_future] }
     let(:search_params) do
@@ -186,23 +174,6 @@ RSpec.describe 'getting milestone listings nested in a project', feature_categor
 
         post_graphql(query, current_user: current_user, variables: vars)
       end
-    end
-
-    it 'is invalid to provide timeframe and start_date/end_date' do
-      query = <<~GQL
-        query($path: ID!, $tstart: Date!, $tend: Date!, $start: Time!, $end: Time!) {
-          project(fullPath: $path) {
-            milestones(timeframe: { start: $tstart, end: $tend }, startDate: $start, endDate: $end) {
-              nodes { id }
-            }
-          }
-        }
-      GQL
-
-      post_graphql(query, current_user: current_user,
-                          variables: vars.merge(vars.transform_keys { |k| :"t#{k}" }))
-
-      expect(graphql_errors).to contain_exactly(a_hash_including('message' => include('deprecated in favor of timeframe')))
     end
 
     it 'is invalid to invert the timeframe arguments' do

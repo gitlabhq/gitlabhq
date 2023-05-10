@@ -11815,7 +11815,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicancestorsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
 | <a id="boardepicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
 | <a id="boardepicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
-| <a id="boardepicancestorsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="boardepicancestorsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="boardepicancestorsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
 | <a id="boardepicancestorsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of epics, e.g., `[1, 2]`. |
@@ -11829,7 +11828,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
-| <a id="boardepicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="boardepicancestorsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="boardepicancestorstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="boardepicancestorstoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
@@ -11854,7 +11852,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicchildrenconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
 | <a id="boardepicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
 | <a id="boardepicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
-| <a id="boardepicchildrenenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="boardepicchildreniid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="boardepicchildreniidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
 | <a id="boardepicchildreniids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of epics, e.g., `[1, 2]`. |
@@ -11868,7 +11865,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="boardepicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
-| <a id="boardepicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="boardepicchildrenstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="boardepicchildrentimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="boardepicchildrentoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
@@ -14011,7 +14007,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicancestorsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
 | <a id="epicancestorscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
 | <a id="epicancestorscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
-| <a id="epicancestorsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="epicancestorsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="epicancestorsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
 | <a id="epicancestorsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of epics, e.g., `[1, 2]`. |
@@ -14025,7 +14020,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
-| <a id="epicancestorsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="epicancestorsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="epicancestorstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="epicancestorstoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
@@ -14050,7 +14044,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicchildrenconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
 | <a id="epicchildrencreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
 | <a id="epicchildrencreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
-| <a id="epicchildrenenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="epicchildreniid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="epicchildreniidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
 | <a id="epicchildreniids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of epics, e.g., `[1, 2]`. |
@@ -14064,7 +14057,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="epicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
-| <a id="epicchildrenstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="epicchildrenstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="epicchildrentimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="epicchildrentoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
@@ -15126,7 +15118,6 @@ Returns [`Epic`](#epic).
 | <a id="groupepicconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
 | <a id="groupepiccreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
 | <a id="groupepiccreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
-| <a id="groupepicenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupepiciid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="groupepiciidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
 | <a id="groupepiciids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of epics, e.g., `[1, 2]`. |
@@ -15140,7 +15131,6 @@ Returns [`Epic`](#epic).
 | <a id="groupepicor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicsort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
-| <a id="groupepicstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupepicstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="groupepictimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupepictoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
@@ -15177,7 +15167,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupepicsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter epics by given confidentiality. |
 | <a id="groupepicscreatedafter"></a>`createdAfter` | [`Time`](#time) | Epics created after this date. |
 | <a id="groupepicscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Epics created before this date. |
-| <a id="groupepicsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupepicsiid"></a>`iid` | [`ID`](#id) | IID of the epic, e.g., "1". |
 | <a id="groupepicsiidstartswith"></a>`iidStartsWith` | [`String`](#string) | Filter epics by IID for autocomplete. |
 | <a id="groupepicsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of epics, e.g., `[1, 2]`. |
@@ -15191,7 +15180,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupepicsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. This feature is an Experiment. It can be changed or removed at any time. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
-| <a id="groupepicsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupepicsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
 | <a id="groupepicstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupepicstoplevelhierarchyonly"></a>`topLevelHierarchyOnly` | [`Boolean`](#boolean) | Filter epics with a top-level hierarchy. |
@@ -15317,7 +15305,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupiterationsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupiterationsid"></a>`id` | [`ID`](#id) | Global ID of the Iteration to look up. |
 | <a id="groupiterationsiid"></a>`iid` | [`ID`](#id) | Internal ID of the Iteration to look up. |
 | <a id="groupiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
@@ -15325,7 +15312,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
 | <a id="groupiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. Returns all iterations if empty. |
 | <a id="groupiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
-| <a id="groupiterationsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
 | <a id="groupiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
@@ -15428,13 +15414,11 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupmilestonescontainingdate"></a>`containingDate` | [`Time`](#time) | Date the milestone contains. |
-| <a id="groupmilestonesenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="groupmilestonesids"></a>`ids` | [`[ID!]`](#id) | Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`. |
 | <a id="groupmilestonesincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include milestones from all parent groups. |
 | <a id="groupmilestonesincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include milestones from all subgroups and subprojects. |
 | <a id="groupmilestonessearchtitle"></a>`searchTitle` | [`String`](#string) | Search string for the title. |
 | <a id="groupmilestonessort"></a>`sort` | [`MilestoneSort`](#milestonesort) | Sort milestones by this criteria. |
-| <a id="groupmilestonesstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="groupmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="groupmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
@@ -18897,7 +18881,6 @@ Represents a product analytics dashboard visualization.
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |
-| <a id="projectjitsukey"></a>`jitsuKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.7. This feature is an Experiment. It can be changed or removed at any time. Jitsu key assigned to the project. |
 | <a id="projectjobsenabled"></a>`jobsEnabled` | [`Boolean`](#boolean) | Indicates if CI/CD pipeline jobs are enabled for the current user. |
 | <a id="projectlanguages"></a>`languages` | [`[RepositoryLanguage!]`](#repositorylanguage) | Programming languages used in the project. |
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
@@ -18945,6 +18928,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
 | <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. This feature is an Experiment. It can be changed or removed at any time. Timelog categories for the project. |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
+| <a id="projecttrackingkey"></a>`trackingKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Tracking key assigned to the project. |
 | <a id="projectuseraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvisibility"></a>`visibility` | [`String`](#string) | Visibility of the project. |
@@ -19614,7 +19598,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectiterationsenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="projectiterationsid"></a>`id` | [`ID`](#id) | Global ID of the Iteration to look up. |
 | <a id="projectiterationsiid"></a>`iid` | [`ID`](#id) | Internal ID of the Iteration to look up. |
 | <a id="projectiterationsin"></a>`in` | [`[IterationSearchableField!]`](#iterationsearchablefield) | Fields in which the fuzzy-search should be performed with the query given in the argument `search`. Defaults to `[title]`. |
@@ -19622,7 +19605,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectiterationsiterationcadenceids"></a>`iterationCadenceIds` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Global iteration cadence IDs by which to look up the iterations. |
 | <a id="projectiterationssearch"></a>`search` | [`String`](#string) | Query used for fuzzy-searching in the fields selected in the argument `in`. Returns all iterations if empty. |
 | <a id="projectiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
-| <a id="projectiterationsstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="projectiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
 | <a id="projectiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
@@ -19746,12 +19728,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectmilestonescontainingdate"></a>`containingDate` | [`Time`](#time) | Date the milestone contains. |
-| <a id="projectmilestonesenddate"></a>`endDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.end. |
 | <a id="projectmilestonesids"></a>`ids` | [`[ID!]`](#id) | Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`. |
 | <a id="projectmilestonesincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Also return milestones in the project's parent group and its ancestors. |
 | <a id="projectmilestonessearchtitle"></a>`searchTitle` | [`String`](#string) | Search string for the title. |
 | <a id="projectmilestonessort"></a>`sort` | [`MilestoneSort`](#milestonesort) | Sort milestones by this criteria. |
-| <a id="projectmilestonesstartdate"></a>`startDate` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 13.5. Use timeframe.start. |
 | <a id="projectmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="projectmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |

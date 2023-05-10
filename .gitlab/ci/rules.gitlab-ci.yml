@@ -2042,12 +2042,6 @@
       changes: ["vendor/gems/omniauth-azure-oauth2/**/*"]
     - <<: *if-merge-request-labels-run-all-rspec
 
-.vendor:rules:omniauth-cas3:
-  rules:
-    - <<: *if-merge-request
-      changes: ["vendor/gems/omniauth-cas3/**/*"]
-    - <<: *if-merge-request-labels-run-all-rspec
-
 .vendor:rules:omniauth_crowd:
   rules:
     - <<: *if-merge-request

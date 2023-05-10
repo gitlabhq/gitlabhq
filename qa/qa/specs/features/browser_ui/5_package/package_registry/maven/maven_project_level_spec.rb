@@ -190,6 +190,8 @@ module QA
       end
 
       before do
+        QA::Support::Helpers::ImportSource.enable('git')
+
         Runtime::Feature.enable(:maven_central_request_forwarding)
         Flow::Login.sign_in_unless_signed_in
 

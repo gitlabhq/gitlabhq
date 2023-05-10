@@ -5,6 +5,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
   <gl-base-dropdown-stub
     category="tertiary"
     class="gl-disclosure-dropdown"
+    data-qa-selector="delete_merged_branches_dropdown_button"
     icon="ellipsis_v"
     nocaret="true"
     placement="right"

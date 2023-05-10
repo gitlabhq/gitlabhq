@@ -208,6 +208,22 @@ NOTE:
 Cloudflare. Git LFS and imports other than a file upload are not affected by
 this limit. Repository limits apply to both public and private projects.
 
+## Import sources
+
+GitLab.com has the following import sources enabled.
+
+| Import source          | GitLab.com default | Default (self-managed)     |
+|------------------------|--------------------| ---------------------------|
+| Bitbucket Cloud        | **{check-circle}** Yes | **{dotted-circle}** No |
+| Bitbucket Server       | **{check-circle}** Yes | **{dotted-circle}** No |
+| FogBugz                | **{check-circle}** Yes | **{dotted-circle}** No |
+| GitLab Direct Transfer | **{check-circle}** Yes | **{dotted-circle}** No |
+| Gitea                  | **{check-circle}** Yes | **{dotted-circle}** No |
+| GitHub                 | **{check-circle}** Yes | **{dotted-circle}** No |
+| GitLab export          | **{check-circle}** Yes | **{dotted-circle}** No |
+| Manifest file          | **{check-circle}** Yes | **{dotted-circle}** No |
+| Repository by URL      | **{check-circle}** Yes | **{dotted-circle}** No |
+
 ## IP range
 
 GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API

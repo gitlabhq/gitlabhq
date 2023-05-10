@@ -38,14 +38,6 @@ vendor omniauth-azure-oauth2:
     include: vendor/gems/omniauth-azure-oauth2/.gitlab-ci.yml
     strategy: depend
 
-vendor omniauth-cas3:
-  extends:
-    - .vendor:rules:omniauth-cas3
-  needs: []
-  trigger:
-    include: vendor/gems/omniauth-cas3/.gitlab-ci.yml
-    strategy: depend
-
 vendor omniauth_crowd:
   extends:
     - .vendor:rules:omniauth_crowd

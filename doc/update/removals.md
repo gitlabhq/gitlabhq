@@ -59,6 +59,14 @@ The Azure Storage Driver used to write to `//` as the default root directory. Th
 
 In GitLab 16.0, the new default configuration for the storage driver uses `trimlegacyrootprefix: true`, and `/` is the default root directory. You can set your configuration to `trimlegacyrootprefix: false` if needed, to revert to the previous behavior.
 
+### CAS OmniAuth provider is removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `omniauth-cas3` gem that provides GitLab with the CAS OmniAuth provider is being removed. You can no longer authenticate into a GitLab instance through CAS. This gem sees very little use. [The gem](https://rubygems.org/gems/omniauth-cas3/) has not had a new release in almost 5 years, which means that its dependencies are out of date and required manual patching during GitLab's [upgrade to OmniAuth 2.0](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
+
 ### CiCdSettingsUpdate mutation renamed to ProjectCiCdSettingsUpdate
 
 WARNING:

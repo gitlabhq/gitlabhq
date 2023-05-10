@@ -10,7 +10,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   after_action :verify_known_sign_in
 
-  protect_from_forgery except: [:cas3, :failure] + AuthHelper.saml_providers, with: :exception, prepend: true
+  protect_from_forgery except: [:failure] + AuthHelper.saml_providers, with: :exception, prepend: true
 
   feature_category :system_access
 
@@ -55,15 +55,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     omniauth_flow(Gitlab::Auth::Saml)
   rescue Gitlab::Auth::Saml::IdentityLinker::UnverifiedRequest
     redirect_unverified_saml_initiation
-  end
-
-  def cas3
-    ticket = params['ticket']
-    if ticket
-      handle_service_ticket oauth['provider'], ticket
-    end
-
-    handle_omniauth
   end
 
   def auth0
@@ -144,12 +135,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def redirect_identity_linked
     redirect_to profile_account_path, notice: _('Authentication method updated')
-  end
-
-  def handle_service_ticket(provider, ticket)
-    Gitlab::Auth::OAuth::Session.create provider, ticket
-    session[:service_tickets] ||= {}
-    session[:service_tickets][provider] = ticket
   end
 
   def build_auth_user(auth_user_class)

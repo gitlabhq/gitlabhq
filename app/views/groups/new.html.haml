@@ -16,11 +16,6 @@
         = render 'new_group_fields', f: f, group_name_id: 'create-group-name'
 
     #import-group-pane.tab-pane
-      - if import_sources_enabled?
-        = render 'import_group_from_another_instance_panel'
-        .gl-mt-7.gl-border-b-solid.gl-border-gray-100.gl-border-1
-        = render 'import_group_from_file_panel'
-      - else
-        .nothing-here-block
-          %h4= s_('GroupsNew|No import options available')
-          %p= s_('GroupsNew|Contact an administrator to enable options for importing your group.')
+      = render 'import_group_from_another_instance_panel'
+      .gl-mt-7.gl-border-b-solid.gl-border-gray-100.gl-border-1
+      = render 'import_group_from_file_panel'

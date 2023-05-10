@@ -24,6 +24,7 @@ module QA
           end
 
           view 'app/assets/javascripts/branches/components/delete_merged_branches.vue' do
+            element :delete_merged_branches_dropdown_button
             element :delete_merged_branches_button
             element :delete_merged_branches_input
             element :delete_merged_branches_confirmation_button
@@ -54,6 +55,7 @@ module QA
           end
 
           def delete_merged_branches(branches_length)
+            click_element(:delete_merged_branches_dropdown_button)
             click_element(:delete_merged_branches_button)
             fill_element(:delete_merged_branches_input, branches_length)
             click_element(:delete_merged_branches_confirmation_button)

@@ -87,11 +87,15 @@ module QA
         end
 
         def click_github_link
-          click_link 'GitHub'
+          retry_until(reload: true, max_attempts: 10, message: 'Waiting for import source to be enabled') do
+            click_link 'GitHub'
+          end
         end
 
         def click_repo_by_url_link
-          click_button 'Repository by URL'
+          retry_until(reload: true, max_attempts: 10, message: 'Waiting for import source to be enabled') do
+            click_button 'Repository by URL'
+          end
         end
 
         def disable_initialize_with_readme

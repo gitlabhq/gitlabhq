@@ -18,6 +18,7 @@ RSpec.describe Import::FogbugzService, feature_category: :importers do
 
   before do
     allow(subject).to receive(:authorized?).and_return(true)
+    stub_application_setting(import_sources: ['fogbugz'])
   end
 
   context 'when no repo is found' do

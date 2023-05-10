@@ -38,6 +38,9 @@ For an overview of the import process, see [Migrating from GitHub to GitLab](htt
 
 To import projects from GitHub:
 
+- [GitHub import source](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+  must be enabled. If not enabled, ask your GitLab administrator to enable it. The GitHub import source is enabled
+  by default on GitLab.com.
 - You must have at least the Maintainer role on the destination group to import to. Using the Developer role for this
   purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
   GitLab 16.0.
@@ -61,6 +64,8 @@ perimeter is specified in the [OmniAuth configuration](../../../integration/gith
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
+- GitHub must be enabled as an import source in the
+  [Admin Area](../../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
 - For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
   [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 

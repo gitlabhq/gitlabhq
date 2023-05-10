@@ -12,6 +12,8 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
 
   before do
     login_as(user)
+
+    stub_application_setting(import_sources: ['gitlab_project'])
   end
 
   describe 'POST create' do

@@ -9,6 +9,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
     let_it_be(:user) { create(:user) }
 
     before do
+      stub_application_setting(import_sources: ['github'])
+
       login_as(user)
     end
 

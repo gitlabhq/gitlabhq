@@ -1431,6 +1431,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
         body: '001e# service=git-upload-pack',
         headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' }
       }
+      stub_application_setting(import_sources: ['git'])
       stub_full_request(endpoint_url, method: :get).to_return(git_response)
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
 

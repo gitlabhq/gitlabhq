@@ -331,7 +331,7 @@ table.supported-languages ul {
         <div class="highlight">
 <pre class="highlight"><code><span class="na">gemnasium-dependency_scanning</span><span class="pi">:</span>
   <span class="na">image</span><span class="pi">:</span>
-    <span class="na">name</span><span class="pi">:</span> <span class="s">$CI_TEMPLATE_REGISTRY_HOST/security-products/gemnasium-python:3-python-3.10</span></code></pre></div></div>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">$CI_TEMPLATE_REGISTRY_HOST/security-products/gemnasium-python:4-python-3.10</span></code></pre></div></div>
     </p>
   </li>
   <li>
@@ -1010,9 +1010,9 @@ import the following default dependency scanning analyzer images from `registry.
 your [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/gemnasium:3
-registry.gitlab.com/security-products/gemnasium-maven:3
-registry.gitlab.com/security-products/gemnasium-python:3
+registry.gitlab.com/security-products/gemnasium:4
+registry.gitlab.com/security-products/gemnasium-maven:4
+registry.gitlab.com/security-products/gemnasium-python:4
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

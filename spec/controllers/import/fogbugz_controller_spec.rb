@@ -11,6 +11,8 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
   let(:namespace_id) { 5 }
 
   before do
+    stub_application_setting(import_sources: ['fogbugz'])
+
     sign_in(user)
   end
 
