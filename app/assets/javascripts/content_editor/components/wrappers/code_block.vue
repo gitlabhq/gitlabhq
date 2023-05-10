@@ -82,6 +82,7 @@ export default {
     <node-view-wrapper
       :class="`content-editor-code-block gl-relative code highlight gl-p-3 ${$options.userColorScheme}`"
       as="pre"
+      dir="auto"
     >
       <div
         v-if="node.attrs.showPreview"

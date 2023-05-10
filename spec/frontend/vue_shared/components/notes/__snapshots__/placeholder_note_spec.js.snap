@@ -57,7 +57,9 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
         <div
           class="note-text md"
         >
-          <p>
+          <p
+            dir="auto"
+          >
             Foo
           </p>
           

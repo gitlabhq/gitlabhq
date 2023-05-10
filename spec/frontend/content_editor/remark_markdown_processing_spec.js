@@ -1349,7 +1349,7 @@ alert("Hello world")
       markdown: `
 <h1 class="heading-with-class">Header</h1>
       `,
-      expectedHtml: '<h1>Header</h1>',
+      expectedHtml: '<h1 dir="auto">Header</h1>',
     },
     {
       markdown: `

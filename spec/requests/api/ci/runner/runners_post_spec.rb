@@ -15,14 +15,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       context 'when invalid token is provided' do
         it 'returns 403 error' do
-          allow_next_instance_of(::Ci::Runners::RegisterRunnerService) do |service|
-            allow(service).to receive(:execute)
-              .and_return(ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden))
-          end
-
           post api('/runners'), params: { token: 'invalid' }
 
           expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - invalid token supplied')
         end
       end
 

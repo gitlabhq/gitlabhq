@@ -8,6 +8,9 @@ module Integrations::Actions
     include IntegrationsHelper
 
     before_action :integration, only: [:edit, :update, :overrides, :test]
+    before_action :render_404, only: :edit, if: -> do
+      integration.to_param == 'prometheus' && Feature.enabled?(:remove_monitor_metrics)
+    end
 
     urgency :low, [:test]
   end

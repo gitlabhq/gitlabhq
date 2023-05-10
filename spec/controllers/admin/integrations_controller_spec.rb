@@ -6,6 +6,7 @@ RSpec.describe Admin::IntegrationsController do
   let(:admin) { create(:admin) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(admin)
   end
 

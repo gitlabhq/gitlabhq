@@ -21,6 +21,5 @@
 
 = render 'shared/integration_settings', integration: integration
 - if lookup_context.template_exists?('show', "shared/integrations/#{integration.to_param}", true)
-  - if !(integration.to_param == 'prometheus' && Feature.enabled?(:remove_monitor_metrics))
-    %hr
-    = render "shared/integrations/#{integration.to_param}/show", integration: integration
+  %hr
+  = render "shared/integrations/#{integration.to_param}/show", integration: integration

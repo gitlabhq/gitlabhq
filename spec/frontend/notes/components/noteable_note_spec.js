@@ -333,7 +333,7 @@ describe('issue_note', () => {
       await nextTick();
       let noteBodyProps = noteBody.props();
 
-      expect(noteBodyProps.note.note_html).toBe(`<p>${updatedText}</p>\n`);
+      expect(noteBodyProps.note.note_html).toBe(`<p dir="auto">${updatedText}</p>\n`);
 
       noteBody.vm.$emit('cancelForm', {});
       await nextTick();

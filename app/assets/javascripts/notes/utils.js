@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import markedBidi from 'marked-bidi';
 import { sanitize } from '~/lib/dompurify';
 import { markdownConfig } from '~/lib/utils/text_utility';
 
@@ -12,6 +13,8 @@ export const trackToggleTimelineView = (enabled) => ({
   label: 'Status', // eslint-disable-line @gitlab/require-i18n-strings
   property: enabled,
 });
+
+marked.use(markedBidi());
 
 export const renderMarkdown = (rawMarkdown) => {
   return sanitize(marked(rawMarkdown), markdownConfig);

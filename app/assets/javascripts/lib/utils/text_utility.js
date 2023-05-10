@@ -483,7 +483,7 @@ export const markdownConfig = {
     'ul',
     'var',
   ],
-  ALLOWED_ATTR: ['class', 'style', 'href', 'src'],
+  ALLOWED_ATTR: ['class', 'style', 'href', 'src', 'dir'],
   ALLOW_DATA_ATTR: false,
 };
 

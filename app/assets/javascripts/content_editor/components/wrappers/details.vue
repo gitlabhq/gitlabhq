@@ -28,6 +28,6 @@ export default {
       :class="{ 'is-open': open }"
       @click="open = !open"
     ></div>
-    <node-view-content as="ul" class="details-content" :class="{ 'is-open': open }" />
+    <node-view-content as="ul" class="details-content" :class="{ 'is-open': open }" dir="auto" />
   </node-view-wrapper>
 </template>

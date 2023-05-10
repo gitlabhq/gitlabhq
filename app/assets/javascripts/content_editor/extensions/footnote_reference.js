@@ -17,6 +17,14 @@ export default Node.create({
 
   selectable: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   addAttributes() {
     return {
       identifier: {
@@ -35,6 +43,6 @@ export default Node.create({
   },
 
   renderHTML({ HTMLAttributes: { label, ...HTMLAttributes } }) {
-    return ['sup', mergeAttributes(HTMLAttributes), label];
+    return ['sup', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), label];
   },
 });

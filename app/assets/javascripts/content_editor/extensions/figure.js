@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { Node, mergeAttributes } from '@tiptap/core';
 
 export default Node.create({
   name: 'figure',
@@ -6,11 +6,19 @@ export default Node.create({
   group: 'block',
   defining: true,
 
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        dir: 'auto',
+      },
+    };
+  },
+
   parseHTML() {
     return [{ tag: 'figure' }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['figure', HTMLAttributes, 0];
+    return ['figure', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
   },
 });

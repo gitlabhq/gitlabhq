@@ -30,6 +30,11 @@ export default {
       required: false,
       default: 'div',
     },
+    collectionStyle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -89,7 +94,13 @@ export default {
         </slot>
       </span>
 
-      <span class="gl-pr-3 gl-text-gray-900 gl-truncate-end">
+      <span
+        class="gl-pr-3 gl-truncate-end gl-text-gray-900"
+        :class="{
+          'gl-font-sm gl-font-weight-semibold': collectionStyle,
+        }"
+        data-testid="section-title"
+      >
         {{ item.title }}
       </span>
 

@@ -80,7 +80,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       expect(page).to have_content('test')
       expect(page).to have_content('deploy')
       expect(page).to have_content('Retry')
-      expect(page).to have_content('Cancel running')
+      expect(page).to have_content('Cancel pipeline')
     end
 
     it 'shows link to the pipeline ref' do
@@ -625,11 +625,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
 
       context 'when canceling' do
         before do
-          click_on 'Cancel running'
+          click_on 'Cancel pipeline'
         end
 
-        it 'does not show a "Cancel running" button', :sidekiq_might_not_need_inline do
-          expect(page).not_to have_content('Cancel running')
+        it 'does not show a "Cancel pipeline" button', :sidekiq_might_not_need_inline do
+          expect(page).not_to have_content('Cancel pipeline')
         end
       end
     end
@@ -847,7 +847,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
         expect(page).to have_content('test')
         expect(page).to have_content('deploy')
         expect(page).to have_content('Retry')
-        expect(page).to have_content('Cancel running')
+        expect(page).to have_content('Cancel pipeline')
       end
 
       it 'does not link to job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do
@@ -1093,7 +1093,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       expect(page).to have_content(build_running.id)
       expect(page).to have_content(build_external.id)
       expect(page).to have_content('Retry')
-      expect(page).to have_content('Cancel running')
+      expect(page).to have_content('Cancel pipeline')
       expect(page).to have_button('Play')
     end
 
@@ -1128,11 +1128,11 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
 
       context 'when canceling' do
         before do
-          click_on 'Cancel running'
+          click_on 'Cancel pipeline'
         end
 
-        it 'does not show a "Cancel running" button', :sidekiq_might_not_need_inline do
-          expect(page).not_to have_content('Cancel running')
+        it 'does not show a "Cancel pipeline" button', :sidekiq_might_not_need_inline do
+          expect(page).not_to have_content('Cancel pipeline')
         end
       end
     end

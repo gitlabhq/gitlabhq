@@ -4,15 +4,23 @@ module Gitlab
   module Middleware
     class CompressedJson
       COLLECTOR_PATH = '/api/v4/error_tracking/collector'
-      PACKAGES_PATH = %r{
-        \A/api/v4/ (?# prefix)
-        (?:projects/
-          (?<project_id>
-            .+ (?# at least one character)
-          )/
-        )? (?# projects segment)
-       packages/npm/-/npm/v1/security/
-       (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
+      INSTANCE_PACKAGES_PATH = %r{
+        \A/api/v4/packages/npm/-/npm/v1/security/
+        (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
+      }xi.freeze
+      GROUP_PACKAGES_PATH = %r{
+        \A/api/v4/groups/
+        (?<id>
+        [a-zA-Z0-9%-._]{1,255}
+        )/-/packages/npm/-/npm/v1/security/
+        (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
+      }xi.freeze
+      PROJECT_PACKAGES_PATH = %r{
+        \A/api/v4/projects/
+        (?<id>
+        [a-zA-Z0-9%-._]{1,255}
+        )/packages/npm/-/npm/v1/security/
+        (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
       }xi.freeze
       MAXIMUM_BODY_SIZE = 200.kilobytes.to_i
       UNSAFE_CHARACTERS = %r{[!"#&'()*+,./:;<>=?@\[\]^`{}|~$]}xi.freeze
@@ -76,16 +84,19 @@ module Gitlab
       end
 
       def match_packages_path?(env)
-        match_data = env['PATH_INFO'].delete_prefix(relative_url).match(PACKAGES_PATH)
+        path = env['PATH_INFO'].delete_prefix(relative_url)
+        match_data = path.match(INSTANCE_PACKAGES_PATH) ||
+          path.match(PROJECT_PACKAGES_PATH) ||
+          path.match(GROUP_PACKAGES_PATH)
         return false unless match_data
 
-        return true unless match_data[:project_id] # instance level endpoint was matched
+        return true if match_data.names.empty? # instance level endpoint was matched
 
-        url_encoded?(match_data[:project_id])
+        url_encoded?(match_data[:id])
       end
 
-      def url_encoded?(project_id)
-        project_id !~ UNSAFE_CHARACTERS
+      def url_encoded?(id)
+        id !~ UNSAFE_CHARACTERS
       end
     end
   end

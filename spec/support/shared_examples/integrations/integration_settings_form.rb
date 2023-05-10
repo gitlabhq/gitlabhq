@@ -2,6 +2,11 @@
 
 RSpec.shared_examples 'integration settings form' do
   include IntegrationsHelper
+
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
+  end
+
   # Note: these specs don't validate channel fields
   # which are present on a few integrations
   it 'displays all the integrations', feature_category: :integrations do

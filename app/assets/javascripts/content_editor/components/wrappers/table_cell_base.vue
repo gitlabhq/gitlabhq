@@ -110,6 +110,7 @@ export default {
   <node-view-wrapper
     class="gl-relative gl-padding-5 gl-min-w-10"
     :as="cellType"
+    dir="auto"
     @click="hideDropdown"
   >
     <span

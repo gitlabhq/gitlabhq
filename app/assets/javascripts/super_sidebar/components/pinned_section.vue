@@ -70,6 +70,7 @@ export default {
     :item="sectionItem"
     :expanded="expanded"
     :separated="true"
+    collection-style
     @collapse-toggle="expanded = !expanded"
   >
     <draggable

@@ -1,4 +1,4 @@
-import { GlTable, GlIcon } from '@gitlab/ui';
+import { GlTable, GlIcon, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import IntegrationsTable from '~/integrations/index/components/integrations_table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -10,11 +10,14 @@ describe('IntegrationsTable', () => {
 
   const findTable = () => wrapper.findComponent(GlTable);
 
-  const createComponent = (propsData = {}) => {
+  const createComponent = (propsData = {}, glFeatures = {}) => {
     wrapper = mount(IntegrationsTable, {
       propsData: {
         integrations: mockActiveIntegrations,
         ...propsData,
+      },
+      provide: {
+        glFeatures,
       },
     });
   };
@@ -46,4 +49,17 @@ describe('IntegrationsTable', () => {
       expect(findTable().findComponent(GlIcon).exists()).toBe(shouldRenderActiveIcon);
     });
   });
+
+  describe.each([true, false])(
+    'when `remove_monitor_metrics` flag  is %p',
+    (removeMonitorMetrics) => {
+      beforeEach(() => {
+        createComponent({ integrations: [mockInactiveIntegrations[3]] }, { removeMonitorMetrics });
+      });
+
+      it(`${removeMonitorMetrics ? 'does not render' : 'renders'} prometheus integration`, () => {
+        expect(findTable().findComponent(GlLink).exists()).toBe(!removeMonitorMetrics);
+      });
+    },
+  );
 });

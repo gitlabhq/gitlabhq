@@ -10,6 +10,9 @@ upgradeCheck:
 global:
   appConfig:
     enableUsagePing: false
+  extraEnv:
+    GITLAB_LICENSE_MODE: test
+    CUSTOMER_PORTAL_URL: https://customers.staging.gitlab.com
   image:
     pullPolicy: Always
   ingress:

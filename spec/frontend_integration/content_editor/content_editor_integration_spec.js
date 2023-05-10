@@ -52,7 +52,7 @@ describe('content_editor', () => {
     });
 
     describe('when the initial content is not empty', () => {
-      const initialContent = '<p><strong>bold text</strong></p>';
+      const initialContent = '<strong>bold text</strong> and <em>italic text</em>';
       beforeEach(async () => {
         mockRenderMarkdownResponse(initialContent);
 

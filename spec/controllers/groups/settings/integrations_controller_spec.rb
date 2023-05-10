@@ -7,6 +7,7 @@ RSpec.describe Groups::Settings::IntegrationsController do
   let_it_be(:group) { create(:group) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(user)
   end
 

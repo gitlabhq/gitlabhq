@@ -53,7 +53,7 @@ module API
 
           result = ::Ci::Runners::RegisterRunnerService.new(params[:token], attributes).execute
           @runner = result.success? ? result.payload[:runner] : nil
-          forbidden! unless @runner
+          forbidden!(result.message) unless @runner
 
           if @runner.persisted?
             present @runner, with: Entities::Ci::RunnerRegistrationDetails

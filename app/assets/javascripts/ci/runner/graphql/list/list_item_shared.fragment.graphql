@@ -16,7 +16,7 @@ fragment ListItemShared on CiRunner {
     ...User
   }
   contactedAt
-  status(legacyMode: null)
+  status
   jobExecutionStatus
   userPermissions {
     updateRunner

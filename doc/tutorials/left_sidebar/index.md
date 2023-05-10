@@ -32,6 +32,7 @@ Let's get started exploring the GitLab UI and left sidebar.
    ![Explore](img/explore_v16_0.png)
 
 1. On the right, above the list of projects, type search criteria.
+   The search finds projects with a matching description.
 
    ![Search projects](img/search_projects_v16_0.png)
 

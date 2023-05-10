@@ -107,7 +107,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         describe 'Cancel all builds' do
           it 'cancels commit', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
-            click_on 'Cancel running'
+            click_on 'Cancel pipeline'
             expect(page).to have_content 'canceled'
           end
         end
@@ -133,7 +133,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
-          expect(page).not_to have_link('Cancel running')
+          expect(page).not_to have_link('Cancel pipeline')
           expect(page).not_to have_link('Retry')
         end
 
@@ -156,7 +156,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
 
-          expect(page).not_to have_link('Cancel running')
+          expect(page).not_to have_link('Cancel pipeline')
           expect(page).not_to have_link('Retry')
         end
       end

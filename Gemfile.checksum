@@ -341,7 +341,7 @@
 {"name":"locale","version":"2.1.3","platform":"ruby","checksum":"b6ddee011e157817cb98e521b3ce7cb626424d5882f1e844aafdee3e8b212725"},
 {"name":"lockbox","version":"1.1.1","platform":"ruby","checksum":"0af16b14c54f791c148615a0115387b51903d868c7fe622f49606c97071c2ac0"},
 {"name":"lograge","version":"0.11.2","platform":"ruby","checksum":"4cbd1554b86f545d795eff15a0c24fd25057d2ac4e1caa5fc186168b3da932ef"},
-{"name":"loofah","version":"2.20.0","platform":"ruby","checksum":"e8fa874c8e2cd2fbdbecc1b6badc3f713639796aaca3f6dd494c4737828a24d6"},
+{"name":"loofah","version":"2.21.0","platform":"ruby","checksum":"ec407f23abdbd3481640c79342a9179320d297b30456df3b46381ba0981f025b"},
 {"name":"lookbook","version":"2.0.1","platform":"ruby","checksum":"0f14729c8c992810de0792a0be865a5792e5765fbaea5950cce74c6e5c73fc4a"},
 {"name":"lru_redux","version":"1.1.0","platform":"ruby","checksum":"ee71d0ccab164c51de146c27b480a68b3631d5b4297b8ffe8eda1c72de87affb"},
 {"name":"lumberjack","version":"1.2.7","platform":"ruby","checksum":"a5c6aae6b4234f1420dbcd80b23e3bca0817bd239440dde097ebe3fa63c63b1f"},

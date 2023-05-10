@@ -10,11 +10,11 @@ export default {
 };
 </script>
 <template>
-  <li>
+  <li dir="auto">
     <a v-if="heading.text" href="#" @click.prevent>
       {{ heading.text }}
     </a>
-    <ul v-if="heading.subHeadings.length">
+    <ul v-if="heading.subHeadings.length" dir="auto">
       <table-of-contents-heading
         v-for="(child, index) in heading.subHeadings"
         :key="index"

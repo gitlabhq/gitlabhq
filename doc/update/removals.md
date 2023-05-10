@@ -102,6 +102,17 @@ Review the details carefully before upgrading.
 
 GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
 
+### GraphQL API: Runner status no longer returns `PAUSED` and `ACTIVE` values
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 16.0 and later, the GraphQL query for runners will no longer return the statuses `PAUSED` and `ACTIVE`.
+
+- `PAUSED` has been replaced with the field, `paused: true`.
+- `ACTIVE` has been replaced with the field, `paused: false`.
+
 ### PipelineSecurityReportFinding name GraphQL field
 
 WARNING:

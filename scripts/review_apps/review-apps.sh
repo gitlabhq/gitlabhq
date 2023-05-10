@@ -208,14 +208,14 @@ function create_application_secret() {
     echoinfo "The 'shared-gitlab-initial-root-password' secret already exists in the ${namespace} namespace."
   fi
 
-  if [ -z "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then echo "License not found" && return; fi
+  if [ -z "${QA_EE_LICENSE}" ]; then echo "License not found" && return; fi
 
   gitlab_license_shared_secret=$(kubectl get secret --namespace "${namespace}" --no-headers -o=custom-columns=NAME:.metadata.name shared-gitlab-license 2> /dev/null | tail -n 1)
   if [[ "${gitlab_license_shared_secret}" == "" ]]; then
     echoinfo "Creating the 'shared-gitlab-license' secret in the "${namespace}" namespace..." true
     kubectl create secret generic --namespace "${namespace}" \
       "shared-gitlab-license" \
-      --from-file=license="${REVIEW_APPS_EE_LICENSE_FILE}" \
+      --from-literal=license="${QA_EE_LICENSE}" \
       --dry-run=client -o json | kubectl apply -f -
   else
     echoinfo "The 'shared-gitlab-license' secret already exists in the ${namespace} namespace."
@@ -356,7 +356,7 @@ HELM_CMD=$(cat << EOF
 EOF
 )
 
-if [ -n "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then
+if [ -n "${QA_EE_LICENSE}" ]; then
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
     --set global.gitlab.license.secret="shared-gitlab-license"

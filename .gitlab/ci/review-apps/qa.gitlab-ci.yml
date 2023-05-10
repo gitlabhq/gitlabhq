@@ -40,7 +40,6 @@ include:
     WD_INSTALL_DIR: /usr/local/bin
     RSPEC_REPORT_OPTS: --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml
   script:
-    - export EE_LICENSE="$(cat $REVIEW_APPS_EE_LICENSE_FILE)"
     - QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO} ${QA_GITLAB_URL} -- ${QA_TESTS} ${RSPEC_REPORT_OPTS}"
     - echo "Running - '${QA_COMMAND}'"
     - eval "$QA_COMMAND"

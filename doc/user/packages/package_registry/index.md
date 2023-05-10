@@ -143,17 +143,17 @@ your project's settings. For example, if you have a public project and set the r
 to **Only Project Members**, the Package Registry is then public. Disabling the Package
 Registry disables all Package Registry operations.
 
-| Project visibility | Action                | [Role](../../permissions.md#roles) required             |
+| Project visibility | Action                | Minimum [role](../../permissions.md#roles) required     |
 |--------------------|-----------------------|---------------------------------------------------------|
 | Public             | View Package Registry | `n/a`, everyone on the internet can perform this action |
-| Public             | Publish a package     | Developer or higher                                     |
+| Public             | Publish a package     | Developer                                               |
 | Public             | Pull a package        | `n/a`, everyone on the internet can perform this action |
-| Internal           | View Package Registry | Guest or higher                                         |
-| Internal           | Publish a package     | Developer or higher                                     |
-| Internal           | Pull a package        | Guest or higher(1)                                      |
-| Private            | View Package Registry | Reporter or higher                                      |
-| Private            | Publish a package     | Developer or higher                                     |
-| Private            | Pull a package        | Reporter or higher(1)                                   |
+| Internal           | View Package Registry | Guest                                                   |
+| Internal           | Publish a package     | Developer                                               |
+| Internal           | Pull a package        | Guest (1)                                               |
+| Private            | View Package Registry | Reporter                                                |
+| Private            | Publish a package     | Developer                                               |
+| Private            | Pull a package        | Reporter (1)                                            |
 
 ### Allow anyone to pull from Package Registry
 

@@ -8639,6 +8639,11 @@ markdownlint@~0.26.2:
   dependencies:
     markdown-it "13.0.1"
 
+marked-bidi@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/marked-bidi/-/marked-bidi-1.0.3.tgz#7e637e0e04f7f297939af6b6472c27ac94266947"
+  integrity sha512-nmphpzT5K1jcSZxb7/hhzSfLCpXHdsdrtM/580o3xgtR4YdOEUr/usYcoR8UsV9gcgxL8LDCfYiDy//isSaILA==
+
 marked@^4.0.18:
   version "4.0.18"
   resolved "https://registry.yarnpkg.com/marked/-/marked-4.0.18.tgz#cd0ac54b2e5610cfb90e8fd46ccaa8292c9ed569"
