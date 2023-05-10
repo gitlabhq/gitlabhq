@@ -1,0 +1,39 @@
+- title: "Remove legacy configuration fields in GitLab Runner Helm Chart"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.6"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
+  reporter: DarrenEastman  # (required) GitLab username of the person reporting the removal
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/379064 # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In GitLab 13.6 and later, users can [specify any runner configuration in the GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html). When this features was released, we deprecated the fields in the GitLab Helm Chart configuration specific to the runner. As of v1.0 of the GitLab Runner Helm chart (GitLab 16.0), the following fields have been removed and are no longer supported:
+
+    - `image`
+    - `rbac.resources`
+    - `rbac.verbs`
+    - `runners.image`
+    - `runners.imagePullSecrets`
+    - `runners.imagePullPolicy`
+    - `runners.requestConcurrency`
+    - `runners.privileged`
+    - `runners.namespace`
+    - `runners.pollTimeout`
+    - `runners.outputLimit`
+    - `runners.cache.cacheType`
+    - `runners.cache.cachePath`
+    - `runners.cache.cacheShared`
+    - `runners.cache.s3ServerAddress`
+    - `runners.cache.s3BucketLocation`
+    - `runners.cache.s3CacheInsecure`
+    - `runners.cache.gcsBucketName`
+    - `runners.builds`
+    - `runners.services`
+    - `runners.helpers`
+    - `runners.pod_security_context`
+    - `runners.serviceAccountName`
+    - `runners.cloneUrl`
+    - `runners.nodeSelector`
+    - `runners.nodeTolerations`
+    - `runners.podLabels`
+    - `runners.podAnnotations`
+    - `runners.env`

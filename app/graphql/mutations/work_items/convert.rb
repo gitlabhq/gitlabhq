@@ -24,8 +24,6 @@ module Mutations
       def resolve(attributes)
         work_item = authorized_find!(id: attributes[:id])
 
-        return { errors: ['Feature flag disabled'] } unless Feature.enabled?(:work_items_mvc_2, work_item.project)
-
         work_item_type = find_work_item_type!(attributes[:work_item_type_id])
         authorize_work_item_type!(work_item, work_item_type)
 

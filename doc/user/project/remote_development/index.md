@@ -32,12 +32,11 @@ With remote development, you can use:
 - The Web IDE as a frontend
 - A separate machine as a backend runtime environment
 
-For a complete IDE experience, connect the Web IDE to a [development environment](#workspace) that's configured to run as a remote host.
-For more information, see [connect a remote machine to the Web IDE](connect_machine.md).
+For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host. You can create this environment [inside](../../workspace/index.md) or [outside](connect_machine.md) of GitLab.
 
 ## Workspace
 
-A workspace is a virtual sandbox environment for your code that includes:
+A [workspace](../../workspace/index.md) is a virtual sandbox environment for your code in GitLab that includes:
 
 - A runtime environment
 - Dependencies

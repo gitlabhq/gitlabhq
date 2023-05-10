@@ -895,7 +895,7 @@ For each node running a Patroni instance on the secondary site:
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
    postgresql['listen_address'] = '0.0.0.0' # You can use a public or VPC address here instead
 
-   gitlab_rails['dbpassword'] = 'POSTGRESQL_PASSWORD'
+   gitlab_rails['db_password'] = 'POSTGRESQL_PASSWORD'
    gitlab_rails['enable'] = true
    gitlab_rails['auto_migrate'] = false
    ```

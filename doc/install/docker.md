@@ -55,6 +55,12 @@ For macOS users, use the user's `$HOME/gitlab` directory:
 export GITLAB_HOME=$HOME/gitlab
 ```
 
+The `GITLAB_HOME` environment variable should be appended to your shell's profile so it is
+applied on all future terminal sessions:
+
+- Bash: `~/.bash_profile`
+- ZSH: `~/.zshrc`
+
 The GitLab container uses host mounted volumes to store persistent data:
 
 | Local location       | Container location | Usage                                       |
@@ -509,6 +515,12 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
 
    ```shell
    sudo docker pull gitlab/gitlab-ee:latest
+   ```
+
+1. Ensure that the `GITLAB_HOME` environment variable is [defined](#set-up-the-volumes-location):
+
+   ```shell
+   echo $GITLAB_HOME
    ```
 
 1. Create the container once again with the

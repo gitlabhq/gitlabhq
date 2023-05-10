@@ -1,8 +1,0 @@
----
-name: ci_remove_post_lint
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116256
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/403256
-milestone: '15.11'
-type: development
-group: group::pipeline authoring
-default_enabled: false

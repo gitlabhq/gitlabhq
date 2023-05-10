@@ -30,6 +30,9 @@ export default {
     isChecked() {
       return this.value && this.value === this.checked;
     },
+    imgClass() {
+      return 'gl-h-6 gl-mt-n2 gl-mr-2';
+    },
   },
   methods: {
     onInput($event) {
@@ -58,11 +61,11 @@ export default {
       @input="onInput($event)"
       @change="onChange($event)"
     >
-      <img v-if="image" :src="image" aria-hidden="true" class="gl-h-5 gl-mr-2" />
+      <img v-if="image" :src="image" :class="imgClass" aria-hidden="true" />
       <span class="gl-font-weight-bold"><slot></slot></span>
     </gl-form-radio>
     <div v-else class="gl-mb-3">
-      <img v-if="image" :src="image" aria-hidden="true" class="gl-h-5 gl-mr-2" />
+      <img v-if="image" :src="image" :class="imgClass" aria-hidden="true" />
       <span class="gl-font-weight-bold"><slot></slot></span>
     </div>
   </div>

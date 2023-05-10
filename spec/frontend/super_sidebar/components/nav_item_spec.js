@@ -80,6 +80,13 @@ describe('NavItem component', () => {
     expect(findLink().attributes('class')).toContain(customClass);
   });
 
+  it('applies data-method specified in the backend', () => {
+    const method = 'post';
+    createWrapper({ item: { title: 'Foo', data_method: method } });
+
+    expect(findLink().attributes('data-method')).toContain(method);
+  });
+
   describe('Data Tracking Attributes', () => {
     it.each`
       id           | panelType    | eventLabel             | eventProperty             | eventExtra

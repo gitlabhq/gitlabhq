@@ -18,6 +18,7 @@ RSpec.describe 'Environment > Metrics', feature_category: :projects do
     stub_any_prometheus_request
 
     sign_in(user)
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   around do |example|

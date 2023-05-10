@@ -1,5 +1,6 @@
 <script>
 import DOCKER_LOGO_URL from '@gitlab/svgs/dist/illustrations/third-party-logos/ci_cd-template-logos/docker.png';
+import LINUX_LOGO_URL from '@gitlab/svgs/dist/illustrations/third-party-logos/linux.svg?url';
 import KUBERNETES_LOGO_URL from '@gitlab/svgs/dist/illustrations/logos/kubernetes.svg?url';
 import { GlFormRadioGroup, GlIcon, GlLink } from '@gitlab/ui';
 
@@ -38,6 +39,7 @@ export default {
     },
   },
   LINUX_PLATFORM,
+  LINUX_LOGO_URL,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
 
@@ -55,7 +57,11 @@ export default {
 
       <div class="gl-display-flex gl-flex-wrap gl-gap-5">
         <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-        <runner-platforms-radio v-model="model" :value="$options.LINUX_PLATFORM">
+        <runner-platforms-radio
+          v-model="model"
+          :image="$options.LINUX_LOGO_URL"
+          :value="$options.LINUX_PLATFORM"
+        >
           Linux
         </runner-platforms-radio>
         <runner-platforms-radio v-model="model" :value="$options.MACOS_PLATFORM">

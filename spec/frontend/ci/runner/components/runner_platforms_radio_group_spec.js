@@ -40,7 +40,7 @@ describe('RunnerPlatformsRadioGroup', () => {
     const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
 
     expect(labels).toEqual([
-      ['Linux', null],
+      ['Linux', expect.any(String)],
       ['macOS', null],
       ['Windows', null],
       ['Docker', expect.any(String)],

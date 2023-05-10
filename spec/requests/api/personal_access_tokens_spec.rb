@@ -448,6 +448,68 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
     end
   end
 
+  describe 'POST /personal_access_tokens/:id/rotate' do
+    let_it_be(:token) { create(:personal_access_token) }
+
+    let(:path) { "/personal_access_tokens/#{token.id}/rotate" }
+
+    it "rotates user's own token", :freeze_time do
+      post api(path, token.user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['token']).not_to eq(token.token)
+      expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+    end
+
+    context 'without permission' do
+      it 'returns an error message' do
+        another_user = create(:user)
+        post api(path, another_user)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when service raises an error' do
+      let(:error_message) { 'boom!' }
+
+      before do
+        allow_next_instance_of(PersonalAccessTokens::RotateService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+        end
+      end
+
+      it 'returns the same error message' do
+        post api(path, token.user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq("400 Bad request - #{error_message}")
+      end
+    end
+
+    context 'when token does not exist' do
+      let(:invalid_path) { "/personal_access_tokens/#{non_existing_record_id}/rotate" }
+
+      context 'for non-admin user' do
+        it 'returns unauthorized' do
+          user = create(:user)
+          post api(invalid_path, user)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
+      context 'for admin user', :enable_admin_mode do
+        it 'returns not found' do
+          admin = create(:admin)
+          post api(invalid_path, admin)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'DELETE /personal_access_tokens/:id' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:token1) { create(:personal_access_token) }

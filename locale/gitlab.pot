@@ -13467,7 +13467,7 @@ msgstr ""
 msgid "DORA4Metrics|Change failure rate (percentage)"
 msgstr ""
 
-msgid "DORA4Metrics|Critical Vulnerabilities"
+msgid "DORA4Metrics|Critical Vulnerabilities over time"
 msgstr ""
 
 msgid "DORA4Metrics|Cycle time"
@@ -13500,7 +13500,7 @@ msgstr ""
 msgid "DORA4Metrics|Go to docs"
 msgstr ""
 
-msgid "DORA4Metrics|High Vulnerabilities"
+msgid "DORA4Metrics|High Vulnerabilities over time"
 msgstr ""
 
 msgid "DORA4Metrics|Lead Time for Changes"
@@ -16695,13 +16695,13 @@ msgstr ""
 msgid "Enter 2FA for Admin Mode"
 msgstr ""
 
-msgid "Enter Admin Mode"
-msgstr ""
-
 msgid "Enter a name for your comment template"
 msgstr ""
 
 msgid "Enter a number"
+msgstr ""
+
+msgid "Enter admin mode"
 msgstr ""
 
 msgid "Enter an integer number between 0 and 100"
@@ -26367,7 +26367,7 @@ msgstr ""
 msgid "Leave"
 msgstr ""
 
-msgid "Leave Admin Mode"
+msgid "Leave admin mode"
 msgstr ""
 
 msgid "Leave edit mode? All unsaved changes will be lost."
@@ -27549,6 +27549,9 @@ msgid "MemberRole|cannot be deleted because it is already assigned to a user. Pl
 msgstr ""
 
 msgid "MemberRole|maximum number of Member Roles are already in use by the group hierarchy. Please delete an existing Member Role."
+msgstr ""
+
+msgid "MemberRole|minimal base access level must be %{min_access_level}."
 msgstr ""
 
 msgid "MemberRole|must be top-level namespace"
@@ -29319,6 +29322,9 @@ msgstr ""
 msgid "Navigation|Context navigation"
 msgstr ""
 
+msgid "Navigation|Enter admin mode"
+msgstr ""
+
 msgid "Navigation|Explore"
 msgstr ""
 
@@ -29332,6 +29338,9 @@ msgid "Navigation|Groups"
 msgstr ""
 
 msgid "Navigation|Groups you visit often will appear here."
+msgstr ""
+
+msgid "Navigation|Leave admin mode"
 msgstr ""
 
 msgid "Navigation|Manage"
@@ -48976,6 +48985,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Average number of deployments to production per day. This metric measures how often value is delivered to end users."
 msgstr ""
 
+msgid "ValueStreamAnalytics|Critical vulnerabilities over time."
+msgstr ""
+
 msgid "ValueStreamAnalytics|Dashboard"
 msgstr ""
 
@@ -48983,6 +48995,9 @@ msgid "ValueStreamAnalytics|Edit Value Stream: %{name}"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Go to docs"
+msgstr ""
+
+msgid "ValueStreamAnalytics|High vulnerabilities over time."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Key metrics"
@@ -49034,12 +49049,6 @@ msgid "ValueStreamAnalytics|The time to successfully deliver a commit into produ
 msgstr ""
 
 msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."
-msgstr ""
-
-msgid "ValueStreamAnalytics|Total Critical vulnerabilities."
-msgstr ""
-
-msgid "ValueStreamAnalytics|Total High vulnerabilities."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Total number of deploys to production."
@@ -53093,6 +53102,9 @@ msgstr ""
 msgid "failed to revert associated finding(id=%{finding_id}) to detected"
 msgstr ""
 
+msgid "failed to revoke token"
+msgstr ""
+
 msgid "file"
 msgid_plural "files"
 msgstr[0] ""
@@ -54313,6 +54325,9 @@ msgid "today"
 msgstr ""
 
 msgid "toggle collapse"
+msgstr ""
+
+msgid "token already revoked"
 msgstr ""
 
 msgid "total must be less than or equal to %{size}"

@@ -51,6 +51,7 @@ describe('Environment item', () => {
   const findUpcomingDeploymentAvatarLink = () =>
     findUpcomingDeployment().findComponent(GlAvatarLink);
   const findUpcomingDeploymentAvatar = () => findUpcomingDeployment().findComponent(GlAvatar);
+  const findMonitoringLink = () => wrapper.find('[data-testid="environment-monitoring"]');
 
   describe('when item is not folder', () => {
     it('should render environment name', () => {
@@ -434,4 +435,25 @@ describe('Environment item', () => {
       });
     });
   });
+
+  describe.each([true, false])(
+    'when `remove_monitor_metrics` flag  is %p',
+    (removeMonitorMetrics) => {
+      beforeEach(() => {
+        factory({
+          propsData: {
+            model: {
+              metrics_path: 'http://0.0.0.0:3000/flightjs/Flight/-/metrics?environment=6',
+            },
+            tableData,
+          },
+          provide: { glFeatures: { removeMonitorMetrics } },
+        });
+      });
+
+      it(`${removeMonitorMetrics ? 'does not render' : 'renders'} link to metrics`, () => {
+        expect(findMonitoringLink().exists()).toBe(!removeMonitorMetrics);
+      });
+    },
+  );
 });

@@ -393,7 +393,7 @@ RSpec.describe Nav::TopNavHelper do
         it 'has leave_admin_mode as last :secondary item' do
           expected_leave_admin_mode_item = ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'leave_admin_mode',
-            title: 'Leave Admin Mode',
+            title: 'Leave admin mode',
             icon: 'lock-open',
             href: '/admin/session/destroy',
             data: { method: 'post', **menu_data_tracking_attrs('leave_admin_mode') }
@@ -409,11 +409,11 @@ RSpec.describe Nav::TopNavHelper do
           expected_enter_admin_mode_item = ::Gitlab::Nav::TopNavMenuItem.build(
             data: {
               qa_selector: 'menu_item_link',
-              qa_title: 'Enter Admin Mode',
+              qa_title: 'Enter admin mode',
               **menu_data_tracking_attrs('enter_admin_mode')
             },
             id: 'enter_admin_mode',
-            title: 'Enter Admin Mode',
+            title: 'Enter admin mode',
             icon: 'lock',
             href: '/admin/session/new'
           )

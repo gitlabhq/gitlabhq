@@ -203,14 +203,14 @@ module Nav
         if header_link?(:admin_mode)
           builder.add_secondary_menu_item(
             id: 'leave_admin_mode',
-            title: _('Leave Admin Mode'),
+            title: _('Leave admin mode'),
             active: active_nav_link?(controller: 'admin/sessions'),
             icon: 'lock-open',
             href: destroy_admin_session_path,
             data: { method: 'post', **menu_data_tracking_attrs('leave_admin_mode') }
           )
         elsif current_user.admin?
-          title = _('Enter Admin Mode')
+          title = _('Enter admin mode')
 
           builder.add_secondary_menu_item(
             id: 'enter_admin_mode',

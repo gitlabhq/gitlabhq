@@ -38,7 +38,7 @@ describe('Environments detail header component', () => {
     ['Destroy', findDestroyButton],
   ];
 
-  const createWrapper = ({ props }) => {
+  const createWrapper = ({ props, glFeatures = {} }) => {
     wrapper = shallowMountExtended(EnvironmentsDetailHeader, {
       stubs: {
         GlSprintf,
@@ -53,6 +53,9 @@ describe('Environments detail header component', () => {
         canStopEnvironment: false,
         canDestroyEnvironment: false,
         ...props,
+      },
+      provide: {
+        glFeatures,
       },
     });
   };
@@ -194,6 +197,25 @@ describe('Environments detail header component', () => {
       expect(tooltip).toBeDefined();
       expect(button.attributes('title')).toBe('See metrics');
     });
+
+    describe.each([true, false])(
+      'and `remove_monitor_metrics` flag is %p',
+      (removeMonitorMetrics) => {
+        beforeEach(() => {
+          createWrapper({
+            props: {
+              environment: createEnvironment({ metricsUrl: 'my metrics url' }),
+              metricsPath,
+            },
+            glFeatures: { removeMonitorMetrics },
+          });
+        });
+
+        it(`${removeMonitorMetrics ? 'does not render' : 'renders'} Metrics button`, () => {
+          expect(findMetricsButton().exists()).toBe(!removeMonitorMetrics);
+        });
+      },
+    );
   });
 
   describe('when has all admin rights', () => {

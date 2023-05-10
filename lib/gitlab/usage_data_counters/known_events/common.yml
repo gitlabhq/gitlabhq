@@ -133,6 +133,8 @@
 - name: p_terraform_state_api_unique_users
   aggregation: weekly
 # Pipeline Authoring group
+- name: ci_interpolation_users
+  aggregation: weekly
 - name: o_pipeline_authoring_unique_users_committing_ciconfigfile
   aggregation: weekly
 - name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile

@@ -68,6 +68,10 @@ module Gitlab
             return @errors.concat(context.errors) unless context.valid?
             return @errors.concat(template.errors) unless template.valid?
 
+            if ctx&.user
+              ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('ci_interpolation_users', values: ctx.user.id)
+            end
+
             @result ||= template.interpolated.to_h.deep_symbolize_keys
           end
           strong_memoize_attr :interpolate!

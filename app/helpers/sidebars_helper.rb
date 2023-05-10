@@ -318,11 +318,37 @@ module SidebarsHelper
       { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' }
     ]
 
+    # Usually, using current_user.admin? is discouraged because it does not
+    # check for admin mode, but since here we want to check admin? and admin mode
+    # separately, we'll have to ignore the cop rule.
+    # rubocop: disable Cop/UserAdmin
     if current_user&.can_admin_all_resources?
       links.append(
         { title: s_('Navigation|Admin Area'), link: admin_root_path, icon: 'admin' }
       )
     end
+
+    if Gitlab::CurrentSettings.admin_mode
+      if header_link?(:admin_mode)
+        links.append(
+          {
+            title: s_('Navigation|Leave admin mode'),
+            link: destroy_admin_session_path,
+            icon: 'lock-open',
+            data_method: 'post'
+          }
+        )
+      elsif current_user&.admin?
+        links.append(
+          {
+            title: s_('Navigation|Enter admin mode'),
+            link: new_admin_session_path,
+            icon: 'lock'
+          }
+        )
+      end
+    end
+    # rubocop: enable Cop/UserAdmin
 
     links
   end

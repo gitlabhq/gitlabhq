@@ -9,6 +9,7 @@ export default {
   WORK_ITEM_DETAIL_MODAL_ID: 'work-item-detail-modal',
   i18n: {
     errorMessage: s__('WorkItem|Something went wrong when deleting the task. Please try again.'),
+    modalTitle: s__('WorkItem|Work item'),
   },
   components: {
     GlAlert,
@@ -179,6 +180,7 @@ export default {
     :modal-id="$options.WORK_ITEM_DETAIL_MODAL_ID"
     header-class="gl-p-0 gl-pb-2!"
     scrollable
+    :title="$options.i18n.modalTitle"
     :data-testid="$options.WORK_ITEM_DETAIL_MODAL_ID"
     @hide="closeModal"
     @shown="onModalShow"

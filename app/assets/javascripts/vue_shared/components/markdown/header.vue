@@ -412,6 +412,7 @@ export default {
         <gl-button
           v-if="!restrictedToolBarItems.includes('attach-file')"
           v-gl-tooltip
+          :aria-label="__('Attach a file or image')"
           :title="__('Attach a file or image')"
           class="gl-mr-2"
           data-testid="button-attach-file"
@@ -459,7 +460,7 @@ export default {
           size="small"
           :title="__('Go full screen')"
           :prepend="true"
-          :button-title="__('Go full screen')"
+          :aria-label="__('Go full screen')"
         />
       </div>
     </div>

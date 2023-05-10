@@ -15,7 +15,7 @@ module API
     end
 
     namespace :ci do
-      desc 'Validates the .gitlab-ci.yml content' do
+      desc 'REMOVED: Validates the .gitlab-ci.yml content' do
         detail 'Checks if CI/CD YAML configuration is valid'
         success code: 200, model: Entities::Ci::Lint::Result
         tags %w[ci_lint]
@@ -28,17 +28,7 @@ module API
       end
 
       post '/lint', urgency: :low do
-        render_api_error!('410 Gone', 410) unless Feature.disabled?(:ci_remove_post_lint, current_user)
-        unauthorized! unless can_lint_ci?
-
-        result = Gitlab::Ci::Lint.new(project: nil, current_user: current_user)
-          .validate(params[:content], dry_run: false)
-
-        status 200
-        Entities::Ci::Lint::Result.represent(result, current_user: current_user, include_jobs: params[:include_jobs]).serializable_hash.tap do |presented_result|
-          presented_result[:status] = presented_result[:valid] ? 'valid' : 'invalid'
-          presented_result.delete(:merged_yaml) unless params[:include_merged_yaml]
-        end
+        render_api_error!('410 Gone', 410)
       end
     end
 

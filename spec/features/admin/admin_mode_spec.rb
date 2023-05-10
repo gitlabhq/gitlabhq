@@ -50,7 +50,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
 
         fill_in 'user_password', with: admin.password
 
-        click_button 'Enter Admin Mode'
+        click_button 'Enter admin mode'
 
         expect(page).to have_current_path(admin_root_path)
       end
@@ -65,7 +65,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
 
           fill_in 'user_password', with: admin.password
 
-          click_button 'Enter Admin Mode'
+          click_button 'Enter admin mode'
 
           expect(page).to have_current_path(admin_root_path)
         end
@@ -111,7 +111,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
           open_top_nav
 
           expect(page).to have_link(text: 'Admin', href: admin_root_path, visible: true)
-          expect(page).to have_link(text: 'Leave Admin Mode', href: destroy_admin_session_path, visible: true)
+          expect(page).to have_link(text: 'Leave admin mode', href: destroy_admin_session_path, visible: true)
         end
       end
 

@@ -112,7 +112,7 @@ Example responses:
 
 WARNING:
 This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/381669) in GitLab 15.7
-and is planned for removal in 16.0. Use [`POST /projects/:id/ci/lint`](#validate-a-ci-yaml-configuration-with-a-namespace) instead.
+and was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/403256) in 16.0. Use [`POST /projects/:id/ci/lint`](#validate-a-ci-yaml-configuration-with-a-namespace) instead.
 
 Checks if CI/CD YAML configuration is valid. This endpoint validates basic CI/CD
 configuration syntax. It doesn't have any namespace-specific context.

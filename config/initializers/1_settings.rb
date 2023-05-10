@@ -765,6 +765,9 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
+  Settings.cron_jobs['open_ai_clear_conversations'] ||= {}
+  Settings.cron_jobs['open_ai_clear_conversations']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['open_ai_clear_conversations']['job_class'] = 'OpenAi::ClearConversationsWorker'
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'

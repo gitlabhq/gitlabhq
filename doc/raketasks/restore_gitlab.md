@@ -66,6 +66,9 @@ restoring the new data, which causes an error.
 
 Read more about [configuring NFS mounts](../administration/nfs.md)
 
+Restoring a backup from an instance using local storage restores to local storage even if the target instance uses object storage.
+Migrations to object storage must be done before or after restoration.
+
 ## Restore for Omnibus GitLab installations
 
 This procedure assumes that:

@@ -13246,6 +13246,28 @@ CREATE SEQUENCE ci_deleted_objects_id_seq
 
 ALTER SEQUENCE ci_deleted_objects_id_seq OWNED BY ci_deleted_objects.id;
 
+CREATE TABLE ci_editor_ai_conversation_messages (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    role text NOT NULL,
+    content text,
+    async_errors text[] DEFAULT '{}'::text[] NOT NULL,
+    CONSTRAINT check_10b793171f CHECK ((char_length(role) <= 100)),
+    CONSTRAINT check_c83d789632 CHECK ((char_length(content) <= 16384))
+);
+
+CREATE SEQUENCE ci_editor_ai_conversation_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_editor_ai_conversation_messages_id_seq OWNED BY ci_editor_ai_conversation_messages.id;
+
 CREATE TABLE ci_freeze_periods (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -17762,7 +17784,8 @@ CREATE TABLE member_roles (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     base_access_level integer NOT NULL,
-    read_code boolean DEFAULT false
+    read_code boolean DEFAULT false,
+    read_vulnerability boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE member_roles_id_seq
@@ -24847,6 +24870,8 @@ ALTER TABLE ONLY ci_daily_build_group_report_results ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY ci_deleted_objects ALTER COLUMN id SET DEFAULT nextval('ci_deleted_objects_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_editor_ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('ci_editor_ai_conversation_messages_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('ci_freeze_periods_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_group_variables ALTER COLUMN id SET DEFAULT nextval('ci_group_variables_id_seq'::regclass);
@@ -26682,6 +26707,9 @@ ALTER TABLE ONLY ci_daily_build_group_report_results
 
 ALTER TABLE ONLY ci_deleted_objects
     ADD CONSTRAINT ci_deleted_objects_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_editor_ai_conversation_messages
+    ADD CONSTRAINT ci_editor_ai_conversation_messages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_freeze_periods
     ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
@@ -29941,6 +29969,12 @@ CREATE INDEX index_ci_daily_build_group_report_results_on_last_pipeline_id ON ci
 CREATE INDEX index_ci_daily_build_group_report_results_on_project_and_date ON ci_daily_build_group_report_results USING btree (project_id, date DESC) WHERE ((default_branch = true) AND ((data -> 'coverage'::text) IS NOT NULL));
 
 CREATE INDEX index_ci_deleted_objects_on_pick_up_at ON ci_deleted_objects USING btree (pick_up_at);
+
+CREATE INDEX index_ci_editor_ai_messages_created_at ON ci_editor_ai_conversation_messages USING btree (created_at);
+
+CREATE INDEX index_ci_editor_ai_messages_on_user_project_and_created_at ON ci_editor_ai_conversation_messages USING btree (user_id, project_id, created_at);
+
+CREATE INDEX index_ci_editor_ai_messages_project_id ON ci_editor_ai_conversation_messages USING btree (project_id);
 
 CREATE INDEX index_ci_freeze_periods_on_project_id ON ci_freeze_periods USING btree (project_id);
 

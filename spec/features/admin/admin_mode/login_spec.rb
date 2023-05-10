@@ -258,7 +258,7 @@ RSpec.describe 'Admin Mode Login', feature_category: :system_access do
               click_link provider_label
               fill_in 'username', with: user.username
               fill_in 'password', with: user.password
-              click_button 'Enter Admin Mode'
+              click_button 'Enter admin mode'
             end
           end
         end

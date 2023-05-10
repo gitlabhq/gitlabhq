@@ -89,6 +89,7 @@ export default {
         ...this.trackingProps,
         item: this.item,
         'data-qa-submenu-item': this.item.title,
+        'data-method': this.item.data_method ?? null,
       };
     },
     computedLinkClasses() {

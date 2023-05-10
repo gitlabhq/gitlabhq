@@ -14,9 +14,9 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 WARNING:
 This feature is in [Beta](../../policy/alpha-beta-support.md#beta) and subject to change without notice. To leave your feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
 
-You can use workspaces to create and manage isolated development environments for your projects. These environments ensure that different projects don't interfere with each other. Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project.
+A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
 
-With workspaces, you can switch between different development environments and manage your code more effectively.
+You can create a workspace on its own or as part of a project. Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project.
 
 ## Run a workspace
 
@@ -112,7 +112,7 @@ To create a workspace in GitLab:
 1. From the **Select project** dropdown list, select a project with a `.devfile.yaml` file. You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
-1. Select **Create Workspace**.
+1. Select **Create workspace**.
 
 The workspace might take a few minutes to start. When the workspace is ready, use the [Web IDE](../project/web_ide/index.md) to access your development environment.
 You also have access to the terminal and can install any necessary dependencies.
@@ -121,7 +121,7 @@ You also have access to the terminal and can install any necessary dependencies.
 
 Workspaces are bundled with the Web IDE by default. The Web IDE is the only code editor available for workspaces.
 
-The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork). For more information, see the [Web IDE](../project/web_ide/index.md).
+The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork). For more information, see [Web IDE](../project/web_ide/index.md).
 
 ## Private repositories
 

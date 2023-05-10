@@ -18938,6 +18938,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
+| <a id="projectproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Product Analytics instrumentation key assigned to the project. |
 | <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. This feature is an Experiment. It can be changed or removed at any time. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
 | <a id="projectpublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
 | <a id="projectpushrules"></a>`pushRules` | [`PushRules`](#pushrules) | Project's push rules settings. |

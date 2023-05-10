@@ -223,8 +223,11 @@ repeatedly reports that some items never reach 100%,
 the following command helps to focus on the most common errors.
 
 ```shell
-jq --raw-output 'select(.severity == "ERROR") | [.project_path, .message] | @tsv' geo.log | sort | uniq -c | sort | tail
+jq --raw-output 'select(.severity == "ERROR") | [.project_path, .class, .message, .error] | @tsv' geo.log | sort | uniq -c | sort | tail
 ```
+
+Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting.md)
+for advice about specific error messages.
 
 ### Parsing `gitaly/current`
 

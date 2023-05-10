@@ -40,6 +40,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
   const findDeployment = () => wrapper.findComponent(Deployment);
   const findActions = () => wrapper.findComponent(EnvironmentActions);
   const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
+  const findMonitoringLink = () => wrapper.find('[data-testid="environment-monitoring"]');
 
   const expandCollapsedSection = async () => {
     const button = wrapper.findByRole('button', { name: __('Expand') });
@@ -314,7 +315,25 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       expect(rollback.exists()).toBe(false);
     });
+
+    describe.each([true, false])(
+      'when `remove_monitor_metrics` flag  is %p',
+      (removeMonitorMetrics) => {
+        beforeEach(() => {
+          wrapper = createWrapper({
+            propsData: { environment: { ...resolvedEnvironment, metricsPath: '/metrics' } },
+            apolloProvider: createApolloProvider(),
+            provideData: { glFeatures: { removeMonitorMetrics } },
+          });
+        });
+
+        it(`${removeMonitorMetrics ? 'does not render' : 'renders'} link to metrics`, () => {
+          expect(findMonitoringLink().exists()).toBe(!removeMonitorMetrics);
+        });
+      },
+    );
   });
+
   describe('terminal', () => {
     it('shows the link to the terminal if set up', () => {
       wrapper = createWrapper({

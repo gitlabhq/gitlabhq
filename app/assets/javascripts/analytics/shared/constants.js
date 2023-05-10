@@ -110,13 +110,13 @@ export const METRIC_TOOLTIPS = {
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
   },
   [VULNERABILITY_METRICS.CRITICAL]: {
-    description: s__('ValueStreamAnalytics|Total Critical vulnerabilities.'),
+    description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),
     groupLink: '-/security/vulnerabilities',
     projectLink: '-/security/vulnerability_report',
     docsLink: helpPagePath('user/application_security/vulnerability_report/index'),
   },
   [VULNERABILITY_METRICS.HIGH]: {
-    description: s__('ValueStreamAnalytics|Total High vulnerabilities.'),
+    description: s__('ValueStreamAnalytics|High vulnerabilities over time.'),
     groupLink: '-/security/vulnerabilities',
     projectLink: '-/security/vulnerability_report',
     docsLink: helpPagePath('user/application_security/vulnerability_report/index'),

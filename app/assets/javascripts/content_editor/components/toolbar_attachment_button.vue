@@ -1,8 +1,12 @@
 <script>
 import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { __ } from '~/locale';
 import Link from '../extensions/link';
 
 export default {
+  i18n: {
+    inputLabel: __('Attach a file or image'),
+  },
   components: {
     GlButton,
   },
@@ -38,8 +42,8 @@ export default {
   <span class="gl-display-inline-flex">
     <gl-button
       v-gl-tooltip
-      :text="__('Attach a file or image')"
-      :title="__('Attach a file or image')"
+      :aria-label="$options.i18n.inputLabel"
+      :title="$options.i18n.inputLabel"
       category="tertiary"
       icon="paperclip"
       size="small"
@@ -52,6 +56,7 @@ export default {
       multiple
       name="content_editor_image"
       class="gl-display-none"
+      :aria-label="$options.i18n.inputLabel"
       data-qa-selector="file_upload_field"
       @change="onFileSelect"
     />

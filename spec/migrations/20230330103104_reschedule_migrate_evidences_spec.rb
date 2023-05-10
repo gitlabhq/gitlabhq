@@ -7,16 +7,10 @@ RSpec.describe RescheduleMigrateEvidences, :migration, feature_category: :vulner
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do
-    it 'schedules a batched background migration' do
+    it 'does not schedule a batched background migration' do
       migrate!
 
-      expect(migration).to have_scheduled_batched_migration(
-        table_name: :vulnerability_occurrences,
-        column_name: :id,
-        interval: described_class::DELAY_INTERVAL,
-        batch_size: described_class::BATCH_SIZE,
-        sub_batch_size: described_class::SUB_BATCH_SIZE
-      )
+      expect(migration).not_to have_scheduled_batched_migration
     end
   end
 

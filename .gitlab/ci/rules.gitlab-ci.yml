@@ -41,16 +41,11 @@
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
 # if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
-#
-# Temprorarily adding || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/ for backward compatibility,
-# remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-approved: &if-merge-request-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-full-rspec/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
-# Temprorarily adding && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/ for backward compatibility,
-# remove once https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/1557 is fully rolled out
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-full-rspec/'
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-ee$/'

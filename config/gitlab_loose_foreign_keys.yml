@@ -39,6 +39,13 @@ ci_daily_build_group_report_results:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_editor_ai_conversation_messages:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 ci_freeze_periods:
   - table: projects
     column: project_id

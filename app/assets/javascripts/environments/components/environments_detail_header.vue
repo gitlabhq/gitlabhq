@@ -4,6 +4,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import StopEnvironmentModal from './stop_environment_modal.vue';
 
@@ -21,7 +22,7 @@ export default {
     GlModalDirective,
     GlTooltip,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, glFeatureFlagsMixin()],
   props: {
     environment: {
       type: Object,
@@ -88,6 +89,9 @@ export default {
     shouldShowTerminalButton() {
       return this.canAdminEnvironment && this.environment.hasTerminals;
     },
+    shouldShowMetricsButton() {
+      return Boolean(!this.glFeatures.removeMonitorMetrics && this.shouldShowExternalUrlButton);
+    },
   },
 };
 </script>
@@ -135,7 +139,7 @@ export default {
         >{{ $options.i18n.externalButtonText }}</gl-button
       >
       <gl-button
-        v-if="shouldShowExternalUrlButton"
+        v-if="shouldShowMetricsButton"
         v-gl-tooltip.hover
         data-testid="metrics-button"
         :href="metricsPath"

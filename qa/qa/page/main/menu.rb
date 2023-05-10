@@ -168,7 +168,7 @@ module QA
         def go_to_admin_area
           Runtime::Env.super_sidebar_enabled? ? super : click_admin_area
 
-          return unless has_text?('Enter Admin Mode', wait: 1.0)
+          return unless has_text?('Enter admin mode', wait: 1.0)
 
           Admin::NewSession.perform do |new_session|
             new_session.set_password(Runtime::User.admin_password)

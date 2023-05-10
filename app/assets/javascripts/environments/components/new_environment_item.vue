@@ -133,7 +133,7 @@ export default {
       return Boolean(
         this.retryPath ||
           this.canShowAutoStopDate ||
-          this.metricsPath ||
+          this.canShowMetricsLink ||
           this.terminalPath ||
           this.canDeleteEnvironment,
       );
@@ -156,6 +156,9 @@ export default {
     },
     metricsPath() {
       return this.environment?.metricsPath ?? '';
+    },
+    canShowMetricsLink() {
+      return Boolean(!this.glFeatures.removeMonitorMetrics && this.metricsPath);
     },
     terminalPath() {
       return this.environment?.terminalPath ?? '';
@@ -307,10 +310,11 @@ export default {
             />
 
             <monitoring
-              v-if="metricsPath"
+              v-if="canShowMetricsLink"
               :monitoring-url="metricsPath"
               data-track-action="click_button"
               data-track-label="environment_monitoring"
+              data-testid="environment-monitoring"
             />
 
             <terminal

@@ -62,11 +62,14 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#super_sidebar_context' do
+    include_context 'custom session'
+
     let_it_be(:user) { build(:user) }
     let_it_be(:group) { build(:group) }
     let_it_be(:panel) { {} }
     let_it_be(:panel_type) { 'project' }
     let(:project) { nil }
+    let(:current_user_mode) { Gitlab::Auth::CurrentUserMode.new(user) }
 
     subject do
       helper.super_sidebar_context(user, group: group, project: project, panel: panel, panel_type: panel_type)
@@ -76,7 +79,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(Time).to receive(:now).and_return(Time.utc(2021, 1, 1))
       allow(helper).to receive(:current_user) { user }
       allow(helper).to receive(:can?).and_return(true)
+      allow(helper).to receive(:session).and_return(session)
       allow(helper).to receive(:header_search_context).and_return({ some: "search data" })
+      allow(helper).to receive(:current_user_mode).and_return(current_user_mode)
       allow(panel).to receive(:super_sidebar_menu_items).and_return(nil)
       allow(panel).to receive(:super_sidebar_context_header).and_return(nil)
       allow(user).to receive(:assigned_open_issues_count).and_return(1)
@@ -382,6 +387,19 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         ]
       end
 
+      let_it_be(:admin_area_link) do
+        { title: s_('Navigation|Admin Area'), link: '/admin', icon: 'admin' }
+      end
+
+      let_it_be(:enter_admin_mode_link) do
+        { title: s_('Navigation|Enter admin mode'), link: '/admin/session/new', icon: 'lock' }
+      end
+
+      let_it_be(:leave_admin_mode_link) do
+        { title: s_('Navigation|Leave admin mode'), link: '/admin/session/destroy', icon: 'lock-open',
+          data_method: 'post' }
+      end
+
       subject do
         helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
       end
@@ -394,14 +412,50 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
       context 'when user is an admin' do
         before do
-          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+          allow(user).to receive(:admin?).and_return(true)
         end
 
-        it 'returns public links and admin area link' do
-          expect(subject[:context_switcher_links]).to eq([
-            *public_link,
-            { title: s_('Navigation|Admin Area'), link: '/admin', icon: 'admin' }
-          ])
+        context 'when application setting :admin_mode is enabled' do
+          before do
+            stub_application_setting(admin_mode: true)
+          end
+
+          context 'when admin mode is on' do
+            before do
+              current_user_mode.request_admin_mode!
+              current_user_mode.enable_admin_mode!(password: user.password)
+            end
+
+            it 'returns public links, admin area and leave admin mode links' do
+              expect(subject[:context_switcher_links]).to eq([
+                *public_link,
+                admin_area_link,
+                leave_admin_mode_link
+              ])
+            end
+          end
+
+          context 'when admin mode is off' do
+            it 'returns public links and enter admin mode link' do
+              expect(subject[:context_switcher_links]).to eq([
+                *public_link,
+                enter_admin_mode_link
+              ])
+            end
+          end
+        end
+
+        context 'when application setting :admin_mode is disabled' do
+          before do
+            stub_application_setting(admin_mode: false)
+          end
+
+          it 'returns public links and admin area link' do
+            expect(subject[:context_switcher_links]).to eq([
+              *public_link,
+              admin_area_link
+            ])
+          end
         end
       end
     end
