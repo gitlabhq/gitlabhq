@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.10.7 (2023-05-10)
+
+### Fixed (1 change)
+
+- [Backport MR 119319 changes to 15-10-stable-ee](gitlab-org/security/gitlab@6c9e1f2f706b0151b1caa3d5199aa312b23c683a) **GitLab Enterprise Edition**
+
 ## 15.10.6 (2023-05-03)
 
 ### Security (1 change)
