@@ -105,7 +105,6 @@ export function mountMarkdownEditor() {
           enableAutocomplete: true,
           autocompleteDataSources: gl.GfmAutoComplete?.dataSources,
           supportsQuickActions: true,
-          autofocus: true,
         },
       });
     },
