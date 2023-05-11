@@ -1,8 +1,0 @@
----
-name: disallow_environment_name_update
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118146
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/408165
-milestone: '16.0'
-type: development
-group: group::environments
-default_enabled: false

@@ -30,9 +30,12 @@ rails-production-server-boot:
   needs: []
   script:
     - source scripts/utils.sh
-    - bundle exec rails server -e production &
-    - sleep 40  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114124#note_1309506358
-    - retry_times_sleep 10 5 "curl http://0.0.0.0:3000"
+    - cp config/puma.rb.example config/puma.rb
+    - sed --in-place "s:/home/git/gitlab:${PWD}:" config/puma.rb
+    - echo 'bind "tcp://127.0.0.1:3000"' >> config/puma.rb
+    - bundle exec puma --environment production --config config/puma.rb &
+    - sleep 40 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114124#note_1309506358
+    - retry_times_sleep 10 5 "curl http://127.0.0.1:3000"
     - kill $(jobs -p)
 
 no-ee-check:

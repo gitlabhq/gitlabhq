@@ -8,13 +8,13 @@
 - return unless branches.any?
 
 = render Pajamas::CardComponent.new(card_options: {class: 'gl-mt-5 gl-bg-gray-10'}, header_options: {class: 'gl-px-5 gl-py-4 gl-bg-white'}, body_options: {class: 'gl-px-3 gl-py-0'}, footer_options: {class: 'gl-bg-white'}) do |c|
-  - c.header do
+  - c.with_header do
     %h3.card-title.h5.gl-line-height-24.gl-m-0
       = panel_title
-  - c.body do
+  - c.with_body do
     %ul.content-list.branches-list.all-branches{ data: { qa_selector: 'all_branches_container' } }
       - branches.first(overview_max_branches).each do |branch|
         = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch), commit_status: @branch_pipeline_statuses[branch.name], show_commit_status: @branch_pipeline_statuses.any?
   - if branches.size > overview_max_branches
-    - c.footer do
+    - c.with_footer do
       = link_to show_more_text, project_branches_filtered_path(project, state: state), id: "state-#{state}", data: { state: state }

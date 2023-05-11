@@ -2955,14 +2955,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
 
-      context 'when the opt_in_jwt project setting is true' do
-        it 'does not include the JWT variables' do
-          project.ci_cd_settings.update!(opt_in_jwt: true)
-
-          expect(subject.pluck(:key)).not_to include('CI_JOB_JWT', 'CI_JOB_JWT_V1', 'CI_JOB_JWT_V2')
-        end
-      end
-
       describe 'variables ordering' do
         context 'when variables hierarchy is stubbed' do
           let(:build_pre_var) { { key: 'build', value: 'value', public: true, masked: false } }
@@ -3151,6 +3143,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               end
             end
           end
+        end
+      end
+
+      context 'when the build has ID tokens' do
+        before do
+          build.update!(
+            id_tokens: { 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } }
+          )
+        end
+
+        it 'includes the tokens and excludes the predefined JWT variables' do
+          runner_vars = subject.to_runner_variables.pluck(:key)
+
+          expect(runner_vars).to include('TEST_ID_TOKEN')
+          expect(runner_vars).not_to include('CI_JOB_JWT')
+          expect(runner_vars).not_to include('CI_JOB_JWT_V1')
+          expect(runner_vars).not_to include('CI_JOB_JWT_V2')
         end
       end
     end

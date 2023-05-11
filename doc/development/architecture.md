@@ -636,7 +636,7 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/)
   - [Charts](https://docs.gitlab.com/charts/charts/nginx/)
-  - [Source](../install/installation.md#9-nginx)
+  - [Source](../install/installation.md#10-nginx)
 - Layer: Core Service (Processor)
 - Process: `nginx`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
@@ -692,7 +692,7 @@ Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/database.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
-  - [Source](../install/installation.md#6-database)
+  - [Source](../install/installation.md#7-database)
 - Layer: Core Service (Data)
 - Process: `postgresql`
 - GitLab.com: [PostgreSQL](https://about.gitlab.com/handbook/engineering/infrastructure/database/)
@@ -729,7 +729,7 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/redis.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
-  - [Source](../install/installation.md#7-redis)
+  - [Source](../install/installation.md#8-redis)
 - Layer: Core Service (Data)
 - Process: `redis`
 - GitLab.com: [Service Architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)

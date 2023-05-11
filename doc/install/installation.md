@@ -45,12 +45,13 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 
 ## Software requirements
 
-| Software           | Minimum version | Notes                                                                                                                                                                                                                                                                                  |
-|:-------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Ruby](#2-ruby)    | `3.0.x`         | From GitLab 15.10, Ruby 3.0 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
-| [Go](#3-go)        | `1.18.x`        | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                        |
-| [Git](#git)        | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
-| [Node.js](#4-node) | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                |
+| Software                | Minimum version | Notes                                                                                                                                                                                                                                                                                  |
+|:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Ruby](#2-ruby)         | `3.0.x`         | From GitLab 15.10, Ruby 3.0 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
+| [RubyGems](#3-rubygems) | `3.4.x`         | A specific RubyGems version is not fully needed, but it's recommended to update so you can enjoy some known performance improvements.                                                                                                                                                  |
+| [Go](#4-go)             | `1.18.x`        | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                        |
+| [Git](#git)             | `2.38.x`        | From GitLab 15.8, Git 2.38.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
+| [Node.js](#5-node)      | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                |
 
 ## GitLab directory structure
 
@@ -86,13 +87,14 @@ The GitLab installation consists of setting up the following components:
 
 1. [Packages and dependencies](#1-packages-and-dependencies).
 1. [Ruby](#2-ruby).
-1. [Go](#3-go).
-1. [Node](#4-node).
-1. [System users](#5-system-users).
-1. [Database](#6-database).
-1. [Redis](#7-redis).
-1. [GitLab](#8-gitlab).
-1. [NGINX](#9-nginx).
+1. [RubyGems](#3-rubygems).
+1. [Go](#4-go).
+1. [Node](#5-node).
+1. [System users](#6-system-users).
+1. [Database](#7-database).
+1. [Redis](#8-redis).
+1. [GitLab](#9-gitlab).
+1. [NGINX](#10-nginx).
 
 ## 1. Packages and dependencies
 
@@ -220,7 +222,23 @@ instructions are designed to install Ruby from the official source code.
 
 [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/).
 
-## 3. Go
+## 3. RubyGems
+
+Sometimes, a newer version of RubyGems is required than the one bundled with Ruby.
+
+To update to a specific version:
+
+```shell
+gem update --system 3.4.12
+```
+
+Or the latest version:
+
+```shell
+gem update --system
+```
+
+## 4. Go
 
 GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
@@ -238,7 +256,7 @@ sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
 rm go1.18.8.linux-amd64.tar.gz
 ```
 
-## 4. Node
+## 5. Node
 
 GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
@@ -262,7 +280,7 @@ npm install --global yarn
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
-## 5. System users
+## 6. System users
 
 Create a `git` user for GitLab:
 
@@ -270,7 +288,7 @@ Create a `git` user for GitLab:
 sudo adduser --disabled-login --gecos 'GitLab' git
 ```
 
-## 6. Database
+## 7. Database
 
 NOTE:
 In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 14.0 and later, we [require PostgreSQL 12+](requirements.md#postgresql-requirements).
@@ -403,7 +421,7 @@ In GitLab 12.1 and later, only PostgreSQL is supported. In GitLab 14.0 and later
    gitlabhq_production> \q
    ```
 
-## 7. Redis
+## 8. Redis
 
 See the [requirements page](requirements.md#redis-versions) for the minimum
 Redis requirements.
@@ -486,7 +504,7 @@ fi
 sudo service redis-server restart
 ```
 
-## 8. GitLab
+## 9. GitLab
 
 ```shell
 # We'll install GitLab into the home directory of the user "git"
@@ -911,7 +929,7 @@ sudo systemctl start gitlab.target
 sudo service gitlab start
 ```
 
-## 9. NGINX
+## 10. NGINX
 
 NGINX is the officially supported web server for GitLab. If you cannot or do not want to use NGINX as your web server, see [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
@@ -1156,7 +1174,7 @@ prometheus:
 If you see this message when attempting to clone a repository hosted by GitLab,
 this is likely due to an outdated NGINX or Apache configuration, or a missing or
 misconfigured GitLab Workhorse instance. Double-check that you've
-[installed Go](#3-go), [installed GitLab Workhorse](#install-gitlab-workhorse),
+[installed Go](#4-go), [installed GitLab Workhorse](#install-gitlab-workhorse),
 and correctly [configured NGINX](#site-configuration).
 
 ### `google-protobuf` "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version 'GLIBC_2.14' not found"

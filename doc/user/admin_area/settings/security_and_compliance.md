@@ -12,7 +12,7 @@ The settings for package metadata synchronization are located in the [Admin Area
 ## Choose package registry metadata to sync
 
 WARNING:
-The full package metadata sync can take up to 30 GB of data. Ensure you have provisioned enough disk space before enabling this feature.
+The full package metadata sync can add up to 30 GB to the PostgreSQL database. Ensure you have provisioned enough disk space for the database before enabling this feature.
 We are actively working on reducing this data size in [epic 10415](https://gitlab.com/groups/gitlab-org/-/epics/10415).
 
 To choose the packages you want to synchronize with the GitLab License Database for [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md):

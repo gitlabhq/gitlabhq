@@ -2,6 +2,7 @@
 
 class ProjectCiCdSetting < ApplicationRecord
   include ChronicDurationAttribute
+  include IgnorableColumns
 
   belongs_to :project, inverse_of: :ci_cd_settings
 
@@ -21,6 +22,8 @@ class ProjectCiCdSetting < ApplicationRecord
   attribute :separated_caches, default: true
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
+
+  ignore_column :opt_in_jwt, remove_with: '16.2', remove_after: '2023-07-01'
 
   def keep_latest_artifacts_available?
     # The project level feature can only be enabled when the feature is enabled instance wide

@@ -2,9 +2,9 @@
   - pages_url = @project.pages_url(with_unique_domain: true)
 
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { qa_selector: 'access_page_container' } }, footer_options: { class: 'gl-alert-warning' }) do |c|
-    - c.header do
+    - c.with_header do
       = s_('GitLabPages|Access pages')
-    - c.body do
+    - c.with_body do
       %p
         = external_link(pages_url, pages_url)
 
@@ -12,7 +12,7 @@
         %p
           = external_link(domain.url, domain.url)
     - unless @project.public_pages?
-      - c.footer do
+      - c.with_footer do
         - help_page = help_page_path('user/project/pages/pages_access_control')
         - link_start = '<a href="%{url}" target="_blank" class="gl-alert-link" rel="noopener noreferrer">'.html_safe % { url: help_page }
         - link_end = '</a>'.html_safe

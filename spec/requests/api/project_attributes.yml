@@ -99,7 +99,6 @@ ci_cd_settings:
     forward_deployment_enabled: ci_forward_deployment_enabled
     job_token_scope_enabled: ci_job_token_scope_enabled
     separated_caches: ci_separated_caches
-    opt_in_jwt: ci_opt_in_jwt
     allow_fork_pipelines_to_run_in_parent_project: ci_allow_fork_pipelines_to_run_in_parent_project
 
 build_import_state: # import_state

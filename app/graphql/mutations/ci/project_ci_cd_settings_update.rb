@@ -31,10 +31,6 @@ module Mutations
         description: 'Indicates CI/CD job tokens generated in other projects ' \
           'have restricted access to this project.'
 
-      argument :opt_in_jwt, GraphQL::Types::Boolean,
-        required: false,
-        description: 'When disabled, the JSON Web Token is always available in all jobs in the pipeline.'
-
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
         null: false,

@@ -518,7 +518,6 @@ class Project < ApplicationRecord
   delegate :job_token_scope_enabled, :job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci_outbound, allow_nil: true
   delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :keep_latest_artifact, :keep_latest_artifact=, to: :ci_cd_settings, allow_nil: true
-  delegate :opt_in_jwt, :opt_in_jwt=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=, to: :ci_cd_settings, prefix: :ci, allow_nil: true
   delegate :restrict_user_defined_variables, :restrict_user_defined_variables=, to: :ci_cd_settings, allow_nil: true
   delegate :separated_caches, :separated_caches=, to: :ci_cd_settings, prefix: :ci, allow_nil: true

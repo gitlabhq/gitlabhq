@@ -1154,7 +1154,6 @@ RSpec/ContextWording:
     - 'spec/features/ics/project_issues_spec.rb'
     - 'spec/features/ide/static_object_external_storage_csp_spec.rb'
     - 'spec/features/incidents/user_creates_new_incident_spec.rb'
-    - 'spec/features/invites_spec.rb'
     - 'spec/features/issuables/markdown_references/internal_references_spec.rb'
     - 'spec/features/issuables/sorting_list_spec.rb'
     - 'spec/features/issuables/user_sees_sidebar_spec.rb'

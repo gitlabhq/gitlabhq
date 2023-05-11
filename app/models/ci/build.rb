@@ -1239,10 +1239,10 @@ module Ci
     end
 
     def job_jwt_variables
-      if project.ci_cd_settings.opt_in_jwt?
+      if id_tokens?
         id_tokens_variables
       else
-        predefined_jwt_variables.concat(id_tokens_variables)
+        predefined_jwt_variables
       end
     end
 
@@ -1259,8 +1259,6 @@ module Ci
     end
 
     def id_tokens_variables
-      return [] unless id_tokens?
-
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         id_tokens.each do |var_name, token_data|
           token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['aud'])

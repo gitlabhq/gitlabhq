@@ -28,14 +28,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     fill_in 'new_user_username', with: new_user.username
     fill_in 'new_user_email', with: new_user.email
     fill_in 'new_user_password', with: new_user.password
-    click_button submit_button_text
-  end
 
-  def fill_in_sign_in_form(user)
-    fill_in 'user_login', with: user.email
-    fill_in 'user_password', with: user.password
-    check 'user_remember_me'
-    click_button 'Sign in'
+    wait_for_all_requests
+
+    click_button submit_button_text
   end
 
   def fill_in_welcome_form
@@ -73,7 +69,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         end
       end
 
-      context 'when invite is sent before account is created - ldap or service sign in for manual acceptance edge case' do
+      context 'when invite is sent before account is created;ldap or service sign in for manual acceptance edge case' do
         let(:user) { create(:user, email: 'user@example.com') }
 
         context 'when invite clicked and not signed in' do
@@ -84,7 +80,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           it 'sign in, grants access and redirects to group activity page' do
             click_link 'Sign in'
 
-            fill_in_sign_in_form(user)
+            gitlab_sign_in(user, remember: true, visit: false)
 
             expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
           end
@@ -175,17 +171,19 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           fill_in_sign_up_form(new_user)
 
           expect(page).to have_current_path(new_user_session_path, ignore_query: true)
-          expect(page).to have_content('You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator')
+          sign_up_message = 'You have signed up successfully. However, we could not sign you in because your account ' \
+                            'is awaiting approval from your GitLab administrator.'
+          expect(page).to have_content(sign_up_message)
         end
       end
 
-      context 'email confirmation disabled' do
+      context 'with email confirmation disabled' do
         before do
           stub_application_setting_enum('email_confirmation_setting', 'off')
         end
 
-        context 'the user signs up for an account with the invitation email address' do
-          it 'redirects to the most recent membership activity page with all the projects/groups invitations automatically accepted' do
+        context 'when the user signs up for an account with the invitation email address' do
+          it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 
@@ -194,7 +192,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           end
         end
 
-        context 'the user sign-up using a different email address' do
+        context 'when the user sign-up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
           it 'signs up and redirects to the activity page' do
@@ -206,7 +204,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         end
       end
 
-      context 'email confirmation enabled' do
+      context 'with email confirmation enabled' do
         context 'when user is not valid in sign up form' do
           let(:new_user) { build_stubbed(:user, password: '11111111') }
 
@@ -232,8 +230,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           end
         end
 
-        context 'the user signs up for an account with the invitation email address' do
-          it 'redirects to the most recent membership activity page with all the projects/groups invitations automatically accepted' do
+        context 'when the user signs up for an account with the invitation email address' do
+          it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 
@@ -241,7 +239,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           end
         end
 
-        context 'the user sign-up using a different email address' do
+        context 'when the user signs up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
           context 'when email confirmation is not set to `soft`' do
@@ -253,7 +251,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             it 'signs up and redirects to the group activity page' do
               fill_in_sign_up_form(new_user)
               confirm_email(new_user)
-              fill_in_sign_in_form(new_user)
+              gitlab_sign_in(new_user, remember: true, visit: false)
               fill_in_welcome_form
 
               expect(page).to have_current_path(activity_group_path(group), ignore_query: true)

@@ -123,6 +123,34 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
+## Rotate a group access token
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+
+Rotate a group access token. Revokes the previous token and creates a new token that expires in one week.
+
+```plaintext
+POST /groups/:id/access_tokens/:token_id/rotate
+```
+
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `token_id` | integer or string | yes | ID of the project access token |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
+```
+
+### Responses
+
+- `200: OK` if existing token is successfully revoked and the new token is created.
+- `400: Bad Request` if not rotated successfully.
+- `401: Unauthorized` if either the:
+  - User does not have access to the token with the specified ID.
+  - Token with the specified ID does not exist.
+- `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
+
 ## Revoke a group access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.

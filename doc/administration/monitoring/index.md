@@ -8,9 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Explore our features to monitor your GitLab instance:
 
-- [GitLab self-monitoring](gitlab_self_monitoring_project/index.md): The
-  GitLab instance administration project helps to monitor the GitLab instance and
-  take action on alerts.
 - [Performance monitoring](performance/index.md): GitLab Performance Monitoring
   makes it possible to measure a wide variety of statistics of your instance.
 - [Prometheus](prometheus/index.md): Prometheus is a powerful time-series monitoring

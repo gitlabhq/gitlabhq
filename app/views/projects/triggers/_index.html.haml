@@ -1,13 +1,13 @@
 .row.gl-mt-3.gl-mb-3
   .col-lg-12
     = render Pajamas::CardComponent.new do |c|
-      - c.header do
+      - c.with_header do
         = _("Manage your project's triggers")
-      - c.body do
+      - c.with_body do
         = render 'projects/triggers/form', btn_text: _('Add trigger')
         .gl-mb-5
         #js-ci-pipeline-triggers-list.triggers-list{ data: { triggers: @triggers_json } }
-      - c.footer do
+      - c.with_footer do
         %p
           = _("These examples show how to trigger this project's pipeline for a branch or tag.")
 

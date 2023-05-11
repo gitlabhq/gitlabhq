@@ -4,10 +4,10 @@
   .table-responsive
     - if !@project.mirror? && @project.remote_mirrors.count == 0
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-5' }) do |c|
-        - c.header do
+        - c.with_header do
           %strong
             = _('Mirrored repositories') + ' (0)'
-        - c.body do
+        - c.with_body do
           = _('There are currently no mirrored repositories.')
     - else
       %table.table.gl-table.gl-mt-5

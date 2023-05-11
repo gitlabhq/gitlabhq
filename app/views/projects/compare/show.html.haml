@@ -18,7 +18,7 @@
     paginate_diffs_per_page: Projects::CompareController::COMMIT_DIFFS_PER_PAGE
 - else
   = render Pajamas::CardComponent.new(card_options: { class: "gl-bg-gray-50 gl-mb-5 gl-border-none gl-text-center" }) do |c|
-    - c.body do
+    - c.with_body do
       %h4
         = s_("CompareBranches|There isn't anything to compare.")
       %p.gl-mb-4.gl-line-height-24

@@ -112,7 +112,6 @@ module API
         expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
         expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
         expose :ci_separated_caches, documentation: { type: 'boolean' }
-        expose :ci_opt_in_jwt, documentation: { type: 'boolean' }
         expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }
         expose :build_git_strategy, documentation: { type: 'string', example: 'fetch' } do |project, options|
           project.build_allow_git_fetch ? 'fetch' : 'clone'

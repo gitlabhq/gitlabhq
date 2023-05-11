@@ -3,12 +3,12 @@
 
 - if can?(current_user, :update_pages, @project)
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, header_options: { class: 'gl-display-flex gl-align-items-center gl-justify-content-space-between' }) do |c|
-    - c.header do
+    - c.with_header do
       Domains (#{@domains.size})
       - if can_add_new_domain
         = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_project_pages_domain_path(@project)) do
           = s_('GitLabPages|New Domain')
-    - c.body do
+    - c.with_body do
       - if @domains.any?
         %ul.list-group.list-group-flush
           - @domains.each do |domain|

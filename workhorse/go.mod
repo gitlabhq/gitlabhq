@@ -20,7 +20,7 @@ require (
 	github.com/johannesboyne/gofakes3 v0.0.0-20230310080033-c0edf658332b
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.2.0
-	github.com/prometheus/client_golang v1.15.0
+	github.com/prometheus/client_golang v1.15.1
 	github.com/rafaeljusto/redigomock/v3 v3.1.2
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.0

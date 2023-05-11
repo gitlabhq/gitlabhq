@@ -1095,7 +1095,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
           'restrict_user_defined_variables' => '',
           'runner_token_expiration_interval' => '',
           'separated_caches' => 'ci_',
-          'opt_in_jwt' => 'ci_',
           'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
           'inbound_job_token_scope_enabled' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_'

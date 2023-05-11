@@ -1894,6 +1894,20 @@ For more information, refer to [security report validation](https://docs.gitlab.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
+### Self-monitoring project is removed
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">14.9</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/10030).
+</div>
+
+GitLab self-monitoring project was meant to enable self-hosted GitLab administrators to visualize performance metrics of GitLab within GitLab itself. This feature relied on GitLab Metrics dashboards. With metrics dashboard being removed, self-monitoring project is also removed. We recommended that self-hosted users monitor their GitLab instance with alternative visualization tools, such as Grafana.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
 ### Shimo integration
 
 <div class="deprecation-notes">

@@ -50,7 +50,6 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
       expect(settings_data['jobTokenScopeEnabled']).to eql project.ci_cd_settings.job_token_scope_enabled?
       expect(settings_data['inboundJobTokenScopeEnabled']).to eql(
         project.ci_cd_settings.inbound_job_token_scope_enabled?)
-      expect(settings_data['optInJwt']).to eql project.ci_cd_settings.opt_in_jwt?
     end
   end
 end

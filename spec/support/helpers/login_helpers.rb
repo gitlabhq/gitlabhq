@@ -94,8 +94,8 @@ module LoginHelpers
   # remember - Whether or not to check "Remember me" (default: false)
   # two_factor_auth - If two-factor authentication is enabled (default: false)
   # password - password to attempt to login with (default: user.password)
-  def gitlab_sign_in_with(user, remember: false, two_factor_auth: false, password: nil)
-    visit new_user_session_path
+  def gitlab_sign_in_with(user, remember: false, two_factor_auth: false, password: nil, visit: true)
+    visit new_user_session_path if visit
 
     fill_in "user_login", with: user.email
     fill_in "user_password", with: (password || user.password)

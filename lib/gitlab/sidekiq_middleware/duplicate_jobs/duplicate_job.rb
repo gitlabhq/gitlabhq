@@ -159,8 +159,6 @@ module Gitlab
         end
 
         def options
-          # Remove line below when FF `ci_pipeline_process_worker_dedup_until_executed` is removed
-          return job_deduplication[:options] if job_deduplication[:options]
           return {} unless worker_klass
           return {} unless worker_klass.respond_to?(:get_deduplication_options)
 
@@ -202,30 +200,12 @@ module Gitlab
         end
 
         def strategy
-          # Remove line below when FF `ci_pipeline_process_worker_dedup_until_executed` is removed
-          return job_deduplication[:strategy] if job_deduplication[:strategy]
           return DEFAULT_STRATEGY unless worker_klass
           return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
           return STRATEGY_NONE unless worker_klass.deduplication_enabled?
 
           worker_klass.get_deduplicate_strategy
         end
-
-        # Returns the deduplicate settings stored in the job itself; remove this method
-        # when FF `ci_pipeline_process_worker_dedup_until_executed` is removed
-        def job_deduplication
-          return {} unless job['deduplicate']
-
-          # Sometimes this setting is returned with all string keys/values; we need
-          # to ensure the keys and values of the hash are fully symbolized or numeric
-          job['deduplicate'].deep_symbolize_keys.tap do |hash|
-            hash[:strategy] = hash[:strategy]&.to_sym
-            hash[:options]&.each do |k, v|
-              hash[:options][k] = k == :ttl ? v.to_i : v.to_sym
-            end
-          end.compact
-        end
-        strong_memoize_attr :job_deduplication
 
         def worker_class_name
           job['class']

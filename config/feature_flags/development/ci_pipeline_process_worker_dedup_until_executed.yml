@@ -1,8 +1,0 @@
----
-name: ci_pipeline_process_worker_dedup_until_executed
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115261
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397829
-milestone: '15.11'
-type: development
-group: group::pipeline authoring
-default_enabled: false

@@ -3,14 +3,14 @@
     %h4
       = badge.title.capitalize
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, header_options: { class: 'gl-display-flex gl-align-items-center' }) do |c|
-      - c.header do
+      - c.with_header do
         .gl-flex-grow-1
           %b
             = badge.title.capitalize
             &middot;
           = badge.to_html
         .js-ref-switcher-badge{ id: "js-project-ci-cd-ref-switcher-#{badge.title.parameterize(separator: '-') }", data: { project_id: @project.id, ref: @ref } }
-      - c.body do
+      - c.with_body do
         .row
           .col-md-2.gl-text-center
             Markdown

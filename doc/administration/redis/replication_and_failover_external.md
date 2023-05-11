@@ -87,7 +87,7 @@ valuable information for the general setup.
 
 Assuming that the Redis primary instance IP is `10.0.0.1`:
 
-1. [Install Redis](../../install/installation.md#7-redis).
+1. [Install Redis](../../install/installation.md#8-redis).
 1. Edit `/etc/redis/redis.conf`:
 
    ```conf
@@ -113,7 +113,7 @@ Assuming that the Redis primary instance IP is `10.0.0.1`:
 
 Assuming that the Redis replica instance IP is `10.0.0.2`:
 
-1. [Install Redis](../../install/installation.md#7-redis).
+1. [Install Redis](../../install/installation.md#8-redis).
 1. Edit `/etc/redis/redis.conf`:
 
    ```conf

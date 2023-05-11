@@ -24,7 +24,7 @@ modern ECMAScript standards supported through [Babel](https://babeljs.io/) and E
 
 Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
-[installation guide](../../install/installation.md#4-node).
+[installation guide](../../install/installation.md#5-node).
 
 ### Browser Support
 

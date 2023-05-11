@@ -64,15 +64,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         it_behaves_like 'scheduling with deduplication class', 'None'
       end
     end
-
-    # This context is to be removed when FF `ci_pipeline_process_worker_dedup_until_executed` is removed
-    context 'when deduplication strategy is provided in the job options' do
-      before do
-        job['deduplicate'] = { 'strategy' => 'until_executed' }
-      end
-
-      it_behaves_like 'scheduling with deduplication class', 'UntilExecuted'
-    end
   end
 
   describe '#perform' do
@@ -489,15 +480,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob, :clean_gi
         receive(:get_deduplication_options).and_return(worker_options))
 
       expect(duplicate_job.options).to eq(worker_options)
-    end
-
-    # This context is to be removed when FF `ci_pipeline_process_worker_dedup_until_executed` is removed
-    context 'when deduplication options are provided in the job options' do
-      it "returns the job's deduplication options" do
-        job['deduplicate'] = { 'options' => { 'if_deduplicated' => 'reschedule_once', 'ttl' => '60' } }
-
-        expect(duplicate_job.options).to eq({ if_deduplicated: :reschedule_once, ttl: 60 })
-      end
     end
   end
 

@@ -3049,7 +3049,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
           'ci_forward_deployment_enabled',
           'ci_job_token_scope_enabled',
           'ci_separated_caches',
-          'ci_opt_in_jwt',
           'ci_allow_fork_pipelines_to_run_in_parent_project',
           'build_git_strategy',
           'keep_latest_artifact',

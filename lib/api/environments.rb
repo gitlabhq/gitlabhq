@@ -13,13 +13,6 @@ module API
     urgency :low
 
     MIN_SEARCH_LENGTH = 3
-    # rubocop:disable Gitlab/DocUrl
-    ENVIRONMENT_NAME_UPDATE_ERROR = <<~DESC
-      Updating environment name was deprecated in GitLab 15.9 and to be removed in GitLab 16.0.
-      For workaround, see [the documentation](https://docs.gitlab.com/ee/ci/environments/#rename-an-environment).
-      For more information, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/338897)
-    DESC
-    # rubocop:enable Gitlab/DocUrl
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
@@ -108,15 +101,7 @@ module API
 
         update_params = declared_params(include_missing: false).extract!(:external_url, :tier)
 
-        # For the transition period, we implicitly extract `:name` field.
-        # This line should be removed when disallow_environment_name_update feature flag is removed.
-        update_params[:name] = params[:name] if params[:name].present?
-
         environment.assign_attributes(update_params)
-
-        if environment.name_changed? && ::Feature.enabled?(:disallow_environment_name_update, user_project)
-          render_api_error!(ENVIRONMENT_NAME_UPDATE_ERROR, 400)
-        end
 
         if environment.save
           present environment, with: Entities::Environment, current_user: current_user

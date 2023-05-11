@@ -1,8 +1,8 @@
 - unless @project.pages_deployed?
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-blue-500' }, header_options: { class: 'gl-bg-blue-500 gl-text-white' }) do |c|
-    - c.header do
+    - c.with_header do
       = s_('GitLabPages|Configure pages')
-    - c.body do
+    - c.with_body do
       - docs_link_start = "<a href='#{help_page_path('user/project/pages/index')}' target='_blank' rel='noopener noreferrer' data-track-action='click_link' data-track-label='pages_docs_link'>".html_safe
       - samples_link_start = "<a href='https://gitlab.com/pages' target='_blank' rel='noopener noreferrer' data-track-action='click_link' data-track-label='pages_samples_link'>".html_safe
       - link_end = '</a>'.html_safe

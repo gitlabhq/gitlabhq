@@ -1,0 +1,9 @@
+- title: "Self-monitoring project is removed"
+  removal_milestone: "16.0"
+  announcement_milestone: "14.9"
+  breaking_change: true
+  reporter: kbychu
+  stage: monitor
+  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/10030
+  body: |
+    GitLab self-monitoring project was meant to enable self-hosted GitLab administrators to visualize performance metrics of GitLab within GitLab itself. This feature relied on GitLab Metrics dashboards. With metrics dashboard being removed, self-monitoring project is also removed. We recommended that self-hosted users monitor their GitLab instance with alternative visualization tools, such as Grafana.

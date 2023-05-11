@@ -21,14 +21,14 @@
         .form-group
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|
             = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }, footer_options: { class: auto_devops_enabled || 'hidden' }) do |c|
-              - c.body do
+              - c.with_body do
                 - autodevops_help_link = link_to _('Learn more.'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
                 - auto_devops_badge = auto_devops_enabled ? (gl_badge_tag badge_for_auto_devops_scope(@project), { variant: :info }, { class: 'js-instance-default-badge gl-ml-3 gl-mt-n1'}) : ''
                 = form.gitlab_ui_checkbox_component :enabled,
                   (s_('CICD|Default to Auto DevOps pipeline') + auto_devops_badge).html_safe,
                   checkbox_options: { class: 'js-toggle-extra-settings', checked: auto_devops_enabled, data: { qa_selector: 'enable_autodevops_checkbox' } },
                   help_text: (s_('CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found.') + ' ' + autodevops_help_link).html_safe
-              - c.footer do
+              - c.with_footer do
                 - if @project.all_clusters.empty?
                   %p.settings-message.text-center
                     = s_('CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable.').html_safe % { kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }

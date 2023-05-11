@@ -2,10 +2,10 @@
 
 - if can?(current_user, :update_pages, @project)
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-text-center nothing-here-block' }) do |c|
-    - c.header do
+    - c.with_header do
       = s_('GitLabPages|Domains')
       - if can_add_new_domain
         = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_project_pages_domain_path(@project)) do
           = s_('GitLabPages|New Domain')
-    - c.body do
+    - c.with_body do
       = s_("GitLabPages|Support for domains and certificates is disabled. Ask your system's administrator to enable it.")
