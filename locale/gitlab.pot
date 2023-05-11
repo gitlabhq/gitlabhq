@@ -859,6 +859,9 @@ msgstr ""
 msgid "%{linkStart} Learn more%{linkEnd}."
 msgstr ""
 
+msgid "%{linkStart}Approval settings%{linkEnd} prevent approvals by its eligible approvers."
+msgstr ""
+
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -5505,37 +5508,7 @@ msgstr ""
 msgid "Approvals required"
 msgstr ""
 
-msgid "Approvals|%{count} of %{total}"
-msgstr ""
-
-msgid "Approvals|Action required"
-msgstr ""
-
-msgid "Approvals|Auto approved"
-msgstr ""
-
-msgid "Approvals|It looks like there was a conflict between the rules for approving this Merge Request and the users who were eligible to approve it. As a result, the system has automatically approved it to keep things moving."
-msgstr ""
-
-msgid "Approvals|Rule automatically approved"
-msgstr ""
-
-msgid "Approvals|Rule cannot be approved"
-msgstr ""
-
 msgid "Approvals|Section: %section"
-msgstr ""
-
-msgid "Approvals|The number of people who need to approve this is more than those who are allowed to. Please ask the project owner to update %{securityPolicy}."
-msgstr ""
-
-msgid "Approvals|Verify the number of %{linkStart}eligible security approvers%{linkEnd} matches the required approvers for the security policy."
-msgstr ""
-
-msgid "Approvals|Verify your %{eligibleApproverLinkStart}eligible approvers%{eligibleApproverLinkEnd} and %{approvalSettingsLinkStart}approval settings%{approvalSettingsLinkEnd} agree with each other."
-msgstr ""
-
-msgid "Approvals|Verify your %{linkStart}approval settings%{linkEnd} do not conflict with this rule."
 msgstr ""
 
 msgid "Approve"
@@ -23773,6 +23746,9 @@ msgstr ""
 msgid "Introducing Your DevOps Reports"
 msgstr ""
 
+msgid "Invalid"
+msgstr ""
+
 msgid "Invalid Insights config file detected"
 msgstr ""
 
@@ -23834,6 +23810,9 @@ msgid "Invalid repository bundle for snippet with id %{snippet_id}"
 msgstr ""
 
 msgid "Invalid repository path"
+msgstr ""
+
+msgid "Invalid rules are automatically approved to unblock the merge request."
 msgstr ""
 
 msgid "Invalid server response"
@@ -24466,6 +24445,9 @@ msgid "Issues|There was an error while moving the issues."
 msgstr ""
 
 msgid "Issue|Title"
+msgstr ""
+
+msgid "It doesn't have any %{linkStart}eligible approvers%{linkEnd}."
 msgstr ""
 
 msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
@@ -45638,6 +45620,9 @@ msgstr ""
 msgid "This repository was last checked %{last_check_timestamp}. The check passed."
 msgstr ""
 
+msgid "This rule is invalid because no one can approve it for one or more of these reasons:"
+msgstr ""
+
 msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
@@ -49868,6 +49853,9 @@ msgstr ""
 msgid "Why can't I approve?"
 msgstr ""
 
+msgid "Why is this rule invalid?"
+msgstr ""
+
 msgid "Wiki"
 msgstr ""
 
@@ -52958,12 +52946,6 @@ msgstr ""
 msgid "mrWidget|%{boldStart}Ready to be merged automatically.%{boldEnd} Ask someone with write access to this repository to merge this request."
 msgstr ""
 
-msgid "mrWidget|%{dangerStart}%{rules} rule can't be approved%{dangerEnd}"
-msgstr ""
-
-msgid "mrWidget|%{dangerStart}%{rules} rules can't be approved%{dangerEnd}"
-msgstr ""
-
 msgid "mrWidget|%{mergeError}."
 msgstr ""
 
@@ -52979,10 +52961,10 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
-msgid "mrWidget|%{rules} invalid rule has been approved automatically"
+msgid "mrWidget|%{rules} invalid rule has been approved automatically, as no one can approve it."
 msgstr ""
 
-msgid "mrWidget|%{rules} invalid rules have been approved automatically"
+msgid "mrWidget|%{rules} invalid rules have been approved automatically, as no one can approve them."
 msgstr ""
 
 msgid "mrWidget|A merge train is a queued list of merge requests waiting to be merged into the target branch. The changes in each merge request are combined with the changes in earlier merge requests and tested before merge."
