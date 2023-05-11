@@ -204,4 +204,22 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe '#tab_count_display' do
+    let(:merge_request) { create(:merge_request) }
+
+    context 'when merge request is preparing' do
+      before do
+        allow(merge_request).to receive(:preparing?).and_return(true)
+      end
+
+      it { expect(tab_count_display(merge_request, 0)).to eq('-') }
+      it { expect(tab_count_display(merge_request, '0')).to eq('-') }
+    end
+
+    context 'when merge request is prepared' do
+      it { expect(tab_count_display(merge_request, 10)).to eq(10) }
+      it { expect(tab_count_display(merge_request, '10')).to eq('10') }
+    end
+  end
 end

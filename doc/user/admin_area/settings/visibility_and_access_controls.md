@@ -165,7 +165,7 @@ For more details on group visibility, see
 
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from
-the item you're changing. 
+the item you're changing.
 
 To restrict visibility levels for groups, projects, snippets, and selected pages:
 
@@ -187,11 +187,12 @@ To restrict visibility levels for groups, projects, snippets, and selected pages
 1. Select **Save changes**.
 
 For more details on project visibility, see
-[Project visibility](../../public_access.md). 
+[Project visibility](../../public_access.md).
 
 ## Configure allowed import sources
 
-You can specify from which hosting sites users can [import their projects](../../project/import/index.md):
+Before projects can be imported from other systems, the [import source](../../gitlab_com/index.md#default-import-sources)
+for that system must be enabled.
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Main menu > Admin**.

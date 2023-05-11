@@ -133,8 +133,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       recent_commits,
       commits_count: @merge_request.commits_count
     )
+    commits_count = @merge_request.preparing? ? '-' : @merge_request.commits_count + @merge_request.context_commits_count
 
-    render json: { html: view_to_html_string('projects/merge_requests/_commits'), next_page: @next_page }
+    render json: { html: view_to_html_string('projects/merge_requests/_commits'), next_page: @next_page, count: commits_count }
   end
 
   def pipelines

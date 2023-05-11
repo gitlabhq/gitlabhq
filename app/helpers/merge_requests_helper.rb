@@ -305,6 +305,10 @@ module MergeRequestsHelper
 
     hidden_issuable_icon(merge_request)
   end
+
+  def tab_count_display(merge_request, count)
+    merge_request.preparing? ? "-" : count
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

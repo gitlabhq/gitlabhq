@@ -1,0 +1,13 @@
+- title: "Embedding Grafana panels in Markdown is removed"
+  announcement_milestone: "15.9"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: kbychu
+  stage: monitor
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/389477
+  body: |
+    The ability to add Grafana panels in GitLab Flavored Markdown is removed.
+    We intend to replace this feature with the ability to [embed charts](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33)
+    with the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui).
+  tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/operations/metrics/embed_grafana.html#embed-grafana-panels-in-markdown-deprecated

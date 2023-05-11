@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2023-05-22' -->
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
 # Shimo (deprecated) **(FREE)**
 

@@ -8,8 +8,6 @@
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/project/merge_requests/reviews/suggestions.md')
 - mr_action = j(params[:tab].presence || 'show')
--# @diffs_count is a number when the value is 0, but a string when there are other values
-- diffs_count_display = @diffs_count.to_s == "0" ? "-" : @diffs_count
 - add_page_specific_style 'page_bundles/issuable'
 - add_page_specific_style 'page_bundles/design_management'
 - add_page_specific_style 'page_bundles/merge_requests'
@@ -38,7 +36,7 @@
             = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", qa_selector: "commits_tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
-                = gl_badge_tag @commits_count, { size: :sm }
+                = gl_badge_tag tab_count_display(@merge_request, @commits_count), { size: :sm }, { class: 'js-commits-count' }
           - if @project.builds_enabled?
             = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
@@ -47,7 +45,7 @@
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              = gl_badge_tag diffs_count_display, { size: :sm }
+              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if moved_mr_sidebar_enabled?

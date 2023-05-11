@@ -58,7 +58,7 @@ The following are resources on version control concepts:
 You can do many Git tasks from the command line:
 
 - [Cherry-pick](cherry_picking.md).
-- [Getting started with Git](getting_started.md).
+- [Getting started with Git](../../tutorials/make_first_git_commit/index.md).
 - [Git add](git_add.md).
 - [Git stash](stash.md).
 - [Rollback commits](rollback_commits.md).

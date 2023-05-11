@@ -122,6 +122,16 @@ Review the details carefully before upgrading.
 
 The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) was deprecated in GitLab 15.8 and removed in GitLab 16.0. This feature is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution) but we are removing that code in favor of the GitLab Dependency Proxy. Use the GitLab Dependency Proxy to proxy and cache container images from Docker Hub.
 
+### Embedding Grafana panels in Markdown is removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The ability to add Grafana panels in GitLab Flavored Markdown is removed.
+We intend to replace this feature with the ability to [embed charts](https://gitlab.com/groups/gitlab-org/opstrace/-/epics/33)
+with the [GitLab Observability UI](https://gitlab.com/gitlab-org/opstrace/opstrace-ui).
+
 ### Enforced validation of CI/CD parameter character lengths
 
 WARNING:

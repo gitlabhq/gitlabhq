@@ -135,7 +135,7 @@ Some settings for [GitLab Pages](../project/pages/index.md) differ from the
 [defaults for self-managed instances](../../administration/pages/index.md):
 
 | Setting                                           | GitLab.com             |
-|---------------------------------------------------|------------------------|
+|:--------------------------------------------------|:-----------------------|
 | Domain name                                       | `gitlab.io`            |
 | IP address                                        | `35.185.44.232`        |
 | Support for custom domains                        | **{check-circle}** Yes |
@@ -208,21 +208,29 @@ NOTE:
 Cloudflare. Git LFS and imports other than a file upload are not affected by
 this limit. Repository limits apply to both public and private projects.
 
-## Import sources
+## Default import sources
 
-GitLab.com has the following import sources enabled.
+> Disabling all importers by default for new GitLab self-managed installations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
 
-| Import source          | GitLab.com default | Default (self-managed)     |
-|------------------------|--------------------| ---------------------------|
-| Bitbucket Cloud        | **{check-circle}** Yes | **{dotted-circle}** No |
-| Bitbucket Server       | **{check-circle}** Yes | **{dotted-circle}** No |
-| FogBugz                | **{check-circle}** Yes | **{dotted-circle}** No |
-| GitLab Direct Transfer | **{check-circle}** Yes | **{dotted-circle}** No |
-| Gitea                  | **{check-circle}** Yes | **{dotted-circle}** No |
-| GitHub                 | **{check-circle}** Yes | **{dotted-circle}** No |
-| GitLab export          | **{check-circle}** Yes | **{dotted-circle}** No |
-| Manifest file          | **{check-circle}** Yes | **{dotted-circle}** No |
-| Repository by URL      | **{check-circle}** Yes | **{dotted-circle}** No |
+The import sources that are available default depend on which GitLab you use:
+
+- GitLab.com: all available import sources are enabled by default.
+- GitLab self-managed: no import sources are enabled by default and must be
+  [enabled](../admin_area/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+
+| Import source                                                                                       | GitLab.com default     | GitLab self-managed default |
+|:----------------------------------------------------------------------------------------------------|:-----------------------|:----------------------------|
+| [Bitbucket Cloud](../project/import/bitbucket.md)                                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [Bitbucket Server](../project/import/bitbucket_server.md)                                           | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [FogBugz](../project/import/fogbugz.md)                                                             | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [Gitea](../project/import/gitea.md)                                                                 | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [GitLab by direct transfer](../group/import/index.md#migrate-groups-by-direct-transfer-recommended) | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [GitLab using file exports](../project/settings/import_export.md)                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [GitHub](../project/import/github.md)                                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [Manifest file](../project/import/manifest.md)                                                      | **{check-circle}** Yes | **{dotted-circle}** No      |
+| [Repository by URL](../project/import/repo_by_url.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
+
+[Other importers](../project/import/index.md#available-project-importers) are available.
 
 ## IP range
 

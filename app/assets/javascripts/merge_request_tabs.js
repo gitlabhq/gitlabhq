@@ -482,12 +482,14 @@ export default class MergeRequestTabs {
 
     axios
       .get(`${source}.json`, { params: { page, per_page: 100 } })
-      .then(({ data }) => {
+      .then(({ data: { html, count, next_page: nextPage } }) => {
         toggleLoader(false);
+
+        document.querySelector('.js-commits-count').textContent = count;
 
         const commitsDiv = document.querySelector('div#commits');
         // eslint-disable-next-line no-unsanitized/property
-        commitsDiv.innerHTML += data.html;
+        commitsDiv.innerHTML += html;
         localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
         scrollToContainer('#commits');
@@ -503,7 +505,7 @@ export default class MergeRequestTabs {
           });
         }
 
-        if (!data.next_page) {
+        if (!nextPage) {
           return import('./add_context_commits_modal');
         }
 

@@ -28,12 +28,17 @@ Code Suggestions are available in Visual Studio Code when you have the GitLab Wo
 
 Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). The best results from Code Suggestions are expected for these six languages:
 
-- C
-- C++
+- C/C++
+- C#
 - Go
 - Java
 - JavaScript
 - Python
+- PHP
+- Ruby
+- Rust
+- Scala
+- TypeScript
 
 Suggestions may be mixed for other languages. Using natural language code comments to request completions may also not function as expected.
 
