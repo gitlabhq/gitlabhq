@@ -240,6 +240,7 @@ export default {
       :quick-actions-docs-path="quickActionsDocsPath"
       :show-content-editor-switcher="enableContentEditor"
       :drawio-enabled="drawioEnabled"
+      :remove-border="true"
       @enableContentEditor="onEditingModeChange('contentEditor')"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >

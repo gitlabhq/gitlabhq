@@ -113,21 +113,5 @@ RSpec.describe JiraConnect::SyncProjectWorker, factory_default: :keep, feature_c
         perform(project.id, update_sequence_id)
       end
     end
-
-    context 'when the feature flag is disabled' do
-      let!(:most_recent_merge_request) { create(:merge_request, :unique_branches, description: 'TEST-323', title: 'TEST-123') }
-
-      before do
-        stub_feature_flags(jira_connect_sync_branches: false)
-        stub_const("#{described_class}::MAX_RECORDS_LIMIT", 1)
-      end
-
-      it 'does not sync branches' do
-        expect(jira_connect_sync_service).to receive(:execute)
-          .with(merge_requests: [most_recent_merge_request], update_sequence_id: update_sequence_id)
-
-        perform(project.id, update_sequence_id)
-      end
-    end
   end
 end

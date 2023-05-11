@@ -2975,8 +2975,7 @@ Users authenticated with SSO or SAML must not use a password for Git operations
 over HTTPS. These users can instead:
 
 - Set up a [personal access token](../user/profile/personal_access_tokens.md).
-- Use the [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager)
-  which securely authenticates using OAuth.
+- Use an [OAuth credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
 ## Link SAML identity for an existing user
 

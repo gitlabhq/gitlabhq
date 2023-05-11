@@ -6,11 +6,13 @@ module Gitlab
       class LoadBalancing < ActiveSupport::Subscriber
         attach_to :load_balancing
 
+        InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
         PROMETHEUS_COUNTER = :gitlab_transaction_caught_up_replica_pick_count_total
         LOG_COUNTERS = { true => :caught_up_replica_pick_ok, false => :caught_up_replica_pick_fail }.freeze
 
         def caught_up_replica_pick(event)
-          return unless Gitlab::SafeRequestStore.active?
+          return unless InstrumentationStorage.active?
 
           result = event.payload[:result]
           counter_name = counter(result)
@@ -20,17 +22,17 @@ module Gitlab
 
         # we want to update Prometheus counter after the controller/action are set
         def web_transaction_completed(_event)
-          return unless Gitlab::SafeRequestStore.active?
+          return unless InstrumentationStorage.active?
 
           LOG_COUNTERS.keys.each { |result| increment_prometheus_for_result_label(result) }
         end
 
         def self.load_balancing_payload
-          return {} unless Gitlab::SafeRequestStore.active?
+          return {} unless InstrumentationStorage.active?
 
           {}.tap do |payload|
             LOG_COUNTERS.values.each do |counter|
-              value = Gitlab::SafeRequestStore[counter]
+              value = InstrumentationStorage[counter]
 
               payload[counter] = value.to_i if value
             end
@@ -40,12 +42,12 @@ module Gitlab
         private
 
         def increment(counter)
-          Gitlab::SafeRequestStore[counter] = Gitlab::SafeRequestStore[counter].to_i + 1
+          InstrumentationStorage[counter] = InstrumentationStorage[counter].to_i + 1
         end
 
         def increment_prometheus_for_result_label(label_value)
           counter_name = counter(label_value)
-          return unless (counter_value = Gitlab::SafeRequestStore[counter_name])
+          return unless (counter_value = InstrumentationStorage[counter_name])
 
           increment_prometheus(labels: { result: label_value }, value: counter_value.to_i)
         end

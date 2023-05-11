@@ -16,6 +16,9 @@ Supported clients:
 
 - `mvn`. Learn how to build a [Maven](../workflows/build_packages.md#maven) package.
 - `gradle`. Learn how to build a [Gradle](../workflows/build_packages.md#gradle) package.
+- `sbt`.
+  - `sbt` can only be used to [pull dependencies](#install-a-package).
+    See this [issue 408479](https://gitlab.com/gitlab-org/gitlab/-/issues/408479) for more details.
 
 ## Publish to the GitLab Package Registry
 
@@ -123,6 +126,44 @@ file:
       }
   }
   ```
+
+:::TabTitle `sbt`
+
+| Token type            | Name must be                 | Token                                                                  |
+|-----------------------|------------------------------|------------------------------------------------------------------------|
+| Personal access token | The username of the user     | Paste token as-is, or define an environment variable to hold the token |
+| Deploy token          | The username of deploy token | Paste token as-is, or define an environment variable to hold the token |
+| CI Job token          | `gitlab-ci-token`            | `sys.env.get("CI_JOB_TOKEN").get`                                      |
+
+Authentication for [SBT](https://www.scala-sbt.org/index.html) is based on
+[basic HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
+You must to provide a name and a password.
+
+NOTE:
+The name field must be named to match the token you chose.
+
+To install a package from the Maven GitLab Package Registry by using `sbt`, you must configure
+a [Maven resolver](https://www.scala-sbt.org/1.x/docs/Resolvers.html#Maven+resolvers).
+If you're accessing a private or an internal project or group, you need to set up
+[credentials](https://www.scala-sbt.org/1.x/docs/Publishing.html#Credentials).
+After configuring the resolver and authentication, you can install a package
+from a project, group, or namespace.
+
+In your [`build.sbt`](https://www.scala-sbt.org/1.x/docs/Directories.html#sbt+build+definition+files), add the following lines:
+
+```scala
+resolvers += ("gitlab" at "<endpoint url>")
+
+credentials += Credentials("GitLab Packages Registry", "<host>", "<name>", "<token>")
+```
+
+In this example:
+
+- `<endpoint url>` is the [endpoint URL](#endpoint-urls).
+Example: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven`.
+- `<host>` is the host present in the `<endpoint url>` without the protocol
+scheme or the port. Example: `gitlab.example.com`.
+- `<name>` and `<token>` are explained in the table above.
 
 ::EndTabs
 
@@ -401,6 +442,22 @@ To install a package by using `gradle`:
 
    ```shell
    gradle install
+   ```
+
+:::TabTitle `sbt`
+
+To install a package by using `sbt`:
+
+1. Add an [inline dependency](https://www.scala-sbt.org/1.x/docs/Library-Management.html#Dependencies) to `build.sbt`:
+
+   ```scala
+   libraryDependencies += "com.mycompany.mydepartment" % "my-project" % "8.4"
+   ```
+
+1. In your project, run the following:
+
+   ```shell
+   sbt update
    ```
 
 ::EndTabs

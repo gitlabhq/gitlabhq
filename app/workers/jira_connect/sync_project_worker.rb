@@ -20,8 +20,11 @@ module JiraConnect
 
       return if project.nil?
 
-      sync_params = { merge_requests: merge_requests_to_sync(project), update_sequence_id: update_sequence_id }
-      sync_params[:branches] = branches_to_sync(project) if Feature.enabled?(:jira_connect_sync_branches, project)
+      sync_params = {
+        branches: branches_to_sync(project),
+        merge_requests: merge_requests_to_sync(project),
+        update_sequence_id: update_sequence_id
+      }
 
       JiraConnect::SyncService.new(project).execute(**sync_params)
     end

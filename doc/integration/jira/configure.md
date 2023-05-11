@@ -37,14 +37,21 @@ To configure your project settings in GitLab:
    [closing reference](../../user/project/issues/managing_issues.md#closing-issues-automatically)
    is made in GitLab, select **Enable Jira transitions**.
 1. Provide Jira configuration information:
-   - **Web URL**: The base URL to the Jira instance web interface you're linking to
-     this GitLab project, such as `https://jira.example.com`.
-   - **Jira API URL**: The base URL to the Jira instance API, such as `https://jira-api.example.com`.
-     Defaults to the **Web URL** value if not set. Leave blank if using **Jira on Atlassian cloud**.
-   - **Username or Email**:
-     For **Jira Server**, use `username`. For **Jira on Atlassian cloud**, use `email`.
-   - **Password/API token**:
-     Use `password` for **Jira Server** or `API token` for **Jira on Atlassian cloud**.
+   - **Web URL**: The base URL for the Jira instance web interface you're linking to
+     this GitLab project (for example, `https://jira.example.com`).
+   - **Jira API URL**: The base URL for the Jira instance API (for example, `https://jira-api.example.com`).
+     If this URL is not set, the **Web URL** value is used by default. Leave blank if you use **Jira Cloud**.
+   - **Authentication type**: From the dropdown list, select:
+     - **Basic**
+     - **Jira personal access token (Jira Data Center and Jira Server only)**
+   - **Email or username** (relevant to **Basic** authentication only):
+     - For Jira Cloud, enter an email.
+     - For Jira Data Center and Jira Server, enter a username.
+   - **New API token, password, or Jira personal access token**:
+     - For **Basic** authentication:
+         - For Jira Cloud, enter an API token.
+         - For Jira Data Center and Jira Server, enter a password.
+     - For **Jira personal access token** authentication, enter the token.
 1. To enable users to [view Jira issues](issues.md#view-jira-issues) inside the GitLab project, select **Enable Jira issues** and
    enter a Jira project key.
 

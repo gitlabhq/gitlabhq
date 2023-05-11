@@ -40,4 +40,13 @@ RSpec.describe API::Entities::Package do
       expect(subject[:_links]).not_to have_key(:web_path)
     end
   end
+
+  context 'with build info' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package) { create(:npm_package, :with_build, project: project) }
+
+    it 'returns an empty array for pipelines' do
+      expect(subject[:pipelines]).to eq([])
+    end
+  end
 end

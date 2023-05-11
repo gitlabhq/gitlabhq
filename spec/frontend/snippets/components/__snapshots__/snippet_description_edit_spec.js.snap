@@ -24,7 +24,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
     </div>
      
     <div
-      class="js-vue-markdown-field md-area position-relative gfm-form gl-border-none! gl-shadow-none! js-expanded"
+      class="js-vue-markdown-field md-area position-relative gfm-form js-expanded"
       data-uploads-path=""
     >
       <markdown-header-stub

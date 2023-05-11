@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
 
     context 'when the request store already has data' do
       before do
-        Gitlab::SafeRequestStore[:rack_attack_instrumentation] = {
+        ::Gitlab::Instrumentation::Storage[:rack_attack_instrumentation] = {
           rack_attack_redis_count: 10,
           rack_attack_redis_duration_s: 9.0
         }
@@ -239,7 +239,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RackAttack, :request_store do
 
     it 'adds the matched name to safe request store' do
       subscriber.safelist(event)
-      expect(Gitlab::SafeRequestStore[:instrumentation_throttle_safelist]).to eql('throttle_unauthenticated')
+      expect(::Gitlab::Instrumentation::Storage[:instrumentation_throttle_safelist]).to eql('throttle_unauthenticated')
     end
   end
 end

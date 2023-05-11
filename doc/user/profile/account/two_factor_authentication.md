@@ -24,18 +24,27 @@ If you set up a device, also set up a TOTP so you can still access your account 
 When 2FA is enabled, you can't use your password to authenticate with Git over HTTPS or the [GitLab API](../../../api/rest/index.md).
 You can use a [personal access token](../personal_access_tokens.md) instead.
 
-## Git Credential Manager
+## OAuth credential helpers
 
-For Git over HTTPS, [Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) offers an alternative to personal access tokens. By default, GCM
-authenticates using OAuth, opening GitLab in your web browser. The first time you authenticate, GitLab asks you to authorize the app. If you remain signed in to GitLab, subsequent
-authentication requires no interaction.
+The following Git credential helpers authenticate to GitLab using OAuth. This is compatible with two-factor authentication. The first time you authenticate, the helper opens the web browser and GitLab asks you to authorize the app. Subsequent authentication requires no interaction.
 
-So you don't need to reauthenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
+### Git Credential Manager
 
-GCM supports GitLab.com out the box. To use with self-managed GitLab, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md)
-documentation.
+[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with self-managed GitLab, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
+
+So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
+
+Git for Windows includes Git Credential Manager.
 
 Git Credential Manager is developed primarily by GitHub, Inc. It is an open-source project and is supported by the community.
+
+### git-credential-oauth
+
+[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with self-managed GitLab, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
+
+Many Linux distributions include git-credential-oauth as a package.
+
+git-credential-oauth is an open-source project supported by the community.
 
 ## Enable two-factor authentication
 
@@ -485,23 +494,25 @@ access token instead of a password.
 This error occurs in the following scenarios:
 
 - You have 2FA enabled and have attempted to authenticate with a username and
-  password. For 2FA-enabled users, a [personal access token](../personal_access_tokens.md) (PAT)
-  must be used instead of a password. To authenticate:
-  - Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
-  - [GitLab Container Registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
-    with `read_registry` or `write_registry` scope is required.
-  - [Dependency Proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy) requests, a PAT with
-    `read_registry` and `write_registry` scopes is required.
+  password.
 - You do not have 2FA enabled and have sent an incorrect username or password
   with your request.
 - You do not have 2FA enabled but an administrator has enabled the
   [enforce 2FA for all users](../../../security/two_factor_authentication.md#enforce-2fa-for-all-users) setting.
 - You do not have 2FA enabled, but an administrator has disabled the
   [password authentication enabled for Git over HTTP(S)](../../admin_area/settings/sign_in_restrictions.md#password-authentication-enabled)
-  setting. You can authenticate Git requests:
-  - Over HTTP(S) using a [personal access token](../personal_access_tokens.md).
-  - In your browser using [Git Credential Manager](#git-credential-manager).
-  - If you have configured LDAP, over HTTP(S) using an [LDAP password](../../../administration/auth/ldap/index.md).
+  setting.
+
+Instead you can authenticate:
+
+- Using a [personal access token](../personal_access_tokens.md) (PAT):
+  - For Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
+  - For [GitLab Container Registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
+    with `read_registry` or `write_registry` scope is required.
+  - For [Dependency Proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy) requests, a PAT with
+    `read_registry` and `write_registry` scopes is required.
+- If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/index.md)
+- Using an [OAuth credential helper](#oauth-credential-helpers).
 
 ### Error: "invalid pin code"
 

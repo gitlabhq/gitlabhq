@@ -6,19 +6,21 @@ module Gitlab
       UPLOAD_DURATION = :uploaded_file_upload_duration_s
       UPLOADED_FILE_SIZE = :uploaded_file_size_bytes
 
+      InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
       def self.track(uploaded_file)
-        if ::Gitlab::SafeRequestStore.active?
-          ::Gitlab::SafeRequestStore[UPLOAD_DURATION] = uploaded_file.upload_duration
-          ::Gitlab::SafeRequestStore[UPLOADED_FILE_SIZE] = uploaded_file.size
+        if InstrumentationStorage.active?
+          InstrumentationStorage[UPLOAD_DURATION] = uploaded_file.upload_duration
+          InstrumentationStorage[UPLOADED_FILE_SIZE] = uploaded_file.size
         end
       end
 
       def self.get_upload_duration
-        ::Gitlab::SafeRequestStore[UPLOAD_DURATION]
+        InstrumentationStorage[UPLOAD_DURATION]
       end
 
       def self.get_uploaded_file_size
-        ::Gitlab::SafeRequestStore[UPLOADED_FILE_SIZE]
+        InstrumentationStorage[UPLOADED_FILE_SIZE]
       end
 
       def self.payload

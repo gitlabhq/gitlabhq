@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::Ldap, :request_store, feature_categ
   end
 
   describe ".payload" do
-    context "when SafeRequestStore is empty" do
+    context "when instrumentation storage is empty" do
       it "returns an empty array" do
         expect(described_class.payload).to eql(net_ldap_count: 0, net_ldap_duration_s: 0.0)
       end
@@ -74,8 +74,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::Ldap, :request_store, feature_categ
 
     context "when LDAP recorded some values" do
       before do
-        Gitlab::SafeRequestStore[:net_ldap_count] = 7
-        Gitlab::SafeRequestStore[:net_ldap_duration_s] = 1.2
+        ::Gitlab::Instrumentation::Storage[:net_ldap_count] = 7
+        ::Gitlab::Instrumentation::Storage[:net_ldap_duration_s] = 1.2
       end
 
       it "returns the populated payload" do
@@ -117,8 +117,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::Ldap, :request_store, feature_categ
       subscriber.observe_event(event_2)
       subscriber.observe_event(event_3)
 
-      expect(Gitlab::SafeRequestStore[:net_ldap_count]).to eq(3)
-      expect(Gitlab::SafeRequestStore[:net_ldap_duration_s]).to eq(0.005741) # (0.321 + 0.12 + 5.3) / 1000
+      expect(::Gitlab::Instrumentation::Storage[:net_ldap_count]).to eq(3)
+      expect(::Gitlab::Instrumentation::Storage[:net_ldap_duration_s]).to eq(0.005741) # (0.321 + 0.12 + 5.3) / 1000
     end
   end
 end

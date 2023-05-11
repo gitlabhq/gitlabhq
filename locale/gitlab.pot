@@ -13494,7 +13494,13 @@ msgstr ""
 msgid "DORA4Metrics|Deploys"
 msgstr ""
 
+msgid "DORA4Metrics|Failed to load YAML config from Project: %{fullPath}"
+msgstr ""
+
 msgid "DORA4Metrics|Failed to load charts"
+msgstr ""
+
+msgid "DORA4Metrics|Failed to load comparison chart for Namespace: %{fullPath}"
 msgstr ""
 
 msgid "DORA4Metrics|Forecast"
@@ -25214,16 +25220,25 @@ msgstr ""
 msgid "JiraService|%{user_link} mentioned this issue in %{entity_link} of %{project_link}%{branch}:{quote}%{entity_message}{quote}"
 msgstr ""
 
+msgid "JiraService|API token for Jira Cloud or password for Jira Data Center and Jira Server"
+msgstr ""
+
 msgid "JiraService|An error occurred while fetching issue list"
 msgstr ""
 
 msgid "JiraService|Are you a GitLab administrator?"
 msgstr ""
 
+msgid "JiraService|Authentication type"
+msgstr ""
+
 msgid "JiraService|Automatically transitions Jira issues to the \"Done\" category. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "JiraService|Base URL of the Jira instance"
+msgstr ""
+
+msgid "JiraService|Basic"
 msgstr ""
 
 msgid "JiraService|Change GitLab version"
@@ -25238,6 +25253,9 @@ msgstr ""
 msgid "JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{gitlab_issues_link_start}disabling GitLab issues%{link_end} if they won't otherwise be used."
 msgstr ""
 
+msgid "JiraService|Email or username"
+msgstr ""
+
 msgid "JiraService|Enable Jira issue creation from vulnerabilities"
 msgstr ""
 
@@ -25247,9 +25265,6 @@ msgstr ""
 msgid "JiraService|Enable Jira transitions"
 msgstr ""
 
-msgid "JiraService|Enter new password or API token"
-msgstr ""
-
 msgid "JiraService|Events for %{noteable_model_name} are disabled."
 msgstr ""
 
@@ -25257,6 +25272,9 @@ msgid "JiraService|Failed to load Jira issue. View the issue in Jira, or reload 
 msgstr ""
 
 msgid "JiraService|Fetch issue types for this Jira project"
+msgstr ""
+
+msgid "JiraService|For Jira Cloud, the authentication type must be %{basic}"
 msgstr ""
 
 msgid "JiraService|For example, 12, 24"
@@ -25304,19 +25322,25 @@ msgstr ""
 msgid "JiraService|Jira issues"
 msgstr ""
 
+msgid "JiraService|Jira personal access token (Jira Data Center and Jira Server only)"
+msgstr ""
+
 msgid "JiraService|Jira project key"
 msgstr ""
 
-msgid "JiraService|Leave blank to use your current password or API token."
+msgid "JiraService|Leave blank to use your current configuration"
 msgstr ""
 
 msgid "JiraService|Move to Done"
 msgstr ""
 
-msgid "JiraService|Open Jira"
+msgid "JiraService|New API token, password, or Jira personal access token"
 msgstr ""
 
-msgid "JiraService|Password for the server version or an API token for the cloud version"
+msgid "JiraService|Only required for Basic authentication. Email for Jira Cloud or username for Jira Data Center and Jira Server"
+msgstr ""
+
+msgid "JiraService|Open Jira"
 msgstr ""
 
 msgid "JiraService|Password or API token"
@@ -25359,12 +25383,6 @@ msgid "JiraService|Use custom transitions"
 msgstr ""
 
 msgid "JiraService|Use regular expression to match Jira issue keys."
-msgstr ""
-
-msgid "JiraService|Username for the server version or an email for the cloud version"
-msgstr ""
-
-msgid "JiraService|Username or email"
 msgstr ""
 
 msgid "JiraService|Using Jira for issue tracking?"

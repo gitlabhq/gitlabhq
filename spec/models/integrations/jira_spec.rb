@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Jira do
+RSpec.describe Integrations::Jira, feature_category: :integrations do
   include AssetsHelpers
 
   let_it_be(:project) { create(:project, :repository) }
@@ -11,6 +11,7 @@ RSpec.describe Integrations::Jira do
   let(:url) { 'http://jira.example.com' }
   let(:api_url) { 'http://api-jira.example.com' }
   let(:username) { 'jira-username' }
+  let(:jira_auth_type) { 0 }
   let(:jira_issue_prefix) { '' }
   let(:jira_issue_regex) { '' }
   let(:password) { 'jira-password' }
@@ -50,11 +51,39 @@ RSpec.describe Integrations::Jira do
       it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_presence_of(:username) }
       it { is_expected.to validate_presence_of(:password) }
+      it { is_expected.to validate_presence_of(:jira_auth_type) }
       it { is_expected.to validate_length_of(:jira_issue_regex).is_at_most(255) }
       it { is_expected.to validate_length_of(:jira_issue_prefix).is_at_most(255) }
+      it { is_expected.to validate_inclusion_of(:jira_auth_type).in_array([0, 1]) }
 
       it_behaves_like 'issue tracker integration URL attribute', :url
       it_behaves_like 'issue tracker integration URL attribute', :api_url
+
+      context 'with personal_access_token_authorization' do
+        before do
+          jira_integration.jira_auth_type = 1
+        end
+
+        it { is_expected.not_to validate_presence_of(:username) }
+      end
+
+      context 'when URL is for Jira Cloud' do
+        before do
+          jira_integration.url = 'https://test.atlassian.net'
+        end
+
+        it 'is valid when jira_auth_type is basic' do
+          jira_integration.jira_auth_type = 0
+
+          expect(jira_integration).to be_valid
+        end
+
+        it 'is invalid when jira_auth_type is PAT' do
+          jira_integration.jira_auth_type = 1
+
+          expect(jira_integration).not_to be_valid
+        end
+      end
     end
 
     context 'when integration is inactive' do
@@ -66,8 +95,10 @@ RSpec.describe Integrations::Jira do
       it { is_expected.not_to validate_presence_of(:url) }
       it { is_expected.not_to validate_presence_of(:username) }
       it { is_expected.not_to validate_presence_of(:password) }
+      it { is_expected.not_to validate_presence_of(:jira_auth_type) }
       it { is_expected.not_to validate_length_of(:jira_issue_regex).is_at_most(255) }
       it { is_expected.not_to validate_length_of(:jira_issue_prefix).is_at_most(255) }
+      it { is_expected.not_to validate_inclusion_of(:jira_auth_type).in_array([0, 1]) }
     end
 
     describe 'jira_issue_transition_id' do
@@ -173,7 +204,7 @@ RSpec.describe Integrations::Jira do
     subject(:fields) { integration.fields }
 
     it 'returns custom fields' do
-      expect(fields.pluck(:name)).to eq(%w[url api_url username password jira_issue_regex jira_issue_prefix jira_issue_transition_id])
+      expect(fields.pluck(:name)).to eq(%w[url api_url jira_auth_type username password jira_issue_regex jira_issue_prefix jira_issue_transition_id])
     end
   end
 
@@ -323,6 +354,7 @@ RSpec.describe Integrations::Jira do
         project: project,
         url: url,
         api_url: api_url,
+        jira_auth_type: jira_auth_type,
         username: username, password: password,
         jira_issue_regex: jira_issue_regex,
         jira_issue_prefix: jira_issue_prefix,
@@ -339,6 +371,7 @@ RSpec.describe Integrations::Jira do
     it 'stores data in data_fields correctly' do
       expect(integration.jira_tracker_data.url).to eq(url)
       expect(integration.jira_tracker_data.api_url).to eq(api_url)
+      expect(integration.jira_tracker_data.jira_auth_type).to eq(jira_auth_type)
       expect(integration.jira_tracker_data.username).to eq(username)
       expect(integration.jira_tracker_data.password).to eq(password)
       expect(integration.jira_tracker_data.jira_issue_regex).to eq(jira_issue_regex)
@@ -545,14 +578,53 @@ RSpec.describe Integrations::Jira do
   end
 
   describe '#client' do
+    before do
+      stub_request(:get, 'http://jira.example.com/foo')
+    end
+
     it 'uses the default GitLab::HTTP timeouts' do
       timeouts = Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS
-      stub_request(:get, 'http://jira.example.com/foo')
 
       expect(Gitlab::HTTP).to receive(:httparty_perform_request)
         .with(Net::HTTP::Get, '/foo', hash_including(timeouts)).and_call_original
 
       jira_integration.client.get('/foo')
+    end
+
+    context 'with basic auth' do
+      before do
+        jira_integration.jira_auth_type = 0
+      end
+
+      it 'uses correct authorization options' do
+        expect_next_instance_of(JIRA::Client) do |instance|
+          expect(instance.request_client.options).to include(
+            additional_cookies: ['OBBasicAuth=fromDialog'],
+            auth_type: :basic,
+            use_cookies: true,
+            password: jira_integration.password,
+            username: jira_integration.username
+          )
+        end
+
+        jira_integration.client.get('/foo')
+      end
+    end
+
+    context 'with personal access token auth' do
+      before do
+        jira_integration.jira_auth_type = 1
+      end
+
+      it 'uses correct authorization options' do
+        expect_next_instance_of(JIRA::Client) do |instance|
+          expect(instance.request_client.options).to include(
+            default_headers: { "Authorization" => "Bearer #{password}" }
+          )
+        end
+
+        jira_integration.client.get('/foo')
+      end
     end
   end
 

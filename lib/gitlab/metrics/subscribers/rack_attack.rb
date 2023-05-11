@@ -13,10 +13,12 @@ module Gitlab
       class RackAttack < ActiveSupport::Subscriber
         attach_to 'rack_attack'
 
+        InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
         INSTRUMENTATION_STORE_KEY = :rack_attack_instrumentation
 
         def self.payload
-          Gitlab::SafeRequestStore[INSTRUMENTATION_STORE_KEY] ||= {
+          InstrumentationStorage[INSTRUMENTATION_STORE_KEY] ||= {
             rack_attack_redis_count: 0,
             rack_attack_redis_duration_s: 0.0
           }

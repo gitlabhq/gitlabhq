@@ -108,6 +108,7 @@ FactoryBot.define do
       api_url { '' }
       username { 'jira_username' }
       password { 'jira_password' }
+      jira_auth_type { 0 }
       jira_issue_transition_automatic { false }
       jira_issue_transition_id { '56-1' }
       issues_enabled { false }
@@ -123,6 +124,7 @@ FactoryBot.define do
       if evaluator.create_data
         integration.jira_tracker_data = build(:jira_tracker_data,
           integration: integration, url: evaluator.url, api_url: evaluator.api_url,
+          jira_auth_type: evaluator.jira_auth_type,
           jira_issue_transition_automatic: evaluator.jira_issue_transition_automatic,
           jira_issue_transition_id: evaluator.jira_issue_transition_id,
           username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
@@ -224,6 +226,7 @@ FactoryBot.define do
     url { 'https://mysite.atlassian.net' }
     username { 'jira_user' }
     password { 'my-secret-password' }
+    jira_auth_type { 0 }
   end
 
   trait :chat_notification do

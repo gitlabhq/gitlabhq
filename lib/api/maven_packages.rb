@@ -23,8 +23,14 @@ module API
 
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::DependencyProxyHelpers
+    helpers ::API::Helpers::Packages::Maven::BasicAuthHelpers
 
     helpers do
+      params :path_and_file_name do
+        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
+        requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
+      end
+
       def path_exists?(path)
         return false if path.blank?
 
@@ -159,10 +165,9 @@ module API
       tags %w[maven_packages]
     end
     params do
-      requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
-      requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
+      use :path_and_file_name
     end
-    route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+    route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
     get 'packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
       # return a similar failure to authorize_read_package!(project)
 
@@ -214,13 +219,12 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
-        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
-        requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
+        use :path_and_file_name
       end
-      route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+      route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
       get ':id/-/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         # return a similar failure to group = find_group(params[:id])
-        group = find_group(params[:id])
+        group = find_authorized_group!
 
         if Feature.disabled?(:maven_central_request_forwarding, group&.root_ancestor)
           not_found!('Group') unless path_exists?(params[:path])
@@ -241,7 +245,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Download the maven package file' do
+      desc 'Download the maven package file at a project level' do
         detail 'This feature was introduced in GitLab 11.3'
         success [
           { code: 200 },
@@ -255,12 +259,11 @@ module API
         tags %w[maven_packages]
       end
       params do
-        requires :path, type: String, desc: 'Package path', documentation: { example: 'foo/bar/mypkg/1.0-SNAPSHOT' }
-        requires :file_name, type: String, desc: 'Package file name', documentation: { example: 'mypkg-1.0-SNAPSHOT.jar' }
+        use :path_and_file_name
       end
-      route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+      route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true, basic_auth_personal_access_token: true
       get ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
-        project = user_project(action: :read_package)
+        project = authorized_user_project(action: :read_package)
 
         # return a similar failure to user_project
         unless Feature.enabled?(:maven_central_request_forwarding, project&.root_ancestor)

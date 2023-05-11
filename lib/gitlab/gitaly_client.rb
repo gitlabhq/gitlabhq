@@ -24,6 +24,8 @@ module Gitlab
       end
     end
 
+    InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Gitlab::Runtime.sidekiq? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
@@ -186,15 +188,15 @@ module Gitlab
     end
 
     def self.query_time
-      query_time = Gitlab::SafeRequestStore[:gitaly_query_time] || 0
+      query_time = InstrumentationStorage[:gitaly_query_time] || 0
       query_time.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
     end
 
     def self.add_query_time(duration)
-      return unless Gitlab::SafeRequestStore.active?
+      return unless InstrumentationStorage.active?
 
-      Gitlab::SafeRequestStore[:gitaly_query_time] ||= 0
-      Gitlab::SafeRequestStore[:gitaly_query_time] += duration
+      InstrumentationStorage[:gitaly_query_time] ||= 0
+      InstrumentationStorage[:gitaly_query_time] += duration
     end
 
     # For some time related tasks we can't rely on `Time.now` since it will be
@@ -253,9 +255,8 @@ module Gitlab
     # forced to route all requests to the primary node which has injected the
     # quarantine object directory to us.
     def self.route_to_primary
-      return {} unless Gitlab::SafeRequestStore.active?
-
-      return {} if Gitlab::SafeRequestStore[:gitlab_git_env].blank?
+      return {} unless InstrumentationStorage.active?
+      return {} if InstrumentationStorage[:gitlab_git_env].blank?
 
       { 'gitaly-route-repository-accessor-policy' => 'primary-only' }
     end
@@ -278,7 +279,7 @@ module Gitlab
     private_class_method :request_deadline
 
     def self.session_id
-      Gitlab::SafeRequestStore[:gitaly_session_id] ||= SecureRandom.uuid
+      InstrumentationStorage[:gitaly_session_id] ||= SecureRandom.uuid
     end
 
     def self.token(storage)
@@ -290,8 +291,8 @@ module Gitlab
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
     def self.enforce_gitaly_request_limits(call_site)
-      # Only count limits in request-response environments
-      return unless Gitlab::SafeRequestStore.active?
+      # Only count limits in live environments
+      return unless InstrumentationStorage.active?
 
       # This is this actual number of times this call was made. Used for information purposes only
       actual_call_count = increment_call_count("gitaly_#{call_site}_actual")
@@ -329,7 +330,7 @@ module Gitlab
     private_class_method :enforce_gitaly_request_limits?
 
     def self.allow_n_plus_1_calls
-      return yield unless Gitlab::SafeRequestStore.active?
+      return yield unless InstrumentationStorage.active?
 
       begin
         increment_call_count(:gitaly_call_count_exception_block_depth)
@@ -344,34 +345,34 @@ module Gitlab
     # afterwards. However, for read-only requests that never mutate the
     # branch, this method allows caching of the ref name directly.
     def self.allow_ref_name_caching
-      return yield unless Gitlab::SafeRequestStore.active?
+      return yield unless InstrumentationStorage.active?
       return yield if ref_name_caching_allowed?
 
       begin
-        Gitlab::SafeRequestStore[:allow_ref_name_caching] = true
+        InstrumentationStorage[:allow_ref_name_caching] = true
         yield
       ensure
-        Gitlab::SafeRequestStore[:allow_ref_name_caching] = false
+        InstrumentationStorage[:allow_ref_name_caching] = false
       end
     end
 
     def self.ref_name_caching_allowed?
-      Gitlab::SafeRequestStore[:allow_ref_name_caching]
+      InstrumentationStorage[:allow_ref_name_caching]
     end
 
     def self.get_call_count(key)
-      Gitlab::SafeRequestStore[key] || 0
+      InstrumentationStorage[key] || 0
     end
     private_class_method :get_call_count
 
     def self.increment_call_count(key)
-      Gitlab::SafeRequestStore[key] ||= 0
-      Gitlab::SafeRequestStore[key] += 1
+      InstrumentationStorage[key] ||= 0
+      InstrumentationStorage[key] += 1
     end
     private_class_method :increment_call_count
 
     def self.decrement_call_count(key)
-      Gitlab::SafeRequestStore[key] -= 1
+      InstrumentationStorage[key] -= 1
     end
     private_class_method :decrement_call_count
 
@@ -381,21 +382,21 @@ module Gitlab
     end
 
     def self.reset_counts
-      return unless Gitlab::SafeRequestStore.active?
+      return unless InstrumentationStorage.active?
 
-      Gitlab::SafeRequestStore["gitaly_call_actual"] = 0
-      Gitlab::SafeRequestStore["gitaly_call_permitted"] = 0
+      InstrumentationStorage["gitaly_call_actual"] = 0
+      InstrumentationStorage["gitaly_call_permitted"] = 0
     end
 
     def self.add_call_details(details)
-      Gitlab::SafeRequestStore['gitaly_call_details'] ||= []
-      Gitlab::SafeRequestStore['gitaly_call_details'] << details
+      InstrumentationStorage['gitaly_call_details'] ||= []
+      InstrumentationStorage['gitaly_call_details'] << details
     end
 
     def self.list_call_details
       return [] unless Gitlab::PerformanceBar.enabled_for_request?
 
-      Gitlab::SafeRequestStore['gitaly_call_details'] || []
+      InstrumentationStorage['gitaly_call_details'] || []
     end
 
     def self.expected_server_version
@@ -480,22 +481,22 @@ module Gitlab
 
     # Count a stack. Used for n+1 detection
     def self.count_stack
-      return unless Gitlab::SafeRequestStore.active?
+      return unless InstrumentationStorage.active?
 
       stack_string = Gitlab::BacktraceCleaner.clean_backtrace(caller).drop(1).join("\n")
 
-      Gitlab::SafeRequestStore[:stack_counter] ||= {}
+      InstrumentationStorage[:stack_counter] ||= {}
 
-      count = Gitlab::SafeRequestStore[:stack_counter][stack_string] || 0
-      Gitlab::SafeRequestStore[:stack_counter][stack_string] = count + 1
+      count = InstrumentationStorage[:stack_counter][stack_string] || 0
+      InstrumentationStorage[:stack_counter][stack_string] = count + 1
     end
     private_class_method :count_stack
 
     # Returns a count for the stack which called Gitaly the most times. Used for n+1 detection
     def self.max_call_count
-      return 0 unless Gitlab::SafeRequestStore.active?
+      return 0 unless InstrumentationStorage.active?
 
-      stack_counter = Gitlab::SafeRequestStore[:stack_counter]
+      stack_counter = InstrumentationStorage[:stack_counter]
       return 0 unless stack_counter
 
       stack_counter.values.max
@@ -504,9 +505,9 @@ module Gitlab
 
     # Returns the stacks that calls Gitaly the most times. Used for n+1 detection
     def self.max_stacks
-      return unless Gitlab::SafeRequestStore.active?
+      return unless InstrumentationStorage.active?
 
-      stack_counter = Gitlab::SafeRequestStore[:stack_counter]
+      stack_counter = InstrumentationStorage[:stack_counter]
       return unless stack_counter
 
       max = max_call_count
@@ -544,8 +545,8 @@ module Gitlab
     end
 
     def self.feature_flag_actors
-      if Gitlab::SafeRequestStore.active?
-        Gitlab::SafeRequestStore[:gitaly_feature_flag_actors] ||= {}
+      if InstrumentationStorage.active?
+        InstrumentationStorage[:gitaly_feature_flag_actors] ||= {}
       else
         Thread.current[:gitaly_feature_flag_actors] ||= {}
       end

@@ -68,13 +68,68 @@ You can customize the Value Streams Dashboard and configure what subgroups and p
 
 A view can display maximum four subgroups or projects.
 
+### Using query parameters
+
 To display multiple subgroups and projects, specify their path as a URL parameter.
 
-For example, the parameter `query=gitlab-org/gitlab-foss,gitlab-org/gitlab,gitlab-org/gitlab-design,gitlab-org/gitlab-docs` displays three separate panels, one each for the:
+For example, the parameter `query=gitlab-org/gitlab-ui,gitlab-org/plan-stage` displays three separate panels, one each for the:
 
 - `gitlab-org` group
 - `gitlab-ui` project
 - `gitlab-org/plan-stage` subgroup
+
+### Using YAML configuration
+
+To change the default content of the page, you need to create a YAML configuration file in a project of your choice. Query parameters can still be used to override the YAML configuration.
+
+First, you need to set up the project.
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the group.
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Scroll to **Analytics Dashboards** and select **Expand**.
+1. Select the project where you would like to store your YAML configuration file.
+1. Select **Save changes**.
+
+After you have set up the project, set up the configuration file:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
+1. In the `value_streams.yaml` configuration file, fill in the configuration options:
+
+```yaml
+# title - Change the title of the Value Streams Dashboard. [optional]
+title: 'Custom Dashboard title'
+
+# description - Change the description of the Value Streams Dashboard. [optional]
+description: 'Custom description'
+
+# widgets - List of widgets that contain panel settings.
+#   title - Change the title of the panel. [optional]
+#   data.namespace - The Group or Project path to use for the chart panel.
+widgets:
+  - title: 'My Custom Project'
+    data:
+      namespace: group/my-custom-project
+  - data:
+      namespace: group/another-project
+  - title: 'My Custom Group'
+    data:
+      namespace: group/my-custom-group
+  - data:
+      namespace: group/another-group
+```
+
+  The following example has an option configuration for a widget for the `my-group` namespace:
+
+  ```yaml
+  widgets:
+    - data:
+        namespace: my-group
+  ```
 
 ## Dashboard metrics and drill-down reports
 

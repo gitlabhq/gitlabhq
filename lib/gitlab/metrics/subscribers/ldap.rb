@@ -8,6 +8,8 @@ module Gitlab
         # at the end of the event key, e.g. `open.net_ldap`
         attach_to :net_ldap
 
+        InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
         COUNTER = :net_ldap_count
         DURATION = :net_ldap_duration_s
 
@@ -26,12 +28,12 @@ module Gitlab
         class << self
           # @return [Integer] the total number of LDAP requests
           def count
-            Gitlab::SafeRequestStore[COUNTER].to_i
+            InstrumentationStorage[COUNTER].to_i
           end
 
           # @return [Float] the total duration spent on LDAP requests
           def duration
-            Gitlab::SafeRequestStore[DURATION].to_f
+            InstrumentationStorage[DURATION].to_f
           end
 
           # Used in Gitlab::InstrumentationHelper to merge the LDAP stats
@@ -71,10 +73,10 @@ module Gitlab
 
         # Track these events as statistics for the current requests, for logging purposes
         def add_to_request_store(event)
-          return unless Gitlab::SafeRequestStore.active?
+          return unless InstrumentationStorage.active?
 
-          Gitlab::SafeRequestStore[COUNTER] = self.class.count + 1
-          Gitlab::SafeRequestStore[DURATION] = self.class.duration + convert_to_seconds(event.duration)
+          InstrumentationStorage[COUNTER] = self.class.count + 1
+          InstrumentationStorage[DURATION] = self.class.duration + convert_to_seconds(event.duration)
         end
 
         # Converts the observed events into Prometheus metrics

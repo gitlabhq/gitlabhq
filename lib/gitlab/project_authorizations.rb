@@ -12,7 +12,12 @@ module Gitlab
     end
 
     def calculate
-      cte = recursive_cte
+      cte = if Feature.enabled?(:linear_project_authorization, user)
+              linear_cte
+            else
+              recursive_cte
+            end
+
       cte_alias = cte.table.alias(Group.table_name)
       projects = Project.arel_table
       links = ProjectGroupLink.arel_table
@@ -47,11 +52,18 @@ module Gitlab
           .where('p_ns.share_with_group_lock IS FALSE')
       ]
 
-      ProjectAuthorization
-        .unscoped
-        .with
-        .recursive(cte.to_arel)
-        .select_from_union(relations)
+      if Feature.enabled?(:linear_project_authorization, user)
+        ProjectAuthorization
+          .unscoped
+          .with(cte.to_arel)
+          .select_from_union(relations)
+      else
+        ProjectAuthorization
+          .unscoped
+          .with
+          .recursive(cte.to_arel)
+          .select_from_union(relations)
+      end
     end
 
     private
@@ -87,6 +99,30 @@ module Gitlab
         .except(:order)
 
       cte
+    end
+
+    def linear_cte
+      # Groups shared with user and their parent groups
+      shared_groups = Group
+        .select("namespaces.id, MAX(LEAST(members.access_level, group_group_links.group_access)) as access_level")
+        .joins("INNER JOIN group_group_links ON group_group_links.shared_group_id = namespaces.id
+               OR namespaces.traversal_ids @> ARRAY[group_group_links.shared_group_id::int]")
+        .joins("INNER JOIN members ON group_group_links.shared_with_group_id = members.source_id")
+        .merge(user.group_members)
+        .merge(GroupMember.active_state)
+        .group("namespaces.id")
+
+      # Groups the user is a member of and their parent groups.
+      lateral_query = Group.as_ids.where("namespaces.traversal_ids @> ARRAY [members.source_id]")
+      member_groups_with_ancestors = GroupMember.select("namespaces.id, MAX(members.access_level) as access_level")
+        .joins("CROSS JOIN LATERAL (#{lateral_query.to_sql}) as namespaces")
+        .group("namespaces.id")
+        .merge(user.group_members)
+        .merge(GroupMember.active_state)
+
+      union = Namespace.from_union([shared_groups, member_groups_with_ancestors])
+
+      Gitlab::SQL::CTE.new(:linear_namespaces_cte, union)
     end
 
     # Builds a LEFT JOIN to join optional memberships onto the CTE.

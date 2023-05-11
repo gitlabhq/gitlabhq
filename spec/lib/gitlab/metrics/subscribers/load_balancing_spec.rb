@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feat
       it 'stores per-request caught up replica search result' do
         subject
 
-        expect(Gitlab::SafeRequestStore[counter_name]).to eq(1)
+        expect(::Gitlab::Instrumentation::Storage[counter_name]).to eq(1)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feat
 
     context 'when no data in request store' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick] = nil
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick] = nil
       end
 
       it 'does not change the counters' do
@@ -60,8 +60,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feat
 
     context 'when request store was updated' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = 1
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_ok] = 2
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_fail] = 1
       end
 
       it 'increments :caught_up_replica_pick count with proper label' do
@@ -78,8 +78,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feat
 
     context 'when no data in request store' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = nil
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = nil
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_ok] = nil
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_fail] = nil
       end
 
       it 'returns empty hash' do
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feat
 
     context 'when request store was updated for a single counter' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_ok] = 2
       end
 
       it 'returns proper payload with only that counter' do
@@ -99,8 +99,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::LoadBalancing, :request_store, feat
 
     context 'when both counters were updated' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = 1
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_ok] = 2
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_fail] = 1
       end
 
       it 'return proper payload' do

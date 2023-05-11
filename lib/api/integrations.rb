@@ -139,8 +139,14 @@ module API
 
           destroy_conditionally!(integration) do
             attrs = integration_attributes(integration).index_with do |attr|
-              column = integration.column_for_attribute(attr)
-              if column.is_a?(ActiveRecord::ConnectionAdapters::NullColumn)
+              column = if integration.attribute_present?(attr)
+                         integration.column_for_attribute(attr)
+                       elsif integration.data_fields_present?
+                         integration.data_fields.column_for_attribute(attr)
+                       end
+
+              case column
+              when nil, ActiveRecord::ConnectionAdapters::NullColumn
                 nil
               else
                 column.default

@@ -8,6 +8,14 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
                :use_null_store_as_repository_cache, feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
 
+  describe '.init_instrumentation_data' do
+    it 'clears instrumentation storage' do
+      expect(::Gitlab::Instrumentation::Storage).to receive(:clear!)
+
+      described_class.init_instrumentation_data
+    end
+  end
+
   describe '.add_instrumentation_data', :request_store do
     let(:payload) { {} }
 
@@ -26,7 +34,7 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
     context 'when Gitaly calls are made' do
       it 'adds Gitaly and Redis data' do
         project = create(:project)
-        RequestStore.clear!
+        ::Gitlab::Instrumentation::Storage.clear!
         project.repository.exists?
 
         subject
@@ -181,8 +189,8 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
 
     context 'when replica caught up search was made' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 2
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = 1
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_ok] = 2
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_fail] = 1
       end
 
       it 'includes related metrics' do
@@ -195,8 +203,8 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
 
     context 'when only a single counter was updated' do
       before do
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_ok] = 1
-        Gitlab::SafeRequestStore[:caught_up_replica_pick_fail] = nil
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_ok] = 1
+        ::Gitlab::Instrumentation::Storage[:caught_up_replica_pick_fail] = nil
       end
 
       it 'includes only that counter into logging' do

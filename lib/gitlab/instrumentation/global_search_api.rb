@@ -8,20 +8,22 @@ module Gitlab
       SCOPE = 'meta.search.scope'
       SEARCH_DURATION_S = :global_search_duration_s
 
+      InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
       def self.get_type
-        ::Gitlab::SafeRequestStore[TYPE]
+        InstrumentationStorage[TYPE]
       end
 
       def self.get_level
-        ::Gitlab::SafeRequestStore[LEVEL]
+        InstrumentationStorage[LEVEL]
       end
 
       def self.get_scope
-        ::Gitlab::SafeRequestStore[SCOPE]
+        InstrumentationStorage[SCOPE]
       end
 
       def self.get_search_duration_s
-        ::Gitlab::SafeRequestStore[SEARCH_DURATION_S]
+        InstrumentationStorage[SEARCH_DURATION_S]
       end
 
       def self.payload
@@ -34,11 +36,11 @@ module Gitlab
       end
 
       def self.set_information(type:, level:, scope:, search_duration_s:)
-        if ::Gitlab::SafeRequestStore.active?
-          ::Gitlab::SafeRequestStore[TYPE] = type
-          ::Gitlab::SafeRequestStore[LEVEL] = level
-          ::Gitlab::SafeRequestStore[SCOPE] = scope
-          ::Gitlab::SafeRequestStore[SEARCH_DURATION_S] = search_duration_s
+        if InstrumentationStorage.active?
+          InstrumentationStorage[TYPE] = type
+          InstrumentationStorage[LEVEL] = level
+          InstrumentationStorage[SCOPE] = scope
+          InstrumentationStorage[SEARCH_DURATION_S] = search_duration_s
         end
       end
     end

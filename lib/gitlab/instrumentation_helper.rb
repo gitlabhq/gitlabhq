@@ -7,6 +7,8 @@ module Gitlab
     DURATION_PRECISION = 6 # microseconds
 
     def init_instrumentation_data(request_ip: nil)
+      ::Gitlab::Instrumentation::Storage.clear!
+
       # Set `request_start_time` only if this is request
       # This is done, as `request_start_time` imply `request_deadline`
       if request_ip

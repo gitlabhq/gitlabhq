@@ -82,6 +82,7 @@ export default {
     />
     <markdown-field
       v-else
+      class="gl-mt-3"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
       :quick-actions-docs-path="quickActionsDocsPath"

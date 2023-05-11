@@ -593,6 +593,12 @@ module API
             },
             {
               required: true,
+              name: :jira_auth_type,
+              type: Integer,
+              desc: 'The authorization type for Jira'
+            },
+            {
+              required: false,
               name: :username,
               type: String,
               desc: 'The username of the user created to be used with GitLab/Jira'

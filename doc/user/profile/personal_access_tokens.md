@@ -249,5 +249,4 @@ Running the following commands changes data directly. This could be damaging if 
 
 ## Alternatives to personal access tokens
 
-For Git over HTTPS, an alternative to personal access tokens is [Git Credential Manager](account/two_factor_authentication.md#git-credential-manager),
-which securely authenticates using OAuth.
+For Git over HTTPS, an alternative to personal access tokens is to use an [OAuth credential helper](account/two_factor_authentication.md#oauth-credential-helpers).

@@ -5,11 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Mobile DevOps
+# Mobile DevOps (Experimental)
 
-GitLab Mobile DevOps is a collection of features and tools designed for mobile developers
-and teams to automate their build and release process using GitLab CI/CD. Mobile DevOps
-is an experimental feature developed by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/).
+Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps
+for Android and iOS using GitLab CI/CD. Mobile DevOps is an experimental feature developed by
+[GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/).
 
 Mobile DevOps is still in development, but you can:
 
@@ -17,13 +17,398 @@ Mobile DevOps is still in development, but you can:
 - [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
 - [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
 
+## Build environments
+
+Get started quickly by using [GitLab.com SaaS runners](../ci/runners/index.md),
+or set up [self-managed runners](https://docs.gitlab.com/runner/#use-self-managed-runners)
+for complete control over the build environment.
+
+### Android build environments
+
+Set up an Android build environment by selecting an appropriate Docker image
+and adding it to your `.gitlab-ci.yml` file. [Fabernovel](https://hub.docker.com/r/fabernovel/android/tags)
+provides a variety of supported Android versions.
+
+For example:
+
+```yaml
+test:
+  image: fabernovel/android:api-33-v1.7.0
+  stage: test
+  script:
+    - fastlane test
+```
+
+### iOS build environments
+
+GitLab SaaS runners on macOS are currently available in beta. Follow the [instructions to request access](../ci/runners/saas/macos_saas_runner.md#access-request-process)
+for your project.
+
+After you are granted access to the beta macOS runners, [choose an image](../ci/runners/saas/macos/environment.md#available-images)
+and add it to your `.gitlab-ci.yml` file.
+
+For example:
+
+```yaml
+test:
+  image: macos-12-xcode-14
+  stage: test
+  script:
+    - fastlane test
+  tags:
+    - saas-macos-medium-m1
+```
+
 ## Code signing
 
-With [project-level secure files](secure_files/index.md), you can manage key stores and provision profiles
-and signing certificates directly in a GitLab project.
+All Android and iOS apps must be securely signed before being distributed through
+the various app stores. Signing ensures that applications haven't been tampered with
+before reaching a user's device.
+
+With [project-level secure files](secure_files/index.md), you can store the following
+in GitLab, so that they can be used to securely sign apps in CI/CD builds:
+
+- Keystores
+- Provision profiles
+- Signing certificates
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Project-level secure files demo](https://youtu.be/O7FbJu3H2YM).
+
+### Code signing Android projects with fastlane & Gradle
+
+To set up code signing for Android:
+
+1. Upload your keystore and keystore properties files to project-level secure files.
+1. Update the Gradle configuration to use those files in the build.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [How to build and release an Android app to Google Play with GitLab](https://youtu.be/u8yC8W2k85U).
+
+#### Create a keystore
+
+Run the following command to generate a keystore file if you don't already have one:
+
+```shell
+keytool -genkey -v -keystore release-keystore.jks -storepass password -alias release -keypass password -keyalg RSA -keysize 2048 -validity 10000 
+```
+
+Next, put the keystore configuration in a file called `release-keystore.properties`,
+which should look similar to this example:
+
+```plaintext
+storeFile=.secure_files/release-keystore.jks
+keyAlias=release
+keyPassword=password
+storePassword=password
+```
+
+After these files are created:
+
+- [Upload them as Secure Files](secure_files/index.md) in the GitLab project
+  so they can be used in CI/CD jobs.
+- Add both files to your `.gitignore` file so they aren't committed to version control.
+
+#### Configure Gradle
+
+The next step is to configure Gradle to use the newly created keystore. In the app's `build.gradle` file:
+
+1. Immediately after the plugins section, add:
+
+   ```gradle
+   def keystoreProperties = new Properties()
+   def keystorePropertiesFile = rootProject.file('.secure_files/release-keystore.properties')
+   if (keystorePropertiesFile.exists()) {
+     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+   }
+   ```
+
+1. Anywhere within the `android` block, add:
+
+   ```gradle
+   signingConfigs {
+     release {
+       keyAlias keystoreProperties['keyAlias']
+       keyPassword keystoreProperties['keyPassword']
+       storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+       storePassword keystoreProperties['storePassword']
+     }
+   }
+   ```
+
+1. Add the `signingConfig` to the release build type:
+
+   ```gradle
+   signingConfig signingConfigs.release
+   ```
+
+With this configuration in place, you can use fastlane to build & sign the app
+with the files stored in secure files.
+
+For example:
+
+- Sample `fastlane/Fastfile` file:
+
+  ```ruby
+  default_platform(:android)
+
+  platform :android do
+    desc "Create and sign a new build"
+    lane :build do
+      gradle(tasks: ["clean", "assembleRelease", "bundleRelease"])
+    end
+  end
+  ```
+
+- Sample `.gitlab-ci.yml` file:
+
+  ```yaml
+  build:
+    image: fabernovel/android:api-33-v1.7.0
+    stage: build
+    script:
+      - apt update -y && apt install -y curl
+      - curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files/-/raw/main/installer" | bash
+      - fastlane build
+  ```
+
+### Code sign iOS projects with fastlane
+
+To set up code signing for iOS, you must:
+
+1. Install fastlane locally so you can upload your signing certificates to GitLab.
+1. Configure the build to use those files.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [How to build and release an iOS app to Test Flight with GitLab](https://youtu.be/Ar8IsBgP1as).
+
+#### Initialize fastlane
+
+With fastlane installed, start by running:
+
+```shell
+fastlane init
+```
+
+This command creates a `fastlane` folder in the project with an `Appfile` and a stubbed-out `fastfile`.
+This process asks you for login credentials to App Store Connect
+to generate an app identifier and App Store app if they don't already exist.
+
+The next step sets up fastlane match to manage code signing files for the project.
+Run the following command to generate a `Matchfile` with the configuration:
+
+```shell
+fastlane match init
+```
+
+This command prompts you to:
+
+- Choose which storage backend you want to use, you must select `gitlab_secure_files`.
+- Input your project path, for example `gitlab-org/gitlab`.
+
+#### Generate and upload certificates
+
+Run the following command to generate certificates and profiles in the Apple Developer portal
+and upload those files to GitLab:
+
+```shell
+PRIVATE_TOKEN=YOUR-TOKEN bundle exec fastlane match development
+```
+
+In this example:
+
+- `YOUR-TOKEN` must be either a personal or project access token with Maintainer role for the GitLab project.
+- Replace `development` with the type of build you want to sign, for example `appstore` or `ad-hoc`.
+
+You can view the files in your project's CI/CD settings as soon as the command completes.
+
+#### Upload-only
+
+If you have already created signing certificates and provisioning profiles for your project,
+you can optionally use `fastlane match import` to load your existing files into GitLab:
+
+```shell
+PRIVATE_TOKEN=YOUR-TOKEN bundle exec fastlane match import
+```
+
+You are prompted to input the path to your files. After you provide those details,
+your files are uploaded and visible in your project's CI/CD settings.
+If prompted for the `git_url` during the import, it is safe to leave it blank and press <kbd>enter</kbd>.
+
+With this configuration in place, you can use fastlane to build and sign the app with
+the files stored in secure files.
+
+For example:
+
+- Sample `fastlane/Fastfile` file:
+
+  ```ruby
+  default_platform(:ios)
+  
+  platform :ios do
+    desc "Build and sign the application for development"
+    lane :build do
+      setup_ci
+
+      match(type: 'development', readonly: is_ci)
+
+      build_app(
+        project: "ios demo.xcodeproj",
+        scheme: "ios demo",
+        configuration: "Debug",
+        export_method: "development"
+      )
+    end
+  end
+  ```
+
+- Sample `.gitlab-ci.yml` file:
+
+  ```yaml
+  build_ios:
+    image: macos-12-xcode-14
+    stage: build
+    script:
+      - fastlane build
+    tags:
+      - shared-macos-amd64
+  ```
+
+## Distribution
+
+Signed builds can be uploaded to the Google Play Store or Apple App Store by using
+the Mobile DevOps Distribution integrations.
+
+### Android distribution with Google Play integration and fastlane
+
+To create an Android distribution with Google Play integration and fastlane, you must:
+
+1. [Create a Google service account](https://docs.fastlane.tools/actions/supply/#setup)
+   in Google Cloud Platform and grant that account access to the project in Google Play.
+1. [Enable the Google Play integration](#enable-google-play-integration).
+1. Add the release step to your pipeline.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Google Play integration demo](https://youtu.be/Fxaj3hna4uk).
+
+#### Enable Google Play Integration
+
+Use the [Google Play integration](../user/project/integrations/google_play.md),
+to configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console)
+to build and release Android apps. To enable the integration:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Google Play**.
+1. In **Enable integration**, select the **Active** checkbox.
+1. In **Package name**, enter the package name of the app. For example, `com.gitlab.app_name`.
+1. In **Service account key (.JSON)** drag or upload your key file.
+1. Select **Save changes**.
+
+With the integration enabled, you can use fastlane to distribute a build to Google Play.
+
+For example:
+
+- Sample `fastlane/Fastfile`:
+
+  ```ruby
+  default_platform(:android)
+
+  platform :android do
+    desc "Submit a new Beta build to the Google Play store"
+    lane :beta do
+      upload_to_play_store(
+        track: 'internal',
+        aab: 'app/build/outputs/bundle/release/app-release.aab',
+        release_status: 'draft'
+      )
+    end
+  end
+  ```
+
+- Sample `.gitlab-ci.yml`:
+
+  ```yaml
+  beta:
+    image: fabernovel/android:api-33-v1.7.0
+    stage: beta
+    script:
+      - fastlane beta
+  ```
+
+### iOS distribution Apple Store integration and fastlane
+
+To create an iOS distribution with the Apple Store integration and fastlane, you must:
+
+1. Generate an API Key for App Store Connect API. In the Apple App Store Connect portal,
+   [generate a new private key for your project](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
+1. [Enable the Apple App Store integration](#enable-apple-app-store-integration).
+1. Add the release step to your pipeline and fastlane configuration.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [Apple App Store integration demo](https://youtu.be/CwzAWVgJeK8).
+
+#### Enable Apple App Store Integration
+
+Use the [Apple App Store integration](../user/project/integrations/apple_app_store.md)
+to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com/)
+to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS. To enable the integration:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Integrations**.
+1. Select **Apple App Store**.
+1. Turn on the **Active** toggle under **Enable Integration**.
+1. Provide the Apple App Store Connect configuration information:
+   - **Issuer ID**: You can find the Apple App Store Connect Issuer ID in the **Keys** section under **Users and Access** in the Apple App Store Connect portal.
+   - **Key ID**: The key ID of the new private key that was just generated.
+   - **Private Key**: The private key that was just generated. You can only download this key one time.
+1. Select **Save changes**.
+
+With the integration enabled, you can use fastlane to distribute a build to TestFlight
+and the Apple App Store.
+
+For example:
+
+- Sample `fastlane/Fastfile`:
+
+  ```ruby
+  default_platform(:ios)
+
+  platform :ios do
+    desc "Build and sign the application for distribution, upload to TestFlight"
+    lane :beta do
+      setup_ci
+
+      match(type: 'appstore', readonly: is_ci)
+
+      app_store_connect_api_key
+
+      increment_build_number(
+        build_number: latest_testflight_build_number(initial_build_number: 1) + 1,
+        xcodeproj: "ios demo.xcodeproj"
+      )
+
+      build_app(
+        project: "ios demo.xcodeproj",
+        scheme: "ios demo",
+        configuration: "Release",
+        export_method: "app-store"
+      )
+
+      upload_to_testflight
+    end
+  end
+  ```
+
+- Sample `.gitlab-ci.yml`:
+
+  ```yaml
+  beta_ios:
+    image: macos-12-xcode-14
+    stage: beta
+    script:
+      - fastlane beta
+  ```
 
 ## Review apps for mobile
 
@@ -42,11 +427,14 @@ to run static analyzers on code to check for known security vulnerabilities. Mob
 expands this functionality for mobile teams with an [experimental SAST feature](../user/application_security/sast/index.md#experimental-features)
 based on [Mobile Security Framework (MobSF)](https://github.com/MobSF/Mobile-Security-Framework-MobSF).
 
-## Automated releases
+## Sample Reference Projects
 
-With the [Apple App Store integration](../user/project/integrations/apple_app_store.md), you can configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com/) to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS.
+See the sample reference projects below for complete build, sign, and release pipeline examples for various platforms. A list of all available projects can be found in [the Mobile DevOps Demo Projects group](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Apple App Store integration demo](https://youtu.be/CwzAWVgJeK8).
+- [Android Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/android_demo)
+- [iOS Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/ios-demo)
+- [Flutter Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/flutter-demo)
 
-With the [Google Play integration](../user/project/integrations/google_play.md), you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console) to build and release apps for Android devices.
+## Mobile DevOps Blog
+
+Additional reference material can be found in the [#mobile section](https://about.gitlab.com/blog/tags.html#mobile) of the GitLab blog.

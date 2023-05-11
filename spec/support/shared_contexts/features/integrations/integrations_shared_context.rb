@@ -68,6 +68,8 @@ RSpec.shared_context 'with integration' do
         hash.merge!(k => '1,2,3')
       elsif integration == 'jira' && k == :jira_issue_transition_automatic # rubocop:disable Lint/DuplicateBranch
         hash.merge!(k => true)
+      elsif integration == 'jira' && k == :jira_auth_type # rubocop:disable Lint/DuplicateBranch
+        hash.merge!(k => 0)
       elsif integration == 'emails_on_push' && k == :recipients
         hash.merge!(k => 'foo@bar.com')
       elsif (integration == 'slack' || integration == 'mattermost') && k == :labels_to_be_notified_behavior

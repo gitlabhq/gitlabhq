@@ -1,8 +1,0 @@
----
-name: jira_connect_sync_branches
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115347
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/402748
-milestone: '15.11'
-type: development
-group: group::integrations
-default_enabled: false

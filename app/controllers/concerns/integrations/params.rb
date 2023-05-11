@@ -53,6 +53,7 @@ module Integrations
       :issues_events,
       :issues_url,
       :jenkins_url,
+      :jira_auth_type,
       :jira_issue_prefix,
       :jira_issue_regex,
       :jira_issue_transition_automatic,

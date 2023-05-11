@@ -63,6 +63,11 @@ export default {
       required: false,
       default: true,
     },
+    removeBorder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     quickActionsDocsPath: {
       type: String,
       required: false,
@@ -350,7 +355,10 @@ export default {
 <template>
   <div
     ref="gl-form"
-    class="js-vue-markdown-field md-area position-relative gfm-form gl-border-none! gl-shadow-none!"
+    :class="{
+      'gl-border-none! gl-shadow-none!': removeBorder,
+    }"
+    class="js-vue-markdown-field md-area position-relative gfm-form"
     :data-uploads-path="uploadsPath"
   >
     <markdown-header

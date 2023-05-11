@@ -3,14 +3,16 @@
 module Gitlab
   module Instrumentation
     class Throttle
+      InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
       KEY = :instrumentation_throttle_safelist
 
       def self.safelist
-        Gitlab::SafeRequestStore[KEY]
+        InstrumentationStorage[KEY]
       end
 
       def self.safelist=(name)
-        Gitlab::SafeRequestStore[KEY] = name
+        InstrumentationStorage[KEY] = name
       end
     end
   end

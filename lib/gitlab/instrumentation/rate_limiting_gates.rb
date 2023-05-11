@@ -5,9 +5,11 @@ module Gitlab
     class RateLimitingGates
       GATES = :rate_limiting_gates
 
+      InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
       class << self
         def track(key)
-          if ::Gitlab::SafeRequestStore.active?
+          if InstrumentationStorage.active?
             gates_set << key
           end
         end
@@ -25,7 +27,7 @@ module Gitlab
         private
 
         def gates_set
-          ::Gitlab::SafeRequestStore[GATES] ||= Set.new
+          InstrumentationStorage[GATES] ||= Set.new
         end
       end
     end

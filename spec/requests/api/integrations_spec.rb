@@ -369,7 +369,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     describe 'Jira integration' do
       let(:integration_name) { 'jira' }
       let(:params) do
-        { url: 'https://jira.example.com', username: 'username', password: 'password' }
+        { url: 'https://jira.example.com', username: 'username', password: 'password', jira_auth_type: 0 }
       end
 
       before do

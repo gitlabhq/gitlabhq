@@ -3,32 +3,34 @@
 module Gitlab
   module Instrumentation
     class Zoekt
+      InstrumentationStorage = ::Gitlab::Instrumentation::Storage
+
       ZOEKT_REQUEST_COUNT = :zoekt_request_count
       ZOEKT_CALL_DURATION = :zoekt_call_duration
       ZOEKT_CALL_DETAILS = :zoekt_call_details
 
       class << self
         def get_request_count
-          ::Gitlab::SafeRequestStore[ZOEKT_REQUEST_COUNT] || 0
+          InstrumentationStorage[ZOEKT_REQUEST_COUNT] || 0
         end
 
         def increment_request_count
-          ::Gitlab::SafeRequestStore[ZOEKT_REQUEST_COUNT] ||= 0
-          ::Gitlab::SafeRequestStore[ZOEKT_REQUEST_COUNT] += 1
+          InstrumentationStorage[ZOEKT_REQUEST_COUNT] ||= 0
+          InstrumentationStorage[ZOEKT_REQUEST_COUNT] += 1
         end
 
         def detail_store
-          ::Gitlab::SafeRequestStore[ZOEKT_CALL_DETAILS] ||= []
+          InstrumentationStorage[ZOEKT_CALL_DETAILS] ||= []
         end
 
         def query_time
-          query_time = ::Gitlab::SafeRequestStore[ZOEKT_CALL_DURATION] || 0
+          query_time = InstrumentationStorage[ZOEKT_CALL_DURATION] || 0
           query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
         end
 
         def add_duration(duration)
-          ::Gitlab::SafeRequestStore[ZOEKT_CALL_DURATION] ||= 0
-          ::Gitlab::SafeRequestStore[ZOEKT_CALL_DURATION] += duration
+          InstrumentationStorage[ZOEKT_CALL_DURATION] ||= 0
+          InstrumentationStorage[ZOEKT_CALL_DURATION] += duration
         end
 
         def add_call_details(duration:, method:, path:, params: nil, body: nil)

@@ -152,7 +152,7 @@ between your computer and GitLab.
    If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following:
 
    - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager).
+   - Install an [OAuth credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
    If you have not enabled 2FA, use your account password.
 

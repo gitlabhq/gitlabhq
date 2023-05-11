@@ -55,7 +55,7 @@ module Gitlab
           commands.each { instrumentation_class.instance_observe_duration(duration / commands.size) }
         end
 
-        if ::RequestStore.active?
+        if ::Gitlab::Instrumentation::Storage.active?
           # These metrics measure total Redis usage per Rails request / job.
           instrumentation_class.increment_request_count(commands.size)
           instrumentation_class.add_duration(duration)
