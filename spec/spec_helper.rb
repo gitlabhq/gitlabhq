@@ -269,6 +269,10 @@ RSpec.configure do |config|
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
+      # Only a few percent of users will be "enrolled" into the new nav with this flag.
+      # Having it enabled globally would make it impossible to test the current nav.
+      stub_feature_flags(super_sidebar_nav_enrolled: false)
+
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
       stub_feature_flags(use_click_house_database_for_error_tracking: false)

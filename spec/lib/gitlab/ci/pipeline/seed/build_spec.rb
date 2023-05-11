@@ -109,6 +109,104 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
     end
 
+    context 'with job:rules:[needs:]' do
+      context 'with a single rule' do
+        let(:job_needs_attributes) { [{ name: 'rspec' }] }
+
+        context 'when job has needs set' do
+          context 'when rule evaluates to true' do
+            let(:attributes) do
+              { name: 'rspec',
+                ref: 'master',
+                needs_attributes: job_needs_attributes,
+                rules: [{ if: '$VAR == null', needs: { job: [{ name: 'build-job' }] } }] }
+            end
+
+            it 'overrides the job needs' do
+              expect(subject).to include(needs_attributes: [{ name: 'build-job' }])
+            end
+          end
+
+          context 'when rule evaluates to false' do
+            let(:attributes) do
+              { name: 'rspec',
+                ref: 'master',
+                needs_attributes: job_needs_attributes,
+                rules: [{ if: '$VAR == true', needs: { job: [{ name: 'build-job' }] } }] }
+            end
+
+            it 'keeps the job needs' do
+              expect(subject).to include(needs_attributes: job_needs_attributes)
+            end
+          end
+
+          context 'with subkeys: artifacts, optional' do
+            let(:attributes) do
+              { name: 'rspec',
+                ref: 'master',
+                rules:
+                [
+                  { if: '$VAR == null',
+                    needs: {
+                      job: [{
+                        name: 'build-job',
+                        optional: false,
+                        artifacts: true
+                      }]
+                    } }
+                ] }
+            end
+
+            context 'when rule evaluates to true' do
+              it 'sets the job needs as well as the job subkeys' do
+                expect(subject[:needs_attributes]).to match_array([{ name: 'build-job', optional: false, artifacts: true }])
+              end
+
+              it 'sets the scheduling type to dag' do
+                expect(subject[:scheduling_type]).to eq(:dag)
+              end
+            end
+          end
+        end
+
+        context 'with multiple rules' do
+          context 'when a rule evaluates to true' do
+            let(:attributes) do
+              { name: 'rspec',
+                ref: 'master',
+                needs_attributes: job_needs_attributes,
+                rules: [
+                  { if: '$VAR == true', needs: { job: [{ name: 'rspec-1' }] } },
+                  { if: '$VAR2 == true', needs: { job: [{ name: 'rspec-2' }] } },
+                  { if: '$VAR3 == null', needs: { job: [{ name: 'rspec' }, { name: 'lint' }] } }
+                ] }
+            end
+
+            it 'overrides the job needs' do
+              expect(subject).to include(needs_attributes: [{ name: 'rspec' }, { name: 'lint' }])
+            end
+          end
+
+          context 'when all rules evaluates to false' do
+            let(:attributes) do
+              { name: 'rspec',
+                ref: 'master',
+                needs_attributes: job_needs_attributes,
+                rules: [
+                  { if: '$VAR == true', needs: { job: [{ name: 'rspec-1' }] }  },
+                  { if: '$VAR2 == true', needs: { job: [{ name: 'rspec-2' }] } },
+                  { if: '$VAR3 == true', needs: { job: [{ name: 'rspec-3' }] } }
+                ] }
+            end
+
+            it 'keeps the job needs' do
+              expect(subject).to include(needs_attributes: job_needs_attributes)
+            end
+          end
+        end
+      end
+    end
+
     context 'with job:tags' do
       let(:attributes) do
         {

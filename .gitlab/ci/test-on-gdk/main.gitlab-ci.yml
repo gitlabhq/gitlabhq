@@ -119,4 +119,4 @@ notify-slack:
     - .notify-slack
     - .rules:report:process-results
   variables:
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.json
+    QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/test_output/rspec-*.xml

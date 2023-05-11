@@ -9,7 +9,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[if changes exists when start_in allow_failure variables].freeze
+          ALLOWED_KEYS = %i[if changes exists when start_in allow_failure variables needs].freeze
           ALLOWED_WHEN = %w[on_success on_failure always never manual delayed].freeze
 
           attributes :if, :exists, :when, :start_in, :allow_failure
@@ -19,6 +19,11 @@ module Gitlab
 
           entry :variables, Entry::Variables,
             description: 'Environment variables to define for rule conditions.'
+
+          entry :needs, Entry::Needs,
+            description: 'Needs configuration to define for rule conditions.',
+            metadata: { allowed_needs: %i[job] },
+            inherit: false
 
           validations do
             validates :config, presence: true
@@ -46,7 +51,8 @@ module Gitlab
           def value
             config.merge(
               changes: (changes_value if changes_defined?),
-              variables: (variables_value if variables_defined?)
+              variables: (variables_value if variables_defined?),
+              needs: (needs_value if needs_defined?)
             ).compact
           end
 

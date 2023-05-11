@@ -1,0 +1,8 @@
+---
+name: introduce_rules_with_needs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112725
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/394769
+milestone: '16.0'
+type: development
+group: group::pipeline authoring
+default_enabled: false

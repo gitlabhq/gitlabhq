@@ -3666,6 +3666,55 @@ If the rule matches, then the job is a manual job with `allow_failure: true`.
 - The rule-level `rules:allow_failure` overrides the job-level [`allow_failure`](#allow_failure),
   and only applies when the specific rule triggers the job.
 
+#### `rules:needs`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../user/feature_flags.md) named `introduce_rules_with_needs`. Disabled by default.
+
+Use `needs` in rules to update a job's [`needs`](#needs) for specific conditions. When a condition matches a rule, the job's `needs` configuration is completely replaced with the `needs` in the rule.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- An array of job names as strings.
+- A hash with a job name, optionally with additional attributes.
+- An empty array (`[]`), to set the job needs to none when the specific condition is met.
+
+**Example of `rules:needs`**:
+
+```yaml
+build-dev:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+  script: echo "Feature branch, so building dev version..."
+
+build-prod:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script: echo "Default branch, so building prod version..."
+
+specs:
+  stage: test
+  needs: ['build-dev']
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      needs: ['build-prod']
+    - when: on_success # Run the job in other cases
+  script: echo "Running dev specs by default, or prod specs when default branch..."
+```
+
+In this example:
+
+- If the pipeline runs on a branch that is not the default branch, the `specs` job needs the `build-dev` job (default behavior).
+- If the pipeline runs on the default branch, and therefore the rule matches the condition, the `specs` job needs the `build-prod` job instead.
+
+**Additional details**:
+
+- `needs` in rules override any `needs` defined at the job-level. When overridden, the behavior is same as [job-level `needs`](#needs).
+- `needs` in rules can accept [`artifacts`](#needsartifacts) and [`optional`](#needsoptional).
+
 #### `rules:variables`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209864) in GitLab 13.7.

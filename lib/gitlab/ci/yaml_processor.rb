@@ -94,16 +94,20 @@ module Gitlab
       end
 
       def validate_job_needs!(name, job)
-        return unless needs = job.dig(:needs, :job)
+        validate_needs_specification!(name, job.dig(:needs, :job))
 
-        validate_duplicate_needs!(name, needs)
+        job[:rules]&.each do |rule|
+          validate_needs_specification!(name, rule.dig(:needs, :job))
+        end
+      end
+
+      def validate_needs_specification!(name, needs)
+        return unless needs
 
         needs.each do |need|
           validate_job_dependency!(name, need[:name], 'need', optional: need[:optional])
         end
-      end
 
-      def validate_duplicate_needs!(name, needs)
         duplicated_needs =
           needs
           .group_by { |need| need[:name] }

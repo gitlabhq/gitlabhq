@@ -37,7 +37,9 @@ alternatives to server hooks include:
 
 Prerequisites:
 
-- The [storage name and relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
+- The [storage name](gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage), path to the Gitaly configuration file
+  (default is `/var/opt/gitlab/gitaly/config.toml` on Omnibus GitLab instances), and the
+  [repository relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
 
 To set server hooks for a repository:
 

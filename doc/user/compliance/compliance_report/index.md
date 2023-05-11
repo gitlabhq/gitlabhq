@@ -195,40 +195,57 @@ To view the compliance frameworks report:
 
 ### Apply a compliance framework to projects in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+> - Adding compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+> - Adding compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
 
-You can apply a compliance framework to selected projects in a group.
+You can apply a compliance framework to projects in a group.
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To apply a compliance framework to projects in a group:
+To apply a compliance framework to one project in a group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Compliance report**.
 1. On the page, select the **Frameworks** tab.
-1. Select one or more projects.
+1. Next to the project you want to add the compliance framework to, select **{plus}** **Add framework**.
+1. Select an existing compliance framework or create a new one.
+
+To apply a compliance framework to multiple projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Apply framework to selected projects**.
 1. Select framework to apply.
 1. Select **Apply**.
 
 ### Remove a compliance framework from projects in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+> - Removing compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+> - Removing compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
 
-You can remove a compliance framework from selected projects in a group.
+You can remove a compliance framework from projects in a group.
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To remove a compliance framework from projects in a group:
+To remove a compliance framework from one project in a group:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Security and Compliance > Compliance report**.
 1. On the page, select the **Frameworks** tab.
-1. Select one or more projects.
+1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
+
+To remove a compliance framework from multiple projects in a group:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Security and Compliance > Compliance report**.
+1. On the page, select the **Frameworks** tab.
+1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
 1. Select **Remove**.
 

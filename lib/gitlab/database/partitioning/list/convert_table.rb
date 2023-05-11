@@ -43,8 +43,13 @@ module Gitlab
 
             create_parent_table
             attach_foreign_keys_to_parent
+            locking_sql = locking_configuration.locking_statement_for(tables_that_will_lock_during_partitioning)
 
             locking_configuration.with_lock_retries do
+              # Loose FKs trigger will exclusively lock the table and it might
+              # not follow the locking order needed to attach the partition.
+              migration_context.execute(locking_sql) if locking_sql.present?
+
               redefine_loose_foreign_key_triggers do
                 migration_context.execute(sql_to_convert_table)
               end
@@ -85,7 +90,6 @@ module Gitlab
             # but they acquire the same locks so it's much faster to include them
             # here.
             [
-              locking_configuration.locking_statement_for(tables_that_will_lock_during_partitioning),
               attach_table_to_parent_statement,
               alter_sequence_statements(old_table: table_name, new_table: parent_table_name),
               remove_constraint_statement

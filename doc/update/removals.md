@@ -121,6 +121,20 @@ Review the details carefully before upgrading.
 
 Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/335372) to include a new `title` field. This field is an alias for the current `name` field, making the less specific `name` field redundant. The `name` field is removed from the PipelineSecurityReportFinding type in GitLab 16.0.
 
+### PostgreSQL 12 compatibility
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 16.0, PostgreSQL 13 is the minimum supported PostgreSQL version. PostgreSQL 12 is no longer shipped with the GitLab Omnibus package.
+Before upgrading to GitLab 16.0, if you are:
+
+- Still using GitLab-packaged PostgreSQL 12, you must [perform a database upgrade](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)
+  to PostgreSQL 13.
+- Using an externally-provided PostgreSQL 12, you must upgrade to PostgreSQL 13 or later to meet the
+  [minimum version requirements](https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements).
+
 ### Project REST API field `operations_access_level` removed
 
 WARNING:

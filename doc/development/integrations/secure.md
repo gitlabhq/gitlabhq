@@ -124,7 +124,7 @@ the project repository contains Java source code and the `dependency_scanning` f
 ```yaml
 mysec_dependency_scanning:
   rules:
-    - if: $DEPENDENCY_SCANNING_DISABLED
+    - if: $DEPENDENCY_SCANNING_DISABLED == 'true'
       when: never
     - if: $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:

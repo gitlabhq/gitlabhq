@@ -65,7 +65,12 @@ module Auth
       token.expire_time = token_expire_at
 
       token[:access] = names.map do |name|
-        { type: type, name: name, actions: actions }
+        {
+          type: type,
+          name: name,
+          actions: actions,
+          meta: access_metadata(path: name)
+        }.compact
       end
 
       token.encoded
@@ -73,6 +78,28 @@ module Auth
 
     def self.token_expire_at
       Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
+    end
+
+    def self.access_metadata(project: nil, path: nil)
+      # If the project is not given, try to infer it from the provided path
+      if project.nil?
+        return if path.nil? # If no path is given, return early
+        return if path == 'import' # Ignore the special 'import' path
+
+        # If the path ends with '/*', remove it so we can parse the actual repository path
+        path = path.chomp('/*')
+
+        # Parse the repository project from the path
+        begin
+          project = ContainerRegistry::Path.new(path).repository_project
+        rescue ContainerRegistry::Path::InvalidRegistryPathError
+          # If the path is invalid, gracefully handle the error
+          return
+        end
+      end
+
+      # Return the project path (lowercase) as metadata
+      { project_path: project&.full_path&.downcase }
     end
 
     private
@@ -138,7 +165,12 @@ module Auth
       #
       ensure_container_repository!(path, authorized_actions)
 
-      { type: type, name: path.to_s, actions: authorized_actions }
+      {
+        type: type,
+        name: path.to_s,
+        actions: authorized_actions,
+        meta: self.class.access_metadata(project: requested_project)
+      }
     end
 
     def actively_importing?(actions, path)

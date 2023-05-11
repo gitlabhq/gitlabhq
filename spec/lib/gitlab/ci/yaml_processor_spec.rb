@@ -659,6 +659,191 @@ module Gitlab
 
             it_behaves_like 'has warnings and expected error', /build job: need test is not defined in current or prior stages/
           end
+
+          describe '#validate_job_needs!' do
+            context "when all validations pass" do
+              let(:config) do
+                <<-EOYML
+                    stages:
+                      - lint
+                    lint_job:
+                      needs: [lint_job_2]
+                      stage: lint
+                      script: 'echo lint_job'
+                      rules:
+                        - if: $var == null
+                          needs:
+                            - lint_job_2
+                            - job: lint_job_3
+                              optional: true
+                    lint_job_2:
+                      stage: lint
+                      script: 'echo job'
+                      rules:
+                        - if: $var == null
+                    lint_job_3:
+                      stage: lint
+                      script: 'echo job'
+                      rules:
+                        - if: $var == null
+                EOYML
+              end
+
+              it 'returns a valid response' do
+                expect(subject).to be_valid
+                expect(subject).to be_instance_of(Gitlab::Ci::YamlProcessor::Result)
+              end
+            end
+
+            context 'needs as array' do
+              context 'single need in following stage' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs: [test_job]
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+
+              context 'multiple needs in the following stage' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs: [test_job, test_job_2]
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                      test_job_2:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+
+              context 'single need in following state - hyphen need' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs:
+                              - test_job
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+
+              context 'when there are duplicate needs (string and hash)' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - test
+                      test_job_1:
+                        stage: test
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs:
+                              - test_job_2
+                              - job: test_job_2
+                      test_job_2:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'test_job_1 has the following needs duplicated: test_job_2.'
+              end
+            end
+
+            context 'rule needs as hash' do
+              context 'single hash need in following stage' do
+                let(:config) do
+                  <<-EOYML
+                      stages:
+                        - lint
+                        - test
+                      lint_job:
+                        stage: lint
+                        script: 'echo lint_job'
+                        rules:
+                          - if: $var == null
+                            needs:
+                              - job: test_job
+                                artifacts: false
+                                optional: false
+                      test_job:
+                        stage: test
+                        script: 'echo job'
+                        rules:
+                          - if: $var == null
+                  EOYML
+                end
+
+                it_behaves_like 'returns errors', 'lint_job job: need test_job is not defined in current or prior stages'
+              end
+            end
+
+            context 'job rule need does not exist' do
+              let(:config) do
+                <<-EOYML
+                  build:
+                    stage: build
+                    script: echo
+                    rules:
+                      - when: always
+                  test:
+                    stage: test
+                    script: echo
+                    rules:
+                      - if: $var == null
+                        needs: [unknown_job]
+                EOYML
+              end
+
+              it_behaves_like 'has warnings and expected error', /test job: undefined need: unknown_job/
+            end
+          end
         end
       end
 

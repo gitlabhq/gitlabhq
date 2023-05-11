@@ -1,0 +1,32 @@
+# valid workflow:rules:needs
+pre_lint_job:
+  script: exit 0
+  rules:
+    - if: $var == null
+
+lint_job:
+  script: exit 0
+  rules:
+    - if: $var == null
+
+rspec_job:
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: [lint_job]
+
+job:
+  needs: [rspec_job]
+  script: exit 0
+  rules:
+    - if: $var == null
+      needs: 
+        - job: lint_job
+          artifacts: false
+          optional: true
+        - job: pre_lint_job
+          artifacts: true
+          optional: false
+        - rspec_job
+    - if: $var == true
+      needs: [lint_job, pre_lint_job]

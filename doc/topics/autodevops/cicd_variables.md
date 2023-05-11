@@ -86,45 +86,39 @@ Use these variables to disable CI/CD jobs.
 
 | **Job name**                           | **CI/CD variable**               | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
-| `.fuzz_base`                           | `COVFUZZ_DISABLED`              | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34984) | [Read more](../../user/application_security/coverage_fuzzing/index.md) about how `.fuzz_base` provide capability for your own jobs. If the variable is present, your jobs aren't created. |
-| `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          | [From GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39135) | If the variable is present, the job isn't created. |
+| `.fuzz_base`                           | `COVFUZZ_DISABLED`              | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34984) | [Read more](../../user/application_security/coverage_fuzzing/index.md) about how `.fuzz_base` provide capability for your own jobs. The job isn't created if the value is `"true"`. |
+| `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          | [From GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39135) | The job isn't created if the value is `"true"`. |
 | `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
-| `bandit-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `brakeman-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
+| `brakeman-sast`                        | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `canary`                               | `CANARY_ENABLED`                |                       | This manual job is created if the variable is present. |
 | `code_intelligence`                    | `CODE_INTELLIGENCE_DISABLED`    | From GitLab 13.6      | If the variable is present, the job isn't created. |
-| `code_quality`                         | `CODE_QUALITY_DISABLED`         |                       | If the variable is present, the job isn't created. |
-| `container_scanning`                   | `CONTAINER_SCANNING_DISABLED`   |                       | If the variable is present, the job isn't created. |
-| `dast`                                 | `DAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `dast_environment_deploy`              | `DAST_DISABLED_FOR_DEFAULT_BRANCH` or `DAST_DISABLED` | [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17789) | If either variable is present, the job isn't created. |
-| `dependency_scanning`                  | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `eslint-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `flawfinder-sast`                      | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `gemnasium-dependency_scanning`        | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `gemnasium-maven-dependency_scanning`  | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `gemnasium-python-dependency_scanning` | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `gosec-sast`                           | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `kubesec-sast`                         | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
+| `code_quality`                         | `CODE_QUALITY_DISABLED`         |                       | The job isn't created if the value is `"true"`. |
+| `container_scanning`                   | `CONTAINER_SCANNING_DISABLED`   |                       | The job isn't created if the value is `"true"`. |
+| `dast`                                 | `DAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
+| `dast_environment_deploy`              | `DAST_DISABLED_FOR_DEFAULT_BRANCH` or `DAST_DISABLED` | [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17789) | The job isn't created if the value is `"true"`. |
+| `dependency_scanning`                  | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
+| `flawfinder-sast`                      | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
+| `gemnasium-dependency_scanning`        | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
+| `gemnasium-maven-dependency_scanning`  | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
+| `gemnasium-python-dependency_scanning` | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
+| `kubesec-sast`                         | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `license_management`                   | `LICENSE_MANAGEMENT_DISABLED`   | GitLab 12.7 and earlier | If the variable is present, the job isn't created. Job deprecated [from GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) |
-| `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   | [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | If the variable is present, the job isn't created. |
+| `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   | [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | The job isn't created if the value is `"true"`.|
 | `load_performance`                     | `LOAD_PERFORMANCE_DISABLED`     | From GitLab 13.2      | If the variable is present, the job isn't created. |
-| `nodejs-scan-sast`                     | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
+| `nodejs-scan-sast`                     | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `performance`                          | `PERFORMANCE_DISABLED`          | GitLab 13.12 and earlier | Browser performance. If the variable is present, the job isn't created. Replaced by `browser_performance`. |
 | `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  | From GitLab 14.0      | Browser performance. If the variable is present, the job isn't created. Replaces `performance`. |
-| `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
+| `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
+| `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `review`                               | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |
 | `review:stop`                          | `REVIEW_DISABLED`               |                       | Manual job. If the variable is present, the job isn't created. |
-| `sast`                                 | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `sast:container`                       | `CONTAINER_SCANNING_DISABLED`   |                       | If the variable is present, the job isn't created. |
-| `secret_detection`                     | `SECRET_DETECTION_DISABLED`     | From GitLab 13.1      | If the variable is present, the job isn't created. |
-| `secret_detection_default_branch`      | `SECRET_DETECTION_DISABLED`     | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | If the variable is present, the job isn't created. |
-| `security-code-scan-sast`              | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `secrets-sast`                         | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `sobelaw-sast`                         | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `stop_dast_environment`                | `DAST_DISABLED_FOR_DEFAULT_BRANCH` or `DAST_DISABLED` | [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17789) | If either variable is present, the job isn't created. |
-| `spotbugs-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
+| `secret_detection`                     | `SECRET_DETECTION_DISABLED`     | From GitLab 13.1      | The job isn't created if the value is `"true"`. |
+| `secret_detection_default_branch`      | `SECRET_DETECTION_DISABLED`     | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | The job isn't created if the value is `"true"`. |
+| `semgrep-sast`                         | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
+| `sobelow-sast`                         | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
+| `stop_dast_environment`                | `DAST_DISABLED_FOR_DEFAULT_BRANCH` or `DAST_DISABLED` | [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17789) | The job isn't created if the value is `"true"`. |
+| `spotbugs-sast`                        | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `test`                                 | `TEST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
 | `staging`                              | `STAGING_ENABLED`               |                       | The job is created if the variable is present. |
 | `stop_review`                          | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |

@@ -315,6 +315,20 @@ Due to low customer usage, Load Performance Testing is deprecated and will be re
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### PipelineSecurityReportFinding projectFingerprint GraphQL field
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.1</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343475).
+</div>
+
+The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Queue selector for running Sidekiq is deprecated
 
 <div class="deprecation-notes">
@@ -1646,20 +1660,6 @@ Previously, the [PipelineSecurityReportFinding GraphQL type was updated](https:/
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### PipelineSecurityReportFinding projectFingerprint GraphQL field
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.1</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/343475).
-</div>
-
-The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) attribute of vulnerability findings is being deprecated in favor of a `uuid` attribute. By using UUIDv5 values to identify findings, we can easily associate any related entity with a finding. The `project_fingerprint` attribute is no longer being used to track findings, and will be removed in GitLab 16.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### PostgreSQL 12 deprecated
 
 <div class="deprecation-notes">
@@ -2204,6 +2204,26 @@ The `POST ci/lint` API endpoint is deprecated in 15.7, and will be removed in 16
 </div>
 
 To avoid confusion and duplication, the `environment_tier` parameter is deprecated in favor of the `environment_tiers` parameter. The new `environment_tiers` parameter allows DORA APIs to return aggregated data for multiple tiers at the same time. The `environment_tier` parameter will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.0">
+
+### `started` iteration state
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">14.8</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334018).
+</div>
+
+The `started` iteration state in the [iterations GraphQL API](https://https://docs.gitlab.com/ee/api/graphql/reference/index.html#iterationstate)
+and [iterations REST API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is deprecated.
+
+The GraphQL API version will be removed in GitLab 16.0. This state is being replaced with the `current` state (already available)
+which aligns with the naming for other time-based entities, such as milestones.
+
+We plan to continue to support the `started` state in REST API version until the next v5 REST API version.
 
 </div>
 
@@ -3722,20 +3742,6 @@ In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Ge
 </div>
 
 In GitLab 14.5, we introduced the command `gitlab-ctl promote` to promote any Geo secondary node to a primary during a failover. This command replaces `gitlab-ctl promote-to-primary-node` which was only usable for single-node Geo sites. `gitlab-ctl promote-to-primary-node` will continue to function as-is and be available until GitLab 15.0. We recommend that Geo customers begin testing the new `gitlab-ctl promote` command in their staging environments and incorporating the new command in their failover procedures.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="15.0">
-
-### `started` iterations API field
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">14.8</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334018).
-</div>
-
-The `started` field in the [iterations API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is being deprecated and will be removed in GitLab 15.0. This field is being replaced with the `current` field (already available) which aligns with the naming for other time-based entities, such as milestones.
 
 </div>
 

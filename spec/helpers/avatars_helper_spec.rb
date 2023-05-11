@@ -102,7 +102,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
   end
 
   describe '#avatar_icon_for_email', :clean_gitlab_redis_cache do
-    let(:user) { create(:user, :public_email, avatar: File.open(uploaded_image_temp_path)) }
+    let(:user) { create(:user, :public_email, :commit_email, avatar: File.open(uploaded_image_temp_path)) }
 
     subject { helper.avatar_icon_for_email(user.email).to_s }
 
@@ -131,11 +131,20 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
         end
 
         context 'without an email passed' do
-          it 'calls gravatar_icon' do
-            expect(helper).to receive(:gravatar_icon).with(nil, 20, 2)
-            expect(User).not_to receive(:find_by_any_email)
+          it 'returns the default avatar' do
+            expect(helper).to receive(:default_avatar)
+            expect(User).not_to receive(:with_public_email)
 
             helper.avatar_icon_for_email(nil, 20, 2)
+          end
+        end
+
+        context 'with a blank email address' do
+          it 'returns the default avatar' do
+            expect(helper).to receive(:default_avatar)
+            expect(User).not_to receive(:with_public_email)
+
+            helper.avatar_icon_for_email('', 20, 2)
           end
         end
       end

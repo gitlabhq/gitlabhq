@@ -286,6 +286,26 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
         expect(migration_context.has_loose_foreign_key?(table_name)).to be_truthy
         expect(migration_context.has_loose_foreign_key?(parent_table_name)).to be_truthy
       end
+
+      context 'with locking tables' do
+        let(:lock_tables) { [table_name] }
+
+        it 'locks the table before dropping the triggers' do
+          recorder = ActiveRecord::QueryRecorder.new { partition }
+
+          lock_index = recorder.log.find_index do |log|
+            log.start_with?('LOCK "_test_table_to_partition" IN ACCESS EXCLUSIVE MODE')
+          end
+
+          trigger_index = recorder.log.find_index do |log|
+            log.start_with?('DROP TRIGGER IF EXISTS _test_table_to_partition_loose_fk_trigger')
+          end
+
+          expect(lock_index).to be_present
+          expect(trigger_index).to be_present
+          expect(lock_index).to be < trigger_index
+        end
+      end
     end
   end
 

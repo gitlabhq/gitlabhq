@@ -2351,9 +2351,12 @@ apifuzzer_v1:
     FUZZAPI_EXCLUDE_PATHS: /api/v1/**
   rules:
     rules:
-    - if: $API_FUZZING_DISABLED
+    - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
-    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+            $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
             $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
     - if: $CI_COMMIT_BRANCH &&
@@ -2367,7 +2370,7 @@ apifuzzer_v2:
     FUZZAPI_EXCLUDE_PATHS: /api/v2/**
   rules:
     rules:
-    - if: $API_FUZZING_DISABLED
+    - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
             $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
@@ -2402,7 +2405,7 @@ apifuzzer_branch:
     FUZZAPI_EXCLUDE_PATHS: /api/large_response_json
   rules:
     rules:
-    - if: $API_FUZZING_DISABLED
+    - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
             $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
@@ -2420,7 +2423,7 @@ apifuzzer_branch:
 apifuzzer_main:
   extends: apifuzzer_fuzz
     rules:
-    - if: $API_FUZZING_DISABLED
+    - if: $API_FUZZING_DISABLED == 'true' || $API_FUZZING_DISABLED == '1'
       when: never
     - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
             $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME

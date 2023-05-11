@@ -386,6 +386,109 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           expect(regular_job.allow_failure).to eq(true)
         end
       end
+
+      context 'with needs:' do
+        let(:config) do
+          <<-EOY
+            job1:
+              script: ls
+
+            job2:
+              script: ls
+              rules:
+                - if: $var == null
+                  needs: [job1]
+                - when: on_success
+
+            job3:
+              script: ls
+              rules:
+                - if: $var == null
+                  needs: [job1]
+                - needs: [job2]
+
+            job4:
+              script: ls
+              needs: [job1]
+              rules:
+                - if: $var == null
+                  needs: [job2]
+                - when: on_success
+                  needs: [job3]
+          EOY
+        end
+
+        let(:job1) { pipeline.builds.find_by(name: 'job1') }
+        let(:job2) { pipeline.builds.find_by(name: 'job2') }
+        let(:job3) { pipeline.builds.find_by(name: 'job3') }
+        let(:job4) { pipeline.builds.find_by(name: 'job4') }
+
+        context 'when the `$var` rule matches' do
+          it 'creates a pipeline with overridden needs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+
+            expect(job1.needs).to be_empty
+            expect(job2.needs).to contain_exactly(an_object_having_attributes(name: 'job1'))
+            expect(job3.needs).to contain_exactly(an_object_having_attributes(name: 'job1'))
+            expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job2'))
+          end
+        end
+
+        context 'when the `$var` rule does not match' do
+          let(:initialization_params) { base_initialization_params.merge(variables_attributes: variables_attributes) }
+
+          let(:variables_attributes) do
+            [{ key: 'var', secret_value: 'SOME_VAR' }]
+          end
+
+          it 'creates a pipeline with overridden needs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+
+            expect(job1.needs).to be_empty
+            expect(job2.needs).to be_empty
+            expect(job3.needs).to contain_exactly(an_object_having_attributes(name: 'job2'))
+            expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job3'))
+          end
+        end
+
+        context 'when the FF introduce_rules_with_needs is disabled' do
+          before do
+            stub_feature_flags(introduce_rules_with_needs: false)
+          end
+
+          context 'when the `$var` rule matches' do
+            it 'creates a pipeline without overridden needs' do
+              expect(pipeline).to be_persisted
+              expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+
+              expect(job1.needs).to be_empty
+              expect(job2.needs).to be_empty
+              expect(job3.needs).to be_empty
+              expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job1'))
+            end
+          end
+
+          context 'when the `$var` rule does not match' do
+            let(:initialization_params) { base_initialization_params.merge(variables_attributes: variables_attributes) }
+
+            let(:variables_attributes) do
+              [{ key: 'var', secret_value: 'SOME_VAR' }]
+            end
+
+            it 'creates a pipeline without overridden needs' do
+              expect(pipeline).to be_persisted
+              expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
+
+              expect(job1.needs).to be_empty
+              expect(job2.needs).to be_empty
+              expect(job3.needs).to be_empty
+              expect(job4.needs).to contain_exactly(an_object_having_attributes(name: 'job1'))
+            end
+          end
+        end
+      end
     end
 
     context 'changes:' do

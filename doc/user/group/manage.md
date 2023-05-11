@@ -699,7 +699,7 @@ To enable Code Suggestions for a group:
 1. Find the **Code Suggestions** settings.
 1. Select **Save changes**.
 
-## Group Experiment features setting **(ULTIMATE)**
+## Group Experiment features setting **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
 
@@ -721,7 +721,7 @@ To enable Experiment features for a group:
 1. Find the **Experiment features** settings.
 1. Select **Save changes**.
 
-## Group third-party AI features setting **(ULTIMATE)**
+## Group third-party AI features setting **(ULTIMATE SAAS)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404856) in GitLab 16.0.
 

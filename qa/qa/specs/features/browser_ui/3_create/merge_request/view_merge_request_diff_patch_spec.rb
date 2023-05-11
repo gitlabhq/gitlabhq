@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Download merge request patch and diff', product_group: :code_review do
+    describe 'Download merge request patch and diff', :requires_admin, product_group: :code_review do
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |merge_request|
           merge_request.title = 'This is a merge request'

@@ -1,4 +1,4 @@
-import { GlButton, GlLink, GlModal, GlPopover } from '@gitlab/ui';
+import { GlButton, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
@@ -9,7 +9,6 @@ import WebIdeLink, {
   PREFERRED_EDITOR_KEY,
 } from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
-import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { KEY_WEB_IDE } from '~/vue_shared/components/constants';
 
 import { stubComponent } from 'helpers/stub_component';
@@ -95,14 +94,7 @@ describe('Web IDE link component', () => {
 
   let wrapper;
 
-  function createComponent(
-    props,
-    {
-      mountFn = shallowMountExtended,
-      glFeatures = {},
-      userCalloutDismisserSlotProps = { dismiss: jest.fn() },
-    } = {},
-  ) {
+  function createComponent(props, { mountFn = shallowMountExtended, glFeatures = {} } = {}) {
     wrapper = mountFn(WebIdeLink, {
       propsData: {
         editUrl: TEST_EDIT_URL,
@@ -124,11 +116,6 @@ describe('Web IDE link component', () => {
               <slot name="modal-footer"></slot>
             </div>`,
         }),
-        UserCalloutDismisser: stubComponent(UserCalloutDismisser, {
-          render() {
-            return this.$scopedSlots.default(userCalloutDismisserSlotProps);
-          },
-        }),
       },
     });
   }
@@ -141,13 +128,6 @@ describe('Web IDE link component', () => {
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findModal = () => wrapper.findComponent(GlModal);
   const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
-  const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
-  const findNewWebIdeCalloutPopover = () => wrapper.findComponent(GlPopover);
-  const findTryItOutLink = () =>
-    wrapper
-      .findAllComponents(GlLink)
-      .filter((link) => link.text().includes('Try it out'))
-      .at(0);
 
   it.each([
     {
@@ -444,132 +424,6 @@ describe('Web IDE link component', () => {
 
       expect(findModal().exists()).toBe(false);
     });
-  });
-
-  describe('Web IDE callout', () => {
-    describe('vscode_web_ide feature flag is enabled and the edit button is not shown', () => {
-      let dismiss;
-
-      beforeEach(() => {
-        dismiss = jest.fn();
-        createComponent(
-          {
-            showEditButton: false,
-          },
-          {
-            glFeatures: { vscodeWebIde: true },
-            userCalloutDismisserSlotProps: { dismiss },
-          },
-        );
-      });
-      it('does not skip the user_callout_dismisser query', () => {
-        expect(findUserCalloutDismisser().props()).toEqual(
-          expect.objectContaining({
-            skipQuery: false,
-            featureName: 'vscode_web_ide_callout',
-          }),
-        );
-      });
-
-      it('mounts new web ide callout popover', () => {
-        expect(findNewWebIdeCalloutPopover().props()).toEqual(
-          expect.objectContaining({
-            showCloseButton: '',
-            target: 'web-ide-link',
-            triggers: 'manual',
-            boundaryPadding: 80,
-          }),
-        );
-      });
-
-      describe.each`
-        calloutStatus | shouldShowCallout | popoverVisibility | tooltipVisibility
-        ${'show'}     | ${true}           | ${true}           | ${false}
-        ${'hide'}     | ${false}          | ${false}          | ${true}
-      `(
-        'when should $calloutStatus web ide callout',
-        ({ shouldShowCallout, popoverVisibility, tooltipVisibility }) => {
-          beforeEach(() => {
-            createComponent(
-              {
-                showEditButton: false,
-              },
-              {
-                glFeatures: { vscodeWebIde: true },
-                userCalloutDismisserSlotProps: { shouldShowCallout, dismiss },
-              },
-            );
-          });
-
-          it(`popover visibility = ${popoverVisibility}`, () => {
-            expect(findNewWebIdeCalloutPopover().props().show).toBe(popoverVisibility);
-          });
-
-          it(`action button tooltip visibility = ${tooltipVisibility}`, () => {
-            expect(findActionsButton().props().showActionTooltip).toBe(tooltipVisibility);
-          });
-        },
-      );
-
-      it('dismisses the callout when popover close button is clicked', () => {
-        findNewWebIdeCalloutPopover().vm.$emit('close-button-clicked');
-
-        expect(dismiss).toHaveBeenCalled();
-      });
-
-      it('dismisses the callout when try it now link is clicked', () => {
-        findTryItOutLink().vm.$emit('click');
-
-        expect(dismiss).toHaveBeenCalled();
-      });
-
-      it('dismisses the callout when action button is clicked', () => {
-        findActionsButton().vm.$emit('actionClicked');
-
-        expect(dismiss).toHaveBeenCalled();
-      });
-    });
-
-    describe.each`
-      featureFlag | showEditButton
-      ${false}    | ${true}
-      ${true}     | ${false}
-      ${false}    | ${false}
-    `(
-      'when vscode_web_ide=$featureFlag and showEditButton = $showEditButton',
-      ({ vscodeWebIde, showEditButton }) => {
-        let dismiss;
-
-        beforeEach(() => {
-          dismiss = jest.fn();
-
-          createComponent(
-            {
-              showEditButton,
-            },
-            { glFeatures: { vscodeWebIde }, userCalloutDismisserSlotProps: { dismiss } },
-          );
-        });
-
-        it('skips the user_callout_dismisser query', () => {
-          expect(findUserCalloutDismisser().props().skipQuery).toBe(true);
-        });
-
-        it('displays actions button tooltip', () => {
-          expect(findActionsButton().props().showActionTooltip).toBe(true);
-        });
-
-        it('mounts new web ide callout popover', () => {
-          expect(findNewWebIdeCalloutPopover().exists()).toBe(false);
-        });
-
-        it('does not dismiss the callout when action button is clicked', () => {
-          findActionsButton().vm.$emit('actionClicked');
-
-          expect(dismiss).not.toHaveBeenCalled();
-        });
-      },
-    );
   });
 
   describe('when vscode_web_ide feature flag is enabled', () => {

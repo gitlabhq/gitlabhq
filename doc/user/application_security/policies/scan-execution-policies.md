@@ -257,5 +257,5 @@ developer may want to try running a SAST scan with different variables than the 
 this case, two SAST jobs run in the pipeline, one with the developer's variables and one with the security and compliance team's variables.
 
 If you want to avoid running duplicate scans, you can either remove the scans from the project's `.gitlab-ci.yml` file or disable your
-local jobs by setting `SAST_DISABLED: true`. Disabling jobs this way does not prevent the security jobs defined by scan execution
+local jobs by setting `SAST_DISABLED: "true"`. Disabling jobs this way does not prevent the security jobs defined by scan execution
 policies from running.

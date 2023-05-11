@@ -2252,9 +2252,12 @@ dast_api_v1:
   variables:
     DAST_API_EXCLUDE_PATHS: /api/v1/**
   rules:
-  - if: $DAST_API_DISABLED
+  - if: $DAST_API_DISABLED == 'true' || $DAST_API_DISABLED == '1'
     when: never
-  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+        $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    when: never
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
         $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
     when: never
   - if: $CI_COMMIT_BRANCH &&
@@ -2267,9 +2270,12 @@ dast_api_v2:
   variables:
     DAST_API_EXCLUDE_PATHS: /api/v2/**
   rules:
-  - if: $DAST_API_DISABLED
+  - if: $DAST_API_DISABLED == 'true' || $DAST_API_DISABLED == '1'
     when: never
-  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+        $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    when: never
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
         $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
     when: never
   - if: $CI_COMMIT_BRANCH &&
@@ -2301,9 +2307,12 @@ dast_api_branch:
   variables:
     DAST_API_EXCLUDE_PATHS: /api/large_response_json
   rules:
-  - if: $DAST_API_DISABLED
+  - if: $DAST_API_DISABLED == 'true' || $DAST_API_DISABLED == '1'
     when: never
-  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+        $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    when: never
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
         $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
     when: never
   - if: $CI_COMMIT_BRANCH &&
@@ -2319,9 +2328,12 @@ dast_api_branch:
 dast_api_main:
   extends: dast_api
   rules:
-  - if: $DAST_API_DISABLED
+  - if: $DAST_API_DISABLED == 'true' || $DAST_API_DISABLED == '1'
     when: never
-  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH &&
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+        $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+    when: never
+  - if: $DAST_API_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
         $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
     when: never
   - if: $CI_COMMIT_BRANCH &&

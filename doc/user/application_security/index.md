@@ -240,9 +240,9 @@ reports are available to download. To download a report, select
 
 ### Ultimate
 
-A merge request contains a security widget which displays a summary of the new results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the latest commit in the target branch.
+A merge request contains a security widget which displays a summary of the _new_ results. New results are determined by comparing the findings of the merge request against the findings of the most recent completed pipeline (`success`, `failed`, `canceled` or `skipped`) for the commit when the feature branch was created from the target branch.
 
-If security scans have not run for the most recent completed pipeline in the target branch there is no base for comparison. The vulnerabilities from the merge request findings are listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
+If security scans have not run for the completed pipeline in the target branch when the feature branch was created, there is no base for comparison. The vulnerabilities from the merge request findings are listed as new in the merge request security widget. We recommend you run a scan of the `default` (target) branch before enabling feature branch scans for your developers.
 
 The merge request security widget displays only a subset of the vulnerabilities in the generated JSON artifact because it contains both new and existing findings.
 

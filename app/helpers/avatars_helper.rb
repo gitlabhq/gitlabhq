@@ -28,7 +28,7 @@ module AvatarsHelper
   end
 
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
-    return gravatar_icon(email, size, scale) if email.nil?
+    return default_avatar if email.blank?
 
     Gitlab::AvatarCache.by_email(email, size, scale, only_path) do
       avatar_icon_by_user_email_or_gravatar(email, size, scale, only_path: only_path)

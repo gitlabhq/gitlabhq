@@ -523,5 +523,3 @@ notify-slack:
   extends:
     - .notify-slack
     - .rules:report:process-results
-  variables:
-    TYPE: "(package-and-test) "

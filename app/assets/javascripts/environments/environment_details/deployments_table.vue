@@ -48,10 +48,14 @@ export default {
       <deployment-job :job="item.job" />
     </template>
     <template #cell(created)="{ item }">
-      <time-ago-tooltip :time="item.created" />
+      <time-ago-tooltip :time="item.created" data-testid="deployment-created-at" />
     </template>
     <template #cell(deployed)="{ item }">
-      <time-ago-tooltip :time="item.deployed" />
+      <time-ago-tooltip
+        v-if="item.deployed"
+        :time="item.deployed"
+        data-testid="deployment-deployed-at"
+      />
     </template>
     <template #cell(actions)="{ item }">
       <deployment-actions

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, product_group: :package_registry, feature_flag: { name: 'maven_central_request_forwarding', scope: :global } do
+  RSpec.describe 'Package', :orchestrated, :requires_admin, :packages, :object_storage, :reliable, product_group: :package_registry, feature_flag: { name: 'maven_central_request_forwarding', scope: :global } do
     describe 'Maven group level endpoint' do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken

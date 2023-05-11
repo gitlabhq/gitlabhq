@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlBadge } from '@gitlab/ui';
+import { GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -22,6 +22,9 @@ export default {
     GlBadge,
     NavItemLink,
     NavItemRouterLink,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     pinnedItemIds: { default: { ids: [] } },
@@ -153,6 +156,7 @@ export default {
         </gl-badge>
         <gl-button
           v-if="isPinnable && !isPinned"
+          v-gl-tooltip.right.viewport="$options.i18n.pinItem"
           size="small"
           category="tertiary"
           icon="thumbtack"
@@ -161,6 +165,7 @@ export default {
         />
         <gl-button
           v-else-if="isPinnable && isPinned"
+          v-gl-tooltip.right.viewport="$options.i18n.unpinItem"
           size="small"
           category="tertiary"
           :aria-label="$options.i18n.unpinItem"

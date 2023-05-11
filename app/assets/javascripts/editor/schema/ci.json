@@ -774,6 +774,9 @@
               },
               "allow_failure": {
                 "$ref": "#/definitions/allow_failure"
+              },
+              "needs": {
+                "$ref": "#/definitions/rulesNeeds"
               }
             }
           },
@@ -935,6 +938,39 @@
       "type": "string",
       "markdownDescription": "Used in conjunction with 'when: delayed' to set how long to delay before starting a job. e.g. '5', 5 seconds, 30 minutes, 1 week, etc. [Learn More](https://docs.gitlab.com/ee/ci/jobs/job_control.html#run-a-job-after-a-delay).",
       "minLength": 1
+    },
+    "rulesNeeds": {
+      "markdownDescription": "Use needs in rules to update job needs for specific conditions. When a condition matches a rule, the job's needs configuration is completely replaced with the needs in the rule. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#rulesneeds).",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "job": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name of a job that is defined in the pipeline."
+              },
+              "artifacts": {
+                "type": "boolean",
+                "description": "Download artifacts of the job in needs."
+              },
+              "optional": {
+                "type": "boolean",
+                "description": "Whether the job needs to be present in the pipeline to run ahead of the current job."
+              }
+            },
+            "required": [
+              "job"
+            ]
+          }
+        ]
+      }
     },
     "allow_failure": {
       "markdownDescription": "Allow job to fail. A failed job does not cause the pipeline to fail. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#allow_failure).",

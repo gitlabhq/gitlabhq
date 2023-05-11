@@ -27,6 +27,7 @@ import CacheYaml from './yaml_tests/positive_tests/cache.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
 import RulesYaml from './yaml_tests/positive_tests/rules.yml';
+import RulesNeedsYaml from './yaml_tests/positive_tests/rules_needs.yml';
 import ProjectPathYaml from './yaml_tests/positive_tests/project_path.yml';
 import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
 import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
@@ -46,6 +47,7 @@ import ProjectPathIncludeLeadSlashYaml from './yaml_tests/negative_tests/project
 import ProjectPathIncludeNoSlashYaml from './yaml_tests/negative_tests/project_path/include/no_slash.yml';
 import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/include/tailing_slash.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
+import RulesNeedsNegativeYaml from './yaml_tests/negative_tests/rules_needs.yml';
 import TriggerNegative from './yaml_tests/negative_tests/trigger.yml';
 import VariablesInvalidOptionsYaml from './yaml_tests/negative_tests/variables/invalid_options.yml';
 import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
@@ -88,6 +90,7 @@ describe('positive tests', () => {
       JobWhenYaml,
       HooksYaml,
       RulesYaml,
+      RulesNeedsYaml,
       VariablesYaml,
       ProjectPathYaml,
       IdTokensYaml,
@@ -121,6 +124,7 @@ describe('negative tests', () => {
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
       RulesNegativeYaml,
+      RulesNeedsNegativeYaml,
       TriggerNegative,
       VariablesInvalidOptionsYaml,
       VariablesInvalidSyntaxDescYaml,

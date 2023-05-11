@@ -161,6 +161,21 @@ RSpec.describe NavHelper, feature_category: :navigation do
       context 'with feature flag on' do
         let(:new_nav_ff) { true }
 
+        context 'when user has not interacted with the new nav toggle yet' do
+          let(:user_preference) { nil }
+
+          specify { expect(subject).to eq false }
+
+          context 'when the user was enrolled into the new nav via a special feature flag' do
+            before do
+              # this ff is disabled in globally to keep tests of the old nav working
+              stub_feature_flags(super_sidebar_nav_enrolled: true)
+            end
+
+            specify { expect(subject).to eq true }
+          end
+        end
+
         context 'when user has new nav disabled' do
           let(:user_preference) { false }
 

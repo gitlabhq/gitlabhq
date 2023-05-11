@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class MembersFinder
-  RELATIONS = %i[direct inherited descendants invited_groups].freeze
+  RELATIONS = %i[direct inherited descendants invited_groups shared_into_ancestors].freeze
   DEFAULT_RELATIONS = %i[direct inherited].freeze
 
   # Params can be any of the following:
@@ -58,15 +58,20 @@ class MembersFinder
 
   def group_union_members(include_relations)
     [].tap do |members|
-      members << direct_group_members(include_relations.include?(:descendants)) if group
+      members << direct_group_members(include_relations) if group
       members << project_invited_groups if include_relations.include?(:invited_groups)
     end
   end
 
-  def direct_group_members(include_descendants)
+  def direct_group_members(include_relations)
     requested_relations = [:inherited, :direct]
-    requested_relations << :descendants if include_descendants
-    GroupMembersFinder.new(group).execute(include_relations: requested_relations).non_invite.non_minimal_access # rubocop: disable CodeReuse/Finder
+    requested_relations << :descendants if include_relations.include?(:descendants)
+    requested_relations << :shared_from_groups if include_relations.include?(:shared_into_ancestors)
+
+    GroupMembersFinder.new(group, current_user) # rubocop: disable CodeReuse/Finder
+                      .execute(include_relations: requested_relations)
+                      .non_invite
+                      .non_minimal_access
   end
 
   def project_invited_groups

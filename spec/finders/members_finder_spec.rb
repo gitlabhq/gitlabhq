@@ -161,6 +161,37 @@ RSpec.describe MembersFinder, feature_category: :subgroups do
       expect(result).to eq([member3, member2, member1])
     end
 
+    context 'with :shared_into_ancestors' do
+      let_it_be(:invited_group) do
+        create(:group).tap do |invited_group|
+          create(:group_group_link, shared_group: nested_group, shared_with_group: invited_group)
+        end
+      end
+
+      let_it_be(:invited_group_member) { create(:group_member, :developer, group: invited_group, user: user1) }
+      let_it_be(:namespace_parent_member) { create(:group_member, :owner, group: group, user: user2) }
+      let_it_be(:namespace_member) { create(:group_member, :developer, group: nested_group, user: user3) }
+      let_it_be(:project_member) { create(:project_member, :developer, project: project, user: user4) }
+
+      subject(:result) { described_class.new(project, user4).execute(include_relations: include_relations) }
+
+      context 'when :shared_into_ancestors is included in the relations' do
+        let(:include_relations) { [:inherited, :direct, :invited_groups, :shared_into_ancestors] }
+
+        it "includes members of groups invited into ancestors of project's group" do
+          expect(result).to match_array([namespace_parent_member, namespace_member, invited_group_member, project_member])
+        end
+      end
+
+      context 'when :shared_into_ancestors is not included in the relations' do
+        let(:include_relations) { [:inherited, :direct, :invited_groups] }
+
+        it "does not include members of groups invited into ancestors of project's group" do
+          expect(result).to match_array([namespace_parent_member, namespace_member, project_member])
+        end
+      end
+    end
+
     context 'when :invited_groups is passed' do
       shared_examples 'with invited_groups param' do
         subject { described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups]) }

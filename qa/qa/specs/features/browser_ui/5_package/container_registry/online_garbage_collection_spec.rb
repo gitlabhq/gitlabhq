@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', product_group: :container_registry do
+  RSpec.describe 'Package', :requires_admin, product_group: :container_registry do
     describe 'Container Registry Online Garbage Collection', :registry_gc, only: { subdomain: %i[pre] } do
       let(:group) { Resource::Group.fabricate_via_api! }
 

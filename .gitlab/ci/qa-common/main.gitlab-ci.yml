@@ -252,7 +252,7 @@ stages:
     - .ruby-image
   stage: notify
   variables:
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.json
+    QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
@@ -264,7 +264,7 @@ stages:
         echo "Test suite passed. Exiting..."
         exit 0
       fi
-    - bundle exec gitlab-qa-report --prepare-stage-reports "$QA_RSPEC_JSON_FILE_PATTERN"  # generate summary
+    - bundle exec gitlab-qa-report --prepare-stage-reports "$QA_RSPEC_XML_FILE_PATTERN"  # generate summary
     - !reference [.notify-slack-qa, script]
 
 # ==========================================
