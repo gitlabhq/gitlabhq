@@ -71,6 +71,7 @@ export default {
       }
     },
   },
+  popperOptions: { strategy: 'fixed' },
 };
 </script>
 
@@ -88,6 +89,7 @@ export default {
       searchable
       size="small"
       class="comment-template-dropdown"
+      :popper-options="$options.popperOptions"
       :searching="$apollo.queries.savedReplies.loading"
       @shown="fetchCommentTemplates"
       @search="setCommentTemplateSearch"

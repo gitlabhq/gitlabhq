@@ -1,0 +1,13 @@
+- title: "Two DAST API variables have been removed"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.7"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: derekferguson  # (required) GitLab username of the person reporting the removal
+  stage: Secure  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383467 # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The variables `DAST_API_HOST_OVERRIDE` and `DAST_API_SPECIFICATION` have been removed from use for DAST API scans.
+
+    `DAST_API_HOST_OVERRIDE` has been removed in favor of using the `DAST_API_TARGET_URL` to automatically override the host in the OpenAPI specification.
+
+    `DAST_API_SPECIFICATION` has been removed in favor of `DAST_API_OPENAPI`. To continue using an OpenAPI specification to guide the test, users must replace the `DAST_API_SPECIFICATION` variable with the `DAST_API_OPENAPI` variable. The value can remain the same, but the variable name must be replaced.

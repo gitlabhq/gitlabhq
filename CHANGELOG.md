@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.3 (2023-05-10)
+
+### Fixed (2 changes)
+
+- [Fix issue description keeping autosave after save](gitlab-org/security/gitlab@9a2d98b24c1ed9416ef672635aae27997b99a8b6)
+- [Backport MR 119319 changes to 15-11-stable-ee](gitlab-org/security/gitlab@7f54f28a839efeebdea9030ae41975c9059a5f4e)
+
+### Changed (1 change)
+
+- [Restrict cleanup migrations only for GitLab.com](gitlab-org/security/gitlab@d6d1c3a650277a0f4acb777f0b123cc0b9c57ea4)
+
 ## 15.11.2 (2023-05-03)
 
 ### Security (2 changes)
@@ -843,6 +854,12 @@ entry.
 - [Update header section](gitlab-org/gitlab@cf4ab283267d84fa1c0dc90fefb1b6ddd2617b5c) ([merge request](gitlab-org/gitlab!114102)) **GitLab Enterprise Edition**
 - [Swap merge_request_user_mentions.note_id to bigint](gitlab-org/gitlab@96baed47326db4f0cc9f60b2e74215211effd814) ([merge request](gitlab-org/gitlab!113928))
 
+## 15.10.7 (2023-05-10)
+
+### Fixed (1 change)
+
+- [Backport MR 119319 changes to 15-10-stable-ee](gitlab-org/security/gitlab@6c9e1f2f706b0151b1caa3d5199aa312b23c683a) **GitLab Enterprise Edition**
+
 ## 15.10.6 (2023-05-03)
 
 ### Security (1 change)
@@ -1641,6 +1658,10 @@ entry.
 ### change (1 change)
 
 - [Update submit buttons to use Pajamas component](gitlab-org/gitlab@4ffb92755e6be3268c78f02e471f5c2a21f437be) ([merge request](gitlab-org/gitlab!114246))
+
+## 15.9.8 (2023-05-10)
+
+No changes.
 
 ## 15.9.7 (2023-05-03)
 

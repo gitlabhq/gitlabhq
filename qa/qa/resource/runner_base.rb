@@ -55,7 +55,12 @@ module QA
         # Start container on initial fabrication and populate all attributes once id is known
         # see: https://docs.gitlab.com/ee/api/runners.html#get-runners-details
         start_container_and_register
-        api_get
+        # Temporary workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/409089
+        Support::Retrier.retry_on_exception(max_attempts: 6, sleep_interval: 10,
+          message: "Retrying GET for runners/:id"
+        ) do
+          api_get
+        end
       end
 
       def remove_via_api!

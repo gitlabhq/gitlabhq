@@ -235,6 +235,18 @@ From GitLab 15.9, all Release links are external. The `external` field in the Re
 
 As of GitLab 16.0, GitLab Runner images based on Windows Server 2004 and 20H2 will not be provided as these operating systems are end-of-life.
 
+### Two DAST API variables have been removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The variables `DAST_API_HOST_OVERRIDE` and `DAST_API_SPECIFICATION` have been removed from use for DAST API scans.
+
+`DAST_API_HOST_OVERRIDE` has been removed in favor of using the `DAST_API_TARGET_URL` to automatically override the host in the OpenAPI specification.
+
+`DAST_API_SPECIFICATION` has been removed in favor of `DAST_API_OPENAPI`. To continue using an OpenAPI specification to guide the test, users must replace the `DAST_API_SPECIFICATION` variable with the `DAST_API_OPENAPI` variable. The value can remain the same, but the variable name must be replaced.
+
 ### Use of `id` field in vulnerabilityFindingDismiss mutation
 
 WARNING:
