@@ -8,7 +8,7 @@ module API
       def can_lint_ci?
         signup_unrestricted = Gitlab::CurrentSettings.signup_enabled? && !Gitlab::CurrentSettings.signup_limited?
         internal_user = current_user.present? && !current_user.external?
-        is_developer = current_user.present? && current_user.projects.any? { |p| p.team.member?(current_user, Gitlab::Access::DEVELOPER) }
+        is_developer = current_user.present? && current_user.projects.any? { |p| p.member?(current_user, Gitlab::Access::DEVELOPER) }
 
         signup_unrestricted || internal_user || is_developer
       end

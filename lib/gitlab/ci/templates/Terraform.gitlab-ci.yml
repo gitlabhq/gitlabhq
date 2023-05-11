@@ -24,6 +24,9 @@ validate:
 
 build:
   extends: .terraform:build
+  environment:
+    name: $TF_STATE_NAME
+    action: prepare
 
 deploy:
   extends: .terraform:deploy
@@ -31,3 +34,4 @@ deploy:
     - build
   environment:
     name: $TF_STATE_NAME
+    action: start

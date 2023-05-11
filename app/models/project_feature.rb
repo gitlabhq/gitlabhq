@@ -206,7 +206,7 @@ class ProjectFeature < ApplicationRecord
 
   override :resource_member?
   def resource_member?(user, feature)
-    project.team.member?(user, ProjectFeature.required_minimum_access_level(feature))
+    project.member?(user, ProjectFeature.required_minimum_access_level(feature))
   end
 end
 

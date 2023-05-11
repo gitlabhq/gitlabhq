@@ -12,6 +12,14 @@ The date of this change is unknown.
 For details, see [issue 216456](https://gitlab.com/gitlab-org/gitlab/-/issues/216456)
 and [issue 387485](https://gitlab.com/gitlab-org/gitlab/-/issues/387485).
 
+## `geo_nodes` API endpoints
+
+Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369140).
+
+The [`geo_nodes` API endpoints](../geo_nodes.md) are deprecated and are replaced by [`geo_sites`](../geo_sites.md).
+It is a part of the global change on [how to refer to Geo deployments](../../administration/geo/glossary.md).
+Nodes are renamed to sites across the application. The functionality of both endpoints remains the same.
+
 ## `merged_by` API field
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350534).

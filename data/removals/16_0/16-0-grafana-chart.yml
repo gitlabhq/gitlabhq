@@ -1,0 +1,19 @@
+- title: "Bundled Grafana Helm Chart"
+  announcement_milestone: "15.10"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: twk3
+  stage: Enablement
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/4353
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    The Grafana Helm chart that was bundled with the GitLab Helm Chart is removed in the GitLab Helm Chart 7.0 release (releasing along with GitLab 16.0).
+
+    The `global.grafana.enabled` setting for the GitLab Helm Chart has also been removed alongside the Grafana Helm chart.
+
+    If you're using the bundled Grafana, you should switch to the [newer chart version from Grafana Labs](https://artifacthub.io/packages/helm/grafana/grafana)
+    or a Grafana Operator from a trusted provider.
+
+    In your new Grafana instance, you can [configure the GitLab provided Prometheus as a data source](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui)
+    and [connect Grafana to the GitLab UI](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui).
+  tiers: # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html

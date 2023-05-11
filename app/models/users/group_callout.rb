@@ -30,9 +30,9 @@ module Users
 
     validates :group, presence: true
     validates :feature_name,
-              presence: true,
-              uniqueness: { scope: [:user_id, :group_id] },
-              inclusion: { in: GroupCallout.feature_names.keys }
+      presence: true,
+      uniqueness: { scope: [:user_id, :group_id] },
+      inclusion: { in: GroupCallout.feature_names.keys }
 
     def source_feature_name
       "#{feature_name}_#{group_id}"

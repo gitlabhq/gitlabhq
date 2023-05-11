@@ -13,9 +13,9 @@ function retrieve_tests_metadata() {
       echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
   fi
 
-  if [[ ! -f "${RSPEC_FAST_QUARANTINE_PATH}" ]]; then
-    curl --location -o "${RSPEC_FAST_QUARANTINE_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_PATH}" ||
-      echo "" > "${RSPEC_FAST_QUARANTINE_PATH}"
+  if [[ ! -f "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" ]]; then
+    curl --location -o "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/${RSPEC_FAST_QUARANTINE_LOCAL_PATH}" ||
+      echo "" > "${RSPEC_FAST_QUARANTINE_LOCAL_PATH}"
   fi
 }
 
@@ -139,7 +139,7 @@ function debug_rspec_variables() {
   echoinfo "FLAKY_RSPEC_SUITE_REPORT_PATH: ${FLAKY_RSPEC_SUITE_REPORT_PATH:-}"
   echoinfo "FLAKY_RSPEC_REPORT_PATH: ${FLAKY_RSPEC_REPORT_PATH:-}"
   echoinfo "NEW_FLAKY_RSPEC_REPORT_PATH: ${NEW_FLAKY_RSPEC_REPORT_PATH:-}"
-  echoinfo "SKIPPED_FLAKY_TESTS_REPORT_PATH: ${SKIPPED_FLAKY_TESTS_REPORT_PATH:-}"
+  echoinfo "SKIPPED_TESTS_REPORT_PATH: ${SKIPPED_TESTS_REPORT_PATH:-}"
 
   echoinfo "CRYSTALBALL: ${CRYSTALBALL:-}"
 
@@ -205,7 +205,7 @@ function rspec_paralellized_job() {
   export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
-  export SKIPPED_FLAKY_TESTS_REPORT_PATH="${rspec_flaky_folder_path}skipped_flaky_tests_${report_name}_report.txt"
+  export SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests_${report_name}.txt"
 
   if [[ -d "ee/" ]]; then
     export KNAPSACK_GENERATE_REPORT="true"
@@ -408,7 +408,7 @@ function generate_flaky_tests_reports() {
 
   mkdir -p ${rspec_flaky_folder_path}
 
-  find ${rspec_flaky_folder_path} -type f -name 'skipped_flaky_tests_*_report.txt' -exec cat {} + >> "${SKIPPED_FLAKY_TESTS_REPORT_PATH}"
+  find ${rspec_flaky_folder_path} -type f -name 'skipped_tests_*.txt' -exec cat {} + >> "${SKIPPED_TESTS_REPORT_PATH}"
   find ${rspec_flaky_folder_path} -type f -name 'retried_tests_*_report.txt' -exec cat {} + >> "${RETRIED_TESTS_REPORT_PATH}"
 
   cleanup_individual_job_reports

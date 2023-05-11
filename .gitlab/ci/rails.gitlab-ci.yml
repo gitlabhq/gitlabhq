@@ -346,7 +346,7 @@ rspec:flaky-tests-report:
   # so we use `dependencies` here.
   dependencies: !reference ["rspec:coverage", "dependencies"]
   variables:
-    SKIPPED_FLAKY_TESTS_REPORT_PATH: rspec/flaky/skipped_flaky_tests_report.txt
+    SKIPPED_TESTS_REPORT_PATH: rspec/skipped_tests_report.txt
     RETRIED_TESTS_REPORT_PATH: rspec/flaky/retried_tests_report.txt
   before_script:
     - source scripts/utils.sh

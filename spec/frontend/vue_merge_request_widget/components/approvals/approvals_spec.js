@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButton, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import approvedByCurrentUser from 'test_fixtures/graphql/merge_requests/approvals/approvals.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -16,6 +17,7 @@ import {
 } from '~/vue_merge_request_widget/components/approvals/messages';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import approvedByQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
+import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
 import { createCanApproveResponse } from 'jest/approvals/mock_data';
 
 Vue.use(VueApollo);
@@ -42,21 +44,36 @@ const testApprovals = () => ({
 });
 
 describe('MRWidget approvals', () => {
+  let mockedSubscription;
   let wrapper;
   let service;
   let mr;
 
-  const createComponent = (props = {}, response = approvedByCurrentUser) => {
-    const requestHandlers = [[approvedByQuery, jest.fn().mockResolvedValue(response)]];
+  const createComponent = (options = {}, responses = { query: approvedByCurrentUser }) => {
+    mockedSubscription = createMockApolloSubscription();
+
+    const requestHandlers = [[approvedByQuery, jest.fn().mockResolvedValue(responses.query)]];
+    const subscriptionHandlers = [[approvedBySubscription, () => mockedSubscription]];
     const apolloProvider = createMockApollo(requestHandlers);
+    const provide = {
+      ...options.provide,
+      glFeatures: {
+        realtimeApprovals: options.provide?.glFeatures?.realtimeApprovals || false,
+      },
+    };
+
+    subscriptionHandlers.forEach(([document, stream]) => {
+      apolloProvider.defaultClient.setRequestHandler(document, stream);
+    });
 
     wrapper = shallowMount(Approvals, {
       apolloProvider,
       propsData: {
         mr,
         service,
-        ...props,
+        ...options.props,
       },
+      provide,
       stubs: {
         GlSprintf,
       },
@@ -97,6 +114,7 @@ describe('MRWidget approvals', () => {
       isOpen: true,
       state: 'open',
       targetProjectFullPath: 'gitlab-org/gitlab',
+      id: 1,
       iid: '1',
     };
 
@@ -114,7 +132,7 @@ describe('MRWidget approvals', () => {
 
         mr.isOpen = false;
 
-        createComponent({}, response);
+        createComponent({}, { query: response });
         await waitForPromises();
       });
 
@@ -128,7 +146,7 @@ describe('MRWidget approvals', () => {
         const response = JSON.parse(JSON.stringify(approvedByCurrentUser));
         response.data.project.mergeRequest.approvedBy.nodes = [];
 
-        createComponent({}, response);
+        createComponent({}, { query: response });
         await waitForPromises();
       });
 
@@ -146,7 +164,7 @@ describe('MRWidget approvals', () => {
 
       describe('and MR is unapproved', () => {
         beforeEach(async () => {
-          createComponent({}, canApproveResponse);
+          createComponent({}, { query: canApproveResponse });
           await waitForPromises();
         });
 
@@ -167,7 +185,7 @@ describe('MRWidget approvals', () => {
         describe('with no approvers', () => {
           beforeEach(async () => {
             canApproveResponse.data.project.mergeRequest.approvedBy.nodes = [];
-            createComponent({}, canApproveResponse);
+            createComponent({}, { query: canApproveResponse });
             await nextTick();
           });
 
@@ -186,7 +204,7 @@ describe('MRWidget approvals', () => {
 
             canApproveResponse.data.project.mergeRequest.approvedBy.nodes[0].id = 2;
 
-            createComponent({}, canApproveResponse);
+            createComponent({}, { query: canApproveResponse });
             await waitForPromises();
           });
 
@@ -202,7 +220,7 @@ describe('MRWidget approvals', () => {
 
       describe('when approve action is clicked', () => {
         beforeEach(async () => {
-          createComponent({}, canApproveResponse);
+          createComponent({}, { query: canApproveResponse });
           await waitForPromises();
         });
 
@@ -259,7 +277,7 @@ describe('MRWidget approvals', () => {
       beforeEach(async () => {
         const response = JSON.parse(JSON.stringify(approvedByCurrentUser));
 
-        createComponent({}, response);
+        createComponent({}, { query: response });
 
         await waitForPromises();
       });
@@ -320,7 +338,7 @@ describe('MRWidget approvals', () => {
         beforeEach(async () => {
           optionalApprovalsResponse.data.project.mergeRequest.userPermissions.canApprove = true;
 
-          createComponent({}, optionalApprovalsResponse);
+          createComponent({}, { query: optionalApprovalsResponse });
           await waitForPromises();
         });
 
@@ -335,7 +353,7 @@ describe('MRWidget approvals', () => {
 
       describe('and cannot approve', () => {
         beforeEach(async () => {
-          createComponent({}, optionalApprovalsResponse);
+          createComponent({}, { query: optionalApprovalsResponse });
           await nextTick();
         });
 
@@ -363,6 +381,46 @@ describe('MRWidget approvals', () => {
       expect(summary.exists()).toBe(true);
       expect(summary.props()).toMatchObject({
         approvalState: approvedByCurrentUser.data.project.mergeRequest,
+      });
+    });
+  });
+
+  describe('realtime approvals update', () => {
+    describe('realtime_approvals feature disabled', () => {
+      beforeEach(() => {
+        jest.spyOn(console, 'warn').mockImplementation();
+        createComponent();
+      });
+
+      it('does not subscribe to the approvals update socket', () => {
+        expect(mr.setApprovals).not.toHaveBeenCalled();
+        mockedSubscription.next({});
+        // eslint-disable-next-line no-console
+        expect(console.warn).toHaveBeenCalledWith(
+          expect.stringMatching('Mock subscription has no observer, this will have no effect'),
+        );
+        expect(mr.setApprovals).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('realtime_approvals feature enabled', () => {
+      const subscriptionApproval = { approved: true };
+      const subscriptionResponse = {
+        data: { mergeRequestApprovalStateUpdated: subscriptionApproval },
+      };
+
+      beforeEach(() => {
+        createComponent({
+          provide: { glFeatures: { realtimeApprovals: true } },
+        });
+      });
+
+      it('updates approvals when the subscription data is streamed to the Apollo client', () => {
+        expect(mr.setApprovals).not.toHaveBeenCalled();
+
+        mockedSubscription.next(subscriptionResponse);
+
+        expect(mr.setApprovals).toHaveBeenCalledWith(subscriptionApproval);
       });
     });
   });

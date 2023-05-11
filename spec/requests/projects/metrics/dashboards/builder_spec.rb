@@ -49,6 +49,10 @@ RSpec.describe 'Projects::Metrics::Dashboards::BuilderController', feature_categ
   end
 
   describe 'POST /:namespace/:project/-/metrics/dashboards/builder' do
+    before do
+      stub_feature_flags(remove_monitor_metrics: false)
+    end
+
     context 'as anonymous user' do
       it 'redirects user to sign in page' do
         send_request
@@ -100,6 +104,18 @@ RSpec.describe 'Projects::Metrics::Dashboards::BuilderController', feature_categ
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(json_response['message']).to eq('Invalid configuration format')
+        end
+      end
+
+      context 'when metrics dashboard feature is unavailable' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: true)
+        end
+
+        it 'returns not found' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

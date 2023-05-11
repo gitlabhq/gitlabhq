@@ -45,6 +45,13 @@ describe('WebIDE', () => {
 
   const callOnBeforeUnload = (e = {}) => window.onbeforeunload(e);
 
+  beforeAll(() => {
+    // HACK: Workaround readonly property in Jest
+    Object.defineProperty(window, 'onbeforeunload', {
+      writable: true,
+    });
+  });
+
   beforeEach(() => {
     stubPerformanceWebAPI();
 

@@ -165,7 +165,7 @@ variables:
   RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
-  RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
+  RSPEC_FAST_QUARANTINE_LOCAL_PATH: rspec/fast_quarantine-gitlab.txt
   TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
   TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
 

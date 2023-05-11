@@ -1,9 +1,9 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import ConfigureFeatureFlagsModal from '~/feature_flags/components/configure_feature_flags_modal.vue';
 import EmptyState from '~/feature_flags/components/empty_state.vue';
@@ -11,7 +11,7 @@ import FeatureFlagsComponent from '~/feature_flags/components/feature_flags.vue'
 import FeatureFlagsTable from '~/feature_flags/components/feature_flags_table.vue';
 import createStore from '~/feature_flags/store/index';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import { getRequestData } from '../mock_data';
 
@@ -43,7 +43,7 @@ describe('Feature flags', () => {
   let mock;
   let store;
 
-  const factory = (provide = mockData, fn = mount) => {
+  const factory = (provide = mockData, fn = mountExtended) => {
     store = createStore(mockState);
     wrapper = fn(FeatureFlagsComponent, {
       store,
@@ -54,10 +54,13 @@ describe('Feature flags', () => {
     });
   };
 
-  const configureButton = () => wrapper.find('[data-testid="ff-configure-button"]');
-  const newButton = () => wrapper.find('[data-testid="ff-new-button"]');
-  const userListButton = () => wrapper.find('[data-testid="ff-user-list-button"]');
+  const configureButton = () => wrapper.findByTestId('ff-configure-button');
+  const newButton = () => wrapper.findByTestId('ff-new-button');
+  const userListButton = () => wrapper.findByTestId('ff-user-list-button');
   const limitAlert = () => wrapper.findComponent(GlAlert);
+  const findTablePagination = () => wrapper.findComponent(TablePagination);
+  const findFeatureFlagsTable = () => wrapper.findComponent(FeatureFlagsTable);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -81,7 +84,7 @@ describe('Feature flags', () => {
     it('makes the new feature flag button do nothing if clicked', () => {
       expect(newButton().exists()).toBe(true);
       expect(newButton().props('disabled')).toBe(false);
-      expect(newButton().props('href')).toBe(undefined);
+      expect(newButton().props('href')).toBeUndefined();
     });
 
     it('shows a feature flags limit reached alert', () => {
@@ -171,9 +174,8 @@ describe('Feature flags', () => {
 
         factory();
         await waitForPromises();
-        await nextTick();
 
-        emptyState = wrapper.findComponent(GlEmptyState);
+        emptyState = findEmptyState();
       });
 
       it('should render the empty state', () => {
@@ -219,7 +221,7 @@ describe('Feature flags', () => {
       });
 
       it('should render a table with feature flags', () => {
-        const table = wrapper.findComponent(FeatureFlagsTable);
+        const table = findFeatureFlagsTable();
         expect(table.exists()).toBe(true);
         expect(table.props('featureFlags')).toEqual(
           expect.arrayContaining([
@@ -232,7 +234,7 @@ describe('Feature flags', () => {
       });
 
       it('should toggle a flag when receiving the toggle-flag event', () => {
-        const table = wrapper.findComponent(FeatureFlagsTable);
+        const table = findFeatureFlagsTable();
 
         const [flag] = table.props('featureFlags');
         table.vm.$emit('toggle-flag', flag);
@@ -255,15 +257,15 @@ describe('Feature flags', () => {
 
       describe('pagination', () => {
         it('should render pagination', () => {
-          expect(wrapper.findComponent(TablePagination).exists()).toBe(true);
+          expect(findTablePagination().exists()).toBe(true);
         });
 
         it('should make an API request when page is clicked', () => {
-          jest.spyOn(wrapper.vm, 'updateFeatureFlagOptions');
-          wrapper.findComponent(TablePagination).vm.change(4);
+          const axiosGet = jest.spyOn(axios, 'get');
+          findTablePagination().vm.change(4);
 
-          expect(wrapper.vm.updateFeatureFlagOptions).toHaveBeenCalledWith({
-            page: '4',
+          expect(axiosGet).toHaveBeenCalledWith('http://test.host/endpoint.json', {
+            params: { page: '4' },
           });
         });
       });
@@ -272,16 +274,12 @@ describe('Feature flags', () => {
 
   describe('unsuccessful request', () => {
     beforeEach(() => {
-      mock
-        .onGet(mockState.endpoint, { params: { page: '1' } })
-        .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
-
       factory();
       return waitForPromises();
     });
 
     it('should render error state', () => {
-      const emptyState = wrapper.findComponent(GlEmptyState);
+      const emptyState = findEmptyState();
       expect(emptyState.props('title')).toEqual('There was an error fetching the feature flags.');
       expect(emptyState.props('description')).toEqual(
         'Try again in a few moments or contact your support team.',
@@ -303,20 +301,12 @@ describe('Feature flags', () => {
   });
 
   describe('rotate instance id', () => {
-    beforeEach(() => {
-      mock
-        .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
-        .reply(HTTP_STATUS_OK, getRequestData, {});
-      factory();
-      return waitForPromises();
-    });
-
     it('should fire the rotate action when a `token` event is received', () => {
-      const actionSpy = jest.spyOn(wrapper.vm, 'rotateInstanceId');
-      const modal = wrapper.findComponent(ConfigureFeatureFlagsModal);
-      modal.vm.$emit('token');
+      factory();
+      const axiosPost = jest.spyOn(axios, 'post');
+      wrapper.findComponent(ConfigureFeatureFlagsModal).vm.$emit('token');
 
-      expect(actionSpy).toHaveBeenCalled();
+      expect(axiosPost).toHaveBeenCalled();
     });
   });
 });

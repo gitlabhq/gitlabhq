@@ -41,11 +41,6 @@ RSpec.describe Group, feature_category: :subgroups do
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
 
-    it do
-      is_expected.to have_many(:application_setting)
-        .with_foreign_key(:instance_administrators_group_id).inverse_of(:instance_group)
-    end
-
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
 
     it do

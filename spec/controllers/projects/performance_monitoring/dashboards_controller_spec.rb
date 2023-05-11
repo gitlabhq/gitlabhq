@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
+RSpec.describe Projects::PerformanceMonitoring::DashboardsController, feature_category: :metrics do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:namespace) }
 
@@ -23,6 +23,10 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
       branch: branch_name,
       format: :json
     }
+  end
+
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
   end
 
   describe 'POST #create' do
@@ -100,6 +104,18 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
 
                   expect(response).to have_gitlab_http_status :bad_request
                   expect(json_response).to eq('error' => "Request parameter branch is missing.")
+                end
+              end
+
+              context 'when metrics dashboard feature is unavailable' do
+                before do
+                  stub_feature_flags(remove_monitor_metrics: true)
+                end
+
+                it 'returns 404 not found' do
+                  post :create, params: params
+
+                  expect(response).to have_gitlab_http_status :not_found
                 end
               end
             end
@@ -215,6 +231,18 @@ RSpec.describe Projects::PerformanceMonitoring::DashboardsController do
 
                   expect(response).to have_gitlab_http_status :bad_request
                   expect(json_response).to eq('error' => 'something went wrong')
+                end
+              end
+
+              context 'when metrics dashboard feature is unavailable' do
+                before do
+                  stub_feature_flags(remove_monitor_metrics: true)
+                end
+
+                it 'returns 404 not found' do
+                  put :update, params: params
+
+                  expect(response).to have_gitlab_http_status :not_found
                 end
               end
             end

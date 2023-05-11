@@ -14,6 +14,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_column :clickhouse_connection_string, remove_with: '16.1', remove_after: '2023-05-22'
+  ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -33,17 +34,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
-  add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
+  add_authentication_token_field :runners_registration_token, encrypted: :required
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
   add_authentication_token_field :error_tracking_access_token, encrypted: :required
 
   belongs_to :push_rule
 
-  belongs_to :instance_group, class_name: "Group", foreign_key: :instance_administrators_group_id,
-    inverse_of: :application_setting
-  alias_attribute :instance_group_id, :instance_administrators_group_id
-  alias_attribute :instance_administrators_group, :instance_group
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 
   sanitizes! :default_branch_name

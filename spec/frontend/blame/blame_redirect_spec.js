@@ -6,7 +6,6 @@ jest.mock('~/alert');
 
 describe('Blame page redirect', () => {
   beforeEach(() => {
-    global.window = Object.create(window);
     const url = 'https://gitlab.com/flightjs/Flight/-/blame/master/file.json';
     Object.defineProperty(window, 'location', {
       writable: true,

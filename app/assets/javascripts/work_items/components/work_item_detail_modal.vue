@@ -2,7 +2,6 @@
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
-import deleteWorkItemFromTaskMutation from '../graphql/delete_task_from_work_item.mutation.graphql';
 import deleteWorkItemMutation from '../graphql/delete_work_item.mutation.graphql';
 
 export default {
@@ -23,26 +22,6 @@ export default {
       default: null,
     },
     workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    issueGid: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    lockVersion: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    lineNumberStart: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    lineNumberEnd: {
       type: String,
       required: false,
       default: null,
@@ -75,50 +54,6 @@ export default {
   },
   methods: {
     deleteWorkItem() {
-      if (this.lockVersion != null && this.lineNumberStart && this.lineNumberEnd) {
-        this.deleteWorkItemWithTaskData();
-      } else {
-        this.deleteWorkItemWithoutTaskData();
-      }
-    },
-    deleteWorkItemWithTaskData() {
-      this.$apollo
-        .mutate({
-          mutation: deleteWorkItemFromTaskMutation,
-          variables: {
-            input: {
-              id: this.issueGid,
-              lockVersion: this.lockVersion,
-              taskData: {
-                id: this.workItemId,
-                lineNumberStart: Number(this.lineNumberStart),
-                lineNumberEnd: Number(this.lineNumberEnd),
-              },
-            },
-          },
-        })
-        .then(
-          ({
-            data: {
-              workItemDeleteTask: {
-                workItem: { descriptionHtml },
-                errors,
-              },
-            },
-          }) => {
-            if (errors?.length) {
-              throw new Error(errors[0]);
-            }
-
-            this.$emit('workItemDeleted', descriptionHtml);
-            this.hide();
-          },
-        )
-        .catch((error) => {
-          this.setErrorMessage(error.message);
-        });
-    },
-    deleteWorkItemWithoutTaskData() {
       this.$apollo
         .mutate({
           mutation: deleteWorkItemMutation,
@@ -191,7 +126,6 @@ export default {
 
     <work-item-detail
       is-modal
-      :work-item-parent-id="issueGid"
       :work-item-id="displayedWorkItemId"
       :work-item-iid="displayedWorkItemIid"
       class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolation-isolate"

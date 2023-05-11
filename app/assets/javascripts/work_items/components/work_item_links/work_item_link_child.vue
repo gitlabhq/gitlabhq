@@ -184,19 +184,19 @@ export default {
     showScopedLabel(label) {
       return isScopedLabel(label) && this.allowsScopedLabels;
     },
-    async removeChild(childId) {
+    async removeChild({ id }) {
       this.cloneChildren();
       this.isLoadingChildren = true;
 
       try {
-        const { data } = await this.updateWorkItem(childId, null);
+        const { data } = await this.updateWorkItem(id, null);
         if (!data?.workItemUpdate?.errors?.length) {
-          this.filterRemovedChild(childId);
+          this.filterRemovedChild(id);
 
           this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
             action: {
               text: s__('WorkItem|Undo'),
-              onClick: this.undoChildRemoval.bind(this, childId),
+              onClick: this.undoChildRemoval.bind(this, id),
             },
           });
         }
@@ -341,7 +341,7 @@ export default {
             :work-item-id="childItem.id"
             :parent-work-item-id="issuableGid"
             data-testid="links-menu"
-            @removeChild="$emit('removeChild', childItem.id)"
+            @removeChild="$emit('removeChild', childItem)"
           />
         </div>
       </div>

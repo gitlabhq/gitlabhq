@@ -34,6 +34,7 @@ include:
     expire_in: 7 days
     reports:
       junit: test_output/**/rspec-*.xml
+      dotenv: suite_status.env
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
     - docker pull ${QA_GDK_IMAGE}
@@ -54,6 +55,11 @@ include:
         ${QA_GDK_IMAGE} "${CI_COMMIT_SHA}" "$RSPEC_REPORT_OPTS $TEST_GDK_TAGS --tag ~requires_praefect"
     # The above image's launch script takes two arguments only - first one is the commit sha and the second one Rspec Args
   allow_failure: true
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" == "failed" ]; then
+        echo "SUITE_FAILED=true" >> suite_status.env
+      fi
 
 download-knapsack-report:
   extends:

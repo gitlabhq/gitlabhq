@@ -22,7 +22,8 @@ module Sidebars
             :alert_management,
             :incidents,
             :on_call_schedules,
-            :escalation_policies
+            :escalation_policies,
+            :service_desk
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

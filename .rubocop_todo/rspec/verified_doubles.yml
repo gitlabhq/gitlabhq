@@ -31,7 +31,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'
     - 'ee/spec/helpers/ee/integrations_helper_spec.rb'
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
-    - 'ee/spec/helpers/ee/trial_registration_helper_spec.rb'
     - 'ee/spec/helpers/kerberos_helper_spec.rb'
     - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/roadmaps_helper_spec.rb'

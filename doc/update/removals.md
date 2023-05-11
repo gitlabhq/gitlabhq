@@ -59,6 +59,22 @@ The Azure Storage Driver used to write to `//` as the default root directory. Th
 
 In GitLab 16.0, the new default configuration for the storage driver uses `trimlegacyrootprefix: true`, and `/` is the default root directory. You can set your configuration to `trimlegacyrootprefix: false` if needed, to revert to the previous behavior.
 
+### Bundled Grafana Helm Chart
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The Grafana Helm chart that was bundled with the GitLab Helm Chart is removed in the GitLab Helm Chart 7.0 release (releasing along with GitLab 16.0).
+
+The `global.grafana.enabled` setting for the GitLab Helm Chart has also been removed alongside the Grafana Helm chart.
+
+If you're using the bundled Grafana, you should switch to the [newer chart version from Grafana Labs](https://artifacthub.io/packages/helm/grafana/grafana)
+or a Grafana Operator from a trusted provider.
+
+In your new Grafana instance, you can [configure the GitLab provided Prometheus as a data source](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui)
+and [connect Grafana to the GitLab UI](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#integration-with-gitlab-ui).
+
 ### CAS OmniAuth provider is removed
 
 WARNING:
@@ -86,6 +102,18 @@ Review the details carefully before upgrading.
 
 The [GitLab Conan repository](https://docs.gitlab.com/ee/user/packages/conan_repository/) supports the `conan search` command, but when searching a project-level endpoint, instance-level Conan packages could have been returned. This unintended functionality is removed in GitLab 16.0. The search endpoint for the project level now only returns packages from the target project.
 
+### Configuring Redis config file paths using environment variables is no longer supported
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+You can no longer specify Redis configuration file locations
+using the environment variables like `GITLAB_REDIS_CACHE_CONFIG_FILE` or
+`GITLAB_REDIS_QUEUES_CONFIG_FILE`. Use the default
+configuration file locations instead, for example `config/redis.cache.yml` or
+`config/redis.queues.yml`.
+
 ### Container Registry pull-through cache is removed
 
 WARNING:
@@ -93,6 +121,22 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) was deprecated in GitLab 15.8 and removed in GitLab 16.0. This feature is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution) but we are removing that code in favor of the GitLab Dependency Proxy. Use the GitLab Dependency Proxy to proxy and cache container images from Docker Hub.
+
+### Enforced validation of CI/CD parameter character lengths
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, only CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name-limitations) had a strict 255-character limit. Now, more CI/CD keywords are validated to ensure they stay under the limit.
+
+The following to 255 characters are now strictly limited to 255 characters:
+
+- The `stage` keyword.
+- The `ref` parameter, which is the Git branch or tag name for the pipeline.
+- The `description` and `target_url` parameters, used by external CI/CD integrations.
+
+Users on self-managed instances should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these parameters are already limited in that database.
 
 ### GitLab administrators must have permission to modify protected branches or tags
 
@@ -112,6 +156,44 @@ In GitLab 16.0 and later, the GraphQL query for runners will no longer return th
 
 - `PAUSED` has been replaced with the field, `paused: true`.
 - `ACTIVE` has been replaced with the field, `paused: false`.
+
+### Limit CI_JOB_TOKEN scope is disabled
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+In GitLab 14.4 we introduced the ability to [limit your project's CI/CD job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) (`CI_JOB_TOKEN`) access to make it more secure. You could use the **Limit CI_JOB_TOKEN access** setting to prevent job tokens from your project's pipelines from being used to **access other projects**. When enabled with no other configuration, your pipelines could not access any other projects. To use job tokens to access other projects from your project's pipelines, you needed to list those other projects explicitly in the setting's allowlist, and you needed to be a maintainer in _all_ the projects. You might have seen this mentioned as the "outbound scope" of the job token.
+
+The job token functionality was updated in 15.9 with a [better security setting](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-access-to-your-project-with-a-job-token). Instead of securing your own project's job tokens from accessing other projects, the new workflow is to secure your own project from being accessed by other projects' job tokens without authorization. You can see this as an "inbound scope" for job tokens. When this new **Allow access to this project with a CI_JOB_TOKEN** setting is enabled with no other configuration, job tokens from other projects cannot **access your project**. If you want a project to have access to your own project, you must list it in the new setting's allowlist. You must be a maintainer in your own project to control the new allowlist, but you only need to have the Guest role in the other projects. This new setting is enabled by default for all new projects.
+
+In GitLab 16.0, the old **Limit CI_JOB_TOKEN access** setting is disabled by default for all **new** projects. In existing projects with this setting currently enabled, it will continue to function as expected, but you are unable to add any more projects to the old allowlist. If the setting is disabled in any project, it is not possible to re-enable this setting in 16.0 or later. To control access between your projects, use the new **Allow access** setting instead.
+
+In 17.0, we plan to remove the **Limit** setting completely, and set the **Allow access** setting to enabled for all projects. This change ensures a higher level of security between projects. If you currently use the **Limit** setting, you should update your projects to use the **Allow access** setting instead. If other projects access your project with a job token, you must add them to the **Allow access** setting's allowlist.
+
+To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 17.0 or later.
+
+### Maximum number of active pipelines per project limit (`ci_active_pipelines`)
+
+The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits) has been removed. Instead, use the other recommended rate limits that offer similar protection:
+
+- [**Pipelines rate limits**](https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_pipelines_creation.html).
+- [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).
+
+### Non-standard default Redis ports are no longer supported
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+If GitLab starts without any Redis configuration file present,
+GitLab assumes it can connect to three Redis servers at `localhost:6380`,
+`localhost:6381` and `localhost:6382`. We are changing this behavior
+so GitLab assumes there is one Redis server at `localhost:6379`.
+
+If you want to keep using the three servers, you must configure
+the Redis URLs by editing the `config/redis.cache.yml`,`config/redis.queues.yml`,
+and `config/redis.shared_state.yml` files.
 
 ### PipelineSecurityReportFinding name GraphQL field
 
@@ -234,6 +316,26 @@ From GitLab 15.9, all Release links are external. The `external` field in the Re
 ### Stop publishing GitLab Runner images based on Windows Server 2004 and 20H2
 
 As of GitLab 16.0, GitLab Runner images based on Windows Server 2004 and 20H2 will not be provided as these operating systems are end-of-life.
+
+### The stable Terraform CI/CD template has been replaced with the latest template
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With every major GitLab version, we update the stable Terraform templates with the current latest templates.
+This change affects the [quickstart](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
+and the [base](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) templates.
+
+The new templates do not change the directory to `$TF_ROOT` explicitly: `gitlab-terraform` gracefully
+handles directory changing. If you altered the job scripts to assume that the current working directory is `$TF_ROOT`, you must manually add `cd "$TF_ROOT"` now.
+
+Because the latest template introduces Merge Request Pipeline support which is not supported in Auto DevOps,
+those rules are not yet integrated into the stable template.
+However, we may introduce them later on, which may break your Terraform pipelines in regards to which jobs are executed.
+
+To accommodate the changes, you might need to adjust the [`rules`](https://docs.gitlab.com/ee/ci/yaml/#rules) in your
+`.gitlab-ci.yml` file.
 
 ### Two DAST API variables have been removed
 

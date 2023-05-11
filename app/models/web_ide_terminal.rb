@@ -39,12 +39,14 @@ class WebIdeTerminal
   private
 
   def web_ide_terminal_route_generator(action, options = {})
-    options.reverse_merge!(action: action,
-                           controller: 'projects/web_ide_terminals',
-                           namespace_id: project.namespace.to_param,
-                           project_id: project.to_param,
-                           id: build.id,
-                           only_path: true)
+    options.reverse_merge!(
+      action: action,
+      controller: 'projects/web_ide_terminals',
+      namespace_id: project.namespace.to_param,
+      project_id: project.to_param,
+      id: build.id,
+      only_path: true
+    )
 
     url_for(options)
   end

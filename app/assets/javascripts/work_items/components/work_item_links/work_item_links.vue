@@ -185,29 +185,26 @@ export default {
         variables: { id: this.issuableGid, workItem },
       });
     },
-    async updateWorkItem(workItem, childId, parentId) {
-      const response = await this.$apollo.mutate({
+    async undoChildRemoval(workItem, childId) {
+      const { data } = await this.$apollo.mutate({
         mutation: updateWorkItemMutation,
-        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+        variables: { input: { id: childId, hierarchyWidget: { parentId: this.issuableGid } } },
       });
 
-      if (parentId === null) {
-        await this.removeHierarchyChild(workItem);
-      } else {
-        await this.addHierarchyChild(workItem);
-      }
-
-      return response;
-    },
-    async undoChildRemoval(workItem, childId) {
-      const { data } = await this.updateWorkItem(workItem, childId, this.issuableGid);
+      await this.addHierarchyChild(workItem);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast?.hide();
       }
     },
-    async removeChild(childId) {
-      const { data } = await this.updateWorkItem({ id: childId }, childId, null);
+    async removeChild(workItem) {
+      const childId = workItem.id;
+      const { data } = await this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: { input: { id: childId, hierarchyWidget: { parentId: null } } },
+      });
+
+      await this.removeHierarchyChild(workItem);
 
       if (data.workItemUpdate.errors.length === 0) {
         this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {

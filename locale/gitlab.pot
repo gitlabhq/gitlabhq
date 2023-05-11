@@ -11974,7 +11974,7 @@ msgstr ""
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr ""
 
-msgid "ContainerRegistry|Tags that match these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{secondStrongStart}latest%{secondStrongEnd} tag is always kept."
+msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept."
 msgstr ""
 
 msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{strongEnd}, unless a rule above says to keep them."
@@ -21236,6 +21236,12 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
+msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
+msgstr ""
+
+msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}. Increasing the user cap does not automatically approve pending users."
+msgstr ""
+
 msgid "GroupSettings|Analytics"
 msgstr ""
 
@@ -21399,12 +21405,6 @@ msgid "GroupSettings|What is Analytics Dashboards?"
 msgstr ""
 
 msgid "GroupSettings|What is Insights?"
-msgstr ""
-
-msgid "GroupSettings|When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals."
-msgstr ""
-
-msgid "GroupSettings|When the number of active users exceeds this number, additional users must be %{user_cap_docs_link_start}approved by an owner%{user_cap_docs_link_end}. Leave empty if you don't want to enforce approvals. Increasing the user cap will not automatically approve pending users."
 msgstr ""
 
 msgid "GroupSettings|You must have the Owner role in the target group"
@@ -24590,6 +24590,9 @@ msgstr ""
 msgid "IssuableEvents|requested review from"
 msgstr ""
 
+msgid "IssuableEvents|resolved all threads"
+msgstr ""
+
 msgid "IssuableEvents|unassigned"
 msgstr ""
 
@@ -27128,6 +27131,9 @@ msgstr ""
 msgid "Mark this issue as a duplicate of another issue"
 msgstr ""
 
+msgid "Mark this issue as blocked by other issues"
+msgstr ""
+
 msgid "Mark this issue as related to another issue"
 msgstr ""
 
@@ -27191,6 +27197,9 @@ msgstr ""
 msgid "Marked"
 msgstr ""
 
+msgid "Marked %{target} as blocked by this issue."
+msgstr ""
+
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
@@ -27201,6 +27210,9 @@ msgid "Marked as ready. Merging is now allowed."
 msgstr ""
 
 msgid "Marked this %{noun} as ready."
+msgstr ""
+
+msgid "Marked this issue as blocked by %{target}."
 msgstr ""
 
 msgid "Marked this issue as related to %{issue_ref}."
@@ -27570,9 +27582,6 @@ msgid "MemberRole|cannot be deleted because it is already assigned to a user. Pl
 msgstr ""
 
 msgid "MemberRole|maximum number of Member Roles are already in use by the group hierarchy. Please delete an existing Member Role."
-msgstr ""
-
-msgid "MemberRole|minimal base access level must be %{min_access_level}."
 msgstr ""
 
 msgid "MemberRole|must be top-level namespace"
@@ -41561,6 +41570,12 @@ msgstr ""
 msgid "Set the per-user rate limit for notes created by web or API requests."
 msgstr ""
 
+msgid "Set this issue as blocked by %{target}."
+msgstr ""
+
+msgid "Set this issue as blocking %{target}."
+msgstr ""
+
 msgid "Set this number to 0 to disable the limit."
 msgstr ""
 
@@ -42931,6 +42946,9 @@ msgid "Specific branches"
 msgstr ""
 
 msgid "Specified URL cannot be used: \"%{reason}\""
+msgstr ""
+
+msgid "Specifies that this issue blocks other issues"
 msgstr ""
 
 msgid "Specify IP ranges that are always allowed for inbound traffic, for use with group-level IP restrictions. Runner and Pages daemon internal IPs should be listed here so that they can access project artifacts."

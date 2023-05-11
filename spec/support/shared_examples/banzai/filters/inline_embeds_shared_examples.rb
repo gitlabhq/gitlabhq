@@ -7,6 +7,10 @@ RSpec.shared_examples 'a metrics embed filter' do
   let(:input) { %(<a href="#{url}">example</a>) }
   let(:doc) { filter(input) }
 
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
+  end
+
   context 'when the document has an external link' do
     let(:url) { 'https://foo.com' }
 
@@ -36,6 +40,18 @@ RSpec.shared_examples 'a metrics embed filter' do
       it 'appends a metrics charts placeholder after the enclosing paragraph' do
         expect(unescape(doc.at_css('p').to_s)).to include(paragraph)
         expect(doc.at_css('.js-render-metrics')).to be_present
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'does not append a metrics chart placeholder' do
+        node = doc.at_css('.js-render-metrics')
+
+        expect(node).not_to be_present
       end
     end
   end

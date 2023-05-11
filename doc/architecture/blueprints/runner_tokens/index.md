@@ -399,19 +399,21 @@ scope.
 | GitLab Rails app | `%15.10` | Define feature flag and policies for "New Runner creation workflow" for groups and projects. |
 | GitLab Rails app | `%15.10` | Only update runner `contacted_at` and `status` when polled for jobs. |
 | GitLab Rails app | `%15.10` | Add GraphQL type to represent runner machines under `CiRunner`. |
-| GitLab Rails app | `%15.10` | Implement UI to create new instance runner. |
+| GitLab Rails app | `%15.11` | Implement UI to create new instance runner. |
 | GitLab Rails app | `%15.11` | Update service and mutation to accept groups and projects. |
 | GitLab Rails app | `%15.11` | Implement UI to create new group/project runners. |
-| GitLab Rails app | `%15.11` | GraphQL changes to `CiRunner` type. (?) |
+| GitLab Rails app | `%15.11` | Add runner_machine field to CiJob GraphQL type. |
 | GitLab Rails app | `%15.11` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
 | GitLab Rails app | `%15.11` | Adapt `POST /api/v4/runners` REST endpoint to accept a request from an authorized user with a scope instead of a registration token. |
-| GitLab Runner    | `%15.11` | Handle glrt- runner tokens in `unregister` command. |
+| GitLab Runner    | `%15.11` | Handle `glrt-` runner tokens in `unregister` command. |
+| GitLab Runner    | `%15.11` | Runner asks for registration token when a `glrt-` runner token is passed in `--token`. |
+| GitLab Rails app | `%15.11` | Move from 'runner machine' terminology to 'runner manager'. |
 
 ### Stage 5 - Optional disabling of registration token
 
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
-| GitLab Rails app | | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
+| GitLab Rails app | `%16.0` | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
 | GitLab Rails app | | Add UI to allow disabling use of registration tokens at project or group level. |
 | GitLab Rails app | | Introduce `:enforce_create_runner_workflow` feature flag (disabled by default) to control whether use of registration tokens is allowed. |
 | GitLab Rails app | | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#register-a-new-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting or `:enforce_create_runner_workflow` feature flag disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |

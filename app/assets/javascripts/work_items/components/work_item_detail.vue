@@ -438,15 +438,15 @@ export default {
         this.activeToast?.hide();
       }
     },
-    async removeChild(childId) {
+    async removeChild({ id }) {
       try {
-        const { data } = await this.updateWorkItem(null, childId, null);
+        const { data } = await this.updateWorkItem(null, id, null);
 
         if (data.workItemUpdate.errors.length === 0) {
           this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
             action: {
               text: s__('WorkItem|Undo'),
-              onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, childId),
+              onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, id),
             },
           });
         }

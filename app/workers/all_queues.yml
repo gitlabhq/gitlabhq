@@ -3468,6 +3468,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ssh_keys_update_last_used_at
+  :worker_name: SshKeys::UpdateLastUsedAtWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: system_hook_push
   :worker_name: SystemHookPushWorker
   :feature_category: :source_code_management

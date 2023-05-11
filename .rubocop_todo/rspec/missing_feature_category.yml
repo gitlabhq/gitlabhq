@@ -510,7 +510,6 @@ RSpec/MissingFeatureCategory:
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/ee/system_note_helper_spec.rb'
     - 'ee/spec/helpers/ee/todos_helper_spec.rb'
-    - 'ee/spec/helpers/ee/trial_registration_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/helpers/ee/version_check_helper_spec.rb'
     - 'ee/spec/helpers/ee/welcome_helper_spec.rb'

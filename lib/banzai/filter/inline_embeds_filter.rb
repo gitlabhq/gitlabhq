@@ -10,6 +10,8 @@ module Banzai
       # the link, and insert this node after any html content
       # surrounding the link.
       def call
+        return doc if Feature.enabled?(:remove_monitor_metrics)
+
         doc.xpath(xpath_search).each do |node|
           next unless element = element_to_embed(node)
 

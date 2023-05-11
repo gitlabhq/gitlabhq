@@ -29,7 +29,7 @@ export const TEXT_AREA_INVALID_FEEDBACK = s__(
 
 export const KEEP_HEADER_TEXT = s__('ContainerRegistry|Keep these tags');
 export const KEEP_INFO_TEXT = s__(
-  'ContainerRegistry|Tags that match these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{secondStrongStart}latest%{secondStrongEnd} tag is always kept.',
+  'ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{strongStart}latest%{strongEnd} tag is always kept.',
 );
 export const KEEP_N_LABEL = s__('ContainerRegistry|Keep the most recent:');
 export const NAME_REGEX_KEEP_LABEL = s__('ContainerRegistry|Keep tags matching:');

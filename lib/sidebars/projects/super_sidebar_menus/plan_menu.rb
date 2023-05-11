@@ -19,8 +19,9 @@ module Sidebars
           [
             :project_issue_list,
             :boards,
+            :milestones,
+            :iterations,
             :project_wiki,
-            :service_desk,
             :requirements
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end

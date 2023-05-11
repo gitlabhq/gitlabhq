@@ -11,6 +11,13 @@ jest.mock('~/blob_edit/edit_blob');
 jest.mock('~/alert');
 
 describe('BlobBundle', () => {
+  beforeAll(() => {
+    // HACK: Workaround readonly property in Jest
+    Object.defineProperty(window, 'onbeforeunload', {
+      writable: true,
+    });
+  });
+
   it('does not load SourceEditor by default', () => {
     blobBundle();
     expect(SourceEditor).not.toHaveBeenCalled();

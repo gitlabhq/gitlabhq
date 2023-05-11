@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa', '~> 10', '>= 10.3.0', require: 'gitlab/qa'
+gem 'gitlab_quality-test_tooling', '~> 0.2.2', require: false
 gem 'activesupport', '~> 6.1.7.2' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.20.0'
 gem 'capybara', '~> 3.39.0'

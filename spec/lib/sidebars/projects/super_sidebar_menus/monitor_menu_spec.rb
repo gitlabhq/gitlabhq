@@ -20,7 +20,8 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::MonitorMenu, feature_categ
       :alert_management,
       :incidents,
       :on_call_schedules,
-      :escalation_policies
+      :escalation_policies,
+      :service_desk
     ])
   end
 end

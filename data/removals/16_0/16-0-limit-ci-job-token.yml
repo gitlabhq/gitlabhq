@@ -1,0 +1,32 @@
+- title: "Limit CI_JOB_TOKEN scope is disabled"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
+  reporter: jreporter # (required) GitLab username of the person reporting the deprecation
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395708  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    In GitLab 14.4 we introduced the ability to [limit your project's CI/CD job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) (`CI_JOB_TOKEN`) access to make it more secure. You could use the **Limit CI_JOB_TOKEN access** setting to prevent job tokens from your project's pipelines from being used to **access other projects**. When enabled with no other configuration, your pipelines could not access any other projects. To use job tokens to access other projects from your project's pipelines, you needed to list those other projects explicitly in the setting's allowlist, and you needed to be a maintainer in _all_ the projects. You might have seen this mentioned as the "outbound scope" of the job token.
+
+    The job token functionality was updated in 15.9 with a [better security setting](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-access-to-your-project-with-a-job-token). Instead of securing your own project's job tokens from accessing other projects, the new workflow is to secure your own project from being accessed by other projects' job tokens without authorization. You can see this as an "inbound scope" for job tokens. When this new **Allow access to this project with a CI_JOB_TOKEN** setting is enabled with no other configuration, job tokens from other projects cannot **access your project**. If you want a project to have access to your own project, you must list it in the new setting's allowlist. You must be a maintainer in your own project to control the new allowlist, but you only need to have the Guest role in the other projects. This new setting is enabled by default for all new projects.
+
+    In GitLab 16.0, the old **Limit CI_JOB_TOKEN access** setting is disabled by default for all **new** projects. In existing projects with this setting currently enabled, it will continue to function as expected, but you are unable to add any more projects to the old allowlist. If the setting is disabled in any project, it is not possible to re-enable this setting in 16.0 or later. To control access between your projects, use the new **Allow access** setting instead.
+
+    In 17.0, we plan to remove the **Limit** setting completely, and set the **Allow access** setting to enabled for all projects. This change ensures a higher level of security between projects. If you currently use the **Limit** setting, you should update your projects to use the **Allow access** setting instead. If other projects access your project with a job token, you must add them to the **Allow access** setting's allowlist.
+
+    To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 17.0 or later.
+  #
+  # OPTIONAL END OF SUPPORT FIELDS
+  #
+  # If an End of Support period applies, the announcement should be shared with GitLab Support
+  # in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+  #
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_date:  # (optional) The date of the milestone release when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: "https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#configure-the-job-token-scope-limit"  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -165,7 +165,7 @@ RSpec.describe Key, :mailer do
           .with(key)
           .and_return(service)
 
-        expect(service).to receive(:execute)
+        expect(service).to receive(:execute_async)
 
         key.update_last_used_at
       end

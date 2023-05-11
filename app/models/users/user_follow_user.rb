@@ -14,9 +14,13 @@ module Users
       followee_count = self.class.where(follower_id: follower_id).limit(MAX_FOLLOWEE_LIMIT).count
       return if followee_count < MAX_FOLLOWEE_LIMIT
 
-      errors.add(:base, format(
-                          _("You can't follow more than %{limit} users. To follow more users, unfollow some others."),
-                          limit: MAX_FOLLOWEE_LIMIT))
+      errors.add(
+        :base,
+        format(
+          _("You can't follow more than %{limit} users. To follow more users, unfollow some others."),
+          limit: MAX_FOLLOWEE_LIMIT
+        )
+      )
     end
   end
 end

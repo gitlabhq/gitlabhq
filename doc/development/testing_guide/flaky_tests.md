@@ -193,6 +193,8 @@ This means it is skipped unless run with `--tag quarantine`:
 bin/rspec --tag quarantine
 ```
 
+After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
+
 ### Jest
 
 For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:

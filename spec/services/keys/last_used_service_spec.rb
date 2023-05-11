@@ -4,31 +4,49 @@ require 'spec_helper'
 
 RSpec.describe Keys::LastUsedService, feature_category: :source_code_management do
   describe '#execute', :clean_gitlab_redis_shared_state do
-    it 'updates the key when it has not been used recently' do
-      key = create(:key, last_used_at: 1.year.ago)
-      time = Time.zone.now
+    context 'when it has not been used recently' do
+      let(:key) { create(:key, last_used_at: 1.year.ago) }
+      let(:time) { Time.zone.now }
 
-      travel_to(time) { described_class.new(key).execute }
+      it 'updates the key' do
+        travel_to(time) { described_class.new(key).execute }
 
-      expect(key.reload.last_used_at).to be_like_time(time)
+        expect(key.reload.last_used_at).to be_like_time(time)
+      end
     end
 
-    it 'does not update the key when it has been used recently' do
-      time = 1.minute.ago
-      key = create(:key, last_used_at: time)
+    context 'when it has been used recently' do
+      let(:time) { 1.minute.ago }
+      let(:key) { create(:key, last_used_at: time) }
 
-      described_class.new(key).execute
+      it 'does not update the key' do
+        described_class.new(key).execute
 
-      expect(key.last_used_at).to be_like_time(time)
+        expect(key.reload.last_used_at).to be_like_time(time)
+      end
+    end
+  end
+
+  describe '#execute_async', :clean_gitlab_redis_shared_state do
+    context 'when it has not been used recently' do
+      let(:key) { create(:key, last_used_at: 1.year.ago) }
+      let(:time) { Time.zone.now }
+
+      it 'schedules a job to update last_used_at' do
+        expect(::SshKeys::UpdateLastUsedAtWorker).to receive(:perform_async)
+
+        travel_to(time) { described_class.new(key).execute_async }
+      end
     end
 
-    it 'does not update the updated_at field' do
-      # Since a lot of these updates could happen in parallel for different keys
-      # we want these updates to be as lightweight as possible, hence we want to
-      # make sure we _only_ update last_used_at and not always updated_at.
-      key = create(:key, last_used_at: 1.year.ago)
+    context 'when it has been used recently' do
+      let(:key) { create(:key, last_used_at: 1.minute.ago) }
 
-      expect { described_class.new(key).execute }.not_to change { key.updated_at }
+      it 'does not schedule a job to update last_used_at' do
+        expect(::SshKeys::UpdateLastUsedAtWorker).not_to receive(:perform_async)
+
+        described_class.new(key).execute_async
+      end
     end
   end
 
@@ -45,14 +63,6 @@ RSpec.describe Keys::LastUsedService, feature_category: :source_code_management 
       service = described_class.new(key)
 
       expect(service.update?).to eq(true)
-    end
-
-    it 'returns false when a lease has already been obtained' do
-      key = build(:key, last_used_at: 1.year.ago)
-      service = described_class.new(key)
-
-      expect(service.update?).to eq(true)
-      expect(service.update?).to eq(false)
     end
 
     it 'returns false when the key does not yet need to be updated' do

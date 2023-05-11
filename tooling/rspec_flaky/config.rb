@@ -18,10 +18,6 @@ module RspecFlaky
       ENV['NEW_FLAKY_RSPEC_REPORT_PATH'] || rails_path("rspec/flaky/new-report.json")
     end
 
-    def self.skipped_flaky_tests_report_path
-      ENV['SKIPPED_FLAKY_TESTS_REPORT_PATH'] || rails_path("rspec/flaky/skipped_flaky_tests_report.txt")
-    end
-
     def self.rails_path(path)
       return path unless defined?(Rails)
 

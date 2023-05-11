@@ -36,7 +36,7 @@ export default {
       :issuable-gid="workItemId"
       :child-item="child"
       :work-item-type="workItemType"
-      @removeChild="$emit('removeChild', child.id)"
+      @removeChild="$emit('removeChild', $event)"
       @click="$emit('click', Object.assign($event, { childItem: child }))"
     />
   </div>

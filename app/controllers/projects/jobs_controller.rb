@@ -8,8 +8,8 @@ class Projects::JobsController < Projects::ApplicationController
 
   urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :raw]
 
-  before_action :find_job_as_build, except: [:index, :play, :show, :retry]
-  before_action :find_job_as_processable, only: [:play, :show, :retry]
+  before_action :find_job_as_build, except: [:index, :play, :retry]
+  before_action :find_job_as_processable, only: [:play, :retry]
   before_action :authorize_read_build_trace!, only: [:trace, :raw]
   before_action :authorize_read_build!
   before_action :authorize_update_build!,

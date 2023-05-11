@@ -684,13 +684,13 @@ class Issue < ApplicationRecord
     elsif project.personal? && project.team.owner?(user)
       true
     elsif confidential? && !assignee_or_author?(user)
-      project.team.member?(user, Gitlab::Access::REPORTER)
+      project.member?(user, Gitlab::Access::REPORTER)
     elsif hidden?
       false
     elsif project.public? || (project.internal? && !user.external?)
       project.feature_available?(:issues, user)
     else
-      project.team.member?(user)
+      project.member?(user)
     end
   end
 

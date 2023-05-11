@@ -121,7 +121,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Service Desk'),
             link: service_desk_project_issues_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::MonitorMenu,
             active_routes: { path: 'issues#service_desk' },
             item_id: :service_desk
           )
@@ -131,7 +131,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Milestones'),
             link: project_milestones_path(context.project),
-            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::ManageMenu,
+            super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::PlanMenu,
             active_routes: { controller: :milestones },
             item_id: :milestones
           )

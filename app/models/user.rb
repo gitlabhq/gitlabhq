@@ -80,14 +80,14 @@ class User < ApplicationRecord
     algorithm: 'aes-256-cbc'
 
   devise :two_factor_authenticatable,
-         otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
+    otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   devise :two_factor_backupable_pbkdf2
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-         :validatable, :omniauthable, :confirmable, :registerable
+    :validatable, :omniauthable, :confirmable, :registerable
 
   # Must be included after `devise`
   include EncryptedUserPassword
@@ -132,11 +132,11 @@ class User < ApplicationRecord
 
   # Namespace for personal projects
   has_one :namespace,
-          -> { where(type: Namespaces::UserNamespace.sti_name) },
-          dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
-          foreign_key: :owner_id,
-          inverse_of: :owner,
-          autosave: true # rubocop:disable Cop/ActiveRecordDependent
+    -> { where(type: Namespaces::UserNamespace.sti_name) },
+    dependent: :destroy, # rubocop:disable Cop/ActiveRecordDependent
+    foreign_key: :owner_id,
+    inverse_of: :owner,
+    autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -171,18 +171,18 @@ class User < ApplicationRecord
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
   has_many :developer_groups, -> { where(members: { access_level: ::Gitlab::Access::DEVELOPER }) }, through: :group_members, source: :group
   has_many :owned_or_maintainers_groups,
-           -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
-           through: :group_members,
-           source: :group
+    -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
+    through: :group_members,
+    source: :group
   alias_attribute :masters_groups, :maintainers_groups
   has_many :developer_maintainer_owned_groups,
-           -> { where(members: { access_level: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
-           through: :group_members,
-           source: :group
+    -> { where(members: { access_level: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
+    through: :group_members,
+    source: :group
   has_many :reporter_developer_maintainer_owned_groups,
-           -> { where(members: { access_level: [Gitlab::Access::REPORTER, Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
-           through: :group_members,
-           source: :group
+    -> { where(members: { access_level: [Gitlab::Access::REPORTER, Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
+    through: :group_members,
+    source: :group
   has_many :minimal_access_group_members, -> { where(access_level: [Gitlab::Access::MINIMAL_ACCESS]) }, class_name: 'GroupMember'
   has_many :minimal_access_groups, through: :minimal_access_group_members, source: :group
 
@@ -349,27 +349,27 @@ class User < ApplicationRecord
   enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
 
   delegate :notes_filter_for,
-           :set_notes_filter,
-           :first_day_of_week, :first_day_of_week=,
-           :timezone, :timezone=,
-           :time_display_relative, :time_display_relative=,
-           :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
-           :view_diffs_file_by_file, :view_diffs_file_by_file=,
-           :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
-           :tab_width, :tab_width=,
-           :sourcegraph_enabled, :sourcegraph_enabled=,
-           :gitpod_enabled, :gitpod_enabled=,
-           :setup_for_company, :setup_for_company=,
-           :render_whitespace_in_code, :render_whitespace_in_code=,
-           :markdown_surround_selection, :markdown_surround_selection=,
-           :markdown_automatic_lists, :markdown_automatic_lists=,
-           :diffs_deletion_color, :diffs_deletion_color=,
-           :diffs_addition_color, :diffs_addition_color=,
-           :use_new_navigation, :use_new_navigation=,
-           :pinned_nav_items, :pinned_nav_items=,
-           :achievements_enabled, :achievements_enabled=,
-           :enabled_following, :enabled_following=,
-           to: :user_preference
+    :set_notes_filter,
+    :first_day_of_week, :first_day_of_week=,
+    :timezone, :timezone=,
+    :time_display_relative, :time_display_relative=,
+    :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
+    :view_diffs_file_by_file, :view_diffs_file_by_file=,
+    :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
+    :tab_width, :tab_width=,
+    :sourcegraph_enabled, :sourcegraph_enabled=,
+    :gitpod_enabled, :gitpod_enabled=,
+    :setup_for_company, :setup_for_company=,
+    :render_whitespace_in_code, :render_whitespace_in_code=,
+    :markdown_surround_selection, :markdown_surround_selection=,
+    :markdown_automatic_lists, :markdown_automatic_lists=,
+    :diffs_deletion_color, :diffs_deletion_color=,
+    :diffs_addition_color, :diffs_addition_color=,
+    :use_new_navigation, :use_new_navigation=,
+    :pinned_nav_items, :pinned_nav_items=,
+    :achievements_enabled, :achievements_enabled=,
+    :enabled_following, :enabled_following=,
+    to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :job_title, :job_title=, to: :user_detail, allow_nil: true
@@ -517,28 +517,27 @@ class User < ApplicationRecord
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
   scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
-    where('EXISTS (?)',
-          ::PersonalAccessToken
-            .where('personal_access_tokens.user_id = users.id')
-            .without_impersonation
-            .expiring_and_not_notified(at).select(1))
+    where('EXISTS (?)', ::PersonalAccessToken
+      .where('personal_access_tokens.user_id = users.id')
+      .without_impersonation
+      .expiring_and_not_notified(at).select(1)
+    )
   end
   scope :with_personal_access_tokens_expired_today, -> do
-    where('EXISTS (?)',
-          ::PersonalAccessToken
-            .select(1)
-            .where('personal_access_tokens.user_id = users.id')
-            .without_impersonation
-            .expired_today_and_not_notified)
+    where('EXISTS (?)', ::PersonalAccessToken
+      .select(1)
+      .where('personal_access_tokens.user_id = users.id')
+      .without_impersonation
+      .expired_today_and_not_notified
+    )
   end
 
   scope :with_ssh_key_expiring_soon, -> do
     includes(:expiring_soon_and_unnotified_keys)
-      .where('EXISTS (?)',
-         ::Key
-         .select(1)
-         .where('keys.user_id = users.id')
-         .expiring_soon_and_not_notified)
+      .where('EXISTS (?)', ::Key
+        .select(1)
+        .where('keys.user_id = users.id')
+        .expiring_soon_and_not_notified)
   end
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
@@ -2057,9 +2056,11 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_project_ids(project_ids)
-    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(Project),
-                                      resource_ids: project_ids,
-                                      default_value: Gitlab::Access::NO_ACCESS) do |project_ids|
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: max_member_access_for_resource_key(Project),
+      resource_ids: project_ids,
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |project_ids|
       project_authorizations.where(project: project_ids)
                             .group(:project_id)
                             .maximum(:access_level)
@@ -2074,9 +2075,11 @@ class User < ApplicationRecord
   #
   # Returns a Hash mapping project ID -> maximum access level.
   def max_member_access_for_group_ids(group_ids)
-    Gitlab::SafeRequestLoader.execute(resource_key: max_member_access_for_resource_key(Group),
-                                      resource_ids: group_ids,
-                                      default_value: Gitlab::Access::NO_ACCESS) do |group_ids|
+    Gitlab::SafeRequestLoader.execute(
+      resource_key: max_member_access_for_resource_key(Group),
+      resource_ids: group_ids,
+      default_value: Gitlab::Access::NO_ACCESS
+    ) do |group_ids|
       group_members.where(source: group_ids).group(:source_id).maximum(:access_level)
     end
   end

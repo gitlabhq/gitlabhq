@@ -53,11 +53,12 @@ describe('WorkItemChildrenWrapper', () => {
 
   it('remove event on child triggers `removeChild` event', () => {
     createComponent();
+    const workItem = { id: 'gid://gitlab/WorkItem/2' };
     const firstChild = findWorkItemLinkChildItems().at(0);
 
-    firstChild.vm.$emit('removeChild', 'gid://gitlab/WorkItem/2');
+    firstChild.vm.$emit('removeChild', workItem);
 
-    expect(wrapper.emitted('removeChild')).toEqual([['gid://gitlab/WorkItem/2']]);
+    expect(wrapper.emitted('removeChild')).toEqual([[workItem]]);
   });
 
   it('emits `show-modal` on `click` event', () => {

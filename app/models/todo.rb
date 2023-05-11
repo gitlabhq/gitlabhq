@@ -13,6 +13,7 @@ class Todo < ApplicationRecord
   # and giving it back again.
   WAIT_FOR_DELETE = 1.hour
 
+  # Actions
   ASSIGNED            = 1
   MENTIONED           = 2
   BUILD_FAILED        = 3
@@ -80,6 +81,7 @@ class Todo < ApplicationRecord
   end
   scope :joins_issue_and_assignees, -> { left_joins(issue: :assignees) }
   scope :for_internal_notes, -> { joins(:note).where(note: { confidential: true }) }
+  scope :with_preloaded_user, -> { preload(:user) }
 
   enum resolved_by_action: { system_done: 0, api_all_done: 1, api_done: 2, mark_all_done: 3, mark_done: 4 }, _prefix: :resolved_by
 

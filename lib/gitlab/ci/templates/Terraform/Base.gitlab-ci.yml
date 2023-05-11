@@ -9,7 +9,7 @@
 # There is a more opinionated template which we suggest the users to abide,
 # which is the lib/gitlab/ci/templates/Terraform.gitlab-ci.yml
 image:
-  name: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/releases/1.1:v0.43.0"
+  name: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/releases/1.4:v1.0.0"
 
 variables:
   TF_ROOT: ${CI_PROJECT_DIR}  # The relative path to the root directory of the Terraform project
@@ -23,24 +23,24 @@ cache:
 .terraform:fmt: &terraform_fmt
   stage: validate
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform fmt
   allow_failure: true
 
 .terraform:validate: &terraform_validate
   stage: validate
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform validate
 
 .terraform:build: &terraform_build
   stage: build
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform plan
     - gitlab-terraform plan-json
   resource_group: ${TF_STATE_NAME}
   artifacts:
+    # The next line, which disables public access to pipeline artifacts, may not be available everywhere.
+    # See: https://docs.gitlab.com/ee/ci/yaml/#artifactspublic
+    public: false
     paths:
       - ${TF_ROOT}/plan.cache
     reports:
@@ -49,7 +49,6 @@ cache:
 .terraform:deploy: &terraform_deploy
   stage: deploy
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform apply
   resource_group: ${TF_STATE_NAME}
   rules:
@@ -59,7 +58,6 @@ cache:
 .terraform:destroy: &terraform_destroy
   stage: cleanup
   script:
-    - cd "${TF_ROOT}"
     - gitlab-terraform destroy
   resource_group: ${TF_STATE_NAME}
   when: manual

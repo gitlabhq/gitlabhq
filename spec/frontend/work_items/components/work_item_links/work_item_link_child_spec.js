@@ -236,7 +236,7 @@ describe('WorkItemLinkChild', () => {
     it('removeChild event on menu triggers `click-remove-child` event', () => {
       itemMenuEl.vm.$emit('removeChild');
 
-      expect(wrapper.emitted('removeChild')).toEqual([[workItemTask.id]]);
+      expect(wrapper.emitted('removeChild')).toEqual([[workItemTask]]);
     });
   });
 
@@ -249,7 +249,7 @@ describe('WorkItemLinkChild', () => {
         (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
       );
     const getChildrenNodes = () => getWidgetHierarchy().children.nodes;
-    const findFirstItemId = () => getChildrenNodes()[0].id;
+    const findFirstItem = () => getChildrenNodes()[0];
 
     beforeEach(() => {
       getWorkItemTreeQueryHandler.mockClear();
@@ -328,7 +328,7 @@ describe('WorkItemLinkChild', () => {
       findExpandButton().vm.$emit('click');
       await waitForPromises();
 
-      findTreeChildren().vm.$emit('removeChild', findFirstItemId());
+      findTreeChildren().vm.$emit('removeChild', findFirstItem());
       await waitForPromises();
 
       expect($toast.show).toHaveBeenCalledWith('Child removed', {
@@ -343,23 +343,23 @@ describe('WorkItemLinkChild', () => {
       const childrenNodes = getChildrenNodes();
       expect(findTreeChildren().props('children')).toEqual(childrenNodes);
 
-      findTreeChildren().vm.$emit('removeChild', findFirstItemId());
+      findTreeChildren().vm.$emit('removeChild', findFirstItem());
       await waitForPromises();
 
       expect(findTreeChildren().props('children')).toEqual([]);
     });
 
     it('calls correct mutation with correct variables', async () => {
-      const firstItemId = findFirstItemId();
+      const firstItem = findFirstItem();
 
       findExpandButton().vm.$emit('click');
       await waitForPromises();
 
-      findTreeChildren().vm.$emit('removeChild', firstItemId);
+      findTreeChildren().vm.$emit('removeChild', firstItem);
 
       expect(mutationChangeParentHandler).toHaveBeenCalledWith({
         input: {
-          id: firstItemId,
+          id: firstItem.id,
           hierarchyWidget: {
             parentId: null,
           },
@@ -383,7 +383,7 @@ describe('WorkItemLinkChild', () => {
       findExpandButton().vm.$emit('click');
       await waitForPromises();
 
-      findTreeChildren().vm.$emit('removeChild', findFirstItemId());
+      findTreeChildren().vm.$emit('removeChild', findFirstItem());
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({

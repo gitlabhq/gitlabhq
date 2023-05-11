@@ -22,7 +22,6 @@ module Capybara
   module Node
     module Actions
       include CapybaraHelpers
-      include WaitHelpers
       include WaitForRequests
 
       module WaitForAllRequestsAfterClickButton
@@ -33,7 +32,16 @@ module Capybara
         end
       end
 
+      module WaitForAllRequestsAfterClickLink
+        def click_link(locator = nil, **options)
+          super
+
+          wait_for_all_requests
+        end
+      end
+
       prepend WaitForAllRequestsAfterClickButton
+      prepend WaitForAllRequestsAfterClickLink
     end
   end
 end

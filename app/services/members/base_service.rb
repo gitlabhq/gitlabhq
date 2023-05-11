@@ -53,8 +53,8 @@ module Members
       end
     end
 
-    def resolve_access_request_todos(current_user, requester)
-      todo_service.resolve_access_request_todos(current_user, requester)
+    def resolve_access_request_todos(member)
+      todo_service.resolve_access_request_todos(member)
     end
 
     def enqueue_delete_todos(member)

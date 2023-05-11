@@ -16,40 +16,43 @@ This feature is in [Beta](../../policy/alpha-beta-support.md#beta) and subject t
 
 A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
 
-You can create a workspace on its own or as part of a project. Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project.
+Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project. Workspaces use the AMD64 architecture.
 
-## Run a workspace
+## Create a workspace
 
-To run a workspace:
+Prerequisites:
 
-1. Set up a Kubernetes cluster that supports the GitLab agent for Kubernetes. See the [supported Kubernetes versions](../clusters/agent/index.md#gitlab-agent-for-kubernetes-supported-cluster-versions).
-1. Ensure autoscaling for Kubernetes cluster is enabled.
-1. In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
-1. [Install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-1. Configure remote development settings for the GitLab agent with the provided snippet.
-1. Install an Ingress controller of your choice (for example, `ingress-nginx`), and make it accessible over a domain.
-1. [Install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
-1. In each public project you want to use this feature for, define a [devfile](#devfile). Ensure the container images used in the devfile support [arbitrary user IDs](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#gitlab-agent-for-kubernetes-supported-cluster-versions).
+- Ensure autoscaling for the Kubernetes cluster is enabled.
+- In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
+- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`), and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
+- In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
+- In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
+- Configure remote development settings for the GitLab agent with this snippet:
 
-## Configure the GitLab agent for Kubernetes
-
-To provision and communicate with the workspace, the GitLab agent for Kubernetes must be running on your cluster. To configure the GitLab agent for Kubernetes:
-
-1. [Install GitLab Runner on the machine where you want to configure the agent](https://docs.gitlab.com/runner/install/).
-1. Deploy the GitLab agent with the provided [YAML manifests](https://gitlab.com/gitlab-examples/ops/gitops-demo/k8s-agents/-/tree/main/manifests). The system does not impose any restrictions on the manner in which pods interact with each other. See [Pod interaction in a cluster](#pod-interaction-in-a-cluster).
-1. Customize the GitLab agent configuration by editing the agent `ConfigMap`. `ConfigMap` is used to configure settings such as the GitLab URL and the registration token. For more information about the available configuration options, see [Connecting a Kubernetes cluster with GitLab](../clusters/agent/index.md).
-1. Deploy the updated `ConfigMap` by running this command:
-
-   ```plaintext
-   kubectl apply -f <path-to-configmap.yaml>
+   ```yaml
+   remote_development:
+     enabled: true
+     dns_zone: "workspaces.example.dev"
    ```
 
-1. Configure the agent to run on specific Kubernetes nodes by using labels:
+   Update `dns_zone` as needed.
 
-   1. To assign labels to nodes, use the `kubectl label` command.
-   1. To configure the agent to only run on nodes with a specific label, use the `nodeSelector` field in the GitLab agent deployment YAML.
+- In each public project you want to use this feature for, define a [devfile](#devfile). Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
 
-You can remove an agent by using the GitLab UI or the GraphQL API. The agent and any associated tokens are removed from GitLab, but no changes are made in your Kubernetes cluster. You must clean up those resources manually. See [Remove an agent](../clusters/agent/work_with_agent.md#remove-an-agent).
+To create a workspace in GitLab:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. In the root directory of your project, create a file named `.devfile.yaml`.
+1. On the left sidebar, select **Workspaces**.
+1. In the upper right, select **New workspace**.
+1. From the **Select project** dropdown list, select a project with a `.devfile.yaml` file. You can only create workspaces for public projects.
+1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
+1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
+1. Select **Create workspace**.
+
+The workspace might take a few minutes to start. To access the workspace, under **Preview**, select the workspace link.
+You also have access to the terminal and can install any necessary dependencies.
 
 ## Devfile
 
@@ -61,22 +64,22 @@ This way, you can create consistent and reproducible development environments re
 
 ### Relevant schema properties
 
-GitLab only supports the `container` component in [devfile 2.2.0](https://devfile.io/docs/2.2.0/devfile-schema).
-Use this component to define a container image as the execution environment for a devfile workspace.
+GitLab only supports the `container` and `volume` components in [devfile 2.2.0](https://devfile.io/docs/2.2.0/devfile-schema).
+Use the `container` component to define a container image as the execution environment for a devfile workspace.
 You can specify the base image, dependencies, and other settings.
 
-Only these properties are relevant to the GitLab implementation of devfile:
+Only these properties are relevant to the GitLab implementation of the `container` component:
 
 | Properties     | Definition                                                                        |
 |----------------| ----------------------------------------------------------------------------------|
 | `image`        | Name of the container image to use for the workspace.                             |
+| `memoryRequest`| Minimum amount of memory the container can use.                                   |
 | `memoryLimit`  | Maximum amount of memory the container can use.                                   |
+| `cpuRequest`   | Minimum amount of CPU the container can use.                                      |
 | `cpuLimit`     | Maximum amount of CPU the container can use.                                      |
-| `mountSources` | Whether to mount the source code directory from the workspace into the container. |
-| `workingDir`   | Working directory to use in the container.                                        |
-| `commands`     | Commands to run in the container.                                                 |
-| `args`         | Arguments to pass to the commands.                                                |
-| `ports`        | Port mappings to expose from the container.                                       |
+| `env`          | Environment variables to use in the container.                                    |
+| `endpoints`    | Port mappings to expose from the container.                                       |
+| `volumeMounts` | Storage volume to mount in the container.                                         |
 
 ### Example definition
 
@@ -90,32 +93,18 @@ components:
       gl/inject-editor: true
     container:
       image: registry.gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs/debian-bullseye-ruby-3.2-node-18.12:rubygems-3.4-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36-gitlab-workspaces
+      env:
+        - name: KEY
+          value: VALUE
       endpoints:
       - name: http-3000
         targetPort: 3000
 ```
 
-For other syntax examples, see the [`demos` projects](https://gitlab.com/gitlab-org/remote-development/demos).
+For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
+For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
 
-## Create a workspace
-
-Prerequisite:
-
-- You must have [configured the GitLab agent for Kubernetes](#configure-the-gitlab-agent-for-kubernetes).
-
-To create a workspace in GitLab:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. In the root directory of your project, create a file named `.devfile.yaml`.
-1. On the left sidebar, select **Workspaces**.
-1. In the upper right, select **New workspace**.
-1. From the **Select project** dropdown list, select a project with a `.devfile.yaml` file. You can only create workspaces for public projects.
-1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
-1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
-1. Select **Create workspace**.
-
-The workspace might take a few minutes to start. When the workspace is ready, use the [Web IDE](../project/web_ide/index.md) to access your development environment.
-You also have access to the terminal and can install any necessary dependencies.
+This container image is for demonstration purposes only. To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 
 ## Web IDE
 
@@ -125,71 +114,42 @@ The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-or
 
 ## Private repositories
 
-You cannot create a workspace for a private repository because you cannot verify your identity. You can only clone or access public repositories.
+You cannot create a workspace for a private repository because GitLab does not inject any credentials into the workspace. You can only create a workspace for public repositories that have a devfile.
 
-You can clone a public repository over:
-
-- **HTTPS**: You must provide a personal access token every time you access a public repository or create a workspace. This token acts as a password and grants access to a specific resource.
-- **SSH**: You don't have to enter your password or personal access token when you access a public repository. However, you must provide your SSH key or personal access token every time you create a workspace.
+From a workspace, you can clone any repository manually.
 
 ## Pod interaction in a cluster
 
-The system does not impose any restrictions on the manner in which pods interact with each other. It's the client's responsibility to restrict network access to the Kubernetes control plane as GitLab cannot determine the location of the API.
+Workspaces run as pods in a Kubernetes cluster. GitLab does not impose any restrictions on the manner in which pods interact with each other.
 
 Because of this requirement, you might want to isolate this feature from other containers in your cluster.
 
-## Networking and security
+## Network access and workspace authorization
 
-Workspaces are isolated environments that are only provisioned when you start a new instance. These environments are isolated from the host machine.
+It's the client's responsibility to restrict network access to the Kubernetes control plane as GitLab does not have control over the API.
 
-Workspaces use virtual network interfaces to connect to the internet and other resources, which helps prevent conflicts with the host machine's network settings.
+Only the workspace creator can access the workspace and any endpoints exposed in that workspace. The workspace creator is only authorized to access the workspace after user authentication with OAuth.
 
-### SSL, TLS, and HTTPS
+## Compute resources and volume storage
 
-Workspaces use SSL and TLS to provide secure and isolated development environments that you can access from anywhere.
+When you stop a workspace, the compute resources for that workspace are scaled down to zero. However, the volume provisioned for the workspace still exists.
 
-Workspaces support HTTPS, which uses Transport Layer Security (TLS) to encrypt data sent between your machine and the workspace. Workspaces generate and manage their own SSL certificates for HTTPS connections. These SSL certificates are automatically renewed.
+To delete the provisioned volume, you must terminate the workspace.
 
-Workspaces also support Let's Encrypt SSL certificates, which you can use to enable HTTPS connections with a custom domain name.
+## Disable remote development in the GitLab agent for Kubernetes
 
-### Workspace authorization
+You can stop the `remote_development` module of the GitLab agent for Kubernetes from communicating with GitLab. To disable remote development in the GitLab agent configuration, set this property:
 
-To use workspaces, you must have a GitLab account with the necessary permissions to create or access a repository. GitLab authentication is used to control access to workspaces. Only users who have been granted access to a repository can create or access workspaces associated with that repository.
+```yaml
+remote_development:
+  enabled: false
+```
 
-GitLab also provides administrators with the ability to:
+If you already have running workspaces, an administrator must manually delete these workspaces in Kubernetes.
 
-- Limit who can create workspaces.
-- Set resource limits for workspaces.
-- Configure the default environment for workspaces.
+## Arbitrary user IDs
 
-## Workspace lifecycle
+You can provide your own container image, which can run as any Linux user ID. It's not possible for GitLab to predict the Linux user ID for a container image.
+GitLab uses the Linux root group ID permission to create, update, or delete files in the container. CRI-O, the container runtime interface used by Kubernetes, has a default group ID of `0` for all containers.
 
-The lifecycle of a workspace is divided into the following stages:
-
-- **Creation**: A workspace is created when you open a new workspace session from a GitLab repository. GitLab creates a virtual machine instance in the cloud with the necessary software and tools for your specific project.
-- **Initialization**: The instance is initialized with the project files and dependencies when you clone the repository or pull from a container registry.
-- **Usage**: The workspace is ready to use. You can use the IDE and command-line tools that come with the workspace or install any other tools.
-- **Persistence**: Any changes made to the project files and dependencies in the workspace persist to the GitLab repository in real-time. This way, these changes can be synced and shared with other collaborators.
-- **Deletion**: When you're finished with the workspace session, you can suspend or delete the workspace. Suspending the workspace pauses billing but keeps the instance running. Deleting the workspace removes the instance and all associated data permanently.
-
-## Container best practices
-
-### Set a user to run a container in Kubernetes
-
-GitLab cannot predict which user is the best fit to run a container in Kubernetes. You must set the user yourself to ensure the container runs correctly.
-
-To set a user to run a container in Kubernetes, follow these best practices:
-
-- When you create a [devfile](#devfile) for the container, ensure the container images used in the devfile support [arbitrary user IDs](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
-- For each container in your project, you must explicitly set the Linux user ID to a random value. The default value for GitLab is `5001`.
-- You must set the fields to prevent any privilege escalation for the Linux user.
-
-CRI-O, the container runtime interface used by OpenShift, has a default group ID of `0` for all containers. If the container images support arbitrary user IDs, all files become editable as a Linux root group member. To solve this issue, GitLab sets arbitrary user IDs for all containers.
-
-### Architectural support
-
-Workspaces use the AMD64 architecture because modern software is generally compatible with this architecture. If you're using other architectures (such as ARM), you can cross-compile your code to run on AMD64 systems.
-
-### Namespace deletion
-
-To delete a namespace, Kubernetes administrators must manually delete the namespace. If you're running a workspace on your own environment, it's your responsibility to manage and delete namespaces.
+If you have a container image that does not support arbitrary user IDs, you cannot create, update, or delete files in a workspace. To create a container image that supports arbitrary user IDs, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).

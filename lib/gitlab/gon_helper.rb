@@ -67,7 +67,7 @@ module Gitlab
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:super_sidebar_peek, current_user)
-      push_frontend_feature_flag(:unbatch_graphql_queries)
+      push_frontend_feature_flag(:unbatch_graphql_queries, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
     end

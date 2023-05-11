@@ -108,8 +108,6 @@ class Group < Namespace
 
   has_one :import_state, class_name: 'GroupImportState', inverse_of: :group
 
-  has_many :application_setting, foreign_key: :instance_administrators_group_id, inverse_of: :instance_group
-
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :group
   has_many :bulk_import_entities, class_name: 'BulkImports::Entity', foreign_key: :namespace_id, inverse_of: :group
 

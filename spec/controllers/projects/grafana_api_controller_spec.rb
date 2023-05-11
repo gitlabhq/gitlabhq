@@ -15,6 +15,7 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
   end
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(user) if user
   end
 
@@ -169,6 +170,14 @@ RSpec.describe Projects::GrafanaApiController, feature_category: :metrics do
 
         it_behaves_like 'accessible'
       end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it_behaves_like 'not accessible'
     end
   end
 

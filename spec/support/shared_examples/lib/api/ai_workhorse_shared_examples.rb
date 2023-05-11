@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'delegates AI request to Workhorse' do
-  context 'when openai_experimentation is disabled' do
+RSpec.shared_examples 'delegates AI request to Workhorse' do |provider_flag|
+  context "when #{provider_flag} is disabled" do
     before do
-      stub_feature_flags(openai_experimentation: false)
+      stub_feature_flags(provider_flag => false)
     end
 
     it 'responds as not found' do

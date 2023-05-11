@@ -129,3 +129,7 @@
   aggregation: weekly
 - name: i_quickactions_type
   aggregation: weekly
+- name: i_quickactions_blocked_by
+  aggregation: weekly
+- name: i_quickactions_blocks
+  aggregation: weekly

@@ -101,7 +101,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Milestones'),
             link: group_milestones_path(context.group),
-            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ManageMenu,
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
             active_routes: { path: 'milestones#index' },
             item_id: :milestones
           )

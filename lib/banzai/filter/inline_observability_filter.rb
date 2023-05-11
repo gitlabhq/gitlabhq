@@ -2,13 +2,21 @@
 
 module Banzai
   module Filter
-    class InlineObservabilityFilter < ::Banzai::Filter::InlineEmbedsFilter
+    class InlineObservabilityFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::StrongMemoize
 
       def call
         return doc unless Gitlab::Observability.enabled?(group)
 
-        super
+        doc.xpath(xpath_search).each do |node|
+          next unless element = element_to_embed(node)
+
+          # We want this to follow any surrounding content. For example,
+          # if a link is inline in a paragraph.
+          node.parent.children.last.add_next_sibling(element)
+        end
+
+        doc
       end
 
       # Placeholder element for the frontend to use as an
@@ -45,6 +53,10 @@ module Banzai
 
       def group
         context[:group] || context[:project]&.group
+      end
+
+      def gitlab_domain
+        ::Gitlab.config.gitlab.url
       end
     end
   end

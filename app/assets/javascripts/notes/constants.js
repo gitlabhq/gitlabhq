@@ -61,17 +61,7 @@ export const MR_FILTER_OPTIONS = [
   {
     text: __('Approvals'),
     value: 'approval',
-    systemNoteIcons: ['approval', 'unapproval'],
-  },
-  {
-    text: __('Commits & branches'),
-    value: 'commit_branches',
-    systemNoteIcons: ['commit', 'fork'],
-  },
-  {
-    text: __('Merge request status'),
-    value: 'status',
-    systemNoteIcons: ['git-merge', 'issue-close', 'issues'],
+    systemNoteIcons: ['approval', 'unapproval', 'check'],
   },
   {
     text: __('Assignees & reviewers'),
@@ -84,6 +74,18 @@ export const MR_FILTER_OPTIONS = [
     ],
   },
   {
+    text: __('Comments'),
+    value: 'comments',
+    noteType: ['DiscussionNote', 'DiffNote'],
+    individualNote: true,
+    noteText: [s__('IssuableEvents|resolved all threads')],
+  },
+  {
+    text: __('Commits & branches'),
+    value: 'commit_branches',
+    systemNoteIcons: ['commit', 'fork'],
+  },
+  {
     text: __('Edits'),
     value: 'edits',
     systemNoteIcons: ['pencil', 'task-done'],
@@ -94,25 +96,24 @@ export const MR_FILTER_OPTIONS = [
     systemNoteIcons: ['label'],
   },
   {
+    text: __('Lock status'),
+    value: 'lock_status',
+    systemNoteIcons: ['lock', 'lock-open'],
+  },
+  {
     text: __('Mentions'),
     value: 'mentions',
     systemNoteIcons: ['comment-dots'],
+  },
+  {
+    text: __('Merge request status'),
+    value: 'status',
+    systemNoteIcons: ['git-merge', 'issue-close', 'issues', 'merge-request-close'],
   },
   {
     text: __('Tracking'),
     value: 'tracking',
     noteType: ['MilestoneNote'],
     systemNoteIcons: ['timer'],
-  },
-  {
-    text: __('Comments'),
-    value: 'comments',
-    noteType: ['DiscussionNote', 'DiffNote'],
-    individualNote: true,
-  },
-  {
-    text: __('Lock status'),
-    value: 'lock_status',
-    systemNoteIcons: ['lock', 'lock-open'],
   },
 ];

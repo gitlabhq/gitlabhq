@@ -4849,7 +4849,6 @@ Layout/LineLength:
     - 'spec/services/lfs/push_service_spec.rb'
     - 'spec/services/loose_foreign_keys/batch_cleaner_service_spec.rb'
     - 'spec/services/loose_foreign_keys/cleaner_service_spec.rb'
-    - 'spec/services/members/approve_access_request_service_spec.rb'
     - 'spec/services/members/create_service_spec.rb'
     - 'spec/services/members/destroy_service_spec.rb'
     - 'spec/services/members/invitation_reminder_email_service_spec.rb'

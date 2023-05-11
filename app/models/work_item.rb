@@ -16,10 +16,10 @@ class WorkItem < Issue
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
-                                foreign_key: :work_item_id, source: :work_item
+    foreign_key: :work_item_id, source: :work_item
   has_many :work_item_children_by_relative_position, -> { work_item_children_keyset_order },
-                                                     through: :child_links, class_name: 'WorkItem',
-                                                     foreign_key: :work_item_id, source: :work_item
+    through: :child_links, class_name: 'WorkItem',
+    foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 

@@ -214,6 +214,12 @@ tests = [
     explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360',
     source: 'vendor/project_templates/gitbook.tar.gz',
     expected: ['spec/lib/gitlab/project_template_spec.rb']
+  },
+
+  {
+    explanation: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1683#note_1385966977',
+    source: 'app/finders/members_finder.rb',
+    expected: ['spec/finders/members_finder_spec.rb', 'spec/graphql/types/project_member_relation_enum_spec.rb']
   }
 ]
 

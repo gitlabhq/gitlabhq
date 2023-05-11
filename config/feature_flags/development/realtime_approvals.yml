@@ -1,0 +1,8 @@
+---
+name: realtime_approvals
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114963'
+rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/399539'
+milestone: '16.0'
+type: development
+group: group::code review
+default_enabled: false

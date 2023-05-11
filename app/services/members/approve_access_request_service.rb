@@ -18,7 +18,7 @@ module Members
     def after_execute(member:, skip_log_audit_event:)
       super
 
-      resolve_access_request_todos(current_user, member)
+      resolve_access_request_todos(member)
     end
 
     def validate_access!(access_requester)

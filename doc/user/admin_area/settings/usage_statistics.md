@@ -54,6 +54,7 @@ tier. Users can continue to access the features in a paid tier without sharing u
 
 - [Maintenance mode](../../../administration/maintenance_mode/index.md).
 - [Configurable issue boards](../../project/issue_board.md#configurable-issue-boards).
+- [Coverage-guided fuzz testing](../../application_security/coverage_fuzzing/index.md).
 
 NOTE:
 Registration is not yet required for participation, but may be added in a future milestone.

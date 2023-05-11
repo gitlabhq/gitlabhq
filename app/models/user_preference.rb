@@ -20,8 +20,8 @@ class UserPreference < ApplicationRecord
     less_than_or_equal_to: Gitlab::TabWidth::MAX
   }
   validates :diffs_deletion_color, :diffs_addition_color,
-            format: { with: ColorsHelper::HEX_COLOR_PATTERN },
-            allow_blank: true
+    format: { with: ColorsHelper::HEX_COLOR_PATTERN },
+    allow_blank: true
 
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
 

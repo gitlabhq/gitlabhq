@@ -20,8 +20,8 @@ module Users
 
     validates :project, presence: true
     validates :feature_name,
-              presence: true,
-              uniqueness: { scope: [:user_id, :project_id] },
-              inclusion: { in: ProjectCallout.feature_names.keys }
+      presence: true,
+      uniqueness: { scope: [:user_id, :project_id] },
+      inclusion: { in: ProjectCallout.feature_names.keys }
   end
 end

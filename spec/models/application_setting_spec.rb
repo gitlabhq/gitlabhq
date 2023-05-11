@@ -25,14 +25,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.kroki_formats).to eq({}) }
   end
 
-  describe 'associations' do
-    it do
-      is_expected.to belong_to(:instance_group).class_name('Group')
-        .with_foreign_key(:instance_administrators_group_id)
-        .inverse_of(:application_setting)
-    end
-  end
-
   describe 'validations' do
     let(:http)  { 'http://example.com' }
     let(:https) { 'https://example.com' }

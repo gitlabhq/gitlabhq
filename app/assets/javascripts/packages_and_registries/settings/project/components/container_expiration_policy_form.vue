@@ -225,9 +225,6 @@ export default {
               <template #strong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
-              <template #secondStrong="{ content }">
-                <strong>{{ content }}</strong>
-              </template>
             </gl-sprintf>
           </p>
           <expiration-dropdown
@@ -262,9 +259,6 @@ export default {
           <p>
             <gl-sprintf :message="$options.i18n.REMOVE_INFO_TEXT">
               <template #strong="{ content }">
-                <strong>{{ content }}</strong>
-              </template>
-              <template #secondStrong="{ content }">
                 <strong>{{ content }}</strong>
               </template>
             </gl-sprintf>

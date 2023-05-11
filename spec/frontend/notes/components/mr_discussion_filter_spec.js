@@ -80,15 +80,15 @@ describe('Merge request discussion filter component', () => {
     wrapper.findComponent(GlCollapsibleListbox).vm.$emit('hidden');
 
     expect(updateMergeRequestFilters).toHaveBeenCalledWith(expect.anything(), [
-      'commit_branches',
-      'status',
       'assignees_reviewers',
+      'comments',
+      'commit_branches',
       'edits',
       'labels',
-      'mentions',
-      'tracking',
-      'comments',
       'lock_status',
+      'mentions',
+      'status',
+      'tracking',
     ]);
   });
 

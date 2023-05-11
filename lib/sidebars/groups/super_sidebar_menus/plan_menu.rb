@@ -22,6 +22,8 @@ module Sidebars
             :issue_boards,
             :epic_boards,
             :roadmap,
+            :milestones,
+            :iterations,
             :group_wiki,
             :crm_contacts,
             :crm_organizations

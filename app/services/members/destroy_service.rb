@@ -84,7 +84,7 @@ module Members
 
       delete_subresources(member) unless skip_subresources
       delete_project_invitations_by(member) unless skip_subresources
-      resolve_access_request_todos(current_user, member)
+      resolve_access_request_todos(member)
 
       after_execute(member: member)
     end

@@ -20,6 +20,8 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::PlanMenu, feature_category: 
       :issue_boards,
       :epic_boards,
       :roadmap,
+      :milestones,
+      :iterations,
       :group_wiki,
       :crm_contacts,
       :crm_organizations

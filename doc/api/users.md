@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Users API **(FREE)**
 
+This documentation has information on API calls, parameters and responses for the Users API. 
+
+For information on user activities that update the user event timestamps, see [get user activities](#get-user-activities).
+
 ## List users
 
 Get a list of users.
@@ -2063,7 +2067,7 @@ Pre-requisite:
 
 Get the last activity date for all users, sorted from oldest to newest.
 
-The activities that update the timestamp are:
+The activities that update the user event timestamps (`last_activity_on` and `current_sign_in_at`) are:
 
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in to GitLab

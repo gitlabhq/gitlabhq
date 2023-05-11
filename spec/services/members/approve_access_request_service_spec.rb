@@ -14,13 +14,17 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :subgroup
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
     it 'raises Gitlab::Access::AccessDeniedError' do
-      expect { described_class.new(current_user, params).execute(access_requester, **opts) }.to raise_error(Gitlab::Access::AccessDeniedError)
+      expect do
+        described_class.new(current_user, params).execute(access_requester, **opts)
+      end.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 
   shared_examples 'a service approving an access request' do
     it 'succeeds' do
-      expect { described_class.new(current_user, params).execute(access_requester, **opts) }.to change { source.requesters.count }.by(-1)
+      expect do
+        described_class.new(current_user, params).execute(access_requester, **opts)
+      end.to change { source.requesters.count }.by(-1)
     end
 
     it 'returns a <Source>Member' do
@@ -32,7 +36,15 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :subgroup
 
     it 'calls the method to resolve access request for the approver' do
       expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:resolve_access_request_todos).with(current_user, access_requester)
+        expect(instance).to receive(:resolve_access_request_todos).with(access_requester)
+      end
+
+      described_class.new(current_user, params).execute(access_requester, **opts)
+    end
+
+    it 'resolves the todos for the access requests' do
+      expect_next_instance_of(TodoService) do |instance|
+        expect(instance).to receive(:resolve_access_request_todos).with(access_requester)
       end
 
       described_class.new(current_user, params).execute(access_requester, **opts)

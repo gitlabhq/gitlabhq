@@ -2127,116 +2127,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
-    context 'relate command' do
-      let_it_be_with_refind(:group) { create(:group) }
-
-      shared_examples 'relate command' do
-        it 'relates issues' do
-          service.execute(content, issue)
-
-          expect(IssueLink.where(source: issue).map(&:target)).to match_array(issues_related)
-        end
-      end
-
-      context 'user is member of group' do
-        before do
-          group.add_developer(developer)
-        end
-
-        context 'relate a single issue' do
-          let(:other_issue) { create(:issue, project: project) }
-          let(:issues_related) { [other_issue] }
-          let(:content) { "/relate #{other_issue.to_reference}" }
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'relate multiple issues at once' do
-          let(:second_issue) { create(:issue, project: project) }
-          let(:third_issue) { create(:issue, project: project) }
-          let(:issues_related) { [second_issue, third_issue] }
-          let(:content) { "/relate #{second_issue.to_reference} #{third_issue.to_reference}" }
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'when quick action target is unpersisted' do
-          let(:issue) { build(:issue, project: project) }
-          let(:other_issue) { create(:issue, project: project) }
-          let(:issues_related) { [other_issue] }
-          let(:content) { "/relate #{other_issue.to_reference}" }
-
-          it 'relates the issues after the issue is persisted' do
-            service.execute(content, issue)
-
-            issue.save!
-
-            expect(IssueLink.where(source: issue).map(&:target)).to match_array(issues_related)
-          end
-        end
-
-        context 'empty relate command' do
-          let(:issues_related) { [] }
-          let(:content) { '/relate' }
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'already having related issues' do
-          let(:second_issue) { create(:issue, project: project) }
-          let(:third_issue) { create(:issue, project: project) }
-          let(:issues_related) { [second_issue, third_issue] }
-          let(:content) { "/relate #{third_issue.to_reference(project)}" }
-
-          before do
-            create(:issue_link, source: issue, target: second_issue)
-          end
-
-          it_behaves_like 'relate command'
-        end
-
-        context 'cross project' do
-          let(:another_group) { create(:group, :public) }
-          let(:other_project) { create(:project, group: another_group) }
-
-          before do
-            another_group.add_developer(developer)
-          end
-
-          context 'relate a cross project issue' do
-            let(:other_issue) { create(:issue, project: other_project) }
-            let(:issues_related) { [other_issue] }
-            let(:content) { "/relate #{other_issue.to_reference(project)}" }
-
-            it_behaves_like 'relate command'
-          end
-
-          context 'relate multiple cross projects issues at once' do
-            let(:second_issue) { create(:issue, project: other_project) }
-            let(:third_issue) { create(:issue, project: other_project) }
-            let(:issues_related) { [second_issue, third_issue] }
-            let(:content) { "/relate #{second_issue.to_reference(project)} #{third_issue.to_reference(project)}" }
-
-            it_behaves_like 'relate command'
-          end
-
-          context 'relate a non-existing issue' do
-            let(:issues_related) { [] }
-            let(:content) { "/relate imaginary##{non_existing_record_iid}" }
-
-            it_behaves_like 'relate command'
-          end
-
-          context 'relate a private issue' do
-            let(:private_project) { create(:project, :private) }
-            let(:other_issue) { create(:issue, project: private_project) }
-            let(:issues_related) { [] }
-            let(:content) { "/relate #{other_issue.to_reference(project)}" }
-
-            it_behaves_like 'relate command'
-          end
-        end
-      end
+    it_behaves_like 'issues link quick action', :relate do
+      let(:user) { developer }
     end
 
     context 'invite_email command' do
@@ -2994,6 +2886,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
           expect(explanations).to be_empty
         end
+      end
+    end
+
+    describe 'relate command' do
+      let_it_be(:other_issue) { create(:issue, project: project) }
+      let(:content) { "/relate #{other_issue.to_reference}" }
+
+      it 'includes explain message' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Marks this issue as related to #{other_issue.to_reference}."])
       end
     end
   end

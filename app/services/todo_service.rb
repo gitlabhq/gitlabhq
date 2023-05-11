@@ -175,11 +175,24 @@ class TodoService
     TodosFinder.new(current_user).any_for_target?(issuable, :pending)
   end
 
-  # Resolves all todos related to target
+  # Resolves all todos related to target for the current_user
   def resolve_todos_for_target(target, current_user)
     attributes = attributes_for_target(target)
 
     resolve_todos(pending_todos([current_user], attributes), current_user)
+  end
+
+  # Resolves all todos related to target for all users
+  def resolve_todos_with_attributes_for_target(target, attributes, resolution: :done, resolved_by_action: :system_done)
+    target_attributes = { target_id: target.id, target_type: target.class.polymorphic_name }
+    attributes.merge!(target_attributes)
+    attributes[:preload_user_association] = true
+
+    todos = PendingTodosFinder.new(attributes).execute
+    users = todos.map(&:user)
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
+    users.each(&:update_todos_count_cache)
+    todos_ids
   end
 
   def resolve_todos(todos, current_user, resolution: :done, resolved_by_action: :system_done)
@@ -198,21 +211,20 @@ class TodoService
     current_user.update_todos_count_cache
   end
 
-  def resolve_access_request_todos(current_user, member)
-    return if current_user.nil? || member.nil?
+  def resolve_access_request_todos(member)
+    return if member.nil?
 
+    # Group or Project
     target = member.source
 
-    finder_params = {
+    todos_params = {
       state: :pending,
       author_id: member.user_id,
-      action_id: ::Todo::MEMBER_ACCESS_REQUESTED,
-      type: target.class.polymorphic_name,
-      target: target.id
+      action: ::Todo::MEMBER_ACCESS_REQUESTED,
+      type: target.class.polymorphic_name
     }
 
-    todos = TodosFinder.new(current_user, finder_params).execute
-    resolve_todos(todos, current_user)
+    resolve_todos_with_attributes_for_target(target, todos_params)
   end
 
   def restore_todos(todos, current_user)
@@ -419,7 +431,7 @@ class TodoService
   end
 
   def pending_todos(users, criteria = {})
-    PendingTodosFinder.new(users, criteria).execute
+    PendingTodosFinder.new(criteria.merge(users: users)).execute
   end
 
   def track_todo_creation(user, issue_type, namespace, project)

@@ -17,8 +17,9 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::PlanMenu, feature_category
     expect(items.map(&:item_id)).to eq([
       :project_issue_list,
       :boards,
+      :milestones,
+      :iterations,
       :project_wiki,
-      :service_desk,
       :requirements
     ])
   end

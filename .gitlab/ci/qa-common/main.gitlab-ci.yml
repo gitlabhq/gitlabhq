@@ -205,11 +205,6 @@ stages:
     - .qa-install
     - .ruby-image
   stage: report
-  variables:
-    QA_FAILURES_REPORTING_PROJECT: gitlab-org/gitlab
-    QA_FAILURES_MAX_DIFF_RATIO: "0.15"
-    QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.json
-    GITLAB_QA_ACCESS_TOKEN: $QA_GITLAB_CI_TOKEN
   when: always
   script:
     - |
@@ -218,10 +213,10 @@ stages:
         exit 0
       fi
     - |
-      bundle exec gitlab-qa-report \
-        --relate-failure-issue "$QA_RSPEC_JSON_FILE_PATTERN" \
-        --project "$QA_FAILURES_REPORTING_PROJECT" \
-        --max-diff-ratio "$QA_FAILURES_MAX_DIFF_RATIO"
+      bundle exec relate-failure-issue \
+        --input-files "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.json" \
+        --project "gitlab-org/gitlab" \
+        --token "$RELATE_TEST_FAILURE_TOKEN"
 
 .generate-test-session:
   extends:

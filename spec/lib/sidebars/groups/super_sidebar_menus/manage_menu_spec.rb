@@ -17,9 +17,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::ManageMenu, feature_category
     expect(items.map(&:item_id)).to eq([
       :activity,
       :members,
-      :labels,
-      :milestones,
-      :iterations
+      :labels
     ])
   end
 end

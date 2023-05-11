@@ -44,7 +44,7 @@ RSpec.describe Members::DestroyService, feature_category: :subgroups do
 
     it 'resolves the access request todos for the owner' do
       expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:resolve_access_request_todos).with(current_user, member)
+        expect(instance).to receive(:resolve_access_request_todos).with(member)
       end
 
       described_class.new(current_user).execute(member, **opts)

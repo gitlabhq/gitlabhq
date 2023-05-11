@@ -22,3 +22,8 @@ ruby\/2\.7\.0\/net\/protocol\.rb:206: warning: previous definition of BUFSIZE wa
 ruby\/2\.7\.0\/net\/protocol\.rb:503: warning: previous definition of Socket was here
 2\.7\.0\/gems\/net-protocol-0\.1\.3\/lib\/net\/protocol\.rb:68: warning: already initialized constant Net::ProtocRetryError
 ruby\/2\.7\.0\/net\/protocol\.rb:66: warning: previous definition of ProtocRetryError was here
+
+# Ruby 3 does not emit warnings for pattern matching, and if it's working
+# fine in both Ruby 2 and Ruby 3, it's unlikely it'll change again.
+# This can be removed when support for Ruby 2 is dropped.
+warning: Pattern matching is experimental, and the behavior may change in future versions of Ruby!
