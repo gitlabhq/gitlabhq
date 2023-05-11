@@ -15,7 +15,7 @@ It is based on an [architecture blueprint](../../architecture/blueprints/databas
 Migration testing is enabled in the [GitLab project](https://gitlab.com/gitlab-org/gitlab)
 for changes that add a new database migration. Trigger this job manually by running the
 `db:gitlabcom-database-testing` job within in `test` stage. To avoid wasting resources,
-only run this job when your MR is ready for review.
+only run this job when your MR is ready for review. Additionally, ensure that the MR has the "database" label for the pipeline to appear in the test stage.
 
 The job starts a pipeline on the [ops GitLab instance](https://ops.gitlab.net/).
 For security reasons, access to the pipeline is restricted to database maintainers.

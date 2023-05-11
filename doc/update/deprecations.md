@@ -329,6 +329,27 @@ The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) a
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### PostgreSQL 13 deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- End of Support: GitLab <span class="milestone">17.0</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/9065).
+</div>
+
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/postgresql-upgrade-cadence.html).
+
+Support for PostgreSQL 13 is scheduled for removal in GitLab 17.0.
+In GitLab 17.0, PostgreSQL 14 becomes the minimum required PostgreSQL version.
+
+PostgreSQL 13 will be supported for the full GitLab 16 release cycle.
+PostgreSQL 14 will also be supported for instances that want to upgrade prior to GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Queue selector for running Sidekiq is deprecated
 
 <div class="deprecation-notes">

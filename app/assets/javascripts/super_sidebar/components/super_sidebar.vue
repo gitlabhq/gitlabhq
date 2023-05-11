@@ -98,7 +98,13 @@ export default {
 <template>
   <div>
     <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
-
+    <gl-button
+      class="super-sidebar-skip-to gl-sr-only-focusable gl-fixed gl-left-0 gl-m-3"
+      href="#content-body"
+      variant="confirm"
+    >
+      {{ $options.i18n.skipToMainContent }}
+    </gl-button>
     <aside
       id="super-sidebar"
       class="super-sidebar"
@@ -107,13 +113,6 @@ export default {
       data-qa-selector="navbar"
       :inert="sidebarState.isCollapsed"
     >
-      <gl-button
-        class="super-sidebar-skip-to gl-sr-only-focusable gl-absolute gl-left-3 gl-right-3 gl-top-3"
-        href="#content-body"
-        variant="confirm"
-      >
-        {{ $options.i18n.skipToMainContent }}
-      </gl-button>
       <user-bar :has-collapse-button="!sidebarState.isPeek" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget

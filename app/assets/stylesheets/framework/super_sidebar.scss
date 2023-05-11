@@ -22,6 +22,12 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   transition: background-color 100ms linear, border-color 100ms linear;
 }
 
+.super-sidebar-skip-to {
+  top: calc(#{$header-height} + #{$calc-application-bars-height});
+  width: calc(#{$super-sidebar-width} - #{$gl-spacing-scale-5});
+  z-index: $super-sidebar-skip-to-z-index;
+}
+
 .super-sidebar {
   display: flex;
   flex-direction: column;
@@ -206,10 +212,6 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     text-decoration: none;
     @include gl-text-contrast-light;
   }
-}
-
-.super-sidebar-skip-to {
-  z-index: $super-sidebar-z-index;
 }
 
 .super-sidebar-overlay {

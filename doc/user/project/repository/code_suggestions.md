@@ -26,7 +26,7 @@ Code Suggestions are available in Visual Studio Code when you have the GitLab Wo
 
 ## Supported languages
 
-Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). The best results from Code Suggestions are expected for these six languages:
+Code Suggestions may produce [low-quality or incomplete suggestions](#model-accuracy-and-quality). The best results from Code Suggestions are expected for these languages:
 
 - C/C++
 - C#

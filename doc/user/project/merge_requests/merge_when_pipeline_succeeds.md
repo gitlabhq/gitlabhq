@@ -7,6 +7,9 @@ type: reference, concepts
 
 # Merge when pipeline succeeds **(FREE)**
 
+NOTE:
+[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** buttons become **Set to auto-merge**.
+
 If you review a merge request and it's ready to merge, but the pipeline hasn't
 completed yet, you can set it to merge when the pipeline succeeds (MWPS). You don't
 have to remember later to merge the work manually:
