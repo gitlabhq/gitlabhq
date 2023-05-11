@@ -66,21 +66,24 @@ After you configure the OIDC and role, the GitLab CI/CD job can retrieve a tempo
 
 ```yaml
 assume role:
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: https://gitlab.example.com
   script:
     - >
       export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s"
       $(aws sts assume-role-with-web-identity
       --role-arn ${ROLE_ARN}
       --role-session-name "GitLabRunner-${CI_PROJECT_ID}-${CI_PIPELINE_ID}"
-      --web-identity-token $CI_JOB_JWT_V2
+      --web-identity-token ${GITLAB_OIDC_TOKEN}
       --duration-seconds 3600
       --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]'
       --output text))
     - aws sts get-caller-identity
 ```
 
-- `CI_JOB_JWT_V2`: Predefined variable.
 - `ROLE_ARN`: The role ARN defined in this [step](#configure-a-role-and-trust).
+- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/index.md#id_tokens).
 
 ## Working example
 

@@ -253,6 +253,29 @@ In GitLab 15.3, [security report schemas below version 15 were deprecated](https
 The `confidence` attribute on vulnerability findings exists only in schema versions before `15-0-0` and in GitLab prior to 15.4.  To maintain consistency
 between the reports and our public APIs, the `confidence` attribute on any vulnerability-related components of our GraphQL API is now removed.
 
+### `CI_BUILD_*` predefined variables removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in GitLab 9.0, and removed in GitLab 16.0. If you still use these variables, you must change to the replacement [predefined variables](https://docs.gitlab.com/ee/ci/variables/predefined_variables.html) which are functionally identical:
+
+| Removed variable      | Replacement variable    |
+| --------------------- |------------------------ |
+| `CI_BUILD_BEFORE_SHA` | `CI_COMMIT_BEFORE_SHA`  |
+| `CI_BUILD_ID`         | `CI_JOB_ID`             |
+| `CI_BUILD_MANUAL`     | `CI_JOB_MANUAL`         |
+| `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
+| `CI_BUILD_REF`        | `CI_COMMIT_SHA`         |
+| `CI_BUILD_REF_NAME`   | `CI_COMMIT_REF_NAME`    |
+| `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
+| `CI_BUILD_REPO`       | `CI_REPOSITORY_URL`     |
+| `CI_BUILD_STAGE`      | `CI_JOB_STAGE`          |
+| `CI_BUILD_TAG`        | `CI_COMMIT_TAG`         |
+| `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
+| `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
+
 ### vulnerabilityFindingDismiss GraphQL mutation
 
 WARNING:
