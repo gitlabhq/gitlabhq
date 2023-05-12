@@ -205,7 +205,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'DependencyProxy::CleanupBlobWorker' => 3,
         'DependencyProxy::CleanupManifestWorker' => 3,
         'Deployments::AutoRollbackWorker' => 3,
-        'Deployments::DropOlderDeploymentsWorker' => 3,
         'Deployments::FinishedWorker' => 3,
         'Deployments::ForwardDeploymentWorker' => 3,
         'Deployments::LinkMergeRequestWorker' => 3,

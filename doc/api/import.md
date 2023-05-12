@@ -19,9 +19,7 @@ Prerequisites:
 
 - [Prerequisites for GitHub importer](../user/project/import/github.md#prerequisites).
 - The namespace set in `target_namespace` must exist.
-- The namespace can be your user namespace or an existing group that you have at least the Maintainer role for. Using
-  the Developer role for this purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab
-  15.8 and will be removed in GitLab 16.0.
+- The namespace can be your user namespace or an existing group that you have at least the Maintainer role for.
 
 ```plaintext
 POST /import/github

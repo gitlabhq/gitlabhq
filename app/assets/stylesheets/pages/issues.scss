@@ -250,92 +250,15 @@ ul.related-merge-requests > li gl-emoji {
 }
 
 .issue-sticky-header {
-  --width: 100%;
-
-  @include gl-left-0;
-  width: var(--width);
+  left: var(--application-bar-left);
+  right: var(--application-bar-right);
+  width: auto;
   top: $calc-application-header-height;
-
-  // collapsed right sidebar
-  @include media-breakpoint-up(sm) {
-    --width: calc(100% - #{$gutter-collapsed-width});
-  }
 }
 
 .limit-container-width {
   .issue-sticky-header-text {
     max-width: $limited-layout-width;
-  }
-}
-
-@include media-breakpoint-up(md) {
-  // collapsed left sidebar + collapsed right sidebar
-  .page-with-contextual-sidebar .issue-sticky-header {
-    left: $contextual-sidebar-collapsed-width;
-    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-collapsed-width});
-  }
-
-  // collapsed left sidebar + expanded right sidebar
-  .page-with-contextual-sidebar.right-sidebar-expanded .issue-sticky-header {
-    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-width});
-  }
-
-  // collapsed super sidebar + collapsed right sidebar
-  .page-with-super-sidebar .issue-sticky-header {
-    --width: calc(100% - #{$gutter-collapsed-width});
-  }
-
-  // collapsed super sidebar + expanded right sidebar
-  .page-with-super-sidebar.right-sidebar-expanded .issue-sticky-header {
-    --width: calc(100% - #{$gutter-width});
-  }
-}
-
-@include media-breakpoint-up(xl) {
-  // expanded left sidebar + collapsed right sidebar
-  .page-with-contextual-sidebar .issue-sticky-header {
-    left: $contextual-sidebar-width;
-    --width: calc(100% - #{$contextual-sidebar-width} - #{$gutter-collapsed-width});
-  }
-
-  // collapsed left sidebar + collapsed right sidebar
-  .page-with-icon-sidebar .issue-sticky-header {
-    left: $contextual-sidebar-collapsed-width;
-    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-collapsed-width});
-  }
-
-  // expanded left sidebar + expanded right sidebar
-  .page-with-contextual-sidebar.right-sidebar-expanded .issue-sticky-header {
-    --width: calc(100% - #{$contextual-sidebar-width} - #{$gutter-width});
-  }
-
-  // collapsed left sidebar + expanded right sidebar
-  .page-with-contextual-sidebar.right-sidebar-expanded.page-with-icon-sidebar .issue-sticky-header {
-    --width: calc(100% - #{$contextual-sidebar-collapsed-width} - #{$gutter-width});
-  }
-
-  // expanded super sidebar + collapsed right sidebar
-  .page-with-super-sidebar .issue-sticky-header {
-    left: $super-sidebar-width;
-    --width: calc(100% - #{$super-sidebar-width} - #{$gutter-collapsed-width});
-  }
-
-  // collapsed super sidebar + collapsed right sidebar
-  .page-with-super-sidebar-collapsed .issue-sticky-header {
-    left: 0;
-    --width: calc(100% - #{$gutter-collapsed-width});
-  }
-
-  // expanded super sidebar + expanded right sidebar
-  .page-with-super-sidebar.right-sidebar-expanded .issue-sticky-header {
-    left: $super-sidebar-width;
-    --width: calc(100% - #{$super-sidebar-width} - #{$gutter-width});
-  }
-
-  // collapsed super sidebar + expanded right sidebar
-  .page-with-super-sidebar-collapsed.right-sidebar-expanded .issue-sticky-header {
-    left: 0;
-    --width: calc(100% - #{$gutter-width});
   }
 }
 

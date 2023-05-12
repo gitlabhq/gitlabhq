@@ -10072,7 +10072,6 @@
 - './spec/workers/dependency_proxy/cleanup_manifest_worker_spec.rb'
 - './spec/workers/dependency_proxy/image_ttl_group_policy_worker_spec.rb'
 - './spec/workers/deployments/archive_in_project_worker_spec.rb'
-- './spec/workers/deployments/drop_older_deployments_worker_spec.rb'
 - './spec/workers/deployments/hooks_worker_spec.rb'
 - './spec/workers/deployments/link_merge_request_worker_spec.rb'
 - './spec/workers/deployments/update_environment_worker_spec.rb'

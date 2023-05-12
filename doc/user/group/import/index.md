@@ -107,9 +107,7 @@ To migrate groups by direct transfer:
   - For GitLab 15.0 and earlier source instances, the personal access token must have both the `api` and
     `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
-- You must have at least the Maintainer role on the destination group to migrate to. Using the Developer role for this
-  purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in
-  GitLab 16.0.
+- You must have at least the Maintainer role on the destination group to migrate to.
 
 ### Prepare user accounts
 

@@ -5,6 +5,9 @@
   --top-bar-height: 0px;
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
+
+  --application-bar-left: 0px;
+  --application-bar-right: 0px;
 }
 
 .with-performance-bar {
@@ -25,6 +28,42 @@
 
 .review-bar-visible {
   --mr-review-bar-height: #{$mr-review-bar-height};
+}
+
+@include media-breakpoint-up(md) {
+  .page-with-contextual-sidebar {
+    --application-bar-left: #{$contextual-sidebar-collapsed-width};
+  }
+
+  .right-sidebar-collapsed {
+    --application-bar-right: #{$gutter-collapsed-width};
+
+    &.is-merge-request {
+      --application-bar-right: 0px;
+    }
+  }
+
+  .right-sidebar-expanded {
+    --application-bar-right: #{$gutter-width};
+  }
+}
+
+@include media-breakpoint-up(xl) {
+  .page-with-contextual-sidebar {
+    --application-bar-left: #{$contextual-sidebar-width};
+  }
+
+  .page-with-icon-sidebar {
+    --application-bar-left: #{$contextual-sidebar-collapsed-width};
+  }
+
+  .page-with-super-sidebar {
+    --application-bar-left: #{$super-sidebar-width};
+  }
+
+  .page-with-super-sidebar-collapsed {
+    --application-bar-left: 0px;
+  }
 }
 
 /** COLORS **/

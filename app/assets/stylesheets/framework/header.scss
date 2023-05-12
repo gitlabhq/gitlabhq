@@ -317,42 +317,22 @@ $search-input-field-x-min-width: 200px;
 }
 
 .top-bar-fixed {
+  @include gl-inset-border-b-1-gray-100;
   background-color: $body-bg;
-  left: 0;
+  left: var(--application-bar-left);
   position: fixed;
-  right: 0;
+  right: var(--application-bar-right);
   top: $calc-application-bars-height;
   width: auto;
   z-index: $top-bar-z-index;
-  @include gl-inset-border-b-1-gray-100;
-
-  .breadcrumbs-list {
-    @include media-breakpoint-down(xs) {
-      flex-wrap: nowrap;
-    }
-  }
 
   @media (prefers-reduced-motion: no-preference) {
     transition: left $gl-transition-duration-medium, right $gl-transition-duration-medium;
   }
 
-  @include media-breakpoint-up(md) {
-    .right-sidebar-collapsed & {
-      right: $gutter-collapsed-width;
-    }
-
-    .right-sidebar-expanded & {
-      right: $gutter-width;
-    }
-  }
-
-  @include media-breakpoint-up(xl) {
-    .page-with-super-sidebar & {
-      left: $super-sidebar-width;
-    }
-
-    .page-with-super-sidebar-collapsed & {
-      left: 0;
+  .breadcrumbs-list {
+    @include media-breakpoint-down(xs) {
+      flex-wrap: nowrap;
     }
   }
 }

@@ -1,0 +1,12 @@
+- title: "Developer role providing the ability to import projects to a group"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: m_frankiewicz
+  stage: Manage
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387891
+  body: |
+    The ability for users with the Developer role for a group to import projects to that group was deprecated in GitLab
+    15.8 and is removed in GitLab 16.0.
+
+    From GitLab 16.0, only users with at least the Maintainer role for a group can import projects to that group.

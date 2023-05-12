@@ -146,12 +146,12 @@ POST /projects/import
 
 | Attribute   | Type           | Required | Description                              |
 | ----------- | -------------- | -------- | ---------------------------------------- |
-| `file`      | string | yes | The file to be uploaded.
-| `path`      | string | yes | Name and path for new project.
-| `name`      | string | no | The name of the project to be imported. Defaults to the path of the project if not provided.
-| `namespace` | integer or string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and is scheduled for removal in GitLab 16.0.
-| `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md).
-| `overwrite` | boolean | no | If there is a project with the same path the import overwrites it. Defaults to `false`.
+| `file`      | string | yes | The file to be uploaded. |
+| `path`      | string | yes | Name and path for new project. |
+| `name`      | string | no | The name of the project to be imported. Defaults to the path of the project if not provided. |
+| `namespace` | integer or string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group to import to. |
+| `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md). |
+| `overwrite` | boolean | no | If there is a project with the same path the import overwrites it. Defaults to `false`. |
 
 The override parameters passed take precedence over all values defined inside the export file.
 

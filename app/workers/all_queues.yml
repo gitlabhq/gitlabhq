@@ -930,15 +930,6 @@
   :weight: 3
   :idempotent: true
   :tags: []
-- :name: deployment:deployments_drop_older_deployments
-  :worker_name: Deployments::DropOlderDeploymentsWorker
-  :feature_category: :continuous_delivery
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 3
-  :idempotent: false
-  :tags: []
 - :name: deployment:deployments_hooks
   :worker_name: Deployments::HooksWorker
   :feature_category: :continuous_delivery

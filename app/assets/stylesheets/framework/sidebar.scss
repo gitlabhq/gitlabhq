@@ -56,7 +56,7 @@
   z-index: $zindex-dropdown-menu;
 
   &.right-sidebar-merge-requests {
-    width: 300px;
+    width: $gutter-width;
 
     @include media-breakpoint-up(md) {
       z-index: auto;
@@ -319,7 +319,7 @@
     @include right-sidebar;
     top: calc(#{$header-height} + #{$calc-application-bars-height});
 
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(md) {
       z-index: 251;
     }
   }
@@ -327,8 +327,12 @@
   &.right-sidebar-merge-requests {
     @include media-breakpoint-down(md) {
       @include right-sidebar;
-      top: $calc-application-header-height;
+      top: calc(#{$header-height} + #{$calc-application-bars-height});
       z-index: 251;
+    }
+
+    @include media-breakpoint-down(sm) {
+      top: $calc-application-header-height;
     }
   }
 

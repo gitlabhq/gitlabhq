@@ -20,8 +20,7 @@ before/after the brackets. Also, some shells (for example, Zsh) can interpret th
 
 Prerequisite:
 
-- At least the Maintainer role on the destination group to import to. Using the Developer role for this purpose was
-  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+- At least the Maintainer role on the destination group to import to.
 
 ## Rate limit
 

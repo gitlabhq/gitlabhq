@@ -167,10 +167,6 @@ module API
         current_authenticated_job.project == project
     end
 
-    def enforce_jobs_api_rate_limits(project)
-      ::Feature.enabled?(:ci_enforce_rate_limits_jobs_api, project)
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ INTEGER_ID_REGEX

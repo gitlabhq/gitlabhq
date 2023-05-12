@@ -170,13 +170,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           deployment.run!
         end
       end
-
-      it 'does not execute Deployments::DropOlderDeploymentsWorker' do
-        expect(Deployments::DropOlderDeploymentsWorker)
-          .not_to receive(:perform_async).with(deployment.id)
-
-        deployment.run!
-      end
     end
 
     context 'when deployment succeeded' do

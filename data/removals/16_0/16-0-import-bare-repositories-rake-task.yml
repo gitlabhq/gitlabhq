@@ -1,0 +1,25 @@
+- title: "Rake task for importing bare repositories"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: false
+  reporter: m_frankiewicz
+  stage: Manage
+  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/5255
+  body: |
+    The [Rake task for importing bare repositories](https://docs.gitlab.com/ee/raketasks/import.html) `gitlab:import:repos` was deprecated in GitLab 15.8 and is removed in GitLab 16.0.
+
+    This Rake task imported a directory tree of repositories into a GitLab instance. These repositories must have been
+    managed by GitLab previously, because the Rake task relied on the specific directory structure or a specific custom Git setting in order to work (`gitlab.fullpath`).
+
+    Importing repositories using this Rake task had limitations. The Rake task:
+
+    - Only knew about project and project wiki repositories and didn't support repositories for designs, group wikis, or snippets.
+    - Permitted you to import non-hashed storage projects even though these aren't supported.
+    - Relied on having Git config `gitlab.fullpath` set. [Epic 8953](https://gitlab.com/groups/gitlab-org/-/epics/8953) proposes removing support for this setting.
+
+    Alternatives to using the `gitlab:import:repos` Rake task include:
+
+    - Migrating projects using either [an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html) or
+      [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
+    - Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
+    - Importing a [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).

@@ -728,6 +728,37 @@ be available in CI/CD jobs.
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.3">
+
+## GitLab 16.3
+
+<div class="deprecation breaking-change" data-milestone="16.3">
+
+### Bundled Grafana deprecated and disabled
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- End of Support: GitLab <span class="milestone">16.3</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772).
+</div>
+
+The version of [Grafana bundled with Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/grafana.html) is
+disabled in 16.0 and will be removed in 16.3.
+If you are using the bundled Grafana, you must migrate to either:
+
+- Another implementation of Grafana. For more information, see
+  [Switch to new Grafana instance](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#switch-to-new-grafana-instance).
+- Another observability platform of your choice.
+
+The version of Grafana that is currently provided is no longer a supported version.
+
+In GitLab versions 16.0 to 16.2, you can still [re-enable the bundled Grafana](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#temporary-workaround).
+However, enabling the bundled Grafana will no longer work from GitLab 16.3.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.1">
 
 ## GitLab 16.1

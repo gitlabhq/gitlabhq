@@ -203,8 +203,7 @@ may be possible for an attacker to steal your sensitive data.
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
   than the GitLab version you exported to.
 - Review [compatibility](#compatibility) for any issues.
-- At least the Maintainer role on the destination group to migrate to. Using the Developer role for this purpose was
-  [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387891) in GitLab 15.8 and will be removed in GitLab 16.0.
+- At least the Maintainer role on the destination group to migrate to.
 
 ### Import a project
 

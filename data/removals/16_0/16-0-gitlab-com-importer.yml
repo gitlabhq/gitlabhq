@@ -1,0 +1,16 @@
+- title: "GitLab.com importer"
+  announcement_milestone: "15.8"
+  removal_milestone: "16.0"
+  breaking_change: false
+  reporter: m_frankiewicz
+  stage: Manage
+  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/4895
+  body: |
+    The [GitLab.com importer](https://docs.gitlab.com/ee/user/project/import/gitlab_com.html) was deprecated in GitLab 15.8 and is removed in GitLab 16.0.
+
+    The GitLab.com importer was introduced in 2015 for importing a project from GitLab.com to a self-managed GitLab instance through the UI.
+
+    This feature was available on self-managed instances only. [Migrating GitLab groups and projects by direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended)
+    supersedes the GitLab.com importer and provides a more cohesive importing functionality.
+
+    See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrated-group-items) and [migrated project items](https://docs.gitlab.com/ee/user/group/import/#migrated-project-items) for an overview.

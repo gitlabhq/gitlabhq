@@ -964,7 +964,7 @@ $tabs-holder-z-index: 250;
 .merge-request-overview {
   @include media-breakpoint-up(lg) {
     display: grid;
-    grid-template-columns: calc(97% - 285px) auto;
+    grid-template-columns: calc(97% - #{$gutter-width}) auto;
     grid-gap: 3%;
   }
 }
@@ -1079,30 +1079,6 @@ $tabs-holder-z-index: 250;
 .merge-request-sticky-header {
   z-index: 204;
   box-shadow: 0 1px 4px rgba($gray-300, 0.4);
-}
-
-.page-with-contextual-sidebar .merge-request-sticky-header {
-  --width: calc(100% - #{$contextual-sidebar-width});
-
-  @include media-breakpoint-down(lg) {
-    --width: calc(100% - #{$contextual-sidebar-collapsed-width});
-  }
-}
-
-.page-with-icon-sidebar .issue-sticky-header {
-  --width: calc(100% - #{$contextual-sidebar-collapsed-width});
-}
-
-.page-with-super-sidebar .merge-request-sticky-header {
-  @include media-breakpoint-up(xl) {
-    --width: calc(100% - #{$super-sidebar-width});
-  }
-}
-
-.page-with-super-sidebar-collapsed .merge-request-sticky-header {
-  @include media-breakpoint-up(xl) {
-    --width: 100%;
-  }
 }
 
 .merge-request-notification-toggle {

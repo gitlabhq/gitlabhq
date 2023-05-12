@@ -635,6 +635,25 @@ html {
 .with-top-bar {
   --top-bar-height: 48px;
 }
+@media (min-width: 768px) {
+  .page-with-contextual-sidebar {
+    --application-bar-left: 56px;
+  }
+}
+@media (min-width: 1200px) {
+  .page-with-contextual-sidebar {
+    --application-bar-left: 256px;
+  }
+  .page-with-icon-sidebar {
+    --application-bar-left: 56px;
+  }
+  .page-with-super-sidebar {
+    --application-bar-left: 256px;
+  }
+  .page-with-super-sidebar-collapsed {
+    --application-bar-left: 0px;
+  }
+}
 .gl-font-sm {
   font-size: 12px;
 }

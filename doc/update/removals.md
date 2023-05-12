@@ -122,6 +122,17 @@ Review the details carefully before upgrading.
 
 The Container Registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) was deprecated in GitLab 15.8 and removed in GitLab 16.0. This feature is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution) but we are removing that code in favor of the GitLab Dependency Proxy. Use the GitLab Dependency Proxy to proxy and cache container images from Docker Hub.
 
+### Developer role providing the ability to import projects to a group
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The ability for users with the Developer role for a group to import projects to that group was deprecated in GitLab
+15.8 and is removed in GitLab 16.0.
+
+From GitLab 16.0, only users with at least the Maintainer role for a group can import projects to that group.
+
 ### Embedding Grafana panels in Markdown is removed
 
 WARNING:
@@ -155,6 +166,17 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 GitLab administrators can no longer perform actions on protected branches or tags unless they have been explicitly granted that permission. These actions include pushing and merging into a [protected branch](https://docs.gitlab.com/ee/user/project/protected_branches.html), unprotecting a branch, and creating [protected tags](https://docs.gitlab.com/ee/user/project/protected_tags.html).
+
+### GitLab.com importer
+
+The [GitLab.com importer](https://docs.gitlab.com/ee/user/project/import/gitlab_com.html) was deprecated in GitLab 15.8 and is removed in GitLab 16.0.
+
+The GitLab.com importer was introduced in 2015 for importing a project from GitLab.com to a self-managed GitLab instance through the UI.
+
+This feature was available on self-managed instances only. [Migrating GitLab groups and projects by direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended)
+supersedes the GitLab.com importer and provides a more cohesive importing functionality.
+
+See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrated-group-items) and [migrated project items](https://docs.gitlab.com/ee/user/group/import/#migrated-project-items) for an overview.
 
 ### GraphQL API: Runner status no longer returns `PAUSED` and `ACTIVE` values
 
@@ -252,6 +274,26 @@ is removed in favor of more specialized fields like:
 - `feature_flags_access_level`
 - `infrastructure_access_level`
 - `monitor_access_level`
+
+### Rake task for importing bare repositories
+
+The [Rake task for importing bare repositories](https://docs.gitlab.com/ee/raketasks/import.html) `gitlab:import:repos` was deprecated in GitLab 15.8 and is removed in GitLab 16.0.
+
+This Rake task imported a directory tree of repositories into a GitLab instance. These repositories must have been
+managed by GitLab previously, because the Rake task relied on the specific directory structure or a specific custom Git setting in order to work (`gitlab.fullpath`).
+
+Importing repositories using this Rake task had limitations. The Rake task:
+
+- Only knew about project and project wiki repositories and didn't support repositories for designs, group wikis, or snippets.
+- Permitted you to import non-hashed storage projects even though these aren't supported.
+- Relied on having Git config `gitlab.fullpath` set. [Epic 8953](https://gitlab.com/groups/gitlab-org/-/epics/8953) proposes removing support for this setting.
+
+Alternatives to using the `gitlab:import:repos` Rake task include:
+
+- Migrating projects using either [an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html) or
+  [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
+- Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
+- Importing a [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
 
 ### Redis 5 compatibility
 

@@ -92,7 +92,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/dependency_proxy/cleanup_dependency_proxy_worker.rb'
     - 'app/workers/dependency_proxy/cleanup_manifest_worker.rb'
     - 'app/workers/dependency_proxy/image_ttl_group_policy_worker.rb'
-    - 'app/workers/deployments/drop_older_deployments_worker.rb'
     - 'app/workers/deployments/link_merge_request_worker.rb'
     - 'app/workers/deployments/update_environment_worker.rb'
     - 'app/workers/design_management/copy_design_collection_worker.rb'
