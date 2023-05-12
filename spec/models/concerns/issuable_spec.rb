@@ -976,7 +976,7 @@ RSpec.describe Issuable do
     end
   end
 
-  describe '#incident?' do
+  describe '#incident_type_issue?' do
     where(:issuable_type, :incident) do
       :issue         | false
       :incident      | true
@@ -986,7 +986,7 @@ RSpec.describe Issuable do
     with_them do
       let(:issuable) { build_stubbed(issuable_type) }
 
-      subject { issuable.incident? }
+      subject { issuable.incident_type_issue? }
 
       it { is_expected.to eq(incident) }
     end

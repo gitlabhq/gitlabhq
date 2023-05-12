@@ -27,7 +27,7 @@ trigger-omnibus-env-ce:
   extends:
     - .trigger-omnibus-env-ce
   variables:
-    FOSS_ONLY: "1" # set FOSS_ONLY because we don't pass it via trigger job
+    FOSS_ONLY: "1"  # set FOSS_ONLY because we don't pass it via trigger job
 
 # TODO: enable once ee jobs are added
 # trigger-omnibus:

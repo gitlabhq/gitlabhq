@@ -73,3 +73,41 @@ Some additional information is included at the bottom of the comment:
   migration (ending in `.log`) are available there, and only accessible by
   database maintainers or with an access request. Details of the specific
   batched background migration batches sampled are also available.
+
+## Test changes to the database testing pipeline
+
+To test a change to the database testing pipeline itself, you need:
+
+1. A merge request against GitLab Org.
+1. The change to be tested must be present on a branch on GitLab Ops.
+
+Use this self-documented script to test a merge request on GitLab Org against an arbitrary branch on GitLab Ops:
+
+```shell
+#! /usr/bin/env bash
+
+# The following must be set on a per-invocation basis:
+TESTING_TRIGGER_TOKEN='[REDACTED]'              # Testing trigger token created in the CI section of the project
+CI_COMMIT_REF_NAME='55-post-notice-on-failure'  # The branch on ops that you want to run against
+CI_MERGE_REQUEST_IID='117901'                   # Merge request ID of the MR on gitlab.com that you want to test
+SHA="fed6dd8a58d75a0e053a4972765b4fc08c5814a3"  # The commit SHA of the HEAD of the branch you want to test on gitlab-org/gitlab
+
+# The following should not be changed between invocations:
+CI_JOB_URL='https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/jobs/1590162939'
+# It doesn't appear that CI_JOB_URL has to be set to anything in particular for the pipeline to run
+# successfully, but this would normally be the URL to the upstream job that invokes the DB testing pipeline.
+CI_MERGE_REQUEST_PROJECT_ID='278964'    # gitlab-org/gitlab numeric ID. Shouldn't change.
+CI_PROJECT_ID="gitlab-org/gitlab"       # The slug identifying gitlab-org/gitlab.
+
+curl --verbose --request POST \
+     --form "token=$TESTING_TRIGGER_TOKEN" \
+     --form "ref=$CI_COMMIT_REF_NAME" \
+     --form "variables[TOP_UPSTREAM_MERGE_REQUEST_IID]=$CI_MERGE_REQUEST_IID" \
+     --form "variables[TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID]=$CI_MERGE_REQUEST_PROJECT_ID" \
+     --form "variables[TOP_UPSTREAM_SOURCE_JOB]=$CI_JOB_URL" \
+     --form "variables[TOP_UPSTREAM_SOURCE_PROJECT]=$CI_PROJECT_ID" \
+     --form "variables[VALIDATION_PIPELINE]=true" \
+     --form "variables[GITLAB_COMMIT_SHA]=$SHA" \
+     --form "variables[TRIGGER_SOURCE]=$CI_JOB_URL" \
+     "https://ops.gitlab.net/api/v4/projects/429/trigger/pipeline"
+```

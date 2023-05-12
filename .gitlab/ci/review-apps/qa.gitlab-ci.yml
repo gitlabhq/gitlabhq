@@ -169,7 +169,7 @@ notify-slack:
     TYPE: "(review-app) "
   when: on_failure
   script:
-    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml"  # generate summary
+    - bundle exec prepare-stage-reports --input-files "${CI_PROJECT_DIR}/qa/tmp/rspec-*.xml"
     - !reference [.notify-slack-qa, script]
 
 export-test-metrics:

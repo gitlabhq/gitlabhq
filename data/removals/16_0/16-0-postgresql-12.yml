@@ -13,5 +13,5 @@
       to PostgreSQL 13.
     - Using an externally-provided PostgreSQL 12, you must upgrade to PostgreSQL 13 or later to meet the
       [minimum version requirements](https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements).
-  tiers: # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: https://docs.gitlab.com/ee/administration/package_information/postgresql_versions.html

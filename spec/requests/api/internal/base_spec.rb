@@ -10,6 +10,9 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
   let_it_be(:project, reload: true) { create(:project, :repository, :wiki_repo) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user, project: project) }
+  let_it_be(:max_pat_access_token_lifetime) do
+    PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date.freeze
+  end
 
   let(:key) { create(:key, user: user) }
   let(:secret_token) { Gitlab::Shell.secret_token }
@@ -194,39 +197,68 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       expect(json_response['message']).to match(/\AInvalid scope: 'badscope'. Valid scopes are: /)
     end
 
-    it 'returns a token without expiry when the expires_at parameter is missing' do
-      token_size = (PersonalAccessToken.token_prefix || '').size + 20
+    it 'returns a token with expiry when it receives a valid expires_at parameter' do
+      freeze_time do
+        token_size = (PersonalAccessToken.token_prefix || '').size + 20
 
-      post api('/internal/personal_access_token'),
-           params: {
-             key_id: key.id,
-             name: 'newtoken',
-             scopes: %w(read_api read_repository)
-           },
-           headers: gitlab_shell_internal_api_request_header
+        post api('/internal/personal_access_token'),
+          params: {
+            key_id: key.id,
+            name: 'newtoken',
+            scopes: %w(read_api read_repository),
+            expires_at: max_pat_access_token_lifetime
+          },
+          headers: gitlab_shell_internal_api_request_header
 
-      expect(json_response['success']).to be_truthy
-      expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-      expect(json_response['scopes']).to match_array(%w(read_api read_repository))
-      expect(json_response['expires_at']).to be_nil
+        expect(json_response['success']).to be_truthy
+        expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
+        expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+        expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
+      end
     end
 
-    it 'returns a token with expiry when it receives a valid expires_at parameter' do
-      token_size = (PersonalAccessToken.token_prefix || '').size + 20
+    context 'when default_pat_expiration feature flag is true' do
+      it 'returns token with expiry as PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
+        freeze_time do
+          token_size = (PersonalAccessToken.token_prefix || '').size + 20
 
-      post api('/internal/personal_access_token'),
-           params: {
-             key_id: key.id,
-             name: 'newtoken',
-             scopes: %w(read_api read_repository),
-             expires_at: '9001-11-17'
-           },
-           headers: gitlab_shell_internal_api_request_header
+          post api('/internal/personal_access_token'),
+            params: {
+              key_id: key.id,
+              name: 'newtoken',
+              scopes: %w(read_api read_repository)
+            },
+            headers: gitlab_shell_internal_api_request_header
 
-      expect(json_response['success']).to be_truthy
-      expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
-      expect(json_response['scopes']).to match_array(%w(read_api read_repository))
-      expect(json_response['expires_at']).to eq('9001-11-17')
+          expect(json_response['success']).to be_truthy
+          expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
+          expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+          expect(json_response['expires_at']).to eq(max_pat_access_token_lifetime.iso8601)
+        end
+      end
+    end
+
+    context 'when default_pat_expiration feature flag is false' do
+      before do
+        stub_feature_flags(default_pat_expiration: false)
+      end
+
+      it 'uses nil expiration value' do
+        token_size = (PersonalAccessToken.token_prefix || '').size + 20
+
+        post api('/internal/personal_access_token'),
+            params: {
+              key_id: key.id,
+              name: 'newtoken',
+              scopes: %w(read_api read_repository)
+            },
+            headers: gitlab_shell_internal_api_request_header
+
+        expect(json_response['success']).to be_truthy
+        expect(json_response['token']).to match(/\A\S{#{token_size}}\z/)
+        expect(json_response['scopes']).to match_array(%w(read_api read_repository))
+        expect(json_response['expires_at']).to be_nil
+      end
     end
   end
 

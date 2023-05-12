@@ -1,0 +1,11 @@
+- title: "Security report schemas version 14.x.x"
+  announcement_milestone: "15.3"
+  removal_milestone: "16.0"
+  breaking_change: true
+  reporter: abellucci
+  stage: Govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366477
+  body: |
+    Version 14.x.x [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) have been removed.
+    Security reports that use schema version 14.x.x will cause an error in the pipeline's **Security** tab. For more information, refer to [security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation).
+  tiers: [Ultimate]

@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlIcon } from '@gitlab/ui';
+import { GlFormGroup } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import { __ } from '~/locale';
@@ -7,7 +7,6 @@ import { __ } from '~/locale';
 export default {
   components: {
     GlFormGroup,
-    GlIcon,
     LabelsSelect,
   },
   inject: [
@@ -50,10 +49,6 @@ export default {
   <gl-form-group class="row" label-class="gl-display-none">
     <label class="col-12 gl-display-flex gl-align-center gl-mb-1">
       {{ $options.i18n.fieldLabel }}
-      <div class="gl-ml-3">
-        <gl-icon name="labels" />
-        <span class="gl-font-base gl-line-height-24">{{ selectedLabels.length }}</span>
-      </div>
     </label>
     <div class="col-12">
       <div class="issuable-form-select-holder">

@@ -1,0 +1,7 @@
+name: default_pat_expiration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410440
+milestone: '16.0'
+type: development
+group: group::authentication and authorization
+default_enabled: true

@@ -1463,6 +1463,7 @@ Input type: `CiAiGenerateConfigInput`
 | ---- | ---- | ----------- |
 | <a id="mutationciaigenerateconfigclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationciaigenerateconfigerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationciaigenerateconfigusermessage"></a>`userMessage` | [`AiMessageType`](#aimessagetype) | User chat message. |
 
 ### `Mutation.ciCdSettingsUpdate`
 

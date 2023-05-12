@@ -93,7 +93,7 @@ module Issues
     end
 
     def resolve_incident(issue)
-      return unless issue.incident?
+      return unless issue.work_item_type&.incident?
 
       status = issue.incident_management_issuable_escalation_status || issue.build_incident_management_issuable_escalation_status
 

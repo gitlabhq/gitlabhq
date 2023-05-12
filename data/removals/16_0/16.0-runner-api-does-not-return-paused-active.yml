@@ -4,7 +4,7 @@
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: DarrenEastman  # (required) GitLab username of the person reporting the removal
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344648 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344648  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
         In GitLab 16.0 and later, the GraphQL query for runners will no longer return the statuses `PAUSED` and `ACTIVE`.
 

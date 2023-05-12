@@ -19,7 +19,7 @@ RSpec.describe API::Entities::PersonalAccessToken do
          user_id: user.id,
          last_used_at: nil,
          active: true,
-         expires_at: nil
+         expires_at: token.expires_at.iso8601
        })
     end
   end

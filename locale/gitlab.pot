@@ -50979,7 +50979,7 @@ msgstr ""
 msgid "Workspaces"
 msgstr ""
 
-msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab. You can create a workspace on its own or as part of a project."
+msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab. You can create a workspace for a public project."
 msgstr ""
 
 msgid "Workspaces|Cancel"
@@ -53915,6 +53915,9 @@ msgid "must belong to same project of the work item."
 msgstr ""
 
 msgid "must contain only a discord user ID."
+msgstr ""
+
+msgid "must expire in 365 days"
 msgstr ""
 
 msgid "must have a repository"

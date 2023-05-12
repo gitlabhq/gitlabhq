@@ -1,0 +1,19 @@
+- title: "Non-expiring access tokens no longer supported"
+  announcement_milestone: "15.4"  # (required) The milestone when this feature was deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jessieay  # (required) GitLab username of the person reporting the removal
+  stage: Manage  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369123
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Currently, you can create access tokens that have no expiration date. These access tokens are valid indefinitely, which presents a security risk if the access token is
+    divulged. Because expiring access tokens are better, from GitLab 15.4 we [populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).
+
+    In GitLab 16.0, any personal, project, or group access token that does not have an expiration date will automatically have an expiration date set at 365 days later than the current date.
+#
+# OPTIONAL FIELDS
+#
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

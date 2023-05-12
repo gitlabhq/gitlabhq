@@ -174,6 +174,10 @@ module Issuable
       end
     end
 
+    def issuable_type
+      self.class.name.underscore
+    end
+
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
@@ -197,15 +201,15 @@ module Issuable
     end
 
     def supports_severity?
-      incident?
+      incident_type_issue?
     end
 
     def supports_escalation?
-      incident?
+      incident_type_issue?
     end
 
-    def incident?
-      is_a?(Issue) && super
+    def incident_type_issue?
+      is_a?(Issue) && work_item_type&.incident?
     end
 
     def supports_issue_type?

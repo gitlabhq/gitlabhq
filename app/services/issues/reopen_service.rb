@@ -27,7 +27,7 @@ module Issues
     end
 
     def perform_incident_management_actions(issue)
-      return unless issue.incident?
+      return unless issue.work_item_type&.incident?
 
       create_timeline_event(issue)
     end

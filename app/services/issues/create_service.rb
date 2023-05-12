@@ -112,7 +112,7 @@ module Issues
     attr_reader :spam_params, :extra_params
 
     def create_timeline_event(issue)
-      return unless issue.incident?
+      return unless issue.work_item_type&.incident?
 
       IncidentManagement::TimelineEvents::CreateService.create_incident(issue, current_user)
     end

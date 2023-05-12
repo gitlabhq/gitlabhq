@@ -274,7 +274,7 @@ module IssuablesHelper
   end
 
   def incident_only_initial_data(issue)
-    return {} unless issue.incident?
+    return {} unless issue.incident_type_issue?
 
     {
       hasLinkedAlerts: issue.alert_management_alerts.any?,
@@ -393,6 +393,35 @@ module IssuablesHelper
       is_incident_allowed: create_issue_type_allowed?(@project, :incident).to_s,
       issue_path: new_project_issue_path(@project),
       incident_path: new_project_issue_path(@project, { issuable_template: 'incident', issue: { issue_type: 'incident' } })
+    }
+  end
+
+  def issuable_label_selector_data(project, issuable)
+    initial_labels = issuable.labels.map do |label|
+      {
+        __typename: "Label",
+        id: label.id,
+        title: label.title,
+        description: label.description,
+        color: label.color,
+        text_color: label.text_color
+      }
+    end
+
+    filter_base_path =
+      if issuable.issuable_type == "merge_request"
+        project_merge_requests_path(project)
+      else
+        project_issues_path(project)
+      end
+
+    {
+      field_name: "#{issuable.class.model_name.param_key}[label_ids][]",
+      full_path: project.full_path,
+      initial_labels: initial_labels.to_json,
+      issuable_type: issuable.issuable_type,
+      labels_filter_base_path: filter_base_path,
+      labels_manage_path: project_labels_path(project)
     }
   end
 

@@ -8,8 +8,8 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:achievement) { create(:achievement, namespace: group) }
-  let_it_be(:user_achievement1) { create(:user_achievement, achievement: achievement, user: user) }
-  let_it_be(:user_achievement2) { create(:user_achievement, :revoked, achievement: achievement, user: user) }
+  let_it_be(:non_revoked_achievement1) { create(:user_achievement, achievement: achievement, user: user) }
+  let_it_be(:non_revoked_achievement2) { create(:user_achievement, :revoked, achievement: achievement, user: user) }
   let_it_be(:fields) do
     <<~HEREDOC
       id
@@ -51,11 +51,10 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
 
   it_behaves_like 'a working graphql query'
 
-  it 'returns all user_achievements' do
+  it 'returns all non_revoked user_achievements' do
     expect(graphql_data_at(:namespace, :achievements, :nodes, :userAchievements, :nodes))
       .to contain_exactly(
-        a_graphql_entity_for(user_achievement1),
-        a_graphql_entity_for(user_achievement2)
+        a_graphql_entity_for(non_revoked_achievement1)
       )
   end
 
@@ -65,9 +64,7 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
     end.count
 
     user2 = create(:user)
-    create_list(:achievement, 3, namespace: group) do |a|
-      create(:user_achievement, achievement: a, user: user2)
-    end
+    create(:user_achievement, achievement: achievement, user: user2)
 
     expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control_count)
   end

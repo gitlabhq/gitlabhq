@@ -1,0 +1,8 @@
+---
+name: visible_label_selection_on_metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88908
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/364534
+milestone: '16.0'
+type: development
+group: "group::ux paper cuts"
+default_enabled: false

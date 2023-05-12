@@ -147,7 +147,7 @@ export default {
         <gl-loading-icon
           v-if="labelsFetchInProgress"
           class="labels-fetch-loading gl-align-items-center gl-w-full gl-h-full gl-mb-3"
-          size="lg"
+          size="sm"
         />
         <template v-else>
           <gl-dropdown-item

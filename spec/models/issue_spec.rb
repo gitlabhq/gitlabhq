@@ -2001,4 +2001,18 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     it { is_expected.to eq(WorkItems::Type.default_by_type(::Issue::DEFAULT_ISSUE_TYPE)) }
   end
+
+  describe 'issue_type enum generated methods' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+
+    where(issue_type: WorkItems::Type.base_types.keys)
+
+    with_them do
+      it 'raises an error if called' do
+        expect { issue.public_send("#{issue_type}?".to_sym) }.to raise_error(Issue::ForbiddenColumnUsed)
+      end
+    end
+  end
 end

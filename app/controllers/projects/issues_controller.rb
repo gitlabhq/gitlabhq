@@ -454,7 +454,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def require_incident_for_incident_routes
     return unless params[:incident_tab].present?
-    return if issue.incident?
+    return if issue.work_item_type&.incident?
 
     # Redirect instead of 404 to gracefully handle
     # issue type changes

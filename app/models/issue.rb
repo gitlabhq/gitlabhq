@@ -40,6 +40,7 @@ class Issue < ApplicationRecord
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   IssueTypeOutOfSyncError = Class.new(StandardError)
+  ForbiddenColumnUsed = Class.new(StandardError)
 
   SORTING_PREFERENCE_FIELD = :issues_sort
   MAX_BRANCH_TEMPLATE = 255
@@ -138,6 +139,28 @@ class Issue < ApplicationRecord
   validate :issue_type_attribute_present
 
   enum issue_type: WorkItems::Type.base_types
+
+  # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/402699
+  WorkItems::Type.base_types.each do |base_type, _value|
+    define_method "#{base_type}?".to_sym do
+      error_message = <<~ERROR
+        `#{base_type}?` uses the `issue_type` column underneath. As we want to remove the column,
+        its usage is forbidden. You should use the `work_item_types` table instead.
+
+        # Before
+
+        issue.requirement? => true
+
+        # After
+
+        issue.work_item_type.requirement? => true
+
+        More details in https://gitlab.com/groups/gitlab-org/-/epics/10529
+      ERROR
+
+      raise ForbiddenColumnUsed, error_message
+    end
+  end
 
   alias_method :issuing_parent, :project
   alias_attribute :issuing_parent_id, :project_id

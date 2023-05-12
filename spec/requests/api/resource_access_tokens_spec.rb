@@ -336,13 +336,33 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           context "when 'expires_at' is not set" do
             let(:expires_at) { nil }
 
-            it "creates a #{source_type} access token with the params", :aggregate_failures do
-              create_token
+            context 'when default_pat_expiration feature flag is true' do
+              it "creates a #{source_type} access token with the default expires_at value", :aggregate_failures do
+                freeze_time do
+                  create_token
+                  expires_at = PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
 
-              expect(response).to have_gitlab_http_status(:created)
-              expect(json_response["name"]).to eq("test")
-              expect(json_response["scopes"]).to eq(["api"])
-              expect(json_response["expires_at"]).to eq(nil)
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(json_response["name"]).to eq("test")
+                  expect(json_response["scopes"]).to eq(["api"])
+                  expect(json_response["expires_at"]).to eq(expires_at.to_date.iso8601)
+                end
+              end
+            end
+
+            context 'when default_pat_expiration feature flag is false' do
+              before do
+                stub_feature_flags(default_pat_expiration: false)
+              end
+
+              it "creates a #{source_type} access token with the params", :aggregate_failures do
+                create_token
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response["name"]).to eq("test")
+                expect(json_response["scopes"]).to eq(["api"])
+                expect(json_response["expires_at"]).to eq(nil)
+              end
             end
           end
 

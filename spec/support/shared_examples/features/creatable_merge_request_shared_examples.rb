@@ -5,20 +5,20 @@ RSpec.shared_examples 'a creatable merge request' do
   include ListboxHelpers
 
   it 'creates new merge request', :js do
-    find('.js-assignee-search').click
+    find('[data-testid="assignee-ids-dropdown-toggle"]').click
     page.within '.dropdown-menu-user' do
       click_link user2.name
     end
 
     expect(find('input[name="merge_request[assignee_ids][]"]', visible: false).value).to match(user2.id.to_s)
-    page.within '.js-assignee-search' do
+    page.within '[data-testid="assignee-ids-dropdown-toggle"]' do
       expect(page).to have_content user2.name
     end
 
     click_link 'Assign to me'
 
     expect(find('input[name="merge_request[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-    page.within '.js-assignee-search' do
+    page.within '[data-testid="assignee-ids-dropdown-toggle"]' do
       expect(page).to have_content user.name
     end
 

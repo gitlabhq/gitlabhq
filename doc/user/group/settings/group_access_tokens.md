@@ -28,11 +28,7 @@ associated with a group rather than a project or user.
 In self-managed instances, group access tokens are subject to the same [maximum lifetime limits](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
 
 WARNING:
-The ability to create group access tokens without expiry was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and is planned for removal in GitLab
-16.0. When this ability is removed, existing group access tokens without an expiry are planned to have an expiry added.
-The automatic adding of an expiry occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry
-occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
+The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. In GitLab 16.0 and later, existing group access tokens without an expiry date are automatically given an expiry date 365 days later than the current date. The automatic adding of an expiry date occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry date occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
 
 You can use group access tokens:
 
@@ -52,13 +48,18 @@ configured for personal access tokens.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
+> - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
 To create a group access token:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
-1. Optional. Enter an expiry date for the token. The token will expire on that date at midnight UTC. An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
+1. Enter an expiry date for the token:
+   - The token expires on that date at midnight UTC.
+   - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
+   - By default, this date can be a maximum of 365 days later than the current date.
+   - An instance-wide [maximum lifetime](../../admin_area/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).
 1. Select  **Create group access token**.

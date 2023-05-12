@@ -4,7 +4,7 @@
   breaking_change: false  # (required) Change to false if this is not a breaking change.
   reporter: DarrenEastman  # (required) GitLab username of the person reporting the removal
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/379064 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/379064  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     In GitLab 13.6 and later, users can [specify any runner configuration in the GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html). When this features was released, we deprecated the fields in the GitLab Helm Chart configuration specific to the runner. As of v1.0 of the GitLab Runner Helm chart (GitLab 16.0), the following fields have been removed and are no longer supported:
 

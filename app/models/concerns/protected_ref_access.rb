@@ -6,18 +6,24 @@ module ProtectedRefAccess
   class_methods do
     def human_access_levels
       {
-        Gitlab::Access::DEVELOPER => "Developers + Maintainers",
-        Gitlab::Access::MAINTAINER => "Maintainers",
-        Gitlab::Access::NO_ACCESS => "No one"
-      }
+        Gitlab::Access::DEVELOPER => 'Developers + Maintainers',
+        Gitlab::Access::MAINTAINER => 'Maintainers',
+        Gitlab::Access::ADMIN => 'Instance admins',
+        Gitlab::Access::NO_ACCESS => 'No one'
+      }.slice(*allowed_access_levels)
     end
 
     def allowed_access_levels
-      [
-        Gitlab::Access::MAINTAINER,
+      levels = [
         Gitlab::Access::DEVELOPER,
+        Gitlab::Access::MAINTAINER,
+        Gitlab::Access::ADMIN,
         Gitlab::Access::NO_ACCESS
       ]
+
+      return levels unless Gitlab.com?
+
+      levels.excluding(Gitlab::Access::ADMIN)
     end
 
     def humanize(access_level)
@@ -47,6 +53,7 @@ module ProtectedRefAccess
 
   def check_access(current_user)
     return false if current_user.nil? || no_access?
+    return current_user.admin? if admin_access?
 
     yield if block_given?
 
@@ -54,6 +61,10 @@ module ProtectedRefAccess
   end
 
   private
+
+  def admin_access?
+    role? && access_level == ::Gitlab::Access::ADMIN
+  end
 
   def no_access?
     role? && access_level == Gitlab::Access::NO_ACCESS

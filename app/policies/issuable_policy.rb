@@ -14,7 +14,7 @@ class IssuablePolicy < BasePolicy
 
   condition(:is_author) { @subject&.author == @user }
 
-  condition(:is_incident) { @subject.incident? }
+  condition(:is_incident) { @subject.incident_type_issue? }
 
   desc "Issuable is hidden"
   condition(:hidden, scope: :subject) { @subject.hidden? }

@@ -100,7 +100,15 @@ module ResourceAccessTokens
     end
 
     def create_membership(resource, user, access_level)
-      resource.add_member(user, access_level, expires_at: params[:expires_at])
+      resource.add_member(user, access_level, expires_at: default_pat_expiration)
+    end
+
+    def default_pat_expiration
+      if Feature.enabled?(:default_pat_expiration)
+        params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      else
+        params[:expires_at]
+      end
     end
 
     def log_event(token)

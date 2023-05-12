@@ -4,7 +4,7 @@
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: derekferguson  # (required) GitLab username of the person reporting the removal
   stage: Secure  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383467 # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383467  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The variables `DAST_API_HOST_OVERRIDE` and `DAST_API_SPECIFICATION` have been removed from use for DAST API scans.
 

@@ -855,7 +855,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `discussion_id`     | integer        | yes      | The ID of a discussion item. |
+| `discussion_id`     | string        | yes      | The ID of a discussion item. |
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
 
@@ -1023,7 +1023,7 @@ Parameters:
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `discussion_id`     | integer        | yes      | The ID of a thread. |
+| `discussion_id`     | string        | yes      | The ID of a thread. |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
 | `resolved`          | boolean        | yes      | Resolve or unresolve the discussion. |
 
@@ -1047,7 +1047,7 @@ Parameters:
 | ------------------- | -------------- | -------- | ----------- |
 | `body`              | string         | yes      | The content of the note or reply. |
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `discussion_id`     | integer        | yes      | The ID of a thread. |
+| `discussion_id`     | string        | yes      | The ID of a thread. |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
 | `note_id`           | integer        | yes      | The ID of a thread note. |
 | `created_at`        | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
@@ -1069,7 +1069,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `discussion_id`     | integer        | yes      | The ID of a thread. |
+| `discussion_id`     | string        | yes      | The ID of a thread. |
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
 | `note_id`           | integer        | yes      | The ID of a thread note. |
@@ -1100,7 +1100,7 @@ Parameters:
 
 | Attribute           | Type           | Required | Description |
 | ------------------- | -------------- | -------- | ----------- |
-| `discussion_id`     | integer        | yes      | The ID of a thread. |
+| `discussion_id`     | string        | yes      | The ID of a thread. |
 | `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request. |
 | `note_id`           | integer        | yes      | The ID of a thread note. |

@@ -18,6 +18,21 @@ RSpec.shared_examples 'protected ref access' do |association|
     it { is_expected.not_to validate_presence_of(:access_level) }
   end
 
+  describe '::human_access_levels' do
+    subject { described_class.human_access_levels }
+
+    let(:levels) do
+      {
+        Gitlab::Access::DEVELOPER => "Developers + Maintainers",
+        Gitlab::Access::MAINTAINER => "Maintainers",
+        Gitlab::Access::ADMIN => 'Instance admins',
+        Gitlab::Access::NO_ACCESS => "No one"
+      }.slice(*described_class.allowed_access_levels)
+    end
+
+    it { is_expected.to eq(levels) }
+  end
+
   describe '#check_access' do
     let_it_be(:current_user) { create(:user) }
 
@@ -42,6 +57,22 @@ RSpec.shared_examples 'protected ref access' do |association|
       let(:access_level) { ::Gitlab::Access::NO_ACCESS }
 
       it { expect(subject.check_access(current_user)).to eq(false) }
+    end
+
+    context 'when instance admin access is configured' do
+      let(:access_level) { Gitlab::Access::ADMIN }
+
+      context 'when current_user is a maintainer' do
+        it { expect(subject.check_access(current_user)).to eq(false) }
+      end
+
+      context 'when current_user is admin' do
+        before do
+          allow(current_user).to receive(:admin?).and_return(true)
+        end
+
+        it { expect(subject.check_access(current_user)).to eq(true) }
+      end
     end
 
     context 'when current_user can push_code to project' do

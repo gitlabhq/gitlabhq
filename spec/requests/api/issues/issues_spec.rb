@@ -1210,7 +1210,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       it 'allows issue type to be converted' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: { issue_type: 'incident' }
 
-        expect(issue.reload.incident?).to be(true)
+        expect(issue.reload.work_item_type.incident?).to be(true)
       end
     end
   end

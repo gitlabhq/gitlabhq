@@ -157,7 +157,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       context 'when a build_service is provided' do
         let(:result) { described_class.new(container: project, current_user: user, params: opts, spam_params: spam_params, build_service: build_service).execute }
 
-        let(:issue_from_builder) { WorkItem.new(project: project, title: 'Issue from builder') }
+        let(:issue_from_builder) { build(:work_item, project: project, title: 'Issue from builder') }
         let(:build_service) { double(:build_service, execute: issue_from_builder) }
 
         it 'uses the provided service to build the issue' do

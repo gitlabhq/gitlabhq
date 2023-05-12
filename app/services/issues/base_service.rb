@@ -110,7 +110,7 @@ module Issues
       issue.namespace.execute_hooks(issue_data, hooks_scope)
       issue.namespace.execute_integrations(issue_data, hooks_scope)
 
-      execute_incident_hooks(issue, issue_data) if issue.incident?
+      execute_incident_hooks(issue, issue_data) if issue.work_item_type&.incident?
     end
 
     # We can remove this code after proposal in

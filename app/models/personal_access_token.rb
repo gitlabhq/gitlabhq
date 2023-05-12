@@ -15,6 +15,7 @@ class PersonalAccessToken < ApplicationRecord
 
   # PATs are 20 characters + optional configurable settings prefix (0..20)
   TOKEN_LENGTH_RANGE = (20..40).freeze
+  MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -48,6 +49,7 @@ class PersonalAccessToken < ApplicationRecord
 
   validates :scopes, presence: true
   validate :validate_scopes
+  validate :expires_at_before_instance_max_expiry_date, on: :create
 
   def revoke!
     update!(revoked: true)
@@ -55,6 +57,19 @@ class PersonalAccessToken < ApplicationRecord
 
   def active?
     !revoked? && !expired?
+  end
+
+  # fall back to default value until background migration has updated all
+  # existing PATs and we can add a validation
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/369123
+  def expires_at=(value)
+    datetime = if Feature.enabled?(:default_pat_expiration)
+                 value.presence || MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+               else
+                 value
+               end
+
+    super(datetime)
   end
 
   override :simple_sorts
@@ -107,6 +122,15 @@ class PersonalAccessToken < ApplicationRecord
 
   def prefix_from_application_current_settings
     self.class.token_prefix
+  end
+
+  def expires_at_before_instance_max_expiry_date
+    return unless Feature.enabled?(:default_pat_expiration)
+    return unless expires_at
+
+    if expires_at > MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      errors.add(:expires_at, _('must expire in 365 days'))
+    end
   end
 end
 

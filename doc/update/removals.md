@@ -190,6 +190,17 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 - [**Pipelines rate limits**](https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_pipelines_creation.html).
 - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).
 
+### Non-expiring access tokens no longer supported
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Currently, you can create access tokens that have no expiration date. These access tokens are valid indefinitely, which presents a security risk if the access token is
+divulged. Because expiring access tokens are better, from GitLab 15.4 we [populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).
+
+In GitLab 16.0, any personal, project, or group access token that does not have an expiration date will automatically have an expiration date set at 365 days later than the current date.
+
 ### Non-standard default Redis ports are no longer supported
 
 WARNING:
@@ -322,6 +333,15 @@ This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_g
 Review the details carefully before upgrading.
 
 From GitLab 15.9, all Release links are external. The `external` field in the Releases and Release link APIs was deprecated in 15.9, and removed in GitLab 16.0.
+
+### Security report schemas version 14.x.x
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Version 14.x.x [security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) have been removed.
+Security reports that use schema version 14.x.x will cause an error in the pipeline's **Security** tab. For more information, refer to [security report validation](https://docs.gitlab.com/ee/user/application_security/#security-report-validation).
 
 ### Stop publishing GitLab Runner images based on Windows Server 2004 and 20H2
 

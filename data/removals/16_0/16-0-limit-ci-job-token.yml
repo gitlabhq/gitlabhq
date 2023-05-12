@@ -2,7 +2,7 @@
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "16.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
-  reporter: jreporter # (required) GitLab username of the person reporting the deprecation
+  reporter: jreporter  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395708  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.

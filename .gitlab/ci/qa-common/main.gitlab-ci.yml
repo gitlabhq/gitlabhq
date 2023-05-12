@@ -214,9 +214,9 @@ stages:
       fi
     - |
       bundle exec relate-failure-issue \
-        --input-files "$CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.json" \
+        --input-files "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.json" \
         --project "gitlab-org/gitlab" \
-        --token "$RELATE_TEST_FAILURE_TOKEN"
+        --token "${RELATE_TEST_FAILURE_TOKEN}"
 
 .generate-test-session:
   extends:
@@ -247,7 +247,6 @@ stages:
     - .ruby-image
   stage: notify
   variables:
-    QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/rspec-*.xml
     SLACK_ICON_EMOJI: ci_failing
     STATUS_SYM: ☠️
     STATUS: failed
@@ -259,7 +258,7 @@ stages:
         echo "Test suite passed. Exiting..."
         exit 0
       fi
-    - bundle exec gitlab-qa-report --prepare-stage-reports "$QA_RSPEC_XML_FILE_PATTERN"  # generate summary
+    - bundle exec prepare-stage-reports --input-files "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.xml"
     - !reference [.notify-slack-qa, script]
 
 # ==========================================

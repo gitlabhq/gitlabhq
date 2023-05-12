@@ -267,6 +267,41 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       expect(personal_access_token).not_to be_valid
       expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
     end
+
+    context 'validates expires_at' do
+      let(:max_expiration_date) { described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now }
+
+      context 'when default_pat_expiration feature flag is true' do
+        context 'when expires_in is less than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+          it 'is valid' do
+            personal_access_token.expires_at = max_expiration_date - 1.day
+
+            expect(personal_access_token).to be_valid
+          end
+        end
+
+        context 'when expires_in is more than MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS days' do
+          it 'is invalid' do
+            personal_access_token.expires_at = max_expiration_date + 1.day
+
+            expect(personal_access_token).not_to be_valid
+            expect(personal_access_token.errors[:expires_at].first).to eq('must expire in 365 days')
+          end
+        end
+      end
+
+      context 'when default_pat_expiration feature flag is false' do
+        before do
+          stub_feature_flags(default_pat_expiration: false)
+        end
+
+        it 'allows any expires_at value' do
+          personal_access_token.expires_at = max_expiration_date + 1.day
+
+          expect(personal_access_token).to be_valid
+        end
+      end
+    end
   end
 
   describe 'scopes' do
@@ -289,7 +324,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }
       let_it_be(:valid_token_and_notified) { create(:personal_access_token, expires_at: 2.days.from_now, expire_notification_delivered: true) }
       let_it_be(:valid_token) { create(:personal_access_token, expires_at: 2.days.from_now) }
-      let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: '999999-12-31'.to_date) }
+      let_it_be(:long_expiry_token) { create(:personal_access_token, expires_at: described_class::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now) }
 
       context 'in one day' do
         it "doesn't have any tokens" do
@@ -424,6 +459,38 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it 'does not change the existing token' do
         expect { personal_access_token.ensure_token }
           .not_to change { personal_access_token.token }.from(token)
+      end
+    end
+  end
+
+  describe '#expires_at=' do
+    let(:personal_access_token) { described_class.new }
+
+    context 'when default_pat_expiration feature flag is true' do
+      context 'expires_at set to empty value' do
+        [nil, ""].each do |expires_in_value|
+          it 'defaults to PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS' do
+            personal_access_token.expires_at = expires_in_value
+
+            freeze_time do
+              expect(personal_access_token.expires_at).to eq(
+                PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date
+              )
+            end
+          end
+        end
+      end
+    end
+
+    context 'when default_pat_expiration feature flag is false' do
+      before do
+        stub_feature_flags(default_pat_expiration: false)
+      end
+
+      it 'does not set a default' do
+        personal_access_token.expires_at = nil
+
+        expect(personal_access_token.expires_at).to eq(nil)
       end
     end
   end

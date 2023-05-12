@@ -157,28 +157,71 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
     end
   end
 
-  context 'when creating new issuable' do
+  context 'with the visible_label_selection_on_metadata feature flag enabled' do
     before do
-      visit new_project_issue_path(project_1)
+      stub_feature_flags(visible_label_selection_on_metadata: true)
     end
 
-    it 'is able to assign ancestor group labels' do
-      fill_in 'issue_title', with: 'new created issue'
-      fill_in 'issue_description', with: 'new issue description'
+    context 'when creating new issuable' do
+      before do
+        visit new_project_issue_path(project_1)
+      end
 
-      find(".js-label-select").click
-      wait_for_requests
+      it 'is able to assign ancestor group labels' do
+        fill_in 'issue_title', with: 'new created issue'
+        fill_in 'issue_description', with: 'new issue description'
 
-      find('a.label-item', text: grandparent_group_label.title).click
-      find('a.label-item', text: parent_group_label.title).click
-      find('a.label-item', text: project_label_1.title).click
+        click_button _('Select label')
 
-      find('.btn-confirm').click
+        wait_for_all_requests
 
-      expect(page.find('.issue-details h1.title')).to have_content('new created issue')
-      expect(page).to have_selector('span.gl-label-text', text: grandparent_group_label.title)
-      expect(page).to have_selector('span.gl-label-text', text: parent_group_label.title)
-      expect(page).to have_selector('span.gl-label-text', text: project_label_1.title)
+        page.within '[data-testid="sidebar-labels"]' do
+          click_button grandparent_group_label.title
+          click_button parent_group_label.title
+          click_button project_label_1.title
+          click_button _('Close')
+
+          wait_for_requests
+        end
+
+        find('.btn-confirm').click
+
+        expect(page.find('.issue-details h1.title')).to have_content('new created issue')
+        expect(page).to have_selector('span.gl-label-text', text: grandparent_group_label.title)
+        expect(page).to have_selector('span.gl-label-text', text: parent_group_label.title)
+        expect(page).to have_selector('span.gl-label-text', text: project_label_1.title)
+      end
+    end
+  end
+
+  context 'with the visible_label_selection_on_metadata feature flag disabled' do
+    before do
+      stub_feature_flags(visible_label_selection_on_metadata: false)
+    end
+
+    context 'when creating new issuable' do
+      before do
+        visit new_project_issue_path(project_1)
+      end
+
+      it 'is able to assign ancestor group labels' do
+        fill_in 'issue_title', with: 'new created issue'
+        fill_in 'issue_description', with: 'new issue description'
+
+        find(".js-label-select").click
+        wait_for_requests
+
+        find('a.label-item', text: grandparent_group_label.title).click
+        find('a.label-item', text: parent_group_label.title).click
+        find('a.label-item', text: project_label_1.title).click
+
+        find('.btn-confirm').click
+
+        expect(page.find('.issue-details h1.title')).to have_content('new created issue')
+        expect(page).to have_selector('span.gl-label-text', text: grandparent_group_label.title)
+        expect(page).to have_selector('span.gl-label-text', text: parent_group_label.title)
+        expect(page).to have_selector('span.gl-label-text', text: project_label_1.title)
+      end
     end
   end
 

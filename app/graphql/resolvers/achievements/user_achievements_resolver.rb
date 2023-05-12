@@ -8,7 +8,7 @@ module Resolvers
       type ::Types::Achievements::UserAchievementType.connection_type, null: true
 
       def resolve_with_lookahead
-        user_achievements = object.user_achievements.not_revoked
+        user_achievements = object.user_achievements.not_revoked.order_by_id_asc
 
         apply_lookahead(user_achievements)
       end

@@ -15,6 +15,7 @@ module Achievements
       optional: true
 
     scope :not_revoked, -> { where(revoked_by_user_id: nil) }
+    scope :order_by_id_asc, -> { order(id: :asc) }
 
     def revoked?
       revoked_by_user_id.present?

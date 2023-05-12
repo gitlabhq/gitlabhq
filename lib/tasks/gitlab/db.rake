@@ -502,6 +502,7 @@ namespace :gitlab do
         milestone = version.release.segments.first(2).join('.')
 
         classes = {}
+        ignored_tables = %w[p_ci_builds]
 
         Gitlab::Database.database_base_models.each do |_, model_class|
           tables = model_class.connection.tables
@@ -524,6 +525,7 @@ namespace :gitlab do
 
           sources.each do |source_name|
             next if source_name.start_with?('_test_') # Ignore test tables
+            next if ignored_tables.include?(source_name)
 
             database = model_class.connection_db_config.name
             file = dictionary_file_path(source_name, views, database)

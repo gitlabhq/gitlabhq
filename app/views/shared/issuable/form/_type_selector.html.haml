@@ -8,7 +8,7 @@
   .issuable-form-select-holder.form-group.gl-mb-0.gl-display-block
     #js-type-select{ data: issuable_type_selector_data(issuable) }
 
-  - if issuable.incident?
+  - if issuable.incident_type_issue?
     %p.form-text.text-muted
       - incident_docs_url = help_page_path('operations/incident_management/incidents.md')
       - incident_docs_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: incident_docs_url)

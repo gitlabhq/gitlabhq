@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProtectedTag::CreateAccessLevel, feature_category: :source_code_management do
   include_examples 'protected tag access'
+  include_examples 'protected ref access allowed_access_levels'
 
   describe 'associations' do
     it { is_expected.to belong_to(:deploy_key) }

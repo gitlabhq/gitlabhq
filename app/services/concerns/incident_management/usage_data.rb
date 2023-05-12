@@ -5,7 +5,7 @@ module IncidentManagement
     include Gitlab::Utils::UsageData
 
     def track_incident_action(current_user, target, action)
-      return unless target.incident?
+      return unless target.incident_type_issue?
 
       event = "incident_management_#{action}"
       track_usage_event(event, current_user.id)

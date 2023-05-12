@@ -55,7 +55,7 @@ module ResourceEvents
     end
 
     def create_timeline_events_from(added_labels: [], removed_labels: [])
-      return unless resource.incident?
+      return unless resource.incident_type_issue?
 
       IncidentManagement::TimelineEvents::CreateService.change_labels(
         resource,

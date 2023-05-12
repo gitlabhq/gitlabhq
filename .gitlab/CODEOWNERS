@@ -437,7 +437,6 @@ lib/gitlab/checks/**
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls
 /doc/administration/monitoring/github_imports.md @eread @ashrafkhamis
-/doc/administration/monitoring/gitlab_self_monitoring_project/ @msedlakjakubowski
 /doc/administration/monitoring/index.md @msedlakjakubowski
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
 /doc/administration/monitoring/performance/gitlab_configuration.md @msedlakjakubowski
@@ -565,6 +564,7 @@ lib/gitlab/checks/**
 /doc/api/license.md @fneill
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
+/doc/api/managed_licenses.md @fneill
 /doc/api/markdown.md @msedlakjakubowski
 /doc/api/member_roles.md @jglassman1
 /doc/api/members.md @jglassman1
@@ -652,6 +652,7 @@ lib/gitlab/checks/**
 /doc/ci/chatops/ @eread @ashrafkhamis
 /doc/ci/cloud_deployment/ @phillipwells
 /doc/ci/cloud_services/ @marcel.amirault
+/doc/ci/components/ @marcel.amirault
 /doc/ci/directed_acyclic_graph/ @marcel.amirault
 /doc/ci/docker/using_docker_images.md @fneill
 /doc/ci/environments/ @phillipwells
@@ -982,6 +983,7 @@ lib/gitlab/checks/**
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
+/doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block
 
 [Authentication and Authorization] @gitlab-org/manage/authentication-and-authorization/approvers
