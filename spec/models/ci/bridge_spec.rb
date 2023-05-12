@@ -160,7 +160,9 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       where(:downstream_status, :upstream_status) do
         [
           %w[success success],
-          *::Ci::Pipeline.completed_statuses.without(:success).map { |status| [status.to_s, 'failed'] }
+          %w[canceled canceled],
+          %w[failed failed],
+          %w[skipped failed]
         ]
       end
 

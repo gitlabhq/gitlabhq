@@ -3,8 +3,12 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import EnvironmentsDetailHeader from './components/environments_detail_header.vue';
-import { apolloProvider } from './graphql/client';
+import { apolloProvider as createApolloProvider } from './graphql/client';
 import environmentsMixin from './mixins/environments_mixin';
+
+Vue.use(VueApollo);
+
+const apolloProvider = createApolloProvider();
 
 export const initHeader = () => {
   const el = document.getElementById('environments-detail-view-header');
@@ -13,7 +17,11 @@ export const initHeader = () => {
 
   return new Vue({
     el,
+    apolloProvider,
     mixins: [environmentsMixin],
+    provide: {
+      projectFullPath: dataset.projectFullPath,
+    },
     data() {
       const environment = {
         name: dataset.name,
@@ -60,7 +68,6 @@ export const initPage = async () => {
   const dataElement = document.getElementById('environments-detail-view');
   const dataSet = convertObjectPropsToCamelCase(JSON.parse(dataElement.dataset.details));
 
-  Vue.use(VueApollo);
   Vue.use(VueRouter);
   const el = document.getElementById('environment_details_page');
 
@@ -90,7 +97,7 @@ export const initPage = async () => {
 
   return new Vue({
     el,
-    apolloProvider: apolloProvider(),
+    apolloProvider,
     router,
     provide: {
       projectPath: dataSet.projectFullPath,

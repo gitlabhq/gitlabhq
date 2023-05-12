@@ -891,6 +891,15 @@ module.exports = {
     ...(DEV_SERVER_ALLOWED_HOSTS ? { allowedHosts: DEV_SERVER_ALLOWED_HOSTS } : {}),
     client: {
       ...(DEV_SERVER_PUBLIC_ADDR ? { webSocketURL: DEV_SERVER_PUBLIC_ADDR } : {}),
+      overlay: {
+        runtimeErrors: (error) => {
+          if (error instanceof DOMException && error.message === 'The user aborted a request.') {
+            return false;
+          }
+
+          return true;
+        },
+      },
     },
   },
 

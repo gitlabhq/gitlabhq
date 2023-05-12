@@ -964,7 +964,7 @@ $tabs-holder-z-index: 250;
 .merge-request-overview {
   @include media-breakpoint-up(lg) {
     display: grid;
-    grid-template-columns: calc(97% - #{$gutter-width}) auto;
+    grid-template-columns: calc(97% - #{$right-sidebar-width}) auto;
     grid-gap: 3%;
   }
 }
@@ -1131,7 +1131,7 @@ $tabs-holder-z-index: 250;
   width: 100%;
   height: $toggle-sidebar-height;
   padding-left: $contextual-sidebar-width;
-  padding-right: $gutter_collapsed_width;
+  padding-right: $right-sidebar-collapsed-width;
   background: var(--white, $white);
   border-top: 1px solid var(--border-color, $border-color);
   transition: padding $gl-transition-duration-medium;

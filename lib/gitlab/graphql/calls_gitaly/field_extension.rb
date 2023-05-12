@@ -67,14 +67,14 @@ module Gitlab
         end
 
         def accounted_for(count = nil)
-          return 0 unless ::Gitlab::Instrumentation::Storage.active?
+          return 0 unless Gitlab::SafeRequestStore.active?
 
-          ::Gitlab::Instrumentation::Storage["graphql_gitaly_accounted_for"] ||= 0
+          Gitlab::SafeRequestStore["graphql_gitaly_accounted_for"] ||= 0
 
           if count.nil?
-            ::Gitlab::Instrumentation::Storage["graphql_gitaly_accounted_for"]
+            Gitlab::SafeRequestStore["graphql_gitaly_accounted_for"]
           else
-            ::Gitlab::Instrumentation::Storage["graphql_gitaly_accounted_for"] += count
+            Gitlab::SafeRequestStore["graphql_gitaly_accounted_for"] += count
           end
         end
 

@@ -14,6 +14,8 @@ RSpec.describe 'Environment > Metrics', feature_category: :projects do
   let!(:staging) { create(:environment, name: 'staging', project: project) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
+
     project.add_developer(user)
     stub_any_prometheus_request
 
@@ -64,6 +66,18 @@ RSpec.describe 'Environment > Metrics', feature_category: :projects do
     end
 
     it_behaves_like 'has environment selector'
+  end
+
+  context 'when metrics dashboard feature is unavailable' do
+    before do
+      stub_feature_flags(remove_monitor_metrics: true)
+    end
+
+    it 'does not provide a link to the monitoring dashboard' do
+      visit_environment(environment)
+
+      expect(page).not_to have_link('Monitoring')
+    end
   end
 
   def visit_environment(environment)

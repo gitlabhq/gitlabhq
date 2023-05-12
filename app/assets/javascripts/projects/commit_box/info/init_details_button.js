@@ -6,7 +6,7 @@ export const initDetailsButton = () => {
   }
 
   expandButton.addEventListener('click', (event) => {
-    const btn = event.target;
+    const btn = event.currentTarget;
     const contentEl = btn.parentElement.querySelector('.js-details-content');
 
     if (contentEl) {

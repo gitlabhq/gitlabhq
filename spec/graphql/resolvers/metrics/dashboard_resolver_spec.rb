@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Metrics::DashboardResolver do
+RSpec.describe Resolvers::Metrics::DashboardResolver, feature_category: :metrics do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -21,6 +21,7 @@ RSpec.describe Resolvers::Metrics::DashboardResolver do
       let(:parent_object) { create(:environment, project: project) }
 
       before do
+        stub_feature_flags(remove_monitor_metrics: false)
         project.add_developer(current_user)
       end
 
@@ -33,6 +34,17 @@ RSpec.describe Resolvers::Metrics::DashboardResolver do
 
       context 'without parent object' do
         let(:parent_object) { nil }
+
+        it 'returns nil', :aggregate_failures do
+          expect(PerformanceMonitoring::PrometheusDashboard).not_to receive(:find_for)
+          expect(resolve_dashboard).to be_nil
+        end
+      end
+
+      context 'when metrics dashboard feature is unavailable' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: true)
+        end
 
         it 'returns nil', :aggregate_failures do
           expect(PerformanceMonitoring::PrometheusDashboard).not_to receive(:find_for)

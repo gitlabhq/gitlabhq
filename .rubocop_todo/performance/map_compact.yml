@@ -101,7 +101,6 @@ Performance/MapCompact:
     - 'lib/gitlab/ci/reports/security/finding.rb'
     - 'lib/gitlab/ci/reports/test_suite_summary.rb'
     - 'lib/gitlab/database/load_balancing/service_discovery.rb'
-    - 'lib/gitlab/database/obsolete_ignored_columns.rb'
     - 'lib/gitlab/git/commit.rb'
     - 'lib/gitlab/git/conflict/file.rb'
     - 'lib/gitlab/git/rugged_impl/commit.rb'

@@ -83,24 +83,34 @@ RSpec.describe EnvironmentEntity do
     end
   end
 
-  context 'metrics disabled' do
+  context 'when metrics dashboard feature is available' do
     before do
-      allow(environment).to receive(:has_metrics?).and_return(false)
+      stub_feature_flags(remove_monitor_metrics: false)
     end
 
-    it "doesn't expose metrics path" do
-      expect(subject).not_to include(:metrics_path)
+    context 'metrics disabled' do
+      before do
+        allow(environment).to receive(:has_metrics?).and_return(false)
+      end
+
+      it "doesn't expose metrics path" do
+        expect(subject).not_to include(:metrics_path)
+      end
+    end
+
+    context 'metrics enabled' do
+      before do
+        allow(environment).to receive(:has_metrics?).and_return(true)
+      end
+
+      it 'exposes metrics path' do
+        expect(subject).to include(:metrics_path)
+      end
     end
   end
 
-  context 'metrics enabled' do
-    before do
-      allow(environment).to receive(:has_metrics?).and_return(true)
-    end
-
-    it 'exposes metrics path' do
-      expect(subject).to include(:metrics_path)
-    end
+  it "doesn't expose metrics path" do
+    expect(subject).not_to include(:metrics_path)
   end
 
   context 'with deployment platform' do

@@ -18,6 +18,8 @@ module ProtectedBranches
 
     def refresh_cache
       CacheService.new(@project_or_group, @current_user, @params).refresh
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e)
     end
   end
 end

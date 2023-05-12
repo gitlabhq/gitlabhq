@@ -126,6 +126,10 @@ vacation period when most employees are out, you can set up a [Deploy Freeze](..
 During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
 
+The next configured deploy freeze is displayed at the top of the
+[environment deployments list](index.md#view-environments-and-deployments)
+page.
+
 ## Protect production secrets
 
 Production secrets are needed to deploy successfully. For example, when deploying to the cloud,

@@ -14,7 +14,9 @@ module Ci
         return ServiceResponse.error(message: 'invalid token supplied', http_status: :forbidden) unless attrs_from_token
 
         unless registration_token_allowed?(attrs_from_token)
-          return ServiceResponse.error(message: 'runner registration disallowed', http_status: :forbidden)
+          return ServiceResponse.error(
+            message: 'runner registration disallowed',
+            reason: :runner_registration_disallowed)
         end
 
         runner = ::Ci::Runner.new(attributes.merge(attrs_from_token))

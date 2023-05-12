@@ -17,6 +17,7 @@ RSpec.describe MetricsDashboard, '(JavaScript fixtures)', type: :controller do
   end
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(user)
     project.add_maintainer(user)
 

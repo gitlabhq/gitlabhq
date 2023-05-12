@@ -18,8 +18,8 @@ RSpec.describe Gitlab::SidekiqMiddleware do
       include ApplicationWorker
 
       def perform(*args)
-        ::Gitlab::Instrumentation::Storage['gitaly_call_actual'] = 1
-        ::Gitlab::Instrumentation::Storage[:gitaly_query_time] = 5
+        Gitlab::SafeRequestStore['gitaly_call_actual'] = 1
+        Gitlab::SafeRequestStore[:gitaly_query_time] = 5
       end
     end
   end

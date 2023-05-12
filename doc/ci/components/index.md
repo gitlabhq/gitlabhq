@@ -177,7 +177,7 @@ For example, for a component repository located at `gitlab-org/dast` on `gitlab.
 - If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
   the commit SHA takes precedence over the tag.
 
-## Components catalog
+## CI/CD Catalog
 
 The CI/CD Catalog is a list of [components repositories](#components-repository),
 each containing resources that you can add to your CI/CD pipelines.

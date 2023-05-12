@@ -1,0 +1,12 @@
+query getEnvironmentFreezes($projectFullPath: ID!, $environmentName: String) {
+  project(fullPath: $projectFullPath) {
+    id
+    environment(name: $environmentName) {
+      id
+      deployFreezes {
+        startTime
+        endTime
+      }
+    }
+  }
+}

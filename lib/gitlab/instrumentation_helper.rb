@@ -6,18 +6,8 @@ module Gitlab
 
     DURATION_PRECISION = 6 # microseconds
 
-    def init_instrumentation_data(request_ip: nil)
-      ::Gitlab::Instrumentation::Storage.clear!
-
-      # Set `request_start_time` only if this is request
-      # This is done, as `request_start_time` imply `request_deadline`
-      if request_ip
-        Gitlab::RequestContext.instance.client_ip = request_ip
-        Gitlab::RequestContext.instance.request_start_time = Gitlab::Metrics::System.real_time
-      end
-
-      Gitlab::RequestContext.instance.start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
-      Gitlab::RequestContext.instance.thread_memory_allocations = Gitlab::Memory::Instrumentation.start_thread_memory_allocations
+    def init_instrumentation_data
+      Gitlab::RequestContext.start_thread_context
     end
 
     def add_instrumentation_data(payload)

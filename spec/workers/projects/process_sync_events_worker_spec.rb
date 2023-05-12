@@ -14,8 +14,8 @@ RSpec.describe Projects::ProcessSyncEventsWorker, feature_category: :cell do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
   end
 
-  it 'has an option to reschedule once if deduplicated' do
-    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once })
+  it 'has the option to reschedule once if deduplicated and a TTL of 1 minute' do
+    expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once, ttl: 1.minute })
   end
 
   describe '#perform' do

@@ -11,7 +11,7 @@ module API
         desc 'Register a new runner' do
           detail "Register a new runner for the instance"
           success Entities::Ci::RunnerRegistrationDetails
-          failure [[400, 'Bad Request'], [403, 'Forbidden']]
+          failure [[400, 'Bad Request'], [403, 'Forbidden'], [410, 'Gone']]
         end
         params do
           requires :token, type: String, desc: 'Registration token'
@@ -52,9 +52,17 @@ module API
           attributes[:active] = !attributes.delete(:paused) if attributes.include?(:paused)
 
           result = ::Ci::Runners::RegisterRunnerService.new(params[:token], attributes).execute
-          @runner = result.success? ? result.payload[:runner] : nil
-          forbidden!(result.message) unless @runner
 
+          if result.error?
+            case result.reason
+            when :runner_registration_disallowed
+              render_api_error_with_reason!(410, '410 Gone', result.message)
+            else
+              forbidden!(result.message)
+            end
+          end
+
+          @runner = result.payload[:runner]
           if @runner.persisted?
             present @runner, with: Entities::Ci::RunnerRegistrationDetails
           else

@@ -97,6 +97,9 @@ sudo gitlab-ctl stop sidekiq
 sudo gitlab-ctl status
 ```
 
+Next, ensure you have completed the [restore prerequisites](#restore-prerequisites) steps and have run `gitlab-ctl reconfigure`
+after copying over the GitLab secrets file from the original installation.
+
 Next, restore the backup, specifying the timestamp of the backup you wish to
 restore:
 
@@ -123,13 +126,9 @@ WARNING:
 The restore command requires [additional parameters](backup_restore.md#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
 
-Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary,
-[as previously mentioned](#restore-prerequisites).
-
-Reconfigure, restart and [check](../administration/raketasks/maintenance.md#check-gitlab-configuration) GitLab:
+Next, restart and [check](../administration/raketasks/maintenance.md#check-gitlab-configuration) GitLab:
 
 ```shell
-sudo gitlab-ctl reconfigure
 sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```

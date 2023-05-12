@@ -5,6 +5,7 @@ import DeleteEnvironmentModal from '~/environments/components/delete_environment
 import EnvironmentsDetailHeader from '~/environments/components/environments_detail_header.vue';
 import StopEnvironmentModal from '~/environments/components/stop_environment_modal.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import DeployFreezeAlert from '~/environments/components/deploy_freeze_alert.vue';
 import { createEnvironment } from './mock_data';
 
 describe('Environments detail header component', () => {
@@ -27,6 +28,7 @@ describe('Environments detail header component', () => {
   const findDestroyButton = () => wrapper.findByTestId('destroy-button');
   const findStopEnvironmentModal = () => wrapper.findComponent(StopEnvironmentModal);
   const findDeleteEnvironmentModal = () => wrapper.findComponent(DeleteEnvironmentModal);
+  const findDeployFreezeAlert = () => wrapper.findComponent(DeployFreezeAlert);
 
   const buttons = [
     ['Cancel Auto Stop At', findCancelAutoStopAtButton],
@@ -44,6 +46,9 @@ describe('Environments detail header component', () => {
         GlSprintf,
         TimeAgo,
       },
+      provide: {
+        glFeatures,
+      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -53,9 +58,6 @@ describe('Environments detail header component', () => {
         canStopEnvironment: false,
         canDestroyEnvironment: false,
         ...props,
-      },
-      provide: {
-        glFeatures,
       },
     });
   };
@@ -260,6 +262,15 @@ describe('Environments detail header component', () => {
 
     it('displays delete environment modal', () => {
       expect(findDeleteEnvironmentModal().exists()).toBe(true);
+    });
+  });
+
+  describe('deploy freeze alert', () => {
+    it('passes the environment name to the alert', () => {
+      const environment = createEnvironment();
+      createWrapper({ props: { environment } });
+
+      expect(findDeployFreezeAlert().props('name')).toBe(environment.name);
     });
   });
 });

@@ -679,9 +679,11 @@ curl --request POST "https://gitlab.example.com/api/v4/runners" \
 
 Response:
 
-| Status    | Description                     |
-|-----------|---------------------------------|
-| 201       | Runner was created              |
+| Status    | Description                       |
+|-----------|-----------------------------------|
+| 201       | Runner was created                |
+| 403       | Invalid runner registration token |
+| 410       | Runner registration disabled      |
 
 Example response:
 

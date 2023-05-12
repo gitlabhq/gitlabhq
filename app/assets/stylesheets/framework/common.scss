@@ -36,7 +36,7 @@
   }
 
   .right-sidebar-collapsed {
-    --application-bar-right: #{$gutter-collapsed-width};
+    --application-bar-right: #{$right-sidebar-collapsed-width};
 
     &.is-merge-request {
       --application-bar-right: 0px;
@@ -44,7 +44,7 @@
   }
 
   .right-sidebar-expanded {
-    --application-bar-right: #{$gutter-width};
+    --application-bar-right: #{$right-sidebar-width};
   }
 }
 

@@ -14,10 +14,11 @@ RSpec.describe Resolvers::Ci::JobsResolver, feature_category: :continuous_integr
     create(:ci_build, :dast, name: 'SAST job', pipeline: pipeline)
     create(:ci_build, :container_scanning, name: 'Container scanning job', pipeline: pipeline)
     create(:ci_build, name: 'Job with tags', pipeline: pipeline, tag_list: ['review'])
+    create(:ci_bridge, name: 'Bridge job', pipeline: pipeline)
   end
 
   describe '#resolve' do
-    context 'when security_report_types is empty' do
+    context 'when none of the optional params are given' do
       it "returns all of the pipeline's jobs" do
         jobs = resolve(described_class, obj: pipeline, arg_style: :internal)
 
@@ -26,7 +27,8 @@ RSpec.describe Resolvers::Ci::JobsResolver, feature_category: :continuous_integr
           have_attributes(name: 'DAST job'),
           have_attributes(name: 'SAST job'),
           have_attributes(name: 'Container scanning job'),
-          have_attributes(name: 'Job with tags')
+          have_attributes(name: 'Job with tags'),
+          have_attributes(name: 'Bridge job')
         )
       end
     end
@@ -50,12 +52,14 @@ RSpec.describe Resolvers::Ci::JobsResolver, feature_category: :continuous_integr
     context 'when a job has tags' do
       it "returns jobs with tags when applicable" do
         jobs = resolve(described_class, obj: pipeline, arg_style: :internal)
+
         expect(jobs).to contain_exactly(
           have_attributes(tag_list: []),
           have_attributes(tag_list: []),
           have_attributes(tag_list: []),
           have_attributes(tag_list: []),
-          have_attributes(tag_list: ['review'])
+          have_attributes(tag_list: ['review']),
+          have_attributes(name: 'Bridge job') # A bridge job has no tag list
         )
       end
     end
@@ -69,6 +73,15 @@ RSpec.describe Resolvers::Ci::JobsResolver, feature_category: :continuous_integr
         jobs = resolve(described_class, obj: pipeline, arg_style: :internal, args: { when_executed: ['manual'] })
         expect(jobs).to contain_exactly(
           have_attributes(name: 'Manual job')
+        )
+      end
+    end
+
+    context 'when filtering by job kind' do
+      it "returns jobs with that type" do
+        jobs = resolve(described_class, obj: pipeline, arg_style: :internal, args: { job_kind: ::Ci::Bridge })
+        expect(jobs).to contain_exactly(
+          have_attributes(name: 'Bridge job')
         )
       end
     end

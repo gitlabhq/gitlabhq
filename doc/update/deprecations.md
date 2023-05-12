@@ -614,6 +614,49 @@ From GitLab 17.0 and later, the methods to register runners introduced by the ne
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">16.0</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398132).
+</div>
+
+The `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated and is
+scheduled for removal in GitLab 17.0.
+
+GitLab uses a separate process called `mail_room` to ingest emails. Currently, GitLab administrators
+can configure their GitLab instances to use `sidekiq` or `webhook` delivery methods to deliver ingested
+emails from `mail_room` to GitLab.
+
+Using the deprecated `sidekiq` delivery method, `mail_room` writes the job data directly to the GitLab
+Redis queue. This means that there is a hard coupling between the delivery method and the Redis
+configuration. Another disadvantage is that framework optimizations such as job payload compression are missed.
+
+Using the `webhook` delivery method, `mail_room` pushes the ingested email body to the GitLab
+API. That way `mail_room` does not need to know your Redis configuration and the GitLab application
+adds the processing job. `mail_room` authenticates with a shared secret key.
+
+Reconfiguring an Omnibus installation generates this secret key file automatically,
+so no secret file configuration setting is needed.
+
+You can configure a custom secret key file (32 characters base 64 encoded) by running a command
+like below and referencing the secret file in `incoming_email_secret_file` and
+`service_desk_email_secret_file` (always specify the absolute path):
+
+```shell
+echo $( ruby -rsecurerandom -e "puts SecureRandom.base64(32)" ) > ~/.gitlab-mailroom-secret
+```
+
+If you run GitLab on more than one machine, you need to provide the secret key file for each machine.
+
+We highly encourage GitLab administrators to start using the `webhook` delivery method for
+`incoming_email_delivery_method` and `service_desk_email_delivery_method` instead of `sidekiq`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### project.pipeline.securityReportFindings GraphQL query
 
 <div class="deprecation-notes">

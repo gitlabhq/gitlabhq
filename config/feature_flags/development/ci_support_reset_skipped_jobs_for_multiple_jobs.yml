@@ -1,0 +1,8 @@
+---
+name: ci_support_reset_skipped_jobs_for_multiple_jobs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120060
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410415
+milestone: '16.1'
+type: development
+group: group::pipeline authoring
+default_enabled: false

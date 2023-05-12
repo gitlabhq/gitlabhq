@@ -10,11 +10,7 @@ When a new pipeline starts, GitLab checks the pipeline configuration to determin
 which jobs should run in that pipeline. You can configure jobs to run depending on
 factors like the status of variables, or the pipeline type.
 
-To configure a job to be included or excluded from certain pipelines, you can use:
-
-- [`rules`](../yaml/index.md#rules)
-- [`only`](../yaml/index.md#only--except)
-- [`except`](../yaml/index.md#only--except)
+To configure a job to be included or excluded from certain pipelines, use [`rules`](../yaml/index.md#rules).
 
 Use [`needs`](../yaml/index.md#needs) to configure a job to run as soon as the
 earlier jobs it depends on finish running.

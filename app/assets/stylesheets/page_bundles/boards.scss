@@ -15,7 +15,7 @@
     width: 100%;
 
     &.is-compact {
-      width: calc(100% - #{$gutter-width});
+      width: calc(100% - #{$right-sidebar-width});
     }
   }
 }

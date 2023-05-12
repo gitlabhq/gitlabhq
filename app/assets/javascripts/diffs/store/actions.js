@@ -49,6 +49,7 @@ import {
   TRACKING_CLICK_SINGLE_FILE_SETTING,
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
+  EVT_MR_PREPARED,
 } from '../constants';
 import { DISCUSSION_SINGLE_DIFF_FAILED, LOAD_SINGLE_DIFF_FAILED } from '../i18n';
 import eventHub from '../event_hub';
@@ -287,10 +288,14 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
     })
     .catch((error) => {
       if (error.response.status === HTTP_STATUS_NOT_FOUND) {
-        createAlert({
-          message: __('Building your merge request. Wait a few moments, then refresh this page.'),
+        const alert = createAlert({
+          message: __(
+            'Building your merge request… This page will update when the build is complete.',
+          ),
           variant: VARIANT_WARNING,
         });
+
+        eventHub.$once(EVT_MR_PREPARED, () => alert.dismiss());
       } else {
         throw error;
       }

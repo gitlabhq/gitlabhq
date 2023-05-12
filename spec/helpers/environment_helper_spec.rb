@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentHelper do
+RSpec.describe EnvironmentHelper, feature_category: :environment_management do
   describe '#render_deployment_status' do
     context 'when using a manual deployment' do
       it 'renders a span tag' do
@@ -56,7 +56,6 @@ RSpec.describe EnvironmentHelper do
         can_destroy_environment: true,
         can_stop_environment: true,
         can_admin_environment: true,
-        environment_metrics_path: project_metrics_dashboard_path(project, environment: environment),
         environments_fetch_path: project_environments_path(project, format: :json),
         environment_edit_path: edit_project_environment_path(project, environment),
         environment_stop_path: stop_project_environment_path(project, environment),
@@ -68,6 +67,18 @@ RSpec.describe EnvironmentHelper do
         auto_stop_at: auto_stop_at,
         graphql_etag_key: environment.etag_cache_key
       }.to_json)
+    end
+
+    context 'when metrics dashboard feature is available' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: false)
+      end
+
+      it 'includes metrics path' do
+        expect(Gitlab::Json.parse(subject)).to include(
+          'environment_metrics_path' => project_metrics_dashboard_path(project, environment: environment)
+        )
+      end
     end
   end
 end

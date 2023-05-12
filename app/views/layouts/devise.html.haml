@@ -10,18 +10,29 @@
         .container.navless-container
           .content
             = render "layouts/flash"
-            .mt-3
-              .col-sm-12.gl-text-center
-                = brand_image
-                %h1.mb-3.gl-font-size-h2
-                  = brand_title
-                - if current_appearance&.description?
-                  = brand_text
-                = render_if_exists 'layouts/devise_help_text'
-            .mb-3
-              .gl-w-half.gl-xs-w-full.gl-ml-auto.gl-mr-auto.bar
-                = yield
-
+            - if current_appearance&.description?
+              .row
+                .col-md.order-12.sm-bg-gray-10
+                  .col-sm-12
+                    %h1.mb-3.gl-font-size-h2
+                      = brand_title
+                    = brand_text
+                    = render_if_exists 'layouts/devise_help_text'
+                .col-md.order-md-12
+                  .col-sm-12.bar
+                    .gl-text-center
+                      = brand_image
+                    = yield
+            - else
+              .mt-3
+                .col-sm-12.gl-text-center
+                  = brand_image
+                  %h1.mb-3.gl-font-size-h2
+                    = brand_title
+                  = render_if_exists 'layouts/devise_help_text'
+              .mb-3
+                .gl-w-half.gl-xs-w-full.gl-ml-auto.gl-mr-auto.bar
+                  = yield
 
         = render 'devise/shared/footer', footer_message: footer_message
     - else

@@ -665,9 +665,18 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Clear all the tokens for pending jobs:
 
+   For GitLab 15.3 and earlier:
+
    ```sql
    -- Clear build tokens
    UPDATE ci_builds SET token = null, token_encrypted = null;
+   ```
+
+   For GitLab 15.4 and later:
+
+   ```sql
+   -- Clear build tokens
+   UPDATE ci_builds SET token_encrypted = null;
    ```
 
 A similar strategy can be employed for the remaining features. By removing the

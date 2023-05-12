@@ -6151,7 +6151,6 @@
 - './spec/lib/gitlab/database/migrations/test_background_runner_spec.rb'
 - './spec/lib/gitlab/database/migrations/test_batched_background_runner_spec.rb'
 - './spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb'
-- './spec/lib/gitlab/database/obsolete_ignored_columns_spec.rb'
 - './spec/lib/gitlab/database/partitioning/detached_partition_dropper_spec.rb'
 - './spec/lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table_spec.rb'
 - './spec/lib/gitlab/database/partitioning_migration_helpers/foreign_key_helpers_spec.rb'

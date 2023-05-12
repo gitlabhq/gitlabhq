@@ -131,11 +131,6 @@ module Gitlab
             end
 
             def report_uses_deprecated_schema_version?
-              # Avoid deprecation warnings for GitLab security scanners
-              # To be removed via https://gitlab.com/gitlab-org/gitlab/-/issues/386798
-              return if report_data.dig('scan', 'scanner', 'vendor', 'name')&.downcase == 'gitlab'
-              return if report_data.dig('scan', 'analyzer', 'vendor', 'name')&.downcase == 'gitlab'
-
               DEPRECATED_VERSIONS[report_type].include?(report_version)
             end
 

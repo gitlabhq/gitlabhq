@@ -716,3 +716,10 @@ services:
   - name: registry.hub.docker.com/library/docker:20.10.16-dind
     alias: docker
 ```
+
+### Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+
+This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`. To prevent users from receiving this error, you should:
+
+- Use [CI_JOB_TOKEN](../jobs/ci_job_token.md) instead.
+- Change from `gitlab-ci-token/CI_BUILD_TOKEN` to `$CI_REGISTRY_USER/$CI_REGISTRY_PASSWORD`.

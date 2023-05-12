@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Graphql::CallsGitaly::FieldExtension, :request_store do
   context 'when the field calls gitaly' do
     before do
       owner.define_method :value do
-        ::Gitlab::Instrumentation::Storage['gitaly_call_actual'] = 1
+        Gitlab::SafeRequestStore['gitaly_call_actual'] = 1
         'fresh-from-the-gitaly-mines!'
       end
     end
@@ -64,22 +64,22 @@ RSpec.describe Gitlab::Graphql::CallsGitaly::FieldExtension, :request_store do
       object = :anything
       arguments = :any_args
 
-      ::Gitlab::Instrumentation::Storage['gitaly_call_actual'] = 3
-      ::Gitlab::Instrumentation::Storage['graphql_gitaly_accounted_for'] = 0
+      ::Gitlab::SafeRequestStore['gitaly_call_actual'] = 3
+      ::Gitlab::SafeRequestStore['graphql_gitaly_accounted_for'] = 0
 
       expect do |b|
         extension.resolve(object: object, arguments: arguments, &b)
       end.to yield_with_args(object, arguments, [3, 0])
 
-      ::Gitlab::Instrumentation::Storage['gitaly_call_actual'] = 13
-      ::Gitlab::Instrumentation::Storage['graphql_gitaly_accounted_for'] = 10
+      ::Gitlab::SafeRequestStore['gitaly_call_actual'] = 13
+      ::Gitlab::SafeRequestStore['graphql_gitaly_accounted_for'] = 10
 
       expect { extension.after_resolve(value: 'foo', memo: [3, 0]) }.not_to raise_error
     end
 
     it 'is unacceptable if some of the calls are unaccounted for' do
-      ::Gitlab::Instrumentation::Storage['gitaly_call_actual'] = 10
-      ::Gitlab::Instrumentation::Storage['graphql_gitaly_accounted_for'] = 9
+      ::Gitlab::SafeRequestStore['gitaly_call_actual'] = 10
+      ::Gitlab::SafeRequestStore['graphql_gitaly_accounted_for'] = 9
 
       expect { extension.after_resolve(value: 'foo', memo: [0, 0]) }.to raise_error(include('Object.value'))
     end

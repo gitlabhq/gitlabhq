@@ -37,12 +37,8 @@ The group's new subgroups have push rules set for them based on either:
 
 ## Restrict Git access protocols
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to
-[enable the feature flag](../../administration/feature_flags.md) named `group_level_git_protocol_control`. On GitLab.com,
-this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/365357) in GitLab 16.0.
 
 You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
 is disabled when the [instance setting](../admin_area/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is

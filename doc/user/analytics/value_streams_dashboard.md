@@ -107,10 +107,10 @@ title: 'Custom Dashboard title'
 # description - Change the description of the Value Streams Dashboard. [optional]
 description: 'Custom description'
 
-# widgets - List of widgets that contain panel settings.
+# panels - List of panels that contain panel settings.
 #   title - Change the title of the panel. [optional]
 #   data.namespace - The Group or Project path to use for the chart panel.
-widgets:
+panels:
   - title: 'My Custom Project'
     data:
       namespace: group/my-custom-project
@@ -123,10 +123,10 @@ widgets:
       namespace: group/another-group
 ```
 
-  The following example has an option configuration for a widget for the `my-group` namespace:
+  The following example has an option configuration for a panel for the `my-group` namespace:
 
   ```yaml
-  widgets:
+  panels:
     - data:
         namespace: my-group
   ```

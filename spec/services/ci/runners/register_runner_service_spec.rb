@@ -18,10 +18,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
   subject(:execute) { described_class.new(token, args).execute }
 
   shared_examples 'runner registration is disallowed' do
-    it 'returns error response' do
+    it 'returns error response with runner_registration_disallowed reason' do
       expect(execute).to be_error
       expect(execute.message).to eq 'runner registration disallowed'
-      expect(execute.http_status).to eq :forbidden
+      expect(execute.reason).to eq :runner_registration_disallowed
     end
   end
 

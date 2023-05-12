@@ -13,7 +13,7 @@ module Namespaces
     urgency :high
 
     idempotent!
-    deduplicate :until_executed, if_deduplicated: :reschedule_once
+    deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: 1.minute
 
     def perform
       results = ::Ci::ProcessSyncEventsService.new(

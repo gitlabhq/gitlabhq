@@ -875,7 +875,7 @@ Parameters:
 | :------------------------------- | :------- | :--------------------------------------------------------------------------- |
 | `view_diffs_file_by_file`        | Yes      | Flag indicating the user sees only one file diff per page.                   |
 | `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs.                   |
-| `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. |
+| `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. |
 
 ## User follow
 

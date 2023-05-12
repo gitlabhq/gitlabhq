@@ -4,8 +4,6 @@ require 'elasticsearch-transport'
 
 module Gitlab
   module Instrumentation
-    InstrumentationStorage = ::Gitlab::Instrumentation::Storage
-
     module ElasticsearchTransportInterceptor
       def perform_request(method, path, params = {}, body = nil, headers = nil)
         start = Time.now
@@ -13,7 +11,7 @@ module Gitlab
           .reverse_merge({ 'X-Opaque-Id': Labkit::Correlation::CorrelationId.current_or_new_id })
         response = super
       ensure
-        if InstrumentationStorage.active?
+        if ::Gitlab::SafeRequestStore.active?
           duration = (Time.now - start)
 
           ::Gitlab::Instrumentation::ElasticsearchTransport.increment_request_count
@@ -35,35 +33,35 @@ module Gitlab
       ELASTICSEARCH_TIMED_OUT_COUNT = :elasticsearch_timed_out_count
 
       def self.get_request_count
-        InstrumentationStorage[ELASTICSEARCH_REQUEST_COUNT] || 0
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_REQUEST_COUNT] || 0
       end
 
       def self.increment_request_count
-        InstrumentationStorage[ELASTICSEARCH_REQUEST_COUNT] ||= 0
-        InstrumentationStorage[ELASTICSEARCH_REQUEST_COUNT] += 1
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_REQUEST_COUNT] ||= 0
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_REQUEST_COUNT] += 1
       end
 
       def self.detail_store
-        InstrumentationStorage[ELASTICSEARCH_CALL_DETAILS] ||= []
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DETAILS] ||= []
       end
 
       def self.query_time
-        query_time = InstrumentationStorage[ELASTICSEARCH_CALL_DURATION] || 0
+        query_time = ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DURATION] || 0
         query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
       end
 
       def self.add_duration(duration)
-        InstrumentationStorage[ELASTICSEARCH_CALL_DURATION] ||= 0
-        InstrumentationStorage[ELASTICSEARCH_CALL_DURATION] += duration
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DURATION] ||= 0
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_CALL_DURATION] += duration
       end
 
       def self.increment_timed_out_count
-        InstrumentationStorage[ELASTICSEARCH_TIMED_OUT_COUNT] ||= 0
-        InstrumentationStorage[ELASTICSEARCH_TIMED_OUT_COUNT] += 1
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_TIMED_OUT_COUNT] ||= 0
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_TIMED_OUT_COUNT] += 1
       end
 
       def self.get_timed_out_count
-        InstrumentationStorage[ELASTICSEARCH_TIMED_OUT_COUNT] || 0
+        ::Gitlab::SafeRequestStore[ELASTICSEARCH_TIMED_OUT_COUNT] || 0
       end
 
       def self.add_call_details(duration, method, path, params, body)

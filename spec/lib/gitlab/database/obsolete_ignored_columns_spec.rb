@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns do
+RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns, feature_category: :database do
   before do
     stub_const('Testing', Module.new)
     stub_const('Testing::MyBase', Class.new(ActiveRecord::Base))
@@ -16,11 +16,10 @@ RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns do
 
     Testing.module_eval do
       Testing::MyBase.class_eval do
+        include IgnorableColumns
       end
 
       SomeAbstract.class_eval do
-        include IgnorableColumns
-
         self.abstract_class = true
 
         self.table_name = 'projects'
@@ -29,8 +28,6 @@ RSpec.describe Gitlab::Database::ObsoleteIgnoredColumns do
       end
 
       Testing::B.class_eval do
-        include IgnorableColumns
-
         self.table_name = 'issues'
 
         ignore_column :id, :other, remove_after: '2019-01-01', remove_with: '12.0'

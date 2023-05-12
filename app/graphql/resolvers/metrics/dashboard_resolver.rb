@@ -15,6 +15,7 @@ module Resolvers
       alias_method :environment, :object
 
       def resolve(path:)
+        return if Feature.enabled?(:remove_monitor_metrics)
         return unless environment
 
         ::PerformanceMonitoring::PrometheusDashboard.find_for(path: path, **service_params)

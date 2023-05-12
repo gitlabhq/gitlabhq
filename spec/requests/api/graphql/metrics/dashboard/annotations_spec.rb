@@ -50,6 +50,7 @@ RSpec.describe 'Getting Metrics Dashboard Annotations', feature_category: :metri
   end
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     project.add_developer(current_user)
     post_graphql(query, current_user: current_user)
   end

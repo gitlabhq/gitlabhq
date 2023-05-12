@@ -6,9 +6,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Award emojis **(FREE)**
 
+> Awarding emojis to work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
+
 When you're collaborating online, you get fewer opportunities for high-fives
-and thumbs-ups. Emojis can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
-[snippets](snippets.md), and anywhere you can have a thread.
+and thumbs-ups. Add award emojis to:
+
+- [Issues](project/issues/index.md).
+- [Tasks](tasks.md).
+- [Merge requests](project/merge_requests/index.md),
+[snippets](snippets.md).
+- [Epics](../user/group/epics/index.md).
+- [Objectives and key results](okrs.md).
+- Anywhere else you can have a comment thread.
 
 ![Award emoji](img/award_emoji_select_v14_6.png)
 

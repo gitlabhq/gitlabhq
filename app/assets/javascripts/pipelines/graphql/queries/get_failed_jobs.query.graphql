@@ -3,7 +3,7 @@ query getFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
     id
     pipeline(iid: $pipelineIid) {
       id
-      jobs(statuses: FAILED) {
+      jobs(statuses: FAILED, retried: false) {
         nodes {
           status
           detailedStatus {

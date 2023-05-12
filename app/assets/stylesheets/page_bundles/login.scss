@@ -292,3 +292,9 @@
     }
   }
 }
+
+@include media-breakpoint-down(sm) {
+  .sm-bg-gray-10 {
+    @include gl-bg-gray-10;
+  }
+}

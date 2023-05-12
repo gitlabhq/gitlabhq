@@ -87,6 +87,28 @@ importer progresses. Here's what to do:
       end
       ```
 
+      Note that by default, `Gitlab::JsonLogger` will include application context metadata in the log entry. If your
+      logger is expected to be called outside of an application request (for example, in a `rake` task) or by low-level
+      code that may be involved in building the application context (for example, database connection code), you should
+      call the class method `exclude_context!` for your logger class, like so:
+
+      ```ruby
+      module Gitlab
+        module Database
+          module LoadBalancing
+            class Logger < ::Gitlab::JsonLogger
+              exclude_context!
+
+              def self.file_name_noext
+                'database_load_balancing'
+              end
+            end
+          end
+        end
+      end
+
+      ```
+
    1. In your class where you want to log, you might initialize the logger as an instance variable:
 
       ```ruby

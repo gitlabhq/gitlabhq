@@ -7,8 +7,8 @@ module SystemNoteHelper
     'cherry_pick' => 'cherry-pick-commit',
     'commit' => 'commit',
     'description' => 'pencil',
-    'merge' => 'merge',
     'merged' => 'merge',
+    'merge' => 'merge',
     'opened' => 'issues',
     'closed' => 'issue-close',
     'time_tracking' => 'timer',
@@ -53,6 +53,8 @@ module SystemNoteHelper
   def system_note_icon_name(note)
     if note.system_note_metadata&.action == 'closed' && note.for_merge_request?
       'merge-request-close'
+    elsif note.system_note_metadata&.action == 'merge' && note.for_merge_request?
+      'mr-system-note-empty'
     else
       ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
     end

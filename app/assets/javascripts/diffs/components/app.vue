@@ -41,6 +41,7 @@ import {
   TRACKING_WHITESPACE_HIDE,
   TRACKING_SINGLE_FILE_MODE,
   TRACKING_MULTIPLE_FILES_MODE,
+  EVT_MR_PREPARED,
 } from '../constants';
 
 import diffsEventHub from '../event_hub';
@@ -470,8 +471,10 @@ export default {
         diffsEventHub.$on('diffFilesModified', this.setDiscussions);
         notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
       }
+      diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
     },
     unsubscribeFromEvents() {
+      diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
       if (this.glFeatures.singleFileFileByFile) {
         notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
         diffsEventHub.$off('diffFilesModified', this.setDiscussions);

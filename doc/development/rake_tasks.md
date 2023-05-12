@@ -424,7 +424,7 @@ a file for quick reference.
 
 ## Show obsolete `ignored_columns`
 
-To see a list of all obsolete `ignored_columns` run:
+To see a list of all obsolete `ignored_columns` definitions run:
 
 ```shell
 bundle exec rake db:obsolete_ignored_columns

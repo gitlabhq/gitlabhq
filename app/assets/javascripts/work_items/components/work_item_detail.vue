@@ -18,6 +18,7 @@ import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
@@ -27,7 +28,9 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_NOTIFICATIONS,
+  WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_PROGRESS,
@@ -51,10 +54,12 @@ import { findHierarchyWidgetChildren } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
+import WorkItemTodos from './work_item_todos.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
+import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
@@ -67,6 +72,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  isLoggedIn: isLoggedIn(),
   components: {
     GlAlert,
     GlBadge,
@@ -77,8 +83,10 @@ export default {
     GlEmptyState,
     WorkItemAssignees,
     WorkItemActions,
+    WorkItemTodos,
     WorkItemCreatedUpdated,
     WorkItemDescription,
+    WorkItemAwardEmoji,
     WorkItemDueDate,
     WorkItemLabels,
     WorkItemTitle,
@@ -287,6 +295,15 @@ export default {
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
+    workItemCurrentUserTodos() {
+      return this.isWidgetPresent(WIDGET_TYPE_CURRENT_USER_TODOS);
+    },
+    showWorkItemCurrentUserTodos() {
+      return this.$options.isLoggedIn && this.workItemCurrentUserTodos;
+    },
+    currentUserTodos() {
+      return this.workItemCurrentUserTodos?.currentUserTodos?.edges;
+    },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
     },
@@ -301,6 +318,9 @@ export default {
     },
     workItemProgress() {
       return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
+    },
+    workItemAwardEmoji() {
+      return this.isWidgetPresent(WIDGET_TYPE_AWARD_EMOJI);
     },
     workItemHierarchy() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
@@ -566,6 +586,12 @@ export default {
             class="gl-mr-3 gl-cursor-help"
             >{{ __('Confidential') }}</gl-badge
           >
+          <work-item-todos
+            v-if="showWorkItemCurrentUserTodos"
+            :work-item="workItem"
+            :current-user-todos="currentUserTodos"
+            @error="updateError = $event"
+          />
           <work-item-actions
             v-if="canUpdate || canDelete"
             :work-item-id="workItem.id"
@@ -683,6 +709,12 @@ export default {
           :work-item-id="workItem.id"
           :work-item-iid="workItem.iid"
           class="gl-pt-5"
+          @error="updateError = $event"
+        />
+        <work-item-award-emoji
+          v-if="workItemAwardEmoji"
+          :work-item="workItem"
+          :award-emoji="workItemAwardEmoji.awardEmoji"
           @error="updateError = $event"
         />
         <work-item-tree

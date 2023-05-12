@@ -29,6 +29,8 @@ class UserPreference < ApplicationRecord
 
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
   ignore_columns :time_format_in_24h, remove_with: '16.2', remove_after: '2023-07-22'
+  # 2023-06-22 is after 16.1 release and during 16.2 release https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#ignoring-the-column-release-m
+  ignore_columns :use_legacy_web_ide, remove_with: '16.2', remove_after: '2023-06-22'
 
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true

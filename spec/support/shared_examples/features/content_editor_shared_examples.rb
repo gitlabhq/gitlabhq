@@ -27,27 +27,6 @@ RSpec.shared_examples 'edits content using the content editor' do
     expect(page).to have_text('Typing text in the content editor')
   end
 
-  describe 'formatting bubble menu' do
-    it 'shows a formatting bubble menu for a regular paragraph and headings' do
-      switch_to_content_editor
-
-      expect(page).to have_css(content_editor_testid)
-
-      type_in_content_editor 'Typing text in the content editor'
-      type_in_content_editor [:shift, :left]
-
-      expect_formatting_menu_to_be_visible
-
-      type_in_content_editor [:right, :right, :enter, '## Heading']
-
-      expect_formatting_menu_to_be_hidden
-
-      type_in_content_editor [:shift, :left]
-
-      expect_formatting_menu_to_be_visible
-    end
-  end
-
   describe 'creating and editing links' do
     before do
       switch_to_content_editor
@@ -319,14 +298,12 @@ RSpec.shared_examples 'edits content using the content editor' do
     it 'displays correct media bubble menu for images', :js do
       display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'dk.png'
 
-      expect_formatting_menu_to_be_hidden
       expect_media_bubble_menu_to_be_visible
     end
 
     it 'displays correct media bubble menu for video', :js do
       display_media_bubble_menu '[data-testid="content_editor_editablebox"] video', 'video_sample.mp4'
 
-      expect_formatting_menu_to_be_hidden
       expect_media_bubble_menu_to_be_visible
     end
   end
@@ -367,7 +344,6 @@ RSpec.shared_examples 'edits content using the content editor' do
       type_in_content_editor 'var a = 0'
       type_in_content_editor [:shift, :left]
 
-      expect_formatting_menu_to_be_hidden
       expect(page).to have_css('[data-testid="code-block-bubble-menu"]')
     end
 
@@ -618,7 +594,6 @@ RSpec.shared_examples 'inserts diagrams.net diagram using the content editor' do
   it 'displays correct media bubble menu with edit diagram button' do
     display_media_bubble_menu '[data-testid="content_editor_editablebox"] img[src]', 'diagram.drawio.svg'
 
-    expect_formatting_menu_to_be_hidden
     expect_media_bubble_menu_to_be_visible
 
     click_edit_diagram_button

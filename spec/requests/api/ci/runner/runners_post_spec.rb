@@ -237,6 +237,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
         end
+
+        context 'when runner registration is disallowed' do
+          before do
+            stub_application_setting(allow_runner_registration_token: false)
+          end
+
+          it 'returns 410 Gone status' do
+            post api('/runners'), params: { token: registration_token }
+
+            expect(response).to have_gitlab_http_status(:gone)
+          end
+        end
       end
     end
   end

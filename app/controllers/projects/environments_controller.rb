@@ -176,10 +176,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics_redirect
+    return not_found if Feature.enabled?(:remove_monitor_metrics)
+
     redirect_to project_metrics_dashboard_path(project)
   end
 
   def metrics
+    return not_found if Feature.enabled?(:remove_monitor_metrics)
+
     respond_to do |format|
       format.html do
         redirect_to project_metrics_dashboard_path(project, environment: environment)
@@ -195,6 +199,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def additional_metrics
+    return not_found if Feature.enabled?(:remove_monitor_metrics)
+
     respond_to do |format|
       format.json do
         additional_metrics = environment.additional_metrics(*metrics_params) || {}

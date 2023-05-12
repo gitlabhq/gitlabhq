@@ -9,8 +9,6 @@ module Gitlab
         include ::Gitlab::Utils::StrongMemoize
         include ::Gitlab::Instrumentation::RedisPayload
 
-        InstrumentationStorage = ::Gitlab::Instrumentation::Storage
-
         # TODO: To be used by https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/395
         # as a 'label' alias.
         def storage_key
@@ -18,10 +16,8 @@ module Gitlab
         end
 
         def add_duration(duration)
-          return unless InstrumentationStorage.active?
-
-          InstrumentationStorage[call_duration_key] ||= 0
-          InstrumentationStorage[call_duration_key] += duration
+          ::RequestStore[call_duration_key] ||= 0
+          ::RequestStore[call_duration_key] += duration
         end
 
         def add_call_details(duration, commands)
@@ -35,66 +31,56 @@ module Gitlab
         end
 
         def increment_request_count(amount = 1)
-          return unless InstrumentationStorage.active?
-
-          InstrumentationStorage[request_count_key] ||= 0
-          InstrumentationStorage[request_count_key] += amount
+          ::RequestStore[request_count_key] ||= 0
+          ::RequestStore[request_count_key] += amount
         end
 
         def increment_read_bytes(num_bytes)
-          return unless InstrumentationStorage.active?
-
-          InstrumentationStorage[read_bytes_key] ||= 0
-          InstrumentationStorage[read_bytes_key] += num_bytes
+          ::RequestStore[read_bytes_key] ||= 0
+          ::RequestStore[read_bytes_key] += num_bytes
         end
 
         def increment_write_bytes(num_bytes)
-          return unless InstrumentationStorage.active?
-
-          InstrumentationStorage[write_bytes_key] ||= 0
-          InstrumentationStorage[write_bytes_key] += num_bytes
+          ::RequestStore[write_bytes_key] ||= 0
+          ::RequestStore[write_bytes_key] += num_bytes
         end
 
         def increment_cross_slot_request_count(amount = 1)
-          return unless InstrumentationStorage.active?
-
-          InstrumentationStorage[cross_slots_key] ||= 0
-          InstrumentationStorage[cross_slots_key] += amount
+          ::RequestStore[cross_slots_key] ||= 0
+          ::RequestStore[cross_slots_key] += amount
         end
 
         def increment_allowed_cross_slot_request_count(amount = 1)
-          return unless InstrumentationStorage.active?
-
-          InstrumentationStorage[allowed_cross_slots_key] ||= 0
-          InstrumentationStorage[allowed_cross_slots_key] += amount
+          ::RequestStore[allowed_cross_slots_key] ||= 0
+          ::RequestStore[allowed_cross_slots_key] += amount
         end
 
         def get_request_count
-          InstrumentationStorage[request_count_key] || 0
+          ::RequestStore[request_count_key] || 0
         end
 
         def read_bytes
-          InstrumentationStorage[read_bytes_key] || 0
+          ::RequestStore[read_bytes_key] || 0
         end
 
         def write_bytes
-          InstrumentationStorage[write_bytes_key] || 0
+          ::RequestStore[write_bytes_key] || 0
         end
 
         def detail_store
-          InstrumentationStorage[call_details_key] ||= []
+          ::RequestStore[call_details_key] ||= []
         end
 
         def get_cross_slot_request_count
-          InstrumentationStorage[cross_slots_key] || 0
+          ::RequestStore[cross_slots_key] || 0
         end
 
         def get_allowed_cross_slot_request_count
-          InstrumentationStorage[allowed_cross_slots_key] || 0
+          ::RequestStore[allowed_cross_slots_key] || 0
         end
 
         def query_time
-          query_time = InstrumentationStorage[call_duration_key] || 0
+          query_time = ::RequestStore[call_duration_key] || 0
           query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
         end
 

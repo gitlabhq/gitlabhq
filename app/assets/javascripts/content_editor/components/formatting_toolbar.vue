@@ -54,6 +54,14 @@ export default {
           @execute="trackToolbarControlExecution"
         />
         <toolbar-button
+          data-testid="strike"
+          content-type="strike"
+          icon-name="strikethrough"
+          editor-command="toggleStrike"
+          :label="__('Strikethrough')"
+          @execute="trackToolbarControlExecution"
+        />
+        <toolbar-button
           data-testid="blockquote"
           content-type="blockquote"
           icon-name="quote"

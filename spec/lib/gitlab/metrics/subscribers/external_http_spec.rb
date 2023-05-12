@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
     context 'when external HTTP detail store has some values' do
       before do
         Gitlab::SafeRequestStore[:peek_enabled] = true
-        ::Gitlab::Instrumentation::Storage[:external_http_detail_store] = [{
+        Gitlab::SafeRequestStore[:external_http_detail_store] = [{
           method: 'POST', code: "200", duration: 0.321
         }]
       end
@@ -87,8 +87,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
 
     context 'when external HTTP recorded some values' do
       before do
-        ::Gitlab::Instrumentation::Storage[:external_http_count] = 7
-        ::Gitlab::Instrumentation::Storage[:external_http_duration_s] = 1.2
+        Gitlab::SafeRequestStore[:external_http_count] = 7
+        Gitlab::SafeRequestStore[:external_http_duration_s] = 1.2
       end
 
       it 'returns the external http detailed store' do
@@ -133,7 +133,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
         )
         expect(described_class.top_slowest_requests).to eq(slow_requests)
 
-        expect(::Gitlab::Instrumentation::Storage[:external_http_slow_requests].length).to eq(3)
+        expect(Gitlab::SafeRequestStore[:external_http_slow_requests].length).to eq(3)
       end
     end
   end
@@ -181,8 +181,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
       subscriber.request(event_2)
       subscriber.request(event_3)
 
-      expect(::Gitlab::Instrumentation::Storage[:external_http_count]).to eq(3)
-      expect(::Gitlab::Instrumentation::Storage[:external_http_duration_s]).to eq(5.741) # 0.321 + 0.12 + 5.3
+      expect(Gitlab::SafeRequestStore[:external_http_count]).to eq(3)
+      expect(Gitlab::SafeRequestStore[:external_http_duration_s]).to eq(5.741) # 0.321 + 0.12 + 5.3
     end
 
     it 'stores a portion of events into the detail store' do
@@ -190,22 +190,22 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
       subscriber.request(event_2)
       subscriber.request(event_3)
 
-      expect(::Gitlab::Instrumentation::Storage[:external_http_detail_store].length).to eq(3)
-      expect(::Gitlab::Instrumentation::Storage[:external_http_detail_store][0]).to match a_hash_including(
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store].length).to eq(3)
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store][0]).to match a_hash_including(
         start: be_like_time(Time.current),
         method: 'POST', code: "200", duration: 0.321,
         scheme: 'https', host: 'gitlab.com', port: 443, path: '/api/v4/projects',
         query: 'current=true', exception_object: nil,
         backtrace: be_a(Array)
       )
-      expect(::Gitlab::Instrumentation::Storage[:external_http_detail_store][1]).to match a_hash_including(
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store][1]).to match a_hash_including(
         start: be_like_time(Time.current),
         method: 'GET', code: "301", duration: 0.12,
         scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2',
         query: 'current=true', exception_object: nil,
         backtrace: be_a(Array)
       )
-      expect(::Gitlab::Instrumentation::Storage[:external_http_detail_store][2]).to match a_hash_including(
+      expect(Gitlab::SafeRequestStore[:external_http_detail_store][2]).to match a_hash_including(
         start: be_like_time(Time.current),
         method: 'POST', duration: 5.3,
         scheme: 'http', host: 'gitlab.com', port: 80, path: '/api/v4/projects/2/issues',
@@ -225,7 +225,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ExternalHttp, :request_store, featu
         subscriber.request(event_2)
         subscriber.request(event_3)
 
-        expect(::Gitlab::Instrumentation::Storage[:external_http_detail_store]).to be(nil)
+        expect(Gitlab::SafeRequestStore[:external_http_detail_store]).to be(nil)
       end
     end
   end

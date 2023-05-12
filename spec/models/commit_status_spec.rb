@@ -565,6 +565,15 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
   end
 
+  describe '.with_type' do
+    let_it_be(:build_job) { create_status(name: 'build job', type: ::Ci::Build) }
+    let_it_be(:bridge_job) { create_status(name: 'bridge job', type: ::Ci::Bridge) }
+
+    it 'returns statuses that match type' do
+      expect(described_class.with_type(::Ci::Build)).to contain_exactly(have_attributes(name: 'build job'))
+    end
+  end
+
   describe '#before_sha' do
     subject { commit_status.before_sha }
 

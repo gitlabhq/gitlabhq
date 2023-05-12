@@ -17,14 +17,6 @@ module ContentEditorHelpers
     find('.js-gfm-input').set content
   end
 
-  def expect_formatting_menu_to_be_visible
-    expect(page).to have_css('[data-testid="formatting-bubble-menu"]')
-  end
-
-  def expect_formatting_menu_to_be_hidden
-    expect(page).not_to have_css('[data-testid="formatting-bubble-menu"]')
-  end
-
   def expect_media_bubble_menu_to_be_visible
     expect(page).to have_css('[data-testid="media-bubble-menu"]')
   end

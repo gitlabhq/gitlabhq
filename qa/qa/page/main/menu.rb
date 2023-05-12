@@ -129,6 +129,12 @@ module QA
           click_element(:sidebar_menu_link, menu_item: 'Snippets')
         end
 
+        def go_to_workspaces
+          return click_element(:nav_item_link, submenu_item: 'Workspaces') if Runtime::Env.super_sidebar_enabled?
+
+          click_element(:sidebar_menu_link, menu_item: 'Workspaces')
+        end
+
         def go_to_create_project
           click_element(:new_menu_toggle)
           click_element(:global_new_project_link)

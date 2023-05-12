@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Git Attributes **(FREE)**
+# Git attributes **(FREE)**
 
 GitLab supports defining custom [Git attributes](https://git-scm.com/docs/gitattributes) such as what
 files to treat as binary, and what language to use for syntax highlighting
@@ -14,13 +14,13 @@ diffs.
 To define these attributes, create a file called `.gitattributes` in the root
 directory of your repository and push it to the default branch of your project.
 
-## Encoding Requirements
+## Encoding requirements
 
 The `.gitattributes` file _must_ be encoded in UTF-8 and _must not_ contain a
 Byte Order Mark. If a different encoding is used, the file's contents are
 ignored.
 
-## Support for Mixed File Encodings
+## Support for mixed file encodings
 
 GitLab attempts to detect the encoding of files automatically, but defaults to UTF-8 unless
 the detector is confident of a different type (such as `ISO-8859-1`). Incorrect encoding
@@ -47,8 +47,8 @@ be performed for the whole repository by running `git add --renormalize .`.
 
 For more information, see [working-tree-encoding](https://git-scm.com/docs/gitattributes#_working_tree_encoding).
 
-## Syntax Highlighting
+## Syntax highlighting
 
 The `.gitattributes` file can be used to define which language to use when
-syntax highlighting files and diffs. See
-["Syntax Highlighting"](highlighting.md) for more information.
+syntax highlighting files and diffs. For more information, see
+[Syntax highlighting](highlighting.md).

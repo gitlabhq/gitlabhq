@@ -6,8 +6,6 @@ module Gitlab
       # Class for tracking the total time spent in external HTTP
       # See more at https://gitlab.com/gitlab-org/labkit-ruby/-/blob/v0.14.0/lib/gitlab-labkit.rb#L18
       class ExternalHttp < ActiveSupport::Subscriber
-        InstrumentationStorage = ::Gitlab::Instrumentation::Storage
-
         attach_to :external_http
 
         DEFAULT_STATUS_CODE = 'undefined'
@@ -21,19 +19,19 @@ module Gitlab
         MAX_SLOW_REQUESTS = 10
 
         def self.detail_store
-          InstrumentationStorage[DETAIL_STORE] ||= []
+          ::Gitlab::SafeRequestStore[DETAIL_STORE] ||= []
         end
 
         def self.duration
-          InstrumentationStorage[DURATION].to_f
+          Gitlab::SafeRequestStore[DURATION].to_f
         end
 
         def self.request_count
-          InstrumentationStorage[COUNTER].to_i
+          Gitlab::SafeRequestStore[COUNTER].to_i
         end
 
         def self.slow_requests
-          InstrumentationStorage[SLOW_REQUESTS]
+          Gitlab::SafeRequestStore[SLOW_REQUESTS]
         end
 
         def self.top_slowest_requests
@@ -84,14 +82,14 @@ module Gitlab
         end
 
         def add_to_request_store(payload)
-          return unless InstrumentationStorage.active?
+          return unless Gitlab::SafeRequestStore.active?
 
-          InstrumentationStorage[COUNTER] = InstrumentationStorage[COUNTER].to_i + 1
-          InstrumentationStorage[DURATION] = InstrumentationStorage[DURATION].to_f + payload[:duration].to_f
+          Gitlab::SafeRequestStore[COUNTER] = Gitlab::SafeRequestStore[COUNTER].to_i + 1
+          Gitlab::SafeRequestStore[DURATION] = Gitlab::SafeRequestStore[DURATION].to_f + payload[:duration].to_f
 
           if payload[:duration].to_f > THRESHOLD_SLOW_REQUEST_S
-            InstrumentationStorage[SLOW_REQUESTS] ||= []
-            InstrumentationStorage[SLOW_REQUESTS] << {
+            Gitlab::SafeRequestStore[SLOW_REQUESTS] ||= []
+            Gitlab::SafeRequestStore[SLOW_REQUESTS] << {
               method: payload[:method],
               host: payload[:host],
               port: payload[:port],

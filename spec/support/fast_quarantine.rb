@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+return unless ENV['CI']
 return if ENV['FAST_QUARANTINE'] == "false"
 return if ENV['CI_MERGE_REQUEST_LABELS'].to_s.include?('pipeline:run-flaky-tests')
 

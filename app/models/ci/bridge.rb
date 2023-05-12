@@ -79,7 +79,9 @@ module Ci
       case pipeline.status
       when 'success'
         success!
-      when 'failed', 'canceled', 'skipped'
+      when 'canceled'
+        cancel!
+      when 'failed', 'skipped'
         drop!
       else
         false

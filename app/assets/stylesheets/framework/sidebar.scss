@@ -22,7 +22,7 @@
   &:not(.is-merge-request) {
     @include media-breakpoint-up(sm) {
       &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
-        padding-right: $gutter-collapsed-width;
+        padding-right: $right-sidebar-collapsed-width;
       }
     }
   }
@@ -30,7 +30,7 @@
   &.is-merge-request {
     @include media-breakpoint-up(lg) {
       .content-wrapper {
-        padding-right: $gutter-collapsed-width;
+        padding-right: $right-sidebar-collapsed-width;
       }
     }
   }
@@ -56,7 +56,7 @@
   z-index: $zindex-dropdown-menu;
 
   &.right-sidebar-merge-requests {
-    width: $gutter-width;
+    width: $right-sidebar-width;
 
     @include media-breakpoint-up(md) {
       z-index: auto;
@@ -69,14 +69,14 @@
 
   @include media-breakpoint-only(sm) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
-      padding-right: $gutter-collapsed-width;
+      padding-right: $right-sidebar-collapsed-width;
     }
   }
 
   &:not(.is-merge-request) {
     @include media-breakpoint-up(md) {
       .content-wrapper {
-        padding-right: $gutter-width;
+        padding-right: $right-sidebar-width;
       }
     }
   }
@@ -102,7 +102,7 @@
 
 @mixin maintain-sidebar-dimensions {
   display: block;
-  width: $gutter-width;
+  width: $right-sidebar-width;
 }
 
 .issues-bulk-update.right-sidebar {
@@ -113,7 +113,7 @@
 
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;
-    width: $gutter-width;
+    width: $right-sidebar-width;
 
     .issuable-sidebar-header {
       // matches `.top-area .nav-controls` for issuable index pages
@@ -401,7 +401,7 @@
     border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
-    width: $gutter-inner-width;
+    width: $right-sidebar-inner-width;
     // --
 
     &:last-child {
@@ -474,7 +474,7 @@
 
   &.right-sidebar-expanded {
     &:not(.right-sidebar-merge-requests) {
-      width: $gutter-width;
+      width: $right-sidebar-width;
     }
 
     .value {
@@ -554,13 +554,13 @@
       }
     }
 
-    width: $gutter-collapsed-width;
+    width: $right-sidebar-collapsed-width;
     padding: 0;
 
     .block,
     .sidebar-contained-width,
     .issuable-sidebar-header {
-      width: $gutter-collapsed-width - 2px;
+      width: $right-sidebar-collapsed-width - 2px;
       padding: 0;
       border-bottom: 0;
       overflow: hidden;

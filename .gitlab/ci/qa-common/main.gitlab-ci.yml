@@ -216,7 +216,7 @@ stages:
       bundle exec relate-failure-issue \
         --input-files "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.json" \
         --project "gitlab-org/gitlab" \
-        --token "${RELATE_TEST_FAILURE_TOKEN}"
+        --token "${QA_RELATE_FAILURE_ISSUE_TOKEN}"
 
 .generate-test-session:
   extends:
@@ -230,7 +230,8 @@ stages:
         --input-files "${CI_PROJECT_DIR}/gitlab-qa-run-*/**/rspec-*.json" \
         --project "gitlab-org/quality/testcase-sessions" \
         --token "${QA_TEST_SESSION_TOKEN}" \
-        --ci-project-token "${GENERATE_TEST_SESSION_READ_API_REPORTER_TOKEN}" > REPORT_ISSUE_URL
+        --ci-project-token "${GENERATE_TEST_SESSION_READ_API_REPORTER_TOKEN}" \
+        --issue-url-file REPORT_ISSUE_URL
   artifacts:
     when: always
     expire_in: 1d

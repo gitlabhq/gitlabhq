@@ -3509,7 +3509,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/database/migrations/sidekiq_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/test_background_runner_spec.rb'
     - 'spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb'
-    - 'spec/lib/gitlab/database/obsolete_ignored_columns_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/detached_partition_dropper_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/monthly_strategy_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/partition_manager_spec.rb'

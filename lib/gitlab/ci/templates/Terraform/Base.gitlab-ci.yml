@@ -52,6 +52,7 @@ cache:
     - gitlab-terraform apply
   resource_group: ${TF_STATE_NAME}
   rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $TF_AUTO_DEPLOY == "true"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
 

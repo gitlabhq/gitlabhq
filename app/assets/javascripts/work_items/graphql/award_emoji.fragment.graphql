@@ -1,0 +1,6 @@
+fragment AwardEmojiFragment on AwardEmoji {
+  name
+  user {
+    id
+  }
+}

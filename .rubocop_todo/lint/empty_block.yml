@@ -108,7 +108,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/database/migrations/instrumentation_spec.rb'
     - 'spec/lib/gitlab/database/migrations/lock_retries_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/observers/transaction_duration_spec.rb'
-    - 'spec/lib/gitlab/database/obsolete_ignored_columns_spec.rb'
     - 'spec/lib/gitlab/database/shared_model_spec.rb'
     - 'spec/lib/gitlab/database/with_lock_retries_outside_transaction_spec.rb'
     - 'spec/lib/gitlab/database/with_lock_retries_spec.rb'

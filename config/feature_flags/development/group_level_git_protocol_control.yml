@@ -1,8 +1,0 @@
----
-name: group_level_git_protocol_control
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89817
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/365357
-milestone: '15.1'
-type: development
-group: group::source code
-default_enabled: false

@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review_workflow do
+RSpec.describe 'Merge request > User sees discussions navigation',
+  :js, feature_category: :code_review_workflow,
+  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410678' do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:user) { project.creator }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }

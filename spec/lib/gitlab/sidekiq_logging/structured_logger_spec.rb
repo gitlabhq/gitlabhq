@@ -328,7 +328,7 @@ RSpec.describe Gitlab::SidekiqLogging::StructuredLogger do
             ApplicationRecord.connection.execute('SELECT pg_sleep(0.1);')
           end
 
-          ::Gitlab::Instrumentation::Storage.clear!
+          Gitlab::SafeRequestStore.clear!
 
           call_subject(job.dup, 'test_queue') {}
         end

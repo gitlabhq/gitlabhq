@@ -1733,14 +1733,6 @@ RSpec.describe Namespace, feature_category: :subgroups do
   end
 
   describe '#all_projects' do
-    context 'when recursive approach is disabled' do
-      before do
-        stub_feature_flags(recursive_approach_for_all_projects: false)
-      end
-
-      include_examples '#all_projects'
-    end
-
     context 'with use_traversal_ids feature flag enabled' do
       before do
         stub_feature_flags(use_traversal_ids: true)

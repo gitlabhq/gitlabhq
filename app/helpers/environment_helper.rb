@@ -79,7 +79,7 @@ module EnvironmentHelper
       can_destroy_environment: can_destroy_environment?(environment),
       can_stop_environment: can?(current_user, :stop_environment, environment),
       can_admin_environment: can?(current_user, :admin_environment, project),
-      environment_metrics_path: project_metrics_dashboard_path(project, environment: environment),
+      **environment_metrics_path(project, environment),
       environments_fetch_path: project_environments_path(project, format: :json),
       environment_edit_path: edit_project_environment_path(project, environment),
       environment_stop_path: stop_project_environment_path(project, environment),
@@ -95,5 +95,11 @@ module EnvironmentHelper
 
   def environments_detail_data_json(user, project, environment)
     environments_detail_data(user, project, environment).to_json
+  end
+
+  def environment_metrics_path(project, environment)
+    return {} if Feature.enabled?(:remove_monitor_metrics)
+
+    { environment_metrics_path: project_metrics_dashboard_path(project, environment: environment) }
   end
 end

@@ -12,8 +12,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `merge_user` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) as an eventual replacement for `merged_by` in GitLab 14.7.
 > - `merge_status` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
 > - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11  [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
+> - `approvals_before_merge` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
 
 Every API call to merge requests must be authenticated.
+
+## Removals in API v5
+
+The `approvals_before_merge` attribute has been deprecated, and is scheduled to be removed
+in API v5 in favor of the [Merge request approvals API](merge_request_approvals.md).
 
 ## List merge requests
 
@@ -192,20 +198,6 @@ Supported attributes:
       "count":0,
       "completed_count":0
     }
-  }
-]
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-[
-  {
-    "id": 1,
-    "title": "test1",
-    "approvals_before_merge": null
-    ...
   }
 ]
 ```
@@ -400,20 +392,6 @@ Supported attributes:
 ]
 ```
 
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-[
-  {
-    "id": 1,
-    "title": "test1",
-    "approvals_before_merge": null
-    ...
-  }
-]
-```
-
 For important notes on response data, read [Merge requests list response notes](#merge-requests-list-response-notes).
 
 ## List group merge requests
@@ -587,20 +565,6 @@ Supported attributes:
 ]
 ```
 
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-[
-  {
-    "id": 1,
-    "title": "test1",
-    "approvals_before_merge": null
-    ...
-  }
-]
-```
-
 For important notes on response data, read [Merge requests list response notes](#merge-requests-list-response-notes).
 
 ## Get single MR
@@ -630,7 +594,7 @@ Supported attributes:
 
 | Attribute                        | Type | Description |
 |----------------------------------|------|-------------|
-| `approvals_before_merge` | integer | **(PREMIUM)** Number of approvals required before this merge request can merge. |
+| `approvals_before_merge`| integer |  **(PREMIUM)** Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
 | `assignee` | object | First assignee of the merge request. |
 | `assignees` | array | Assignees of the merge request. |
 | `author` | object | User who created this merge request. |
@@ -753,7 +717,7 @@ Supported attributes:
   },
   "has_conflicts": false,
   "blocking_discussions_resolved": true,
-  "approvals_before_merge": null,
+  "approvals_before_merge": null, // deprecated, use [Merge request approvals API](merge_request_approvals.md)
   "subscribed": true,
   "changes_count": "1",
   "latest_build_started_at": "2022-05-13T09:46:50.032Z",
@@ -1280,8 +1244,8 @@ POST /projects/:id/merge_requests
 | `target_branch`            | string  | **{check-circle}** Yes      | The target branch. |
 | `title`                    | string  | **{check-circle}** Yes      | Title of MR. |
 | `allow_collaboration`      | boolean | **{dotted-circle}** No       | Allow commits from members who can merge to the target branch. |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | Number of approvals required before this can be merged (see below). To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
 | `allow_maintainer_to_push` | boolean | **{dotted-circle}** No       | Alias of `allow_collaboration`. |
-| `approvals_before_merge` **(PREMIUM)** | integer | **{dotted-circle}** No | Number of approvals required before this can be merged (see below). |
 | `assignee_id`              | integer | **{dotted-circle}** No       | Assignee user ID. |
 | `assignee_ids`             | integer array | **{dotted-circle}** No | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
 | `description`              | string  | **{dotted-circle}** No       | Description of the merge request. Limited to 1,048,576 characters. |
@@ -1292,13 +1256,6 @@ POST /projects/:id/merge_requests
 | `squash`                   | boolean | no       | Indicates if the merge request is set to be squashed when merged. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
 | `squash_on_merge`          | boolean | no       | Indicates if the merge request will be squashed when merged. |
 | `target_project_id`        | integer | **{dotted-circle}** No       | Numeric ID of the target project. |
-
-If `approvals_before_merge` is not provided, it inherits the value from the target project. If provided, the following conditions must hold for it to take effect:
-
-- The target project's `approvals_before_merge` must be greater than zero. A
-  value of zero disables approvals for that project.
-- The provided value of `approvals_before_merge` must be greater than the
-  target project's `approvals_before_merge`.
 
 ```json
 {
@@ -1418,18 +1375,6 @@ If `approvals_before_merge` is not provided, it inherits the value from the targ
     "count":0,
     "completed_count":0
   }
-}
-```
-
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
 }
 ```
 
@@ -1601,18 +1546,6 @@ Must include at least one non-required attribute from above.
     "count":0,
     "completed_count":0
   }
-}
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
 }
 ```
 
@@ -1790,18 +1723,6 @@ Supported attributes:
     "count":0,
     "completed_count":0
   }
-}
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
 }
 ```
 
@@ -2003,18 +1924,6 @@ Supported attributes:
     "count":0,
     "completed_count":0
   }
-}
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
 }
 ```
 
@@ -2318,18 +2227,6 @@ Example response:
 }
 ```
 
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
-}
-```
-
 For important notes on response data, read [Single merge request response notes](#single-merge-request-response-notes).
 
 ## Unsubscribe from a merge request
@@ -2486,18 +2383,6 @@ Example response:
     "count":0,
     "completed_count":0
   }
-}
-```
-
-Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see
-the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 1,
-  "title": "test1",
-  "approvals_before_merge": null
-  ...
 }
 ```
 

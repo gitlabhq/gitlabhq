@@ -9,6 +9,7 @@ import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
+  EVT_MR_PREPARED,
 } from '~/diffs/constants';
 import { LOAD_SINGLE_DIFF_FAILED } from '~/diffs/i18n';
 import * as diffActions from '~/diffs/store/actions';
@@ -396,23 +397,46 @@ describe('DiffsStoreActions', () => {
       );
     });
 
-    it('should show a warning on 404 reponse', async () => {
-      mock.onGet(endpointMetadata).reply(HTTP_STATUS_NOT_FOUND);
+    describe('on a 404 response', () => {
+      let dismissAlert;
 
-      await testAction(
-        diffActions.fetchDiffFilesMeta,
-        {},
-        { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
-        [{ type: types.SET_LOADING, payload: true }],
-        [],
-      );
+      beforeAll(() => {
+        dismissAlert = jest.fn();
 
-      expect(createAlert).toHaveBeenCalledTimes(1);
-      expect(createAlert).toHaveBeenCalledWith({
-        message: expect.stringMatching(
-          'Building your merge request. Wait a few moments, then refresh this page.',
-        ),
-        variant: 'warning',
+        mock.onGet(endpointMetadata).reply(HTTP_STATUS_NOT_FOUND);
+        createAlert.mockImplementation(() => ({ dismiss: dismissAlert }));
+      });
+
+      it('should show a warning', async () => {
+        await testAction(
+          diffActions.fetchDiffFilesMeta,
+          {},
+          { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+          [{ type: types.SET_LOADING, payload: true }],
+          [],
+        );
+
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: expect.stringMatching(
+            'Building your merge request… This page will update when the build is complete.',
+          ),
+          variant: 'warning',
+        });
+      });
+
+      it("should attempt to close the alert if the MR reports that it's been prepared", async () => {
+        await testAction(
+          diffActions.fetchDiffFilesMeta,
+          {},
+          { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+          [{ type: types.SET_LOADING, payload: true }],
+          [],
+        );
+
+        diffsEventHub.$emit(EVT_MR_PREPARED);
+
+        expect(dismissAlert).toHaveBeenCalled();
       });
     });
 

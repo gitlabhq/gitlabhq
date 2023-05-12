@@ -24,6 +24,12 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
 
   subject { described_class.new(context) }
 
+  before do
+    # Enable integrations with menu items
+    allow(project).to receive(:external_wiki).and_return(build(:external_wiki_integration, project: project))
+    allow(project).to receive(:external_issue_tracker).and_return(build(:bugzilla_integration, project: project))
+  end
+
   it 'implements #super_sidebar_context_header' do
     expect(subject.super_sidebar_context_header).to eq(
       {

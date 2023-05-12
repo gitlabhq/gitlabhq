@@ -2009,10 +2009,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
-  describe '#deploy_freezes', :request_store do
+  describe '#deploy_freezes' do
     let(:environment) { create(:environment, project: project, name: 'staging') }
     let(:freeze_period) { create(:ci_freeze_period, project: project) }
-    let(:cache_key) { "project:#{project.id}:freeze_periods_for_environments" }
 
     subject { environment.deploy_freezes }
 
@@ -2021,9 +2020,11 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
 
     it 'caches the freeze periods' do
-      expect { subject }.to(
-        change { Gitlab::SafeRequestStore[cache_key] }.from(nil).to([freeze_period])
-      )
+      expect(Gitlab::SafeRequestStore).to receive(:fetch)
+        .at_least(:once)
+        .and_return([freeze_period])
+
+      subject
     end
   end
 

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Database::PgDepend, type: :model, feature_category: :data
         connection.execute('CREATE EXTENSION IF NOT EXISTS pg_stat_statements;')
       end
 
-      it 'returns pg_stat_statements' do
+      it 'returns pg_stat_statements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410508' do
         expect(subject.pluck('relname')).to eq(['pg_stat_statements'])
       end
     end

@@ -2,15 +2,15 @@
 
 module Gitlab
   module Database
-    # Checks which `ignored_columns` can be safely removed by scanning
-    # the current schema for all `ApplicationRecord` descendants.
+    # Checks which `ignored_columns` definitions can be safely removed by
+    # scanning the current schema for all `ApplicationRecord` descendants.
     class ObsoleteIgnoredColumns
       def initialize(base = ApplicationRecord)
         @base = base
       end
 
       def execute
-        @base.descendants.map do |klass|
+        @base.descendants.filter_map do |klass|
           next if klass.abstract_class?
 
           safe_to_remove = ignored_columns_safe_to_remove_for(klass)

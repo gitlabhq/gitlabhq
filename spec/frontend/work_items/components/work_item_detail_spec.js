@@ -9,6 +9,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -27,6 +28,7 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDatesSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
@@ -46,6 +48,8 @@ import {
   objectiveType,
   mockWorkItemCommentNote,
 } from '../mock_data';
+
+jest.mock('~/lib/utils/common_utils');
 
 describe('WorkItemDetail component', () => {
   let wrapper;
@@ -91,6 +95,7 @@ describe('WorkItemDetail component', () => {
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
+  const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
 
   const createComponent = ({
     isModal = false,
@@ -114,6 +119,7 @@ describe('WorkItemDetail component', () => {
 
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
+      isLoggedIn: isLoggedIn(),
       propsData: { isModal, workItemId, workItemIid },
       data() {
         return {
@@ -145,6 +151,10 @@ describe('WorkItemDetail component', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    isLoggedIn.mockReturnValue(true);
+  });
 
   afterEach(() => {
     setWindowLocation('');
@@ -186,6 +196,10 @@ describe('WorkItemDetail component', () => {
 
     it('updates the document title', () => {
       expect(document.title).toEqual('Updated title · Task · test-project-path');
+    });
+
+    it('renders todos widget if logged in', () => {
+      expect(findWorkItemTodos().exists()).toBe(true);
     });
   });
 
@@ -766,6 +780,18 @@ describe('WorkItemDetail component', () => {
       await nextTick();
 
       expect(findAbuseCategorySelector().exists()).toBe(false);
+    });
+  });
+
+  describe('todos widget', () => {
+    beforeEach(async () => {
+      isLoggedIn.mockReturnValue(false);
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('does not renders if not logged in', () => {
+      expect(findWorkItemTodos().exists()).toBe(false);
     });
   });
 });

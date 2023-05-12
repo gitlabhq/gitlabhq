@@ -14,7 +14,9 @@ export const TASK_TYPE_NAME = 'Task';
 
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
+export const WIDGET_TYPE_AWARD_EMOJI = 'AWARD_EMOJI';
 export const WIDGET_TYPE_NOTIFICATIONS = 'NOTIFICATIONS';
+export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
@@ -215,3 +217,19 @@ export const TEST_ID_NOTIFICATIONS_TOGGLE_ACTION = 'notifications-toggle-action'
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';
+
+export const ADD = 'ADD';
+export const MARK_AS_DONE = 'MARK_AS_DONE';
+export const TODO_ADD_ICON = 'todo-add';
+export const TODO_DONE_ICON = 'todo-done';
+export const TODO_TYPENAME = 'Todo';
+export const TODO_EDGE_TYPENAME = 'TodoEdge';
+export const TODO_CONNECTION_TYPENAME = 'TodoConnection';
+export const CURRENT_USER_TODOS_TYPENAME = 'WorkItemWidgetCurrentUserTodos';
+export const WORK_ITEM_TYPENAME = 'WorkItem';
+export const WORK_ITEM_UPDATE_PAYLOAD_TYPENAME = 'WorkItemUpdatePayload';
+
+export const EMOJI_ACTION_ADD = 'ADD';
+export const EMOJI_ACTION_REMOVE = 'REMOVE';
+export const EMOJI_THUMBSUP = 'thumbsup';
+export const EMOJI_THUMBSDOWN = 'thumbsdown';

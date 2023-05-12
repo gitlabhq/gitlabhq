@@ -341,7 +341,7 @@ gem 'pg_query', '~> 2.2', '>= 2.2.1'
 
 gem 'premailer-rails', '~> 1.10.3'
 
-gem 'gitlab-labkit', '~> 0.31.1'
+gem 'gitlab-labkit', '~> 0.32.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n

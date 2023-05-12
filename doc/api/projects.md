@@ -17,6 +17,16 @@ For details, see [Project visibility](../user/public_access.md).
 
 The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
 
+## Removals in API v5
+
+These attributes are deprecated, and are scheduled to be removed in v5 of the API:
+
+- `tag_list`: Use the `topics` attribute instead.
+- `marked_for_deletion_at`: Use the `marked_for_deletion_on` attribute instead.
+  Available only to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/).
+- `approvals_before_merge`: Use the [Merge request approvals API](merge_request_approvals.md) instead.
+  Available only to [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/).
+
 ## Project merge method
 
 The `merge_method` can use these options:
@@ -261,29 +271,6 @@ When the user is authenticated and `simple` is not set this returns something li
     }
   },
   {
-    ...
-  }
-]
-```
-
-NOTE:
-The `tag_list` attribute has been deprecated
-and is removed in API v5 in favor of the `topics` attribute.
-
-NOTE:
-For users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/),
-the `marked_for_deletion_at` attribute has been deprecated, and is removed
-in API v5 in favor of the `marked_for_deletion_on` attribute.
-
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
-can also see the `approvals_before_merge` parameter:
-
-```json
-[
-  {
-    "id": 4,
-    "description": null,
-    "approvals_before_merge": 0,
     ...
   }
 ]
@@ -548,7 +535,7 @@ GET /users/:user_id/projects
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
-    "approvals_before_merge": 0,
+    "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
     "mirror": false,
     "mirror_user_id": 45,
     "mirror_trigger_builds": false,
@@ -807,7 +794,7 @@ Example response:
     "auto_devops_enabled": true,
     "auto_devops_deploy_strategy": "continuous",
     "repository_storage": "default",
-    "approvals_before_merge": 0,
+    "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
     "mirror": false,
     "mirror_user_id": 45,
     "mirror_trigger_builds": false,
@@ -989,7 +976,7 @@ GET /projects/:id
   "squash_option": "default_on",
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
-  "approvals_before_merge": 0,
+  "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
   "mirror": false,
   "mirror_user_id": 45,
   "mirror_trigger_builds": false,
@@ -1031,22 +1018,6 @@ GET /projects/:id
     "members": "http://example.com/api/v4/projects/1/members",
     "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
   }
-}
-```
-
-NOTE:
-The `tag_list` attribute has been deprecated
-and is removed in API v5 in favor of the `topics` attribute.
-
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
-can also see the `approvals_before_merge` parameter:
-
-```json
-{
-  "id": 3,
-  "description": null,
-  "approvals_before_merge": 0,
-  ...
 }
 ```
 
@@ -1275,7 +1246,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1361,7 +1332,7 @@ POST /projects/user/:user_id
 | `allow_merge_on_skipped_pipeline`                           | boolean | **{dotted-circle}** No | Set whether or not merge requests can be merged with skipped jobs. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. |
 | `analytics_access_level`                                    | string  | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `approvals_before_merge` **(PREMIUM)**                      | integer | **{dotted-circle}** No | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string  | **{dotted-circle}** No | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                               | string  | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual` or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -1460,7 +1431,7 @@ Supported attributes:
 | `allow_pipeline_trigger_approve_deployment` **(PREMIUM)**   | boolean        | **{dotted-circle}** No | Set whether or not a pipeline triggerer is allowed to approve deployments. |
 | `only_allow_merge_if_all_status_checks_passed` **(ULTIMATE)** | boolean | **{dotted-circle}** No | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false.<br/><br/>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. The feature flag was enabled by default in GitLab 15.9. |
 | `analytics_access_level`                                    | string         | **{dotted-circle}** No | One of `disabled`, `private` or `enabled` |
-| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge request by default. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
+| `approvals_before_merge` **(PREMIUM)**                      | integer        | **{dotted-circle}** No | How many approvers should approve merge requests by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). |
 | `auto_cancel_pending_pipelines`                             | string         | **{dotted-circle}** No | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                               | string         | **{dotted-circle}** No | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                                       | boolean        | **{dotted-circle}** No | Enable Auto DevOps for this project. |
@@ -2882,7 +2853,7 @@ Example response:
   "auto_devops_enabled": true,
   "auto_devops_deploy_strategy": "continuous",
   "autoclose_referenced_issues": true,
-  "approvals_before_merge": 0,
+  "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
   "mirror": false,
   "compliance_frameworks": []
 }

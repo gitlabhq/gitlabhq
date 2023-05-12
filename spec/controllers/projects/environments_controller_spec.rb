@@ -15,6 +15,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
   let!(:environment) { create(:environment, name: 'production', project: project) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     sign_in(user)
   end
 
@@ -543,6 +544,18 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
 
       expect(response).to redirect_to(project_metrics_dashboard_path(project))
     end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        get :metrics_redirect, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'GET #metrics' do
@@ -612,6 +625,20 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         get :metrics, params: environment_params
 
         expect(response).to redirect_to(project_metrics_dashboard_path(project, environment: environment))
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        expect(environment).not_to receive(:metrics)
+
+        get :metrics, params: environment_params
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -707,6 +734,18 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         additional_metrics(window_params)
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        additional_metrics(window_params)
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
