@@ -13,7 +13,6 @@ import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_DELETE,
@@ -51,7 +50,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [Tracking.mixin({ label: 'actions_menu' }), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
   notificationsToggleTestId: TEST_ID_NOTIFICATIONS_TOGGLE_ACTION,
   notificationsToggleFormTestId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
@@ -126,11 +125,7 @@ export default {
       };
     },
     canPromoteToObjective() {
-      return (
-        this.glFeatures.workItemsMvc2 &&
-        this.canUpdate &&
-        this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT
-      );
+      return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
     },
     objectiveWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;

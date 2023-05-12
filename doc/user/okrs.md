@@ -220,6 +220,20 @@ To set health status of an OKR:
 1. [Open the key result](okrs.md#view-a-key-result) that you want to edit.
 1. Next to **Health status**, select the dropdown list and select the desired health status.
 
+## Promote a key result to an objective
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386877) in GitLab 16.0.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To promote a key result:
+
+1. [Open the key result](#view-a-key-result).
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**)..
+1. Select **Promote to objective**.
+
 ## Close an OKR
 
 When an OKR is achieved, you can close it.

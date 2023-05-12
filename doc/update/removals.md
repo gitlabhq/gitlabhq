@@ -389,6 +389,18 @@ Security reports that use schema version 14.x.x will cause an error in the pipel
 
 As of GitLab 16.0, GitLab Runner images based on Windows Server 2004 and 20H2 will not be provided as these operating systems are end-of-life.
 
+### The Phabricator task importer
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/phabricator.html) was deprecated in
+GitLab 15.7 and is removed in 16.0.
+
+The Phabricator project hasn't been actively maintained since June 1, 2021. We haven't observed imports using this
+tool. There has been no activity on the open related issues on GitLab.
+
 ### The stable Terraform CI/CD template has been replaced with the latest template
 
 WARNING:
