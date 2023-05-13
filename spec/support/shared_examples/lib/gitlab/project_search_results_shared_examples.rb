@@ -38,8 +38,7 @@ RSpec.shared_examples 'access restricted confidential issues' do
     let(:user) { author }
 
     it 'lists project confidential issues' do
-      expect(objects).to contain_exactly(issue,
-                                         security_issue_1)
+      expect(objects).to contain_exactly(issue, security_issue_1)
       expect(results.limited_issues_count).to eq 2
     end
   end
@@ -48,8 +47,7 @@ RSpec.shared_examples 'access restricted confidential issues' do
     let(:user) { assignee }
 
     it 'lists project confidential issues for assignee' do
-      expect(objects).to contain_exactly(issue,
-                                         security_issue_2)
+      expect(objects).to contain_exactly(issue, security_issue_2)
       expect(results.limited_issues_count).to eq 2
     end
   end
@@ -60,9 +58,7 @@ RSpec.shared_examples 'access restricted confidential issues' do
     end
 
     it 'lists project confidential issues' do
-      expect(objects).to contain_exactly(issue,
-                                         security_issue_1,
-                                         security_issue_2)
+      expect(objects).to contain_exactly(issue, security_issue_1, security_issue_2)
       expect(results.limited_issues_count).to eq 3
     end
   end
@@ -72,9 +68,7 @@ RSpec.shared_examples 'access restricted confidential issues' do
 
     context 'when admin mode is enabled', :enable_admin_mode do
       it 'lists all project issues' do
-        expect(objects).to contain_exactly(issue,
-                                           security_issue_1,
-                                           security_issue_2)
+        expect(objects).to contain_exactly(issue, security_issue_1, security_issue_2)
       end
     end
 

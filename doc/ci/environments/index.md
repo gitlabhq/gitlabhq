@@ -161,9 +161,10 @@ deploy_review_app:
 ### Rename an environment
 
 > - Renaming an environment by using the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3.
-> - Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9 and is planned for removal in GitLab 16.0.
+> - Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9.
+> - Renaming an environment with the API [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
 
-You cannot rename an environment by using the UI, and the API method was deprecated in GitLab 15.9 and to be removed in GitLab 16.0.
+You cannot rename an environment.
 
 To achieve the same result as renaming an environment:
 

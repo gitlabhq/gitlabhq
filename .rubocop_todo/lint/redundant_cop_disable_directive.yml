@@ -317,7 +317,7 @@ Lint/RedundantCopDisableDirective:
     - 'spec/support/shared_examples/models/packages/debian/distribution_key_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/rubygems_packages_shared_examples.rb'
     - 'spec/uploaders/packages/composer/cache_uploader_spec.rb'
-    - 'tooling/danger/product_intelligence.rb'
+    - 'tooling/danger/analytics_instrumentation.rb'
     - 'tooling/danger/stable_branch.rb'
     - 'tooling/danger/suggestor.rb'
     - 'tooling/lib/tooling/helm3_client.rb'

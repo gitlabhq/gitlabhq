@@ -795,7 +795,7 @@ You can change these limits in the [GitLab Rails console](operations/rails_conso
   The `max_yaml_size_bytes` value is not directly tied to the size of the YAML file,
   but rather the memory allocated for the relevant objects.
 
-- To update the maximum YAML depth, update `max_yaml_depth` with the new value in megabytes:
+- To update the maximum YAML depth, update `max_yaml_depth` with the new value in number of lines:
 
   ```ruby
   ApplicationSetting.update(max_yaml_depth: 125)

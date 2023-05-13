@@ -7,7 +7,7 @@
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do
     .container-fluid.container-limited{ class: "gl-pb-2! gl-pt-6! #{@content_class}" }
-      .js-group-invite-members-banner{ data: { svg_path: image_path('illustrations/merge_requests.svg'),
+      .js-group-invite-members-banner{ data: { svg_path: image_path('illustrations/empty-state/empty-merge-requests-md.svg'),
         track_label: 'invite_members_banner',
         invite_members_path: group_group_members_path(@group),
         callouts_path: group_callouts_path,

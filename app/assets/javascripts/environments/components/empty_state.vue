@@ -1,20 +1,17 @@
 <script>
-import { GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { ENVIRONMENTS_SCOPE } from '../constants';
 
 export default {
   components: {
+    GlButton,
     GlEmptyState,
     GlLink,
+    GlSprintf,
   },
   inject: ['newEnvironmentPath'],
   props: {
     helpPath: {
-      type: String,
-      required: true,
-    },
-    scope: {
       type: String,
       required: true,
     },
@@ -26,40 +23,40 @@ export default {
   },
   computed: {
     title() {
-      return this.hasTerm
-        ? this.$options.i18n.searchingTitle
-        : this.$options.i18n.title[this.scope];
+      return this.hasTerm ? this.$options.i18n.searchingTitle : this.$options.i18n.title;
     },
     content() {
       return this.hasTerm ? this.$options.i18n.searchingContent : this.$options.i18n.content;
     },
-    buttonText() {
-      return this.hasTerm ? this.$options.i18n.newEnvironmentButtonLabel : '';
-    },
   },
   i18n: {
-    title: {
-      [ENVIRONMENTS_SCOPE.AVAILABLE]: s__("Environments|You don't have any environments."),
-      [ENVIRONMENTS_SCOPE.STOPPED]: s__("Environments|You don't have any stopped environments."),
-    },
-    content: s__(
-      'Environments|Environments are places where code gets deployed, such as staging or production.',
-    ),
     searchingTitle: s__('Environments|No results found'),
+    title: s__('Environments|Get started with environments'),
     searchingContent: s__('Environments|Edit your search and try again'),
-    link: s__('Environments|How do I create an environment?'),
-    newEnvironmentButtonLabel: s__('Environments|New environment'),
+    content: s__(
+      'Environments|Environments are places where code gets deployed, such as staging or production. You can create an environment in the UI or in your .gitlab-ci.yml file. You can also enable review apps, which assist with providing an environment to showcase product changes. %{linkStart}Learn more%{linkEnd} about environments.',
+    ),
+    newEnvironmentButtonLabel: s__('Environments|Create an environment'),
+    enablingReviewButtonLabel: s__('Environments|Enable review apps'),
   },
 };
 </script>
 <template>
-  <gl-empty-state :primary-button-text="buttonText" :primary-button-link="newEnvironmentPath">
-    <template #title>
-      <h4>{{ title }}</h4>
-    </template>
+  <gl-empty-state class="gl-layout-w-limited" :title="title">
     <template #description>
-      <p>{{ content }}</p>
-      <gl-link v-if="!hasTerm" :href="helpPath">{{ $options.i18n.link }}</gl-link>
+      <gl-sprintf :message="content">
+        <template #link="{ content: contentToDisplay }">
+          <gl-link :href="helpPath">{{ contentToDisplay }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
+    <template v-if="!hasTerm" #actions>
+      <gl-button :href="newEnvironmentPath" variant="confirm">
+        {{ $options.i18n.newEnvironmentButtonLabel }}
+      </gl-button>
+      <gl-button @click="$emit('enable-review')">
+        {{ $options.i18n.enablingReviewButtonLabel }}
+      </gl-button>
     </template>
   </gl-empty-state>
 </template>

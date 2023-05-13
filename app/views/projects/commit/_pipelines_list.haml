@@ -4,7 +4,7 @@
 #commit-pipeline-table-view{ data: { disable_initialization: disable_initialization,
   endpoint: endpoint,
   full_path: @project.full_path,
-  "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
+  "empty-state-svg-path" => image_path('illustrations/empty-state/empty-pipeline-md.svg'),
   "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
   "project-id": @project.id,
   "artifacts-endpoint" => downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json),

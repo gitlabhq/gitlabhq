@@ -208,3 +208,5 @@ class AbuseReport < ApplicationRecord
     )
   end
 end
+
+AbuseReport.prepend_mod

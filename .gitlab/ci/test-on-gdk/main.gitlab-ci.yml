@@ -13,6 +13,7 @@ include:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - sysctl -n -w fs.inotify.max_user_watches=524288
+    - echo "SUITE_RAN=true" > suite_status.env
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375

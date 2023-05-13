@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
-import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/merge_requests.svg?url';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-merge-requests-md.svg?url';
 import api from '~/api';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -31,14 +31,14 @@ export default {
   <div class="mr-widget-body mr-widget-empty-state">
     <div class="row">
       <div
-        class="col-md-5 order-md-last col-12 text-center d-flex justify-content-center align-items-center svg-content svg-250 pb-0"
+        class="col-md-3 col-12 text-center d-flex justify-content-center align-items-center svg-content svg-150 pb-0 pt-0"
       >
         <img
           :alt="s__('mrWidgetNothingToMerge|This merge request contains no changes.')"
           :src="$options.EMPTY_STATE_SVG_URL"
         />
       </div>
-      <div class="text col-md-7 order-md-first col-12">
+      <div class="text col-md-9 col-12">
         <p class="highlight">
           {{ s__('mrWidgetNothingToMerge|This merge request contains no changes.') }}
         </p>

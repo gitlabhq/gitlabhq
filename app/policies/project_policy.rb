@@ -38,6 +38,9 @@ class ProjectPolicy < BasePolicy
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && team_member? }
 
+  desc "User is a security policy bot on the project"
+  condition(:security_policy_bot) { user&.security_policy_bot? && team_member? }
+
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
 

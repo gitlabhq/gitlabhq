@@ -191,8 +191,8 @@ For more details on project visibility, see
 
 ## Configure allowed import sources
 
-Before projects can be imported from other systems, the [import source](../../gitlab_com/index.md#default-import-sources)
-for that system must be enabled.
+Before you can import projects from other systems, you must enable the
+[import source](../../gitlab_com/index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the top bar, select **Main menu > Admin**.

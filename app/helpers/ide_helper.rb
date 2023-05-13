@@ -43,7 +43,7 @@ module IdeHelper
       'empty-state-svg-path' => image_path('illustrations/multi_file_editor_empty.svg'),
       'no-changes-state-svg-path' => image_path('illustrations/multi-editor_no_changes_empty.svg'),
       'committed-state-svg-path' => image_path('illustrations/multi-editor_all_changes_committed_empty.svg'),
-      'pipelines-empty-state-svg-path': image_path('illustrations/pipelines_empty.svg'),
+      'pipelines-empty-state-svg-path': image_path('illustrations/empty-state/empty-pipeline-md.svg'),
       'switch-editor-svg-path': image_path('illustrations/rocket-launch-md.svg'),
       'promotion-svg-path': image_path('illustrations/web-ide_promotion.svg'),
       'ci-help-page-path' => help_page_path('ci/quick_start/index'),

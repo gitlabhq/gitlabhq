@@ -25,11 +25,12 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
 
   it 'renders the breadcrumbs', :aggregate_failures do
     within('.breadcrumbs') do
-      expect(page).to have_content("#{project.creator.name} #{project.name} New Release")
+      expect(page).to have_content("#{project.creator.name} #{project.name} Releases New")
 
       expect(page).to have_link(project.creator.name, href: user_path(project.creator))
       expect(page).to have_link(project.name, href: project_path(project))
-      expect(page).to have_link('New Release', href: new_project_release_path(project))
+      expect(page).to have_link('Releases', href: project_releases_path(project))
+      expect(page).to have_link('New', href: new_project_release_path(project))
     end
   end
 

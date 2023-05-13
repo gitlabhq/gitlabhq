@@ -15,7 +15,8 @@ module Projects
           cloudsqlMysqlUrl: new_project_google_cloud_database_path(project, :mysql),
           cloudsqlSqlserverUrl: new_project_google_cloud_database_path(project, :sqlserver),
           cloudsqlInstances: ::GoogleCloud::GetCloudsqlInstancesService.new(project).execute,
-          emptyIllustrationUrl: ActionController::Base.helpers.image_path('illustrations/pipelines_empty.svg')
+          emptyIllustrationUrl:
+            ActionController::Base.helpers.image_path('illustrations/empty-state/empty-pipeline-md.svg')
         }
 
         @js_data = Gitlab::Json.dump(js_data)

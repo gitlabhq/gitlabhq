@@ -7,8 +7,6 @@ coach: "@grzesiek"
 
 # GitLab Service-Integration: AI and Beyond
 
-[[_TOC_]]
-
 This document is an abbreviated proposal for Service-Integration to allow teams within GitLab to rapidly build new application features that leverage AI, ML, and data technologies.
 
 ## Executive Summary

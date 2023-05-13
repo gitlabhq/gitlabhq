@@ -99,6 +99,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    showAiAssistantDrawer: {
+      type: Boolean,
+      required: true,
+    },
   },
   apollo: {
     appStatus: {
@@ -194,6 +198,7 @@ export default {
       <ci-editor-header
         :show-drawer="showDrawer"
         :show-job-assistant-drawer="showJobAssistantDrawer"
+        :show-ai-assistant-drawer="showAiAssistantDrawer"
         v-on="$listeners"
       />
       <text-editor :commit-sha="commitSha" :value="ciFileContent" v-on="$listeners" />

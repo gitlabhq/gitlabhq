@@ -823,6 +823,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/workers/partition_creation_worker_spec.rb'
     - 'spec/workers/projects/delete_branch_worker_spec.rb'
     - 'spec/workers/web_hook_worker_spec.rb'
-    - 'tooling/danger/product_intelligence.rb'
+    - 'tooling/danger/analytics_instrumentation.rb'
     - 'tooling/danger/suggestor.rb'
     - 'tooling/docs/deprecation_handling.rb'

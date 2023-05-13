@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Service Ping review guidelines
 
 This page includes introductory material for a
-[Product Intelligence](https://about.gitlab.com/handbook/engineering/development/analytics/product-intelligence/)
+[Analytics Instrumentation](https://about.gitlab.com/handbook/engineering/development/analytics/analytics-instrumentation/)
 review, and is specific to Service Ping related reviews. For broader advice and
 general best practices for code reviews, refer to our [code review guide](../code_review.md).
 
@@ -18,7 +18,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 
 ## Review process
 
-We recommend a Product Intelligence review when a merge request (MR) touches
+We recommend a Analytics Instrumentation review when a merge request (MR) touches
 any of the following Service Ping files:
 
 - `usage_data*` files.
@@ -26,29 +26,29 @@ any of the following Service Ping files:
   - [`config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/metrics).
   - [`ee/config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/metrics).
   - [`schema.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
-- Product Intelligence tooling. For example,
+- Analytics Instrumentation tooling. For example,
   [`Gitlab::UsageMetricDefinitionGenerator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/usage_metric_definition_generator.rb)
 
 ### Roles and process
 
 #### The merge request **author** should
 
-- Decide whether a Product Intelligence review is needed. You can skip the Product Intelligence
-review and remove the labels if the changes are not related to the Product Intelligence domain and
+- Decide whether a Analytics Instrumentation review is needed. You can skip the Analytics Instrumentation
+review and remove the labels if the changes are not related to the Analytics Instrumentation domain and
 are regular backend changes.
-- If a Product Intelligence review is needed, add the labels
-  `~product intelligence` and `~product intelligence::review pending`.
-- For merge requests authored by Product Intelligence team members:
-  - Assign both the `~backend` and `~product intelligence` reviews to another Product Intelligence team member.
-  - Assign the maintainer review to someone outside of the Product Intelligence group.
+- If a Analytics Instrumentation review is needed, add the labels
+  `~analytics instrumentation` and `~analytics instrumentation::review pending`.
+- For merge requests authored by Analytics Instrumentation team members:
+  - Assign both the `~backend` and `~analytics instrumentation` reviews to another Analytics Instrumentation team member.
+  - Assign the maintainer review to someone outside of the Analytics Instrumentation group.
 - Assign an
-  [engineer](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Product Intelligence team for a review.
+  [engineer](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) from the Analytics Instrumentation team for a review.
 - Set the correct attributes in the metric's YAML definition:
   - `product_section`, `product_stage`, `product_group`
   - Provide a clear description of the metric.
 - Add a changelog [according to guidelines](../changelog.md).
 
-#### The Product Intelligence **reviewer** should
+#### The Analytics Instrumentation **reviewer** should
 
 - Perform a first-pass review on the merge request and suggest improvements to the author.
 - Check the [metrics location](metrics_dictionary.md#metric-key_path) in
@@ -70,13 +70,13 @@ are regular backend changes.
 - If a metric was changed or removed: Make sure the MR author notified the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment on the issue for the MR and all of these groups have acknowledged the removal.
 - Metrics instrumentations
   - Recommend using metrics instrumentation for new metrics, [if possible](metrics_instrumentation.md#support-for-instrumentation-classes).
-- Approve the MR, and relabel the MR with `~"product intelligence::approved"`.
+- Approve the MR, and relabel the MR with `~"analytics instrumentation::approved"`.
 
 ## Review workload distribution
 
-[Danger bot](../dangerbot.md) adds the list of changed Product Intelligence files
+[Danger bot](../dangerbot.md) adds the list of changed Analytics Instrumentation files
 and pings the
 [`@gitlab-org/analytics-section/product-intelligence/engineers`](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) group for merge requests
 that are not drafts.
 
-Any of the Product Intelligence engineers can be assigned for the Product Intelligence review.
+Any of the Analytics Instrumentation engineers can be assigned for the Analytics Instrumentation review.

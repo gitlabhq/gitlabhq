@@ -690,8 +690,8 @@ Create a merge request for the new Service Ping metric, and do the following:
 
 - Add the `feature` label to the merge request. A metric is a user-facing change and is part of expanding the Service Ping feature.
 - Add a changelog entry that complies with the [changelog entries guide](../changelog.md).
-- Ask for a Product Intelligence review.
-  On GitLab.com, we have DangerBot set up to monitor Product Intelligence related files and recommend a [Product Intelligence review](review_guidelines.md).
+- Ask for an Analytics Instrumentation review.
+  On GitLab.com, we have DangerBot set up to monitor Analytics Instrumentation related files and recommend a [Analytics Instrumentation review](review_guidelines.md).
 
 ## Verify your metric
 

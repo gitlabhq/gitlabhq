@@ -66,6 +66,27 @@ All AI features are experimental.
 1. Enable the specific feature flag for the feature you want to test
 1. Set either the required access token `OpenAi` or `Vertex`. Ask in [`#ai_enablement_team`](https://gitlab.slack.com/archives/C051K31F30R) to receive an access token.
 
+### Set up the embedding database
+
+For features that use the embedding database, additional setup is needed.
+
+1. Enable [pgvector](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
+1. Enable the embedding database in GDK
+
+   ```shell
+     gdk config set gitlab.rails.databases.embedding.enabled true
+   ```
+
+1. Run `gdk reconfigure`
+1. Run database migrations to create the embedding database
+
+### Setup for GitLab chat
+
+To populate the embedding database for GitLab chat:
+
+1. Open a rails console
+1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
+
 ### Internal-Only GCP account access
 
 In order to obtain a GCP service key for local development, please follow the steps below:
@@ -204,7 +225,7 @@ If the circuit is open, subsequent requests fail fast without executing the code
 
 ### Configuration
 
-The circuit breaker is configured with two constants which control the number of errors and requests at which the circuit will open: 
+The circuit breaker is configured with two constants which control the number of errors and requests at which the circuit will open:
 
 - `ERROR_THRESHOLD`
 - `VOLUME_THRESHOLD`

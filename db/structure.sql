@@ -14111,7 +14111,6 @@ CREATE TABLE ci_triggers (
     project_id integer,
     owner_id integer NOT NULL,
     description character varying,
-    ref character varying,
     encrypted_token bytea,
     encrypted_token_iv bytea
 );

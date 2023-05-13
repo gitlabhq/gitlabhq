@@ -697,7 +697,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
           it 'creates a new pipeline' do
             expect do
-              click_on 'Run pipeline'
+              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -713,7 +713,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
               end
 
               expect do
-                click_on 'Run pipeline'
+                find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -726,7 +726,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Run pipeline'
+            find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
             wait_for_requests
           end
 
@@ -736,7 +736,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              click_on 'Run pipeline'
+              find('[data-testid="run_pipeline_button"]', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)

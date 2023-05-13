@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 def raw_repo_without_container(repository)
-  Gitlab::Git::Repository.new(repository.shard,
-                              "#{repository.disk_path}.git",
-                              repository.repo_type.identifier_for_container(repository.container),
-                              repository.container.full_path)
+  Gitlab::Git::Repository.new(
+    repository.shard,
+    "#{repository.disk_path}.git",
+    repository.repo_type.identifier_for_container(repository.container),
+    repository.container.full_path
+  )
 end
 
 RSpec.shared_examples 'Gitaly feature flag actors are inferred from repository' do

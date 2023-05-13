@@ -23,7 +23,8 @@ class JiraConnect::BranchesController < ApplicationController
   def new_branch_data
     {
       initial_branch_name: initial_branch_name,
-      success_state_svg_path: ActionController::Base.helpers.image_path('illustrations/merge_requests.svg')
+      success_state_svg_path:
+        ActionController::Base.helpers.image_path('illustrations/empty-state/empty-merge-requests-md.svg')
     }
   end
 end

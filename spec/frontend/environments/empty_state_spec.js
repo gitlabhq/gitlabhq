@@ -11,12 +11,17 @@ describe('~/environments/components/empty_state.vue', () => {
 
   const findNewEnvironmentLink = () =>
     wrapper.findByRole('link', {
-      name: s__('Environments|New environment'),
+      name: s__('Environments|Create an environment'),
     });
 
   const findDocsLink = () =>
     wrapper.findByRole('link', {
-      name: s__('Environments|How do I create an environment?'),
+      name: 'Learn more',
+    });
+
+  const finfEnablingReviewButton = () =>
+    wrapper.findByRole('button', {
+      name: s__('Environments|Enable review apps'),
     });
 
   const createWrapper = ({ propsData = {} } = {}) =>
@@ -29,38 +34,44 @@ describe('~/environments/components/empty_state.vue', () => {
       provide: { newEnvironmentPath: NEW_PATH },
     });
 
-  it('shows an empty state for available environments', () => {
-    wrapper = createWrapper();
-
-    const title = wrapper.findByRole('heading', {
-      name: s__("Environments|You don't have any environments."),
+  describe('without search term', () => {
+    beforeEach(() => {
+      wrapper = createWrapper();
     });
 
-    expect(title.exists()).toBe(true);
-  });
+    it('shows an empty state environments', () => {
+      const title = wrapper.findByRole('heading', {
+        name: s__('Environments|Get started with environments'),
+      });
 
-  it('shows an empty state for stopped environments', () => {
-    wrapper = createWrapper({ propsData: { scope: ENVIRONMENTS_SCOPE.STOPPED } });
-
-    const title = wrapper.findByRole('heading', {
-      name: s__("Environments|You don't have any stopped environments."),
+      expect(title.exists()).toBe(true);
     });
 
-    expect(title.exists()).toBe(true);
-  });
+    it('shows a link to the the help path', () => {
+      const link = findDocsLink();
 
-  it('shows a link to the the help path', () => {
-    wrapper = createWrapper();
+      expect(link.attributes('href')).toBe(HELP_PATH);
+    });
 
-    const link = findDocsLink();
+    it('shows a link to creating a new environment', () => {
+      const link = findNewEnvironmentLink();
 
-    expect(link.attributes('href')).toBe(HELP_PATH);
-  });
+      expect(link.attributes('href')).toBe(NEW_PATH);
+    });
 
-  it('hides a link to creating a new environment', () => {
-    const link = findNewEnvironmentLink();
+    it('shows a button to enable review apps', () => {
+      const button = finfEnablingReviewButton();
 
-    expect(link.exists()).toBe(false);
+      expect(button.exists()).toBe(true);
+    });
+
+    it('should emit enable review', () => {
+      const button = finfEnablingReviewButton();
+
+      button.vm.$emit('click');
+
+      expect(wrapper.emitted('enable-review')).toBeDefined();
+    });
   });
 
   describe('with search term', () => {
@@ -86,10 +97,16 @@ describe('~/environments/components/empty_state.vue', () => {
       expect(link.exists()).toBe(false);
     });
 
-    it('shows a link to create a new environment', () => {
+    it('hide a link to create a new environment', () => {
       const link = findNewEnvironmentLink();
 
-      expect(link.attributes('href')).toBe(NEW_PATH);
+      expect(link.exists()).toBe(false);
+    });
+
+    it('hide a button to enable review apps', () => {
+      const button = finfEnablingReviewButton();
+
+      expect(button.exists()).toBe(false);
     });
   });
 });

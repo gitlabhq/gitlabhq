@@ -10,7 +10,7 @@ jest.mock('lodash/uniqueId', () => (x) => `${x}77`);
 
 const EXPECTED_COPY_PRE_ID = 'enable-review-app-copy-string-77';
 
-describe('Enable Review App Modal', () => {
+describe('Enable Review Apps Modal', () => {
   let wrapper;
   let modal;
 

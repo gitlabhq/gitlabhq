@@ -35,6 +35,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:security_bot) { @user&.security_bot? }
 
+  desc "User is security policy bot"
+  with_options scope: :user, score: 0
+  condition(:security_policy_bot) { @user&.security_policy_bot? }
+
   desc "User is automation bot"
   with_options scope: :user, score: 0
   condition(:automation_bot) { @user&.automation_bot? }

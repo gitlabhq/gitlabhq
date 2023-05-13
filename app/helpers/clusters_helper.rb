@@ -64,7 +64,11 @@ module ClustersHelper
     when 'apps'
       render 'applications'
     when 'integrations'
-      render 'integrations'
+      if Feature.enabled?(:remove_monitor_metrics)
+        render('details', expanded: expanded)
+      else
+        render 'integrations'
+      end
     when 'settings'
       render 'advanced_settings_container'
     else

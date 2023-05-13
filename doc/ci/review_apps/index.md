@@ -58,16 +58,16 @@ The process of configuring review apps is as follows:
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/index.md) `${CI_COMMIT_REF_SLUG}`
    to create dynamic environments and restrict it to run only on branches.
-   Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-app-button) for your project.
+   Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
 1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the review apps.
 
-### Enable review app button
+### Enable review apps button
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
 
 When configuring review apps for a project, you add a new job to the `.gitlab-ci.yml` file,
 as mentioned above. To facilitate this, and if you are using Kubernetes, you can select
-**Enable review app** and GitLab prompts you with a template code block that
+**Enable review apps** and GitLab prompts you with a template code block that
 you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
 Prerequisite:
@@ -78,7 +78,7 @@ To use the review apps template:
 
 1. On the top bar, select **Main menu > Projects** and find the project you want to create a review app job for.
 1. On the left sidebar, select **Deployments > Environments**.
-1. Select **Enable review app**.
+1. Select **Enable review apps**.
 1. Copy the provided code snippet and paste it into your
    `.gitlab-ci.yml` file:
 

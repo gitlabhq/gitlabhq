@@ -183,4 +183,4 @@ Lint/MissingCopEnableDirective:
     - 'spec/lib/gitlab/sidekiq_middleware/size_limiter/server_spec.rb'
     - 'spec/support/capybara.rb'
     - 'spec/support/google_api/cloud_platform_helpers.rb'
-    - 'tooling/danger/product_intelligence.rb'
+    - 'tooling/danger/analytics_instrumentation.rb'

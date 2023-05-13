@@ -55,7 +55,7 @@ end
 OPTIONAL_REVIEW_TEMPLATE = '%{role} review is optional for %{category}'
 NOT_AVAILABLE_TEMPLATES = {
   default: 'No %{role} available',
-  product_intelligence: group_not_available_template('#g_product_intelligence', '@gitlab-org/analytics-section/product-intelligence/engineers'),
+  product_intelligence: group_not_available_template('#g_analyze_analytics_instrumentation', '@gitlab-org/analytics-section/product-intelligence/engineers'),
   import_integrate_be: group_not_available_template('#g_manage_import_and_integrate', '@gitlab-org/manage/import-and-integrate'),
   import_integrate_fe: group_not_available_template('#g_manage_import_and_integrate', '@gitlab-org/manage/import-and-integrate')
 }.freeze
@@ -98,14 +98,14 @@ categories << :database if helper.mr_labels.include?('database')
 # Ensure to spin for UX reviewer when ~UX is applied (e.g. to review changes to the UI) except when it's from wider community contribution where we want to assign from the corresponding group
 categories << :ux if helper.mr_labels.include?('UX') && !helper.mr_labels.include?('Community contribution') # rubocop:disable Rails/NegateInclude
 
-# Ensure to spin for Product Intelligence reviewer when ~"product intelligence::review pending" is applied
-categories << :product_intelligence if helper.mr_labels.include?("product intelligence::review pending")
+# Ensure to spin for Analytics Instrumentation reviewer when ~"analytics instrumentation::review pending" is applied
+categories << :analytics_instrumentation if helper.mr_labels.include?("analytics instrumentation::review pending")
 
-# Skip Product intelligence reviews for growth experiment MRs
-categories.delete(:product_intelligence) if helper.mr_labels.include?("growth experiment")
+# Skip Analytics Instrumentation reviews for growth experiment MRs
+categories.delete(:analytics_instrumentation) if helper.mr_labels.include?("growth experiment")
 
 # Skip specialty reviews for stable branch MRs since they have already been merged to the default branch
-categories.subtract([:database, :ux, :product_intelligence]) if stable_branch.valid_stable_branch?
+categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
 
 if changes.any?
   random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)

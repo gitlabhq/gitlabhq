@@ -6,7 +6,6 @@ import {
   trackProjectImport,
   trackNewRegistrations,
   trackSaasTrialSubmit,
-  trackSaasTrialSkip,
   trackSaasTrialGroup,
   trackSaasTrialGetStarted,
   trackTrialAcceptTerms,
@@ -143,9 +142,6 @@ describe('~/google_tag_manager/index', () => {
   describe.each([
     createOmniAuthTestCase(trackFreeTrialAccountSubmissions, 'freeThirtyDayTrial'),
     createOmniAuthTestCase(trackNewRegistrations, 'standardSignUp'),
-    createTestCase(trackSaasTrialSkip, {
-      links: [{ cls: 'js-skip-trial', expectation: { event: 'saasTrialSkip' } }],
-    }),
     createTestCase(trackSaasTrialGroup, {
       forms: [{ cls: 'js-saas-trial-group', expectation: { event: 'saasTrialGroup' } }],
     }),

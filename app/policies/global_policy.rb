@@ -62,8 +62,12 @@ class GlobalPolicy < BasePolicy
 
   rule { ~can?(:access_api) }.prevent :execute_graphql_mutation
 
-  rule { blocked | (internal & ~migration_bot & ~security_bot) }.policy do
+  rule { blocked | (internal & ~migration_bot & ~security_bot & ~security_policy_bot) }.policy do
     prevent :access_git
+  end
+
+  rule { security_policy_bot }.policy do
+    enable :access_git
   end
 
   rule { project_bot | service_account }.policy do

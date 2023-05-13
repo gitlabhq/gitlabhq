@@ -91,7 +91,7 @@ module Ci
         artifacts_endpoint: downloadable_artifacts_project_pipeline_path(project, artifacts_endpoint_placeholder, format: :json),
         artifacts_endpoint_placeholder: artifacts_endpoint_placeholder,
         pipeline_schedule_url: pipeline_schedules_path(project),
-        empty_state_svg_path: image_path('illustrations/pipelines_empty.svg'),
+        empty_state_svg_path: image_path('illustrations/empty-state/empty-pipeline-md.svg'),
         error_state_svg_path: image_path('illustrations/pipelines_failed.svg'),
         no_pipelines_svg_path: image_path('illustrations/pipelines_pending.svg'),
         can_create_pipeline: can?(current_user, :create_pipeline, project).to_s,

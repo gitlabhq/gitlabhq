@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespacesHelper do
+RSpec.describe NamespacesHelper, feature_category: :subgroups do
   let!(:admin) { create(:admin) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do
@@ -121,7 +121,7 @@ RSpec.describe NamespacesHelper do
     end
   end
 
-  describe '#pipeline_usage_app_data' do
+  describe '#pipeline_usage_app_data', unless: Gitlab.ee?, feature_category: :consumables_cost_management do
     it 'returns a hash with necessary data for the frontend' do
       expect(helper.pipeline_usage_app_data(user_group)).to eql({
         namespace_actual_plan_name: user_group.actual_plan_name,

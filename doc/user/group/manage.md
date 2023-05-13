@@ -679,13 +679,20 @@ To view the merge request approval settings for a group:
 
 Support for group-level settings for merge request approval rules is tracked in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Group Code Suggestions **(PREMIUM SAAS)**
+## Group Code Suggestions **(FREE SAAS)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
 
 WARNING:
-This feature is in [Beta](../../policy/alpha-beta-support.md#beta). Code Suggestions use generative AI to suggest code while you're developing. Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed. Code Suggestions may produce [low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality). Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations). We look forward to hearing your feedback.
+This feature is in [Beta](../../policy/alpha-beta-support.md#beta).
+Code Suggestions use generative AI to suggest code while you're developing.
+Due to high demand, this feature will have unscheduled downtime and code suggestions in VS Code may be delayed.
+Code Suggestions may produce
+[low-quality or incomplete suggestions](../project/repository/code_suggestions.md#model-accuracy-and-quality).
+Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
+We look forward to hearing your feedback.
 
 This setting enables users in the group to access [Code Suggestions](../project/repository/code_suggestions.md).
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)

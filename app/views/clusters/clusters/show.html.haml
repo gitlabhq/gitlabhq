@@ -33,7 +33,7 @@
         = render 'clusters/clusters/details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/health_tab' if !Feature.enabled?(:remove_monitor_metrics)
-        = render 'clusters/clusters/integrations_tab'
+        = render 'clusters/clusters/integrations_tab' if !Feature.enabled?(:remove_monitor_metrics)
         = render 'clusters/clusters/advanced_settings_tab'
 
       .tab-content.py-3

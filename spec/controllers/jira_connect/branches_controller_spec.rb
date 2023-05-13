@@ -17,7 +17,7 @@ RSpec.describe JiraConnect::BranchesController do
         expect(response).to be_successful
         expect(assigns(:new_branch_data)).to include(
           initial_branch_name: 'ACME-123-my-issue',
-          success_state_svg_path: start_with('/assets/illustrations/merge_requests-')
+          success_state_svg_path: start_with('/assets/illustrations/empty-state/empty-merge-requests-md-')
         )
       end
 

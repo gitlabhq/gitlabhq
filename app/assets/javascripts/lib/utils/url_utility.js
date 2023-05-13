@@ -5,8 +5,11 @@ const PATH_SEPARATOR_LEADING_REGEX = new RegExp(`^${PATH_SEPARATOR}+`);
 const PATH_SEPARATOR_ENDING_REGEX = new RegExp(`${PATH_SEPARATOR}+$`);
 const SHA_REGEX = /[\da-f]{40}/gi;
 
+// GitLab default domain (override in jh)
+export const DOMAIN = 'gitlab.com';
+
 // About GitLab default host (overwrite in jh)
-export const PROMO_HOST = 'about.gitlab.com';
+export const PROMO_HOST = `about.${DOMAIN}`; // about.gitlab.com
 
 // About Gitlab default url (overwrite in jh)
 export const PROMO_URL = `https://${PROMO_HOST}`;

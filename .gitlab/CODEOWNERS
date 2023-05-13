@@ -278,7 +278,7 @@ Dangerfile
 /ee/app/assets/javascripts/vue_shared/components/customizable_dashboard/panels_base.vue
 /ee/app/assets/javascripts/product_analytics/
 
-^[Product Intelligence] @gitlab-org/analytics-section/product-intelligence/engineers
+^[Analytics Instrumentation] @gitlab-org/analytics-section/product-intelligence/engineers
 /ee/lib/gitlab/usage_data_counters/
 /ee/lib/ee/gitlab/usage_data.rb
 /lib/gitlab/usage_data.rb
@@ -1238,9 +1238,7 @@ lib/gitlab/checks/**
 # the same section.
 /**/app/**/ci/
 /**/lib/**/ci/
-/**/spec/**/ci/
 /**/app/**/merge_trains/
-/**/spec/**/merge_trains/
 /app/controllers/admin/jobs_controller.rb
 /app/controllers/admin/runner_projects_controller.rb
 /app/controllers/admin/runners_controller.rb
@@ -1304,49 +1302,6 @@ lib/gitlab/checks/**
 /ee/app/workers/clear_shared_runners_minutes_worker.rb
 /ee/lib/api/merge_trains.rb
 /ee/lib/ee/api/entities/merge_train.rb
-/ee/spec/requests/api/merge_trains_spec.rb
-/spec/controllers/admin/jobs_controller_spec.rb
-/spec/controllers/admin/runner_projects_controller_spec.rb
-/spec/controllers/admin/runners_controller_spec.rb
-/spec/controllers/projects/artifacts_controller_spec.rb
-/spec/controllers/projects/jobs_controller_spec.rb
-/spec/requests/runner_setup_controller_spec.rb
-/spec/controllers/projects/pipeline_schedules_controller_spec.rb
-/spec/requests/projects/pipelines_controller_spec.rb
-/spec/controllers/projects/pipelines_settings_controller_spec.rb
-/spec/controllers/projects/runners_controller_spec.rb
-/spec/controllers/groups/variables_controller_spec.rb
-/spec/models/commit_status_spec.rb
-/spec/models/external_pull_request_spec.rb
-/spec/models/generic_commit_status_spec.rb
-/spec/models/namespace_ci_cd_setting_spec.rb
-/spec/models/project_ci_cd_setting_spec.rb
-/spec/presenters/commit_status_presenter_spec.rb
-/spec/views/projects/jobs/
-/spec/views/projects/pipeline_schedules/
-/spec/views/projects/pipelines/
-/spec/views/projects/settings/ci_cd/
-/spec/workers/build_hooks_worker_spec.rb
-/spec/workers/build_queue_worker_spec.rb
-/spec/workers/build_success_worker_spec.rb
-/spec/workers/ci_platform_metrics_update_cron_worker_spec.rb
-/spec/workers/create_pipeline_worker_spec.rb
-/spec/workers/expire_build_artifacts_worker_spec.rb
-/spec/workers/pipeline_hooks_worker_spec.rb
-/spec/workers/pipeline_metrics_worker_spec.rb
-/spec/workers/pipeline_notification_worker_spec.rb
-/spec/workers/pipeline_process_worker_spec.rb
-/spec/workers/pipeline_schedule_worker_spec.rb
-/spec/workers/run_pipeline_schedule_worker_spec.rb
-/spec/workers/stuck_ci_jobs_worker_spec.rb
-/spec/workers/update_external_pull_requests_worker_spec.rb
-/ee/spec/finders/merge_trains_finder_spec.rb
-/ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb
-/ee/spec/services/auto_merge/merge_train_service_spec.rb
-/ee/spec/services/system_notes/merge_train_service_spec.rb
-/ee/spec/controllers/projects/subscriptions_controller_spec.rb
-/ee/spec/helpers/ee/projects/pipeline_helper_spec.rb
-/ee/spec/workers/clear_shared_runners_minutes_worker_spec.rb
 
 # Overrides for Verify. These files below require approval from teams outside Verify.
 /**/lib/**/ci/reports/**/ @gitlab-org/maintainers/rails-backend
@@ -1359,7 +1314,6 @@ lib/gitlab/checks/**
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
 
 # Verify frontend
-/**/spec/frontend/**/ci/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
@@ -1403,15 +1357,6 @@ lib/gitlab/checks/**
 /ee/app/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /ee/app/services/ee/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /ee/app/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/graphql/ee/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/graphql/resolvers/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/graphql/types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/models/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/policies/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/requests/api/graphql/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/services/audit_events/*runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/spec/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /lib/api/ci/helpers/runner.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /lib/api/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /lib/api/ci/runner.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
@@ -1420,31 +1365,6 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /lib/gitlab/seeders/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /lib/tasks/gitlab/seed/runner_fleet.rake @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/factories/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/finders/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/graphql/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/graphql/resolvers/ci/*runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/graphql/types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/graphql/types/permission_types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/lib/gitlab/audit/ci_runner_token_author_spec.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/lib/api/ci/helpers/runner_*_spec.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/lib/api/ci/helpers/runner_spec.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/lib/gitlab/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/lib/gitlab/seeders/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/models/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/models/concerns/runners*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/models/preloaders/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/requests/api/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/requests/api/graphql/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/requests/api/graphql/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/requests/api/graphql/mutations/ci/runners_registration_token/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/requests/api/graphql/project/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/support/shared_contexts/graphql/resolvers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/support/shared_examples/features/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/tasks/gitlab/seed/runner_fleet_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/spec/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah

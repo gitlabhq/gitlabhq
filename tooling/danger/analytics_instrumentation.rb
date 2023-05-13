@@ -3,13 +3,13 @@
 
 module Tooling
   module Danger
-    module ProductIntelligence
+    module AnalyticsInstrumentation
       METRIC_DIRS = %w[lib/gitlab/usage/metrics/instrumentations ee/lib/gitlab/usage/metrics/instrumentations].freeze
-      APPROVED_LABEL = 'product intelligence::approved'
-      REVIEW_LABEL = 'product intelligence::review pending'
+      APPROVED_LABEL = 'analytics instrumentation::approved'
+      REVIEW_LABEL = 'analytics instrumentation::review pending'
       CHANGED_FILES_MESSAGE = <<~MSG
-        For the following files, a review from the [Data team and Product Intelligence team](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
-        Please check the ~"product intelligence" [Service Ping guide](https://docs.gitlab.com/ee/development/service_ping/) or the [Snowplow guide](https://docs.gitlab.com/ee/development/snowplow/).
+        For the following files, a review from the [Data team and Analytics Instrumentation team](https://gitlab.com/groups/gitlab-org/analytics-section/product-intelligence/engineers/-/group_members?with_inherited_permissions=exclude) is recommended
+        Please check the ~"analytics instrumentation" [Service Ping guide](https://docs.gitlab.com/ee/development/service_ping/) or the [Snowplow guide](https://docs.gitlab.com/ee/development/snowplow/).
 
         For MR review guidelines, see the [Service Ping review guidelines](https://docs.gitlab.com/ee/development/service_ping/review_guidelines.html) or the [Snowplow review guidelines](https://docs.gitlab.com/ee/development/snowplow/review_guidelines.html).
 
@@ -18,7 +18,7 @@ module Tooling
       MSG
 
       CHANGED_SCOPE_MESSAGE = <<~MSG
-        The following metrics could be affected by the modified scopes and require ~"product intelligence" review:
+        The following metrics could be affected by the modified scopes and require ~"analytics instrumentation" review:
 
       MSG
 
@@ -33,13 +33,13 @@ module Tooling
       ].freeze
 
       def check!
-        product_intelligence_paths_to_review = helper.changes.by_category(:product_intelligence).files
+        analytics_instrumentation_paths_to_review = helper.changes.by_category(:analytics_instrumentation).files
 
         labels_to_add = missing_labels
 
-        return if product_intelligence_paths_to_review.empty? || skip_review?
+        return if analytics_instrumentation_paths_to_review.empty? || skip_review?
 
-        warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(product_intelligence_paths_to_review)) unless has_approved_label?
+        warn format(CHANGED_FILES_MESSAGE, changed_files: helper.markdown_list(analytics_instrumentation_paths_to_review)) unless has_approved_label?
 
         helper.labels_to_add.concat(labels_to_add) unless labels_to_add.empty?
       end
@@ -110,7 +110,7 @@ module Tooling
         return [] unless helper.ci?
 
         labels = []
-        labels << 'product intelligence' unless helper.mr_has_labels?('product intelligence')
+        labels << 'analytics instrumentation' unless helper.mr_has_labels?('analytics instrumentation')
         labels << REVIEW_LABEL unless has_workflow_labels?
 
         labels

@@ -173,7 +173,7 @@ Include in the MR description:
 ##### Query Plans
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
-- Provide a link to the plan from [postgres.ai](database/database_lab.md), provided by the chatbot.
+- Provide a link to the plan generated using the `explain` command in the [postgres.ai](database/database_lab.md) chatbot.
   - If it's not possible to get an accurate picture in Database Lab, you may need to seed a development environment, and instead provide links
     from [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan
     and the query used in the form.

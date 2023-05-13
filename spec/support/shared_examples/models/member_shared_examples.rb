@@ -508,11 +508,13 @@ RSpec.shared_examples_for "bulk member creation" do
         create(:member_task, member: member, project: task_project, tasks_to_be_done: %w(code ci))
 
         expect do
-          described_class.add_members(source,
-                                    [user1.id],
-                                    :developer,
-                                    tasks_to_be_done: %w(issues),
-                                    tasks_project_id: task_project.id)
+          described_class.add_members(
+            source,
+            [user1.id],
+            :developer,
+            tasks_to_be_done: %w(issues),
+            tasks_project_id: task_project.id
+          )
         end.not_to change { MemberTask.count }
 
         member.reset
@@ -522,11 +524,13 @@ RSpec.shared_examples_for "bulk member creation" do
 
       it 'adds tasks to be done if they do not exist', :aggregate_failures do
         expect do
-          described_class.add_members(source,
-                                    [user1.id],
-                                    :developer,
-                                    tasks_to_be_done: %w(issues),
-                                    tasks_project_id: task_project.id)
+          described_class.add_members(
+            source,
+            [user1.id],
+            :developer,
+            tasks_to_be_done: %w(issues),
+            tasks_project_id: task_project.id
+          )
         end.to change { MemberTask.count }.by(1)
 
         member = source.members.find_by(user_id: user1.id)

@@ -1074,7 +1074,7 @@ Style/IfUnlessModifier:
     - 'spec/support/webmock.rb'
     - 'spec/views/profiles/keys/_key.html.haml_spec.rb'
     - 'spec/workers/analytics/usage_trends/counter_job_worker_spec.rb'
-    - 'tooling/danger/product_intelligence.rb'
+    - 'tooling/danger/analytics_instrumentation.rb'
     - 'tooling/lib/tooling/find_codeowners.rb'
     - 'tooling/lib/tooling/image.rb'
     - 'tooling/lib/tooling/test_map_packer.rb'

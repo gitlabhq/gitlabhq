@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOMAIN, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
@@ -93,7 +93,7 @@ export default {
             },
             {
               text: this.$options.i18n.docs,
-              href: 'https://docs.gitlab.com',
+              href: `https://docs.${DOMAIN}`,
               extraAttrs: {
                 ...this.trackingAttrs('gitlab_documentation'),
               },
@@ -107,7 +107,7 @@ export default {
             },
             {
               text: this.$options.i18n.forum,
-              href: 'https://forum.gitlab.com/',
+              href: `https://forum.${DOMAIN}/`,
               extraAttrs: {
                 ...this.trackingAttrs('community_forum'),
               },
@@ -121,7 +121,7 @@ export default {
             },
             {
               text: this.$options.i18n.feedback,
-              href: 'https://about.gitlab.com/submit-feedback',
+              href: `${PROMO_URL}/submit-feedback`,
               extraAttrs: {
                 ...this.trackingAttrs('submit_feedback'),
               },

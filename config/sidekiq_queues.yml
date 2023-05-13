@@ -23,6 +23,8 @@
 #     chance = (queue weight / total weight of all queues) * 100
 ---
 :queues:
+- - abuse_new_abuse_report
+  - 1
 - - adjourned_project_deletion
   - 1
 - - admin_emails

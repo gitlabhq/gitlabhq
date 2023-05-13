@@ -28,6 +28,7 @@ export default {
   <gl-empty-state
     :title="$options.i18n.title"
     :svg-path="pipelinesEmptyStateSvgPath"
+    :svg-height="150"
     :description="$options.i18n.description"
     :primary-button-text="$options.i18n.primaryButtonText"
     :primary-button-link="ciHelpPagePath"

@@ -3,39 +3,39 @@
 require 'gitlab-dangerfiles'
 require 'gitlab/dangerfiles/spec_helper'
 
-require_relative '../../../tooling/danger/product_intelligence'
+require_relative '../../../tooling/danger/analytics_instrumentation'
 require_relative '../../../tooling/danger/project_helper'
 
-RSpec.describe Tooling::Danger::ProductIntelligence do
+RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :service_ping do
   include_context "with dangerfile"
 
-  subject(:product_intelligence) { fake_danger.new(helper: fake_helper) }
+  subject(:analytics_instrumentation) { fake_danger.new(helper: fake_helper) }
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
   let(:previous_label_to_add) { 'label_to_add' }
   let(:labels_to_add) { [previous_label_to_add] }
   let(:ci_env) { true }
-  let(:has_product_intelligence_label) { true }
+  let(:has_analytics_instrumentation_label) { true }
 
   before do
     allow(fake_helper).to receive(:changed_lines).and_return(changed_lines) if defined?(changed_lines)
     allow(fake_helper).to receive(:labels_to_add).and_return(labels_to_add)
     allow(fake_helper).to receive(:ci?).and_return(ci_env)
-    allow(fake_helper).to receive(:mr_has_labels?).with('product intelligence').and_return(has_product_intelligence_label)
+    allow(fake_helper).to receive(:mr_has_labels?).with('analytics instrumentation').and_return(has_analytics_instrumentation_label)
   end
 
   describe '#check!' do
-    subject { product_intelligence.check! }
+    subject { analytics_instrumentation.check! }
 
     let(:markdown_formatted_list) { 'markdown formatted list' }
-    let(:review_pending_label) { 'product intelligence::review pending' }
-    let(:approved_label) { 'product intelligence::approved' }
+    let(:review_pending_label) { 'analytics instrumentation::review pending' }
+    let(:approved_label) { 'analytics instrumentation::approved' }
     let(:changed_files) { ['metrics/counts_7d/test_metric.yml'] }
     let(:changed_lines) { ['+tier: ee'] }
     let(:fake_changes) { instance_double(Gitlab::Dangerfiles::Changes, files: changed_files) }
 
     before do
-      allow(fake_changes).to receive(:by_category).with(:product_intelligence).and_return(fake_changes)
+      allow(fake_changes).to receive(:by_category).with(:analytics_instrumentation).and_return(fake_changes)
       allow(fake_helper).to receive(:changes).and_return(fake_changes)
       allow(fake_helper).to receive(:all_changed_files).and_return(changed_files)
       allow(fake_helper).to receive(:markdown_list).with(changed_files).and_return(markdown_formatted_list)
@@ -51,7 +51,7 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
 
     shared_examples "doesn't add new warnings" do
       it "doesn't add new warnings" do
-        expect(product_intelligence).not_to receive(:warn)
+        expect(analytics_instrumentation).not_to receive(:warn)
 
         subject
       end
@@ -67,7 +67,7 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
       it 'receives all the changed files by calling the correct helper method', :aggregate_failures do
         expect(fake_helper).not_to receive(:changes_by_category)
         expect(fake_helper).to receive(:changes)
-        expect(fake_changes).to receive(:by_category).with(:product_intelligence)
+        expect(fake_changes).to receive(:by_category).with(:analytics_instrumentation)
         expect(fake_changes).to receive(:files)
 
         subject
@@ -99,26 +99,26 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
         include_examples 'adds new labels'
 
         it 'warns with proper message' do
-          expect(product_intelligence).to receive(:warn).with(%r{#{markdown_formatted_list}})
+          expect(analytics_instrumentation).to receive(:warn).with(%r{#{markdown_formatted_list}})
 
           subject
         end
       end
 
-      context 'with product intelligence::review pending label' do
-        let(:mr_labels) { ['product intelligence::review pending'] }
+      context 'with analytics instrumentation::review pending label' do
+        let(:mr_labels) { ['analytics instrumentation::review pending'] }
 
         include_examples "doesn't add new labels"
       end
 
-      context 'with product intelligence::approved label' do
-        let(:mr_labels) { ['product intelligence::approved'] }
+      context 'with analytics instrumentation::approved label' do
+        let(:mr_labels) { ['analytics instrumentation::approved'] }
 
         include_examples "doesn't add new labels"
       end
 
-      context 'with the product intelligence label' do
-        let(:has_product_intelligence_label) { true }
+      context 'with the analytics instrumentation label' do
+        let(:has_analytics_instrumentation_label) { true }
 
         context 'with ci? false' do
           let(:ci_env) { false }
@@ -148,9 +148,9 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
       context 'when a scope is changed' do
         context 'and a metrics uses the affected scope' do
           it 'producing warning' do
-            expect(product_intelligence).to receive(:warn).with(%r{#{modified_files}})
+            expect(analytics_instrumentation).to receive(:warn).with(%r{#{modified_files}})
 
-            product_intelligence.check_affected_scopes!
+            analytics_instrumentation.check_affected_scopes!
           end
         end
 
@@ -158,9 +158,9 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
           let(:changed_lines) { ['+scope :foo, -> { iwhere(email: Array(emails)) }'] }
 
           it 'doesnt do anything' do
-            expect(product_intelligence).not_to receive(:warn)
+            expect(analytics_instrumentation).not_to receive(:warn)
 
-            product_intelligence.check_affected_scopes!
+            analytics_instrumentation.check_affected_scopes!
           end
         end
       end
@@ -170,9 +170,9 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
       let(:modified_files) { ['app/models/post_box.rb'] }
 
       it 'doesnt do anything' do
-        expect(product_intelligence).not_to receive(:warn)
+        expect(analytics_instrumentation).not_to receive(:warn)
 
-        product_intelligence.check_affected_scopes!
+        analytics_instrumentation.check_affected_scopes!
       end
     end
 
@@ -180,9 +180,9 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
       let(:modified_files) { ['spec/app/models/user_spec.rb'] }
 
       it 'doesnt do anything' do
-        expect(product_intelligence).not_to receive(:warn)
+        expect(analytics_instrumentation).not_to receive(:warn)
 
-        product_intelligence.check_affected_scopes!
+        analytics_instrumentation.check_affected_scopes!
       end
     end
   end
@@ -199,9 +199,9 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
         let(:changed_lines) { ['+ ci_runners: count(::Ci::CiRunner),'] }
 
         it 'produces warning' do
-          expect(product_intelligence).to receive(:warn).with(/usage_data\.rb has been deprecated/)
+          expect(analytics_instrumentation).to receive(:warn).with(/usage_data\.rb has been deprecated/)
 
-          product_intelligence.check_usage_data_insertions!
+          analytics_instrumentation.check_usage_data_insertions!
         end
       end
 
@@ -209,24 +209,24 @@ RSpec.describe Tooling::Danger::ProductIntelligence do
         let(:changed_lines) { ['- ci_runners: count(::Ci::CiRunner),'] }
 
         it 'doesnt do anything' do
-          expect(product_intelligence).not_to receive(:warn)
+          expect(analytics_instrumentation).not_to receive(:warn)
 
-          product_intelligence.check_usage_data_insertions!
+          analytics_instrumentation.check_usage_data_insertions!
         end
       end
     end
 
     context 'when usage_data.rb is not modified' do
       context 'and another file has insertions' do
-        let(:modified_files) { ['tooling/danger/product_intelligence.rb'] }
+        let(:modified_files) { ['tooling/danger/analytics_instrumentation.rb'] }
 
         it 'doesnt do anything' do
           expect(fake_helper).to receive(:changed_lines).with("lib/gitlab/usage_data.rb").and_return([])
-          allow(fake_helper).to receive(:changed_lines).with("tooling/danger/product_intelligence.rb").and_return(["+ Inserting"])
+          allow(fake_helper).to receive(:changed_lines).with("tooling/danger/analytics_instrumentation.rb").and_return(["+ Inserting"])
 
-          expect(product_intelligence).not_to receive(:warn)
+          expect(analytics_instrumentation).not_to receive(:warn)
 
-          product_intelligence.check_usage_data_insertions!
+          analytics_instrumentation.check_usage_data_insertions!
         end
       end
     end

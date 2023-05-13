@@ -41,10 +41,12 @@ RSpec.shared_examples '#prometheus_client shared' do
       subject.cluster.platform_kubernetes.namespace = 'a-namespace'
       stub_kubeclient_discover(cluster.platform_kubernetes.api_url)
 
-      create(:cluster_kubernetes_namespace,
-             cluster: cluster,
-             cluster_project: cluster.cluster_project,
-             project: cluster.cluster_project.project)
+      create(
+        :cluster_kubernetes_namespace,
+        cluster: cluster,
+        cluster_project: cluster.cluster_project,
+        project: cluster.cluster_project.project
+      )
     end
 
     it 'creates proxy prometheus_client' do

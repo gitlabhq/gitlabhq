@@ -42,7 +42,7 @@ describe('Pipelines', () => {
   let trackingSpy;
 
   const paths = {
-    emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
+    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
     noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
     ciLintPath: '/ci/lint',
@@ -53,7 +53,7 @@ describe('Pipelines', () => {
   };
 
   const noPermissions = {
-    emptyStateSvgPath: '/assets/illustrations/pipelines_empty.svg',
+    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
     errorStateSvgPath: '/assets/illustrations/pipelines_failed.svg',
     noPipelinesSvgPath: '/assets/illustrations/pipelines_pending.svg',
   };

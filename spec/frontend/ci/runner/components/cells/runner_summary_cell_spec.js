@@ -82,14 +82,15 @@ describe('RunnerTypeCell', () => {
 
   it('Displays the runner description', () => {
     expect(wrapper.text()).toContain(mockRunner.description);
+    expect(wrapper.findByText(I18N_NO_DESCRIPTION).exists()).toBe(false);
   });
 
-  it('Displays the no runner description', () => {
+  it('Displays "No description" for missing runner description', () => {
     createComponent({
       description: null,
     });
 
-    expect(wrapper.text()).toContain(I18N_NO_DESCRIPTION);
+    expect(wrapper.findByText(I18N_NO_DESCRIPTION).classes()).toContain('gl-text-secondary');
   });
 
   it('Displays last contact', () => {

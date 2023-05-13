@@ -31,15 +31,15 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
   end
 
   describe 'page tabs' do
-    it 'shows "Available" and "Stopped" tab with links' do
-      visit_environments(project)
-
-      expect(page).to have_link(_('Available'))
-      expect(page).to have_link(_('Stopped'))
-    end
-
     describe 'with one available environment' do
       let!(:environment) { create(:environment, project: project, state: :available) }
+
+      it 'shows "Available" and "Stopped" tab with links' do
+        visit_environments(project)
+
+        expect(page).to have_link(_('Available'))
+        expect(page).to have_link(_('Stopped'))
+      end
 
       describe 'in available tab page' do
         it 'shows one environment' do
@@ -70,7 +70,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
         it 'shows no environments' do
           visit_environments(project, scope: 'stopped')
 
-          expect(page).to have_content(s_('Environments|You don\'t have any stopped environments.'))
+          expect(page).to have_content(s_('Environments|Get started with environments'))
         end
       end
 
@@ -99,7 +99,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
         it 'shows no environments' do
           visit_environments(project, scope: 'available')
 
-          expect(page).to have_content(s_('Environments|You don\'t have any environments.'))
+          expect(page).to have_content(s_('Environments|Get started with environments'))
         end
       end
 
@@ -119,11 +119,11 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
       visit_environments(project)
     end
 
-    it 'does not show environments and counters are set to zero' do
-      expect(page).to have_content(s_('Environments|You don\'t have any environments.'))
+    it 'does not show environments and tabs' do
+      expect(page).to have_content(s_('Environments|Get started with environments'))
 
-      expect(page).to have_link("#{_('Available')} 0")
-      expect(page).to have_link("#{_('Stopped')} 0")
+      expect(page).not_to have_link(_('Available'))
+      expect(page).not_to have_link(_('Stopped'))
     end
   end
 
@@ -403,7 +403,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
   it 'does have a new environment button' do
     visit_environments(project)
 
-    expect(page).to have_link('New environment')
+    expect(page).to have_link('Create an environment')
   end
 
   describe 'creating a new environment' do
@@ -415,7 +415,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
       let(:role) { :developer }
 
       it 'developer creates a new environment with a valid name' do
-        click_link 'New environment'
+        click_link 'Create an environment'
         fill_in('Name', with: 'production')
         click_on 'Save'
 
@@ -423,7 +423,7 @@ RSpec.describe 'Environments page', :js, feature_category: :projects do
       end
 
       it 'developer creates a new environment with invalid name' do
-        click_link 'New environment'
+        click_link 'Create an environment'
         fill_in('Name', with: 'name,with,commas')
         click_on 'Save'
 

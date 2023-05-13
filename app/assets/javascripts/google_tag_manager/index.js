@@ -123,17 +123,6 @@ export const trackSaasTrialSubmit = () => {
   pushEvent('saasTrialSubmit');
 };
 
-export const trackSaasTrialSkip = () => {
-  if (!isSupported()) {
-    return;
-  }
-
-  const skipLink = document.querySelector('.js-skip-trial');
-  skipLink.addEventListener('click', () => {
-    pushEvent('saasTrialSkip');
-  });
-};
-
 export const trackSaasTrialGroup = () => {
   if (!isSupported()) {
     return;

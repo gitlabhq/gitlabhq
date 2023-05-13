@@ -51,6 +51,9 @@ tasks:
         [[ -f /workspace/gitpod_start_time.sh ]] && source /workspace/gitpod_start_time.sh
         SECONDS=0
         cd /workspace/gitlab-development-kit
+        make gitlab-update
+        make gitlab-shell-update
+        make gitlab-workhorse-update
         # update GDK
         if [ "$GITLAB_UPDATE_GDK" == true ]; then
           echo "$(date) – Updating GDK" | tee -a /workspace/startup.log

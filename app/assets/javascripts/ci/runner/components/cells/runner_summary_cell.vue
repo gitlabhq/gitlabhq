@@ -71,7 +71,7 @@ export default {
 
 <template>
   <div>
-    <div>
+    <div class="gl-mb-3">
       <slot :runner="runner" name="runner-name">
         <runner-name :runner="runner" />
       </slot>
@@ -84,22 +84,23 @@ export default {
       <runner-type-badge :type="runner.runnerType" size="sm" class="gl-vertical-align-middle" />
     </div>
 
-    <div class="gl-ml-auto gl-display-inline-flex gl-max-w-full gl-py-2">
-      <div class="gl-flex-shrink-0">
-        <runner-upgrade-status-icon :runner="runner" />
-        <gl-sprintf v-if="runner.version" :message="$options.i18n.I18N_VERSION_LABEL">
-          <template #version>{{ runner.version }}</template>
-        </gl-sprintf>
-      </div>
-      <div class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>
+    <div class="gl-mb-3 gl-ml-auto gl-display-inline-flex gl-max-w-full">
+      <template v-if="runner.version">
+        <div class="gl-flex-shrink-0">
+          <runner-upgrade-status-icon :runner="runner" />
+          <gl-sprintf :message="$options.i18n.I18N_VERSION_LABEL">
+            <template #version>{{ runner.version }}</template>
+          </gl-sprintf>
+        </div>
+        <div class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>
+      </template>
       <tooltip-on-truncate
-        v-if="runner.description"
         class="gl-text-truncate gl-display-block"
+        :class="{ 'gl-text-secondary': !runner.description }"
         :title="runner.description"
       >
-        {{ runner.description }}
+        {{ runner.description || $options.i18n.I18N_NO_DESCRIPTION }}
       </tooltip-on-truncate>
-      <span v-else class="gl-text-secondary">{{ $options.i18n.I18N_NO_DESCRIPTION }}</span>
     </div>
 
     <div>
@@ -148,6 +149,6 @@ export default {
       </runner-summary-field>
     </div>
 
-    <runner-tags class="gl-display-block gl-pt-2" :tag-list="runner.tagList" size="sm" />
+    <runner-tags class="gl-display-block" :tag-list="runner.tagList" size="sm" />
   </div>
 </template>

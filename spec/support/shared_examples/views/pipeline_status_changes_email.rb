@@ -8,12 +8,14 @@ RSpec.shared_examples 'pipeline status changes email' do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
   let(:pipeline) do
-    create(:ci_pipeline,
-           project: project,
-           user: user,
-           ref: project.default_branch,
-           sha: project.commit.sha,
-           status: status)
+    create(
+      :ci_pipeline,
+      project: project,
+      user: user,
+      ref: project.default_branch,
+      sha: project.commit.sha,
+      status: status
+    )
   end
 
   before do

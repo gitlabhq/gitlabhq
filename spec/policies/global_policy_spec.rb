@@ -10,6 +10,7 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
   let_it_be(:service_account) { create(:user, :service_account) }
   let_it_be(:migration_bot) { create(:user, :migration_bot) }
   let_it_be(:security_bot) { create(:user, :security_bot) }
+  let_it_be(:security_policy_bot) { create(:user, :security_policy_bot) }
   let_it_be(:llm_bot) { create(:user, :llm_bot) }
   let_it_be_with_reload(:current_user) { create(:user) }
   let_it_be(:user) { create(:user) }
@@ -406,6 +407,12 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     context 'security bot' do
       let(:current_user) { security_bot }
+
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
+    context 'security policy bot' do
+      let(:current_user) { security_policy_bot }
 
       it { is_expected.to be_allowed(:access_git) }
     end

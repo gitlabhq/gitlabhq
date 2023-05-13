@@ -6,8 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Snowplow review guidelines
 
-This page includes introductory material for a
-[Product Intelligence](https://about.gitlab.com/handbook/engineering/development/analytics/product-intelligence/)
+This page includes introductory material for an
+[Analytics Instrumentation](https://about.gitlab.com/handbook/engineering/development/analytics/analytics-instrumentation/)
 review, and is specific to Snowplow related reviews. For broader advice and
 general best practices for code reviews, refer to our [code review guide](../code_review.md).
 
@@ -18,7 +18,7 @@ general best practices for code reviews, refer to our [code review guide](../cod
 
 ## Review process
 
-We recommend a Product Intelligence review when a merge request (MR) involves changes in
+We recommend an Analytics Instrumentation review when a merge request (MR) involves changes in
 events or touches Snowplow related files.
 
 ### Roles and process
@@ -33,7 +33,7 @@ events or touches Snowplow related files.
   to reset with `GET http://localhost:9090/micro/reset` first).
 - Add or update the event definition file according to the [Event Dictionary Guide](event_dictionary_guide.md).
 
-#### The Product Intelligence **reviewer** should
+#### The Analytics Instrumentation **reviewer** should
 
 - Check that the [event schema](index.md#event-schema) is correct.
 - Check the [usage recommendations](implementation.md#usage-recommendations).

@@ -397,20 +397,37 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
     end
 
     describe 'functionality' do
-      render_views
+      context 'when remove_monitor_metrics FF is disabled' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: false)
+        end
 
-      it "renders view" do
-        go
+        render_views
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:cluster)).to eq(cluster)
+        it "renders view" do
+          go
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:cluster)).to eq(cluster)
+        end
+
+        it 'renders integration tab view' do
+          go(tab: 'integrations')
+
+          expect(response).to render_template('clusters/clusters/_integrations')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
 
-      it 'renders integration tab view' do
-        go(tab: 'integrations')
+      context 'when remove_monitor_metrics FF is enabled' do
+        render_views
 
-        expect(response).to render_template('clusters/clusters/_integrations')
-        expect(response).to have_gitlab_http_status(:ok)
+        it 'renders details tab view', :aggregate_failures do
+          go(tab: 'integrations')
+
+          expect(response).to render_template('clusters/clusters/_details')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 

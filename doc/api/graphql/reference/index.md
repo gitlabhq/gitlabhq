@@ -15071,6 +15071,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
 | <a id="groupclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `Group.codeCoverageActivities`
@@ -16124,6 +16125,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="instancesecuritydashboardclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
 | <a id="instancesecuritydashboardclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `InstanceSecurityDashboard.projects`
@@ -18991,6 +18993,7 @@ Represents a product analytics dashboard visualization.
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
 | <a id="projectgroup"></a>`group` | [`Group`](#group) | Group of the project. |
+| <a id="projecthasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean!`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
 | <a id="projecthttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | URL to connect to the project via HTTPS. |
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
@@ -19249,6 +19252,7 @@ Returns [`ClusterAgent`](#clusteragent).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectclusteragenthasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
 | <a id="projectclusteragenthasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 | <a id="projectclusteragentname"></a>`name` | [`String!`](#string) | Name of the cluster agent. |
 
@@ -19266,6 +19270,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectclusteragentshasremotedevelopmentagentconfig"></a>`hasRemoteDevelopmentAgentConfig` | [`Boolean`](#boolean) | Returns only cluster agents which have an associated remote development agent config. |
 | <a id="projectclusteragentshasvulnerabilities"></a>`hasVulnerabilities` | [`Boolean`](#boolean) | Returns only cluster agents which have vulnerabilities. |
 
 ##### `Project.containerRepositories`

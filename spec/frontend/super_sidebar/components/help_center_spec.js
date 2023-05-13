@@ -4,7 +4,7 @@ import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { DOMAIN, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { helpCenterState } from '~/super_sidebar/constants';
@@ -52,7 +52,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.docs,
-      href: 'https://docs.gitlab.com',
+      href: `https://docs.${DOMAIN}`,
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
@@ -62,7 +62,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.forum,
-      href: 'https://forum.gitlab.com/',
+      href: `https://forum.${DOMAIN}/`,
       extraAttrs: trackingAttrs('community_forum'),
     },
     {
@@ -72,7 +72,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.feedback,
-      href: 'https://about.gitlab.com/submit-feedback',
+      href: `${PROMO_URL}/submit-feedback`,
       extraAttrs: trackingAttrs('submit_feedback'),
     },
   ];

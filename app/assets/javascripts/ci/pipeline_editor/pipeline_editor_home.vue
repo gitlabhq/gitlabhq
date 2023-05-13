@@ -1,6 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CommitSection from './components/commit/commit_section.vue';
 import PipelineEditorDrawer from './components/drawer/pipeline_editor_drawer.vue';
 import JobAssistantDrawer from './components/job_assistant_drawer/job_assistant_drawer.vue';
@@ -9,6 +10,9 @@ import PipelineEditorFileTree from './components/file_tree/container.vue';
 import PipelineEditorHeader from './components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from './components/pipeline_editor_tabs.vue';
 import { CREATE_TAB, FILE_TREE_DISPLAY_KEY } from './constants';
+
+const AiAssistantDrawer = () =>
+  import('ee_component/ci/pipeline_editor/components/ai_assistant_drawer.vue');
 
 export default {
   commitSectionRef: 'commitSectionRef',
@@ -30,11 +34,13 @@ export default {
     GlModal,
     PipelineEditorDrawer,
     JobAssistantDrawer,
+    AiAssistantDrawer,
     PipelineEditorFileNav,
     PipelineEditorFileTree,
     PipelineEditorHeader,
     PipelineEditorTabs,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -66,8 +72,10 @@ export default {
       shouldLoadNewBranch: false,
       showDrawer: false,
       showJobAssistantDrawer: false,
+      showAiAssistantDrawer: false,
       drawerIndex: 200,
       jobAssistantIndex: 200,
+      aiAssistantIndex: 200,
       showFileTree: false,
       showSwitchBranchModal: false,
     };
@@ -92,6 +100,13 @@ export default {
     },
     closeJobAssistantDrawer() {
       this.showJobAssistantDrawer = false;
+    },
+    closeAiAssistantDrawer() {
+      this.showAiAssistantDrawer = false;
+    },
+    openAiAssistantDrawer() {
+      this.showAiAssistantDrawer = true;
+      this.aiAssistantIndex = this.drawerIndex + 1;
     },
     handleConfirmSwitchBranch() {
       this.showSwitchBranchModal = true;
@@ -167,11 +182,14 @@ export default {
           :is-new-ci-config-file="isNewCiConfigFile"
           :show-drawer="showDrawer"
           :show-job-assistant-drawer="showJobAssistantDrawer"
+          :show-ai-assistant-drawer="showAiAssistantDrawer"
           v-on="$listeners"
           @open-drawer="openDrawer"
           @close-drawer="closeDrawer"
           @open-job-assistant-drawer="openJobAssistantDrawer"
           @close-job-assistant-drawer="closeJobAssistantDrawer"
+          @open-ai-assistant-drawer="openAiAssistantDrawer"
+          @close-ai-assistant-drawer="closeAiAssistantDrawer"
           @set-current-tab="setCurrentTab"
           @walkthrough-popover-cta-clicked="setScrollToCommitForm"
         />
@@ -201,6 +219,12 @@ export default {
       :z-index="jobAssistantIndex"
       v-on="$listeners"
       @close-job-assistant-drawer="closeJobAssistantDrawer"
+    />
+    <ai-assistant-drawer
+      v-if="glFeatures.aiCiConfigGenerator"
+      :is-visible="showAiAssistantDrawer"
+      :z-index="aiAssistantIndex"
+      @close-ai-assistant-drawer="closeAiAssistantDrawer"
     />
   </div>
 </template>

@@ -9763,7 +9763,7 @@
 - './spec/tooling/danger/customer_success_spec.rb'
 - './spec/tooling/danger/datateam_spec.rb'
 - './spec/tooling/danger/feature_flag_spec.rb'
-- './spec/tooling/danger/product_intelligence_spec.rb'
+- './spec/tooling/danger/analytics_instrumentation_spec.rb'
 - './spec/tooling/danger/project_helper_spec.rb'
 - './spec/tooling/danger/sidekiq_queues_spec.rb'
 - './spec/tooling/danger/specs_spec.rb'

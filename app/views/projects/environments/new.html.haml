@@ -1,5 +1,6 @@
-- breadcrumb_title _("Environments")
-- page_title _("New Environment")
+- add_to_breadcrumbs s_("Environments|Environments"), project_environments_path(@project)
+- breadcrumb_title s_("Environments|New")
+- page_title s_("Environments|New Environment")
 - add_page_specific_style 'page_bundles/environments'
 
 #js-new-environment{ data: { project_environments_path: project_environments_path(@project) } }
