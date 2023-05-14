@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::AppDescriptorController do
+RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrations do
   describe '#show' do
     let(:descriptor) do
       json_response.deep_symbolize_keys

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::BranchesController do
+RSpec.describe JiraConnect::BranchesController, feature_category: :integrations do
   describe '#new' do
     context 'when logged in' do
       let_it_be(:user) { create(:user) }
