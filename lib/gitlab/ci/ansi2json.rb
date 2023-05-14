@@ -4,8 +4,8 @@
 module Gitlab
   module Ci
     module Ansi2json
-      def self.convert(ansi, state = nil, verify_state: false)
-        Converter.new.convert(ansi, state, verify_state: verify_state)
+      def self.convert(ansi, state = nil)
+        Converter.new.convert(ansi, state)
       end
     end
   end

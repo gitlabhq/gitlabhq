@@ -34,3 +34,27 @@ export const trackErrorStatusUpdateOptions = (status) => ({
   category,
   action: `update_${status}_status`,
 });
+
+/**
+ * Tracks snowplow event when error list is filter by status
+ */
+export const trackErrorStatusFilterOptions = (status) => ({
+  category,
+  action: `filter_${status}_status`,
+});
+
+/**
+ * Tracks snowplow event when error list is sorted by field
+ */
+export const trackErrorSortedByField = (field) => ({
+  category,
+  action: `sort_by_${field}`,
+});
+
+/**
+ * Tracks snowplow event when the Create Issue button is clicked
+ */
+export const trackCreateIssueFromError = {
+  category,
+  action: 'click_create_issue_from_error',
+};

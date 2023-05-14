@@ -5,7 +5,12 @@ import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
-import { trackErrorListViewsOptions, trackErrorStatusUpdateOptions } from '~/error_tracking/utils';
+import {
+  trackErrorListViewsOptions,
+  trackErrorStatusUpdateOptions,
+  trackErrorStatusFilterOptions,
+  trackErrorSortedByField,
+} from '~/error_tracking/events_tracking';
 import Tracking from '~/tracking';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import errorsList from './list_mock.json';
@@ -524,6 +529,8 @@ describe('ErrorTrackingList', () => {
         stubs: {
           GlTable: false,
           GlLink: false,
+          GlDropdown: false,
+          GlDropdownItem: false,
         },
       });
     });
@@ -534,7 +541,6 @@ describe('ErrorTrackingList', () => {
     });
 
     it('should track status updates', async () => {
-      Tracking.event.mockClear();
       const status = 'ignored';
       findErrorActions().vm.$emit('update-issue-status', {
         errorId: 1,
@@ -544,6 +550,20 @@ describe('ErrorTrackingList', () => {
       await nextTick();
 
       const { category, action } = trackErrorStatusUpdateOptions(status);
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track error filter', () => {
+      const findStatusFilter = () => findStatusFilterDropdown().find('.dropdown-item');
+      findStatusFilter().trigger('click');
+      const { category, action } = trackErrorStatusFilterOptions('unresolved');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track error sorting', () => {
+      const findSortItem = () => findSortDropdown().find('.dropdown-item');
+      findSortItem().trigger('click');
+      const { category, action } = trackErrorSortedByField('last_seen');
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
   });

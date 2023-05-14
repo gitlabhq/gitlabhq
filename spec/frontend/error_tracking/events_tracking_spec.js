@@ -1,4 +1,4 @@
-import * as errorTrackingUtils from '~/error_tracking/utils';
+import * as errorTrackingUtils from '~/error_tracking/events_tracking';
 
 const externalUrl = 'https://sentry.io/organizations/test-sentry-nk/issues/1/?project=1';
 

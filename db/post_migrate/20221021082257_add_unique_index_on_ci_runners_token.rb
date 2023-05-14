@@ -6,12 +6,10 @@ class AddUniqueIndexOnCiRunnersToken < Gitlab::Database::Migration[2.0]
   INDEX_NAME = 'index_uniq_ci_runners_on_token'
 
   def up
-    finalize_background_migration 'ResetDuplicateCiRunnersTokenValues'
-
     add_concurrent_index :ci_runners,
-                         :token,
-                         name: INDEX_NAME,
-                         unique: true
+      :token,
+      name: INDEX_NAME,
+      unique: true
   end
 
   def down

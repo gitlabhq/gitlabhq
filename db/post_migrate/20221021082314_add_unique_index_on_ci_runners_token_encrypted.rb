@@ -6,12 +6,10 @@ class AddUniqueIndexOnCiRunnersTokenEncrypted < Gitlab::Database::Migration[2.0]
   INDEX_NAME = 'index_uniq_ci_runners_on_token_encrypted'
 
   def up
-    finalize_background_migration 'ResetDuplicateCiRunnersTokenEncryptedValues'
-
     add_concurrent_index :ci_runners,
-                         :token_encrypted,
-                         name: INDEX_NAME,
-                         unique: true
+      :token_encrypted,
+      name: INDEX_NAME,
+      unique: true
   end
 
   def down

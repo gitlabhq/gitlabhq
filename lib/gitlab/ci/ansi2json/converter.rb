@@ -4,13 +4,9 @@ module Gitlab
   module Ci
     module Ansi2json
       class Converter
-        def convert(stream, new_state, verify_state: false)
+        def convert(stream, new_state)
           @lines = []
-          @state = if verify_state
-                     SignedState.new(new_state, stream.size)
-                   else
-                     State.new(new_state, stream.size)
-                   end
+          @state = State.new(new_state, stream.size)
 
           append = false
           truncated = false

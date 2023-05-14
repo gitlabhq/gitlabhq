@@ -17,7 +17,8 @@ import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue
 import {
   trackErrorDetailsViewsOptions,
   trackErrorStatusUpdateOptions,
-} from '~/error_tracking/utils';
+  trackCreateIssueFromError,
+} from '~/error_tracking/events_tracking';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -492,16 +493,20 @@ describe('ErrorDetails', () => {
     });
 
     it('should track IGNORE status update', async () => {
-      Tracking.event.mockClear();
       await findUpdateIgnoreStatusButton().trigger('click');
       const { category, action } = trackErrorStatusUpdateOptions('ignored');
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
 
     it('should track RESOLVE status update', async () => {
-      Tracking.event.mockClear();
       await findUpdateResolveStatusButton().trigger('click');
       const { category, action } = trackErrorStatusUpdateOptions('resolved');
+      expect(Tracking.event).toHaveBeenCalledWith(category, action);
+    });
+
+    it('should track create issue button click', async () => {
+      await wrapper.find('[data-qa-selector="create_issue_button"]').vm.$emit('click');
+      const { category, action } = trackCreateIssueFromError;
       expect(Tracking.event).toHaveBeenCalledWith(category, action);
     });
   });

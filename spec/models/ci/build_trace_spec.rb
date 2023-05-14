@@ -25,26 +25,6 @@ RSpec.describe Ci::BuildTrace, feature_category: :continuous_integration do
     it { is_expected.to delegate_method(:complete?).to(:build).with_prefix }
   end
 
-  describe 'FF sign_and_verify_ansi2json_state' do
-    before do
-      stub_feature_flags(sign_and_verify_ansi2json_state: false)
-    end
-
-    it 'calls convert with verify_state: true when enabled for project' do
-      build.project = create(:project)
-      stub_feature_flags(sign_and_verify_ansi2json_state: build.project)
-
-      expect(Gitlab::Ci::Ansi2json).to receive(:convert).with(stream.stream, state, verify_state: true)
-
-      described_class.new(build: build, stream: stream, state: state)
-    end
-
-    it 'calls convert with verify_state: false when disabled' do
-      expect(Gitlab::Ci::Ansi2json).to receive(:convert).with(stream.stream, state, verify_state: false)
-      described_class.new(build: build, stream: stream, state: state)
-    end
-  end
-
   it 'returns formatted trace' do
     expect(subject.lines).to eq(
       [

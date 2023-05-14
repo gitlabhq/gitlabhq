@@ -2,7 +2,7 @@
 import { GlLink, GlIcon, GlCard, GlTooltipDirective } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
-import { trackClickErrorLinkToSentryOptions } from '../utils';
+import { trackClickErrorLinkToSentryOptions } from '../events_tracking';
 
 const CARD_CLASS = 'gl-mr-7 gl-w-15p gl-min-w-fit-content';
 const HEADER_CLASS =

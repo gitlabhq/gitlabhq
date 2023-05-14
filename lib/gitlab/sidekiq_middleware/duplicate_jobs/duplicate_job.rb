@@ -147,7 +147,10 @@ module Gitlab
           end
           local cookie = cmsgpack.unpack(cookie_msgpack)
           cookie.deduplicated = "1"
-          redis.call("set", KEYS[1], cmsgpack.pack(cookie), "ex", redis.call("ttl", KEYS[1]))
+          local ttl = redis.call("ttl", KEYS[1])
+          if ttl > 0 then
+            redis.call("set", KEYS[1], cmsgpack.pack(cookie), "ex", ttl)
+          end
         LUA
 
         def should_reschedule?

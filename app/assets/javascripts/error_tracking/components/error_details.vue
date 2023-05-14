@@ -17,7 +17,11 @@ import Tracking from '~/tracking';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import query from '../queries/details.query.graphql';
-import { trackErrorDetailsViewsOptions, trackErrorStatusUpdateOptions } from '../utils';
+import {
+  trackErrorDetailsViewsOptions,
+  trackErrorStatusUpdateOptions,
+  trackCreateIssueFromError,
+} from '../events_tracking';
 import { severityLevel, severityLevelVariant, errorStatus } from '../constants';
 import Stacktrace from './stacktrace.vue';
 import ErrorDetailsInfo from './error_details_info.vue';
@@ -184,6 +188,8 @@ export default {
     ]),
     createIssue() {
       this.issueCreationInProgress = true;
+      const { category, action } = trackCreateIssueFromError;
+      Tracking.event(category, action);
       this.$refs.sentryIssueForm.submit();
     },
     onIgnoreStatusUpdate() {

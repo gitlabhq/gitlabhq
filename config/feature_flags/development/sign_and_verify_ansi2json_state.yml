@@ -1,8 +1,0 @@
----
-name: sign_and_verify_ansi2json_state
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116625
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/404718
-milestone: '15.11'
-type: development
-group: group::pipeline execution
-default_enabled: true

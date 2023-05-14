@@ -2,7 +2,7 @@ export const mockImportFailures = [
   {
     type: 'pull_request',
     title: 'Add one cool feature',
-    url: 'https://github.com/USER/REPO/pull/2',
+    provider_url: 'https://github.com/USER/REPO/pull/2',
     details: {
       exception_class: 'ActiveRecord::RecordInvalid',
       exception_message: 'Record invalid',
@@ -17,7 +17,7 @@ export const mockImportFailures = [
   {
     type: 'pull_request',
     title: 'Add another awesome feature',
-    url: 'https://github.com/USER/REPO/pull/3',
+    provider_url: 'https://github.com/USER/REPO/pull/3',
     details: {
       exception_class: 'ActiveRecord::RecordInvalid',
       exception_message: 'Record invalid',
@@ -32,7 +32,7 @@ export const mockImportFailures = [
   {
     type: 'lfs_object',
     title: '3a9257fae9e86faee27d7208cb55e086f18e6f29f48c430bfbc26d42eb',
-    url: null,
+    provider_url: null,
     details: {
       exception_class: 'NameError',
       exception_message: 'some message',

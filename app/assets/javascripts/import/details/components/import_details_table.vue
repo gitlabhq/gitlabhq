@@ -34,7 +34,7 @@ export default {
       tdClass: 'gl-md-w-30 gl-word-break-word',
     },
     {
-      key: 'url',
+      key: 'provider_url',
       label: __('URL'),
       tdClass: 'gl-white-space-nowrap',
     },
@@ -141,9 +141,9 @@ export default {
       <template #cell(type)="{ item: { type } }">
         {{ $options.STATISTIC_ITEMS[type] }}
       </template>
-      <template #cell(url)="{ item: { url } }">
-        <gl-link v-if="url" :href="url" target="_blank">
-          {{ url }}
+      <template #cell(provider_url)="{ item: { provider_url } }">
+        <gl-link v-if="provider_url" :href="provider_url" target="_blank">
+          {{ provider_url }}
           <gl-icon name="external-link" />
         </gl-link>
       </template>

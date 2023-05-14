@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import ErrorDetailsInfo from '~/error_tracking/components/error_details_info.vue';
-import { trackClickErrorLinkToSentryOptions } from '~/error_tracking/utils';
+import { trackClickErrorLinkToSentryOptions } from '~/error_tracking/events_tracking';
 import Tracking from '~/tracking';
 
 jest.mock('~/tracking');
