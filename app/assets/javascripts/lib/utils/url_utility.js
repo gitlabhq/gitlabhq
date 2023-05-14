@@ -321,15 +321,6 @@ export function getBaseURL() {
 }
 
 /**
- * Takes a URL and returns content from the start until the final '/'
- *
- * @param {String} url - full url, including protocol and host
- */
-export function stripFinalUrlSegment(url) {
-  return new URL('.', url).href;
-}
-
-/**
  * Returns true if url is an absolute URL
  *
  * @param {String} url

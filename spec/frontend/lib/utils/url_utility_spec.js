@@ -788,18 +788,6 @@ describe('URL utility', () => {
     });
   });
 
-  describe('stripFinalUrlSegment', () => {
-    it.each`
-      path                                                        | expected
-      ${'http://fake.domain/twitter/typeahead-js/-/tags/v0.11.0'} | ${'http://fake.domain/twitter/typeahead-js/-/tags/'}
-      ${'http://fake.domain/bar/cool/-/nested/content'}           | ${'http://fake.domain/bar/cool/-/nested/'}
-      ${'http://fake.domain/bar/cool?q="search"'}                 | ${'http://fake.domain/bar/'}
-      ${'http://fake.domain/bar/cool#link-to-something'}          | ${'http://fake.domain/bar/'}
-    `('stripFinalUrlSegment $path => $expected', ({ path, expected }) => {
-      expect(urlUtils.stripFinalUrlSegment(path)).toBe(expected);
-    });
-  });
-
   describe('escapeFileUrl', () => {
     it('encodes URL excluding the slashes', () => {
       expect(urlUtils.escapeFileUrl('/foo-bar/file.md')).toBe('/foo-bar/file.md');

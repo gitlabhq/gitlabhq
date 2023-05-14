@@ -592,7 +592,7 @@ module API
               desc: 'The base URL to the Jira instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
             },
             {
-              required: true,
+              required: false,
               name: :jira_auth_type,
               type: Integer,
               desc: 'The authorization type for Jira'
