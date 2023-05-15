@@ -83,18 +83,6 @@ function scrollToContainer(container) {
   }
 }
 
-function computeTopOffset(tabs) {
-  const navbar = document.querySelector('.navbar-gitlab');
-  const peek = document.getElementById('js-peek');
-  let stickyTop;
-
-  stickyTop = navbar ? navbar.offsetHeight : 0;
-  stickyTop = peek ? stickyTop + peek.offsetHeight : stickyTop;
-  stickyTop = tabs ? stickyTop + tabs.offsetHeight : stickyTop;
-
-  return stickyTop;
-}
-
 function mountPipelines() {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
   const { mrWidgetData } = gl;
@@ -145,11 +133,11 @@ function destroyPipelines(app) {
   return null;
 }
 
-function loadDiffs({ url, sticky, tabs }) {
+function loadDiffs({ url, tabs }) {
   return axios.get(url).then(({ data }) => {
     const $container = $('#diffs');
     $container.html(data.html);
-    initDiffStatsDropdown(sticky);
+    initDiffStatsDropdown();
 
     localTimeAgo(document.querySelectorAll('#diffs .js-timeago'));
     syntaxHighlight($('#diffs .js-syntax-highlight'));
@@ -537,7 +525,6 @@ export default class MergeRequestTabs {
 
     loadDiffs({
       url: diffUrl,
-      sticky: computeTopOffset(this.mergeRequestTabs),
       tabs: this,
     })
       .then(() => {

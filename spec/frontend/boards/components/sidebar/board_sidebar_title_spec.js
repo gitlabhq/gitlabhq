@@ -1,9 +1,9 @@
 import { GlAlert, GlFormInput, GlForm, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
@@ -32,6 +32,7 @@ const TEST_ISSUE_B = {
 describe('BoardSidebarTitle', () => {
   let wrapper;
   let store;
+  let storeDispatch;
   let mockApollo;
 
   const issueSetTitleMutationHandlerSuccess = jest.fn().mockResolvedValue(updateIssueTitleResponse);
@@ -52,8 +53,9 @@ describe('BoardSidebarTitle', () => {
       [issueSetTitleMutation, issueSetTitleMutationHandlerSuccess],
       [updateEpicTitleMutation, updateEpicTitleMutationHandlerSuccess],
     ]);
+    storeDispatch = jest.spyOn(store, 'dispatch');
 
-    wrapper = shallowMount(BoardSidebarTitle, {
+    wrapper = shallowMountExtended(BoardSidebarTitle, {
       store,
       apolloProvider: mockApollo,
       provide: {
@@ -78,9 +80,9 @@ describe('BoardSidebarTitle', () => {
   const findFormInput = () => wrapper.findComponent(GlFormInput);
   const findGlLink = () => wrapper.findComponent(GlLink);
   const findEditableItem = () => wrapper.findComponent(BoardEditableItem);
-  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findTitle = () => wrapper.find('[data-testid="item-title"]');
-  const findCollapsed = () => wrapper.find('[data-testid="collapsed-content"]');
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findTitle = () => wrapper.findByTestId('item-title');
+  const findCollapsed = () => wrapper.findByTestId('collapsed-content');
 
   it('renders title and reference', () => {
     createWrapper();
@@ -105,9 +107,6 @@ describe('BoardSidebarTitle', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
-        store.state.boardItems[TEST_ISSUE_A.id].title = TEST_TITLE;
-      });
       findFormInput().vm.$emit('input', TEST_TITLE);
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await nextTick();
@@ -116,14 +115,20 @@ describe('BoardSidebarTitle', () => {
     it('collapses sidebar and renders new title', async () => {
       await waitForPromises();
       expect(findCollapsed().isVisible()).toBe(true);
-      expect(findTitle().text()).toContain(TEST_TITLE);
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveItemTitle).toHaveBeenCalledWith({
-        title: TEST_TITLE,
+      expect(storeDispatch).toHaveBeenCalledWith('setActiveItemTitle', {
         projectPath: 'h/b',
+        title: 'New item title',
       });
+    });
+
+    it('renders correct title', async () => {
+      createWrapper({ item: { ...TEST_ISSUE_A, title: TEST_TITLE } });
+      await waitForPromises();
+
+      expect(findTitle().text()).toContain(TEST_TITLE);
     });
   });
 
@@ -131,14 +136,13 @@ describe('BoardSidebarTitle', () => {
     beforeEach(async () => {
       createWrapper();
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {});
       findFormInput().vm.$emit('input', '');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await nextTick();
     });
 
     it('commits change to the server', () => {
-      expect(wrapper.vm.setActiveItemTitle).not.toHaveBeenCalled();
+      expect(storeDispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -169,7 +173,7 @@ describe('BoardSidebarTitle', () => {
     });
 
     it('sets title, expands item and shows alert', () => {
-      expect(wrapper.vm.title).toBe(TEST_TITLE);
+      expect(findFormInput().attributes('value')).toBe(TEST_TITLE);
       expect(findCollapsed().isVisible()).toBe(false);
       expect(findAlert().exists()).toBe(true);
     });
@@ -179,16 +183,13 @@ describe('BoardSidebarTitle', () => {
     beforeEach(async () => {
       createWrapper({ item: TEST_ISSUE_B });
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
-        store.state.boardItems[TEST_ISSUE_B.id].title = TEST_TITLE;
-      });
       findFormInput().vm.$emit('input', TEST_TITLE);
       findCancelButton().vm.$emit('click');
       await nextTick();
     });
 
     it('collapses sidebar and render former title', () => {
-      expect(wrapper.vm.setActiveItemTitle).not.toHaveBeenCalled();
+      expect(storeDispatch).not.toHaveBeenCalled();
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toBe(TEST_ISSUE_B.title);
     });
@@ -198,10 +199,6 @@ describe('BoardSidebarTitle', () => {
     beforeEach(async () => {
       createWrapper({ item: TEST_ISSUE_B });
 
-      jest.spyOn(wrapper.vm, 'setActiveItemTitle').mockImplementation(() => {
-        throw new Error(['failed mutation']);
-      });
-      jest.spyOn(wrapper.vm, 'setError').mockImplementation(() => {});
       findFormInput().vm.$emit('input', 'Invalid title');
       findForm().vm.$emit('submit', { preventDefault: () => {} });
       await nextTick();
@@ -210,7 +207,10 @@ describe('BoardSidebarTitle', () => {
     it('collapses sidebar and renders former item title', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toContain(TEST_ISSUE_B.title);
-      expect(wrapper.vm.setError).toHaveBeenCalled();
+      expect(storeDispatch).toHaveBeenCalledWith(
+        'setError',
+        expect.objectContaining({ message: 'An error occurred when updating the title' }),
+      );
     });
   });
 

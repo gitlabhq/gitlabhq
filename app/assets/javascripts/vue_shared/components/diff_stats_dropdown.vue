@@ -147,13 +147,5 @@ export default {
         </template>
       </gl-sprintf>
     </span>
-
-    <div
-      class="diff-stats-additions-deletions-collapsed gl-float-right gl-display-none"
-      data-testid="diff-stats-additions-deletions-collapsed"
-    >
-      <span class="gl-text-green-600 gl-font-weight-bold">+{{ added }}</span>
-      <span class="gl-text-red-500 gl-font-weight-bold">-{{ deleted }}</span>
-    </div>
   </div>
 </template>

@@ -17,6 +17,8 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 const MAX_TOPICS_TO_SHOW = 3;
 const MAX_TOPIC_TITLE_LENGTH = 15;
@@ -30,6 +32,10 @@ export default {
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
+    updated: __('Updated'),
+  },
+  safeHtmlConfig: {
+    ADD_TAGS: ['gl-emoji'],
   },
   components: {
     GlAvatarLabeled,
@@ -39,9 +45,11 @@ export default {
     GlBadge,
     GlPopover,
     GlSprintf,
+    TimeAgoTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   props: {
     /**
@@ -62,6 +70,9 @@ export default {
      *   permissions: {
      *     projectAccess: { accessLevel: 50 };
      *   };
+     *   descriptionHtml: string;
+     *   updatedAt: string;
+     * }
      */
     project: {
       type: Object,
@@ -138,7 +149,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-py-5 gl-md-display-flex gl-align-items-center gl-border-b">
+  <li class="projects-list-item gl-py-5 gl-md-display-flex gl-align-items-center gl-border-b">
     <gl-avatar-labeled
       class="gl-flex-grow-1"
       :entity-id="project.id"
@@ -158,6 +169,12 @@ export default {
           accessLevelLabel
         }}</user-access-role-badge>
       </template>
+      <div
+        v-if="project.descriptionHtml"
+        v-safe-html:[$options.safeHtmlConfig]="project.descriptionHtml"
+        class="gl-font-sm gl-overflow-hidden gl-line-height-20 description"
+        data-testid="project-description"
+      ></div>
       <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
         <div
           class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center gl-mx-n2 gl-my-n2"
@@ -197,7 +214,7 @@ export default {
       </div>
     </gl-avatar-labeled>
     <div
-      class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-md-mt-0"
+      class="gl-md-display-flex gl-flex-direction-column gl-align-items-flex-end gl-flex-shrink-0 gl-mt-3 gl-pl-10 gl-md-pl-0 gl-md-mt-0"
     >
       <div class="gl-display-flex gl-align-items-center gl-gap-x-3">
         <gl-badge v-if="project.archived" variant="warning">{{ $options.i18n.archived }}</gl-badge>
@@ -230,6 +247,10 @@ export default {
           <gl-icon name="issues" />
           <span>{{ numberToMetricPrefix(project.openIssuesCount) }}</span>
         </gl-link>
+      </div>
+      <div class="gl-font-sm gl-white-space-nowrap gl-text-secondary gl-mt-3">
+        <span>{{ $options.i18n.updated }}</span>
+        <time-ago-tooltip :time="project.updatedAt" />
       </div>
     </div>
   </li>

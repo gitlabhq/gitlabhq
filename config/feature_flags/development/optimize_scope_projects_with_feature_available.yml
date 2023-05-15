@@ -1,0 +1,8 @@
+---
+name: optimize_scope_projects_with_feature_available
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119950/
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410693
+milestone: '16.0'
+type: development
+group: group::tenant scale
+default_enabled: false

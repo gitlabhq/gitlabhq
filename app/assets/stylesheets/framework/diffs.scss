@@ -51,12 +51,11 @@
         pointer-events: none;
       }
 
-      &.is-commit {
-        top: calc(#{$calc-application-header-height} + #{$commit-stat-summary-height});
-      }
-
-      &.is-compare {
-        top: calc(#{$calc-application-header-height} + #{$compare-branches-sticky-header-height});
+      &.is-commit,
+      &.is-compare,
+      &.is-wiki {
+        top: calc(#{$calc-application-header-height});
+        border-top: 0;
       }
     }
 
@@ -679,40 +678,6 @@ table.code {
 
   &:focus {
     outline: 0;
-  }
-}
-
-.diff-files-changed {
-  background-color: $body-bg;
-
-  .inline-parallel-buttons {
-    @include gl-relative;
-    z-index: 1;
-  }
-
-  @include media-breakpoint-up(sm) {
-    @include gl-sticky;
-    top: $calc-application-header-height;
-    z-index: 200;
-
-    &.is-stuck {
-      @include gl-py-0;
-      border-top: 1px solid $white-dark;
-      border-bottom: 1px solid $white-dark;
-
-      .diff-stats-additions-deletions-expanded,
-      .inline-parallel-buttons {
-        @include gl-display-none;
-      }
-    }
-  }
-
-  @include media-breakpoint-up(lg) {
-    &.is-stuck {
-      .diff-stats-additions-deletions-collapsed {
-        @include gl-display-block;
-      }
-    }
   }
 }
 

@@ -12,6 +12,7 @@ import {
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}1`);
 
@@ -36,6 +37,7 @@ describe('ProjectsListItem', () => {
   const findForksLink = () => wrapper.findByRole('link', { name: ProjectsListItem.i18n.forks });
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
+  const findProjectDescription = () => wrapper.findByTestId('project-description');
 
   it('renders project avatar', () => {
     createComponent();
@@ -103,6 +105,12 @@ describe('ProjectsListItem', () => {
     expect(starsLink.attributes('href')).toBe(`${project.webUrl}/-/starrers`);
     expect(starsLink.text()).toBe(project.starCount.toString());
     expect(starsLink.findComponent(GlIcon).props('name')).toBe('star-o');
+  });
+
+  it('renders updated at', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(project.updatedAt);
   });
 
   describe('when issues are enabled', () => {
@@ -228,6 +236,31 @@ describe('ProjectsListItem', () => {
         expect(firstTopicBadge.text()).toBe('topic with ver…');
         expect(tooltip.value).toBe(topicWithLongName);
       });
+    });
+  });
+
+  describe('when project has a description', () => {
+    it('renders description', () => {
+      const descriptionHtml = '<p>Foo bar</p>';
+
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            descriptionHtml,
+          },
+        },
+      });
+
+      expect(findProjectDescription().element.innerHTML).toBe(descriptionHtml);
+    });
+  });
+
+  describe('when project does not have a description', () => {
+    it('does not render description', () => {
+      createComponent();
+
+      expect(findProjectDescription().exists()).toBe(false);
     });
   });
 });

@@ -38,7 +38,7 @@ JS_CONSOLE_FILTER = Regexp.union(
 
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
 
-SCREENSHOT_FILENAME_LENGTH = ENV['CI'] || ENV['CI_SERVER'] ? 255 : 99
+SCREENSHOT_FILENAME_LENGTH = ENV['CI'] || ENV['CI_SERVER'] ? 150 : 99
 
 @blackhole_tcp_server = nil
 

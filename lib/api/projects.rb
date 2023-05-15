@@ -112,8 +112,6 @@ module API
       end
 
       def validate_projects_api_rate_limit_for_unauthenticated_users!
-        return unless Feature.enabled?(:rate_limit_for_unauthenticated_projects_api_access)
-
         check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
       end
     end

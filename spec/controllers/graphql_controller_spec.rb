@@ -146,7 +146,7 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           ])
       end
 
-      it 'does not allow string as _json parameter' do
+      it 'does not allow string as _json parameter (a malformed multiplex query)' do
         post :execute, params: { _json: 'bad' }
 
         expect(response).to have_gitlab_http_status(:ok)

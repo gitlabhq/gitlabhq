@@ -21,7 +21,10 @@ export default {
      *   openIssuesCount: number;
      *   permissions: {
      *     projectAccess: { accessLevel: 50 };
-     *   }[];
+     *   };
+     *   descriptionHtml: string;
+     *   updatedAt: string;
+     * }[]
      */
     projects: {
       type: Array,

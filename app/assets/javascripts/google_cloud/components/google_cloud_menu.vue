@@ -4,11 +4,13 @@ import { s__ } from '~/locale';
 const CONFIGURATION_KEY = 'configuration';
 const DEPLOYMENTS_KEY = 'deployments';
 const DATABASES_KEY = 'databases';
+const AIML_KEY = 'aiml';
 
 const i18n = {
   configuration: { title: s__('CloudSeed|Configuration') },
   deployments: { title: s__('CloudSeed|Deployments') },
   databases: { title: s__('CloudSeed|Databases') },
+  aiml: { title: s__('CloudSeed|AI / ML') },
 };
 
 export default {
@@ -29,6 +31,11 @@ export default {
       type: String,
       required: true,
     },
+    aimlUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     isConfigurationActive() {
@@ -39,6 +46,9 @@ export default {
     },
     isDatabasesActive() {
       return this.active === DATABASES_KEY;
+    },
+    isAimlActive() {
+      return this.active === AIML_KEY;
     },
   },
   i18n,
@@ -78,6 +88,17 @@ export default {
           :class="{ 'gl-tab-nav-item-active': isDatabasesActive }"
         >
           {{ $options.i18n.databases.title }}
+        </a>
+      </li>
+      <li role="presentation" class="nav-item">
+        <a
+          data-testid="aimlLink"
+          role="tab"
+          :href="aimlUrl"
+          class="nav-link gl-tab-nav-item hidden"
+          :class="{ 'gl-tab-nav-item-active': isAimlActive }"
+        >
+          {{ $options.i18n.aiml.title }}
         </a>
       </li>
     </ul>

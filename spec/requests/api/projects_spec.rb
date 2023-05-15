@@ -1181,30 +1181,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :projects d
           end
         end
       end
-
-      context 'when the feature flag `rate_limit_for_unauthenticated_projects_api_access` is disabled' do
-        before do
-          stub_feature_flags(rate_limit_for_unauthenticated_projects_api_access: false)
-        end
-
-        context 'when the user is not signed in' do
-          let_it_be(:current_user) { nil }
-
-          it_behaves_like 'does not log request and does not block the request' do
-            def request
-              get api(path, current_user)
-            end
-          end
-        end
-
-        context 'when the user is signed in' do
-          it_behaves_like 'does not log request and does not block the request' do
-            def request
-              get api(path, current_user)
-            end
-          end
-        end
-      end
     end
   end
 

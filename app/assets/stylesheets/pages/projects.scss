@@ -654,3 +654,17 @@
     }
   }
 }
+
+.projects-list-item {
+  .description {
+    max-height: $gl-spacing-scale-8;
+
+    p {
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      /* stylelint-disable-next-line value-no-vendor-prefix */
+      display: -webkit-box;
+    }
+  }
+}

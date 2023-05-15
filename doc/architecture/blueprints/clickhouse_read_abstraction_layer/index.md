@@ -10,6 +10,17 @@ participating-stages: []
 
 # Consider an abstraction layer to interact with ClickHouse or alternatives
 
+## Table of Contents
+
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Goals](#goals)
+- [Non-goals](#non-goals)
+- [Possible solutions](#possible-solutions)
+  - [Recommended approach](#recommended-approach)
+  - [Overview of open source tools](#overview-of-open-source-tools)
+- [Open Questions](#open-questions)
+
 ## Summary
 
 Provide a solution standardizing read access to ClickHouse or its alternatives for GitLab installations that will not opt-in to install ClickHouse. After analyzing different [open-source tools](#overview-of-open-source-tools) and weighing them against an option to [build a solution internally](#recommended-approach). The current recommended approach proposes to use dedicated database-level drivers to connect to each data source. Additionally, it proposes the usage of [repository pattern](https://martinfowler.com/eaaCatalog/repository.html) to confine optionally database availability complexity to a single application layer.
@@ -24,7 +35,7 @@ offering a unified interface for interactions with underlying data stores, to a 
 
 ## Goals
 
-- Limit the impact of optionally available data stores on the overall GitLab application codebase to [single abstraction layer](../../../../development/reusing_abstractions.md#abstractions)
+- Limit the impact of optionally available data stores on the overall GitLab application codebase to [single abstraction layer](../../../development/reusing_abstractions.md#abstractions)
 - Support all data store specific features
 - Support communication for satellite services of the main GitLab application
 
@@ -72,7 +83,7 @@ Following ClickHouse documentation there are the following drivers for Ruby and 
 
 To keep the codebase well organized and limit coupling to any specific database engine it is important to encapsulate
 interactions, including querying data to a single application layer, that would present its interface to layers above in
-similar vain to [ActiveRecord interface propagation through abstraction layers](../../../../development/reusing_abstractions.md)
+similar vain to [ActiveRecord interface propagation through abstraction layers](../../../development/reusing_abstractions.md)
 
 Keeping underlying database engines encapsulated makes the recommended solution a good two-way door decision that
 keeps the opportunity to introduce other tools later on, while giving groups time to explore and understand their use cases.
@@ -81,7 +92,7 @@ At the lowest abstraction layer, it can be expected that there will be a family 
 following MVC pattern implemented by Rails should be classified as _Models_.
 
 Models-level abstraction builds well into existing patterns and guidelines but unfortunately does not solve the challenge of the optional availability of the ClickHouse database engine for self-managed instances. It is required to design a dedicated entity that will house responsibility of selecting best database to serve business logic request.
-From the already mentioned existing abstraction [guidelines](../../../../development/reusing_abstractions.md)  `Finders` seems to be the closest to the given requirements, due to the fact that `Finders` encapsulate database specific interaction behind their own public API, hiding database vendors detail from all layers above them.
+From the already mentioned existing abstraction [guidelines](../../../development/reusing_abstractions.md)  `Finders` seems to be the closest to the given requirements, due to the fact that `Finders` encapsulate database specific interaction behind their own public API, hiding database vendors detail from all layers above them.
 
 However, they are closely coupled to `ActiveRecord` ORM framework, and are bound by existing GitLab convention to return `ActiveRecord::Relation` objects, that might be used to compose even more complex queries. That coupling makes `Finders` unfit to deal with the optional availability of ClickHouse because returned data might come from two different databases, and might not be compatible with each other.
 
@@ -138,7 +149,7 @@ In this section authors provide an overview of existing 3rd party open-source so
 
 1. It focuses on the fact whether the proposed abstraction layer can support both ClickHouse and PostgreSQL (must have)
 1. Additional consideration might be if more than the two must-have storages are supported
-1. The solution must support the [minimum required versions](../../../../install/requirements.md#postgresql-requirements) for PostgreSQL
+1. The solution must support the [minimum required versions](../../../install/requirements.md#postgresql-requirements) for PostgreSQL
 
 ##### 3. Protocol compatibility
 

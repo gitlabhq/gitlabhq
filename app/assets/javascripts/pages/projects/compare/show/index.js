@@ -7,7 +7,7 @@ import syntaxHighlight from '~/syntax_highlight';
 initCompareSelector();
 
 new Diff(); // eslint-disable-line no-new
-initDiffStatsDropdown(true);
+initDiffStatsDropdown();
 GpgBadges.fetch();
 
 syntaxHighlight([document.querySelector('.files')]);

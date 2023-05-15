@@ -109,7 +109,7 @@ class GraphqlController < ApplicationController
 
   private
 
-  def permitted_params
+  def permitted_multiplex_params
     params.permit(_json: [:query, :operationName, { variables: {} }])
   end
 
@@ -190,7 +190,7 @@ class GraphqlController < ApplicationController
   end
 
   def multiplex_param
-    permitted_params[:_json]
+    permitted_multiplex_params[:_json]
   end
 
   def multiplex_queries
@@ -221,8 +221,10 @@ class GraphqlController < ApplicationController
     Gitlab::Graphql::Variables.new(variable_info).to_h
   end
 
+  # We support Apollo-style query batching where an array of queries will be in the `_json:` key.
+  # https://graphql-ruby.org/queries/multiplex.html#apollo-query-batching
   def multiplex?
-    multiplex_param.present?
+    params[:_json].is_a?(Array)
   end
 
   def authorize_access_api!

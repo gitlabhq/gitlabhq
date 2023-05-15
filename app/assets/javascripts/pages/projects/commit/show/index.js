@@ -18,7 +18,7 @@ import '~/sourcegraph/load';
 import DiffStats from '~/diffs/components/diff_stats.vue';
 import { initReportAbuse } from '~/projects/report_abuse';
 
-initDiffStatsDropdown(true);
+initDiffStatsDropdown();
 new ZenMode();
 new ShortcutsNavigation();
 

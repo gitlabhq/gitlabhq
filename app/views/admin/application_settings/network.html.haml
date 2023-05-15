@@ -146,8 +146,7 @@
   .settings-content
     = render 'users_api_limits'
 
-- if Feature.enabled?(:rate_limit_for_unauthenticated_projects_api_access)
-  = render 'projects_api_limits'
+= render 'projects_api_limits'
 
 %section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header

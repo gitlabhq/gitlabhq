@@ -1,8 +1,0 @@
----
-name: rate_limit_for_unauthenticated_projects_api_access
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112283
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/391922
-milestone: '15.10'
-type: development
-group: group::tenant scale
-default_enabled: true

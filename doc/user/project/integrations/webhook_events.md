@@ -271,6 +271,7 @@ Payload example:
     "human_time_estimate": null,
     "human_time_change": null,
     "weight": null,
+    "health_status": "at_risk",
     "iid": 23,
     "url": "http://example.com/diaspora/issues/23",
     "state": "opened",

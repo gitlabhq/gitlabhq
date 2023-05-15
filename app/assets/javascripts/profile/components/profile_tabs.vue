@@ -96,7 +96,7 @@ export default {
       :is="component"
       v-for="{ key, component } in $options.tabs"
       :key="key"
-      class="container-fluid container-limited"
+      class="container-fluid container-limited gl-text-left"
       :personal-projects="personalProjects"
       :personal-projects-loading="personalProjectsLoading"
     />

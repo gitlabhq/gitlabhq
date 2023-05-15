@@ -55,6 +55,8 @@ All AI features are experimental.
    ```ruby
    Feature.enable(:ai_related_settings)
    Feature.enable(:openai_experimentation)
+   Feature.enable(:tofa_experimentation_main_flag)
+   Feature.enable(:anthropic_experimentation)
    ```
 
 1. Simulate the GDK to [simulate SaaS](ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
@@ -87,31 +89,49 @@ To populate the embedding database for GitLab chat:
 1. Open a rails console
 1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
 
-### Internal-Only GCP account access
+### Configure GCP Vertex access
 
 In order to obtain a GCP service key for local development, please follow the steps below:
 
 - Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
-- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
-- In the rails console, you will use this by `Gitlab::CurrentSettings.update(tofa_credentials: File.read('/YOUR_FILE.json'))`
+- Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account. Your full settings should then be:
+
+```ruby
+Gitlab::CurrentSettings.update(tofa_credentials: File.read('/YOUR_FILE.json'))
+
+# Note: These credential examples will not work locally for all models
+Gitlab::CurrentSettings.update(tofa_host: "<root-domain>") # Example: us-central1-aiplatform.googleapis.com
+Gitlab::CurrentSettings.update(tofa_url: "<full-api-endpoint>") # Example: https://ROOT-DOMAIN/v1/projects/MY-COOL-PROJECT/locations/us-central1/publishers/google/models/MY-SPECIAL-MODEL:predict
+```
+
+Internal team members can [use this snippet](https://gitlab.com/gitlab-com/gl-infra/production/-/snippets/2541742) for help configuring these endpoints.
+
+### Configure OpenAI access
+
+```ruby
+Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
+```
+
+### Configure Anthropic access
+
+```ruby
+Feature.enable(:anthropic_experimentation)
+Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
+```
 
 ## Experimental REST API
 
-Use the [experimental REST API endpoints](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/ai/experimentation/open_ai.rb) to quickly experiment and prototype AI features.
+Use the [experimental REST API endpoints](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/ai/experimentation) to quickly experiment and prototype AI features.
 
 The endpoints are:
 
 - `https://gitlab.example.com/api/v4/ai/experimentation/openai/completions`
 - `https://gitlab.example.com/api/v4/ai/experimentation/openai/embeddings`
 - `https://gitlab.example.com/api/v4/ai/experimentation/openai/chat/completions`
-
-To use these endpoints locally, set the OpenAI API key in the application settings:
-
-```ruby
-Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
-```
+- `https://gitlab.example.com/api/v4/ai/experimentation/anthropic/complete`
+- `https://gitlab.example.com/api/v4/ai/experimentation/tofa/chat`
 
 These endpoints are only for prototyping, not for rolling features out to customers.
 The experimental endpoint is only available to GitLab team members on production. Use the
