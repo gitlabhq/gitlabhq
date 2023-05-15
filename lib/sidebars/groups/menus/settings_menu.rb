@@ -52,6 +52,11 @@ module Sidebars
           true
         end
 
+        override :separated?
+        def separated?
+          true
+        end
+
         private
 
         def general_menu_item

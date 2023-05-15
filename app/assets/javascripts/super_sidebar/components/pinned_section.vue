@@ -23,6 +23,11 @@ export default {
       required: false,
       default: () => [],
     },
+    separated: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -69,7 +74,7 @@ export default {
   <menu-section
     :item="sectionItem"
     :expanded="expanded"
-    :separated="true"
+    :separated="separated"
     @collapse-toggle="expanded = !expanded"
   >
     <draggable

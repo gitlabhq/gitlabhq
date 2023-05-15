@@ -25,6 +25,12 @@ RSpec.describe Sidebars::Groups::Menus::SettingsMenu, :with_license do
     end
   end
 
+  describe '#separated?' do
+    it 'returns true' do
+      expect(menu.separated?).to be true
+    end
+  end
+
   describe 'Menu items' do
     subject { menu.renderable_items.find { |e| e.item_id == item_id } }
 

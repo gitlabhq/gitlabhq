@@ -66,6 +66,11 @@ module Sidebars
       @renderable_items ||= @items.select(&:render?)
     end
 
+    # Defines whether menu is separated from others with a top separator
+    def separated?
+      false
+    end
+
     # Returns a tree-like representation of itself and all
     # renderable menu entries, with additional information
     # on whether the item(s) have an active route
@@ -79,7 +84,8 @@ module Sidebars
         link: link,
         is_active: is_active,
         pill_count: has_pill? ? pill_count : nil,
-        items: items
+        items: items,
+        separated: separated?
       }
     end
 

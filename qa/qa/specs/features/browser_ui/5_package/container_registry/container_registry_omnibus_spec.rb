@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :skip_live_env, product_group: :container_registry, quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/399556',
-    type: :flaky
-  } do
+  RSpec.describe 'Package', :orchestrated, :skip_live_env, product_group: :container_registry do
     describe 'Self-managed Container Registry' do
       include Support::Helpers::MaskToken
 
@@ -48,7 +45,6 @@ module QA
 
       after do
         runner.remove_via_api!
-        project.remove_via_api!
       end
 
       context "when tls is disabled" do

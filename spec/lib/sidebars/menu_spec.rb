@@ -54,6 +54,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
           link: "foo2",
           is_active: true,
           pill_count: nil,
+          separated: false,
           items: [
             {
               id: 'id1',
@@ -87,6 +88,7 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
           link: nil,
           is_active: false,
           pill_count: 'foo',
+          separated: false,
           items: []
         })
     end

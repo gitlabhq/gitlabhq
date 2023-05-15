@@ -57,6 +57,7 @@ describe('Pipeline editor tabs component', () => {
         isNewCiConfigFile: true,
         showDrawer: false,
         showJobAssistantDrawer: false,
+        showAiAssistantDrawer: false,
         ...props,
       },
       data() {
@@ -65,6 +66,7 @@ describe('Pipeline editor tabs component', () => {
         };
       },
       provide: {
+        aiChatAvailable: false,
         ciConfigPath: '/path/to/ci-config',
         ciLintPath: mockCiLintPath,
         currentBranch: 'main',

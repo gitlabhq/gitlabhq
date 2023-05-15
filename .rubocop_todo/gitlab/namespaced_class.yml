@@ -244,6 +244,7 @@ Gitlab/NamespacedClass:
     - 'app/models/notification_setting.rb'
     - 'app/models/oauth_access_grant.rb'
     - 'app/models/oauth_access_token.rb'
+    - 'app/models/organization.rb'
     - 'app/models/out_of_context_discussion.rb'
     - 'app/models/pages_deployment.rb'
     - 'app/models/pages_domain.rb'

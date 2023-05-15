@@ -38,13 +38,13 @@ exports[`Design management list item component with notes renders item with mult
   </div>
    
   <div
-    class="card-footer gl-display-flex gl-w-full"
+    class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4"
   >
     <div
       class="gl-display-flex gl-flex-direction-column str-truncated-100"
     >
       <span
-        class="gl-font-weight-bold str-truncated-100"
+        class="gl-font-weight-semibold str-truncated-100"
         data-qa-selector="design_file_name"
         data-testid="design-img-filename-1"
         title="test"
@@ -118,13 +118,13 @@ exports[`Design management list item component with notes renders item with sing
   </div>
    
   <div
-    class="card-footer gl-display-flex gl-w-full"
+    class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4"
   >
     <div
       class="gl-display-flex gl-flex-direction-column str-truncated-100"
     >
       <span
-        class="gl-font-weight-bold str-truncated-100"
+        class="gl-font-weight-semibold str-truncated-100"
         data-qa-selector="design_file_name"
         data-testid="design-img-filename-1"
         title="test"

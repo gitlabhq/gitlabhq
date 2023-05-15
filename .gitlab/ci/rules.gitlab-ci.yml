@@ -1463,6 +1463,12 @@
 
 .qa:rules:package-and-test-sidebar:
   rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-merge-request
       changes: *code-patterns
       when: manual

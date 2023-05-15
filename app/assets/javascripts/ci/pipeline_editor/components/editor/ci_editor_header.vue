@@ -17,6 +17,7 @@ export default {
     GlButton,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  inject: ['aiChatAvailable'],
   props: {
     showDrawer: {
       type: Boolean,
@@ -29,6 +30,11 @@ export default {
     showAiAssistantDrawer: {
       type: Boolean,
       required: true,
+    },
+  },
+  computed: {
+    isAiConfigChatAvailable() {
+      return this.glFeatures.aiCiConfigGenerator && this.aiChatAvailable;
     },
   },
   methods: {
@@ -96,7 +102,7 @@ export default {
       {{ $options.i18n.jobAssistant }}
     </gl-button>
     <gl-button
-      v-if="glFeatures.aiCiConfigGenerator"
+      v-if="isAiConfigChatAvailable"
       icon="bulb"
       size="small"
       data-testid="ai-assistant-drawer-toggle"

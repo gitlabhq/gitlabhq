@@ -45,7 +45,7 @@ export default {
 <template>
   <div
     id="tasks"
-    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4"
+    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-5"
   >
     <div
       class="gl-pl-5 gl-pr-4 gl-py-4 gl-display-flex gl-justify-content-space-between gl-bg-white gl-rounded-base"

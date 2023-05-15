@@ -6,7 +6,8 @@ RSpec.describe Sidebars::Admin::Menus::AdminSettingsMenu, feature_category: :nav
   it_behaves_like 'Admin menu',
     link: '/admin/application_settings/general',
     title: s_('Admin|Settings'),
-    icon: 'settings'
+    icon: 'settings',
+    separated: true
 
   it_behaves_like 'Admin menu with sub menus'
 end

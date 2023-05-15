@@ -98,41 +98,6 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
     end
   end
 
-  describe '#show_candidate_view_model' do
-    let(:candidate) { candidate0 }
-
-    subject { Gitlab::Json.parse(helper.show_candidate_view_model(candidate))['candidate'] }
-
-    it 'generates the correct params' do
-      expect(subject['params']).to include(
-        hash_including('name' => 'param1', 'value' => 'p1'),
-        hash_including('name' => 'param2', 'value' => 'p2')
-      )
-    end
-
-    it 'generates the correct metrics' do
-      expect(subject['metrics']).to include(
-        hash_including('name' => 'metric1', 'value' => 0.1),
-        hash_including('name' => 'metric2', 'value' => 0.2),
-        hash_including('name' => 'metric3', 'value' => 0.3)
-      )
-    end
-
-    it 'generates the correct info' do
-      expected_info = {
-        'iid' => candidate.iid,
-        'eid' => candidate.eid,
-        'path_to_artifact' => "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
-        'experiment_name' => candidate.experiment.name,
-        'path_to_experiment' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
-        'status' => 'running',
-        'path' => "/#{project.full_path}/-/ml/candidates/#{candidate.iid}"
-      }
-
-      expect(subject['info']).to include(expected_info)
-    end
-  end
-
   describe '#experiments_as_data' do
     let(:experiments) { [experiment] }
 

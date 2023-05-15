@@ -35,6 +35,11 @@ module Sidebars
           { 'data-qa-selector': 'admin_settings_menu_link' }
         end
 
+        override :separated?
+        def separated?
+          true
+        end
+
         private
 
         def general_settings_menu_item

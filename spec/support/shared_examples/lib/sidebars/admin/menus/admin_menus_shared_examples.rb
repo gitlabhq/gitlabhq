@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'Admin menu' do |link:, title:, icon:|
+RSpec.shared_examples 'Admin menu' do |link:, title:, icon:, separated: false|
   let_it_be(:user) { build(:user, :admin) }
 
   before do
@@ -21,6 +21,10 @@ RSpec.shared_examples 'Admin menu' do |link:, title:, icon:|
 
   it 'renders the correct icon' do
     expect(subject.sprite_icon).to be icon
+  end
+
+  it 'renders the separator if needed' do
+    expect(subject.separated?).to be separated
   end
 
   describe '#render?' do

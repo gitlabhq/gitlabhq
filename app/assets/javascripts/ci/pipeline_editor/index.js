@@ -46,6 +46,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     usesExternalConfig,
     validateTabIllustrationPath,
     ymlHelpPagePath,
+    aiChatAvailable,
   } = el.dataset;
 
   const configurationPaths = Object.fromEntries(
@@ -115,6 +116,7 @@ export const initPipelineEditor = (selector = '#js-pipeline-editor') => {
     el,
     apolloProvider,
     provide: {
+      aiChatAvailable: parseBoolean(aiChatAvailable),
       ciConfigPath,
       ciExamplesHelpPagePath,
       ciHelpPagePath,

@@ -8751,6 +8751,9 @@ msgstr ""
 msgid "Cannot delete the default framework"
 msgstr ""
 
+msgid "Cannot delete the default organization"
+msgstr ""
+
 msgid "Cannot have multiple Jira imports running at the same time"
 msgstr ""
 

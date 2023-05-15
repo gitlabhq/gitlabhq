@@ -1,7 +1,15 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
+import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import { PANELS_WITH_PINS } from '~/super_sidebar/constants';
 import { sidebarData } from '../mock_data';
+
+const menuItems = [
+  { id: 1, title: 'No subitems' },
+  { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Pinned subitem' }] },
+  { id: 3, title: 'Empty subitems array', items: [] },
+  { id: 4, title: 'Also with subitems', items: [{ id: 41, title: 'Subitem' }] },
+];
 
 describe('SidebarMenu component', () => {
   let wrapper;
@@ -17,14 +25,10 @@ describe('SidebarMenu component', () => {
     });
   };
 
-  describe('computed', () => {
-    const menuItems = [
-      { id: 1, title: 'No subitems' },
-      { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Pinned subitem' }] },
-      { id: 3, title: 'Empty subitems array', items: [] },
-      { id: 4, title: 'Also with subitems', items: [{ id: 41, title: 'Subitem' }] },
-    ];
+  const findPinnedSection = () => wrapper.findComponent(PinnedSection);
+  const findMainMenuSeparator = () => wrapper.findByTestId('main-menu-separator');
 
+  describe('computed', () => {
     describe('supportsPins', () => {
       it('is true for the project sidebar', () => {
         createWrapper({ ...sidebarData, panel_type: 'project' });
@@ -146,6 +150,35 @@ describe('SidebarMenu component', () => {
           expect(wrapper.vm.pinnedItems).toEqual([{ id: 21, title: 'Pinned subitem' }]);
         });
       });
+    });
+  });
+
+  describe('Menu separators', () => {
+    it('should add the separator above pinned section', () => {
+      createWrapper({
+        ...sidebarData,
+        current_menu_items: menuItems,
+        panel_type: 'project',
+      });
+      expect(findPinnedSection().props('separated')).toBe(true);
+    });
+
+    it('should add the separator above main menu items when there is a pinned section', () => {
+      createWrapper({
+        ...sidebarData,
+        current_menu_items: menuItems,
+        panel_type: PANELS_WITH_PINS[0],
+      });
+      expect(findMainMenuSeparator().exists()).toBe(true);
+    });
+
+    it('should NOT add the separator above main menu items when there is no pinned section', () => {
+      createWrapper({
+        ...sidebarData,
+        current_menu_items: menuItems,
+        panel_type: 'explore',
+      });
+      expect(findMainMenuSeparator().exists()).toBe(false);
     });
   });
 });

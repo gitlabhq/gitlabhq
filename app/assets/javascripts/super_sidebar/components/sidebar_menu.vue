@@ -89,6 +89,9 @@ export default {
     supportsPins() {
       return PANELS_WITH_PINS.includes(this.panelType);
     },
+    hasStaticItems() {
+      return this.staticItems.length > 0;
+    },
   },
   methods: {
     createPin(itemId) {
@@ -126,34 +129,50 @@ export default {
           Sentry.captureException(e);
         });
     },
+    isSection(navItem) {
+      return navItem.items?.length;
+    },
   },
 };
 </script>
 
 <template>
   <nav class="gl-p-2 gl-relative">
-    <template v-if="staticItems.length > 0">
-      <ul class="gl-p-0 gl-m-0">
-        <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
-      </ul>
-      <hr aria-hidden="true" class="gl-my-2 gl-mx-4" />
-    </template>
+    <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0">
+      <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
+    </ul>
     <pinned-section
       v-if="supportsPins"
+      separated
       :items="pinnedItems"
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
+    <hr
+      v-if="supportsPins"
+      aria-hidden="true"
+      class="gl-my-2 gl-mx-4"
+      data-testid="main-menu-separator"
+    />
     <ul class="gl-p-0 gl-list-style-none">
-      <component
-        :is="item.items && item.items.length ? 'MenuSection' : 'NavItem'"
-        v-for="item in nonStaticItems"
-        :key="item.id"
-        :item="item"
-        tag="li"
-        @pin-add="createPin"
-        @pin-remove="destroyPin"
-      />
+      <template v-for="item in nonStaticItems">
+        <menu-section
+          v-if="isSection(item)"
+          :key="item.id"
+          :item="item"
+          :separated="item.separated"
+          @pin-add="createPin"
+          @pin-remove="destroyPin"
+        />
+        <nav-item
+          v-else
+          :key="item.id"
+          :item="item"
+          tag="li"
+          @pin-add="createPin"
+          @pin-remove="destroyPin"
+        />
+      </template>
     </ul>
   </nav>
 </template>

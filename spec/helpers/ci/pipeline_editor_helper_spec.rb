@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineEditorHelper do
   let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   describe 'can_view_pipeline_editor?' do
     subject { helper.can_view_pipeline_editor?(project) }
@@ -62,6 +63,10 @@ RSpec.describe Ci::PipelineEditorHelper do
         .to receive(:image_path)
         .with('illustrations/project-run-CICD-pipelines-sm.svg')
         .and_return('illustrations/validate.svg')
+
+      allow(helper)
+        .to receive(:current_user)
+        .and_return(user)
     end
 
     subject(:pipeline_editor_data) { helper.js_pipeline_editor_data(project) }

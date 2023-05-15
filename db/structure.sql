@@ -15321,6 +15321,18 @@ CREATE SEQUENCE design_management_repositories_id_seq
 
 ALTER SEQUENCE design_management_repositories_id_seq OWNED BY design_management_repositories.id;
 
+CREATE TABLE design_management_repository_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    design_management_repository_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_bf1387c28b CHECK ((char_length(verification_failure) <= 255))
+);
+
 CREATE TABLE design_management_versions (
     id bigint NOT NULL,
     sha bytea NOT NULL,
@@ -19179,13 +19191,15 @@ ALTER SEQUENCE operations_user_lists_id_seq OWNED BY operations_user_lists.id;
 CREATE TABLE organizations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    name text DEFAULT ''::text NOT NULL,
+    CONSTRAINT check_d130d769e0 CHECK ((char_length(name) <= 255))
 );
 
 CREATE SEQUENCE organizations_id_seq
-    START WITH 1
+    START WITH 1000
     INCREMENT BY 1
-    NO MINVALUE
+    MINVALUE 1000
     NO MAXVALUE
     CACHE 1;
 
@@ -27046,6 +27060,9 @@ ALTER TABLE ONLY design_management_designs_versions
 ALTER TABLE ONLY design_management_repositories
     ADD CONSTRAINT design_management_repositories_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY design_management_repository_states
+    ADD CONSTRAINT design_management_repository_states_pkey PRIMARY KEY (design_management_repository_id);
+
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT design_management_versions_pkey PRIMARY KEY (id);
 
@@ -30560,6 +30577,14 @@ CREATE INDEX index_design_management_designs_versions_on_version_id ON design_ma
 
 CREATE UNIQUE INDEX index_design_management_repositories_on_project_id ON design_management_repositories USING btree (project_id);
 
+CREATE INDEX index_design_management_repository_states_failed_verification ON design_management_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_design_management_repository_states_needs_verification ON design_management_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_design_management_repository_states_on_verification_state ON design_management_repository_states USING btree (verification_state);
+
+CREATE INDEX index_design_management_repository_states_pending_verification ON design_management_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE INDEX index_design_management_versions_on_author_id ON design_management_versions USING btree (author_id) WHERE (author_id IS NOT NULL);
 
 CREATE INDEX index_design_management_versions_on_issue_id ON design_management_versions USING btree (issue_id);
@@ -33169,6 +33194,8 @@ CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_sett
 CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_events USING btree (system_note_metadata_id);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);
+
+CREATE UNIQUE INDEX unique_organizations_on_name_lower ON organizations USING btree (lower(name));
 
 CREATE UNIQUE INDEX unique_packages_project_id_and_name_and_version_when_debian ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 9) AND (status <> 4));
 
@@ -37020,6 +37047,9 @@ ALTER TABLE ONLY requirements_management_test_reports
 
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT fk_rails_d2711daad4 FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY design_management_repository_states
+    ADD CONSTRAINT fk_rails_d2a258cc5a FOREIGN KEY (design_management_repository_id) REFERENCES design_management_repositories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY web_hooks
     ADD CONSTRAINT fk_rails_d35697648e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

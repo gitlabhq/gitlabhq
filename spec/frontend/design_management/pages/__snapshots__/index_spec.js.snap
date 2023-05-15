@@ -9,7 +9,9 @@ exports[`Design management index page designs renders error 1`] = `
    
   <!---->
    
-  <div>
+  <div
+    class="gl-bg-gray-10 gl-border gl-border-t-0 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-5"
+  >
     <gl-alert-stub
       dismisslabel="Dismiss"
       primarybuttonlink=""
@@ -41,7 +43,9 @@ exports[`Design management index page designs renders loading icon 1`] = `
    
   <!---->
    
-  <div>
+  <div
+    class="gl-bg-gray-10 gl-border gl-border-t-0 gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-px-5"
+  >
     <gl-loading-icon-stub
       color="dark"
       label="Loading"
