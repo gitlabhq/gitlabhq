@@ -4,7 +4,7 @@
   %h4= s_('GroupSettings|Export group')
   %p= _('Export this group with all related data.')
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
-    = c.body do
+    - c.with_body do
       - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index', anchor: 'migrate-groups-by-direct-transfer-recommended') }
       - docs_link_end = '</a>'.html_safe
       = s_('GroupsNew|This feature is deprecated and replaced by group migration by direct transfer. %{docs_link_start}Learn more%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }
@@ -12,7 +12,7 @@
     - export_information = _('After the export is complete, download the data file from a notification email or from this page. You can then import the data file from the %{strong_text_start}Create new group%{strong_text_end} page of another GitLab instance.') % { strong_text_start: '<strong>'.html_safe, strong_text_end: '</strong>'.html_safe}
     = export_information.html_safe
   = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-    = c.body do
+    - c.with_body do
       %p.gl-mb-0
         %p= _('The following items will be exported:')
         %ul

@@ -2,7 +2,7 @@
 import { GlDisclosureDropdown, GlModal } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
-import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
+import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { ACTIONS_I18N } from '../constants';
 
@@ -126,6 +126,7 @@ export default {
         .catch(this.handleError);
     },
     handleRemoveReportResponse() {
+      // eslint-disable-next-line import/no-deprecated
       if (this.report.redirectPath) redirectTo(this.report.redirectPath);
       else refreshCurrentPage();
     },

@@ -5,7 +5,7 @@
 
 - if @teams_error_message
   = render Pajamas::AlertComponent.new(variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       = @teams_error_message
 
 %h3

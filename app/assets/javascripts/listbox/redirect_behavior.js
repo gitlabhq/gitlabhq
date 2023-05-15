@@ -1,5 +1,5 @@
 import { initListbox } from '~/listbox';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 
 /**
  * Instantiates GlCollapsibleListbox components with redirect behavior for tags created
@@ -15,7 +15,7 @@ export function initRedirectListboxBehavior() {
   return elements.map((el) =>
     initListbox(el, {
       onChange({ href }) {
-        redirectTo(href);
+        redirectTo(href); // eslint-disable-line import/no-deprecated
       },
     }),
   );

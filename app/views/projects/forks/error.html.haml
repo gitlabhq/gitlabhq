@@ -4,7 +4,7 @@
     variant: :danger,
     alert_options: { class: 'gl-mt-5' },
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       %p
         = _("You tried to fork %{link_to_the_project} but it failed for the following reason:").html_safe % { link_to_the_project: link_to_project(@project) }
 
@@ -17,5 +17,5 @@
           - else
             = error
 
-    = c.actions do
+    - c.with_actions do
       = link_to _('Try to fork again'), new_project_fork_path(@project), title: _("Fork"), class: "btn gl-alert-action btn-info btn-md gl-button"

@@ -4,7 +4,7 @@
       = render Pajamas::CheckboxTagComponent.new(name: dom_id(merge_request, "selected"),
         value: nil,
         checkbox_options: { 'data-id' => merge_request.id }) do |c|
-        = c.label do
+        - c.with_label do
           %span.gl-sr-only
             = merge_request.title
 

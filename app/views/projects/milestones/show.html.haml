@@ -16,7 +16,7 @@
   = render Pajamas::AlertComponent.new(dismissible: false,
                                        alert_options: { class: 'gl-mt-3 gl-mb-5',
                                                         data: { testid: 'no-issues-alert' }}) do |c|
-    = c.body do
+    - c.with_body do
       = _('Assign some issues to this milestone.')
 - else
   = render 'shared/milestones/milestone_complete_alert', milestone: @milestone do

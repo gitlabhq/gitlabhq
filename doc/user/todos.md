@@ -128,7 +128,7 @@ corresponding to-do item as done.
 
 To-do items are marked as done if you:
 
-- Add an award emoji to the description or comment.
+- Add an emoji reaction to the description or comment.
 - Add or remove a label.
 - Change the assignee.
 - Change the milestone.

@@ -23,7 +23,7 @@
     = render_if_exists 'admin/health_check/health_check_url'
 %hr
 = render Pajamas::CardComponent.new do |c|
-  = c.header do
+  - c.with_header do
     Current Status:
     - if no_errors
       = sprite_icon('check', css_class: 'cgreen')
@@ -31,7 +31,7 @@
     - else
       = sprite_icon('warning-solid', css_class: 'cred')
       #{ s_('HealthCheck|Unhealthy') }
-  = c.body do
+  - c.with_body do
     - if no_errors
       #{ s_('HealthCheck|No Health Problems Detected') }
     - else

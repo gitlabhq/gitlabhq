@@ -152,7 +152,8 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           {
             single_endpoint_issue_events_import: true,
             single_endpoint_notes_import: 'false',
-            attachments_import: false
+            attachments_import: false,
+            collaborators_import: true
           }
         end
 

@@ -73,12 +73,11 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
   end
 
   describe '#parallel_import', :clean_gitlab_redis_cache do
-    let(:page_struct) { Struct.new(:objects, :number, keyword_init: true) }
-
     before do
-      allow(client).to receive(:each_page)
-        .with(:collaborators, project.import_source, { page: 1 })
-        .and_yield(page_struct.new(number: 1, objects: [github_collaborator]))
+      allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'direct')
+        .and_return([github_collaborator])
+      allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'outside')
+        .and_return([])
     end
 
     it 'imports each collaborator in parallel' do
@@ -106,6 +105,44 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
 
         expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
         expect(waiter.jobs_remaining).to eq(0)
+      end
+    end
+  end
+
+  describe '#each_object_to_import', :clean_gitlab_redis_cache do
+    let(:github_collaborator_2) { { id: 100501, login: 'alice', role_name: 'owner' } }
+    let(:github_collaborator_3) { { id: 100502, login: 'tom', role_name: 'guest' } }
+
+    before do
+      allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'direct')
+        .and_return([github_collaborator, github_collaborator_2, github_collaborator_3])
+      allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'outside')
+        .and_return([github_collaborator_3])
+      allow(Gitlab::GithubImport::ObjectCounter).to receive(:increment)
+        .with(project, :collaborator, :fetched)
+    end
+
+    it 'yields every direct collaborator who is not an outside collaborator to the supplied block' do
+      expect { |b| importer.each_object_to_import(&b) }
+        .to yield_successive_args(github_collaborator, github_collaborator_2)
+
+      expect(Gitlab::GithubImport::ObjectCounter).to have_received(:increment).twice
+    end
+
+    context 'when a collaborator has been already imported' do
+      before do
+        allow(importer).to receive(:already_imported?).and_return(true)
+      end
+
+      it 'does not yield anything' do
+        expect(Gitlab::GithubImport::ObjectCounter)
+          .not_to receive(:increment)
+
+        expect(importer)
+          .not_to receive(:mark_as_imported)
+
+        expect { |b| importer.each_object_to_import(&b) }
+          .not_to yield_control
       end
     end
   end

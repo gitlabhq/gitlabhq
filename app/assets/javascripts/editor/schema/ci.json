@@ -1092,6 +1092,14 @@
             "on_failure",
             "always"
           ]
+        },
+        "fallback_keys": {
+          "type": "array",
+          "markdownDescription": "List of keys to download cache from if no cache hit occurred for key",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5
         }
       }
     },

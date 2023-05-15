@@ -233,8 +233,7 @@ release. There are three levels of Release Scoping labels:
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
 - `~"Next Patch Release"`: Issues to put in the next patch release. Work on these
-  first, and add the `~"Pick into X.Y"` label to the merge request, along with the
-  appropriate milestone.
+  first, and follow the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md) to backport the bug fix to the current version.
 
 Each issue scheduled for the current milestone should be labeled `~"Deliverable"~`
 or `~"Stretch"`. Any open issue for a previous milestone should be labeled

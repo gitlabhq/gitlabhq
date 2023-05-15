@@ -23,7 +23,6 @@ These features have been proposed:
 
 - Searching experiments.
 - Visual comparison of candidates.
-- Creating, deleting, and updating experiments through the GitLab UI.
 - Creating, deleting, and updating candidates through the GitLab UI.
 
 For feature requests, see [epic 9341](https://gitlab.com/groups/gitlab-org/-/epics/9341).
@@ -59,9 +58,9 @@ Some example parameters:
 ## Track new experiments and candidates
 
 Experiment and trials can only be tracked through the
-[MLFlow](https://www.mlflow.org/docs/latest/tracking.html) client integration.
-See [MLFlow client integration](../../integrations/mlflow_client.md) for more information
-on how to use GitLab as a backend for the MLFlow Client.
+[MLflow](https://www.mlflow.org/docs/latest/tracking.html) client integration.
+See [MLflow client integration](../../integrations/mlflow_client.md) for more information
+on how to use GitLab as a backend for the MLflow Client.
 
 ## Explore model candidates
 

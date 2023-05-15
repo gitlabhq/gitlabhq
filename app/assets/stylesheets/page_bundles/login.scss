@@ -96,11 +96,6 @@
     .login-body {
       font-size: 13px;
 
-      input + p,
-      input ~ p.field-validation {
-        margin-top: 5px;
-      }
-
       .username .validation-success {
         color: $green-600;
       }

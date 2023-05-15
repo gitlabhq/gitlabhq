@@ -28,7 +28,7 @@ module QA
           end
 
           base.view 'app/assets/javascripts/notes/components/discussion_filter.vue' do
-            element :discussion_preferences_dropdown, required: true
+            element :discussion_preferences_dropdown
             element :filter_menu_item
           end
 

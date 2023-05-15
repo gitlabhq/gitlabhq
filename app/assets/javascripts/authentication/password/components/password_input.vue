@@ -32,6 +32,11 @@ export default {
       required: false,
       default: '',
     },
+    testid: {
+      type: String,
+      required: false,
+      default: '',
+    },
     autocomplete: {
       type: String,
       required: false,
@@ -76,6 +81,7 @@ export default {
       :name="name"
       :minlength="minimumPasswordLength"
       :data-qa-selector="qaSelector"
+      :data-testid="testid"
       :title="title"
       :type="type"
     />

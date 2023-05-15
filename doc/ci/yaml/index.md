@@ -1480,6 +1480,33 @@ faster-test-job:
     - echo "Running tests..."
 ```
 
+#### `cache:fallback_keys`
+
+Use `cache:fallback_keys` to specify a list of keys to try to restore cache from
+if there is no cache found for the `cache:key`. Caches are retrieved in the order specified
+in the `fallback_keys` section.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- An array of cache keys
+
+**Example of `cache:fallback_keys`**:
+
+```yaml
+rspec:
+  script: rspec
+  cache:
+    key: gems-$CI_COMMIT_REF_SLUG
+    paths:
+      - rspec/
+    fallback_keys:
+      - gems
+    when: 'always'
+```
+
 ### `coverage`
 
 Use `coverage` with a custom regular expression to configure how code coverage

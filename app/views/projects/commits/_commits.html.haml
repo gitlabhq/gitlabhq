@@ -38,7 +38,7 @@
   %li
     = render Pajamas::AlertComponent.new(variant: :warning,
       dismissible: false) do |c|
-      = c.body do
+      - c.with_body do
         = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
 - if can_update_merge_request && context_commits&.empty? && !(defined?(@next_page) && @next_page)

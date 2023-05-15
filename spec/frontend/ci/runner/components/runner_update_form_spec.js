@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import {
   INSTANCE_TYPE,
@@ -86,7 +86,7 @@ describe('RunnerUpdateForm', () => {
         variant: VARIANT_SUCCESS,
       }),
     );
-    expect(redirectTo).toHaveBeenCalledWith(mockRunnerPath);
+    expect(redirectTo).toHaveBeenCalledWith(mockRunnerPath); // eslint-disable-line import/no-deprecated
   };
 
   beforeEach(() => {
@@ -278,7 +278,7 @@ describe('RunnerUpdateForm', () => {
 
       expect(captureException).not.toHaveBeenCalled();
       expect(saveAlertToLocalStorage).not.toHaveBeenCalled();
-      expect(redirectTo).not.toHaveBeenCalled();
+      expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
     });
   });
 });

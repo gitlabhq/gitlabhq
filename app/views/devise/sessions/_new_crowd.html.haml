@@ -4,7 +4,7 @@
     = text_field_tag :username, nil, { class: "form-control top", title: _("This field is required."), autofocus: "autofocus", required: true }
   .form-group.gl-px-5
     = label_tag :password
-    = password_field_tag :password, nil, { autocomplete: 'current-password', class: "form-control bottom", title: _("This field is required."), required: true }
+    = password_field_tag :password, nil, { class: 'form-control gl-form-input js-password', data: { id: 'password', name: 'password' } }
   - if remember_me_enabled?
     .remember-me.gl-px-5
       %label{ for: "remember_me" }

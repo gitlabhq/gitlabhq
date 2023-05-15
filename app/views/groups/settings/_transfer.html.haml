@@ -15,6 +15,6 @@
       %li= s_("GroupSettings|If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.")
     - if group.paid?
       = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-        = c.body do
+        - c.with_body do
           = html_escape(_("This group can't be transferred because it is linked to a subscription. To transfer this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
     .js-transfer-group-form{ data: initial_data }

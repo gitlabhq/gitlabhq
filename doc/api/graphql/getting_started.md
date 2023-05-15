@@ -183,7 +183,7 @@ Mutations generally use InputTypes and variables, neither of which appear here.
 
 Mutations have:
 
-- Inputs. For example, arguments, such as which emoji you'd like to award,
+- Inputs. For example, arguments, such as which emoji reaction you'd like to add,
   and to which object.
 - Return statements. That is, what you'd like to get back when it's successful.
 - Errors. Always ask for what went wrong, just in case.
@@ -299,7 +299,7 @@ mutation DisableCI_JOB_TOKENscope {
       inboundJobTokenScopeEnabled
       jobTokenScopeEnabled
     }
-    errors 
+    errors
   }
 }
 ```

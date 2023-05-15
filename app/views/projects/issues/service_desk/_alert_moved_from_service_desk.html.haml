@@ -4,5 +4,5 @@
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   alert_options: { class: 'hide js-alert-moved-from-service-desk-warning gl-mt-5' }) do |c|
-  = c.body do
+  - c.with_body do
     = s_('This project does not have %{service_desk_link_start}Service Desk%{service_desk_link_end} enabled, so the user who created the issue will no longer receive email notifications about new activity.').html_safe % { service_desk_link_start: service_desk_link_start, service_desk_link_end: '</a>'.html_safe }

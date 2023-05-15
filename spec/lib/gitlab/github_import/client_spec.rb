@@ -131,6 +131,16 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
     end
   end
 
+  describe '#collaborators' do
+    it 'returns the collaborators' do
+      expect(client)
+        .to receive(:each_object)
+          .with(:collaborators, 'foo/bar')
+
+      client.collaborators('foo/bar')
+    end
+  end
+
   describe '#branch_protection' do
     it 'returns the protection details for the given branch' do
       expect(client.octokit)

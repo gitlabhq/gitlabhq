@@ -323,7 +323,6 @@ module EE
       with_scope :subject
       condition(:ai_available) do
         ::Feature.enabled?(:openai_experimentation) &&
-          subject_container.root_ancestor.experiment_features_enabled &&
           @subject.send_to_ai?
       end
 
@@ -350,9 +349,32 @@ Some resources already implement `send_to_ai?`. Make sure yours does as well. In
 # ee/app/models/concerns/ee
 
 def send_to_ai?
-  !try(:confidential) && resource_parent.public? && resource_parent.third_party_ai_features_enabled
+  !try(:confidential) && resource_parent.public?
 end
 ```
+
+### Check if feature is allowed for this resource based on namespace settings
+
+There are two settings allowed on root namespace level that restrict the use of AI features:
+
+- `experiment_features_enabled`
+- `third_party_ai_features_enabled`.
+
+To check if that feature is allowed for a given namespace, call:
+
+```ruby
+Gitlab::Llm::StageCheck.available?(namespace, :name_of_the_feature)
+```
+
+Add the name of the feature to the `Gitlab::Llm::StageCheck` class. There are arrays there that differentiate
+between experimental and beta features.
+
+This way we are ready for the following different cases:
+
+- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA and does not use a third-party setting.
+- If feature is in GA, but uses a third-party setting, the class will return a proper answer based on the namespace third-party setting.
+
+To move the feature from the experimental phase to the beta phase, move the name of the feature from the `EXPERIMENTAL_FEATURES` array to the `BETA_FEATURES` array.
 
 ### Implement calls to AI APIs and the prompts
 

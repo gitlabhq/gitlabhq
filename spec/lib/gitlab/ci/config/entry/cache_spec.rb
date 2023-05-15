@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
       let(:key) { 'some key' }
       let(:when_config) { nil }
       let(:unprotect) { false }
+      let(:fallback_keys) { [] }
 
       let(:config) do
         {
@@ -27,13 +28,22 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
         }.tap do |config|
           config[:policy] = policy if policy
           config[:when] = when_config if when_config
+          config[:fallback_keys] = fallback_keys if fallback_keys
         end
       end
 
       describe '#value' do
         shared_examples 'hash key value' do
           it 'returns hash value' do
-            expect(entry.value).to eq(key: key, untracked: true, paths: ['some/path/'], policy: 'pull-push', when: 'on_success', unprotect: false)
+            expect(entry.value).to eq(
+              key: key,
+              untracked: true,
+              paths: ['some/path/'],
+              policy: 'pull-push',
+              when: 'on_success',
+              unprotect: false,
+              fallback_keys: []
+            )
           end
         end
 
@@ -102,6 +112,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
         context 'without `when`' do
           it 'assigns when to default' do
             expect(entry.value).to include(when: 'on_success')
+          end
+        end
+
+        context 'with `fallback_keys`' do
+          let(:fallback_keys) { %w[key-1 key-2] }
+
+          it 'matches the list of fallback keys' do
+            expect(entry.value).to match(a_hash_including(fallback_keys: %w[key-1 key-2]))
+          end
+        end
+
+        context 'without `fallback_keys`' do
+          it 'assigns an empty list' do
+            expect(entry.value).to match(a_hash_including(fallback_keys: []))
           end
         end
       end

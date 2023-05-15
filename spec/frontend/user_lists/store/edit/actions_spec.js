@@ -1,6 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import * as actions from '~/user_lists/store/edit/actions';
 import * as types from '~/user_lists/store/edit/mutation_types';
 import createState from '~/user_lists/store/edit/state';
@@ -89,7 +89,7 @@ describe('User Lists Edit Actions', () => {
             name: updatedList.name,
             iid: updatedList.iid,
           });
-          expect(redirectTo).toHaveBeenCalledWith(userList.path);
+          expect(redirectTo).toHaveBeenCalledWith(userList.path); // eslint-disable-line import/no-deprecated
         });
       });
     });

@@ -11,7 +11,7 @@
   = render Pajamas::AlertComponent.new(variant: :info,
       title: _('GitLab Pages has moved'),
       alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-    = c.body do
+    - c.with_body do
       = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deployments > Pages', project_pages_path(@project)).html_safe}
 
 %section.settings.general-settings.no-animate.expanded#js-general-settings
@@ -39,7 +39,7 @@
     = render Pajamas::AlertComponent.new(variant: :info,
         title: _('Merge requests and approvals settings have moved.'),
         alert_options: { class: 'js-merge-request-settings-callout gl-my-5', data: { feature_id: Users::CalloutsHelper::MERGE_REQUEST_SETTINGS_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-      = c.body do
+      - c.with_body do
         = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
 = render_if_exists 'projects/settings/analytics', expanded: expanded

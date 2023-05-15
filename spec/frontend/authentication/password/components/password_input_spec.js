@@ -10,6 +10,7 @@ describe('PasswordInput', () => {
     id: 'new_user_password',
     minimumPasswordLength: '8',
     qaSelector: 'new_user_password_field',
+    testid: 'new_user_password',
     autocomplete: 'new-password',
     name: 'new_user',
   };
@@ -33,6 +34,7 @@ describe('PasswordInput', () => {
     expect(findPasswordInput().attributes('name')).toBe(propsData.name);
     expect(findPasswordInput().attributes('minlength')).toBe(propsData.minimumPasswordLength);
     expect(findPasswordInput().attributes('data-qa-selector')).toBe(propsData.qaSelector);
+    expect(findPasswordInput().attributes('data-testid')).toBe(propsData.testid);
     expect(findPasswordInput().attributes('title')).toBe(propsData.title);
   });
 

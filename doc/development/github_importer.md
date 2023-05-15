@@ -72,8 +72,11 @@ This worker imports all pull requests. For every pull request a job for the
 
 ### 5. Stage::ImportCollaboratorsWorker
 
-This worker imports all repository collaborators. For every collaborator, we schedule a job
-for the `Gitlab::GithubImport::ImportCollaboratorWorker` worker.
+This worker imports only direct repository collaborators who are not outside collaborators.
+For every collaborator, we schedule a job for the `Gitlab::GithubImport::ImportCollaboratorWorker` worker.
+
+NOTE:
+This stage is optional (controlled by `Gitlab::GithubImport::Settings`) and is selected by default.
 
 ### 6. Stage::ImportPullRequestsMergedByWorker
 

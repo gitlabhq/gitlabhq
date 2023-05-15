@@ -1,6 +1,6 @@
 - if domain_presenter.errors.any?
   = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       - domain_presenter.errors.full_messages.each do |msg|
         = msg
 

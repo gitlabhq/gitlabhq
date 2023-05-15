@@ -328,7 +328,7 @@ describe('Snippet Edit app', () => {
       it('should redirect to snippet view on successful mutation', async () => {
         await createComponentAndSubmit();
 
-        expect(urlUtils.redirectTo).toHaveBeenCalledWith(TEST_WEB_URL);
+        expect(urlUtils.redirectTo).toHaveBeenCalledWith(TEST_WEB_URL); // eslint-disable-line import/no-deprecated
       });
 
       describe('when there are errors after creating a new snippet', () => {
@@ -349,7 +349,7 @@ describe('Snippet Edit app', () => {
 
           await waitForPromises();
 
-          expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+          expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
           expect(createAlert).toHaveBeenCalledWith({
             message: `Can't create snippet: ${TEST_MUTATION_ERROR}`,
           });
@@ -373,7 +373,7 @@ describe('Snippet Edit app', () => {
               },
             });
 
-            expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+            expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
             expect(createAlert).toHaveBeenCalledWith({
               message: `Can't update snippet: ${TEST_MUTATION_ERROR}`,
             });
@@ -391,7 +391,7 @@ describe('Snippet Edit app', () => {
         });
 
         it('should not redirect', () => {
-          expect(urlUtils.redirectTo).not.toHaveBeenCalled();
+          expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
         });
 
         it('should alert', () => {

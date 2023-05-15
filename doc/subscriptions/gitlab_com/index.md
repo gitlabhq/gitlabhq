@@ -335,7 +335,7 @@ expiration date without a gap in available service. Subscriptions purchased thro
 To view or change automatic subscription renewal (at the same tier as the
 previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
-- If a **Resume subscription** button is displayed, your subscription was canceled
+- If a **Turn on auto-renew** button is displayed, your subscription was canceled
   previously. Select it to resume automatic renewal.
 - If a **Cancel subscription** button is displayed, your subscription is set to automatically
   renew at the end of the subscription period. Select it to cancel automatic renewal.

@@ -5,7 +5,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
@@ -185,7 +185,7 @@ describe('GroupRunnerShowApp', () => {
           message: 'Runner deleted',
           variant: VARIANT_SUCCESS,
         });
-        expect(redirectTo).toHaveBeenCalledWith(mockRunnersPath);
+        expect(redirectTo).toHaveBeenCalledWith(mockRunnersPath); // eslint-disable-line import/no-deprecated
       });
     });
   });

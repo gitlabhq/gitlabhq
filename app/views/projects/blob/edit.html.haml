@@ -7,7 +7,7 @@
   = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5 gl-mt-5' },
     variant: :danger,
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       - blob_link_start = '<a href="%{url}" class="gl-link" target="_blank" rel="noopener noreferrer">'.html_safe
       - link_end = '</a>'.html_safe
       - external_link_icon = content_tag 'span', { aria: { label: _('Opens new window') }} do

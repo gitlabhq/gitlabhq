@@ -461,7 +461,7 @@ describe('ForkForm component', () => {
 
         await submitForm();
 
-        expect(urlUtility.redirectTo).not.toHaveBeenCalled();
+        expect(urlUtility.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
       });
 
       it('does not make POST request if no visibility is checked', async () => {
@@ -549,7 +549,7 @@ describe('ForkForm component', () => {
         setupComponent();
         await submitForm();
 
-        expect(urlUtility.redirectTo).toHaveBeenCalledWith(webUrl);
+        expect(urlUtility.redirectTo).toHaveBeenCalledWith(webUrl); // eslint-disable-line import/no-deprecated
       });
 
       it('displays an alert when POST is unsuccessful', async () => {
@@ -560,7 +560,7 @@ describe('ForkForm component', () => {
         setupComponent();
         await submitForm();
 
-        expect(urlUtility.redirectTo).not.toHaveBeenCalled();
+        expect(urlUtility.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred while forking the project. Please try again.',
         });

@@ -5,7 +5,7 @@ import {
   getParameterByName,
   setUrlParams,
   queryToObject,
-  redirectTo,
+  redirectTo, // eslint-disable-line import/no-deprecated
 } from '~/lib/utils/url_utility';
 import {
   SORT_QUERY_PARAM_NAME,
@@ -119,6 +119,7 @@ export default {
       const sortParamValue = getParameterByName(SORT_QUERY_PARAM_NAME);
       const activeTabParamValue = getParameterByName(ACTIVE_TAB_QUERY_PARAM_NAME);
 
+      // eslint-disable-next-line import/no-deprecated
       redirectTo(
         setUrlParams(
           {

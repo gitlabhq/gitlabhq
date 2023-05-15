@@ -4,7 +4,7 @@
 
 - if @error
   = render Pajamas::AlertComponent.new(variant: :danger, dismissible: true) do |c|
-    = c.body do
+    - c.with_body do
       = @error
 
 %h1.page-title.gl-font-size-h-display
@@ -38,4 +38,3 @@
       = s_('TagsPage|Create tag')
     = render Pajamas::ButtonComponent.new(href: project_tags_path(@project)) do
       = s_('TagsPage|Cancel')
-

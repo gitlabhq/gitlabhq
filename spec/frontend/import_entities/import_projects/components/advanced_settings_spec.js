@@ -5,8 +5,8 @@ import AdvancedSettingsPanel from '~/import_entities/import_projects/components/
 describe('Import Advanced Settings', () => {
   let wrapper;
   const OPTIONAL_STAGES = [
-    { name: 'stage1', label: 'Stage 1' },
-    { name: 'stage2', label: 'Stage 2', details: 'Extra details' },
+    { name: 'stage1', label: 'Stage 1', selected: false },
+    { name: 'stage2', label: 'Stage 2', details: 'Extra details', selected: false },
   ];
 
   const createComponent = () => {

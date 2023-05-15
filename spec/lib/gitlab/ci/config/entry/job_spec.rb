@@ -664,7 +664,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
       it 'overrides default config' do
         expect(entry[:image].value).to eq(name: 'some_image')
-        expect(entry[:cache].value).to eq([key: 'test', policy: 'pull-push', when: 'on_success', unprotect: false])
+        expect(entry[:cache].value).to match_array([
+          key: 'test',
+          policy: 'pull-push',
+          when: 'on_success',
+          unprotect: false,
+          fallback_keys: []
+        ])
       end
     end
 
@@ -679,7 +685,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
       it 'uses config from default entry' do
         expect(entry[:image].value).to eq 'specified'
-        expect(entry[:cache].value).to eq([key: 'test', policy: 'pull-push', when: 'on_success', unprotect: false])
+        expect(entry[:cache].value).to match_array([
+          key: 'test',
+          policy: 'pull-push',
+          when: 'on_success',
+          unprotect: false,
+          fallback_keys: []
+        ])
       end
     end
 

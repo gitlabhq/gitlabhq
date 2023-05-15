@@ -2,8 +2,6 @@
 
 module ErrorTracking
   class ListProjectsService < ErrorTracking::BaseService
-    MASKED_TOKEN_REGEX = /\A\*+\z/.freeze
-
     private
 
     def perform
@@ -46,7 +44,7 @@ module ErrorTracking
     end
 
     def masked_token?
-      MASKED_TOKEN_REGEX.match?(params[:token])
+      ErrorTracking::SentryClient::Token.masked_token?(params[:token])
     end
   end
 end

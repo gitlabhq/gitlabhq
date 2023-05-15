@@ -1,5 +1,5 @@
 <script>
-import { setUrlParams, redirectTo, queryToObject, updateHistory } from '~/lib/utils/url_utility';
+import { setUrlParams, redirectTo, queryToObject, updateHistory } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
@@ -80,12 +80,12 @@ export default {
         params = { ...params, sort };
       }
 
-      redirectTo(setUrlParams(params, window.location.href, true));
+      redirectTo(setUrlParams(params, window.location.href, true)); // eslint-disable-line import/no-deprecated
     },
     handleSort(sort) {
       const { page, ...query } = queryToObject(window.location.search);
 
-      redirectTo(setUrlParams({ ...query, sort }, window.location.href, true));
+      redirectTo(setUrlParams({ ...query, sort }, window.location.href, true)); // eslint-disable-line import/no-deprecated
     },
   },
   filteredSearchNamespace: 'abuse_reports',

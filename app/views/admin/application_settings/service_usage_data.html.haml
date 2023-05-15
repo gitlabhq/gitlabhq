@@ -22,7 +22,7 @@
       dismissible: false,
       title: _('Service Ping payload not found in the application cache')) do |c|
 
-      = c.body do
+      - c.with_body do
         - enable_service_ping_link_url = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'enable-or-disable-usage-statistics')
         - enable_service_ping_link = '<a href="%{url}">'.html_safe % { url: enable_service_ping_link_url }
         - generate_manually_link_url = help_page_path('development/service_ping/troubleshooting', anchor: 'generate-service-ping')

@@ -8,7 +8,7 @@
   = render Pajamas::AlertComponent.new(title: s_('ExternalIssueIntegration|Another issue tracker is already in use'),
     variant: :warning,
     dismissible: false) do |c|
-    = c.body do
+    - c.with_body do
       = s_('ExternalIssueIntegration|Only one issue tracker integration can be active at a time. Please disable the active tracker first and try again.')
 
 - if integration.to_param === 'slack'

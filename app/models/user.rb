@@ -1089,13 +1089,6 @@ class User < ApplicationRecord
     update(otp_backup_codes: nil)
   end
 
-  # Returns true if the user is allowed to sign in with either otp or recovery codes.
-  def sign_in_with_codes_allowed?
-    return two_factor_otp_enabled? unless Feature.enabled?(:webauthn_without_totp)
-
-    two_factor_enabled?
-  end
-
   def two_factor_enabled?
     two_factor_otp_enabled? || two_factor_webauthn_enabled?
   end

@@ -9,7 +9,7 @@ import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
 import { JOB_GRAPHQL_ERRORS } from '~/jobs/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
 import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
 import playJobMutation from '~/jobs/components/job/graphql/mutations/job_play_with_variables.mutation.graphql';
@@ -192,7 +192,7 @@ describe('Manual Variables Form', () => {
       await waitForPromises();
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-      expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath);
+      expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath); // eslint-disable-line import/no-deprecated
     });
   });
 
@@ -227,7 +227,7 @@ describe('Manual Variables Form', () => {
       await waitForPromises();
 
       expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledTimes(1);
-      expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath);
+      expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath); // eslint-disable-line import/no-deprecated
     });
   });
 

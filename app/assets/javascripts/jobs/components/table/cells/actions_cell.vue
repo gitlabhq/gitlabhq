@@ -8,7 +8,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import {
   ACTIONS_DOWNLOAD_ARTIFACTS,
   ACTIONS_START_NOW,
@@ -138,7 +138,7 @@ export default {
         } else if (redirect) {
           // Retry and Play actions redirect to job detail view
           // we don't need to refetch with jobActionPerformed event
-          redirectTo(job.detailedStatus.detailsPath);
+          redirectTo(job.detailedStatus.detailsPath); // eslint-disable-line import/no-deprecated
         } else {
           eventHub.$emit('jobActionPerformed');
         }

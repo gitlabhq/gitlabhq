@@ -240,7 +240,7 @@ export const REPO_GRAPH_SCROLL_BOTTOM = {
 export const GO_TO_PROJECT_OVERVIEW = {
   id: 'project.goToOverview',
   description: __("Go to the project's overview page"),
-  defaultKeys: ['g p'], // eslint-disable-line @gitlab/require-i18n-strings
+  defaultKeys: ['g o'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
 export const GO_TO_PROJECT_ACTIVITY_FEED = {
@@ -307,6 +307,12 @@ export const GO_TO_PROJECT_MERGE_REQUESTS = {
   id: 'project.goToMergeRequests',
   description: __('Go to merge requests'),
   defaultKeys: ['g m'], // eslint-disable-line @gitlab/require-i18n-strings
+};
+
+export const GO_TO_PROJECT_PIPELINES = {
+  id: 'project.goToPipelines',
+  description: __('Go to pipelines'),
+  defaultKeys: ['g p'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
 export const GO_TO_PROJECT_JOBS = {
@@ -598,6 +604,7 @@ const PROJECT_SHORTCUTS_GROUP = {
     NEW_ISSUE,
     GO_TO_PROJECT_ISSUE_BOARDS,
     GO_TO_PROJECT_MERGE_REQUESTS,
+    GO_TO_PROJECT_PIPELINES,
     GO_TO_PROJECT_JOBS,
     ...(gon.features?.removeMonitorMetrics ? [] : [GO_TO_PROJECT_METRICS]),
     GO_TO_PROJECT_ENVIRONMENTS,

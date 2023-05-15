@@ -1,6 +1,6 @@
 import { getTag } from '~/rest_api';
 import { createAlert } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
 import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
@@ -95,7 +95,7 @@ export const removeAssetLink = ({ commit }, linkIdToRemove) => {
 
 export const receiveSaveReleaseSuccess = ({ commit }, urlToRedirectTo) => {
   commit(types.RECEIVE_SAVE_RELEASE_SUCCESS);
-  redirectTo(urlToRedirectTo);
+  redirectTo(urlToRedirectTo); // eslint-disable-line import/no-deprecated
 };
 
 export const saveRelease = ({ commit, dispatch, state }) => {

@@ -394,9 +394,8 @@ as a reviewer, it is recommended that they are not also picked as the maintainer
 Maintainers should check before merging if the merge request is approved by the
 required approvers. If still awaiting further approvals from others, remove yourself as a reviewer then `@` mention the author and explain why in a comment. Stay as reviewer if you're merging the code.
 
-Note that certain merge requests may target a stable branch. These are rare
-events. These types of merge requests cannot be merged by the Maintainer.
-Instead, these should be sent to the [Release Manager](https://about.gitlab.com/community/release-managers/).
+Certain merge requests may target a stable branch. For an overview of how to handle these requests,
+see the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md).
 
 After merging, a maintainer should stay as the reviewer listed on the merge request.
 

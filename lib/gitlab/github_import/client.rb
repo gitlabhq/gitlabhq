@@ -112,6 +112,10 @@ module Gitlab
         each_object(:branches, *args)
       end
 
+      def collaborators(*args)
+        each_object(:collaborators, *args)
+      end
+
       def branch_protection(repo_name, branch_name)
         with_rate_limit { octokit.branch_protection(repo_name, branch_name).to_h }
       end

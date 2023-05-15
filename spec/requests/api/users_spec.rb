@@ -3558,7 +3558,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
               deactivate
 
               expect(response).to have_gitlab_http_status(:forbidden)
-              expect(json_response['message']).to eq("403 Forbidden - The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
+              expect(json_response['message']).to eq("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
               expect(user.reload.state).to eq('active')
             end
           end
@@ -3582,7 +3582,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - A blocked user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('Error occurred. A blocked user cannot be deactivated')
             expect(blocked_user.reload.state).to eq('blocked')
           end
         end
@@ -3596,7 +3596,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - A blocked user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('Error occurred. A blocked user cannot be deactivated')
             expect(user.reload.state).to eq('ldap_blocked')
           end
         end
@@ -3608,7 +3608,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
             deactivate
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(json_response['message']).to eq('403 Forbidden - An internal user cannot be deactivated by the API')
+            expect(json_response['message']).to eq('Internal users cannot be deactivated')
           end
         end
 

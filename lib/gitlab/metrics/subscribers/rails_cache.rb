@@ -13,7 +13,8 @@ module Gitlab
 
           return unless current_transaction
 
-          current_transaction.observe(:gitlab_cache_read_multikey_count, event.payload[:key].size) do
+          labels = { store: event.payload[:store].split('::').last }
+          current_transaction.observe(:gitlab_cache_read_multikey_count, event.payload[:key].size, labels) do
             buckets [10, 50, 100, 1000]
             docstring 'Number of keys for mget in read_multi/fetch_multi'
           end

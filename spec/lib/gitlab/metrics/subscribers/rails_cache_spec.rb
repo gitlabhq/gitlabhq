@@ -76,7 +76,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
 
       it 'observes multi-key count' do
         expect(transaction).to receive(:observe)
-                                 .with(:gitlab_cache_read_multikey_count, event.payload[:key].size)
+                                 .with(:gitlab_cache_read_multikey_count,
+                                   event.payload[:key].size,
+                                   { store: store_label })
 
         subject
       end

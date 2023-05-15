@@ -51,7 +51,7 @@ When deleting users, you can either:
   The user's personal projects are deleted, not moved to the Ghost User.
 - Delete the user and their contributions, including:
   - Abuse reports.
-  - Award emojis.
+  - Emoji reactions.
   - Epics.
   - Groups of which the user is the only user with the Owner role.
   - Issues.

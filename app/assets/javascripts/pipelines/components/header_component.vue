@@ -7,7 +7,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility';
+import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __ } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import {
@@ -233,7 +233,7 @@ export default {
           this.reportFailure(DELETE_FAILURE, errors);
           this.isDeleting = false;
         } else {
-          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
+          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success')); // eslint-disable-line import/no-deprecated
         }
       } catch {
         this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);

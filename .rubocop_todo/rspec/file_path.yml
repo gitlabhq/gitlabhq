@@ -12,6 +12,7 @@ RSpec/FilePath:
     - 'ee/spec/frontend/fixtures/analytics/value_streams_staging_stage.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams_test_stage.rb'
     - 'ee/spec/frontend/fixtures/dora/metrics.rb'
+    - 'ee/spec/helpers/merge_requests_helper_spec.rb'
     - 'ee/spec/models/merge_request/blocking_spec.rb'
     - 'ee/spec/requests/api/ci/runner/jobs_put_spec.rb'
     - 'ee/spec/requests/api/ci/runner/jobs_trace_spec.rb'

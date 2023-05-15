@@ -15,8 +15,10 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
+          return skip_to_next_stage(project) if import_settings(project).disabled?(:collaborators_import) ||
+            !has_push_access?(client, project.import_source)
+
           info(project.id, message: 'starting importer', importer: 'Importer::CollaboratorsImporter')
-          return skip_to_next_stage(project) unless has_push_access?(client, project.import_source)
 
           waiter = Importer::CollaboratorsImporter.new(project, client).execute
           project.import_state.refresh_jid_expiration

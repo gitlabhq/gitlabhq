@@ -1,6 +1,6 @@
 import { initListbox } from '~/listbox';
 import { initRedirectListboxBehavior } from '~/listbox/redirect_behavior';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { getFixture, setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/lib/utils/url_utility');
@@ -42,10 +42,10 @@ describe('initRedirectListboxBehavior', () => {
     const { onChange } = firstCallArgs[1];
     const mockItem = { href: '/foo' };
 
-    expect(redirectTo).not.toHaveBeenCalled();
+    expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
 
     onChange(mockItem);
 
-    expect(redirectTo).toHaveBeenCalledWith(mockItem.href);
+    expect(redirectTo).toHaveBeenCalledWith(mockItem.href); // eslint-disable-line import/no-deprecated
   });
 });

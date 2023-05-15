@@ -171,6 +171,21 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         expect(find_partitions(ci_model.table_name, conn: main_connection).size).to eq(0)
       end
     end
+
+    context 'when partition_manager_sync_partitions feature flag is disabled' do
+      before do
+        described_class.register_models(models)
+        stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'skips sync_partitions' do
+        expect(described_class::PartitionManager).not_to receive(:new)
+        expect(described_class).to receive(:sync_partitions)
+          .and_call_original
+
+        described_class.sync_partitions(models)
+      end
+    end
   end
 
   describe '.report_metrics' do

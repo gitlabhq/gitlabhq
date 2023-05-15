@@ -7,8 +7,8 @@
                              dismiss_endpoint: callouts_path,
                              defer_links: 'true' }},
     close_button_options: { data: { testid: 'close-security-newsletter-callout' }}) do |c|
-  = c.body do
+  - c.with_body do
     = s_('AdminArea|Sign up for the GitLab Security Newsletter to get notified for security updates.')
-  = c.actions do
+  - c.with_actions do
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: 'https://about.gitlab.com/company/preference-center/', target: '_blank', button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }) do
       = s_('AdminArea|Sign up for the GitLab newsletter')

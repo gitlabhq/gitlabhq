@@ -27,7 +27,7 @@
 
     #create-from-template-pane.tab-pane
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-my-5' }) do |c|
-        = c.body do
+        - c.with_body do
           %div
             - contributing_templates_url = 'https://gitlab.com/gitlab-org/project-templates/contributing'
             - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: contributing_templates_url }

@@ -2,7 +2,7 @@
   = render 'devise/shared/tab_single', tab_title: _('Two-Factor Authentication') if Feature.disabled?(:restyle_login_page, @project)
   .login-box.gl-p-5
     .login-body
-      - if @user.sign_in_with_codes_allowed?
+      - if @user.two_factor_enabled?
         = gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), method: :post, html: { class: "edit_user gl-show-field-errors js-2fa-form #{'hidden' if @user.two_factor_webauthn_enabled?}" }) do |f|
           - resource_params = params[resource_name].presence || params
           - if remember_me_enabled?

@@ -91,9 +91,36 @@ test-job:
 ```
 
 If multiple caches are combined with a fallback cache key,
-the fallback cache is fetched every time a cache is not found.
+the global fallback cache is fetched every time a cache is not found.
 
 ## Use a fallback cache key
+
+### Per-cache fallback keys
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
+
+Each cache entry supports up-to 5 fallback keys:
+
+```yaml
+test-job:
+  stage: build
+  cache:
+    - key: cache-$CI_COMMIT_REF_SLUG
+      fallback_keys:
+        - cache-$CI_DEFAULT_BRANCH
+        - cache-default
+      paths:
+        - vendor/ruby
+  script:
+    - bundle config set --local path 'vendor/ruby'
+    - bundle install
+    - yarn install --cache-folder .yarn-cache
+    - echo Run tests...
+```
+
+Fallback keys follows the same processing logic as `cache:key`, meaning that the fullname may include a `-$index` (based on cache clearance) and `-protected`/`-non_protected` (if cache separation enabled on protected branches) suffixes.
+
+### Global fallback key
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
 
@@ -119,6 +146,14 @@ job1:
     paths:
       - binaries/
 ```
+
+The order of caches extraction is:
+
+1. Retrieval attempt for `cache:key`
+1. Retrieval attemps for each entry in order in `fallback_keys`
+1. Retrieval attempt for the global fallback key in `CACHE_FALLBACK_KEY`
+
+The cache extraction process stops after the first successful cache is retrieved.
 
 ## Disable cache for specific jobs
 
@@ -623,10 +658,10 @@ job B:
 ```
 
 1. `job A` runs.
-1. `public/` is cached as cache.zip.
+1. `public/` is cached as `cache.zip`.
 1. `job B` runs.
 1. The previous cache, if any, is unzipped.
-1. `vendor/` is cached as cache.zip and overwrites the previous one.
+1. `vendor/` is cached as `cache.zip` and overwrites the previous one.
 1. The next time `job A` runs it uses the cache of `job B` which is different
    and thus isn't effective.
 

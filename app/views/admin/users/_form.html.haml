@@ -28,7 +28,7 @@
         .col-lg-8
           - if @user.new_record?
             = render Pajamas::AlertComponent.new(variant: :info, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-              = c.body do
+              - c.with_body do
                 = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
           - else
             .form-group.gl-form-group{ role: 'group' }

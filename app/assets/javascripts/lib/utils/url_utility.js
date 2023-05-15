@@ -272,6 +272,11 @@ export const setUrlFragment = (url, fragment) => {
   return `${rootUrl}#${encodedFragment}`;
 };
 
+/**
+ * Navigates to a URL
+ * @param {*} url - url to navigate to
+ * @param {*} external - if true, open a new page or tab
+ */
 export function visitUrl(url, external = false) {
   if (external) {
     // Simulate `target="_blank" rel="noopener noreferrer"`
@@ -284,6 +289,19 @@ export function visitUrl(url, external = false) {
   }
 }
 
+export function refreshCurrentPage() {
+  visitUrl(window.location.href);
+}
+
+/**
+ * Navigates to a URL
+ * @deprecated Use visitUrl from ~/lib/utils/url_utility.js instead
+ * @param {*} url
+ */
+export function redirectTo(url) {
+  return window.location.assign(url);
+}
+
 export function updateHistory({ state = {}, title = '', url, replace = false, win = window } = {}) {
   if (win.history) {
     if (replace) {
@@ -292,14 +310,6 @@ export function updateHistory({ state = {}, title = '', url, replace = false, wi
       win.history.pushState(state, title, url);
     }
   }
-}
-
-export function refreshCurrentPage() {
-  visitUrl(window.location.href);
-}
-
-export function redirectTo(url) {
-  return window.location.assign(url);
 }
 
 export const escapeFileUrl = (fileUrl) => encodeURIComponent(fileUrl).replace(/%2F/g, '/');

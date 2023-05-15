@@ -1870,7 +1870,8 @@ module Gitlab
               key: 'key',
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1895,7 +1896,8 @@ module Gitlab
               key: { files: ['file'] },
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1922,7 +1924,8 @@ module Gitlab
                 key: 'keya',
                 policy: 'pull-push',
                 when: 'on_success',
-                unprotect: false
+                unprotect: false,
+                fallback_keys: []
               },
               {
                 paths: ['logs/', 'binaries/'],
@@ -1930,7 +1933,8 @@ module Gitlab
                 key: 'key',
                 policy: 'pull-push',
                 when: 'on_success',
-                unprotect: false
+                unprotect: false,
+                fallback_keys: []
               }
             ]
           )
@@ -1958,7 +1962,8 @@ module Gitlab
               key: { files: ['file'] },
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -1984,7 +1989,8 @@ module Gitlab
               key: { files: ['file'], prefix: 'prefix' },
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
 
@@ -2008,7 +2014,8 @@ module Gitlab
               key: 'local',
               policy: 'pull-push',
               when: 'on_success',
-              unprotect: false
+              unprotect: false,
+              fallback_keys: []
             ])
         end
       end

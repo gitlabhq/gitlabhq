@@ -29,7 +29,7 @@ If you have questions about the patch release process, please:
 * Ask questions on the [`#releases`] Slack channel (internal only).
 
 [severity label]: https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity
-[patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/process_new.md
+[patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md
 [`#releases`]: https://gitlab.slack.com/archives/C0XM5UU6B
 
 /assign me

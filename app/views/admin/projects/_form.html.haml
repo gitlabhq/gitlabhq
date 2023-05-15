@@ -1,10 +1,10 @@
 = gitlab_ui_form_for [:admin, @project] do |f|
   = form_errors(@project)
   = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-3 gl-mb-6' }) do |c|
-    = c.title { _('Naming') }
-    = c.description do
+    - c.with_title { _('Naming') }
+    - c.with_description do
       = _('Update your project name and description.')
-    = c.body do
+    - c.with_body do
       .form-group.gl-form-group
         = f.label :name, _('Project name')
         = f.text_field :name, class: 'form-control gl-form-input gl-md-form-input-md'
@@ -18,10 +18,10 @@
         = f.text_area :description, class: 'form-control gl-form-input gl-form-textarea gl-lg-form-input-xl', rows: 5
 
   = render ::Layouts::HorizontalSectionComponent.new(options: { class: 'gl-pb-3 gl-mb-6' }) do |c|
-    = c.title { _('Permissions and project features') }
-    = c.description do
+    - c.with_title { _('Permissions and project features') }
+    - c.with_description do
       = _('Configure advanced permissions')
-    = c.body do
+    - c.with_body do
       - if @project.project_setting.present?
         .form-group.gl-form-group
           %legend.col-form-label.col-form-label

@@ -70,6 +70,9 @@ export default {
         timeoutSource: this.job.metadata.timeout_source,
       });
     },
+    runnerAdminPath() {
+      return this.job?.runner?.admin_path || '';
+    },
   },
   i18n: {
     COVERAGE: __('Coverage'),
@@ -104,7 +107,12 @@ export default {
       data-testid="job-timeout"
       :title="$options.i18n.TIMEOUT"
     />
-    <detail-row v-if="job.runner" :value="runnerId" :title="$options.i18n.RUNNER" />
+    <detail-row
+      v-if="job.runner"
+      :value="runnerId"
+      :title="$options.i18n.RUNNER"
+      :path="runnerAdminPath"
+    />
     <detail-row v-if="job.coverage" :value="coverage" :title="$options.i18n.COVERAGE" />
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">

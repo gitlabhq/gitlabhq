@@ -23,7 +23,7 @@
               = render Pajamas::AlertComponent.new(variant: :danger,
                 dismissible: false,
                 title: project.full_name) do |c|
-                = c.actions do
+                - c.with_actions do
                   = render Pajamas::ButtonComponent.new(variant: :confirm, href: admin_namespace_project_runner_project_path(project.namespace, project, runner_project), method: :delete) do
                     = _('Disable')
 

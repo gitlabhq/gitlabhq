@@ -5,7 +5,7 @@ import PipelineWizard from '~/pipeline_wizard/pipeline_wizard.vue';
 import PagesWizardTemplate from '~/pipeline_wizard/templates/pages.yml?raw';
 import { logError } from '~/lib/logger';
 import { s__ } from '~/locale';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import pagesMarkOnboardingComplete from '../queries/mark_onboarding_complete.graphql';
 
 export const i18n = {
@@ -57,7 +57,7 @@ export default {
     async onDone() {
       this.loading = true;
       await this.updateOnboardingState();
-      redirectTo(this.redirectToWhenDone);
+      redirectTo(this.redirectToWhenDone); // eslint-disable-line import/no-deprecated
     },
   },
 };

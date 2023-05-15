@@ -25,7 +25,8 @@ module Ci
       refspecs: -> (build) { build.merge_request_ref? },
       artifacts_exclude: -> (build) { build.supports_artifacts_exclude? },
       multi_build_steps: -> (build) { build.multi_build_steps? },
-      return_exit_code: -> (build) { build.exit_codes_defined? }
+      return_exit_code: -> (build) { build.exit_codes_defined? },
+      fallback_cache_keys: -> (build) { build.fallback_cache_keys_defined? }
     }.freeze
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
@@ -919,9 +920,15 @@ module Ci
     def cache
       cache = Array.wrap(options[:cache])
 
+      cache.each do |single_cache|
+        single_cache[:fallback_keys] = [] unless single_cache.key?(:fallback_keys)
+      end
+
       if project.jobs_cache_index
         cache = cache.map do |single_cache|
-          single_cache.merge(key: "#{single_cache[:key]}-#{project.jobs_cache_index}")
+          cache = single_cache.merge(key: "#{single_cache[:key]}-#{project.jobs_cache_index}")
+          fallback = cache.slice(:fallback_keys).transform_values { |keys| keys.map { |key| "#{key}-#{project.jobs_cache_index}" } }
+          cache.merge(fallback.compact)
         end
       end
 
@@ -930,8 +937,14 @@ module Ci
       cache.map do |entry|
         type_suffix = !entry[:unprotect] && pipeline.protected_ref? ? 'protected' : 'non_protected'
 
-        entry.merge(key: "#{entry[:key]}-#{type_suffix}")
+        cache = entry.merge(key: "#{entry[:key]}-#{type_suffix}")
+        fallback = cache.slice(:fallback_keys).transform_values { |keys| keys.map { |key| "#{key}-#{type_suffix}" } }
+        cache.merge(fallback.compact)
       end
+    end
+
+    def fallback_cache_keys_defined?
+      Array.wrap(options[:cache]).any? { |cache| cache[:fallback_keys].present? }
     end
 
     def credentials

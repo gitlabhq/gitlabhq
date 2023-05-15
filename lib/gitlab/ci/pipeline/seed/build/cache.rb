@@ -16,6 +16,7 @@ module Gitlab
               @when = local_cache.delete(:when)
               @unprotect = local_cache.delete(:unprotect)
               @custom_key_prefix = custom_key_prefix
+              @fallback_keys = local_cache.delete(:fallback_keys)
 
               raise ArgumentError, "unknown cache keys: #{local_cache.keys}" if local_cache.any?
             end
@@ -27,7 +28,8 @@ module Gitlab
                 policy: @policy,
                 untracked: @untracked,
                 when: @when,
-                unprotect: @unprotect
+                unprotect: @unprotect,
+                fallback_keys: @fallback_keys
               }.compact
             end
 

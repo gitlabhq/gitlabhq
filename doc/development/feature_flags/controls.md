@@ -410,8 +410,8 @@ take one of the following actions:
 To remove a feature flag, open **one merge request** to make the changes. In the MR:
 
 1. Add the ~"feature flag" label so release managers are aware of the removal.
-1. If the merge request has to be picked into a stable branch, add the
-   appropriate `~"Pick into X.Y"` label, for example `~"Pick into 13.0"`.
+1. If the merge request has to be backported into the current version, follow the
+   [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md) process.
    See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)
    for further details.
 1. Remove all references to the feature flag from the codebase, including tests.

@@ -2,10 +2,10 @@
   %legend.col-form-label.col-form-label
     = _('Large File Storage')
   = f.gitlab_ui_checkbox_component :lfs_enabled, checkbox_options: { checked: @group.lfs_enabled? } do |c|
-    = c.label do
+    - c.with_label do
       = _('Projects in this group can use Git LFS')
       = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index'), class: 'gl-ml-2'
-    = c.help_text do
+    - c.with_help_text do
       = _('This setting can be overridden in each project.')
 .form-group.gl-form-group{ role: 'group' }
   = f.label s_('ProjectCreationLevel|Allowed to create projects'), class: 'gl-display-block col-form-label'

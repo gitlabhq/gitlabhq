@@ -8,7 +8,7 @@
     = text_field_tag :username, nil, { class: "form-control gl-form-input top", title: _("This field is required."), autofocus: "autofocus", data: { qa_selector: 'username_field' }, required: true }
   .form-group.gl-px-5
     = label_tag :password
-    = password_field_tag :password, nil, { autocomplete: 'current-password', class: "form-control gl-form-input bottom", title: _("This field is required."), data: { qa_selector: 'password_field' }, required: true }
+    = password_field_tag :password, nil, { class: 'form-control gl-form-input js-password', data: { id: 'password', name: 'password', qa_selector: 'password_field' } }
   - if render_remember_me
     .gl-px-5
       = render Pajamas::CheckboxTagComponent.new(name: 'remember_me') do |c|

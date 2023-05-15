@@ -140,6 +140,9 @@ You can choose to import these items, but this could significantly increase impo
 - **Import issue and pull request events**.
 - **Use alternative comments import method**.
 - **Import Markdown attachments**.
+- **Import collaborators** (selected by default). Leaving it selected might result in new users using a seat in the group or namespace,
+  and being granted permissions [as high as project owner](#collaborators-members). Only direct collaborators are imported.
+  Outside collaborators are never imported.
 
 ### Select which repositories to import
 
@@ -209,7 +212,8 @@ The following items of a project are imported:
 - Repository description.
 - Git repository data.
 - Branch protection rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22650) in GitLab 15.4.
-- Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
+- Collaborators (members). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10. From GitLab 16.0, can
+  be imported [as an additional item](#select-additional-items-to-import).
 - Issues.
 - Pull requests.
 - Wiki pages.

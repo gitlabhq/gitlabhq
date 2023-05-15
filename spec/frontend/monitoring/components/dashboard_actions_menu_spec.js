@@ -2,7 +2,7 @@ import { GlDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CustomMetricsFormFields from '~/custom_metrics/components/custom_metrics_form_fields.vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
 import { DASHBOARD_PAGE, PANEL_NEW_PAGE } from '~/monitoring/router/constants';
 import { createStore } from '~/monitoring/stores';
@@ -292,8 +292,8 @@ describe('Actions menu', () => {
         findDuplicateDashboardModal().vm.$emit('dashboardDuplicated', newDashboard);
 
         await nextTick();
-        expect(redirectTo).toHaveBeenCalled();
-        expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl);
+        expect(redirectTo).toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+        expect(redirectTo).toHaveBeenCalledWith(newDashboardUrl); // eslint-disable-line import/no-deprecated
       });
     });
   });

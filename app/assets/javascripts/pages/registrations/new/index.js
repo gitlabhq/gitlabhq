@@ -5,7 +5,7 @@ import LengthValidator from '~/validators/length_validator';
 import UsernameValidator from '~/pages/sessions/new/username_validator';
 import EmailFormatValidator from '~/pages/sessions/new/email_format_validator';
 import { initLanguageSwitcher } from '~/language_switcher';
-import { initTogglePasswordVisibility } from '~/authentication/password';
+import { initPasswordInput } from '~/authentication/password';
 import Tracking from '~/tracking';
 
 new UsernameValidator(); // eslint-disable-line no-new
@@ -20,4 +20,4 @@ Tracking.enableFormTracking({
 });
 
 initLanguageSwitcher();
-initTogglePasswordVisibility();
+initPasswordInput();

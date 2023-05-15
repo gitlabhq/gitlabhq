@@ -3,14 +3,14 @@
 - @force_desktop_expanded_sidebar = true
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-3 js-search-settings-section' }, header_options: { class: 'gl-display-flex' }, body_options: { class: 'gl-py-0' }) do |c|
-  - c.header do
+  - c.with_header do
     .gl-flex-grow-1
       = html_escape(_("%{strong_open}%{group_name}%{strong_close} projects:")) % { strong_open: '<strong>'.html_safe, group_name: @group.name, strong_close: '</strong>'.html_safe }
     - if can? current_user, :admin_group, @group
       .controls
         = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), size: :small, variant: :confirm) do
           = _("New project")
-  - c.body do
+  - c.with_body do
     %ul.content-list
       - @projects.each_with_index do |project, idx|
         %li.project-row.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'project_row_container', qa_index: idx } }

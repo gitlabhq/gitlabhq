@@ -103,6 +103,8 @@ To turn off Admin Mode for your current session, on the top bar, select **Main m
 
 ### Limitations of Admin Mode
 
+Admin Mode times out after six hours, and you cannot change this timeout limit.
+
 The following access methods are **not** protected by Admin Mode:
 
 - Git client access (SSH using public keys or HTTPS using Personal Access Tokens).

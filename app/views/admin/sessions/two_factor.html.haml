@@ -9,7 +9,7 @@
         .tab-content
           .login-box.tab-pane.gl-p-5.active{ id: 'login-pane', role: 'tabpanel' }
             .login-body
-              - if current_user.sign_in_with_codes_allowed?
+              - if current_user.two_factor_enabled?
                 = render 'admin/sessions/two_factor_otp'
               - if current_user.two_factor_webauthn_enabled?
                 = render 'authentication/authenticate', render_remember_me: false, target_path: admin_session_path

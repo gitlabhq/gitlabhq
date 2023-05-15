@@ -758,16 +758,11 @@ module API
 
         break if user.deactivated?
 
-        unless user.can_be_deactivated?
-          forbidden!('A blocked user cannot be deactivated by the API') if user.blocked?
-          forbidden!('An internal user cannot be deactivated by the API') if user.internal?
-          forbidden!("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
-        end
-
-        if user.deactivate
+        result = ::Users::DeactivateService.new(current_user, skip_authorization: true).execute(user)
+        if result[:status] == :success
           true
         else
-          render_api_error!(user.errors.full_messages, 400)
+          render_api_error!(result[:message], result[:reason] || :bad_request)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

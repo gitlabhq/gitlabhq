@@ -7,7 +7,7 @@ import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import BroadcastMessagesBase from '~/admin/broadcast_messages/components/base.vue';
 import MessagesTable from '~/admin/broadcast_messages/components/messages_table.vue';
 import { generateMockMessages, MOCK_MESSAGES } from '../mock_data';
@@ -107,6 +107,6 @@ describe('BroadcastMessagesBase', () => {
     findTable().vm.$emit('delete-message', id);
     await waitForPromises();
 
-    expect(redirectTo).toHaveBeenCalledWith(`${TEST_HOST}/admin/broadcast_messages?page=1`);
+    expect(redirectTo).toHaveBeenCalledWith(`${TEST_HOST}/admin/broadcast_messages?page=1`); // eslint-disable-line import/no-deprecated
   });
 });

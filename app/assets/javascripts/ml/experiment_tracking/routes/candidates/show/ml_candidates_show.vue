@@ -1,7 +1,8 @@
 <script>
-import { GlLink } from '@gitlab/ui';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
+import DetailRow from './components/candidate_detail_row.vue';
+
 import {
   TITLE_LABEL,
   INFO_LABEL,
@@ -23,7 +24,7 @@ export default {
   components: {
     ModelExperimentsHeader,
     DeleteButton,
-    GlLink,
+    DetailRow,
   },
   props: {
     candidate: {
@@ -38,27 +39,27 @@ export default {
     STATUS_LABEL,
     EXPERIMENT_LABEL,
     ARTIFACTS_LABEL,
-    PARAMETERS_LABEL,
-    METRICS_LABEL,
-    METADATA_LABEL,
     DELETE_CANDIDATE_CONFIRMATION_MESSAGE,
     DELETE_CANDIDATE_PRIMARY_ACTION_LABEL,
     DELETE_CANDIDATE_MODAL_TITLE,
     MLFLOW_ID_LABEL,
   },
   computed: {
+    info() {
+      return Object.freeze(this.candidate.info);
+    },
     sections() {
       return [
         {
-          sectionName: this.$options.i18n.PARAMETERS_LABEL,
+          sectionName: PARAMETERS_LABEL,
           sectionValues: this.candidate.params,
         },
         {
-          sectionName: this.$options.i18n.METRICS_LABEL,
+          sectionName: METRICS_LABEL,
           sectionValues: this.candidate.metrics,
         },
         {
-          sectionName: this.$options.i18n.METADATA_LABEL,
+          sectionName: METADATA_LABEL,
           sectionValues: this.candidate.metadata,
         },
       ];
@@ -71,7 +72,7 @@ export default {
   <div>
     <model-experiments-header :page-title="$options.i18n.TITLE_LABEL">
       <delete-button
-        :delete-path="candidate.info.path"
+        :delete-path="info.path"
         :delete-confirmation-text="$options.i18n.DELETE_CANDIDATE_CONFIRMATION_MESSAGE"
         :action-primary-text="$options.i18n.DELETE_CANDIDATE_PRIMARY_ACTION_LABEL"
         :modal-title="$options.i18n.DELETE_CANDIDATE_MODAL_TITLE"
@@ -82,55 +83,39 @@ export default {
       <tbody>
         <tr class="divider"></tr>
 
-        <tr>
-          <td class="gl-text-secondary gl-font-weight-bold">{{ $options.i18n.INFO_LABEL }}</td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.ID_LABEL }}</td>
-          <td>{{ candidate.info.iid }}</td>
-        </tr>
+        <detail-row
+          :label="$options.i18n.ID_LABEL"
+          :section-label="$options.i18n.INFO_LABEL"
+          :text="info.iid"
+        />
 
-        <tr>
-          <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}</td>
-          <td>{{ candidate.info.eid }}</td>
-        </tr>
+        <detail-row :label="$options.i18n.MLFLOW_ID_LABEL" :text="info.eid" />
 
-        <tr>
-          <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.STATUS_LABEL }}</td>
-          <td>{{ candidate.info.status }}</td>
-        </tr>
+        <detail-row :label="$options.i18n.STATUS_LABEL" :text="info.status" />
 
-        <tr>
-          <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.EXPERIMENT_LABEL }}</td>
-          <td>
-            <gl-link :href="candidate.info.path_to_experiment">{{
-              candidate.info.experiment_name
-            }}</gl-link>
-          </td>
-        </tr>
+        <detail-row
+          :label="$options.i18n.EXPERIMENT_LABEL"
+          :text="info.experiment_name"
+          :href="info.path_to_experiment"
+        />
 
-        <tr v-if="candidate.info.path_to_artifact">
-          <td></td>
-          <td class="gl-font-weight-bold">{{ $options.i18n.ARTIFACTS_LABEL }}</td>
-          <td>
-            <gl-link :href="candidate.info.path_to_artifact">{{
-              $options.i18n.ARTIFACTS_LABEL
-            }}</gl-link>
-          </td>
-        </tr>
+        <detail-row
+          v-if="info.path_to_artifact"
+          :label="$options.i18n.ARTIFACTS_LABEL"
+          :href="info.path_to_artifact"
+          :text="$options.i18n.ARTIFACTS_LABEL"
+        />
 
         <template v-for="{ sectionName, sectionValues } in sections">
-          <tr :key="sectionName" class="divider"></tr>
+          <tr v-if="sectionValues" :key="sectionName" class="divider"></tr>
 
-          <tr v-for="(item, index) in sectionValues" :key="item.name">
-            <td v-if="index === 0" class="gl-text-secondary gl-font-weight-bold">
-              {{ sectionName }}
-            </td>
-            <td v-else></td>
-            <td class="gl-font-weight-bold">{{ item.name }}</td>
-            <td>{{ item.value }}</td>
-          </tr>
+          <detail-row
+            v-for="(item, index) in sectionValues"
+            :key="item.name"
+            :label="item.name"
+            :section-label="index === 0 ? sectionName : ''"
+            :text="item.value"
+          />
         </template>
       </tbody>
     </table>

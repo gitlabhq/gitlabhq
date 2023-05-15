@@ -128,7 +128,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                 services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                 stage: 'test',
                 cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success',
-                          unprotect: false }],
+                          unprotect: false, fallback_keys: [] }],
                 job_variables: {},
                 root_variables_inheritance: true,
                 ignore: false,
@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                 services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                 stage: 'test',
                 cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success',
-                          unprotect: false }],
+                          unprotect: false, fallback_keys: [] }],
                 job_variables: {},
                 root_variables_inheritance: true,
                 ignore: false,
@@ -161,7 +161,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                 image: { name: "image:1.0" },
                 services: [{ name: "postgres:9.1" }, { name: "mysql:5.5" }],
                 cache: [{ key: "k", untracked: true, paths: ["public/"], policy: "pull-push", when: 'on_success',
-                          unprotect: false }],
+                          unprotect: false, fallback_keys: [] }],
                 only: { refs: %w(branches tags) },
                 job_variables: { 'VAR' => { value: 'job' } },
                 root_variables_inheritance: true,
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                        image: { name: 'image:1.0' },
                        services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                        stage: 'test',
-                       cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success', unprotect: false }],
+                       cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success', unprotect: false, fallback_keys: [] }],
                        job_variables: {},
                        root_variables_inheritance: true,
                        ignore: false,
@@ -222,7 +222,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          image: { name: 'image:1.0' },
                          services: [{ name: 'postgres:9.1' }, { name: 'mysql:5.5' }],
                          stage: 'test',
-                         cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success', unprotect: false }],
+                         cache: [{ key: 'k', untracked: true, paths: ['public/'], policy: 'pull-push', when: 'on_success', unprotect: false, fallback_keys: [] }],
                          job_variables: { 'VAR' => { value: 'job' } },
                          root_variables_inheritance: true,
                          ignore: false,
@@ -277,7 +277,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
 
       describe '#cache_value' do
         it 'returns correct cache definition' do
-          expect(root.cache_value).to eq([key: 'a', policy: 'pull-push', when: 'on_success', unprotect: false])
+          expect(root.cache_value).to match_array([
+            key: 'a',
+            policy: 'pull-push',
+            when: 'on_success',
+            unprotect: false,
+            fallback_keys: []
+          ])
         end
       end
     end

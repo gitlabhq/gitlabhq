@@ -13,7 +13,7 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import PipelineNewForm, {
   POLLING_INTERVAL,
 } from '~/ci/pipeline_new/components/pipeline_new_form.vue';
@@ -212,7 +212,7 @@ describe('Pipeline New Form', () => {
       await waitForPromises();
 
       expect(getFormPostParams().ref).toEqual(`refs/heads/${defaultBranch}`);
-      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${newPipelinePostResponse.id}`);
+      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${newPipelinePostResponse.id}`); // eslint-disable-line import/no-deprecated
     });
 
     it('creates a pipeline with short ref and variables from the query params', async () => {
@@ -225,7 +225,7 @@ describe('Pipeline New Form', () => {
       await waitForPromises();
 
       expect(getFormPostParams()).toEqual(mockPostParams);
-      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${newPipelinePostResponse.id}`);
+      expect(redirectTo).toHaveBeenCalledWith(`${pipelinesPath}/${newPipelinePostResponse.id}`); // eslint-disable-line import/no-deprecated
     });
   });
 

@@ -230,11 +230,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           let(:expected_cache) do
-            [{ 'key' => a_string_matching(/^cache_key-(?>protected|non_protected)$/),
-               'untracked' => false,
-               'paths' => ['vendor/*'],
-               'policy' => 'pull-push',
-               'when' => 'on_success' }]
+            [{
+              'key' => a_string_matching(/^cache_key-(?>protected|non_protected)$/),
+              'untracked' => false,
+              'paths' => ['vendor/*'],
+              'policy' => 'pull-push',
+              'when' => 'on_success',
+              'fallback_keys' => []
+            }]
           end
 
           let(:expected_features) do

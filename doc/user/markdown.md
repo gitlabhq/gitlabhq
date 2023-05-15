@@ -266,7 +266,7 @@ this font installed by default.
 
 <!-- vale gitlab.Spelling = YES -->
 
-To learn more about adding custom emojis, see [Custom emoji](award_emojis.md#custom-emojis).
+To learn more about adding custom emojis, see [Custom emojis](award_emojis.md#custom-emojis).
 
 ### Front matter
 

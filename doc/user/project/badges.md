@@ -107,7 +107,7 @@ If there is no release, it shows `none`.
 You can access a latest release badge image by using the following link:
 
 ```plaintext
-https://gitlab.example.com/<namespace>/<project>/badges/<branch>/release.svg
+https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg
 ```
 
 By default, the badge fetches the release sorted using the [`released_at`](../../api/releases/index.md#create-a-release)

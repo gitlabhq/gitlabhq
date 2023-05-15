@@ -5,10 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Merge when pipeline succeeds **(FREE)**
+# Auto-merge **(FREE)**
+
+> **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 
 NOTE:
-[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** buttons become **Set to auto-merge**.
+[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** become **Set to auto-merge**.
 
 If you review a merge request and it's ready to merge, but the pipeline hasn't
 completed yet, you can set it to merge when the pipeline succeeds (MWPS). You don't

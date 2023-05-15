@@ -11,7 +11,7 @@
       = render Pajamas::AlertComponent.new(variant: :tip,
         alert_options: { class: 'gl-my-3' },
         dismissible: false) do |c|
-        = c.body do
+        - c.with_body do
           - docs_link_url = help_page_path('user/group/import/index') + '#migrate-groups-by-direct-transfer-recommended'
           - docs_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
           = html_escape(_("Importing GitLab projects? Migrating GitLab projects when migrating groups by direct transfer is in Beta. %{link_start}Learn more.%{link_end}")) % { link_start: docs_link, link_end: '</a>'.html_safe }

@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import DeleteMilestoneModal from '~/milestones/components/delete_milestone_modal.vue';
 import eventHub from '~/milestones/event_hub';
 import { HTTP_STATUS_IM_A_TEAPOT, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { createAlert } from '~/alert';
 
 jest.mock('~/lib/utils/url_utility');
@@ -60,7 +60,7 @@ describe('Delete milestone modal', () => {
         });
       });
       await findModal().vm.$emit('primary');
-      expect(redirectTo).toHaveBeenCalledWith(responseURL);
+      expect(redirectTo).toHaveBeenCalledWith(responseURL); // eslint-disable-line import/no-deprecated
       expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
         milestoneUrl: mockProps.milestoneUrl,
         successful: true,
@@ -90,7 +90,7 @@ describe('Delete milestone modal', () => {
         expect(createAlert).toHaveBeenCalledWith({
           message: alertMessage,
         });
-        expect(redirectTo).not.toHaveBeenCalled();
+        expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
         expect(eventHub.$emit).toHaveBeenCalledWith('deleteMilestoneModal.requestFinished', {
           milestoneUrl: mockProps.milestoneUrl,
           successful: false,

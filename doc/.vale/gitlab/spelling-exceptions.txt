@@ -585,7 +585,7 @@ mitigations
 mitmproxy
 mixin
 mixins
-MLFlow
+MLflow
 Mmap
 mockup
 mockups

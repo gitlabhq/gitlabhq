@@ -16,7 +16,7 @@ import {
   WINDOWS_PLATFORM,
 } from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { runnerCreateResult } from '../mock_data';
 
 const mockGroupId = 'gid://gitlab/Group/72';
@@ -92,7 +92,7 @@ describe('GroupRunnerRunnerApp', () => {
       it('redirects to the registration page', () => {
         const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
 
-        expect(redirectTo).toHaveBeenCalledWith(url);
+        expect(redirectTo).toHaveBeenCalledWith(url); // eslint-disable-line import/no-deprecated
       });
     });
 
@@ -105,7 +105,7 @@ describe('GroupRunnerRunnerApp', () => {
       it('redirects to the registration page with the platform', () => {
         const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
 
-        expect(redirectTo).toHaveBeenCalledWith(url);
+        expect(redirectTo).toHaveBeenCalledWith(url); // eslint-disable-line import/no-deprecated
       });
     });
 

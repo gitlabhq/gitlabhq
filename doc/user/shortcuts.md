@@ -68,7 +68,7 @@ relatively quickly to work, and they take you to another page in the project.
 
 | Keyboard shortcut           | Description |
 |-----------------------------|-------------|
-| <kbd>g</kbd> + <kbd>p</kbd> | Go to the project home page (**Project > Details**). |
+| <kbd>g</kbd> + <kbd>o</kbd> | Go to the project overview page (**Project > Details**). |
 | <kbd>g</kbd> + <kbd>v</kbd> | Go to the project activity feed (**Project > Activity**). |
 | <kbd>g</kbd> + <kbd>r</kbd> | Go to the project releases list (**Project > Releases**). |
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) list (**Repository > Files**). |
@@ -80,6 +80,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>i</kbd>                | Go to the New Issue page (**Issues**, select **New Issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project issue boards list (**Issues > Boards**). |
 | <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [merge requests](project/merge_requests/index.md) list (**Merge Requests**). |
+| <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD pipelines list (**CI/CD > Pipelines**). |
 | <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD jobs list (**CI/CD > Jobs**). |
 | <kbd>g</kbd> + <kbd>e</kbd> | Go to the project environments (**Deployments > Environments**). |
 | <kbd>g</kbd> + <kbd>k</kbd> | Go to the project Kubernetes cluster integration page (**Infrastructure > Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |

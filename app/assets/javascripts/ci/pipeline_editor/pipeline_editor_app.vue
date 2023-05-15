@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
-import { mergeUrlParams, queryToObject, redirectTo } from '~/lib/utils/url_utility';
+import { mergeUrlParams, queryToObject, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, s__ } from '~/locale';
 
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
@@ -325,7 +325,7 @@ export default {
         },
         this.newMergeRequestPath,
       );
-      redirectTo(url);
+      redirectTo(url); // eslint-disable-line import/no-deprecated
     },
     async refetchContent() {
       this.$apollo.queries.initialCiFileContent.skip = false;

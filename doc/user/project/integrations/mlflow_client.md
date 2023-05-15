@@ -4,7 +4,7 @@ group: Incubation
 info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# MLFlow client integration **(FREE)**
+# MLflow client integration **(FREE)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../policy/alpha-beta-support.md#experiment) release [with a flag](../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 
@@ -12,21 +12,20 @@ NOTE:
 Model experiment tracking is an [experimental feature](../../../policy/alpha-beta-support.md).
 Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
 
-[MLFlow](https://mlflow.org/) is one of the most popular open source tools for Machine Learning Experiment Tracking.
-GitLab works as a backend to the MLFlow Client, [logging experiments](../ml/experiment_tracking/index.md).
+[MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning Experiment Tracking.
+GitLab works as a backend to the MLflow Client, [logging experiments](../ml/experiment_tracking/index.md).
 Setting up your integrations requires minimal changes to existing code.
 
-GitLab plays the role of proxy server, both for artifact storage and tracking data. It reflects the
-MLFlow [Scenario 5](https://www.mlflow.org/docs/latest/tracking.html#scenario-5-mlflow-tracking-server-enabled-with-proxied-artifact-storage-access).
+GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
 
-## Enable MLFlow client integration
+## Enable MLflow client integration
 
 Prerequisites:
 
 - A [personal access token](../../../user/profile/personal_access_tokens.md) for the project, with minimum access level of `api`.
 - The project ID. To find the project ID, on the top bar, select **Main menu > Projects** and find your project. On the left sidebar, select **Settings > General**.
 
-To enable MLFlow client integration:
+To enable MLflow client integration:
 
 1. Set the tracking URI and token environment variables on the host that runs the code.
    This can be your local environment, CI pipeline, or remote host. For example:
@@ -38,7 +37,7 @@ To enable MLFlow client integration:
 
 1. If your training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
-When running the training code, MLFlow creates experiments, runs, log parameters, metrics, metadata
+When running the training code, MLflow creates experiments, runs, log parameters, metrics, metadata
 and artifacts on GitLab.
 
 After experiments are logged, they are listed under `/<your project>/-/ml/experiments`.
@@ -47,10 +46,28 @@ Runs are registered as:
 - Model Candidates, which can be explored by selecting an experiment.
 - Tags, which are registered as metadata.
 
-## Supported MlFlow client methods and caveats
+## Associating a candidate to a CI/CD job
 
-GitLab supports these methods from the MLFlow client. Other methods might be supported but were not
-tested. More information can be found in the [MLFlow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
+
+If your training code is being run from a CI/CD job, GitLab can use that information to enhance
+candidate metadata. To do so, add the following snippet to your training code within the run
+execution context:
+
+```python
+with mlflow.start_run(run_name=f"Candidate {index}"):
+  # Your training code
+
+  # Start of snippet to be included
+  if os.getenv('GITLAB_CI'):
+    mlflow.set_tag('gitlab.CI_JOB_ID', os.getenv('CI_JOB_ID'))
+  # End of snippet to be included
+```
+
+## Supported MLflow client methods and caveats
+
+GitLab supports these methods from the MLflow client. Other methods might be supported but were not
+tested. More information can be found in the [MLflow Documentation](https://www.mlflow.org/docs/1.28.0/python_api/mlflow.html).
 
 | Method                   | Supported        | Version Added  | Comments |
 |--------------------------|------------------|----------------|----------|
@@ -79,7 +96,7 @@ tested. More information can be found in the [MLFlow Documentation](https://www.
 
 ## Limitations
 
-- The API GitLab supports is the one defined at MLFlow version 1.28.0.
+- The API GitLab supports is the one defined at MLflow version 1.28.0.
 - API endpoints not listed above are not supported.
 - During creation of experiments and runs, ExperimentTags are stored, even though they are not displayed.
-- MLFlow Model Registry is not supported.
+- MLflow Model Registry is not supported.

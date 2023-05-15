@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       optionalStagesSelection: Object.fromEntries(
-        this.optionalStages.map(({ name }) => [name, false]),
+        this.optionalStages.map(({ name, selected }) => [name, selected]),
       ),
     };
   },

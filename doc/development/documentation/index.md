@@ -187,9 +187,8 @@ Further needs for what would make the doc even better should be immediately addr
 in a follow-up merge request or issue.
 
 If the release version you want to add the documentation to has already been
-frozen or released, use the label `~"Pick into X.Y"` to get it merged into
-the correct release. Avoid picking into a past release as much as you can, as
-it increases the work of the release managers.
+released, follow the [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md)
+to get it merged into the current version.
 
 ## GitLab `/help`
 

@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import {
   queryToObject,
-  redirectTo,
+  redirectTo, // eslint-disable-line import/no-deprecated
   removeParams,
   mergeUrlParams,
   updateHistory,
@@ -136,7 +136,7 @@ describe('dashboard invalid url parameters', () => {
 
     // redirect to with new parameters
     expect(mergeUrlParams).toHaveBeenCalledWith({ duration_seconds: '120' }, toUrl);
-    expect(redirectTo).toHaveBeenCalledTimes(1);
+    expect(redirectTo).toHaveBeenCalledTimes(1); // eslint-disable-line import/no-deprecated
   });
 
   it('changes the url when a panel moves the time slider', async () => {

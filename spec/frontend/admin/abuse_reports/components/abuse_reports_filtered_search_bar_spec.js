@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { redirectTo, updateHistory } from '~/lib/utils/url_utility';
+import { redirectTo, updateHistory } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import AbuseReportsFilteredSearchBar from '~/admin/abuse_reports/components/abuse_reports_filtered_search_bar.vue';
 import {
   FILTERED_SEARCH_TOKENS,
@@ -161,23 +161,24 @@ describe('AbuseReportsFilteredSearchBar', () => {
       (filterToken) => {
         createComponentAndFilter([filterToken]);
         const { type, value } = filterToken;
-        expect(redirectTo).toHaveBeenCalledWith(`https://localhost/?${type}=${value.data}`);
+        expect(redirectTo).toHaveBeenCalledWith(`https://localhost/?${type}=${value.data}`); // eslint-disable-line import/no-deprecated
       },
     );
 
     it('ignores search query param', () => {
       const searchFilterToken = { type: FILTERED_SEARCH_TERM, value: { data: 'ignored' } };
       createComponentAndFilter([USER_FILTER_TOKEN, searchFilterToken]);
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser');
+      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser'); // eslint-disable-line import/no-deprecated
     });
 
     it('redirects without page query param', () => {
       createComponentAndFilter([USER_FILTER_TOKEN], '?page=2');
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser');
+      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?user=mr_abuser'); // eslint-disable-line import/no-deprecated
     });
 
     it('redirects with existing sort query param', () => {
       createComponentAndFilter([USER_FILTER_TOKEN], `?sort=${DEFAULT_SORT}`);
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
         `https://localhost/?user=mr_abuser&sort=${DEFAULT_SORT}`,
       );
@@ -197,6 +198,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
     it('redirects to URL with existing query params and the sort query param', () => {
       createComponentAndSort(`?${EXISTING_QUERY}`);
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
         `https://localhost/?${EXISTING_QUERY}&sort=${SORT_VALUE}`,
       );
@@ -205,6 +207,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
     it('redirects without page query param', () => {
       createComponentAndSort(`?${EXISTING_QUERY}&page=2`);
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
         `https://localhost/?${EXISTING_QUERY}&sort=${SORT_VALUE}`,
       );
@@ -213,6 +216,7 @@ describe('AbuseReportsFilteredSearchBar', () => {
     it('redirects with existing sort query param replaced with the new one', () => {
       createComponentAndSort(`?${EXISTING_QUERY}&sort=created_at_desc`);
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
         `https://localhost/?${EXISTING_QUERY}&sort=${SORT_VALUE}`,
       );

@@ -3,7 +3,7 @@ import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/rel
 import testAction from 'helpers/vuex_action_helper';
 import { getTag } from '~/api/tags_api';
 import { createAlert } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__ } from '~/locale';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
 import createReleaseAssetLinkMutation from '~/releases/graphql/mutations/create_release_link.mutation.graphql';
@@ -306,8 +306,8 @@ describe('Release edit/new actions', () => {
       it("redirects to the release's dedicated page", () => {
         const { selfUrl } = releaseResponse.data.project.release.links;
         actions.receiveSaveReleaseSuccess({ commit: jest.fn(), state }, selfUrl);
-        expect(redirectTo).toHaveBeenCalledTimes(1);
-        expect(redirectTo).toHaveBeenCalledWith(selfUrl);
+        expect(redirectTo).toHaveBeenCalledTimes(1); // eslint-disable-line import/no-deprecated
+        expect(redirectTo).toHaveBeenCalledWith(selfUrl); // eslint-disable-line import/no-deprecated
       });
     });
 

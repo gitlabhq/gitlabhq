@@ -11,7 +11,8 @@ RSpec.describe Gitlab::GithubImport::Settings do
     {
       single_endpoint_issue_events_import: true,
       single_endpoint_notes_import: false,
-      attachments_import: false
+      attachments_import: false,
+      collaborators_import: false
     }
   end
 
@@ -22,17 +23,26 @@ RSpec.describe Gitlab::GithubImport::Settings do
         {
           name: 'single_endpoint_issue_events_import',
           label: stages[:single_endpoint_issue_events_import][:label],
+          selected: false,
           details: stages[:single_endpoint_issue_events_import][:details]
         },
         {
           name: 'single_endpoint_notes_import',
           label: stages[:single_endpoint_notes_import][:label],
+          selected: false,
           details: stages[:single_endpoint_notes_import][:details]
         },
         {
           name: 'attachments_import',
           label: stages[:attachments_import][:label].strip,
+          selected: false,
           details: stages[:attachments_import][:details]
+        },
+        {
+          name: 'collaborators_import',
+          label: stages[:collaborators_import][:label].strip,
+          selected: true,
+          details: stages[:collaborators_import][:details]
         }
       ]
     end
@@ -48,6 +58,7 @@ RSpec.describe Gitlab::GithubImport::Settings do
         single_endpoint_issue_events_import: true,
         single_endpoint_notes_import: 'false',
         attachments_import: nil,
+        collaborators_import: false,
         foo: :bar
       }.stringify_keys
     end
@@ -67,6 +78,7 @@ RSpec.describe Gitlab::GithubImport::Settings do
       expect(settings.enabled?(:single_endpoint_issue_events_import)).to eq true
       expect(settings.enabled?(:single_endpoint_notes_import)).to eq false
       expect(settings.enabled?(:attachments_import)).to eq false
+      expect(settings.enabled?(:collaborators_import)).to eq false
     end
   end
 
@@ -77,6 +89,7 @@ RSpec.describe Gitlab::GithubImport::Settings do
       expect(settings.disabled?(:single_endpoint_issue_events_import)).to eq false
       expect(settings.disabled?(:single_endpoint_notes_import)).to eq true
       expect(settings.disabled?(:attachments_import)).to eq true
+      expect(settings.disabled?(:collaborators_import)).to eq true
     end
   end
 end

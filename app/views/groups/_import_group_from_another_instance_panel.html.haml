@@ -9,7 +9,7 @@
 
     - if bulk_imports_disabled
       = render Pajamas::AlertComponent.new(dismissible: false, variant: :tip) do |c|
-        = c.body do
+        - c.with_body do
           = s_('GroupsNew|Importing groups by direct transfer is currently disabled.')
 
           - if current_user.admin?
@@ -24,7 +24,7 @@
     - else
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :warning) do |c|
-        = c.body do
+        - c.with_body do
           - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md', anchor: 'migrated-group-items') }
           - docs_link_end = '</a>'.html_safe
           = s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }

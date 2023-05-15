@@ -1,7 +1,7 @@
 = form_tag(admin_session_path, method: :post, class: 'new_user gl-show-field-errors', 'aria-live': 'assertive') do
   .form-group
     = label_tag :user_password, _('Password'), class: 'label-bold'
-    = password_field_tag 'user[password]', nil, class: 'form-control', autocomplete: 'current-password', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field', testid: 'password-field' }
+    = password_field_tag 'user[password]', nil, { class: 'form-control js-password', data: { id: 'user_password', name: 'user[password]', qa_selector: 'password_field', testid: 'password-field' } }
 
   .submit-container.move-submit-down
     = submit_tag _('Enter admin mode'), class: 'gl-button btn btn-confirm', data: { qa_selector: 'enter_admin_mode_button' }

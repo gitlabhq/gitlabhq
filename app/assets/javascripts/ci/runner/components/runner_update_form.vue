@@ -14,7 +14,7 @@ import {
   runnerToModel,
 } from 'ee_else_ce/ci/runner/runner_update_form_utils';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __ } from '~/locale';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
@@ -101,7 +101,7 @@ export default {
     },
     onSuccess() {
       saveAlertToLocalStorage({ message: __('Changes saved.'), variant: VARIANT_SUCCESS });
-      redirectTo(this.runnerPath);
+      redirectTo(this.runnerPath); // eslint-disable-line import/no-deprecated
     },
     onError(message) {
       this.saving = false;

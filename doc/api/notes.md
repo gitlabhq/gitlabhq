@@ -272,7 +272,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### Create new snippet note
 
 Creates a new note for a single snippet. Snippet notes are user comments on snippets.
-If you create a note where the body only contains an Award Emoji, GitLab returns this object.
+If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/snippets/:snippet_id/notes
@@ -408,7 +408,7 @@ lines in a merge request. For other approaches with more granular control, see
 and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
 in the Discussions API.
 
-If you create a note where the body only contains an award emoji, GitLab returns this object.
+If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/notes
@@ -542,7 +542,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ### Create new epic note
 
 Creates a new note for a single epic. Epic notes are comments users can post to an epic.
-If you create a note where the body only contains an Award Emoji, GitLab returns this object.
+If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/notes

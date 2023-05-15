@@ -220,6 +220,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
       end
     end
 
+    context 'with cache:fallback_keys' do
+      let(:config) do
+        {
+          key: 'ruby-branch-key',
+          paths: ['vendor/ruby'],
+          fallback_keys: ['ruby-default']
+        }
+      end
+
+      it { is_expected.to include(config) }
+    end
+
     context 'with all cache option keys' do
       let(:config) do
         {
@@ -228,7 +240,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           untracked: true,
           policy: 'push',
           unprotect: true,
-          when: 'on_success'
+          when: 'on_success',
+          fallback_keys: ['default-ruby']
         }
       end
 

@@ -18,7 +18,7 @@ import { uniqueId } from 'lodash';
 import Vue from 'vue';
 import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { s__, __, n__ } from '~/locale';
 import {
   CC_VALIDATION_REQUIRED_ERROR,
@@ -339,7 +339,7 @@ export default {
       const { id, errors, totalWarnings, warnings } = data.createPipeline;
 
       if (id) {
-        redirectTo(`${this.pipelinesPath}/${id}`);
+        redirectTo(`${this.pipelinesPath}/${id}`); // eslint-disable-line import/no-deprecated
         return;
       }
 

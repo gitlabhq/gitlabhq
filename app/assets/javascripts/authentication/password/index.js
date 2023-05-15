@@ -2,14 +2,14 @@ import Vue from 'vue';
 import GlFieldErrors from '~/gl_field_errors';
 import PasswordInput from './components/password_input.vue';
 
-export const initTogglePasswordVisibility = () => {
+export const initPasswordInput = () => {
   document.querySelectorAll('.js-password').forEach((el) => {
     if (!el) {
       return null;
     }
 
     const { form } = el;
-    const { title, id, minimumPasswordLength, qaSelector, autocomplete, name } = el.dataset;
+    const { title, id, minimumPasswordLength, qaSelector, testid, autocomplete, name } = el.dataset;
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -22,6 +22,7 @@ export const initTogglePasswordVisibility = () => {
             id,
             minimumPasswordLength,
             qaSelector,
+            testid,
             autocomplete,
             name,
           },

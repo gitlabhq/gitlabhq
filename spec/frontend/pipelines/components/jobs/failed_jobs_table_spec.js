@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import FailedJobsTable from '~/pipelines/components/jobs/failed_jobs_table.vue';
 import RetryFailedJobMutation from '~/pipelines/graphql/mutations/retry_failed_job.mutation.graphql';
 import {
@@ -94,7 +94,7 @@ describe('Failed Jobs Table', () => {
 
     await waitForPromises();
 
-    expect(redirectTo).toHaveBeenCalledWith(job.detailedStatus.detailsPath);
+    expect(redirectTo).toHaveBeenCalledWith(job.detailedStatus.detailsPath); // eslint-disable-line import/no-deprecated
   });
 
   it('shows error message if the retry failed job mutation fails', async () => {

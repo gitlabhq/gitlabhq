@@ -1,7 +1,7 @@
 import { GlDropdownItem, GlSearchBoxByType, GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import ActionsMenu from '~/monitoring/components/dashboard_actions_menu.vue';
 import DashboardHeader from '~/monitoring/components/dashboard_header.vue';
 import DashboardsDropdown from '~/monitoring/components/dashboards_dropdown.vue';
@@ -74,6 +74,7 @@ describe('Dashboard header', () => {
         display_name: 'A display name',
       });
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(
         `${mockProjectPath}/-/metrics/.gitlab%2Fdashboards%2Fdashboard%26copy.yml`,
       );
@@ -85,6 +86,7 @@ describe('Dashboard header', () => {
         display_name: 'dashboard&copy.yml',
       });
 
+      // eslint-disable-next-line import/no-deprecated
       expect(redirectTo).toHaveBeenCalledWith(`${mockProjectPath}/-/metrics/dashboard%26copy.yml`);
     });
   });

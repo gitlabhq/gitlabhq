@@ -3,7 +3,7 @@
 
 - if @error
   = render Pajamas::AlertComponent.new(variant: :danger) do |c|
-    = c.body do
+    - c.with_body do
       = @error
 %h1.page-title.gl-font-size-h-display
   = _('New Branch')
@@ -21,4 +21,3 @@
   = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', class: 'gl-mr-3' }) do
     = _('Create branch')
   = link_to _('Cancel'), project_branches_path(@project), class: 'gl-button btn btn-default btn-cancel'
-

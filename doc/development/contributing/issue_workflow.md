@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 **Before you submit an issue, [search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)**
 for similar entries. Someone else might have already had the same bug or feature proposal.
-If you find an existing issue, show your support with an award emoji and add your notes to the discussion.
+If you find an existing issue, show your support with an emoji reaction and add your notes to the discussion.
 
 To submit a bug:
 

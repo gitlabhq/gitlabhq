@@ -160,7 +160,7 @@ For a quick overview, items that are exported include:
 - Issue boards
 - Pipelines history
 - Push rules
-- Awards
+- Emoji reactions
 - Group members as long as the user has the Maintainer role in the
   exported project's group or is an administrator
 

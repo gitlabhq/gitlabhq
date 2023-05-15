@@ -5,7 +5,7 @@ import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlModal } from '@gitlab
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportActions from '~/admin/abuse_reports/components/abuse_report_actions.vue';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility';
+import { redirectTo, refreshCurrentPage } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { sprintf } from '~/locale';
 import { ACTIONS_I18N } from '~/admin/abuse_reports/constants';
@@ -115,7 +115,7 @@ describe('AbuseReportActions', () => {
           findConfirmationModal().vm.$emit('primary');
           await axios.waitForAll();
 
-          expect(redirectTo).toHaveBeenCalledWith('/redirect_path');
+          expect(redirectTo).toHaveBeenCalledWith('/redirect_path'); // eslint-disable-line import/no-deprecated
         });
       });
     });
@@ -194,7 +194,7 @@ describe('AbuseReportActions', () => {
 
           await axios.waitForAll();
 
-          expect(redirectTo).toHaveBeenCalledWith('/redirect_path');
+          expect(redirectTo).toHaveBeenCalledWith('/redirect_path'); // eslint-disable-line import/no-deprecated
         });
       });
     });

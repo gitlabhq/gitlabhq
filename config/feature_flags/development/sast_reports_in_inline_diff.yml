@@ -1,0 +1,8 @@
+---
+name: sast_reports_in_inline_diff
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119975
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410191
+milestone: '16.0'
+type: development
+group: group::static analysis
+default_enabled: false

@@ -388,7 +388,7 @@ RSpec.describe Admin::UsersController do
           put :deactivate, params: { id: user.username }
           user.reload
           expect(user.deactivated?).to be_falsey
-          expect(flash[:notice]).to eq("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
+          expect(flash[:alert]).to eq("The user you are trying to deactivate has been active in the past #{Gitlab::CurrentSettings.deactivate_dormant_users_period} days and cannot be deactivated")
         end
       end
     end
@@ -410,7 +410,7 @@ RSpec.describe Admin::UsersController do
         put :deactivate, params: { id: user.username }
         user.reload
         expect(user.deactivated?).to be_falsey
-        expect(flash[:notice]).to eq('Error occurred. A blocked user cannot be deactivated')
+        expect(flash[:alert]).to eq('Error occurred. A blocked user cannot be deactivated')
       end
     end
 
@@ -421,7 +421,7 @@ RSpec.describe Admin::UsersController do
         put :deactivate, params: { id: internal_user.username }
 
         expect(internal_user.reload.deactivated?).to be_falsey
-        expect(flash[:notice]).to eq('Internal users cannot be deactivated')
+        expect(flash[:alert]).to eq('Internal users cannot be deactivated')
       end
     end
   end

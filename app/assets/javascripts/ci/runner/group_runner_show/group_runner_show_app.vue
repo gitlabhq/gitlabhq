@@ -2,7 +2,7 @@
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 
 import RunnerDeleteButton from '../components/runner_delete_button.vue';
 import RunnerEditButton from '../components/runner_edit_button.vue';
@@ -76,7 +76,7 @@ export default {
     },
     onDeleted({ message }) {
       saveAlertToLocalStorage({ message, variant: VARIANT_SUCCESS });
-      redirectTo(this.runnersPath);
+      redirectTo(this.runnersPath); // eslint-disable-line import/no-deprecated
     },
   },
 };

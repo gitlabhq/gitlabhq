@@ -39,7 +39,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           policy: 'pull-push',
           untracked: true,
           unprotect: false,
-          when: 'on_success'
+          when: 'on_success',
+          fallback_keys: []
         }
 
         expect(pipeline).to be_persisted
@@ -72,7 +73,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted
@@ -89,7 +91,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted
@@ -123,7 +126,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted
@@ -140,7 +144,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             paths: ['logs/'],
             policy: 'pull-push',
             when: 'on_success',
-            unprotect: false
+            unprotect: false,
+            fallback_keys: []
           }
 
           expect(pipeline).to be_persisted

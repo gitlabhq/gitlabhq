@@ -1,6 +1,6 @@
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
-import { redirectTo } from '~/lib/utils/url_utility';
+import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import * as actions from '~/user_lists/store/new/actions';
 import * as types from '~/user_lists/store/new/mutation_types';
 import createState from '~/user_lists/store/new/state';
@@ -41,7 +41,7 @@ describe('User Lists Edit Actions', () => {
       it('should redirect to the user list page', () => {
         return testAction(actions.createUserList, createdList, state, [], [], () => {
           expect(Api.createFeatureFlagUserList).toHaveBeenCalledWith('1', createdList);
-          expect(redirectTo).toHaveBeenCalledWith(userList.path);
+          expect(redirectTo).toHaveBeenCalledWith(userList.path); // eslint-disable-line import/no-deprecated
         });
       });
     });

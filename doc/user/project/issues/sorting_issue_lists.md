@@ -73,7 +73,7 @@ then issues with a milestone without a due date.
 ## Sorting by popularity
 
 When you sort by **Popularity**, the issue order changes to sort descending by the
-number of upvotes ([awarded](../../award_emojis.md) a "thumbs up" emoji)
+number of upvotes ([emoji reactions](../../award_emojis.md) with the "thumbs up")
 on each issue. You can use this to identify issues that are in high demand.
 
 ## Sorting by priority

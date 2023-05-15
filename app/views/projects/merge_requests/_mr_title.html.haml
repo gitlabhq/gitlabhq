@@ -9,7 +9,7 @@
     = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5' },
       variant: :danger,
       dismissible: false) do |c|
-      = c.body do
+      - c.with_body do
         = _('The source project of this merge request has been removed.')
 
   .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }

@@ -1152,6 +1152,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       { cache: [{ key: "key", paths: ["public"], policy: "pull-push" }] }
     end
 
+    let(:options_with_fallback_keys) do
+      { cache: [
+        { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w(key1 key2) }
+      ] }
+    end
+
     subject { build.cache }
 
     context 'when build has cache' do
@@ -1167,6 +1173,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           ] }
         end
 
+        let(:options_with_fallback_keys) do
+          { cache: [
+            { key: "key", paths: ["public"], policy: "pull-push", fallback_keys: %w(key3 key4) },
+            { key: "key2", paths: ["public"], policy: "pull-push", fallback_keys: %w(key5 key6) }
+          ] }
+        end
+
         before do
           allow_any_instance_of(Project).to receive(:jobs_cache_index).and_return(1)
         end
@@ -1178,8 +1191,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             allow(build.pipeline).to receive(:protected_ref?).and_return(true)
           end
 
-          it do
-            is_expected.to all(a_hash_including(key: a_string_matching(/-protected$/)))
+          context 'without the `unprotect` option' do
+            it do
+              is_expected.to all(a_hash_including(key: a_string_matching(/-protected$/)))
+            end
+
+            context 'and the caches have fallback keys' do
+              let(:options) { options_with_fallback_keys }
+
+              it do
+                is_expected.to all(a_hash_including({
+                  key: a_string_matching(/-protected$/),
+                  fallback_keys: array_including(a_string_matching(/-protected$/))
+                }))
+              end
+            end
           end
 
           context 'and the cache has the `unprotect` option' do
@@ -1193,6 +1219,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             it do
               is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
             end
+
+            context 'and the caches have fallback keys' do
+              let(:options) do
+                options_with_fallback_keys[:cache].each { |entry| entry[:unprotect] = true }
+                options_with_fallback_keys
+              end
+
+              it do
+                is_expected.to all(a_hash_including({
+                  key: a_string_matching(/-non_protected$/),
+                  fallback_keys: array_including(a_string_matching(/-non_protected$/))
+                }))
+              end
+            end
           end
         end
 
@@ -1203,6 +1243,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
           it do
             is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
+          end
+
+          context 'and the caches have fallback keys' do
+            let(:options) { options_with_fallback_keys }
+
+            it do
+              is_expected.to all(a_hash_including({
+                key: a_string_matching(/-non_protected$/),
+                fallback_keys: array_including(a_string_matching(/-non_protected$/))
+              }))
+            end
           end
         end
 
@@ -1219,6 +1270,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             it 'is expected to have no type suffix' do
               is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
             end
+
+            context 'and the caches have fallback keys' do
+              let(:options) { options_with_fallback_keys }
+
+              it do
+                is_expected.to match([
+                  a_hash_including({
+                    key: 'key-1',
+                    fallback_keys: %w(key3-1 key4-1)
+                  }),
+                  a_hash_including({
+                    key: 'key2-1',
+                    fallback_keys: %w(key5-1 key6-1)
+                  })
+                ])
+              end
+            end
           end
 
           context 'running on not protected ref' do
@@ -1228,6 +1296,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
             it 'is expected to have no type suffix' do
               is_expected.to match([a_hash_including(key: 'key-1'), a_hash_including(key: 'key2-1')])
+            end
+
+            context 'and the caches have fallback keys' do
+              let(:options) { options_with_fallback_keys }
+
+              it do
+                is_expected.to match([
+                  a_hash_including({
+                    key: 'key-1',
+                    fallback_keys: %w(key3-1 key4-1)
+                  }),
+                  a_hash_including({
+                    key: 'key2-1',
+                    fallback_keys: %w(key5-1 key6-1)
+                  })
+                ])
+              end
             end
           end
         end
@@ -1239,6 +1324,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it { is_expected.to be_an(Array).and all(include(key: a_string_matching(/^key-1-(?>protected|non_protected)/))) }
+
+        context 'and the cache have fallback keys' do
+          let(:options) { options_with_fallback_keys }
+
+          it do
+            is_expected.to be_an(Array).and all(include({
+              key: a_string_matching(/^key-1-(?>protected|non_protected)/),
+              fallback_keys: array_including(a_string_matching(/^key\d-1-(?>protected|non_protected)/))
+            }))
+          end
+        end
       end
 
       context 'when project does not have jobs_cache_index' do
@@ -1249,6 +1345,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it do
           is_expected.to eq(options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected") })
         end
+
+        context 'and the cache have fallback keys' do
+          let(:options) { options_with_fallback_keys }
+
+          it do
+            is_expected.to eq(
+              options[:cache].map do |entry|
+                entry[:key] = "#{entry[:key]}-non_protected"
+                entry[:fallback_keys].map! { |key| "#{key}-non_protected" }
+
+                entry
+              end
+            )
+          end
+        end
       end
     end
 
@@ -1258,6 +1369,29 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#fallback_cache_keys_defined?' do
+    subject { build }
+
+    it 'returns false when fallback keys are not defined' do
+      expect(subject.fallback_cache_keys_defined?).to be false
+    end
+
+    context "with fallbacks keys" do
+      before do
+        allow(build).to receive(:options).and_return({
+          cache: [{
+            key: "key1",
+            fallback_keys: %w(key2)
+          }]
+        })
+      end
+
+      it 'returns true when fallback keys are defined' do
+        expect(subject.fallback_cache_keys_defined?).to be true
+      end
     end
   end
 

@@ -6,21 +6,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Workspaces (Beta) **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10122) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
-This feature is in [Beta](../../policy/alpha-beta-support.md#beta) and subject to change without notice. To leave your feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+This feature is in [Beta](../../policy/alpha-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
 
 A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
 
 Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project. Workspaces use the AMD64 architecture.
 
-## Create a workspace
+## Set up a workspace
 
-Prerequisites:
+### Prerequisites
 
 - Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#gitlab-agent-for-kubernetes-supported-cluster-versions).
 - Ensure autoscaling for the Kubernetes cluster is enabled.
@@ -39,6 +40,8 @@ Prerequisites:
    Update `dns_zone` as needed.
 
 - In each public project you want to use this feature for, define a [devfile](#devfile). Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
+
+### Create a workspace
 
 To create a workspace in GitLab:
 

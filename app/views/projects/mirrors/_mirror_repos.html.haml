@@ -33,7 +33,7 @@
             = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { qa_selector: 'mirror_repository_button' }
     - else
       = render Pajamas::AlertComponent.new(dismissible: false) do |c|
-        = c.body do
+        - c.with_body do
           = _('Mirror settings are only available to GitLab administrators.')
 
     = render 'projects/mirrors/mirror_repos_list'

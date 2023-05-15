@@ -96,19 +96,14 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def deactivate
-    if user.blocked?
-      return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user cannot be deactivated"))
+    deactivate_service = Users::DeactivateService.new(current_user, skip_authorization: true)
+    result = deactivate_service.execute(user)
+
+    if result.success?
+      redirect_back_or_admin_user(notice: _("Successfully deactivated"))
+    else
+      redirect_back_or_admin_user(alert: result.message)
     end
-
-    return redirect_back_or_admin_user(notice: _("Successfully deactivated")) if user.deactivated?
-    return redirect_back_or_admin_user(notice: _("Internal users cannot be deactivated")) if user.internal?
-
-    unless user.can_be_deactivated?
-      return redirect_back_or_admin_user(notice: format(_("The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated"), minimum_inactive_days: Gitlab::CurrentSettings.deactivate_dormant_users_period))
-    end
-
-    user.deactivate
-    redirect_back_or_admin_user(notice: _("Successfully deactivated"))
   end
 
   def block
