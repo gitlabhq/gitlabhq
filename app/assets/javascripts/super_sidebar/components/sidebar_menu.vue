@@ -150,7 +150,6 @@ export default {
         v-for="item in nonStaticItems"
         :key="item.id"
         :item="item"
-        :collection-style="supportsPins"
         tag="li"
         @pin-add="createPin"
         @pin-remove="destroyPin"

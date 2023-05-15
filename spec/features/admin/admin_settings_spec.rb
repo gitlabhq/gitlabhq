@@ -649,6 +649,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'loads togglable usage ping payload on click', :js do
+        allow(Gitlab::Usage::ServicePingReport).to receive(:for).and_return({ uuid: '12345678', hostname: '127.0.0.1' })
+
         stub_usage_data_connections
         stub_database_flavor_check
 

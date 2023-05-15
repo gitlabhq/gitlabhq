@@ -10,6 +10,6 @@ RSpec.describe Gitlab::GithubImport::ImportPullRequestMergedByWorker, feature_ca
   end
 
   describe '#importer_class' do
-    it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::PullRequestMergedByImporter) }
+    it { expect(subject.importer_class).to eq(Gitlab::GithubImport::Importer::PullRequests::MergedByImporter) }
   end
 end

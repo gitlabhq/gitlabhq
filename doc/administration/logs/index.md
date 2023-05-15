@@ -350,7 +350,9 @@ the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://gi
 Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
 process on Redis or external HTTP, not only the serialization process.
 
-## `application.log`
+## `application.log` (deprecated)
+
+> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
 
 Depending on your installation method, this file is located at:
 

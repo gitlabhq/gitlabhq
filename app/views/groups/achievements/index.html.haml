@@ -1,0 +1,14 @@
+- breadcrumb_title _('Achievements')
+- page_title _('Achievements')
+- @content_wrapper_class = "gl-relative"
+
+= content_for :after_content do
+  #js-achievements-form-portal
+
+#js-achievements-app{ data: { base_path: group_achievements_path(@group), view_model: Gitlab::Json.generate({
+  can_admin_achievement: can?(current_user, :admin_achievement, @group),
+  can_award_achievement: can?(current_user, :award_achievement, @group),
+  group_full_path: @group.full_path,
+  group_id: @group.id,
+  text_query: params[:search]
+  }) } }

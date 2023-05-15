@@ -21,6 +21,7 @@ beforeEach(() => {
 describe('CompareVersions', () => {
   let wrapper;
   let store;
+  let dispatchMock;
   const targetBranchName = 'tmp-wine-dev';
   const { commit } = getDiffWithCommit;
 
@@ -28,6 +29,8 @@ describe('CompareVersions', () => {
     if (createCommit) {
       store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
     }
+
+    dispatchMock = jest.spyOn(store, 'dispatch');
 
     wrapper = mount(CompareVersionsComponent, {
       store,
@@ -146,7 +149,7 @@ describe('CompareVersions', () => {
 
     it('renders short commit ID', () => {
       expect(wrapper.text()).toContain('Viewing commit');
-      expect(wrapper.text()).toContain(wrapper.vm.commit.short_id);
+      expect(wrapper.text()).toContain(commit.short_id);
     });
   });
 
@@ -204,10 +207,6 @@ describe('CompareVersions', () => {
         setWindowLocation(`?commit_id=${mrCommit.id}`);
       });
 
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      });
-
       it('uses the correct href', () => {
         const link = getPrevCommitNavElement();
 
@@ -219,7 +218,7 @@ describe('CompareVersions', () => {
 
         link.trigger('click');
         await nextTick();
-        expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({
+        expect(dispatchMock).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
           direction: 'previous',
         });
       });
@@ -238,10 +237,6 @@ describe('CompareVersions', () => {
         setWindowLocation(`?commit_id=${mrCommit.id}`);
       });
 
-      beforeEach(() => {
-        jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
-      });
-
       it('uses the correct href', () => {
         const link = getNextCommitNavElement();
 
@@ -253,7 +248,9 @@ describe('CompareVersions', () => {
 
         link.trigger('click');
         await nextTick();
-        expect(wrapper.vm.moveToNeighboringCommit).toHaveBeenCalledWith({ direction: 'next' });
+        expect(dispatchMock).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
+          direction: 'next',
+        });
       });
 
       it('renders a disabled button when there is no next commit', () => {

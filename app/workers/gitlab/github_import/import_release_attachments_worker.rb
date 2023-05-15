@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# TODO: remove in 16.X milestone
-# https://gitlab.com/gitlab-org/gitlab/-/issues/377059
+# TODO: remove in 16.1 milestone
+# https://gitlab.com/gitlab-org/gitlab/-/issues/409706
 module Gitlab
   module GithubImport
     class ImportReleaseAttachmentsWorker # rubocop:disable Scalability/IdempotentWorker

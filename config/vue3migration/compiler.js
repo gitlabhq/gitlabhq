@@ -2,16 +2,20 @@ const { parse, compile: compilerDomCompile } = require('@vue/compiler-dom');
 
 const COMMENT_NODE_TYPE = 3;
 
-const getPropIndex = (node, prop) => node.props?.findIndex((p) => p.name === prop) ?? -1;
+const hasProp = (node, prop) => node.props?.some((p) => p.name === prop);
 
 function modifyKeysInsideTemplateTag(templateNode) {
+  if (!templateNode.tag === 'template' || !hasProp(templateNode, 'for')) {
+    return;
+  }
+
   let keyCandidate = null;
   for (const node of templateNode.children) {
     const keyBindingIndex = node.props
       ? node.props.findIndex((prop) => prop.arg && prop.arg.content === 'key')
       : -1;
 
-    if (keyBindingIndex !== -1 && getPropIndex(node, 'for') === -1) {
+    if (keyBindingIndex !== -1 && !hasProp(node, 'for')) {
       if (!keyCandidate) {
         keyCandidate = node.props[keyBindingIndex];
       }
@@ -24,40 +28,97 @@ function modifyKeysInsideTemplateTag(templateNode) {
   }
 }
 
+function getSlotName(node) {
+  return node?.props?.find((prop) => prop.name === 'slot')?.arg?.content;
+}
+
+function filterCommentNodeAndTrailingSpace(node, idx, list) {
+  if (node.type === COMMENT_NODE_TYPE) {
+    return false;
+  }
+
+  if (node.content !== ' ') {
+    return true;
+  }
+
+  if (list[idx - 1]?.type === COMMENT_NODE_TYPE) {
+    return false;
+  }
+
+  return true;
+}
+
+function filterCommentNodes(node) {
+  const { length: originalLength } = node.children;
+  // eslint-disable-next-line no-param-reassign
+  node.children = node.children.filter(filterCommentNodeAndTrailingSpace);
+  if (node.children.length !== originalLength) {
+    // trim remaining spaces
+    while (node.children.at(-1)?.content === ' ') {
+      node.children.pop();
+    }
+  }
+}
+
+function dropVOnceForChildrenInsideVIfBecauseOfIssue7725(node) {
+  // See https://github.com/vuejs/core/issues/7725 for details
+  if (!hasProp(node, 'if')) {
+    return;
+  }
+
+  node.children?.forEach((child) => {
+    if (Array.isArray(child.props)) {
+      // eslint-disable-next-line no-param-reassign
+      child.props = child.props.filter((prop) => prop.name !== 'once');
+    }
+  });
+}
+
+function fixSameSlotsInsideTemplateFailingWhenUsingWhitespacePreserveDueToIssue6063(node) {
+  // See https://github.com/vuejs/core/issues/6063 for details
+  // eslint-disable-next-line no-param-reassign
+  node.children = node.children.filter((child, idx) => {
+    if (child.content !== ' ') {
+      // We need to drop only comment nodes
+      return true;
+    }
+
+    const previousNodeSlotName = getSlotName(node.children[idx - 1]);
+    const nextNodeSlotName = getSlotName(node.children[idx + 1]);
+
+    if (previousNodeSlotName && previousNodeSlotName === nextNodeSlotName) {
+      // We have a space beween two slot entries with same slot name, we need to drop it
+      return false;
+    }
+
+    return true;
+  });
+}
+
 module.exports = {
   parse,
   compile(template, options) {
     const rootNode = parse(template, options);
 
-    // We do not want to switch to whitespace: collapse mode which is Vue.js 3 default
-    // It will be too devastating to codebase
-
-    // However, without `whitespace: condense` Vue will treat spaces between comments
-    // and nodes itself as text nodes, resulting in multi-root component
-    // For multi-root component passing classes / attributes fallthrough will not work
-
-    // See https://github.com/vuejs/core/issues/7909 for details
-
-    // To fix that we simply drop all component comments only on top-level
-    rootNode.children = rootNode.children.filter((n) => n.type !== COMMENT_NODE_TYPE);
-
     const pendingNodes = [rootNode];
     while (pendingNodes.length) {
       const currentNode = pendingNodes.pop();
-      if (getPropIndex(currentNode, 'for') !== -1) {
-        if (currentNode.tag === 'template') {
-          // This one will be dropped all together with compiler when we drop Vue.js 2 support
-          modifyKeysInsideTemplateTag(currentNode);
-        }
+      if (Array.isArray(currentNode.children)) {
+        // This one will be dropped all together with compiler when we drop Vue.js 2 support
+        modifyKeysInsideTemplateTag(currentNode);
 
-        // This one will be dropped when https://github.com/vuejs/core/issues/7725 will be fixed
-        const vOncePropIndex = getPropIndex(currentNode, 'once');
-        if (vOncePropIndex !== -1) {
-          currentNode.props.splice(vOncePropIndex, 1);
-        }
+        dropVOnceForChildrenInsideVIfBecauseOfIssue7725(currentNode);
+
+        // See https://github.com/vuejs/core/issues/7909 for details
+        // However, this issue applies not only to root-level nodes
+        // But on any level comments could change slot emptiness detection
+        // so we simply drop them
+        filterCommentNodes(currentNode);
+
+        fixSameSlotsInsideTemplateFailingWhenUsingWhitespacePreserveDueToIssue6063(currentNode);
+
+        currentNode.children.forEach((child) => pendingNodes.push(child));
       }
-
-      currentNode.children?.forEach((child) => pendingNodes.push(child));
     }
 
     return compilerDomCompile(rootNode, options);

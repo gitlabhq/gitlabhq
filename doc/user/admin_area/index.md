@@ -458,7 +458,7 @@ For multi-node systems we recommend ingesting the logs into services like Elasti
 
 | Log file                | Contents |
 |:------------------------|:---------|
-| `application.log`       | GitLab user activity |
+| `application_json.log`  | GitLab user activity |
 | `git_json.log`          | Failed GitLab interaction with Git repositories |
 | `production.log`        | Requests received from Puma, and the actions taken to serve those requests |
 | `sidekiq.log`           | Background jobs |

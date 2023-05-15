@@ -62,7 +62,7 @@ RSpec.describe Import::GithubFailureEntity, feature_category: :importers do
     end
 
     it_behaves_like 'import failure entity' do
-      let(:source) { 'Gitlab::GithubImport::Importer::PullRequestMergedByImporter' }
+      let(:source) { 'Gitlab::GithubImport::Importer::PullRequests::MergedByImporter' }
       let(:title) { 'Pull request 2 merger' }
       let(:provider_url) { 'https://github.com/example/repo/pull/2' }
     end

@@ -1,5 +1,5 @@
-import prometheusIntegration from 'test_fixtures/integrations/prometheus/prometheus_integration.html';
 import MockAdapter from 'axios-mock-adapter';
+import prometheusIntegration from 'test_fixtures/integrations/prometheus/prometheus_integration.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';

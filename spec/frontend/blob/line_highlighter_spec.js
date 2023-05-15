@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign, no-new, no-underscore-dangle */
-
 import $ from 'jquery';
-import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import htmlStaticLineHighlighter from 'test_fixtures_static/line_highlighter.html';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LineHighlighter from '~/blob/line_highlighter';
 import * as utils from '~/lib/utils/common_utils';
 
@@ -17,7 +17,7 @@ describe('LineHighlighter', () => {
   };
 
   beforeEach(() => {
-    loadHTMLFixture('static/line_highlighter.html');
+    setHTMLFixture(htmlStaticLineHighlighter);
     testContext.class = new LineHighlighter();
     testContext.css = testContext.class.highlightLineClass;
     return (testContext.spies = {

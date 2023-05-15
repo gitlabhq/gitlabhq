@@ -1,6 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
-import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import { PANELS_WITH_PINS } from '~/super_sidebar/constants';
 import { sidebarData } from '../mock_data';
 
@@ -102,10 +101,6 @@ describe('SidebarMenu component', () => {
             'Also with subitems',
           ]);
         });
-
-        it('passes `supportsPin` to menu sections', () => {
-          expect(wrapper.findAllComponents(MenuSection).at(1).props('collectionStyle')).toBe(true);
-        });
       });
 
       describe('when the sidebar does not support pins', () => {
@@ -119,10 +114,6 @@ describe('SidebarMenu component', () => {
 
         it('keeps all items as non-static', () => {
           expect(wrapper.vm.nonStaticItems).toEqual(menuItems);
-        });
-
-        it('passes `supportsPin` to menu sections', () => {
-          expect(wrapper.findAllComponents(MenuSection).at(1).props('collectionStyle')).toBe(false);
         });
       });
     });

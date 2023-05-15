@@ -2,12 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::PullRequestMergedByImporter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter,
+  :clean_gitlab_redis_cache, feature_category: :importers do
   let_it_be(:merge_request) { create(:merged_merge_request) }
 
   let(:project) { merge_request.project }
-  let(:merged_at) { Time.new(2017, 1, 1, 12, 00).utc }
-  let(:client_double) { double(user: { id: 999, login: 'merger', email: 'merger@email.com' } ) }
+  let(:merged_at) { Time.utc(2017, 1, 1, 12) }
+  let(:client_double) do
+    instance_double(Gitlab::GithubImport::Client, user: { id: 999, login: 'merger', email: 'merger@email.com' })
+  end
+
   let(:merger_user) { { id: 999, login: 'merger' } }
 
   let(:pull_request) do
@@ -25,7 +29,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestMergedByImporter, :cle
   shared_examples 'adds a note referencing the merger user' do
     it 'adds a note referencing the merger user' do
       expect { subject.execute }
-        .to change(Note, :count).by(1)
+        .to change { Note.count }.by(1)
         .and not_change(merge_request, :updated_at)
 
       metrics = merge_request.metrics.reload
@@ -68,7 +72,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestMergedByImporter, :cle
 
     it 'adds a note referencing the merger user' do
       expect { subject.execute }
-        .to change(Note, :count).by(1)
+        .to change { Note.count }.by(1)
         .and not_change(merge_request, :updated_at)
 
       metrics = merge_request.metrics.reload

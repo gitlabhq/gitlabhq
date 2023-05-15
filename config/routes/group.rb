@@ -158,6 +158,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       resources :contacts, only: [:index, :new, :edit]
       resources :organizations, only: [:index, :new, :edit]
     end
+
+    resources :achievements, only: [:index, :new, :edit]
   end
 
   scope(

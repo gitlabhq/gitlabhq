@@ -1463,14 +1463,15 @@
 
 .qa:rules:package-and-test-sidebar:
   rules:
-    - !reference [".qa:rules:package-and-test-common", rules]
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: *if-merge-request
+      changes: *code-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:
-        SKIP_REPORT_IN_ISSUES: "true"
-        PROCESS_TEST_RESULTS: "false"
-        KNAPSACK_GENERATE_REPORT: "false"
-        UPDATE_QA_CACHE: "false"
+        SKIP_REPORT_IN_ISSUES: "false"
+        PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
 

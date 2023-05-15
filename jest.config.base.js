@@ -51,6 +51,7 @@ module.exports = (path, options = {}) => {
         experimentalCSSCompile: false,
         compiler: require.resolve('./config/vue3migration/compiler'),
         compilerOptions: {
+          whitespace: 'preserve',
           compatConfig: {
             MODE: 2,
           },

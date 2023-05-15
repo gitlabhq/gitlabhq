@@ -50,6 +50,11 @@ configured for personal access tokens.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 > - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
+WARNING:
+Project access tokens are treated as [internal users](../../../development/internal_users.md).
+If an internal user creates a project access token, that token is able to access
+all projects that have visibility level set to [Internal](../../public_access.md).
+
 To create a group access token:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
@@ -65,11 +70,6 @@ To create a group access token:
 1. Select  **Create group access token**.
 
 A group access token is displayed. Save the group access token somewhere safe. After you leave or refresh the page, you can't view it again.
-
-WARNING:
-Group access tokens are treated as [internal users](../../../development/internal_users.md).
-If an internal user creates a group access token, that token is able to access all
-groups that have visibility level set to [Internal](../../public_access.md).
 
 ## Create a group access token using Rails console
 

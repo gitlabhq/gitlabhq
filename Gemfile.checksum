@@ -123,7 +123,7 @@
 {"name":"docile","version":"1.4.0","platform":"ruby","checksum":"5f1734bde23721245c20c3d723e76c104208e1aa01277a69901ce770f0ebb8d3"},
 {"name":"domain_name","version":"0.5.20190701","platform":"ruby","checksum":"000a600454cb4a344769b2f10b531765ea7bd3a304fe47ed12e5ca1eab969851"},
 {"name":"doorkeeper","version":"5.6.6","platform":"ruby","checksum":"2344e86c77770526efcda893b5217aa13d1c7eb1b40de840b58b19eb1ff757e0"},
-{"name":"doorkeeper-openid_connect","version":"1.8.5","platform":"ruby","checksum":"d4ee57687945402843c948cee399c758cdddf04468c42b1fb02a8800dd0627f6"},
+{"name":"doorkeeper-openid_connect","version":"1.8.6","platform":"ruby","checksum":"8dc46543e697476f441496a5d465bbc68c10d052e54348cec4db06d123b1e003"},
 {"name":"dotenv","version":"2.7.6","platform":"ruby","checksum":"2451ed5e8e43776d7a787e51d6f8903b98e446146c7ad143d5678cc2c409d547"},
 {"name":"dry-configurable","version":"0.12.0","platform":"ruby","checksum":"87a9579a04dfbae73e401d694282800d64bbdb8631cb3e987bfb79b673df7c67"},
 {"name":"dry-container","version":"0.7.2","platform":"ruby","checksum":"a071824ba3451048b23500210f96a2b9facd6e46ac687f65e49c75d18786f6da"},

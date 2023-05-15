@@ -65,7 +65,7 @@ test2:
 
 `&` sets up the name of the anchor (`job_configuration`), `<<` means "merge the
 given hash into the current one," and `*` includes the named anchor
-(`job_configuration` again). The expanded version of this example is:
+(`job_configuration` again). The [expanded](../pipeline_editor/index.md#view-full-configuration) version of this example is:
 
 ```yaml
 .job_template:
@@ -123,7 +123,7 @@ test:mysql:
   services: *mysql_configuration
 ```
 
-The expanded version is:
+The [expanded](../pipeline_editor/index.md#view-full-configuration) version is:
 
 ```yaml
 .job_template:

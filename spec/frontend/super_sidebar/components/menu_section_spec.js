@@ -10,8 +10,6 @@ describe('MenuSection component', () => {
   const findButton = () => wrapper.find('button');
   const findCollapse = () => wrapper.getComponent(GlCollapse);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
-  const findSectionTitle = () => wrapper.findByTestId('section-title');
-
   const createWrapper = (item, otherProps) => {
     wrapper = shallowMountExtended(MenuSection, {
       propsData: { item, ...otherProps },
@@ -67,17 +65,6 @@ describe('MenuSection component', () => {
         expect(findButton().attributes('aria-expanded')).toBe('false');
         expect(findCollapse().props('visible')).toBe(false);
       });
-    });
-  });
-
-  describe('`collectionStyle` prop', () => {
-    const newClasses = 'gl-font-sm gl-font-weight-semibold'.split(' ');
-
-    it('applies new classes when using new styles', () => {
-      createWrapper({ title: 'Asdf' }, { collectionStyle: true });
-      const classes = findSectionTitle().classes();
-
-      newClasses.forEach((newClass) => expect(classes).toContain(newClass));
     });
   });
 

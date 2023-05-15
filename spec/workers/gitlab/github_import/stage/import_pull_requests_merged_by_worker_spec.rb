@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker, fe
       client = double(:client)
       waiter = Gitlab::JobWaiter.new(2, '123')
 
-      expect(Gitlab::GithubImport::Importer::PullRequestsMergedByImporter)
+      expect(Gitlab::GithubImport::Importer::PullRequests::AllMergedByImporter)
         .to receive(:new)
         .with(project, client)
         .and_return(importer)

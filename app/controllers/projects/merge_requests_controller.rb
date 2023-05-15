@@ -613,8 +613,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     Feature.enabled?(:summarize_my_code_review, current_user) &&
       namespace.group_namespace? &&
       namespace.licensed_feature_available?(:summarize_my_mr_code_review) &&
-      namespace.experiment_features_enabled &&
-      namespace.third_party_ai_features_enabled &&
+      Gitlab::Llm::StageCheck.available?(namespace, :summarize_my_mr_code_review) &&
       merge_request.send_to_ai?
   end
 end

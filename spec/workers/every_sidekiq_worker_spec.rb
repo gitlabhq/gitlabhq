@@ -277,6 +277,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Gitlab::GithubImport::ImportPullRequestReviewWorker' => 5,
         'Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker' => 5,
         'Gitlab::GithubImport::PullRequests::ImportReviewWorker' => 5,
+        'Gitlab::GithubImport::PullRequests::ImportMergedByWorker' => 5,
         'Gitlab::GithubImport::ImportPullRequestWorker' => 5,
         'Gitlab::GithubImport::RefreshImportJidWorker' => 5,
         'Gitlab::GithubImport::Stage::FinishImportWorker' => 5,

@@ -63,7 +63,7 @@ if (global.document) {
   };
 
   let compatH;
-  Vue.config.compilerOptions.whitespace = 'condense';
+  Vue.config.compilerOptions.whitespace = 'preserve';
   Vue.createApp({
     compatConfig: {
       MODE: 3,
