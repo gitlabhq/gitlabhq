@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migration, schema: 20211202041233,
-feature_category: :source_code_management do
+  feature_category: :source_code_management do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:users) { table(:users) }
   let(:snippets) { table(:snippets) }
@@ -14,24 +14,28 @@ feature_category: :source_code_management do
   let(:user_name) { 'Test' }
 
   let!(:user) do
-    users.create!(id: 1,
-                  email: 'user@example.com',
-                  projects_limit: 10,
-                  username: 'test',
-                  name: user_name,
-                  state: user_state,
-                  last_activity_on: 1.minute.ago,
-                  user_type: user_type,
-                  confirmed_at: 1.day.ago)
+    users.create!(
+      id: 1,
+      email: 'user@example.com',
+      projects_limit: 10,
+      username: 'test',
+      name: user_name,
+      state: user_state,
+      last_activity_on: 1.minute.ago,
+      user_type: user_type,
+      confirmed_at: 1.day.ago
+    )
   end
 
   let!(:migration_bot) do
-    users.create!(id: 100,
-                  email: "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}",
-                  user_type: HasUserType::USER_TYPES[:migration_bot],
-                  name: 'GitLab Migration Bot',
-                  projects_limit: 10,
-                  username: 'bot')
+    users.create!(
+      id: 100,
+      email: "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}",
+      user_type: HasUserType::USER_TYPES[:migration_bot],
+      name: 'GitLab Migration Bot',
+      projects_limit: 10,
+      username: 'bot'
+    )
   end
 
   let!(:snippet_with_repo) { snippets.create!(id: 1, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
@@ -260,15 +264,17 @@ feature_category: :source_code_management do
     context 'when both user name and snippet file_name are invalid' do
       let(:user_name) { '.' }
       let!(:other_user) do
-        users.create!(id: 2,
-                      email: 'user2@example.com',
-                      projects_limit: 10,
-                      username: 'test2',
-                      name: 'Test2',
-                      state: user_state,
-                      last_activity_on: 1.minute.ago,
-                      user_type: user_type,
-                      confirmed_at: 1.day.ago)
+        users.create!(
+          id: 2,
+          email: 'user2@example.com',
+          projects_limit: 10,
+          username: 'test2',
+          name: 'Test2',
+          state: user_state,
+          last_activity_on: 1.minute.ago,
+          user_type: user_type,
+          confirmed_at: 1.day.ago
+        )
       end
 
       let!(:invalid_snippet) { snippets.create!(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: '.', content: content) }
@@ -322,10 +328,12 @@ feature_category: :source_code_management do
   end
 
   def raw_repository(snippet)
-    Gitlab::Git::Repository.new('default',
-                                "#{disk_path(snippet)}.git",
-                                Gitlab::GlRepository::SNIPPET.identifier_for_container(snippet),
-                                "@snippets/#{snippet.id}")
+    Gitlab::Git::Repository.new(
+      'default',
+      "#{disk_path(snippet)}.git",
+      Gitlab::GlRepository::SNIPPET.identifier_for_container(snippet),
+      "@snippets/#{snippet.id}"
+    )
   end
 
   def hashed_repository(snippet)

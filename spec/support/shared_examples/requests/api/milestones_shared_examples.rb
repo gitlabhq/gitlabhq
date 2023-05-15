@@ -52,7 +52,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
-      expect(json_response.map { |m| m['id'] }).to match_array([closed_milestone.id, other_milestone.id])
+      expect(json_response.pluck('id')).to match_array([closed_milestone.id, other_milestone.id])
     end
 
     it 'does not return any milestone if none found' do
@@ -293,7 +293,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
         expect(json_response).to be_an Array
         # 2 for projects, 3 for group(which has another project with an issue)
         expect(json_response.size).to be_between(2, 3)
-        expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
+        expect(json_response.pluck('id')).to include(issue.id, confidential_issue.id)
       end
 
       it 'does not return confidential issues to team members with guest role' do
@@ -306,7 +306,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
-        expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
+        expect(json_response.pluck('id')).to include(issue.id)
       end
 
       it 'does not return confidential issues to regular users' do
@@ -316,7 +316,7 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
-        expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
+        expect(json_response.pluck('id')).to include(issue.id)
       end
 
       it 'returns issues ordered by label priority' do

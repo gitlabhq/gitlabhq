@@ -4,7 +4,7 @@ import { i18n } from '../constants';
 
 export default {
   i18n,
-  placeholderText: i18n.ENTRPOINT_PLACEHOLDER_TEXT,
+  placeholderText: i18n.ENTRYPOINT_PLACEHOLDER_TEXT,
   components: {
     GlAccordionItem,
     GlFormGroup,
@@ -38,7 +38,7 @@ export default {
     },
     serviceEntryPoint(service) {
       const { entrypoint = [''] } = service;
-      return entrypoint.join(',');
+      return entrypoint.join('\n');
     },
   },
 };
@@ -75,7 +75,7 @@ export default {
           :placeholder="$options.placeholderText"
           :data-testid="`service-entrypoint-input-${index}`"
           :value="serviceEntryPoint(service)"
-          @input="$emit('update-job', `services[${index}].entrypoint`, $event.split(','))"
+          @input="$emit('update-job', `services[${index}].entrypoint`, $event.split('\n'))"
         />
       </gl-form-group>
     </div>

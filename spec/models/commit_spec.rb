@@ -885,4 +885,94 @@ eos
       expect(commit.has_been_reverted?(user, issue.notes_with_associations)).to eq(false)
     end
   end
+
+  describe '#tipping_refs' do
+    let_it_be(:tag_name) { 'v1.1.0' }
+    let_it_be(:branch_names) { %w[master not-merged-branch v1.1.0] }
+
+    shared_examples 'tipping ref names' do
+      context 'when called without limits' do
+        it 'return tipping refs names' do
+          expect(called_method.call).to eq(expected)
+        end
+      end
+
+      context 'when called with limits' do
+        it 'return tipping refs names' do
+          limit = 1
+          expect(called_method.call(limit).size).to be <= limit
+        end
+      end
+
+      describe '#tipping_branches' do
+        let(:called_method) { ->(limit = 0) { commit.tipping_branches(limit: limit) } }
+        let(:expected) { branch_names }
+
+        it_behaves_like 'with tipping ref names'
+      end
+
+      describe '#tipping_tags' do
+        let(:called_method) { ->(limit = 0) { commit.tipping_tags(limit: limit) } }
+        let(:expected) { [tag_name] }
+
+        it_behaves_like 'with tipping ref names'
+      end
+    end
+  end
+
+  context 'containing refs' do
+    shared_examples 'containing ref names' do
+      context 'without arguments' do
+        it 'returns branch names containing the commit' do
+          expect(ref_containing.call).to eq(containing_refs)
+        end
+      end
+
+      context 'with limit argument' do
+        it 'returns the appropriate amount branch names' do
+          limit = 2
+          expect(ref_containing.call(limit: limit).size).to be <= limit
+        end
+      end
+
+      context 'with tipping refs excluded' do
+        let(:excluded_refs) do
+          project.repository.refs_by_oid(oid: commit_sha, ref_patterns: [ref_prefix]).map { |n| n.delete_prefix(ref_prefix) }
+        end
+
+        it 'returns branch names containing the commit without the one with the commit at tip' do
+          expect(ref_containing.call(excluded_tipped: true)).to eq(containing_refs - excluded_refs)
+        end
+
+        it 'returns the appropriate amount branch names with limit argument' do
+          limit = 2
+          expect(ref_containing.call(limit: limit, excluded_tipped: true).size).to be <= limit
+        end
+      end
+    end
+
+    describe '#branches_containing' do
+      let_it_be(:commit_sha) { project.commit.sha }
+      let_it_be(:containing_refs) { project.repository.branch_names_contains(commit_sha) }
+
+      let(:ref_prefix) { Gitlab::Git::BRANCH_REF_PREFIX }
+
+      let(:ref_containing) { ->(limit: 0, excluded_tipped: false) { commit.branches_containing(exclude_tipped: excluded_tipped, limit: limit) } }
+
+      it_behaves_like 'containing ref names'
+    end
+
+    describe '#tags_containing' do
+      let_it_be(:tag_name) { 'v1.1.0' }
+      let_it_be(:commit_sha) { project.repository.find_tag(tag_name).target_commit.sha }
+      let_it_be(:containing_refs) { %w[v1.1.0 v1.1.1] }
+
+      let(:ref_prefix) { Gitlab::Git::TAG_REF_PREFIX }
+
+      let(:commit) { project.repository.commit(commit_sha) }
+      let(:ref_containing) { ->(limit: 0, excluded_tipped: false) { commit.tags_containing(exclude_tipped: excluded_tipped, limit: limit) } }
+
+      it_behaves_like 'containing ref names'
+    end
+  end
 end

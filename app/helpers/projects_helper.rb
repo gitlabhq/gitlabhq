@@ -259,6 +259,14 @@ module ProjectsHelper
     cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
   end
 
+  def show_mobile_devops_project_promo?(project)
+    return false unless ::Feature.enabled?(:mobile_devops_projects_promo, project)
+
+    return false unless (project.project_setting.target_platforms & ::ProjectSetting::ALLOWED_TARGET_PLATFORMS).any?
+
+    cookies["hide_mobile_devops_promo_#{project.id}".to_sym].blank?
+  end
+
   def no_password_message
     push_pull_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('topics/git/terminology', anchor: 'pull-and-push') }
     clone_with_https_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('gitlab-basics/start-using-git', anchor: 'clone-with-https') }

@@ -260,6 +260,21 @@ RSpec.describe Groups::MilestonesController do
       expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
       expect(milestone.title).to eq("title changed")
     end
+
+    it "handles ActiveRecord::StaleObjectError" do
+      milestone_params[:title] = "title changed"
+      # Purposely reduce the lock_version to trigger an ActiveRecord::StaleObjectError
+      milestone_params[:lock_version] = milestone.lock_version - 1
+
+      put :update, params: {
+        id: milestone.iid,
+        group_id: group.to_param,
+        milestone: milestone_params
+      }
+
+      expect(response).not_to redirect_to(group_milestone_path(group, milestone.iid))
+      expect(response).to render_template(:edit)
+    end
   end
 
   describe "#destroy" do

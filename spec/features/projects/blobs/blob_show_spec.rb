@@ -580,7 +580,11 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
     end
 
     describe '.gitlab/dashboards/custom-dashboard.yml' do
+      let(:remove_monitor_metrics) { false }
+
       before do
+        stub_feature_flags(remove_monitor_metrics: remove_monitor_metrics)
+
         project.add_maintainer(project.creator)
 
         Files::CreateService.new(
@@ -606,6 +610,15 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
 
             # shows a learn more link
             expect(page).to have_link('Learn more')
+          end
+        end
+
+        context 'when metrics dashboard feature is unavailable' do
+          let(:remove_monitor_metrics) { true }
+
+          it 'displays the blob without an auxiliary viewer' do
+            expect(page).to have_content('Environment metrics')
+            expect(page).not_to have_content('Metrics Dashboard YAML definition', wait: 0)
           end
         end
       end

@@ -37,12 +37,6 @@ GET /projects/:id/packages
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
 ```
 
-> **Deprecation:**
->
-> The `pipelines` attribute in the response is deprecated in favor of the package pipelines endpoint, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. The `pipelines` attribute always returns an empty array if the feature flag is enabled.
-> The `pipeline` attribute in the response is deprecated in favor of `pipelines`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44348) in GitLab 13.6. Both are available until 13.7.
-> The `build_info` attribute in the response is deprecated in favor of `pipeline`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040) in GitLab 12.10.
-
 Example response:
 
 ```json
@@ -52,16 +46,14 @@ Example response:
     "name": "com/mycompany/my-app",
     "version": "1.0-SNAPSHOT",
     "package_type": "maven",
-    "created_at": "2019-11-27T03:37:38.711Z",
-    "pipelines": []
+    "created_at": "2019-11-27T03:37:38.711Z"
   },
   {
     "id": 2,
     "name": "@foo/bar",
     "version": "1.0.3",
     "package_type": "npm",
-    "created_at": "2019-11-27T03:37:38.711Z",
-    "pipelines": []
+    "created_at": "2019-11-27T03:37:38.711Z"
   },
   {
     "id": 3,
@@ -74,8 +66,7 @@ Example response:
       "delete_api_path": "https://gitlab.example.com/api/v4/projects/1/packages/3"
     },
     "created_at": "2029-12-16T20:33:34.316Z",
-    "tags": [],
-    "pipelines": []
+    "tags": []
   }
 ]
 ```
@@ -115,7 +106,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 > **Deprecation:**
 >
-> The `pipelines` attribute in the response is deprecated in favor of the package pipelines endpoint, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. The `pipelines` attribute always returns an empty array if the feature flag is enabled.
 > The `pipeline` attribute in the response is deprecated in favor of `pipelines`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44348) in GitLab 13.6. Both are available until 13.7.
 > The `build_info` attribute in the response is deprecated in favor of `pipeline`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040) in GitLab 12.10.
 
@@ -133,7 +123,21 @@ Example response:
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
     "created_at": "2019-11-27T03:37:38.711Z",
-    "pipelines": []
+    "pipelines": [
+      {
+        "id": 123,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/47",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+        "user": {
+          "name": "Administrator",
+          "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+        }
+      }
+    ]
   },
   {
     "id": 2,
@@ -145,7 +149,21 @@ Example response:
       "delete_api_path": "/namespace1/project1/-/packages/1"
     },
     "created_at": "2019-11-27T03:37:38.711Z",
-    "pipelines": []
+    "pipelines": [
+      {
+        "id": 123,
+        "status": "pending",
+        "ref": "new-pipeline",
+        "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+        "web_url": "https://example.com/foo/bar/pipelines/47",
+        "created_at": "2016-08-11T11:28:34.085Z",
+        "updated_at": "2016-08-11T11:32:35.169Z",
+        "user": {
+          "name": "Administrator",
+          "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+        }
+      }
+    ]
   }
 ]
 ```
@@ -179,7 +197,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 > **Deprecation:**
 >
-> The `pipelines` attribute in the response is deprecated in favor of the package pipelines endpoint, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.0. The `pipelines` attribute always returns an empty array if the feature flag is enabled.
 > The `pipeline` attribute in the response is deprecated in favor of `pipelines`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44348) in GitLab 13.6. Both are available until 13.7.
 > The `build_info` attribute in the response is deprecated in favor of `pipeline`, which was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28040) in GitLab 12.10.
 
@@ -197,7 +214,21 @@ Example response:
   },
   "created_at": "2019-11-27T03:37:38.711Z",
   "last_downloaded_at": "2022-09-07T07:51:50.504Z"
-  "pipelines": [],
+  "pipelines": [
+    {
+      "id": 123,
+      "status": "pending",
+      "ref": "new-pipeline",
+      "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+      "web_url": "https://example.com/foo/bar/pipelines/47",
+      "created_at": "2016-08-11T11:28:34.085Z",
+      "updated_at": "2016-08-11T11:32:35.169Z",
+      "user": {
+        "name": "Administrator",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+      }
+    }
+  ],
   "versions": [
     {
       "id":2,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ContainerRegistry::GitlabApiClient do
+RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   include_context 'container registry client'
@@ -612,6 +612,159 @@ RSpec.describe ContainerRegistry::GitlabApiClient do
       end
 
       it_behaves_like 'fetching the project from container repository and path'
+    end
+  end
+
+  describe '#each_sub_repositories_with_tag_page' do
+    let(:page_size) { 100 }
+    let(:project_path) { 'repo/project' }
+
+    shared_examples 'iterating through a page' do |expected_tags: true|
+      it 'iterates through one page' do
+        expect_next_instance_of(described_class) do |client|
+          expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
+        end
+
+        expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size, &b) }
+          .to yield_with_args(expected_tags ? client_response_repositories : [])
+      end
+    end
+
+    context 'when no block is given' do
+      it 'raises an Argument error' do
+        expect do
+          described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size)
+        end.to raise_error(ArgumentError, 'block not given')
+      end
+    end
+
+    context 'when a block is given' do
+      before do
+        expect(Auth::ContainerRegistryAuthenticationService).to receive(:pull_nested_repositories_access_token).with(project_path).and_return(token)
+        stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+      end
+
+      context 'with an empty page' do
+        let(:client_response) { { pagination: {}, response_body: [] } }
+
+        it_behaves_like 'iterating through a page', expected_tags: false
+      end
+
+      context 'with one page' do
+        let(:client_response) { { pagination: {}, response_body: client_response_repositories } }
+        let(:client_response_repositories) do
+          [
+            {
+              "name": "docker-alpine",
+              "path": "gitlab-org/build/cng/docker-alpine",
+              "created_at": "2022-06-07T12:11:13.633+00:00",
+              "updated_at": "2022-06-07T14:37:49.251+00:00"
+            },
+            {
+              "name": "git-base",
+              "path": "gitlab-org/build/cng/git-base",
+              "created_at": "2022-06-07T12:11:13.633+00:00",
+              "updated_at": "2022-06-07T14:37:49.251+00:00"
+            }
+          ]
+        end
+
+        it_behaves_like 'iterating through a page'
+      end
+
+      context 'with two pages' do
+        let(:client_response1) { { pagination: { next: { uri: URI('http://localhost/next?last=latest') } }, response_body: client_response_repositories1 } }
+        let(:client_response_repositories1) do
+          [
+            {
+              "name": "docker-alpine",
+              "path": "gitlab-org/build/cng/docker-alpine",
+              "created_at": "2022-06-07T12:11:13.633+00:00",
+              "updated_at": "2022-06-07T14:37:49.251+00:00"
+            },
+            {
+              "name": "git-base",
+              "path": "gitlab-org/build/cng/git-base",
+              "created_at": "2022-06-07T12:11:13.633+00:00",
+              "updated_at": "2022-06-07T14:37:49.251+00:00"
+            }
+          ]
+        end
+
+        let(:client_response2) { { pagination: {}, response_body: client_response_repositories2 } }
+        let(:client_response_repositories2) do
+          [
+            {
+              "name": "docker-alpine1",
+              "path": "gitlab-org/build/cng/docker-alpine",
+              "created_at": "2022-06-07T12:11:13.633+00:00",
+              "updated_at": "2022-06-07T14:37:49.251+00:00"
+            },
+            {
+              "name": "git-base1",
+              "path": "gitlab-org/build/cng/git-base",
+              "created_at": "2022-06-07T12:11:13.633+00:00",
+              "updated_at": "2022-06-07T14:37:49.251+00:00"
+            }
+          ]
+        end
+
+        it 'iterates through two pages' do
+          expect_next_instance_of(described_class) do |client|
+            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response1)
+            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: 'latest').and_return(client_response2)
+          end
+
+          expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size, &b) }
+            .to yield_successive_args(client_response_repositories1, client_response_repositories2)
+        end
+      end
+
+      context 'when max pages is reached' do
+        let(:client_response) { { pagination: {}, response_body: [] } }
+
+        before do
+          stub_const('ContainerRegistry::GitlabApiClient::MAX_REPOSITORIES_PAGE_SIZE', 0)
+          expect_next_instance_of(described_class) do |client|
+            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
+          end
+        end
+
+        it 'raises an error' do
+          expect { described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size) {} } # rubocop:disable Lint/EmptyBlock
+            .to raise_error(StandardError, 'too many pages requested')
+        end
+      end
+
+      context 'without a page size set' do
+        let(:client_response) { { pagination: {}, response_body: [] } }
+
+        it 'uses a default size' do
+          expect_next_instance_of(described_class) do |client|
+            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
+          end
+
+          expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, &b) }.to yield_with_args([])
+        end
+      end
+
+      context 'with an empty client response' do
+        let(:client_response) { {} }
+
+        it 'breaks the loop' do
+          expect_next_instance_of(described_class) do |client|
+            expect(client).to receive(:sub_repositories_with_tag).with(project_path, page_size: page_size, last: nil).and_return(client_response)
+          end
+
+          expect { |b| described_class.each_sub_repositories_with_tag_page(path: project_path, page_size: page_size, &b) }.not_to yield_control
+        end
+      end
+
+      context 'with a nil page' do
+        let(:client_response) { { pagination: {}, response_body: nil } }
+
+        it_behaves_like 'iterating through a page', expected_tags: false
+      end
     end
   end
 

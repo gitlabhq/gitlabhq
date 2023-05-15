@@ -40,7 +40,7 @@ For this bot:
 
 Other examples of internal users:
 
-- [Alert Bot](../operations/metrics/alerts.md#trigger-actions-from-alerts)
+- [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk.md#support-bot-user)
 - Visual Review Bot

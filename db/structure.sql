@@ -14486,7 +14486,8 @@ CREATE TABLE container_registry_data_repair_details (
     missing_count integer DEFAULT 0,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE container_repositories (
@@ -18364,7 +18365,8 @@ CREATE TABLE milestones (
     description_html text,
     start_date date,
     cached_markdown_version integer,
-    group_id integer
+    group_id integer,
+    lock_version integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE milestones_id_seq
@@ -30344,6 +30346,8 @@ CREATE INDEX index_composer_cache_files_where_namespace_id_is_null ON packages_c
 
 CREATE INDEX index_container_expiration_policies_on_next_run_at_and_enabled ON container_expiration_policies USING btree (next_run_at, enabled);
 
+CREATE INDEX index_container_registry_data_repair_details_on_status ON container_registry_data_repair_details USING btree (status);
+
 CREATE INDEX index_container_repositories_on_greatest_completed_at ON container_repositories USING btree (GREATEST(migration_pre_import_done_at, migration_import_done_at, migration_aborted_at, migration_skipped_at)) WHERE (migration_state = ANY (ARRAY['import_done'::text, 'pre_import_done'::text, 'import_aborted'::text, 'import_skipped'::text]));
 
 CREATE INDEX index_container_repositories_on_migration_state_import_done_at ON container_repositories USING btree (migration_state, migration_import_done_at);
@@ -33031,8 +33035,6 @@ CREATE UNIQUE INDEX issue_user_mentions_on_issue_id_and_note_id_index ON issue_u
 CREATE UNIQUE INDEX issue_user_mentions_on_issue_id_index ON issue_user_mentions USING btree (issue_id) WHERE (note_id IS NULL);
 
 CREATE UNIQUE INDEX kubernetes_namespaces_cluster_and_namespace ON clusters_kubernetes_namespaces USING btree (cluster_id, namespace);
-
-CREATE INDEX merge_request_mentions_temp_index ON merge_requests USING btree (id) WHERE ((description ~~ '%@%'::text) OR ((title)::text ~~ '%@%'::text));
 
 CREATE UNIQUE INDEX merge_request_user_mentions_on_mr_id_and_note_id_index ON merge_request_user_mentions USING btree (merge_request_id, note_id);
 

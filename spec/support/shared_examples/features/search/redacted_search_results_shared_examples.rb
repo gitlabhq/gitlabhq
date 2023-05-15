@@ -48,14 +48,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible issue' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'Issue', id: unreadable.id, ability: :read_issue }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'Issue', id: unreadable.id, ability: :read_issue }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end
@@ -95,16 +99,18 @@ RSpec.shared_examples 'a redacted search results' do
     end
 
     let(:unredacted_results) do
-      ar_relation(Note,
-      readable_note_on_commit,
-      readable_diff_note,
-      readable_note_on_mr,
-      readable_diff_note_on_mr,
-      readable_note_on_project_snippet,
-      unreadable_note_on_commit,
-      unreadable_diff_note,
-      unreadable_note_on_mr,
-      unreadable_note_on_project_snippet)
+      ar_relation(
+        Note,
+        readable_note_on_commit,
+        readable_diff_note,
+        readable_note_on_mr,
+        readable_diff_note_on_mr,
+        readable_note_on_project_snippet,
+        unreadable_note_on_commit,
+        unreadable_diff_note,
+        unreadable_note_on_mr,
+        unreadable_note_on_project_snippet
+      )
     end
 
     let(:scope) { 'notes' }
@@ -112,23 +118,29 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible notes' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'Note', id: unreadable_note_on_commit.id, ability: :read_note },
-                          { class_name: 'DiffNote', id: unreadable_diff_note.id, ability: :read_note },
-                          { class_name: 'DiscussionNote', id: unreadable_note_on_mr.id, ability: :read_note },
-                          { class_name: 'Note', id: unreadable_note_on_project_snippet.id, ability: :read_note }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'Note', id: unreadable_note_on_commit.id, ability: :read_note },
+                { class_name: 'DiffNote', id: unreadable_diff_note.id, ability: :read_note },
+                { class_name: 'DiscussionNote', id: unreadable_note_on_mr.id, ability: :read_note },
+                { class_name: 'Note', id: unreadable_note_on_project_snippet.id, ability: :read_note }
+              ]
+            )
+          )
+        )
 
-      expect(result).to contain_exactly(readable_note_on_commit,
-                                        readable_diff_note,
-                                        readable_note_on_mr,
-                                        readable_diff_note_on_mr,
-                                        readable_note_on_project_snippet)
+      expect(result).to contain_exactly(
+        readable_note_on_commit,
+        readable_diff_note,
+        readable_note_on_mr,
+        readable_diff_note_on_mr,
+        readable_note_on_project_snippet
+      )
     end
   end
 
@@ -141,14 +153,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible merge request' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'MergeRequest', id: unreadable.id, ability: :read_merge_request }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'MergeRequest', id: unreadable.id, ability: :read_merge_request }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end
@@ -169,14 +185,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible blob' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'Gitlab::Search::FoundBlob', id: unreadable.id, ability: :read_blob }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'Gitlab::Search::FoundBlob', id: unreadable.id, ability: :read_blob }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end
@@ -191,14 +211,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible blob' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'Gitlab::Search::FoundWikiPage', id: unreadable.id, ability: :read_wiki_page }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'Gitlab::Search::FoundWikiPage', id: unreadable.id, ability: :read_wiki_page }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end
@@ -213,14 +237,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible snippet' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'ProjectSnippet', id: unreadable.id, ability: :read_snippet }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'ProjectSnippet', id: unreadable.id, ability: :read_snippet }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end
@@ -239,14 +267,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible snippet' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'PersonalSnippet', id: unreadable.id, ability: :read_snippet }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'PersonalSnippet', id: unreadable.id, ability: :read_snippet }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end
@@ -265,14 +297,18 @@ RSpec.shared_examples 'a redacted search results' do
     it 'redacts the inaccessible commit' do
       expect(search_service.send(:logger))
         .to receive(:error)
-              .with(hash_including(
-                      message: "redacted_search_results",
-                      current_user_id: user.id,
-                      query: search,
-                      filtered: array_including(
-                        [
-                          { class_name: 'Commit', id: unreadable.id, ability: :read_commit }
-                        ])))
+        .with(
+          hash_including(
+            message: "redacted_search_results",
+            current_user_id: user.id,
+            query: search,
+            filtered: array_including(
+              [
+                { class_name: 'Commit', id: unreadable.id, ability: :read_commit }
+              ]
+            )
+          )
+        )
 
       expect(result).to contain_exactly(readable)
     end

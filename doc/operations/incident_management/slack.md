@@ -69,7 +69,7 @@ To declare a GitLab incident from Slack:
    - The project where the incident should be created.
    - The severity of the incident.
 
-   If there is an existing [incident template](../metrics/alerts.md#trigger-actions-from-alerts) for your
+   If there is an existing [incident template](alerts.md#trigger-actions-from-alerts) for your
    project, that template is automatically applied to the description text box. The template is applied
    only if the description text box is empty.
 

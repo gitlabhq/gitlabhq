@@ -108,10 +108,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
      or manually by using the [`ingress-nginx`](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
      Helm chart.
 
-     NOTE:
-     For metrics to appear when using the [Prometheus cluster integration](../../user/clusters/integrations.md#prometheus-cluster-integration), you must [enable Prometheus metrics](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx#prometheus-metrics).
-
-     When deploying [using custom charts](customize.md#custom-helm-chart), you must also
+     When deploying [using custom charts](customize.md#custom-helm-chart), you must
      [annotate](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
      the Ingress manifest to be scraped by Prometheus using
      `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
@@ -141,21 +138,6 @@ To make full use of Auto DevOps with Kubernetes, you need:
   Runners should be registered as [shared runners](../../ci/runners/runners_scope.md#shared-runners)
   for the entire GitLab instance, or [project runners](../../ci/runners/runners_scope.md#project-runners)
   that are assigned to specific projects.
-
-- **Prometheus** (for [Auto Monitoring](stages.md#auto-monitoring))
-
-  To enable Auto Monitoring, you need Prometheus installed either inside or
-  outside your cluster, and configured to scrape your Kubernetes cluster.
-  If you've configured the GitLab integration with Kubernetes, you can
-  instruct GitLab to query an in-cluster Prometheus by enabling
-  the [Prometheus cluster integration](../../user/clusters/integrations.md#prometheus-cluster-integration).
-
-  The [Prometheus integration](../../user/project/integrations/prometheus.md)
-  integration must be activated for the project, or activated at the group or instance level.
-  For more information, see [Project integration management](../../user/admin_area/settings/project_integration_management.md).
-
-  To get response metrics (in addition to system metrics), you must
-  [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
 
 - **cert-manager** (optional, for TLS/HTTPS)
 

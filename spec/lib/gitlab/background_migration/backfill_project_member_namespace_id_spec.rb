@@ -4,10 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectMemberNamespaceId, :migration, schema: 20220516054011 do
   let(:migration) do
-    described_class.new(start_id: 1, end_id: 10,
-                        batch_table: table_name, batch_column: batch_column,
-                        sub_batch_size: sub_batch_size, pause_ms: pause_ms,
-                        connection: ApplicationRecord.connection)
+    described_class.new(
+      start_id: 1, end_id: 10,
+      batch_table: table_name, batch_column: batch_column,
+      sub_batch_size: sub_batch_size, pause_ms: pause_ms,
+      connection: ApplicationRecord.connection
+    )
   end
 
   let(:members_table) { table(:members) }
@@ -35,37 +37,55 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectMemberNamespaceId, :m
     projects_table.create!(id: 102, name: 'project3', path: 'project3', namespace_id: 202, project_namespace_id: 302)
 
     # project1, no member namespace (fill in)
-    members_table.create!(id: 1, source_id: 100,
-                          source_type: 'Project', type: 'ProjectMember',
-                          member_namespace_id: nil, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 1, source_id: 100,
+      source_type: 'Project', type: 'ProjectMember',
+      member_namespace_id: nil, access_level: 10, notification_level: 3
+    )
+
     # bogus source id, no member namespace id (do nothing)
-    members_table.create!(id: 2, source_id: non_existing_record_id,
-                          source_type: 'Project', type: 'ProjectMember',
-                          member_namespace_id: nil, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 2, source_id: non_existing_record_id,
+      source_type: 'Project', type: 'ProjectMember',
+      member_namespace_id: nil, access_level: 10, notification_level: 3
+    )
+
     # project3, existing member namespace id (do nothing)
-    members_table.create!(id: 3, source_id: 102,
-                          source_type: 'Project', type: 'ProjectMember',
-                          member_namespace_id: 300, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 3, source_id: 102,
+      source_type: 'Project', type: 'ProjectMember',
+      member_namespace_id: 300, access_level: 10, notification_level: 3
+    )
 
     # Group memberships (do not change)
     # group1, no member namespace (do nothing)
-    members_table.create!(id: 4, source_id: 201,
-                          source_type: 'Namespace', type: 'GroupMember',
-                          member_namespace_id: nil, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 4, source_id: 201,
+      source_type: 'Namespace', type: 'GroupMember',
+      member_namespace_id: nil, access_level: 10, notification_level: 3
+    )
+
     # group2, existing member namespace (do nothing)
-    members_table.create!(id: 5, source_id: 202,
-                          source_type: 'Namespace', type: 'GroupMember',
-                          member_namespace_id: 201, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 5, source_id: 202,
+      source_type: 'Namespace', type: 'GroupMember',
+      member_namespace_id: 201, access_level: 10, notification_level: 3
+    )
 
     # Project Namespace memberships (do not change)
     # project namespace, existing member namespace (do nothing)
-    members_table.create!(id: 6, source_id: 300,
-                          source_type: 'Namespace', type: 'ProjectNamespaceMember',
-                          member_namespace_id: 201, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 6, source_id: 300,
+      source_type: 'Namespace', type: 'ProjectNamespaceMember',
+      member_namespace_id: 201, access_level: 10, notification_level: 3
+    )
+
     # project namespace, not member namespace (do nothing)
-    members_table.create!(id: 7, source_id: 301,
-                          source_type: 'Namespace', type: 'ProjectNamespaceMember',
-                          member_namespace_id: 201, access_level: 10, notification_level: 3)
+    members_table.create!(
+      id: 7, source_id: 301,
+      source_type: 'Namespace', type: 'ProjectNamespaceMember',
+      member_namespace_id: 201, access_level: 10, notification_level: 3
+    )
   end
 
   it 'backfills `member_namespace_id` for the selected records', :aggregate_failures do

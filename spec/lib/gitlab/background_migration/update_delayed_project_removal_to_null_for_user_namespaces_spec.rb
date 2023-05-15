@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::UpdateDelayedProjectRemovalToNullForUserNamespaces,
-               :migration do
+  :migration do
   let(:namespaces_table) { table(:namespaces) }
   let(:namespace_settings_table) { table(:namespace_settings) }
 

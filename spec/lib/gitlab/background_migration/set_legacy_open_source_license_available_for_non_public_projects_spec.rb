@@ -3,21 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::SetLegacyOpenSourceLicenseAvailableForNonPublicProjects,
-               :migration,
-               schema: 20220722110026 do
+  :migration,
+  schema: 20220722110026 do
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:project_settings_table) { table(:project_settings) }
 
   subject(:perform_migration) do
-    described_class.new(start_id: projects_table.minimum(:id),
-                        end_id: projects_table.maximum(:id),
-                        batch_table: :projects,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                   .perform
+    described_class.new(
+      start_id: projects_table.minimum(:id),
+      end_id: projects_table.maximum(:id),
+      batch_table: :projects,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   it 'sets `legacy_open_source_license_available` attribute to false for non-public projects', :aggregate_failures do
@@ -37,11 +38,13 @@ RSpec.describe Gitlab::BackgroundMigration::SetLegacyOpenSourceLicenseAvailableF
   def create_legacy_license_project(path, visibility_level:)
     namespace = namespaces_table.create!(name: "namespace-#{path}", path: "namespace-#{path}")
     project_namespace = namespaces_table.create!(name: "project-namespace-#{path}", path: path, type: 'Project')
-    project = projects_table.create!(name: path,
-                                     path: path,
-                                     namespace_id: namespace.id,
-                                     project_namespace_id: project_namespace.id,
-                                     visibility_level: visibility_level)
+    project = projects_table.create!(
+      name: path,
+      path: path,
+      namespace_id: namespace.id,
+      project_namespace_id: project_namespace.id,
+      visibility_level: visibility_level
+    )
     project_settings_table.create!(project_id: project.id, legacy_open_source_license_available: true)
 
     project

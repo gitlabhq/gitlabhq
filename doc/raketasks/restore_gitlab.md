@@ -105,6 +105,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
+# NOTE: "_gitlab_backup.tar" is omitted from the name
 sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
 ```
 

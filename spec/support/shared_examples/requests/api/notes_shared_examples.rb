@@ -14,7 +14,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         it 'sorts by created_at in descending order by default' do
           get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user, admin_mode: user.admin?)
 
-          response_dates = json_response.map { |note| note['created_at'] }
+          response_dates = json_response.pluck('created_at')
 
           expect(json_response.length).to eq(4)
           expect(response_dates).to eq(response_dates.sort.reverse)
@@ -42,7 +42,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           it 'page breaks first page correctly' do
             get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?per_page=4", user, admin_mode: user.admin?)
 
-            response_ids = json_response.map { |note| note['id'] }
+            response_ids = json_response.pluck('id')
 
             expect(response_ids).to include(@note2.id)
             expect(response_ids).not_to include(@first_note.id)
@@ -51,7 +51,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
           it 'page breaks second page correctly' do
             get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?per_page=4&page=2", user, admin_mode: user.admin?)
 
-            response_ids = json_response.map { |note| note['id'] }
+            response_ids = json_response.pluck('id')
 
             expect(response_ids).not_to include(@note2.id)
             expect(response_ids).to include(@first_note.id)
@@ -62,7 +62,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       it 'sorts by ascending order when requested' do
         get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?sort=asc", user, admin_mode: user.admin?)
 
-        response_dates = json_response.map { |note| note['created_at'] }
+        response_dates = json_response.pluck('created_at')
 
         expect(json_response.length).to eq(4)
         expect(response_dates).to eq(response_dates.sort)
@@ -71,7 +71,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       it 'sorts by updated_at in descending order when requested' do
         get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?order_by=updated_at", user, admin_mode: user.admin?)
 
-        response_dates = json_response.map { |note| note['updated_at'] }
+        response_dates = json_response.pluck('updated_at')
 
         expect(json_response.length).to eq(4)
         expect(response_dates).to eq(response_dates.sort.reverse)
@@ -80,7 +80,7 @@ RSpec.shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       it 'sorts by updated_at in ascending order when requested' do
         get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?order_by=updated_at&sort=asc", user, admin_mode: user.admin?)
 
-        response_dates = json_response.map { |note| note['updated_at'] }
+        response_dates = json_response.pluck('updated_at')
 
         expect(json_response.length).to eq(4)
         expect(response_dates).to eq(response_dates.sort)

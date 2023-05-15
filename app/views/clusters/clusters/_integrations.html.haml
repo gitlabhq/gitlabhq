@@ -9,7 +9,7 @@
           = prometheus_form.hidden_field :application_type, value: @prometheus_integration.application_type
           .form-group.gl-form-group
             - help_text = s_('ClusterIntegration|Allows GitLab to query a specifically configured in-cluster Prometheus for metrics.')
-            - help_link = link_to(_('More information.'), help_page_path("user/clusters/integrations", anchor: "prometheus-cluster-integration"), target: '_blank', rel: 'noopener noreferrer')
+            - help_link = link_to(_('More information.'), help_page_path("user/clusters/integrations"), target: '_blank', rel: 'noopener noreferrer')
             = prometheus_form.gitlab_ui_checkbox_component :enabled,
                 s_('ClusterIntegration|Enable Prometheus integration'),
                 help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }

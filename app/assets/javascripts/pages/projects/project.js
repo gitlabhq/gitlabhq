@@ -25,6 +25,13 @@ export default class Project {
       $(this).parents('.auto-devops-implicitly-enabled-banner').remove();
       return e.preventDefault();
     });
+    $('.hide-mobile-devops-promo').on('click', function (e) {
+      const projectId = $(this).data('project-id');
+      const cookieKey = `hide_mobile_devops_promo_${projectId}`;
+      setCookie(cookieKey, 'false');
+      $(this).parents('#mobile-devops-promo-banner').remove();
+      return e.preventDefault();
+    });
   }
 
   static changeProject(url) {

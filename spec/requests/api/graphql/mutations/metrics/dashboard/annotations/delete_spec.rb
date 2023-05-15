@@ -17,6 +17,10 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete, feature_categ
     graphql_mutation_response(:delete_annotation)
   end
 
+  before do
+    stub_feature_flags(remove_monitor_metrics: false)
+  end
+
   specify { expect(described_class).to require_graphql_authorizations(:admin_metrics_dashboard_annotation) }
 
   context 'when the user has permission to delete the annotation' do
@@ -53,6 +57,15 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Delete, feature_categ
 
         expect(mutation_response['errors']).to eq([service_response[:message]])
       end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
     end
   end
 

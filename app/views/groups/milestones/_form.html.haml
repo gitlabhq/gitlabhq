@@ -1,5 +1,9 @@
 = gitlab_ui_form_for [@group, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@milestone)
+
+  - if @conflict
+    = render 'shared/model_version_conflict', model_name: _('milestone'), link_path: group_milestone_path(@group, @milestone)
+
   .form-group
     = f.label :title, _("Title")
     = f.text_field :title, maxlength: 255, class: "form-control", data: { qa_selector: "milestone_title_field" }, required: true, autofocus: true
@@ -14,6 +18,8 @@
                               placeholder: _('Write milestone description...')
       .clearfix
       .error-alert
+
+  = f.hidden_field :lock_version
 
   - if @milestone.new_record?
     = f.submit _('Create milestone'), data: { qa_selector: "create_milestone_button" }, class: 'gl-mr-2', pajamas_button: true

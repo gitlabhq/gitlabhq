@@ -44,16 +44,18 @@ RSpec.describe JiraConnect::SyncService, feature_category: :integrations do
       subject
     end
 
-    context 'when a request returns an error' do
-      it 'logs the response as an error' do
+    context 'when a request returns errors' do
+      it 'logs each response as an error' do
         expect_next(client).to store_info(
           [
             { 'errorMessages' => ['some error message'] },
-            { 'errorMessages' => ['x'] }
+            { 'errorMessage' => 'a single error message' },
+            { 'errorMessages' => [] },
+            { 'errorMessage' => '' }
           ])
 
         expect_log(:error, { 'errorMessages' => ['some error message'] })
-        expect_log(:error, { 'errorMessages' => ['x'] })
+        expect_log(:error, { 'errorMessage' => 'a single error message' })
 
         subject
       end

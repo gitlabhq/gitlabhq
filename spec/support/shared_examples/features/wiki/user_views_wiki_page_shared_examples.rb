@@ -9,9 +9,11 @@ RSpec.shared_examples 'User views a wiki page' do
 
   let(:path) { 'image.png' }
   let(:wiki_page) do
-    create(:wiki_page,
-           wiki: wiki,
-           title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})")
+    create(
+      :wiki_page,
+      wiki: wiki,
+      title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})"
+    )
   end
 
   before do

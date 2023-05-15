@@ -224,18 +224,14 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
     context 'without the need for a license' do
       context 'with build info' do
-        let_it_be(:package1) { create(:npm_package, :with_build, project: project) }
-
-        it 'returns an empty array for the pipelines attribute' do
-          subject
-
-          expect(json_response['pipelines']).to be_empty
-        end
-
         it 'does not result in additional queries' do
           control = ActiveRecord::QueryRecorder.new do
             get api(package_url, user)
           end
+
+          pipeline = create(:ci_pipeline, user: user, project: project)
+          create(:ci_build, user: user, pipeline: pipeline, project: project)
+          create(:package_build_info, package: package1, pipeline: pipeline)
 
           expect do
             get api(package_url, user)

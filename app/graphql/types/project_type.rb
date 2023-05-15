@@ -214,6 +214,11 @@ module Types
           null: true,
           description: 'Statistics of the project.'
 
+    field :statistics_details_paths, Types::ProjectStatisticsRedirectType,
+          null: true,
+          description: 'Redirects for Statistics of the project.',
+          calls_gitaly: true
+
     field :repository, Types::RepositoryType,
           null: true,
           description: 'Git repository of the project.'
@@ -612,15 +617,11 @@ module Types
           authorize: :read_cycle_analytics,
           alpha: { milestone: '15.10' }
 
-    field :tags_tipping_at_commit, ::Types::Projects::CommitParentNamesType,
-          null: true,
-          resolver: Resolvers::Projects::TagsTippingAtCommitResolver,
-          description: "Get tag names tipping at a given commit."
-
-    field :branches_tipping_at_commit, ::Types::Projects::CommitParentNamesType,
-          null: true,
-          resolver: Resolvers::Projects::BranchesTippingAtCommitResolver,
-          description: "Get branch names tipping at a given commit."
+    field :commit_references, ::Types::CommitReferencesType,
+      null: true,
+      resolver: Resolvers::Projects::CommitReferencesResolver,
+      alpha: { milestone: '16.0' },
+      description: "Get tag names containing a given commit."
 
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
@@ -728,6 +729,19 @@ module Types
       else
         object.forks.visible_to_user_and_access_level(current_user, minimum_access_level)
       end
+    end
+
+    def statistics_details_paths
+      root_ref = project.repository.root_ref || project.default_branch_or_main
+
+      {
+        repository: Gitlab::Routing.url_helpers.project_tree_url(project, root_ref),
+        wiki: Gitlab::Routing.url_helpers.project_wikis_pages_url(project),
+        build_artifacts: Gitlab::Routing.url_helpers.project_artifacts_url(project),
+        packages: Gitlab::Routing.url_helpers.project_packages_url(project),
+        snippets: Gitlab::Routing.url_helpers.project_snippets_url(project),
+        container_registry: Gitlab::Routing.url_helpers.project_container_registry_index_url(project)
+      }
     end
 
     private

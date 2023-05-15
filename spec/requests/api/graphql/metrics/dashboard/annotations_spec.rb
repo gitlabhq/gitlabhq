@@ -22,6 +22,7 @@ RSpec.describe 'Getting Metrics Dashboard Annotations', feature_category: :metri
     create(:metrics_dashboard_annotation, environment: environment, starting_at: to.advance(minutes: 5), dashboard_path: path)
   end
 
+  let(:remove_monitor_metrics) { false }
   let(:args) { "from: \"#{from}\", to: \"#{to}\"" }
   let(:fields) do
     <<~QUERY
@@ -50,7 +51,7 @@ RSpec.describe 'Getting Metrics Dashboard Annotations', feature_category: :metri
   end
 
   before do
-    stub_feature_flags(remove_monitor_metrics: false)
+    stub_feature_flags(remove_monitor_metrics: remove_monitor_metrics)
     project.add_developer(current_user)
     post_graphql(query, current_user: current_user)
   end
@@ -84,6 +85,20 @@ RSpec.describe 'Getting Metrics Dashboard Annotations', feature_category: :metri
       let(:args) { "from: \"#{from}\"" }
 
       it_behaves_like 'a working graphql query'
+    end
+  end
+
+  context 'when metrics dashboard feature is unavailable' do
+    let(:remove_monitor_metrics) { true }
+
+    it_behaves_like 'a working graphql query'
+
+    it 'returns nil' do
+      annotations = graphql_data.dig(
+        'project', 'environments', 'nodes', 0, 'metricsDashboard', 'annotations'
+      )
+
+      expect(annotations).to be_nil
     end
   end
 end

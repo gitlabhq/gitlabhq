@@ -121,6 +121,7 @@ Requirements and limitations:
   Otherwise, scan result policies do not have any effect.
 - The maximum number of policies is five.
 - Each policy can have a maximum of five rules.
+- All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
 
 ## Example security scan result policies project
 

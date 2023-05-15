@@ -11,6 +11,10 @@ module BlobViewer
     self.file_types = %i(metrics_dashboard)
     self.binary = false
 
+    def self.can_render?(blob, verify_binary: true)
+      super && !Feature.enabled?(:remove_monitor_metrics)
+    end
+
     def valid?
       errors.blank?
     end

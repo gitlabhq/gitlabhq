@@ -1507,6 +1507,7 @@ Payload example:
   "deployable_id": 796,
   "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
   "environment": "staging",
+  "environment_tier": "staging",
   "environment_slug": "staging",
   "environment_external_url": "https://staging.example.com",
   "project": {

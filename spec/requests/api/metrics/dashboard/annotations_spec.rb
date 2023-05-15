@@ -16,6 +16,7 @@ RSpec.describe API::Metrics::Dashboard::Annotations, feature_category: :metrics 
     let(:url) { "/#{source_type.pluralize}/#{source.id}/metrics_dashboard/annotations" }
 
     before do
+      stub_feature_flags(remove_monitor_metrics: false)
       project.add_developer(user)
     end
 
@@ -102,6 +103,18 @@ RSpec.describe API::Metrics::Dashboard::Annotations, feature_category: :metrics 
           post api(url, guest), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when metrics dashboard feature is unavailable' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: true)
+        end
+
+        it 'returns 404 not found' do
+          post api(url, user), params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

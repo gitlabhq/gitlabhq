@@ -14,7 +14,7 @@ RSpec.shared_examples 'custom attributes endpoints' do |attributable_name|
         get api("/#{attributable_name}", user), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.map { |r| r['id'] }).to include(attributable.id, other_attributable.id)
+        expect(json_response.pluck('id')).to include(attributable.id, other_attributable.id)
       end
     end
 

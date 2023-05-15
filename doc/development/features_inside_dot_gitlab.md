@@ -9,7 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 We have implemented standard features that depend on configuration files in the `.gitlab/` directory. You can find `.gitlab/` in various GitLab repositories.
 When implementing new features, please refer to these existing features to avoid conflicts:
 
-- [Custom Dashboards](../operations/metrics/dashboards/index.md#add-a-new-dashboard-to-your-project): `.gitlab/dashboards/`.
 - [Issue Templates](../user/project/description_templates.md#create-an-issue-template): `.gitlab/issue_templates/`.
 - [Merge request Templates](../user/project/description_templates.md#create-a-merge-request-template): `.gitlab/merge_request_templates/`.
 - [GitLab agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/configuration_repository.md#layout): `.gitlab/agents/`.

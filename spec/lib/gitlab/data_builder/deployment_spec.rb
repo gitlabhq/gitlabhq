@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::Deployment do
+RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_delivery do
   describe '.build' do
     it 'returns the object kind for a deployment' do
       deployment = build(:deployment, deployable: nil, environment: create(:environment))
@@ -40,6 +40,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       expect(data[:commit_url]).to eq(expected_commit_url)
       expect(data[:commit_title]).to eq(commit.title)
       expect(data[:ref]).to eq(deployment.ref)
+      expect(data[:environment_tier]).to eq('other')
     end
 
     it 'does not include the deployable URL when there is no deployable' do

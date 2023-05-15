@@ -95,6 +95,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
     it { is_expected.to have_one(:mock_ci_integration) }
     it { is_expected.to have_one(:mock_monitoring_integration) }
     it { is_expected.to have_one(:service_desk_custom_email_verification).class_name('ServiceDesk::CustomEmailVerification') }
+    it { is_expected.to have_one(:container_registry_data_repair_detail).class_name('ContainerRegistry::DataRepairDetail') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
@@ -6797,6 +6798,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :projects do
       create(:project, namespace: group_4)
 
       expect(described_class.for_group_and_its_ancestor_groups(group_3)).to match_array([project_1, project_2, project_3])
+    end
+  end
+
+  describe '.pending_data_repair_analysis' do
+    it 'returns projects that are not in ContainerRegistry::DataRepairDetail' do
+      project_1 = create(:project)
+      project_2 = create(:project)
+
+      expect(described_class.pending_data_repair_analysis).to match_array([project_1, project_2])
+
+      create(:container_registry_data_repair_detail, project: project_1)
+
+      expect(described_class.pending_data_repair_analysis).to match_array([project_2])
     end
   end
 

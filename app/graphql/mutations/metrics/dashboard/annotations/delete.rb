@@ -14,6 +14,8 @@ module Mutations
                   description: 'Global ID of the annotation to delete.'
 
           def resolve(id:)
+            raise_resource_not_available_error! if Feature.enabled?(:remove_monitor_metrics)
+
             annotation = authorized_find!(id: id)
 
             result = ::Metrics::Dashboard::Annotations::DeleteService.new(context[:current_user], annotation).execute

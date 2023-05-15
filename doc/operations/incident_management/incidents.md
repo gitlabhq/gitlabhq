@@ -70,7 +70,7 @@ To filter the incident list by author or assignee, enter these values in the sea
 ### Summary
 
 The summary section for incidents provides critical details about the
-incident and the contents of the issue template (if [selected](../metrics/alerts.md#trigger-actions-from-alerts)). The highlighted
+incident and the contents of the issue template (if [selected](alerts.md#trigger-actions-from-alerts)). The highlighted
 bar at the top of the incident displays from left to right:
 
 - The link to the original alert.
@@ -87,7 +87,7 @@ Below the highlight bar, a summary includes the following fields:
 The incident summary can be further customized using
 [GitLab Flavored Markdown](../../user/markdown.md).
 
-If an incident is [created from an alert](../metrics/alerts.md#trigger-actions-from-alerts)
+If an incident is [created from an alert](alerts.md#trigger-actions-from-alerts)
 that provided Markdown for the incident, then the Markdown is appended to the summary.
 If an incident template is configured for the project, then the template content is appended at the end.
 
@@ -169,14 +169,13 @@ label to the incident.
 ## Related topics
 
 - [Create an incident](manage_incidents.md#create-an-incident)
-- [Create an incident automatically](../metrics/alerts.md#trigger-actions-from-alerts)
+- [Create an incident automatically](alerts.md#trigger-actions-from-alerts)
   whenever an alert is triggered
 - [View incidents list](manage_incidents.md#view-incidents-list)
 - [Assign to a user](manage_incidents.md#assign-to-a-user)
 - [Change incident severity](manage_incidents.md#change-severity)
 - [Change incident status](manage_incidents.md#change-status)
 - [Change escalation policy](manage_incidents.md#change-escalation-policy)
-- [Embed metrics](manage_incidents.md#embed-metrics)
 - [Close an incident](manage_incidents.md#close-an-incident)
 - [Automatically close incidents via recovery alerts](manage_incidents.md#automatically-close-incidents-via-recovery-alerts)
 - [Add a to-do item](../../user/todos.md#create-a-to-do-item)

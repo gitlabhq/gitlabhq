@@ -70,7 +70,7 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
 
       get_container_repository_storage_moves
 
-      json_ids = json_response.map { |storage_move| storage_move['id'] }
+      json_ids = json_response.pluck('id')
       expect(json_ids).to eq([storage_move.id, storage_move_middle.id, storage_move_oldest.id])
     end
 

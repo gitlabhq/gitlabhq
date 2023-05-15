@@ -399,11 +399,10 @@ RSpec.shared_examples 'wiki controller actions' do
     let(:id_param) { wiki_title }
 
     subject(:request) do
-      patch(:update,
-            params: routing_params.merge(
-              id: id_param,
-              wiki: { title: new_title, content: new_content }
-            ))
+      patch(:update, params: routing_params.merge(
+        id: id_param,
+        wiki: { title: new_title, content: new_content }
+      ))
     end
 
     it_behaves_like 'edit action'
@@ -439,10 +438,9 @@ RSpec.shared_examples 'wiki controller actions' do
     let(:new_content) { 'New content' }
 
     subject(:request) do
-      post(:create,
-            params: routing_params.merge(
-              wiki: { title: new_title, content: new_content }
-            ))
+      post(:create, params: routing_params.merge(
+        wiki: { title: new_title, content: new_content }
+      ))
     end
 
     context 'when page is valid' do
@@ -476,10 +474,9 @@ RSpec.shared_examples 'wiki controller actions' do
     let(:delete_user) { user }
 
     subject(:request) do
-      delete(:destroy,
-            params: routing_params.merge(
-              id: id_param
-            ))
+      delete(:destroy, params: routing_params.merge(
+        id: id_param
+      ))
     end
 
     before do

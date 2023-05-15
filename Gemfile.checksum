@@ -652,7 +652,6 @@
 {"name":"tty-screen","version":"0.8.1","platform":"ruby","checksum":"6508657c38f32bdca64880abe201ce237d80c94146e1f9b911cba3c7823659a2"},
 {"name":"typhoeus","version":"1.4.0","platform":"ruby","checksum":"fff9880d5dc35950e7706cf132fd297f377c049101794be1cf01c95567f642d4"},
 {"name":"tzinfo","version":"2.0.6","platform":"ruby","checksum":"8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b"},
-{"name":"u2f","version":"0.2.1","platform":"ruby","checksum":"7907b163c00682ce94d82178154af2ec3930e50f342c3502d64929c6370c5553"},
 {"name":"uber","version":"0.1.0","platform":"ruby","checksum":"5beeb407ff807b5db994f82fa9ee07cfceaa561dad8af20be880bc67eba935dc"},
 {"name":"undercover","version":"0.4.5","platform":"ruby","checksum":"27bb5d708e253e2c1a3f3edd3668a30728f0e59a1e18004b623d5e7b1e86f3b9"},
 {"name":"unf","version":"0.1.4","platform":"java","checksum":"49a5972ec0b3d091d3b0b2e00113f2f342b9b212f0db855eb30a629637f6d302"},

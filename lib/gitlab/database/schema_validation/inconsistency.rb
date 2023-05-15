@@ -18,6 +18,10 @@ module Gitlab
           validator_class.name.demodulize.underscore
         end
 
+        def object_type
+          structure_sql_object&.class&.name&.demodulize || database_object&.class&.name&.demodulize
+        end
+
         def table_name
           structure_sql_object&.table_name || database_object&.table_name
         end
@@ -40,10 +44,6 @@ module Gitlab
           MSG
         end
 
-        private
-
-        attr_reader :validator_class, :structure_sql_object, :database_object
-
         def structure_sql_statement
           return unless structure_sql_object
 
@@ -55,6 +55,10 @@ module Gitlab
 
           "#{database_object.statement}\n"
         end
+
+        private
+
+        attr_reader :validator_class, :structure_sql_object, :database_object
       end
     end
   end

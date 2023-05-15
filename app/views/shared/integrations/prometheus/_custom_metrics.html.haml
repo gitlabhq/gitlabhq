@@ -3,7 +3,7 @@
 .col-lg-3
   %p
     = s_('PrometheusService|Custom metrics require Prometheus installed on a cluster with environment scope "*" OR a manually configured Prometheus to be available.')
-    = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/index.md', anchor: 'adding-custom-metrics'), target: '_blank', rel: "noopener noreferrer"
+    = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/index.md'), target: '_blank', rel: "noopener noreferrer"
 
 .col-lg-9
   = render Pajamas::CardComponent.new(header_options: { class: 'gl-display-flex gl-align-items-center' }, body_options: { class: 'gl-p-0' }, card_options: { class: 'gl-mb-5 custom-monitored-metrics js-panel-custom-monitored-metrics', data: { active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data, service_active: "#{integration.active}" } }) do |c|

@@ -11293,7 +11293,13 @@ msgstr ""
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
 msgstr ""
 
+msgid "ComplianceFrameworks|Requires Ultimate subscription"
+msgstr ""
+
 msgid "ComplianceFrameworks|Saved changes to compliance framework"
+msgstr ""
+
+msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Set default"
@@ -25481,9 +25487,6 @@ msgstr ""
 msgid "JobAssistant|Error - Valid value is between 1 second and 1 week"
 msgstr ""
 
-msgid "JobAssistant|Example: %{entrypointPlaceholderExample}, Input format: %{entrypointPlaceholderInput}"
-msgstr ""
-
 msgid "JobAssistant|Image"
 msgstr ""
 
@@ -25505,7 +25508,10 @@ msgstr ""
 msgid "JobAssistant|Job name"
 msgstr ""
 
-msgid "JobAssistant|Please use \",\" to separate array type fields."
+msgid "JobAssistant|Please enter the parameters."
+msgstr ""
+
+msgid "JobAssistant|Please separate array type fields with new lines"
 msgstr ""
 
 msgid "JobAssistant|Rules"
@@ -25514,13 +25520,13 @@ msgstr ""
 msgid "JobAssistant|Script"
 msgstr ""
 
-msgid "JobAssistant|Service"
-msgstr ""
-
 msgid "JobAssistant|Service entrypoint (optional)"
 msgstr ""
 
 msgid "JobAssistant|Service name (optional)"
+msgstr ""
+
+msgid "JobAssistant|Services"
 msgstr ""
 
 msgid "JobAssistant|Stage (optional)"
@@ -27264,6 +27270,9 @@ msgid "MattermostService|Command trigger word"
 msgstr ""
 
 msgid "MattermostService|Fill in the word that works best for your team."
+msgstr ""
+
+msgid "MattermostService|Install"
 msgstr ""
 
 msgid "MattermostService|Request URL"
@@ -36133,6 +36142,9 @@ msgstr ""
 msgid "Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones."
 msgstr ""
 
+msgid "Promotions|Get started with GitLab Mobile DevOps"
+msgstr ""
+
 msgid "Promotions|Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr ""
 
@@ -36178,6 +36190,9 @@ msgstr ""
 msgid "Promotions|Set the number of necessary approvals and define a list of approvers needed for every merge request in a project."
 msgstr ""
 
+msgid "Promotions|Ship faster with GitLab Mobile DevOps."
+msgstr ""
+
 msgid "Promotions|Start GitLab Ultimate trial"
 msgstr ""
 
@@ -36209,6 +36224,9 @@ msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."
 msgstr ""
 
 msgid "Promotions|Upgrade your plan to improve repositories."
+msgstr ""
+
+msgid "Promotions|Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps for Android and iOS using GitLab CI/CD."
 msgstr ""
 
 msgid "Promotions|Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
@@ -42430,6 +42448,12 @@ msgid "Someone edited the file the same time you did. Please check out %{link_st
 msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
+msgstr ""
+
+msgid "Someone edited this %{model_name} at the same time you did. Please check out the %{link_to_model} and make sure your changes will not unintentionally remove theirs."
+msgstr ""
+
+msgid "Someone edited this %{model_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
 msgid "Someone edited this merge request at the same time you did. Please refresh the page to see changes."

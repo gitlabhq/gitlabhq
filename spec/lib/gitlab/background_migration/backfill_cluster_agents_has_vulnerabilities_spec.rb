@@ -4,10 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillClusterAgentsHasVulnerabilities, :migration do # rubocop:disable Layout/LineLength
   let(:migration) do
-    described_class.new(start_id: 1, end_id: 10,
-                        batch_table: table_name, batch_column: batch_column,
-                        sub_batch_size: sub_batch_size, pause_ms: pause_ms,
-                        connection: ApplicationRecord.connection)
+    described_class.new(
+      start_id: 1, end_id: 10,
+      batch_table: table_name, batch_column: batch_column,
+      sub_batch_size: sub_batch_size, pause_ms: pause_ms,
+      connection: ApplicationRecord.connection
+    )
   end
 
   let(:users_table) { table(:users) }

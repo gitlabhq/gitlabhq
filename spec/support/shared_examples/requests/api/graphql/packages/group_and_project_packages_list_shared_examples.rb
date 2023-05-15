@@ -279,11 +279,11 @@ RSpec.shared_examples 'group and project packages query' do
     end
 
     def npm_pipeline_ids
-      graphql_data_npm_package.dig('pipelines', 'nodes').map { |pipeline| pipeline['id'] }
+      graphql_data_npm_package.dig('pipelines', 'nodes').pluck('id')
     end
 
     def composer_pipeline_ids
-      graphql_data_composer_package.dig('pipelines', 'nodes').map { |pipeline| pipeline['id'] }
+      graphql_data_composer_package.dig('pipelines', 'nodes').pluck('id')
     end
 
     def graphql_data_npm_package

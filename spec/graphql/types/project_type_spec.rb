@@ -24,7 +24,7 @@ RSpec.describe GitlabSchema.types['Project'] do
       snippets_enabled jobs_enabled public_jobs open_issues_count import_status
       only_allow_merge_if_pipeline_succeeds request_access_enabled
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
-      namespace group statistics repository merge_requests merge_request issues
+      namespace group statistics statistics_details_paths repository merge_requests merge_request issues
       issue milestones pipelines removeSourceBranchAfterMerge pipeline_counts sentryDetailedError snippets
       grafanaIntegration autocloseReferencedIssues suggestion_commit_message environments
       environment boards jira_import_status jira_imports services releases release

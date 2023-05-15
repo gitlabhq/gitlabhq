@@ -647,6 +647,7 @@ project:
 - redirect_routes
 - statistics
 - container_repositories
+- container_registry_data_repair_detail
 - uploads
 - file_uploads
 - import_state

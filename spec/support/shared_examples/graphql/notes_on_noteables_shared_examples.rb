@@ -4,9 +4,11 @@ RSpec.shared_context 'exposing regular notes on a noteable in GraphQL' do
   include GraphqlHelpers
 
   let(:note) do
-    create(:note,
-           noteable: noteable,
-           project: (noteable.project if noteable.respond_to?(:project)))
+    create(
+      :note,
+      noteable: noteable,
+      project: (noteable.project if noteable.respond_to?(:project))
+    )
   end
 
   let(:user) { note.author }

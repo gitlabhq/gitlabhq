@@ -386,7 +386,7 @@ You can also [enable reindexing as a regular cron job](https://docs.gitlab.com/o
 
 Sometimes you may need to re-import the common metrics that power the Metrics dashboards.
 
-This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics), or as a [troubleshooting measure](../../operations/metrics/dashboards/index.md#troubleshooting).
+This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics).
 
 To re-import the metrics you can run:
 

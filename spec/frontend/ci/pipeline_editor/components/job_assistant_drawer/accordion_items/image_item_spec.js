@@ -8,8 +8,8 @@ describe('Image item', () => {
   const findImageNameInput = () => wrapper.findByTestId('image-name-input');
   const findImageEntrypointInput = () => wrapper.findByTestId('image-entrypoint-input');
 
-  const dummyImageName = 'dummyImageName';
-  const dummyImageEntrypoint = 'dummyImageEntrypoint';
+  const dummyImageName = 'a';
+  const dummyImageEntrypoint = ['b', 'c'];
 
   const createComponent = ({ job = JSON.parse(JSON.stringify(JOB_TEMPLATE)) } = {}) => {
     wrapper = shallowMountExtended(ImageItem, {
@@ -31,9 +31,9 @@ describe('Image item', () => {
     expect(wrapper.emitted('update-job')).toHaveLength(1);
     expect(wrapper.emitted('update-job')[0]).toEqual(['image.name', dummyImageName]);
 
-    findImageEntrypointInput().vm.$emit('input', dummyImageEntrypoint);
+    findImageEntrypointInput().vm.$emit('input', dummyImageEntrypoint.join('\n'));
 
     expect(wrapper.emitted('update-job')).toHaveLength(2);
-    expect(wrapper.emitted('update-job')[1]).toEqual(['image.entrypoint', [dummyImageEntrypoint]]);
+    expect(wrapper.emitted('update-job')[1]).toEqual(['image.entrypoint', dummyImageEntrypoint]);
   });
 });

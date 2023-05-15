@@ -1,5 +1,9 @@
 = gitlab_ui_form_for [@project, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@milestone)
+
+  - if @conflict
+    = render 'shared/model_version_conflict', model_name: _('milestone'), link_path: project_milestone_path(@project, @milestone)
+
   - if @redirect_path.present?
     = f.hidden_field(:redirect_path, name: :redirect_path, id: :redirect_path, value: @redirect_path)
   .form-group
@@ -17,6 +21,8 @@
       = render 'shared/notes/hints'
     .clearfix
     .error-alert
+
+  = f.hidden_field :lock_version
 
   - if @milestone.new_record?
     = f.submit _('Create milestone'), data: { qa_selector: 'create_milestone_button' }, class: 'gl-mr-2', pajamas_button: true

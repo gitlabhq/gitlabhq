@@ -85,7 +85,6 @@ gem 'invisible_captcha', '~> 2.0.0'
 gem 'devise-two-factor', '~> 4.0.2'
 gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted'
-gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.11'

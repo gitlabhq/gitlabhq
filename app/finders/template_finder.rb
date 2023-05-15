@@ -16,15 +16,26 @@ class TemplateFinder
     def build(type, project, params = {})
       if type.to_s == 'licenses'
         LicenseTemplateFinder.new(project, params) # rubocop: disable CodeReuse/Finder
-      else
+      elsif type_allowed?(type)
         new(type, project, params)
       end
     end
 
     def all_template_names(project, type)
-      return {} if !VENDORED_TEMPLATES.key?(type.to_s) && type.to_s != 'licenses'
+      return {} unless type_allowed?(type)
 
       build(type, project).template_names
+    end
+
+    def type_allowed?(type)
+      case type.to_s
+      when 'licenses'
+        true
+      when 'metrics_dashboard_ymls'
+        !Feature.enabled?(:remove_monitor_metrics)
+      else
+        VENDORED_TEMPLATES.key?(type)
+      end
     end
   end
 

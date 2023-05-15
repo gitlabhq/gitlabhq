@@ -6,14 +6,8 @@
 = form_errors(issuable)
 
 - if @conflict
-  = render Pajamas::AlertComponent.new(variant: :danger,
-    dismissible: false,
-    alert_options: { class: 'gl-mb-5' }) do |c|
-    = c.body do
-      Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
-      Please check out
-      = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project, issuable]), target: "_blank", rel: 'noopener noreferrer'
-      and make sure your changes will not unintentionally remove theirs
+  - model_name = _(issuable.class.model_name.human.downcase)
+  = render 'shared/model_version_conflict', model_name: model_name, link_path: polymorphic_path([@project, issuable])
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 

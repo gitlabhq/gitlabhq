@@ -22,18 +22,29 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceIdForNamespaceRoute
   subject(:perform_migration) { migration.perform(1, 10, table_name, batch_column, sub_batch_size, pause_ms) }
 
   before do
-    routes_table.create!(id: 1, name: 'test1', path: 'test1', source_id: namespace1.id,
-                         source_type: namespace1.class.sti_name)
-    routes_table.create!(id: 2, name: 'test2', path: 'test2', source_id: namespace2.id,
-                         source_type: namespace2.class.sti_name)
-    routes_table.create!(id: 5, name: 'test3', path: 'test3', source_id: project1.id,
-                         source_type: project1.class.sti_name) # should be ignored - project route
-    routes_table.create!(id: 6, name: 'test4', path: 'test4', source_id: non_existing_record_id,
-                         source_type: namespace3.class.sti_name) # should be ignored - invalid source_id
-    routes_table.create!(id: 10, name: 'test5', path: 'test5', source_id: namespace3.id,
-                         source_type: namespace3.class.sti_name)
-    routes_table.create!(id: 11, name: 'test6', path: 'test6', source_id: namespace4.id,
-                         source_type: namespace4.class.sti_name) # should be ignored - outside the scope
+    routes_table.create!(
+      id: 1, name: 'test1', path: 'test1', source_id: namespace1.id, source_type: namespace1.class.sti_name
+    )
+
+    routes_table.create!(
+      id: 2, name: 'test2', path: 'test2', source_id: namespace2.id, source_type: namespace2.class.sti_name
+    )
+
+    routes_table.create!(
+      id: 5, name: 'test3', path: 'test3', source_id: project1.id, source_type: project1.class.sti_name
+    ) # should be ignored - project route
+
+    routes_table.create!(
+      id: 6, name: 'test4', path: 'test4', source_id: non_existing_record_id, source_type: namespace3.class.sti_name
+    ) # should be ignored - invalid source_id
+
+    routes_table.create!(
+      id: 10, name: 'test5', path: 'test5', source_id: namespace3.id, source_type: namespace3.class.sti_name
+    )
+
+    routes_table.create!(
+      id: 11, name: 'test6', path: 'test6', source_id: namespace4.id, source_type: namespace4.class.sti_name
+    ) # should be ignored - outside the scope
   end
 
   it 'backfills `type` for the selected records', :aggregate_failures do

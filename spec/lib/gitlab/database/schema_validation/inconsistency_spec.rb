@@ -50,6 +50,32 @@ RSpec.describe Gitlab::Database::SchemaValidation::Inconsistency, feature_catego
     end
   end
 
+  describe '#object_type' do
+    it 'returns the structure sql object type' do
+      expect(inconsistency.object_type).to eq('Index')
+    end
+
+    context 'when the structure sql object is not available' do
+      subject(:inconsistency) { described_class.new(validator, nil, database_object) }
+
+      it 'returns the database object type' do
+        expect(inconsistency.object_type).to eq('Index')
+      end
+    end
+  end
+
+  describe '#structure_sql_statement' do
+    it 'returns structure sql statement' do
+      expect(inconsistency.structure_sql_statement).to eq("#{structure_sql_statement}\n")
+    end
+  end
+
+  describe '#database_statement' do
+    it 'returns database statement' do
+      expect(inconsistency.database_statement).to eq("#{database_statement}\n")
+    end
+  end
+
   describe '#inspect' do
     let(:expected_output) do
       <<~MSG

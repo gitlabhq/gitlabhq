@@ -724,4 +724,12 @@ RSpec.describe Milestone do
       end
     end
   end
+
+  describe '#lock_version' do
+    let_it_be(:milestone) { create(:milestone, project: project) }
+
+    it 'ensures that lock_version and optimistic locking is enabled' do
+      expect(milestone.lock_version).to be_present
+    end
+  end
 end

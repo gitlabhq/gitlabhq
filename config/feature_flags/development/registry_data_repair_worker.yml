@@ -1,0 +1,8 @@
+---
+name: registry_data_repair_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115156
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/397505
+milestone: '16.0'
+type: development
+group: group::container registry
+default_enabled: false

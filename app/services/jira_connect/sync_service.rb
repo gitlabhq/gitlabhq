@@ -31,7 +31,9 @@ module JiraConnect
         jira_response: response&.to_json
       }
 
-      if response && response['errorMessages'].present?
+      has_errors = response && (response['errorMessage'].present? || response['errorMessages'].present?)
+
+      if has_errors
         logger.error(message)
       else
         logger.info(message)

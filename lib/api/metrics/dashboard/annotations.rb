@@ -40,6 +40,8 @@ module API
             end
 
             post ':id/metrics_dashboard/annotations' do
+              not_found! if Feature.enabled?(:remove_monitor_metrics)
+
               annotations_source_object = annotations_source[:class].find(params[:id])
 
               forbidden! unless can?(current_user, :admin_metrics_dashboard_annotation, annotations_source_object)

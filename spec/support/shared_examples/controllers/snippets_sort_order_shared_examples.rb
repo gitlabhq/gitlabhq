@@ -15,8 +15,9 @@ RSpec.shared_examples 'snippets sort order' do
 
   context 'when no sort param is provided' do
     it 'calls SnippetsFinder with updated_at sort option' do
-      expect(SnippetsFinder).to receive(:new).with(user,
-          hash_including(sort: 'updated_desc')).and_call_original
+      expect(SnippetsFinder).to receive(:new)
+        .with(user, hash_including(sort: 'updated_desc'))
+        .and_call_original
 
       subject
     end
@@ -27,8 +28,9 @@ RSpec.shared_examples 'snippets sort order' do
     let(:sort_argument) { { sort: order } }
 
     it 'calls SnippetsFinder with the given sort param' do
-      expect(SnippetsFinder).to receive(:new).with(user,
-          hash_including(sort: order)).and_call_original
+      expect(SnippetsFinder).to receive(:new)
+        .with(user, hash_including(sort: order))
+        .and_call_original
 
       subject
     end

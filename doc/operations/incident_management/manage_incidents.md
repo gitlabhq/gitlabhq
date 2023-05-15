@@ -70,7 +70,7 @@ You are then credited with the alert's status change.
 
 ### Automatically, when an alert is triggered **(ULTIMATE)**
 
-In the project settings, you can turn on [creating an incident automatically](../metrics/alerts.md#trigger-actions-from-alerts)
+In the project settings, you can turn on [creating an incident automatically](alerts.md#trigger-actions-from-alerts)
 whenever an alert is triggered.
 
 ### Using the PagerDuty webhook
@@ -201,18 +201,14 @@ In GitLab 15.1 and earlier, the escalation policy for [incidents created from al
 reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident escalation policy is independent and can be changed.
 
-## Embed metrics
+<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
-You can embed metrics anywhere [GitLab Flavored Markdown](../../user/markdown.md) is
-used, like descriptions or comments. Embedding
-metrics helps you share them when discussing incidents or performance issues.
+## Embed metrics (removed)
 
-To embed metrics in a Markdown text box in GitLab,
-[paste the link to the dashboard](../metrics/embed.md#embedding-gitlab-managed-kubernetes-metrics).
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
 
-You can embed both [GitLab-hosted metrics](../metrics/embed.md) (deprecated) and
-[Grafana metrics](../metrics/embed_grafana.md) in incidents and issue
-templates.
+<!--- end_remove -->
 
 ## Close an incident
 

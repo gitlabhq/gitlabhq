@@ -37,7 +37,6 @@ module Gitlab
           {
             title: issue_title,
             description: issue_description,
-            confidential: true,
             issue_type: 'issue',
             labels: %w[database database-inconsistency-report]
           }
@@ -51,10 +50,32 @@ module Gitlab
           <<~MSG
             We have detected a new schema inconsistency.
 
-            Table_name: #{inconsistency.table_name}
-            Object_name: #{inconsistency.object_name}
-            Validator_name: #{inconsistency.type}
-            Error_message: #{inconsistency.error_message}
+            **Table name:** #{inconsistency.table_name}\
+            **Object name:** #{inconsistency.object_name}\
+            **Validator name:** #{inconsistency.type}\
+            **Object type:** #{inconsistency.object_type}\
+            **Error message:** #{inconsistency.error_message}
+
+
+            **Structure.sql statement:**
+
+            ```sql
+            #{inconsistency.structure_sql_statement}
+            ```
+
+            **Database statement:**
+
+            ```sql
+            #{inconsistency.database_statement}
+            ```
+
+            **Diff:**
+
+            ```diff
+            #{inconsistency.diff}
+
+            ```
+
 
             For more information, please contact the database team.
           MSG

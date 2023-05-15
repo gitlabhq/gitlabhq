@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver do
+RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver, feature_category: :metrics do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -23,6 +23,10 @@ RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver do
 
       before_all do
         environment.project.add_developer(current_user)
+      end
+
+      before do
+        stub_feature_flags(remove_monitor_metrics: false)
       end
 
       context 'with annotation records' do
@@ -53,6 +57,16 @@ RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver do
             end
 
             expect(resolve_annotations).to be_empty
+          end
+        end
+
+        context 'when metrics dashboard feature is unavailable' do
+          before do
+            stub_feature_flags(remove_monitor_metrics: true)
+          end
+
+          it 'returns nothing' do
+            expect(resolve_annotations).to be_nil
           end
         end
       end

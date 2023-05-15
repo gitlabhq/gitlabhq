@@ -34,7 +34,7 @@ describe('Services item', () => {
     expect(wrapper.emitted('update-job')).toHaveLength(1);
     expect(wrapper.emitted('update-job')[0]).toEqual(['services[0].name', dummyServiceName]);
 
-    findServiceEntrypointInputByIndex(0).vm.$emit('input', dummyServiceEntrypoint.join(','));
+    findServiceEntrypointInputByIndex(0).vm.$emit('input', dummyServiceEntrypoint.join('\n'));
 
     expect(wrapper.emitted('update-job')).toHaveLength(2);
     expect(wrapper.emitted('update-job')[1]).toEqual([

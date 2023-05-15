@@ -18,7 +18,7 @@ RSpec.shared_examples 'returns repositories for allowed users' do |user_type, sc
       subject
 
       expect(json_response.length).to eq(2)
-      expect(json_response.map { |repository| repository['id'] }).to contain_exactly(
+      expect(json_response.pluck('id')).to contain_exactly(
         root_repository.id, test_repository.id)
       expect(response.body).not_to include('tags')
       expect(response.body).not_to include('tags_count')
@@ -47,7 +47,7 @@ RSpec.shared_examples 'returns tags for allowed users' do |user_type, scope|
         subject
 
         expect(json_response.length).to eq(2)
-        expect(json_response.map { |repository| repository['id'] }).to contain_exactly(
+        expect(json_response.pluck('id')).to contain_exactly(
           root_repository.id, test_repository.id)
         expect(response.body).to include('tags')
       end

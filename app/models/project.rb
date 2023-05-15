@@ -188,6 +188,7 @@ class Project < ApplicationRecord
   has_one :confluence_integration, class_name: 'Integrations::Confluence'
   has_one :custom_issue_tracker_integration, class_name: 'Integrations::CustomIssueTracker'
   has_one :datadog_integration, class_name: 'Integrations::Datadog'
+  has_one :container_registry_data_repair_detail, class_name: 'ContainerRegistry::DataRepairDetail'
   has_one :discord_integration, class_name: 'Integrations::Discord'
   has_one :drone_ci_integration, class_name: 'Integrations::DroneCi'
   has_one :emails_on_push_integration, class_name: 'Integrations::EmailsOnPush'
@@ -738,6 +739,11 @@ class Project < ApplicationRecord
     topic = Projects::Topic.find_by_name(topic_name)
 
     topic ? with_topic(topic) : none
+  end
+
+  scope :pending_data_repair_analysis, -> do
+    left_outer_joins(:container_registry_data_repair_detail)
+    .where(container_registry_data_repair_details: { project_id: nil })
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }

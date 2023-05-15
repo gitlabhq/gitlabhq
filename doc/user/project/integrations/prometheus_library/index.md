@@ -2,43 +2,11 @@
 stage: Monitor
 group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+remove_date: '2023-08-22'
+redirect_to: '../../../../operations/index.md'
 ---
 
-# Prometheus Metrics library (deprecated) **(FREE)**
+# Prometheus Metrics library (removed) **(FREE)**
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7.
-
-WARNING:
-This feature is in its end-of-life process. It is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541)
-in GitLab 14.7, and is planned for removal in GitLab 16.0.
-
-GitLab offers automatic detection of select [Prometheus exporters](https://prometheus.io/docs/instrumenting/exporters/).
-
-## Exporters
-
-Currently supported exporters are:
-
-- [Kubernetes](kubernetes.md)
-- [NGINX](nginx.md)
-- [NGINX Ingress Controller 0.9.0-0.15.x](nginx_ingress_vts.md)
-- [NGINX Ingress Controller 0.16.0+](nginx_ingress.md)
-- [HAProxy](haproxy.md)
-- [Amazon Cloud Watch](cloudwatch.md)
-
-We have tried to surface the most important metrics for each exporter, and
-continue to add support for additional exporters in future releases. If you
-would like to add support for other official exporters, contributions are welcome.
-
-## Identifying Environments
-
-GitLab retrieves performance data from the configured Prometheus server, and
-attempts to identifying the presence of known metrics. Once identified, GitLab
-then needs to be able to map the data to a particular environment.
-
-To isolate and only display relevant metrics for a given environment,
-GitLab needs a method to detect which labels are associated. To do that,
-GitLab uses the defined queries and fills in the environment specific variables.
-Typically this involves looking for the
-[`$CI_ENVIRONMENT_SLUG`](../../../../ci/variables/index.md#predefined-cicd-variables),
-but may also include other information such as the project's Kubernetes namespace.
-Each search query is defined in the [exporter specific documentation](#exporters).
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7
+and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.

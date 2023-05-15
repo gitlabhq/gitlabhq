@@ -81,6 +81,38 @@ To explain your code:
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
+### Explain this Vulnerability in the Web UI **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment) on GitLab.com.
+
+This feature is an [Experiment](../policy/alpha-beta-support.md) on GitLab.com that is powered by Google AI.
+
+GitLab can help you with your vulnerability by using a large language model to:
+
+- Summarize the vulnerability.
+- Help developers and security analysts get started understanding the vulnerability, how it could be exploited, and how to fix it.
+- Provide a suggested mitigation.
+
+Prerequisites:
+
+- You must have the GitLab Ultimate subscription tier.
+- You must be a member of the project.
+- The vulnerability must be a SAST finding.
+
+To explain your vulnerability:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Security and Compliance > Vulnerability report**.
+1. Find a SAST vulnerability.
+1. Open the vulnerability.
+1. Select **Try it out**.
+
+Review the drawer on the right-hand side of your screen.
+
+![How to use Explain this Vulnerability Experiment](img/explain_this_vulnerability.png)
+
+We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
+
 ### GitLab Chat **(ULTIMATE SAAS)**
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/alpha-beta-support.md#experiment).

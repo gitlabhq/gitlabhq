@@ -10,14 +10,15 @@ RSpec.describe Gitlab::BackgroundMigration::PruneStaleProjectExportJobs, feature
   let(:uploads) { table(:project_relation_export_uploads) }
 
   subject(:perform_migration) do
-    described_class.new(start_id: 1,
-                        end_id: 300,
-                        batch_table: :project_export_jobs,
-                        batch_column: :id,
-                        sub_batch_size: 2,
-                        pause_ms: 0,
-                        connection: ActiveRecord::Base.connection)
-                    .perform
+    described_class.new(
+      start_id: 1,
+      end_id: 300,
+      batch_table: :project_export_jobs,
+      batch_column: :id,
+      sub_batch_size: 2,
+      pause_ms: 0,
+      connection: ActiveRecord::Base.connection
+    ).perform
   end
 
   it 'removes export jobs and associated relations older than 7 days' do

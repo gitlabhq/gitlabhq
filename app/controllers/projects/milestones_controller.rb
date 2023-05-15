@@ -85,6 +85,24 @@ class Projects::MilestonesController < Projects::ApplicationController
         end
       end
     end
+  rescue ActiveRecord::StaleObjectError
+    respond_to do |format|
+      format.html do
+        @conflict = true
+        render :edit
+      end
+
+      format.json do
+        render json: {
+          errors: [
+            format(
+              _("Someone edited this %{model_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."),
+              model_name: _('milestone')
+            )
+          ]
+        }, status: :conflict
+      end
+    end
   end
 
   def promote
@@ -152,7 +170,15 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
+    params.require(:milestone)
+          .permit(
+            :description,
+            :due_date,
+            :lock_version,
+            :start_date,
+            :state_event,
+            :title
+          )
   end
 
   def search_params

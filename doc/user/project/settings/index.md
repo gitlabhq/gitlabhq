@@ -358,7 +358,7 @@ Configure [alert integrations](../../../operations/incident_management/integrati
 
 #### Alert integration
 
-Automatically [create](../../../operations/metrics/alerts.md#trigger-actions-from-alerts), [notify on](../../../operations/incident_management/paging.md#email-notifications-for-alerts), and [resolve](../../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) incidents based on GitLab alerts.
+Automatically [create](../../../operations/incident_management/alerts.md#trigger-actions-from-alerts), [notify on](../../../operations/incident_management/paging.md#email-notifications-for-alerts), and [resolve](../../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) incidents based on GitLab alerts.
 
 #### PagerDuty integration
 

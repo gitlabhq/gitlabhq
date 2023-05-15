@@ -777,6 +777,34 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#show_mobile_devops_project_promo?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:hide_cookie, :feature_flag_enabled, :mobile_target_platform, :result) do
+      false | true | true | true
+      false | false | true | false
+      false | false | false | false
+      false | true | false | false
+      true | false | false | false
+      true | true | false | false
+      true | true | true | false
+      true | false | true | false
+    end
+
+    with_them do
+      before do
+        allow(Gitlab).to receive(:com?) { gitlab_com }
+        Feature.enable(:mobile_devops_projects_promo, feature_flag_enabled)
+        project.project_setting.target_platforms << 'ios' if mobile_target_platform
+        helper.request.cookies["hide_mobile_devops_promo_#{project.id}"] = true if hide_cookie
+      end
+
+      it 'resolves if the user can import members' do
+        expect(helper.show_mobile_devops_project_promo?(project)).to eq result
+      end
+    end
+  end
+
   describe '#can_admin_project_member?' do
     context 'when user is project owner' do
       before do

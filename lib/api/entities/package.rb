@@ -7,8 +7,6 @@ module API
       include ::Routing::PackagesHelper
       extend ::API::Entities::EntityHelpers
 
-      EMPTY_PIPELINES = [].freeze
-
       expose :id, documentation: { type: 'integer', example: 1 }
 
       expose :name, documentation: { type: 'string', example: '@foo/bar' } do |package|
@@ -46,9 +44,7 @@ module API
       expose :tags
 
       expose :pipeline, if: ->(package) { package.original_build_info }, using: Package::Pipeline
-      expose :pipelines, if: ->(package) { package.pipelines.present? }, using: Package::Pipeline do |_|
-        EMPTY_PIPELINES
-      end
+      expose :pipelines, if: ->(package) { package.pipelines.present? }, using: Package::Pipeline
 
       expose :versions, using: ::API::Entities::PackageVersion, unless: ->(_, opts) { opts[:collection] }
 
