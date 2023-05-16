@@ -31,12 +31,9 @@ After you set up everything, the two teams will be able to hand off issues from 
 1. A product designer on the UX team:
    1. Checks the `Workflow::Ready for design` list on the **UX workflow** board and decides to work on the profile page redesign.
 
-      <!-- Image: UX board with lists:
-            ~Workflow::Ready for design,
-            ~Workflow::Design
-            ~Workflow::Ready for development -->
+      ![Issue board called "UX workflow" with three columns and three issues](img/ux_board_filled_v16_0.png)
 
-   1. Assigns themselves to the issue.
+   1. Assigns themselves to the **Redesign user profile page** issue.
    1. Drags the issue card to the `Workflow::Design` list. The previous workflow label is automatically removed.
    1. Creates the ✨new designs✨.
    1. [Adds the designs to the issue](../../user/project/issues/design_management.md).
@@ -45,12 +42,9 @@ After you set up everything, the two teams will be able to hand off issues from 
 1. A developer on the Frontend team:
    1. Checks the `Workflow::Ready for development` list on the **Frontend workflow** board and chooses an issue to work on.
 
-      <!-- Image: Frontend board, scoped to ~Frontend, with lists:
-            ~Workflow::Ready for development
-            ~Workflow::In development
-            ~Workflow::Complete -->
+      ![Issue board called "Frontend workflow" with three columns and three issues](img/frontend_board_filled_v16_0.png)
 
-   1. Assigns themselves to the issue.
+   1. Assigns themselves to the **Redesign user profile page** issue.
    1. Drags the issue card to the `Workflow::In development` list. The previous workflow label is automatically removed.
    1. Adds the frontend code in a [merge request](../../user/project/merge_requests/index.md).
    1. Adds the `Workflow::Complete` label.
@@ -140,14 +134,13 @@ To create the **UX workflow** issue board:
 1. In the **Title field**, enter `UX workflow`.
 1. Clear the **Show the Open list** and **Show the Closed list** checkboxes.
 1. Select **Create board**. You should see an empty board.
-
-   <!-- Image: empty UX workflow board -->
-
 1. Create a list for the `Workflow::Ready for design` label:
    1. In the upper-left corner of the issue board page, select **Create list**.
    1. In the column that appears, from the **Value** dropdown list, select the `Workflow::Ready for design` label.
    1. Select **Add to board**.
 1. Repeat the previous step for labels `Workflow::Design` and `Workflow::Ready for development`.
+
+![Issue board called "UX workflow" with three columns and no issues](img/ux_board_empty_v16_0.png)
 
 To create the **Frontend workflow** board:
 
@@ -163,6 +156,8 @@ To create the **Frontend workflow** board:
    1. In the column that appeared, from the **Value** dropdown list, select the `Workflow::Ready for development` label.
    1. Select **Add to board**.
 1. Repeat the previous step for labels `Workflow::In development` and `Workflow::Complete`.
+
+![Issue board called "Frontend workflow" with three columns and no issues](img/frontend_board_empty_v16_0.png)
 
 For now, lists in both your boards should be empty. Next, you'll populate them with some issues.
 
@@ -193,9 +188,9 @@ Repeat these steps to create a few more issues with the same labels.
 
 You should now see at least one issue there, ready for your product designers to start working on!
 
-<!-- Image: UX workflow board with at least one issue in the `Workflow::Ready for design` list -->
-
 Congratulations! Now your teams can start collaborating on amazing software.
+As a next step, you can try out [the goal workflow](#the-goal-workflow) for yourself using these boards,
+simulating the two teams interacting.
 
 ## Learn more about project management in GitLab
 

@@ -110,11 +110,13 @@
 
     .file-buttons {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      justify-content: space-between;
       width: 100%;
+      padding: $gl-padding-8 0 0;
 
       .md-header-toolbar {
-        margin: $gl-padding 0;
+        margin-left: 0;
       }
 
       .soft-wrap-toggle {
@@ -125,6 +127,17 @@
       @media(max-width: map-get($grid-breakpoints, md)-1) {
         clear: both;
       }
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .file-editor .file-buttons {
+    flex-direction: column;
+    padding: 0;
+
+    .md-header-toolbar {
+      margin: $gl-padding-8 0;
     }
   }
 }

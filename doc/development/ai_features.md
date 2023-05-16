@@ -89,6 +89,15 @@ To populate the embedding database for GitLab chat:
 1. Open a rails console
 1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
 
+### Debugging
+
+To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
+To follow the debugging messages related to the AI requests on the abstraction layer, you can use:
+
+```shell
+tail -f log/llm.log
+```
+
 ### Configure GCP Vertex access
 
 In order to obtain a GCP service key for local development, please follow the steps below:

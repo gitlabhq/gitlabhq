@@ -131,6 +131,16 @@ To commit changes in the Web IDE:
 1. Select **Commit & Push**.
 1. Commit to the current branch, or create a new branch.
 
+## Create a merge request
+
+To create a merge request:
+
+1. [Commit the changes](index.md#commit-changes).
+1. In the pop-up notification in the lower-right corner, select `Create Merge Request`.
+This action opens a new window with the [merge request creation form](../merge_requests/index.md).
+
+To access missed notifications, see the [IDE notification tips](index.md#access-missed-ide-notifications).
+
 ## Use the command palette
 
 In the Web IDE, you can access many commands through the command palette.
@@ -203,3 +213,10 @@ You cannot use interactive web terminals to interact with a runner.
 However, you can use a terminal to install dependencies and compile and debug code.
 
 For more information about configuring a workspace that supports interactive web terminals, see [remote development](../remote_development/index.md).
+
+## Access missed IDE notifications
+
+Actions that you take in the Web IDE trigger notifications that pop up in the lower-right corner. If you missed the pop-up:
+
+1. In the lower-right corner, select the bell icon (**{notifications}**). This opens a list of notifications.
+1. Select the notification you want to access.

@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/403041
 milestone: '16.0'
 type: development
 group: group::analytics instrumentation
-default_enabled: false
+default_enabled: true

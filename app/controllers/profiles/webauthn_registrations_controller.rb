@@ -4,8 +4,7 @@ class Profiles::WebauthnRegistrationsController < Profiles::ApplicationControlle
   feature_category :system_access
 
   def destroy
-    webauthn_registration = current_user.webauthn_registrations.find(params[:id])
-    webauthn_registration.destroy
+    Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
 
     redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
   end

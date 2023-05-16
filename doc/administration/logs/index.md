@@ -1034,6 +1034,18 @@ can be used.
 }
 ```
 
+## `llm.log` **(ULTIMATE SAAS)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
+
+The `llm.log` file logs information related to
+[AI features](../../user/ai_features.md).
+
+Depending on your installation method, this file is located at:
+
+- Omnibus GitLab: `/var/log/gitlab/gitlab-rails/llm.log`
+- Installations from source: `/home/git/gitlab/log/llm.log`
+
 ## Registry logs
 
 For Omnibus GitLab installations, Container Registry logs are in `/var/log/gitlab/registry/current`.

@@ -26,7 +26,10 @@
           dismiss_key: @project.id,
           human_access: human_access } }
 
-    - unless Feature.enabled?(:source_editor_toolbar, current_user)
+    - if Feature.enabled?(:source_editor_toolbar, current_user)
+      #editor-toolbar
+
+    - else
       .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
         - if is_markdown
           .md-header.gl-display-flex.gl-px-2.gl-rounded-base.gl-mx-2.gl-mt-2
@@ -40,8 +43,6 @@
             = _("Soft wrap")
 
   .file-editor.code
-    - if Feature.enabled?(:source_editor_toolbar, current_user)
-      #editor-toolbar
     .js-edit-mode-pane#editor{ data: { 'editor-loading': true, qa_selector: 'source_editor_preview_container' } }<
       %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]

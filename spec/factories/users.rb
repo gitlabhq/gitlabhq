@@ -124,6 +124,8 @@ FactoryBot.define do
       transient { registrations_count { 5 } }
 
       after(:create) do |user, evaluator|
+        user.generate_otp_backup_codes!
+
         create_list(:webauthn_registration, evaluator.registrations_count, user: user)
       end
     end

@@ -83,35 +83,36 @@ RSpec.describe 'Editing file blob', :js, feature_category: :projects do
     end
 
     context 'blob edit toolbar' do
-      toolbar_buttons = [
-        "Add bold text",
-        "Add italic text",
-        "Add strikethrough text",
-        "Insert a quote",
-        "Insert code",
-        "Add a link",
-        "Add a bullet list",
-        "Add a numbered list",
-        "Add a checklist",
-        "Add a collapsible section",
-        "Add a table"
-      ]
-
-      it "does not have any buttons" do
-        stub_feature_flags(source_editor_toolbar: true)
-        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
-        buttons = page.all('.file-buttons .md-header-toolbar button[type="button"]')
-        expect(buttons.length).to eq(0)
-      end
-
-      it "has defined set of toolbar buttons when the flag is off" do
-        stub_feature_flags(source_editor_toolbar: false)
+      def has_toolbar_buttons
+        toolbar_buttons = [
+          "Add bold text",
+          "Add italic text",
+          "Add strikethrough text",
+          "Insert a quote",
+          "Insert code",
+          "Add a link",
+          "Add a bullet list",
+          "Add a numbered list",
+          "Add a checklist",
+          "Add a collapsible section",
+          "Add a table"
+        ]
         visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
         buttons = page.all('.file-buttons .md-header-toolbar button[type="button"]')
         expect(buttons.length).to eq(toolbar_buttons.length)
         toolbar_buttons.each_with_index do |button_title, i|
           expect(buttons[i]['title']).to include(button_title)
         end
+      end
+
+      it "has defined set of toolbar buttons when the flag is on" do
+        stub_feature_flags(source_editor_toolbar: true)
+        has_toolbar_buttons
+      end
+
+      it "has defined set of toolbar buttons when the flag is off" do
+        stub_feature_flags(source_editor_toolbar: false)
+        has_toolbar_buttons
       end
     end
 

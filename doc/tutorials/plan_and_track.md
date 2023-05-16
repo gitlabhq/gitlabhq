@@ -15,4 +15,5 @@ issues, epics, and more.
 | [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | Choose a project template and create a project with files to get you started. | |
 | [Migrate to GitLab](../user/project/import/index.md) | If you are coming to GitLab from another platform, you can import or convert your projects. | |
 | [Run an agile iteration](agile_sprint/index.md) | Use group, projects, and iterations to run an agile development iteration. |
+| [Set up issue boards for team hand-off](boards_for_teams/index.md) | Use issue boards and scoped labels to set up collaboration across many teams. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Epics and Issue Boards](https://www.youtube.com/watch?v=I1bFIAQBHB8) | Find out how to use epics and issue boards for project management. | |

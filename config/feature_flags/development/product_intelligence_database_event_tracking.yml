@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368976
 milestone: '15.3'
 type: development
 group: group::product intelligence
-default_enabled: false
+default_enabled: true

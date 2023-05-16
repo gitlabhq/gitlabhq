@@ -206,9 +206,7 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
     it('removes the registered buttons from the toolbar', () => {
       expect(instance.toolbar.removeItems).not.toHaveBeenCalled();
       instance.unuse(extension);
-      expect(instance.toolbar.removeItems).toHaveBeenCalledWith([
-        EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
-      ]);
+      expect(instance.toolbar.removeItems).toHaveBeenCalledWith([]);
     });
 
     it('disposes the modelChange listener and does not fetch preview on content changes', () => {

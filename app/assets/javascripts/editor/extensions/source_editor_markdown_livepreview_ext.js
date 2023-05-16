@@ -14,7 +14,6 @@ import {
   EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
   EXTENSION_MARKDOWN_PREVIEW_LABEL,
   EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
-  EDITOR_TOOLBAR_BUTTON_GROUPS,
 } from '../constants';
 
 const fetchPreview = (text, previewMarkdownPath) => {
@@ -58,9 +57,6 @@ export class EditorMarkdownPreviewExtension {
     this.toolbarButtons = [];
 
     this.setupPreviewAction(instance);
-    if (instance.toolbar) {
-      this.setupToolbar(instance);
-    }
 
     const debouncedResizeHandler = debounce((entries) => {
       for (const entry of entries) {
@@ -102,25 +98,6 @@ export class EditorMarkdownPreviewExtension {
   static resizePreviewLayout(instance, width) {
     const { height } = instance.getLayoutInfo();
     instance.layout({ width, height });
-  }
-
-  setupToolbar(instance) {
-    this.toolbarButtons = [
-      {
-        id: EXTENSION_MARKDOWN_PREVIEW_ACTION_ID,
-        label: EXTENSION_MARKDOWN_PREVIEW_LABEL,
-        icon: 'live-preview',
-        selected: false,
-        group: EDITOR_TOOLBAR_BUTTON_GROUPS.settings,
-        category: 'primary',
-        selectedLabel: EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL,
-        onClick: () => instance.togglePreview(),
-        data: {
-          qaSelector: 'editor_toolbar_button',
-        },
-      },
-    ];
-    instance.toolbar.addItems(this.toolbarButtons);
   }
 
   togglePreviewLayout(instance) {

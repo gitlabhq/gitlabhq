@@ -42,6 +42,64 @@ As a [new Software Developer to a team such as Sasha](https://about.gitlab.com/h
 
 ![User Flow](img/remote_dev_15_7.png)
 
+## Architecture
+
+```plantuml
+@startuml
+node "Kubernetes" {
+  [Ingress Controller] --> [GitLab Workspaces Proxy] : Decrypt Traffic
+
+  note right of "Ingress Controller"
+    Customers can choose
+    an ingress controller
+    of their choice
+  end note
+
+  note top of "GitLab Workspaces Proxy"
+    Authenticate and
+    authorize user traffic
+  end note
+
+  [GitLab Workspaces Proxy] ..> [Workspace n] : Forward traffic\nfor workspace n
+  [GitLab Workspaces Proxy] ..> [Workspace 2] : Forward traffic\nfor workspace 2
+  [GitLab Workspaces Proxy] --> [Workspace 1] : Forward traffic\nfor workspace 1
+
+  [Agentk] .up.> [Workspace n] : Applies kubernetes resources\nfor workspace n
+  [Agentk] .up.> [Workspace 2] : Applies kubernetes resources\nfor workspace 2
+  [Agentk] .up.> [Workspace 1] : Applies kubernetes resources\nfor workspace 1
+
+  [Agentk] --> [Kubernetes API Server] : Interact and get/apply\nKubernetes resources
+}
+
+node "GitLab" {
+  [Nginx] --> [GitLab Rails] : Forward
+  [GitLab Rails] --> [Postgres] : Access database
+  [GitLab Rails] --> [Gitaly] : Fetch files
+  [KAS] -up-> [GitLab Rails] : Proxy
+}
+
+[Agentk] -up-> [KAS] : Initiate reconciliation loop
+"Load Balancer IP" --> [Ingress Controller]
+[Browser] --> [Nginx] : Browse GitLab
+[Browser] -right-> "Domain IP" : Browse workspace URL
+"Domain IP" .right.> "Load Balancer IP"
+[GitLab Workspaces Proxy] ..> [GitLab Rails] : Authenticate and authorize\nthe user accessing the workspace.
+
+note top of "Domain IP"
+  For local development, workspace URL
+  is [workspace-name].workspaces.localdev.me
+  which resolves to localhost (127.0.0.1)
+end note
+
+note top of "Load Balancer IP"
+  For local development,
+  it includes all local loopback interfaces
+  e.g. 127.0.0.1, 172.16.123.1, 192.168.0.1, etc.
+end note
+
+@enduml
+```
+
 ## Terminology
 
 We use the following terms to describe components and properties of the Remote Development architecture.

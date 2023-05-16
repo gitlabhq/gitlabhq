@@ -151,6 +151,7 @@ export class SourceEditorExtension {
           instance.toolbar.updateItem(EXTENSION_SOFTWRAP_ID, {
             selected: !isSoftWrapped,
           });
+          document.querySelector('.soft-wrap-toggle')?.blur();
         }
       },
     };
