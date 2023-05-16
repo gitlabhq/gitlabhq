@@ -37,7 +37,7 @@
       z-index: 120;
 
       &.is-sidebar-moved {
-        top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + 24px);
+        top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       }
 
       &::before {

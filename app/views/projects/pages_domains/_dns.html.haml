@@ -13,7 +13,6 @@
       %p.form-text.text-muted
         = _("To access this domain create a new DNS record")
 - if verification_enabled
-  - verification_record = "#{domain_presenter.verification_domain} TXT #{domain_presenter.keyed_verification_code}"
   .form-group.border-section
     .row
       .col-sm-2
@@ -24,7 +23,7 @@
           = gl_badge_tag text, variant: status
           = link_to sprite_icon("redo"), verify_project_pages_domain_path(@project, domain_presenter), method: :post, class: "gl-ml-2 gl-button btn btn-sm btn-default has-tooltip", title: _("Retry verification")
         .input-group
-          = text_field_tag :domain_verification, verification_record, class: "monospace js-select-on-focus form-control", readonly: true
+          = text_field_tag :domain_verification, domain_presenter.verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append
             = clipboard_button(target: '#domain_verification', class: 'btn-default d-none d-sm-block')
         %p.form-text.text-muted

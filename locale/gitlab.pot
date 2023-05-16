@@ -684,6 +684,9 @@ msgstr ""
 msgid "%{docs_link_start}Learn about visibility levels.%{docs_link_end}"
 msgstr ""
 
+msgid "%{docs_link_start}Setting up a verified domain%{docs_link_end} requires being linked to a project."
+msgstr ""
+
 msgid "%{docs_link_start}What is Large File Storage?%{docs_link_end}"
 msgstr ""
 
@@ -2406,6 +2409,9 @@ msgid "Acknowledge"
 msgstr ""
 
 msgid "Action"
+msgstr ""
+
+msgid "Action '%{action}' in registry %{registry_id} entry is not supported."
 msgstr ""
 
 msgid "Action not allowed."
@@ -15909,6 +15915,12 @@ msgstr ""
 msgid "DomainVerification|Add Domain"
 msgstr ""
 
+msgid "DomainVerification|Are you sure you want to delete this domain?"
+msgstr ""
+
+msgid "DomainVerification|Delete domain"
+msgstr ""
+
 msgid "DomainVerification|Domain was added"
 msgstr ""
 
@@ -15918,19 +15930,40 @@ msgstr ""
 msgid "DomainVerification|Domain was updated"
 msgstr ""
 
+msgid "DomainVerification|Edit Domain"
+msgstr ""
+
+msgid "DomainVerification|Enter your domain"
+msgstr ""
+
 msgid "DomainVerification|Failed to verify domain ownership"
 msgstr ""
 
 msgid "DomainVerification|How do I configure a domain?"
 msgstr ""
 
+msgid "DomainVerification|How to set up DNS records?"
+msgstr ""
+
+msgid "DomainVerification|Manually enter certificate information"
+msgstr ""
+
+msgid "DomainVerification|New Domain"
+msgstr ""
+
 msgid "DomainVerification|No domains configured. Create a domain in a project in this group hierarchy."
+msgstr ""
+
+msgid "DomainVerification|Remove certificate"
 msgstr ""
 
 msgid "DomainVerification|Successfully verified domain ownership"
 msgstr ""
 
 msgid "DomainVerification|The following domains are configured for projects in this group. Users with email addresses that match a verified domain do not need to confirm their account."
+msgstr ""
+
+msgid "DomainVerification|To verify ownership of your domain, add the above key to a TXT record within your DNS configuration. %{link_to_help}"
 msgstr ""
 
 msgid "Don't have a group?"
@@ -37195,6 +37228,12 @@ msgstr ""
 msgid "Registration|Your profile"
 msgstr ""
 
+msgid "Registry entry enqueued to be resynced"
+msgstr ""
+
+msgid "Registry entry enqueued to be reverified"
+msgstr ""
+
 msgid "Registry setup"
 msgstr ""
 
@@ -42885,6 +42924,9 @@ msgstr ""
 msgid "Source IP"
 msgstr ""
 
+msgid "Source Project"
+msgstr ""
+
 msgid "Source branch"
 msgstr ""
 
@@ -44127,6 +44169,9 @@ msgid "System output"
 msgstr ""
 
 msgid "System started"
+msgstr ""
+
+msgid "TXT"
 msgstr ""
 
 msgid "Table of Contents"

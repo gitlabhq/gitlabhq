@@ -9,6 +9,23 @@ module Gitlab
 
     DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT = proc { deny_all_requests_except_allowed_app_setting }.freeze
 
+    # Result stores the validation result:
+    # uri - The original URI requested
+    # hostname - The hostname that should be used to connect. For DNS
+    #   rebinding protection, this will be the resolved IP address of
+    #   the hostname.
+    # use_proxy -
+    #   If true, this means that the proxy server specified in the
+    #   http_proxy/https_proxy environment variables should be used.
+    #
+    #   If false, this either means that no proxy server was specified
+    #   or that the hostname in the URL is exempt via the no_proxy
+    #   environment variable. This allows the caller to disable usage
+    #   of a proxy since the IP address may be used to
+    #   connect. Otherwise, Net::HTTP may erroneously compare the IP
+    #   address against the no_proxy list.
+    Result = Struct.new(:uri, :hostname, :use_proxy)
+
     class << self
       # Validates the given url according to the constraints specified by arguments.
       #
@@ -21,9 +38,9 @@ module Gitlab
       # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.
       # deny_all_requests_except_allowed - Raises error if URL is not in the allow list and argument is true. Can be Boolean or Proc. Defaults to instance app setting.
       #
-      # Returns an array with [<uri>, <original-hostname>].
+      # Returns a Result object.
       # rubocop:disable Metrics/ParameterLists
-      def validate!(
+      def validate_url_with_proxy!(
         url,
         schemes:,
         ports: [],
@@ -37,7 +54,7 @@ module Gitlab
         dns_rebind_protection: true)
         # rubocop:enable Metrics/ParameterLists
 
-        return [nil, nil] if url.nil?
+        return Result.new(nil, nil, true) if url.nil?
 
         raise ArgumentError, 'The schemes is a required argument' if schemes.blank?
 
@@ -56,19 +73,22 @@ module Gitlab
         begin
           address_info = get_address_info(uri)
         rescue SocketError
-          return [uri, nil] unless enforce_address_info_retrievable?(uri, dns_rebind_protection, deny_all_requests_except_allowed)
+          proxy_in_use = uri_under_proxy_setting?(uri, nil)
+
+          return Result.new(uri, nil, proxy_in_use) unless enforce_address_info_retrievable?(uri, dns_rebind_protection, deny_all_requests_except_allowed)
 
           raise BlockedUrlError, 'Host cannot be resolved or invalid'
         end
 
         ip_address = ip_address(address_info)
+        proxy_in_use = uri_under_proxy_setting?(uri, ip_address)
 
         # Ignore DNS rebind protection when a proxy is being used, as DNS
         # rebinding is expected behavior.
-        dns_rebind_protection &= !uri_under_proxy_setting?(uri, ip_address)
-        return [uri, nil] if domain_in_allow_list?(uri)
+        dns_rebind_protection &&= !proxy_in_use
+        return Result.new(uri, nil, proxy_in_use) if domain_in_allow_list?(uri)
 
-        protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
+        protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection, proxy_in_use)
 
         return protected_uri_with_hostname if ip_in_allow_list?(ip_address, port: get_port(uri))
 
@@ -96,6 +116,13 @@ module Gitlab
         true
       end
 
+      # For backwards compatibility, Returns an array with [<uri>, <original-hostname>].
+      # Issue for refactoring: https://gitlab.com/gitlab-org/gitlab/-/issues/410890
+      def validate!(...)
+        result = validate_url_with_proxy!(...)
+        [result.uri, result.hostname]
+      end
+
       private
 
       # Returns the given URI with IP address as hostname and the original hostname respectively
@@ -106,12 +133,12 @@ module Gitlab
       #
       # The original hostname is used to validate the SSL, given in that scenario
       # we'll be making the request to the IP address, instead of using the hostname.
-      def enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
-        return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != uri.hostname
+      def enforce_uri_hostname(ip_address, uri, dns_rebind_protection, proxy_in_use)
+        return Result.new(uri, nil, proxy_in_use) unless dns_rebind_protection && ip_address && ip_address != uri.hostname
 
         new_uri = uri.dup
         new_uri.hostname = ip_address
-        [new_uri, uri.hostname]
+        Result.new(new_uri, uri.hostname, proxy_in_use)
       end
 
       def ip_address(address_info)

@@ -3406,6 +3406,33 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 | <a id="mutationexternalauditeventdestinationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationexternalauditeventdestinationupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`ExternalAuditEventDestination`](#externalauditeventdestination) | Updated destination. |
 
+### `Mutation.geoRegistriesUpdate`
+
+Mutates a Geo registry. Does not mutate the registry entry if `geo_registries_update_mutation` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `GeoRegistriesUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgeoregistriesupdateaction"></a>`action` | [`GeoRegistryAction!`](#georegistryaction) | Action to be executed on a Geo registry. |
+| <a id="mutationgeoregistriesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgeoregistriesupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass!`](#georegistryclass) | Class of the Geo registry to be updated. |
+| <a id="mutationgeoregistriesupdateregistryid"></a>`registryId` | [`GeoBaseRegistryID!`](#geobaseregistryid) | ID of the Geo registry entry to be updated. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgeoregistriesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgeoregistriesupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgeoregistriesupdateregistry"></a>`registry` | [`Registrable`](#registrable) | Updated Geo registry entry. |
+
 ### `Mutation.gitlabSubscriptionActivate`
 
 Input type: `GitlabSubscriptionActivateInput`
@@ -24391,6 +24418,36 @@ Event action.
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
 
+### `GeoRegistryAction`
+
+Action to trigger on one or more Geo registries.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="georegistryactionresync"></a>`RESYNC` | Resync a registry. |
+| <a id="georegistryactionreverify"></a>`REVERIFY` | Reverify a registry. |
+
+### `GeoRegistryClass`
+
+Geo registry class.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="georegistryclassci_secure_file_registry"></a>`CI_SECURE_FILE_REGISTRY` | Geo::CiSecureFileRegistry registry class. |
+| <a id="georegistryclasscontainer_repository_registry"></a>`CONTAINER_REPOSITORY_REGISTRY` | Geo::ContainerRepositoryRegistry registry class. |
+| <a id="georegistryclassdependency_proxy_blob_registry"></a>`DEPENDENCY_PROXY_BLOB_REGISTRY` | Geo::DependencyProxyBlobRegistry registry class. |
+| <a id="georegistryclassdependency_proxy_manifest_registry"></a>`DEPENDENCY_PROXY_MANIFEST_REGISTRY` | Geo::DependencyProxyManifestRegistry registry class. |
+| <a id="georegistryclassjob_artifact_registry"></a>`JOB_ARTIFACT_REGISTRY` | Geo::JobArtifactRegistry registry class. |
+| <a id="georegistryclasslfs_object_registry"></a>`LFS_OBJECT_REGISTRY` | Geo::LfsObjectRegistry registry class. |
+| <a id="georegistryclassmerge_request_diff_registry"></a>`MERGE_REQUEST_DIFF_REGISTRY` | Geo::MergeRequestDiffRegistry registry class. |
+| <a id="georegistryclasspackage_file_registry"></a>`PACKAGE_FILE_REGISTRY` | Geo::PackageFileRegistry registry class. |
+| <a id="georegistryclasspages_deployment_registry"></a>`PAGES_DEPLOYMENT_REGISTRY` | Geo::PagesDeploymentRegistry registry class. |
+| <a id="georegistryclasspipeline_artifact_registry"></a>`PIPELINE_ARTIFACT_REGISTRY` | Geo::PipelineArtifactRegistry registry class. |
+| <a id="georegistryclassproject_wiki_repository_registry"></a>`PROJECT_WIKI_REPOSITORY_REGISTRY` | Geo::ProjectWikiRepositoryRegistry registry class. |
+| <a id="georegistryclasssnippet_repository_registry"></a>`SNIPPET_REPOSITORY_REGISTRY` | Geo::SnippetRepositoryRegistry registry class. |
+| <a id="georegistryclassterraform_state_version_registry"></a>`TERRAFORM_STATE_VERSION_REGISTRY` | Geo::TerraformStateVersionRegistry registry class. |
+| <a id="georegistryclassupload_registry"></a>`UPLOAD_REGISTRY` | Geo::UploadRegistry registry class. |
+
 ### `GitlabSubscriptionsUserRole`
 
 Role of User.
@@ -26154,6 +26211,12 @@ An example `EpicTreeSortingID` is: `"gid://gitlab/EpicTreeSorting/1"`.
 
 Represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
 
+### `GeoBaseRegistryID`
+
+A `GeoBaseRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoBaseRegistryID` is: `"gid://gitlab/Geo::BaseRegistry/1"`.
+
 ### `GitlabErrorTrackingDetailedErrorID`
 
 A `GitlabErrorTrackingDetailedErrorID` is a global ID. It is encoded as a string.
@@ -26604,6 +26667,25 @@ One of:
 - [`MavenMetadata`](#mavenmetadata)
 - [`NugetMetadata`](#nugetmetadata)
 - [`PypiMetadata`](#pypimetadata)
+
+#### `Registrable`
+
+One of:
+
+- [`CiSecureFileRegistry`](#cisecurefileregistry)
+- [`ContainerRepositoryRegistry`](#containerrepositoryregistry)
+- [`DependencyProxyBlobRegistry`](#dependencyproxyblobregistry)
+- [`DependencyProxyManifestRegistry`](#dependencyproxymanifestregistry)
+- [`JobArtifactRegistry`](#jobartifactregistry)
+- [`LfsObjectRegistry`](#lfsobjectregistry)
+- [`MergeRequestDiffRegistry`](#mergerequestdiffregistry)
+- [`PackageFileRegistry`](#packagefileregistry)
+- [`PagesDeploymentRegistry`](#pagesdeploymentregistry)
+- [`PipelineArtifactRegistry`](#pipelineartifactregistry)
+- [`ProjectWikiRepositoryRegistry`](#projectwikirepositoryregistry)
+- [`SnippetRepositoryRegistry`](#snippetrepositoryregistry)
+- [`TerraformStateVersionRegistry`](#terraformstateversionregistry)
+- [`UploadRegistry`](#uploadregistry)
 
 #### `SecurityPolicySource`
 

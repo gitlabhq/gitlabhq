@@ -172,6 +172,10 @@ class PagesDomain < ApplicationRecord
     "#{VERIFICATION_KEY}=#{verification_code}"
   end
 
+  def verification_record
+    "#{verification_domain} TXT #{keyed_verification_code}"
+  end
+
   def certificate=(certificate)
     super(certificate)
 

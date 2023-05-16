@@ -106,11 +106,11 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-pt-3 gl-display-none gl-md-display-block"
+      class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-display-none gl-md-display-flex gl-flex-direction-column gl-justify-content-end gl-border-b"
       :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
     >
       <div
-        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5"
+        class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-px-5 gl-w-full"
         :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
       >
         <div class="gl-w-full gl-display-flex gl-align-items-center">

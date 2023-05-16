@@ -27,5 +27,11 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::ResponseLogger do
 
       it { expect(subject).to eq({}) }
     end
+
+    context 'when response is a String' do
+      let(:response) { response1 }
+
+      it { expect(subject).to eq({ response_bytes: response1.bytesize }) }
+    end
   end
 end

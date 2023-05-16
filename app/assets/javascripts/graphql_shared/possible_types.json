@@ -89,6 +89,22 @@
     "NugetMetadata",
     "PypiMetadata"
   ],
+  "Registrable": [
+    "CiSecureFileRegistry",
+    "ContainerRepositoryRegistry",
+    "DependencyProxyBlobRegistry",
+    "DependencyProxyManifestRegistry",
+    "JobArtifactRegistry",
+    "LfsObjectRegistry",
+    "MergeRequestDiffRegistry",
+    "PackageFileRegistry",
+    "PagesDeploymentRegistry",
+    "PipelineArtifactRegistry",
+    "ProjectWikiRepositoryRegistry",
+    "SnippetRepositoryRegistry",
+    "TerraformStateVersionRegistry",
+    "UploadRegistry"
+  ],
   "ResolvableInterface": [
     "Discussion",
     "Note"

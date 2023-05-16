@@ -183,9 +183,6 @@ To monitor [repository verification](praefect.md#repository-verification), use t
 - `gitaly_praefect_stale_verification_leases_released_total`, the number of stale verification leases
   released.
 
-The `/metrics` endpoint also provides all the metrics available under the `/db_metrics` endpoint. Using `/metrics` for `/db_metrics` metrics
-is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390266) in GitLab 15.9 and will be removed in GitLab 16.0.
-
 You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
 
 ### Database metrics `/db_metrics` endpoint

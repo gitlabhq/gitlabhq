@@ -39,11 +39,7 @@ module QA
           end
         end
 
-        it 'imports a project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347877',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/405127',
-            type: :investigating
-          } do
+        it 'imports a project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347877' do
           Page::Project::Import::Github.perform do |import_page|
             import_page.add_personal_access_token(Runtime::Env.github_access_token)
 
@@ -54,7 +50,7 @@ module QA
             import_page.import!(github_repo, group.full_path, imported_project.name)
 
             aggregate_failures do
-              expect(import_page).to have_imported_project(github_repo, wait: 240)
+              expect(import_page).to have_imported_project(github_repo, wait: import_wait_duration)
               # validate link is present instead of navigating to avoid dealing with multiple tabs
               # which makes the test more complicated
               expect(import_page).to have_go_to_project_link(github_repo)

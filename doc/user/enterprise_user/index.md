@@ -41,21 +41,62 @@ The following automated processes use [verified domains](../project/pages/custom
 
 Prerequisites:
 
-- A project with [GitLab Pages](../project/pages/index.md), served under the default Pages domain `*.gitlab.io`.
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
 
 Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you must:
 
-- Only configure the DNS `TXT` record to verify the domain's ownership.
-- Ignore instructions for the `A`, `CNAME`, and `ALIAS` records.
+- Link the domain to a project. For more information on group-level domain verification, see [issue 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
+- Configure the DNS `TXT` record to verify the domain's ownership.
 
-1. [Add a custom domain](../project/pages/custom_domains_ssl_tls_certification/index.md#1-add-a-custom-domain) for the matching email domain.
-   - The domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
-1. [Get a verification code](../project/pages/custom_domains_ssl_tls_certification/index.md#2-get-the-verification-code).
-1. [Set up the DNS `TXT`](../project/pages/custom_domains_ssl_tls_certification/index.md#3-set-up-dns-records) for your custom domain.
-1. [Verify the domain's ownership](../project/pages/custom_domains_ssl_tls_certification/index.md#4-verify-the-domains-ownership).
-1. Optional. [Add more domain aliases](../project/pages/custom_domains_ssl_tls_certification/index.md#add-more-domain-aliases).
+Steps:
+
+#### 1. Add a custom domain for the matching email domain
+
+The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
+
+1. On the top bar, select **Main menu > Groups** and find your top group.
+1. On the left sidebar, select **Settings > Domain Verification**.
+1. In the upper-right corner, select **Add Domain**.
+1. In **Domain**, enter the domain name.
+1. In **Project**, link to a project.
+1. Optional. In **Certificate**, switch the **Manually enter certificate information** toggle to add an SSL/TLS
+   certificate. You can also add the certificate and key later.
+1. Select **Add Domain**.
+
+#### 2. Get a verification code
+
+After you create a new domain, the verification code prompts you. Copy the values from GitLab
+and paste them in your domain's control panel as a `TXT` record.
+
+![Get the verification code](../img/get_domain_verification_code_v16_0.png)
+
+#### 3. Verify the domain's ownership
+
+After you have added all the DNS records:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Domain Verification**.
+1. On the domain table row, Select **Retry verification** (**{retry}**).
+
+![Verify your domain](../img/retry_domain_verification_v16_0.png)
+
+WARNING:
+For GitLab instances with domain verification enabled,
+if the domain cannot be verified for 7 days, that domain is removed
+from the GitLab project.
+
+> **Notes:**
+>
+> - Domain verification is **required for GitLab.com users**;
+  for GitLab self-managed instances, your GitLab administrator has the option
+  to [disabled custom domain verification](../../administration/pages/index.md#custom-domain-verification).
+> - [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
+  although it's usually a matter of minutes to complete. Until it does, verification
+  fails, and attempts to visit your domain result in a 404.
+> - Once your domain has been verified, leave the verification record
+  in place. Your domain is periodically reverified, and may be
+  disabled if the record is removed.
 
 ### View domains in group
 

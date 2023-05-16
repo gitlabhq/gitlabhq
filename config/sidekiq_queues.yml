@@ -105,6 +105,8 @@
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
   - 1
+- - ci_llm_generate_config
+  - 1
 - - ci_parse_secure_file_metadata
   - 1
 - - ci_runners_process_runner_version_update

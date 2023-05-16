@@ -87,6 +87,20 @@ To view a list of files you changed in the Web IDE:
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
 
+## Upload a new file
+
+To upload a new file and add it to the Git repository:
+
+1. In the **Explorer** file tree, navigate to the directory where you want to upload the file.
+1. Optional. If the directory does not exist yet, select the directory path where you want to have a new directory and either:
+   - Right-click on the directory path, and select **New Folder...**. You can create a nested directory path with the `/` separator, for example `parentdir/subdir1/subdir2`.
+   - In the **Explorer** panel, in the upper-right corner, select the new folder (**{folder-new}**) icon.
+1. Enter the name of the new directory, and press <kbd>Enter/Return</kbd> to create it. 
+1. Right-click on the directory path and select `Upload...`.
+1. Select the file you want to upload, then select `Open`. You can select and add multiple files at once.
+
+The file is uploaded and automatically added as a new file to the Git repository.
+
 ## Switch branches
 
 The Web IDE uses the currently selected branch by default.

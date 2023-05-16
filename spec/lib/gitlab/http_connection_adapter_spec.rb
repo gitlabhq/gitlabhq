@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::HTTPConnectionAdapter do
+RSpec.describe Gitlab::HTTPConnectionAdapter, feature_category: :shared do
   include StubRequests
 
   let(:uri) { URI('https://example.org') }
@@ -108,6 +108,42 @@ RSpec.describe Gitlab::HTTPConnectionAdapter do
         expect(connection.hostname_override).to eq(nil)
         expect(connection.addr_port).to eq('example.org')
         expect(connection.port).to eq(443)
+      end
+    end
+
+    context 'when proxy is enabled' do
+      before do
+        stub_env('http_proxy', 'http://proxy.example.com')
+      end
+
+      it 'proxy stays configured' do
+        expect(connection.proxy?).to be true
+        expect(connection.proxy_from_env?).to be true
+        expect(connection.proxy_address).to eq('proxy.example.com')
+      end
+
+      context 'when no_proxy matches the request' do
+        before do
+          stub_env('no_proxy', 'example.org')
+        end
+
+        it 'proxy is disabled' do
+          expect(connection.proxy?).to be false
+          expect(connection.proxy_from_env?).to be false
+          expect(connection.proxy_address).to be nil
+        end
+      end
+
+      context 'when no_proxy does not match the request' do
+        before do
+          stub_env('no_proxy', 'example.com')
+        end
+
+        it 'proxy stays configured' do
+          expect(connection.proxy?).to be true
+          expect(connection.proxy_from_env?).to be true
+          expect(connection.proxy_address).to eq('proxy.example.com')
+        end
       end
     end
 

@@ -7,6 +7,9 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
 
   let(:schemes) { %w[http https] }
 
+  # This test ensures backward compatibliity for the validate! method.
+  # We shoud refactor all callers of validate! to handle a Result object:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/410890
   describe '#validate!' do
     let(:options) { { schemes: schemes } }
 
@@ -18,6 +21,36 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
 
         expect(uri).to eq(Addressable::URI.parse(expected_uri))
         expect(hostname).to eq(expected_hostname)
+      end
+    end
+
+    context 'when the URL hostname is a domain' do
+      context 'when domain can be resolved' do
+        let(:import_url) { 'https://example.org' }
+
+        before do
+          stub_dns(import_url, ip_address: '93.184.216.34')
+        end
+
+        it_behaves_like 'validates URI and hostname' do
+          let(:expected_uri) { 'https://93.184.216.34' }
+          let(:expected_hostname) { 'example.org' }
+          let(:expected_use_proxy) { false }
+        end
+      end
+    end
+  end
+
+  describe '#validate_url_with_proxy!' do
+    let(:options) { { schemes: schemes } }
+
+    subject { described_class.validate_url_with_proxy!(import_url, **options) }
+
+    shared_examples 'validates URI and hostname' do
+      it 'runs the url validations' do
+        expect(subject.uri).to eq(Addressable::URI.parse(expected_uri))
+        expect(subject.hostname).to eq(expected_hostname)
+        expect(subject.use_proxy).to eq(expected_use_proxy)
       end
     end
 
@@ -94,6 +127,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
       it_behaves_like 'validates URI and hostname' do
         let(:expected_uri) { nil }
         let(:expected_hostname) { nil }
+        let(:expected_use_proxy) { true }
       end
 
       it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
@@ -109,6 +143,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
       it_behaves_like 'validates URI and hostname' do
         let(:expected_uri) { 'http://127.0.0.1' }
         let(:expected_hostname) { 'localhost' }
+        let(:expected_use_proxy) { false }
       end
 
       it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
@@ -146,6 +181,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
             let(:expected_hostname) { 'review-minio-svc.svc' }
+            let(:expected_use_proxy) { false }
           end
 
           it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
@@ -157,6 +193,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { 'http://127.0.0.1:9000/external-diffs/merge_request_diffs/mr-1/diff-1' }
             let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
           end
 
           it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
@@ -239,6 +276,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         it_behaves_like 'validates URI and hostname' do
           let(:expected_uri) { 'https://93.184.216.34' }
           let(:expected_hostname) { 'example.org' }
+          let(:expected_use_proxy) { false }
         end
 
         it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
@@ -259,12 +297,25 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           let(:import_url) { 'http://foobar.x' }
 
           before do
-            allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+            stub_env('http_proxy', 'http://proxy.example.com')
           end
 
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { true }
+          end
+
+          context 'with no_proxy' do
+            before do
+              stub_env('no_proxy', 'foobar.x')
+            end
+
+            it_behaves_like 'validates URI and hostname' do
+              let(:expected_uri) { import_url }
+              let(:expected_hostname) { nil }
+              let(:expected_use_proxy) { false }
+            end
           end
         end
       end
@@ -284,6 +335,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
       it_behaves_like 'validates URI and hostname' do
         let(:expected_uri) { import_url }
         let(:expected_hostname) { nil }
+        let(:expected_use_proxy) { false }
       end
 
       it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
@@ -311,18 +363,20 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
       it_behaves_like 'validates URI and hostname' do
         let(:expected_uri) { 'http://192.168.0.120:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
         let(:expected_hostname) { 'a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network' }
+        let(:expected_use_proxy) { false }
       end
 
       it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
 
       context 'with HTTP_PROXY' do
         before do
-          allow(Gitlab).to receive(:http_proxy_env?).and_return(true)
+          stub_env('http_proxy', 'http://proxy.example.com')
         end
 
         it_behaves_like 'validates URI and hostname' do
           let(:expected_uri) { import_url }
           let(:expected_hostname) { nil }
+          let(:expected_use_proxy) { true }
         end
 
         context 'when domain is in no_proxy env' do
@@ -333,6 +387,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { 'http://192.168.0.120:9121/scrape?target=unix:///var/opt/gitlab/redis/redis.socket&amp;check-keys=*' }
             let(:expected_hostname) { 'a.192.168.0.120.3times.127.0.0.1.1time.repeat.rebind.network' }
+            let(:expected_use_proxy) { false }
           end
         end
       end
@@ -347,6 +402,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         it_behaves_like 'validates URI and hostname' do
           let(:expected_uri) { import_url }
           let(:expected_hostname) { nil }
+          let(:expected_use_proxy) { false }
         end
 
         it_behaves_like 'a URI exempt from `deny_all_requests_except_allowed`'
@@ -363,6 +419,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
           end
 
           it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
@@ -374,6 +431,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
           end
 
           it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
@@ -386,6 +444,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
         it_behaves_like 'validates URI and hostname' do
           let(:expected_uri) { import_url }
           let(:expected_hostname) { nil }
+          let(:expected_use_proxy) { false }
         end
 
         it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'
@@ -396,6 +455,7 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only, feature_category: :sh
           it_behaves_like 'validates URI and hostname' do
             let(:expected_uri) { import_url }
             let(:expected_hostname) { nil }
+            let(:expected_use_proxy) { false }
           end
 
           it_behaves_like 'a URI denied by `deny_all_requests_except_allowed`'

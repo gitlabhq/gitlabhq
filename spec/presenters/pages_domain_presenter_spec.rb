@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDomainPresenter do
+RSpec.describe PagesDomainPresenter, feature_category: :pages do
   using RSpec::Parameterized::TableSyntax
   include LetsEncryptHelpers
 
@@ -60,6 +60,48 @@ RSpec.describe PagesDomainPresenter do
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe 'user_defined_certificate?' do
+    subject { presenter.user_defined_certificate? }
+
+    let(:domain) { create(:pages_domain) }
+
+    context "when domain certificate is user provided" do
+      it { is_expected.to eq(true) }
+    end
+
+    context "when domain is not persisted" do
+      before do
+        domain.destroy!
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context "when domain certificate is blank" do
+      before do
+        domain.update!(certificate: nil, key: nil)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context "when domain certificate source is gitlab_provided" do
+      before do
+        domain.update!(certificate_source: :gitlab_provided)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context "when domain certificate has error" do
+      before do
+        domain.errors.add(:certificate, "certificate error")
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 end

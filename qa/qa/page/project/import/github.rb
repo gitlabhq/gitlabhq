@@ -87,7 +87,7 @@ module QA
               ) do
                 status_selector = 'import_status_indicator'
 
-                return has_element?(status_selector, text: "Complete", wait: 1) unless allow_partial_import # rubocop:disable Cop/AvoidReturnFromBlocks
+                next has_element?(status_selector, text: "Complete", wait: 1) unless allow_partial_import
 
                 ["Partially completed", "Complete"].any? do |status|
                   has_element?(status_selector, text: status, wait: 1)

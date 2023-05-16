@@ -226,6 +226,22 @@ Review the details carefully before upgrading.
 The [Jira DVCS connector](https://docs.gitlab.com/ee/integration/jira/dvcs/) for Jira Cloud was deprecated in GitLab 15.1 and has been removed in 16.0. Use the [GitLab for Jira Cloud app](https://docs.gitlab.com/ee/integration/jira/connect-app.html) instead. The Jira DVCS connector was also deprecated for Jira 8.13 and earlier. You can only use the Jira DVCS connector with Jira Data Center or Jira Server in Jira 8.14 and later. Upgrade your Jira instance to Jira 8.14 or later, and reconfigure the Jira integration in your GitLab instance.
 If you cannot upgrade your Jira instance in time and are on GitLab self-managed version, we offer a workaround until GitLab 16.6. This breaking change is deployed in GitLab 16.0 behind a feature flag named `jira_dvcs_end_of_life_amnesty`. The flag is disabled by default, but you can ask an administrator to enable the flag at any time. For questions related to this announcement, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408185).
 
+### Legacy Gitaly configuration method
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, Gitaly configuration keys for Omnibus GitLab were scattered throughout the configuration file. In GitLab
+15.10, we added support for a single configuration structure that matches Gitaly internal configuration. Both methods
+of configuring Gitaly were supported in parallel.
+
+In GitLab 16.0, we removed support for the former configuration method and now only support the new configuration
+method.
+
+Before upgrading to GitLab 16.0, administrators must migrate to the new single configuration structure. For
+instructions, see [Gitaly - Omnibus GitLab configuration structure change](https://docs.gitlab.com/ee/update/#gitaly-omnibus-gitlab-configuration-structure-change).
+
 ### Legacy Gitaly configuration methods with variables
 
 WARNING:
@@ -238,6 +254,22 @@ in GitLab 16.0. These variables are replaced with standard
 
 GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly must switch to configuring
 using `config.toml`.
+
+### Legacy Praefect configuration method
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, Praefect configuration keys for Omnibus GitLab were scattered throughout the configuration file. In GitLab
+15.9, we added support for a single configuration structure that matches Praefect internal configuration. Both methods
+of configuring Praefect were supported in parallel.
+
+In GitLab 16.0, we removed support for the former configuration method and now only support the new configuration
+method.
+
+Before upgrading to GitLab 16.0, administrators must migrate to the new single configuration structure. For
+instructions, see [Praefect - Omnibus GitLab configuration structure change](https://docs.gitlab.com/ee/update/#praefect-omnibus-gitlab-configuration-structure-change).
 
 ### License-Check and the Policies tab on the License Compliance page
 
@@ -281,6 +313,27 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 
 - [**Pipelines rate limits**](https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_pipelines_creation.html).
 - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#set-cicd-limits).
+
+### Monitoring performance metrics through Prometheus is removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+We previously launched a solution that allows you to view performance metrics by displaying data stored in a Prometheus instance.
+The Prometheus instance can be set up as a GitLab-managed app or you can connect a previously configured Prometheus instance.
+The latter is known as an "external Prometheus" in GitLab. The value we provided was to enable you to easily set up monitoring
+(using GitLab Managed Apps) and have the visualization of the metrics all in the same tool you used to build the application.
+
+However, as we are removing certificate-based integrations, the full monitoring experience is also deprecated as you will not
+have the option to easily set up Prometheus from GitLab. Furthermore, we plan to consolidate on
+a focused observability dashboard experience instead of having multiple paths to view metrics. Because of this, we are also removing the external
+Prometheus experience, together with the metrics visualization capability.
+
+This removal only refers to the GitLab Metrics capabilities, and **does not** include:
+
+- Deprecating [alerts for Prometheus](https://gitlab.com/gitlab-org/gitlab/-/issues/338834).
+- [Capabilities that GitLab comes with that allow operators of GitLab to retrieve metrics from those instances](https://docs.gitlab.com/ee/administration/monitoring/prometheus/gitlab_metrics.html).
 
 ### Non-expiring access tokens no longer supported
 
@@ -329,6 +382,18 @@ Before upgrading to GitLab 16.0, if you are:
   to PostgreSQL 13.
 - Using an externally-provided PostgreSQL 12, you must upgrade to PostgreSQL 13 or later to meet the
   [minimum version requirements](https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements).
+
+### Praefect custom metrics endpoint configuration
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Support for using the `prometheus_exclude_database_from_default_metrics` configuration value was deprecated in
+GitLab 15.9 and is removed in GitLab 16.0. We made this change to improve the performance of Praefect.
+All metrics that scrape the Praefect database are now exported to the `/db_metrics` endpoint.
+
+You must update your metrics collection targets to use the `/db_metrics` endpoint.
 
 ### Project REST API field `operations_access_level` removed
 

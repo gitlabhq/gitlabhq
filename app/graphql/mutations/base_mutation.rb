@@ -28,7 +28,7 @@ module Mutations
     end
 
     def ready?(**args)
-      raise_resource_not_available_error! ERROR_MESSAGE if Gitlab::Database.read_only?
+      raise_resource_not_available_error!(ERROR_MESSAGE) if read_only?
 
       missing_args = self.class.arguments.values
         .reject { |arg| arg.accepts?(args.fetch(arg.keyword, :not_given)) }
@@ -37,6 +37,10 @@ module Mutations
       raise ArgumentError, "Arguments must be provided: #{missing_args.join(", ")}" if missing_args.any?
 
       true
+    end
+
+    def read_only?
+      Gitlab::Database.read_only?
     end
 
     def load_application_object(argument, id, context)

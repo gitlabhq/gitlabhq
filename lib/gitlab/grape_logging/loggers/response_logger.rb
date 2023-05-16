@@ -8,7 +8,14 @@ module Gitlab
           return {} unless Feature.enabled?(:log_response_length)
 
           response_bytes = 0
-          response.each { |resp| response_bytes += resp.to_s.bytesize }
+
+          case response
+          when String
+            response_bytes = response.bytesize
+          else
+            response.each { |resp| response_bytes += resp.to_s.bytesize }
+          end
+
           {
             response_bytes: response_bytes
           }

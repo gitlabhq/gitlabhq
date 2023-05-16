@@ -215,6 +215,23 @@
       ]
 
 - request:
+    path: /user/orgs
+    method: GET
+    query_params:
+      page: '1'
+      per_page: '25'
+    headers:
+      Host: api.github.com
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json; charset=utf-8
+      X-Ratelimit-Limit: '5000'
+      X-Ratelimit-Remaining: '5000'
+    body: |
+      []
+
+- request:
     path:
       matcher: ShouldMatch
       value: (\/repositories\/466994992$|\/repos\/gitlab-qa-github\/import-test$)
@@ -344,175 +361,6 @@
         "watchers_count": 0,
         "web_commit_signoff_required": false
       }
-
-- request:
-    path: /repos/gitlab-qa-github/import-test/issues
-    method: GET
-    headers:
-      Host: api.github.com
-  response:
-    status: 200
-    headers:
-      Content-Type: application/json; charset=utf-8
-      X-Ratelimit-Limit: '5000'
-      X-Ratelimit-Remaining: '5000'
-    body: |
-      [
-        {
-          "active_lock_reason": null,
-          "assignee": {
-            "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
-            "events_url": "https://api.github.com/users/gitlab-qa-github/events{/privacy}",
-            "followers_url": "https://api.github.com/users/gitlab-qa-github/followers",
-            "following_url": "https://api.github.com/users/gitlab-qa-github/following{/other_user}",
-            "gists_url": "https://api.github.com/users/gitlab-qa-github/gists{/gist_id}",
-            "gravatar_id": "",
-            "html_url": "https://github.com/gitlab-qa-github",
-            "id": 59606922,
-            "login": "gitlab-qa-github",
-            "node_id": "MDQ6VXNlcjU5NjA2OTIy",
-            "organizations_url": "https://api.github.com/users/gitlab-qa-github/orgs",
-            "received_events_url": "https://api.github.com/users/gitlab-qa-github/received_events",
-            "repos_url": "https://api.github.com/users/gitlab-qa-github/repos",
-            "site_admin": false,
-            "starred_url": "https://api.github.com/users/gitlab-qa-github/starred{/owner}{/repo}",
-            "subscriptions_url": "https://api.github.com/users/gitlab-qa-github/subscriptions",
-            "type": "User",
-            "url": "https://api.github.com/users/gitlab-qa-github"
-          },
-          "assignees": [
-            {
-              "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
-              "events_url": "https://api.github.com/users/gitlab-qa-github/events{/privacy}",
-              "followers_url": "https://api.github.com/users/gitlab-qa-github/followers",
-              "following_url": "https://api.github.com/users/gitlab-qa-github/following{/other_user}",
-              "gists_url": "https://api.github.com/users/gitlab-qa-github/gists{/gist_id}",
-              "gravatar_id": "",
-              "html_url": "https://github.com/gitlab-qa-github",
-              "id": 59606922,
-              "login": "gitlab-qa-github",
-              "node_id": "MDQ6VXNlcjU5NjA2OTIy",
-              "organizations_url": "https://api.github.com/users/gitlab-qa-github/orgs",
-              "received_events_url": "https://api.github.com/users/gitlab-qa-github/received_events",
-              "repos_url": "https://api.github.com/users/gitlab-qa-github/repos",
-              "site_admin": false,
-              "starred_url": "https://api.github.com/users/gitlab-qa-github/starred{/owner}{/repo}",
-              "subscriptions_url": "https://api.github.com/users/gitlab-qa-github/subscriptions",
-              "type": "User",
-              "url": "https://api.github.com/users/gitlab-qa-github"
-            }
-          ],
-          "author_association": "OWNER",
-          "body": "Test pull request body",
-          "closed_at": null,
-          "comments": 1,
-          "comments_url": "https://api.github.com/repos/gitlab-qa-github/import-test/issues/2/comments",
-          "created_at": "2022-03-07T07:58:10Z",
-          "draft": false,
-          "events_url": "https://api.github.com/repos/gitlab-qa-github/import-test/issues/2/events",
-          "html_url": "https://github.com/gitlab-qa-github/import-test/pull/2",
-          "id": 1161030385,
-          "labels": [
-            {
-              "color": "0075ca",
-              "default": true,
-              "description": "Improvements or additions to documentation",
-              "id": 3902072341,
-              "name": "documentation",
-              "node_id": "LA_kwDOG9XHMM7olOYV",
-              "url": "https://api.github.com/repos/gitlab-qa-github/import-test/labels/documentation"
-            }
-          ],
-          "labels_url": "https://api.github.com/repos/gitlab-qa-github/import-test/issues/2/labels{/name}",
-          "locked": false,
-          "milestone": {
-            "closed_at": null,
-            "closed_issues": 0,
-            "created_at": "2022-03-07T07:54:43Z",
-            "creator": {
-              "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
-              "events_url": "https://api.github.com/users/gitlab-qa-github/events{/privacy}",
-              "followers_url": "https://api.github.com/users/gitlab-qa-github/followers",
-              "following_url": "https://api.github.com/users/gitlab-qa-github/following{/other_user}",
-              "gists_url": "https://api.github.com/users/gitlab-qa-github/gists{/gist_id}",
-              "gravatar_id": "",
-              "html_url": "https://github.com/gitlab-qa-github",
-              "id": 59606922,
-              "login": "gitlab-qa-github",
-              "node_id": "MDQ6VXNlcjU5NjA2OTIy",
-              "organizations_url": "https://api.github.com/users/gitlab-qa-github/orgs",
-              "received_events_url": "https://api.github.com/users/gitlab-qa-github/received_events",
-              "repos_url": "https://api.github.com/users/gitlab-qa-github/repos",
-              "site_admin": false,
-              "starred_url": "https://api.github.com/users/gitlab-qa-github/starred{/owner}{/repo}",
-              "subscriptions_url": "https://api.github.com/users/gitlab-qa-github/subscriptions",
-              "type": "User",
-              "url": "https://api.github.com/users/gitlab-qa-github"
-            },
-            "description": null,
-            "due_on": null,
-            "html_url": "https://github.com/gitlab-qa-github/import-test/milestone/1",
-            "id": 7741550,
-            "labels_url": "https://api.github.com/repos/gitlab-qa-github/import-test/milestones/1/labels",
-            "node_id": "MI_kwDOG9XHMM4AdiBu",
-            "number": 1,
-            "open_issues": 2,
-            "state": "open",
-            "title": "0.0.1",
-            "updated_at": "2022-07-07T10:01:32Z",
-            "url": "https://api.github.com/repos/gitlab-qa-github/import-test/milestones/1"
-          },
-          "node_id": "PR_kwDOG9XHMM40Bfnz",
-          "number": 2,
-          "performed_via_github_app": null,
-          "pull_request": {
-            "diff_url": "https://github.com/gitlab-qa-github/import-test/pull/2.diff",
-            "html_url": "https://github.com/gitlab-qa-github/import-test/pull/2",
-            "merged_at": null,
-            "patch_url": "https://github.com/gitlab-qa-github/import-test/pull/2.patch",
-            "url": "https://api.github.com/repos/gitlab-qa-github/import-test/pulls/2"
-          },
-          "reactions": {
-            "+1": 0,
-            "-1": 0,
-            "confused": 0,
-            "eyes": 0,
-            "heart": 0,
-            "hooray": 0,
-            "laugh": 0,
-            "rocket": 0,
-            "total_count": 0,
-            "url": "https://api.github.com/repos/gitlab-qa-github/import-test/issues/2/reactions"
-          },
-          "repository_url": "https://api.github.com/repos/gitlab-qa-github/import-test",
-          "state": "open",
-          "state_reason": null,
-          "timeline_url": "https://api.github.com/repos/gitlab-qa-github/import-test/issues/2/timeline",
-          "title": "Test pull request",
-          "updated_at": "2022-12-27T09:57:21Z",
-          "url": "https://api.github.com/repos/gitlab-qa-github/import-test/issues/2",
-          "user": {
-            "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
-            "events_url": "https://api.github.com/users/gitlab-qa-github/events{/privacy}",
-            "followers_url": "https://api.github.com/users/gitlab-qa-github/followers",
-            "following_url": "https://api.github.com/users/gitlab-qa-github/following{/other_user}",
-            "gists_url": "https://api.github.com/users/gitlab-qa-github/gists{/gist_id}",
-            "gravatar_id": "",
-            "html_url": "https://github.com/gitlab-qa-github",
-            "id": 59606922,
-            "login": "gitlab-qa-github",
-            "node_id": "MDQ6VXNlcjU5NjA2OTIy",
-            "organizations_url": "https://api.github.com/users/gitlab-qa-github/orgs",
-            "received_events_url": "https://api.github.com/users/gitlab-qa-github/received_events",
-            "repos_url": "https://api.github.com/users/gitlab-qa-github/repos",
-            "site_admin": false,
-            "starred_url": "https://api.github.com/users/gitlab-qa-github/starred{/owner}{/repo}",
-            "subscriptions_url": "https://api.github.com/users/gitlab-qa-github/subscriptions",
-            "type": "User",
-            "url": "https://api.github.com/users/gitlab-qa-github"
-          }
-        }
-      ]
 
 - request:
     path: /repos/gitlab-qa-github/import-test/labels
@@ -1288,8 +1136,6 @@
     path: /repos/gitlab-qa-github/import-test/issues
     method: GET
     query_params:
-      per_page: '100'
-      sort: created
       state: all
     headers:
       Host: api.github.com
@@ -2815,3 +2661,109 @@
           "url": "https://api.github.com/users/gitlab-qa-github"
         }
       ]
+
+- request:
+    path: /users/gitlab-qa-github
+    method: GET
+    headers:
+      Host: api.github.com
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json; charset=utf-8
+      X-Ratelimit-Limit: '5000'
+      X-Ratelimit-Remaining: '5000'
+    body: |
+      {
+        "avatar_url": "https://avatars.githubusercontent.com/u/59606922?v=4",
+        "bio": null,
+        "blog": "",
+        "collaborators": 0,
+        "company": null,
+        "created_at": "2020-01-07T11:47:11Z",
+        "disk_usage": 841,
+        "email": null,
+        "events_url": "https://api.github.com/users/gitlab-qa-github/events{/privacy}",
+        "followers": 0,
+        "followers_url": "https://api.github.com/users/gitlab-qa-github/followers",
+        "following": 0,
+        "following_url": "https://api.github.com/users/gitlab-qa-github/following{/other_user}",
+        "gists_url": "https://api.github.com/users/gitlab-qa-github/gists{/gist_id}",
+        "gravatar_id": "",
+        "hireable": null,
+        "html_url": "https://github.com/gitlab-qa-github",
+        "id": 59606922,
+        "location": null,
+        "login": "gitlab-qa-github",
+        "name": null,
+        "node_id": "MDQ6VXNlcjU5NjA2OTIy",
+        "organizations_url": "https://api.github.com/users/gitlab-qa-github/orgs",
+        "owned_private_repos": 0,
+        "plan": {
+          "collaborators": 0,
+          "name": "free",
+          "private_repos": 10000,
+          "space": 976562499
+        },
+        "private_gists": 0,
+        "public_gists": 0,
+        "public_repos": 4,
+        "received_events_url": "https://api.github.com/users/gitlab-qa-github/received_events",
+        "repos_url": "https://api.github.com/users/gitlab-qa-github/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/gitlab-qa-github/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/gitlab-qa-github/subscriptions",
+        "total_private_repos": 0,
+        "twitter_username": null,
+        "two_factor_authentication": true,
+        "type": "User",
+        "updated_at": "2023-04-27T11:22:33Z",
+        "url": "https://api.github.com/users/gitlab-qa-github"
+      }
+
+- request:
+    path: /users/gitlab-qa
+    method: GET
+    headers:
+      Host: api.github.com
+  response:
+    status: 200
+    headers:
+      Content-Type: application/json; charset=utf-8
+      X-Ratelimit-Limit: '5000'
+      X-Ratelimit-Remaining: '5000'
+    body: |
+      {
+        "avatar_url": "https://avatars.githubusercontent.com/u/40021320?v=4",
+        "bio": null,
+        "blog": "",
+        "company": null,
+        "created_at": "2018-06-07T08:07:41Z",
+        "email": null,
+        "events_url": "https://api.github.com/users/gitlab-qa/events{/privacy}",
+        "followers": 0,
+        "followers_url": "https://api.github.com/users/gitlab-qa/followers",
+        "following": 0,
+        "following_url": "https://api.github.com/users/gitlab-qa/following{/other_user}",
+        "gists_url": "https://api.github.com/users/gitlab-qa/gists{/gist_id}",
+        "gravatar_id": "",
+        "hireable": null,
+        "html_url": "https://github.com/gitlab-qa",
+        "id": 40021320,
+        "location": null,
+        "login": "gitlab-qa",
+        "name": null,
+        "node_id": "MDQ6VXNlcjQwMDIxMzIw",
+        "organizations_url": "https://api.github.com/users/gitlab-qa/orgs",
+        "public_gists": 0,
+        "public_repos": 2,
+        "received_events_url": "https://api.github.com/users/gitlab-qa/received_events",
+        "repos_url": "https://api.github.com/users/gitlab-qa/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/gitlab-qa/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/gitlab-qa/subscriptions",
+        "twitter_username": null,
+        "type": "User",
+        "updated_at": "2023-05-11T05:59:28Z",
+        "url": "https://api.github.com/users/gitlab-qa"
+      }
