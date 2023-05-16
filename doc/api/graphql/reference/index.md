@@ -11547,7 +11547,7 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalertiid"></a>`iid` | [`ID!`](#id) | Internal ID of the alert. |
 | <a id="alertmanagementalertissue"></a>`issue` | [`Issue`](#issue) | Issue attached to the alert. |
 | <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 13.10. Use issue field. |
-| <a id="alertmanagementalertmetricsdashboardurl"></a>`metricsDashboardUrl` | [`String`](#string) | URL for metrics embed for the alert. |
+| <a id="alertmanagementalertmetricsdashboardurl"></a>`metricsDashboardUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.0. Returns no data. Underlying feature was removed in 16.0. |
 | <a id="alertmanagementalertmonitoringtool"></a>`monitoringTool` | [`String`](#string) | Monitoring tool the alert came from. |
 | <a id="alertmanagementalertnotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="alertmanagementalertprometheusalert"></a>`prometheusAlert` | [`PrometheusAlert`](#prometheusalert) | Alert condition for Prometheus. |
@@ -15027,6 +15027,7 @@ GPG signature for a signed commit.
 | <a id="groupdependencyproxymanifests"></a>`dependencyProxyManifests` | [`DependencyProxyManifestConnection`](#dependencyproxymanifestconnection) | Dependency Proxy manifests. (see [Connections](#connections)) |
 | <a id="groupdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Dependency Proxy settings for the group. |
 | <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |
+| <a id="groupdependencyproxytotalsizeinbytes"></a>`dependencyProxyTotalSizeInBytes` | [`Int!`](#int) | Total size of the dependency proxy cached images in bytes. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |

@@ -632,23 +632,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           constraints: { id: /\d+/ }
         # rubocop: enable Cop/PutProjectRoutesUnderScope
       end
-
-      # All new routes should go under /-/ scope.
-      # Look for scope '-' at the top of the file.
-
-      # Legacy routes.
-      # Introduced in 12.0.
-      # Should be removed with https://gitlab.com/gitlab-org/gitlab/issues/28848.
-      Gitlab::Routing.redirect_legacy_paths(
-        self, :mirror, :tags, :hooks,
-        :commits, :commit, :find_file, :files, :compare,
-        :cycle_analytics, :mattermost, :variables, :triggers,
-        :environments, :protected_environments, :error_tracking, :alert_management,
-        :serverless, :clusters, :audit_events, :wikis, :merge_requests,
-        :vulnerability_feedback, :security, :dependencies, :issues,
-        :pipelines, :pipeline_schedules, :runners, :snippets
-      )
     end
+
     # rubocop: disable Cop/PutProjectRoutesUnderScope
     resources(
       :projects,

@@ -595,19 +595,19 @@ module API
               required: false,
               name: :jira_auth_type,
               type: Integer,
-              desc: 'The authorization type for Jira'
+              desc: 'The authentication method to be used with Jira. `0` means Basic Authentication. `1` means Jira personal access token. Defaults to `0`'
             },
             {
               required: false,
               name: :username,
               type: String,
-              desc: 'The username of the user created to be used with GitLab/Jira'
+              desc: 'The email or username to be used with Jira. For Jira Cloud use an email, for Jira Data Center and Jira Server use a username. Required when using Basic authentication (`jira_auth_type` is `0`)'
             },
             {
               required: true,
               name: :password,
               type: String,
-              desc: 'The password of the user created to be used with GitLab/Jira'
+              desc: 'The Jira API token, password, or personal access token to be used with Jira. When your authentication method is Basic (`jira_auth_type` is `0`) use an API token for Jira Cloud, or a password for Jira Data Center or Jira Server. When your authentication method is Jira personal access token (`jira_auth_type` is `1`) use a personal access token'
             },
             {
               required: false,

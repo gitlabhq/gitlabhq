@@ -263,9 +263,10 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 
 | GitLab SaaS runner type  | Machine Type   | CI/CD minutes cost factor  |
 | :--------- | :------------------- | :--------- |
-| Linux OS + Docker executor| Small  |1|
-| Linux OS + Docker executor| Medium  |2|
-| Linux OS + Docker executor| Large |3|
+| Linux OS | Small  |1|
+| Linux OS | Medium  |2|
+| Linux OS | Large |3|
+| Linux OS + GPU-enabled | Medium, GPU Standard |7|
 
 ### Monthly reset of CI/CD minutes
 

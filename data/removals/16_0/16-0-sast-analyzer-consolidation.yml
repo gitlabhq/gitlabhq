@@ -1,0 +1,21 @@
+- title: "The Security Code Scan-based GitLab SAST analyzer is now removed"  # (required) Clearly explain the change. For example, "The `confidential` field for a `Note` is removed" or "CI/CD job names are limited to 250 characters."
+  announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "16.0"  # (required) The milestone when this feature is being removed.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: connorgilbert  # (required) GitLab username of the person reporting the change
+  stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390416  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+    We've reduced the number of supported analyzers used by default in GitLab SAST.
+    This is part of our long-term strategy to deliver a faster, more consistent user experience across different programming languages.
+
+    As of GitLab 16.0, the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) no longer uses the [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)-based analyzer for .NET.
+    We've removed this analyzer from the SAST CI/CD template and replaced it with GitLab-supported detection rules for C# in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+
+    Because this analyzer has reached End of Support in GitLab 16.0, we won't provide further updates to it.
+    However, we won't delete any container images we previously published for this analyzer or remove the ability to run it by using a [custom CI/CD pipeline job](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportssast).
+
+    If you've already dismissed a vulnerability finding from the deprecated analyzer, the replacement attempts to respect your previous dismissal. See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
+
+    If you customize the behavior of GitLab SAST by disabling the Semgrep-based analyzer or depending on specific SAST jobs in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#actions-required).

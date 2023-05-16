@@ -167,6 +167,11 @@ module Types
           null: false,
           description: 'Total size of the dependency proxy cached images.'
 
+    field :dependency_proxy_total_size_in_bytes,
+          GraphQL::Types::Int,
+          null: false,
+          description: 'Total size of the dependency proxy cached images in bytes.'
+
     field :dependency_proxy_image_prefix,
           GraphQL::Types::String,
           null: false,
@@ -279,8 +284,12 @@ module Types
 
     def dependency_proxy_total_size
       ActiveSupport::NumberHelper.number_to_human_size(
-        group.dependency_proxy_manifests.sum(:size) + group.dependency_proxy_blobs.sum(:size)
+        dependency_proxy_total_size_in_bytes
       )
+    end
+
+    def dependency_proxy_total_size_in_bytes
+      group.dependency_proxy_manifests.sum(:size) + group.dependency_proxy_blobs.sum(:size)
     end
 
     def dependency_proxy_setting

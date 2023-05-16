@@ -552,6 +552,26 @@ GitLab 15.7 and is removed in 16.0.
 The Phabricator project hasn't been actively maintained since June 1, 2021. We haven't observed imports using this
 tool. There has been no activity on the open related issues on GitLab.
 
+### The Security Code Scan-based GitLab SAST analyzer is now removed
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+We've reduced the number of supported analyzers used by default in GitLab SAST.
+This is part of our long-term strategy to deliver a faster, more consistent user experience across different programming languages.
+
+As of GitLab 16.0, the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) no longer uses the [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)-based analyzer for .NET.
+We've removed this analyzer from the SAST CI/CD template and replaced it with GitLab-supported detection rules for C# in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+
+Because this analyzer has reached End of Support in GitLab 16.0, we won't provide further updates to it.
+However, we won't delete any container images we previously published for this analyzer or remove the ability to run it by using a [custom CI/CD pipeline job](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportssast).
+
+If you've already dismissed a vulnerability finding from the deprecated analyzer, the replacement attempts to respect your previous dismissal. See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
+
+If you customize the behavior of GitLab SAST by disabling the Semgrep-based analyzer or depending on specific SAST jobs in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#actions-required).
+
 ### The stable Terraform CI/CD template has been replaced with the latest template
 
 WARNING:

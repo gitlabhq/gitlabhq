@@ -105,6 +105,7 @@ For more information about our plans for language support in SAST, see the [cate
 | React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 13.10                                                                                   |
 | Ruby                         | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 13.9                                                                                    |
 | Ruby on Rails                | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 10.3                                                                                    |
+| Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 16.0                                                                                    |
 | Scala<sup>1</sup>            | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
 | Swift (iOS)                  | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
 | TypeScript<sup>2</sup>       | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
@@ -113,7 +114,7 @@ For more information about our plans for language support in SAST, see the [cate
 1. The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
 [Grails](https://grails.org/),
-and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java projects.
+and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java or Scala projects.
 1. These analyzers reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554).
 1. Security Code Scan reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/390416).
 

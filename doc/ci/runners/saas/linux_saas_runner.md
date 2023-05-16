@@ -28,6 +28,15 @@ CI/CD jobs that run on `medium` and `large` machine types consumes CI minutes at
 
 Refer to the CI/CD minutes [cost factor](../../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
 
+## GPU-enabled SaaS runners on Linux **(PREMIUM SAAS)**
+
+We offer GPU-enabled SaaS runners for heavy compute including ModelOps or HPC workloads. Available to Premium and Ultimate plan customers, jobs on these instances consume the CI/CD minutes allocated to your namespace.
+
+|                   | Standard                   |
+|-------------------|---------------------------|
+| Specs             | 4 vCPU, 16 GB RAM, 1 Nvidia Tesla T4 GPU (or similar) |
+| GitLab CI/CD tags | `saas-linux-medium-gpu-standard` |
+
 ## Example of how to tag a job
 
 To use a machine type other than `small`, add a `tags:` keyword to your job.
