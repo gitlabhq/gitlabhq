@@ -1,5 +1,13 @@
 import '~/commons';
-import { GlButton, GlEmptyState, GlFilteredSearch, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import {
+  GlButton,
+  GlEmptyState,
+  GlFilteredSearch,
+  GlLoadingIcon,
+  GlPagination,
+  GlCollapsibleListbox,
+} from '@gitlab/ui';
+import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { chunk } from 'lodash';
@@ -10,8 +18,10 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import Api from '~/api';
 import { createAlert, VARIANT_WARNING } from '~/alert';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
@@ -22,9 +32,14 @@ import { RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/pipelines/constants';
 import Store from '~/pipelines/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import {
+  setIdTypePreferenceMutationResponse,
+  setIdTypePreferenceMutationResponseWithErrors,
+} from 'jest/issues/list/mock_data';
 
 import { stageReply, users, mockSearch, branches } from './mock_data';
 
+jest.mock('@sentry/browser');
 jest.mock('~/alert');
 
 const mockProjectPath = 'twitter/flight';
@@ -38,6 +53,7 @@ const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
 
 describe('Pipelines', () => {
   let wrapper;
+  let mockApollo;
   let mock;
   let trackingSpy;
 
@@ -70,6 +86,7 @@ describe('Pipelines', () => {
   const findNavigationControls = () => wrapper.findComponent(NavigationControls);
   const findPipelinesTable = () => wrapper.findComponent(PipelinesTableComponent);
   const findTablePagination = () => wrapper.findComponent(TablePagination);
+  const findPipelineKeyCollapsibleBoxVue = () => wrapper.findComponent(GlCollapsibleListbox);
 
   const findTab = (tab) => wrapper.findByTestId(`pipelines-tab-${tab}`);
   const findPipelineKeyCollapsibleBox = () => wrapper.findByTestId('pipeline-key-collapsible-box');
@@ -81,6 +98,9 @@ describe('Pipelines', () => {
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
   const createComponent = (props = defaultProps) => {
+    const { mutationMock, ...restProps } = props;
+    mockApollo = createMockApollo([[setSortPreferenceMutation, mutationMock]]);
+
     wrapper = extendedWrapper(
       mount(PipelinesComponent, {
         provide: {
@@ -95,8 +115,9 @@ describe('Pipelines', () => {
           defaultBranchName: mockDefaultBranchName,
           endpoint: mockPipelinesEndpoint,
           params: {},
-          ...props,
+          ...restProps,
         },
+        apolloProvider: mockApollo,
       }),
     );
   };
@@ -115,6 +136,7 @@ describe('Pipelines', () => {
 
   afterEach(() => {
     mock.reset();
+    mockApollo = null;
     window.history.pushState.mockReset();
   });
 
@@ -346,6 +368,45 @@ describe('Pipelines', () => {
             expect.anything(),
             `${window.location.pathname}?page=1&scope=all&username=root&ref=main&status=pending`,
           );
+        });
+      });
+
+      describe('when user changes Show Pipeline ID to Show Pipeline IID', () => {
+        const mockFilteredPipeline = mockPipelinesResponse.pipelines[0];
+
+        beforeEach(() => {
+          gon.current_user_id = 1;
+        });
+
+        it('should change the text to Show Pipeline IID', async () => {
+          expect(findPipelineKeyCollapsibleBox().exists()).toBe(true);
+          expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.id}`);
+          findPipelineKeyCollapsibleBoxVue().vm.$emit('select', 'iid');
+
+          await waitForPromises();
+
+          expect(findPipelineUrlLinks().at(0).text()).toBe(`#${mockFilteredPipeline.iid}`);
+        });
+
+        it('calls mutation to save idType preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponse);
+          createComponent({ ...defaultProps, mutationMock });
+
+          findPipelineKeyCollapsibleBoxVue().vm.$emit('select', 'iid');
+
+          expect(mutationMock).toHaveBeenCalledWith({ input: { visibilityPipelineIdType: 'IID' } });
+        });
+
+        it('captures error when mutation response has errors', async () => {
+          const mutationMock = jest
+            .fn()
+            .mockResolvedValue(setIdTypePreferenceMutationResponseWithErrors);
+          createComponent({ ...defaultProps, mutationMock });
+
+          findPipelineKeyCollapsibleBoxVue().vm.$emit('select', 'iid');
+          await waitForPromises();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
         });
       });
 

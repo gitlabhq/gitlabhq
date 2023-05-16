@@ -48,6 +48,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     iosRunnersAvailable,
     registrationToken,
     fullPath,
+    visibilityPipelineIdType,
   } = el.dataset;
 
   return new Vue({
@@ -91,6 +92,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
           defaultBranchName,
           params: JSON.parse(params),
           registrationToken,
+          defaultVisibilityPipelineIdType: visibilityPipelineIdType,
         },
       });
     },

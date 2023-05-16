@@ -1,12 +1,15 @@
 <script>
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
+import * as Sentry from '@sentry/browser';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/alert';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import {
   ANY_TRIGGER_AUTHOR,
   RAW_TEXT_WARNING,
@@ -113,6 +116,11 @@ export default {
       required: false,
       default: null,
     },
+    defaultVisibilityPipelineIdType: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -123,7 +131,7 @@ export default {
       page: getParameterByName('page') || '1',
       requestData: {},
       isResetCacheButtonLoading: false,
-      selectedPipelineKeyOption: this.$options.PipelineKeyOptions[0],
+      visibilityPipelineIdType: this.defaultVisibilityPipelineIdType,
     };
   },
   stateMap: {
@@ -232,6 +240,12 @@ export default {
     validatedParams() {
       return validateParams(this.params);
     },
+    selectedPipelineKeyOption() {
+      return (
+        this.$options.PipelineKeyOptions.find((e) => this.visibilityPipelineIdType === e.value) ||
+        this.$options.PipelineKeyOptions[0]
+      );
+    },
   },
   created() {
     this.service = new PipelinesService(this.endpoint);
@@ -317,8 +331,26 @@ export default {
 
       this.updateContent({ ...this.requestData, page: '1' });
     },
-    changeVisibilityPipelineID(val) {
-      this.selectedPipelineKeyOption = PipelineKeyOptions.find((e) => val === e.value);
+    changeVisibilityPipelineIDType(idType) {
+      this.visibilityPipelineIdType = idType;
+      this.saveVisibilityPipelineIDType(idType);
+    },
+    saveVisibilityPipelineIDType(idType) {
+      if (!isLoggedIn()) return;
+
+      this.$apollo
+        .mutate({
+          mutation: setSortPreferenceMutation,
+          variables: { input: { visibilityPipelineIdType: idType.toUpperCase() } },
+        })
+        .then(({ data }) => {
+          if (data.userPreferencesUpdate.errors.length) {
+            throw new Error(data.userPreferencesUpdate.errors);
+          }
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
     },
   },
 };
@@ -362,7 +394,7 @@ export default {
           data-testid="pipeline-key-collapsible-box"
           :toggle-text="selectedPipelineKeyOption.text"
           :items="$options.PipelineKeyOptions"
-          @select="changeVisibilityPipelineID"
+          @select="changeVisibilityPipelineIDType"
         />
       </div>
     </div>

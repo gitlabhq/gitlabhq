@@ -28930,7 +28930,13 @@ msgstr ""
 msgid "MlExperimentTracking|Experiment removed"
 msgstr ""
 
+msgid "MlExperimentTracking|Experiments keep track of comparable model candidates, and determine which parameters provides the best performance. Create experiments using the MLflow client"
+msgstr ""
+
 msgid "MlExperimentTracking|Filter candidates"
+msgstr ""
+
+msgid "MlExperimentTracking|Get started with model experiments!"
 msgstr ""
 
 msgid "MlExperimentTracking|ID"
@@ -28972,9 +28978,6 @@ msgstr ""
 msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
 msgstr ""
 
-msgid "MlExperimentTracking|No experiments"
-msgstr ""
-
 msgid "MlExperimentTracking|No name"
 msgstr ""
 
@@ -28982,9 +28985,6 @@ msgid "MlExperimentTracking|Parameters"
 msgstr ""
 
 msgid "MlExperimentTracking|Status"
-msgstr ""
-
-msgid "MlExperimentTracking|There are no logged experiments for this project. Create a new experiment using the MLflow client."
 msgstr ""
 
 msgid "Modal updated"

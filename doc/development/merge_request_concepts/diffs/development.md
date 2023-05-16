@@ -119,6 +119,23 @@ relationship to the change, such as:
 - Its ordering in the diff.
 - The raw diff output itself.
 
+#### External diff storage
+
+By default, diff data of a `MergeRequestDiffFile` is stored in `diff` column in
+the `merge_request_diff_files` table. On some installations, the table can grow
+too large, so they're configured to store diffs on external storage to save space.
+To configure it, see [Merge request diffs storage](../../../administration/merge_request_diffs.md).
+
+When configured to use external storage:
+
+- The `diff` column in the database is left `NULL`.
+- The associated `MergeRequestDiff` record sets the `stored_externally` attribute
+  to `true` on creation of `MergeRequestDiff`.
+
+A cron job named `ScheduleMigrateExternalDiffsWorker` is also scheduled at
+minute 15 of every hour. This migrates `diff` that are still stored in the
+database to external storage.
+
 ### `MergeRequestDiffDetail`
 
 `MergeRequestDiffDetail` is defined in `app/models/merge_request_diff_detail.rb`.

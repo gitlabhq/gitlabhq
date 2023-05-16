@@ -121,7 +121,8 @@ RSpec.describe Ci::PipelinesHelper do
                                            :has_gitlab_ci,
                                            :pipeline_editor_path,
                                            :suggested_ci_templates,
-                                           :full_path])
+                                           :full_path,
+                                           :visibility_pipeline_id_type])
     end
 
     describe 'when the project is eligible for the `ios_specific_templates` experiment' do
@@ -190,6 +191,29 @@ RSpec.describe Ci::PipelinesHelper do
             it { is_expected.to eq('true') }
           end
         end
+      end
+    end
+  end
+
+  describe '#visibility_pipeline_id_type' do
+    subject { helper.visibility_pipeline_id_type }
+
+    context 'when user is not signed in' do
+      it 'shows default pipeline id type' do
+        expect(subject).to eq('id')
+      end
+    end
+
+    context 'when user is signed in' do
+      let(:user) { create(:user) }
+
+      before do
+        sign_in(user)
+        user.user_preference.update!(visibility_pipeline_id_type: 'iid')
+      end
+
+      it 'shows user preference pipeline id type' do
+        expect(subject).to eq('iid')
       end
     end
   end

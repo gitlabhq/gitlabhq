@@ -76,7 +76,7 @@ then
   echo
   echo '  ✖ ERROR: The number of README.md file(s) has changed. Use index.md instead of README.md.' >&2
   echo '  ✖        If removing a README.md file, update NUMBER_READMES in lint-doc.sh.' >&2
-  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#work-with-directories-and-files'
+  echo '  https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files' >&2
   echo
   ((ERRORCODE++))
 fi
@@ -92,7 +92,34 @@ then
   echo
   echo '  ✖ ERROR: The number of directory names containing dashes has changed. Use underscores instead of dashes for the directory names.' >&2
   echo '  ✖        If removing a directory containing dashes, update NUMBER_DASHES in lint-doc.sh.' >&2
-  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#work-with-directories-and-files'
+  echo '  https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files' >&2
+  echo
+  ((ERRORCODE++))
+fi
+
+# Do not use uppercase letters in directory and file names, use all lowercase instead.
+# (find always returns 0, so we use the grep hack https://serverfault.com/a/225827)
+FIND_UPPERCASE_DIRS=$(find doc -type d -name "*[[:upper:]]*")
+echo '=> Checking for directory names containing an uppercase letter...'
+echo
+if echo "${FIND_UPPERCASE_DIRS}" | grep . &>/dev/null
+then
+  echo '✖ ERROR: Found one or more directories with an uppercase letter in their name. Use lowercase instead of uppercase for the directory names.' >&2
+  echo 'https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files' >&2
+  echo
+  echo "${FIND_UPPERCASE_DIRS}"
+  echo
+  ((ERRORCODE++))
+fi
+FIND_UPPERCASE_FILES=$(find doc -type f -name "*[[:upper:]]*.md")
+echo '=> Checking for file names containing an uppercase letter...'
+echo
+if echo "${FIND_UPPERCASE_FILES}" | grep . &>/dev/null
+then
+  echo '✖ ERROR: Found one or more file names with an uppercase letter in their name. Use lowercase instead of uppercase for the file names.' >&2
+  echo 'https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files' >&2
+  echo
+  echo "${FIND_UPPERCASE_FILES}"
   echo
   ((ERRORCODE++))
 fi

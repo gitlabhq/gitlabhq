@@ -316,6 +316,22 @@ method.
 Before upgrading to GitLab 16.0, administrators must migrate to the new single configuration structure. For
 instructions, see [Praefect - Omnibus GitLab configuration structure change](https://docs.gitlab.com/ee/update/#praefect-omnibus-gitlab-configuration-structure-change).
 
+### Legacy routes removed
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214217).
+</div>
+
+GitLab 16.0 removes legacy URLs from the GitLab application.
+
+When subgroups were introduced in GitLab 9.0, a `/-/` delimiter was added to URLs to signify the end of a group path. All GitLab URLs now use this delimiter for project, group, and instance level features.
+
+URLs that do not use the `/-/` delimiter are planned for removal in GitLab 16.0. For the full list of these URLs, along with their replacements, see [issue 28848](https://gitlab.com/gitlab-org/gitlab/-/issues/28848#release-notes).
+
+Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are not affected by this change.
+
 ### License-Check and the Policies tab on the License Compliance page
 
 <div class="deprecation-notes">

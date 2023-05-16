@@ -51,27 +51,29 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasExperiments">
+  <div>
     <model-experiments-header :page-title="$options.i18n.TITLE_LABEL" />
 
-    <gl-table-lite :items="tableItems" :fields="$options.tableFields">
-      <template #cell(nameColumn)="data">
-        <gl-link :href="data.value.path">
-          {{ data.value.name }}
-        </gl-link>
-      </template>
-    </gl-table-lite>
+    <template v-if="hasExperiments">
+      <gl-table-lite :items="tableItems" :fields="$options.tableFields">
+        <template #cell(nameColumn)="data">
+          <gl-link :href="data.value.path">
+            {{ data.value.name }}
+          </gl-link>
+        </template>
+      </gl-table-lite>
 
-    <pagination v-if="hasExperiments" v-bind="pageInfo" />
+      <pagination v-if="hasExperiments" v-bind="pageInfo" />
+    </template>
+
+    <gl-empty-state
+      v-else
+      :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
+      :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
+      :primary-button-link="$options.constants.CREATE_EXPERIMENT_HELP_PATH"
+      :svg-path="emptyStateSvgPath"
+      :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
+      class="gl-py-8"
+    />
   </div>
-
-  <gl-empty-state
-    v-else
-    :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
-    :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
-    :primary-button-link="$options.constants.CREATE_EXPERIMENT_HELP_PATH"
-    :svg-path="emptyStateSvgPath"
-    :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
-    class="gl-py-8"
-  />
 </template>

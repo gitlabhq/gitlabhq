@@ -605,17 +605,17 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
           wait_for_requests
         end
 
-        it 'changes the Pipeline ID column for Pipeline IID' do
-          page.find('[data-testid="pipeline-key-collapsible-box"]').click
+        it 'changes the Pipeline ID column link to Pipeline IID and persists', :aggregate_failures do
+          expect(page).to have_link(text: "##{pipeline.id}")
 
-          within '.gl-new-dropdown-contents' do
-            dropdown_options = page.find_all '.gl-new-dropdown-item'
+          select_from_listbox('Show Pipeline IID', from: 'Show Pipeline ID')
 
-            dropdown_options[1].click
-          end
+          expect(page).to have_link(text: "##{pipeline.iid}")
 
-          expect(page.find('[data-testid="pipeline-th"]')).to have_content 'Pipeline'
-          expect(page.find('[data-testid="pipeline-url-link"]')).to have_content "##{pipeline.iid}"
+          visit project_pipelines_path(project)
+          wait_for_requests
+
+          expect(page).to have_link(text: "##{pipeline.iid}")
         end
       end
     end

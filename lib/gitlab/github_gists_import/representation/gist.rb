@@ -65,6 +65,10 @@ module Gitlab
         def github_identifiers
           { id: id }
         end
+
+        def total_files_size
+          files.values.sum { |f| f[:size].to_i }
+        end
       end
     end
   end

@@ -101,7 +101,8 @@ module Ci
         has_gitlab_ci: has_gitlab_ci?(project).to_s,
         pipeline_editor_path: can?(current_user, :create_pipeline, project) && project_ci_pipeline_editor_path(project),
         suggested_ci_templates: suggested_ci_templates.to_json,
-        full_path: project.full_path
+        full_path: project.full_path,
+        visibility_pipeline_id_type: visibility_pipeline_id_type
       }
 
       experiment(:ios_specific_templates, actor: current_user, project: project, sticky_to: project) do |e|
@@ -112,6 +113,12 @@ module Ci
       end
 
       data
+    end
+
+    def visibility_pipeline_id_type
+      return 'id' unless current_user.present?
+
+      current_user.user_preference.visibility_pipeline_id_type
     end
 
     private
