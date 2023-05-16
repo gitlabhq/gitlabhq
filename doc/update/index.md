@@ -471,7 +471,7 @@ that may remain stuck permanently in a **pending** state.
 
     ```ruby
         Gitlab::Database::BackgroundMigrationJob.pending.where(class_name: "PopulateTopicsNonPrivateProjectsCount").find_each do |job|
-          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCountq", job.arguments)
+          puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsNonPrivateProjectsCount", job.arguments)
         end
     ```
 
