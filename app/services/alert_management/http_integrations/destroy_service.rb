@@ -12,6 +12,7 @@ module AlertManagement
 
       def execute
         return error_no_permissions unless allowed?
+        return error_legacy_prometheus unless destroy_allowed?
 
         if integration.destroy
           success
@@ -28,6 +29,12 @@ module AlertManagement
         current_user&.can?(:admin_operations, integration)
       end
 
+      # Prevents downtime while migrating from Integrations::Prometheus.
+      # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/409734
+      def destroy_allowed?
+        !(integration.legacy? && integration.prometheus?)
+      end
+
       def error(message)
         ServiceResponse.error(message: message)
       end
@@ -38,6 +45,10 @@ module AlertManagement
 
       def error_no_permissions
         error(_('You have insufficient permissions to remove this HTTP integration'))
+      end
+
+      def error_legacy_prometheus
+        error(_('Legacy Prometheus integrations cannot currently be removed'))
       end
     end
   end

@@ -60,6 +60,7 @@ The token also includes custom claims provided by GitLab:
 | `user_id`               | Always                       | ID of the user executing the job. |
 | `user_login`            | Always                       | Username of the user executing the job. |
 | `user_email`            | Always                       | Email of the user executing the job. |
+| `user_identities`       | User Preference setting      | List of the user's external identities ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0). |
 | `pipeline_id`           | Always                       | ID of the pipeline. |
 | `pipeline_source`       | Always                       | [Pipeline source](../jobs/job_control.md#common-if-clauses-for-rules). |
 | `job_id`                | Always                       | ID of the job. |
@@ -83,6 +84,10 @@ The token also includes custom claims provided by GitLab:
   "user_id": "1",
   "user_login": "sample-user",
   "user_email": "sample-user@example.com",
+  "user_identities": [
+      {"provider": "github", "extern_uid": "2435223452345"},
+      {"provider": "bitbucket", "extern_uid": "john.smith"},
+  ],
   "pipeline_id": "574",
   "pipeline_source": "push",
   "job_id": "302",

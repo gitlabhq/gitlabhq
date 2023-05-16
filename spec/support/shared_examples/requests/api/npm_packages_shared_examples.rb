@@ -259,8 +259,13 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
       before do
         project.send("add_#{user_role}", user) if user_role
         project.update!(visibility: visibility.to_s)
+
+        group.send("add_#{user_role}", user) if user_role && scope == :group
+        group.update!(visibility: visibility.to_s) if scope == :group
+
         package.update!(name: package_name) unless package_name == 'non-existing-package'
-        if scope == :instance
+
+        if %i[instance group].include?(scope)
           allow_fetch_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
         else
           allow_fetch_cascade_application_setting(attribute: "npm_package_requests_forwarding", return_value: request_forward)
@@ -279,6 +284,8 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
           status = :not_found
         end
       end
+
+      status = :not_found if scope == :group && params[:package_name_type] == :non_existing && !params[:request_forward]
 
       it_behaves_like example_name, status: status
     end
@@ -300,6 +307,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
     let(:headers) { build_token_auth_header(personal_access_token.token) }
 
     before do
+      group.add_developer(user) if scope == :group
       project.add_developer(user)
     end
 

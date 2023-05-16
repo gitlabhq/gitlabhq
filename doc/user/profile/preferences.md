@@ -182,6 +182,13 @@ NOTE:
 This feature is experimental, and choosing absolute times might break certain layouts.
 Open an issue if you notice that using absolute times breaks a layout.
 
+## User identities in CI job JSON web tokens
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0. False by default.
+
+You can select to include the list of your external identities in the JSON Web Token information that is generated for a CI job.
+For more information and examples, see [Token Payload](../../ci/secrets/id_token_authentication.md#token-payload).
+
 ## Integrations
 
 Configure your preferences with third-party services which provide enhancements to your GitLab experience.

@@ -32,7 +32,7 @@ class MergeRequestDiff < ApplicationRecord
     -> { order(:merge_request_diff_id, :relative_order) },
     inverse_of: :merge_request_diff
 
-  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
+  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff
 
   validates :base_commit_sha, :head_commit_sha, :start_commit_sha, sha: true
   validates :merge_request_id, uniqueness: { scope: :diff_type }, if: :merge_head?

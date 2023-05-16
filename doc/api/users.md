@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Users API **(FREE)**
 
-This documentation has information on API calls, parameters and responses for the Users API. 
+This documentation has information on API calls, parameters and responses for the Users API.
 
 For information on user activities that update the user event timestamps, see [get user activities](#get-user-activities).
 
@@ -875,7 +875,7 @@ Parameters:
 | :------------------------------- | :------- | :--------------------------------------------------------------------------- |
 | `view_diffs_file_by_file`        | Yes      | Flag indicating the user sees only one file diff per page.                   |
 | `show_whitespace_in_diffs`       | Yes      | Flag indicating the user sees whitespace changes in diffs.                   |
-| `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. |
+| `pass_user_identities_to_ci_jwt` | Yes      | Flag indicating the user passes their external identities as CI information. This attribute does not contain enough information to identify or authorize the user in an external system. The attribute is internal to GitLab, and must not be passed to third-party services. For more information and examples, see [Token Payload](../ci/secrets/id_token_authentication.md#token-payload). |
 
 ## User follow
 

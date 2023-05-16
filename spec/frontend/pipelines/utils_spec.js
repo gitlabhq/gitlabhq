@@ -1,3 +1,4 @@
+import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { createSankey } from '~/pipelines/components/dag/drawing_utils';
 import {
   makeLinksFromNodes,
@@ -14,7 +15,7 @@ import { createNodeDict } from '~/pipelines/utils';
 import { mockDownstreamPipelinesRest } from '../vue_merge_request_widget/mock_data';
 import { mockDownstreamPipelinesGraphql } from '../commit/mock_data';
 import { mockParsedGraphQLNodes, missingJob } from './components/dag/mock_data';
-import { generateResponse, mockPipelineResponse } from './graph/mock_data';
+import { generateResponse } from './graph/mock_data';
 
 describe('DAG visualization parsing utilities', () => {
   const nodeDict = createNodeDict(mockParsedGraphQLNodes);
@@ -151,14 +152,6 @@ describe('DAG visualization parsing utilities', () => {
           expect(group).toBe(groupObject);
         });
       });
-    });
-
-    /*
-      Just as a fallback in case multiple functions change, so tests pass
-      but the implementation moves away from case.
-    */
-    it('matches the snapshot', () => {
-      expect(columns).toMatchSnapshot();
     });
   });
 });

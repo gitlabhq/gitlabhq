@@ -11,16 +11,12 @@ module API
           package_name: API::NO_SLASH_URL_PART_REGEX
         }.freeze
 
-        def endpoint_scope
-          params[:id].present? ? :project : :instance
-        end
-
         def project
           strong_memoize(:project) do
             case endpoint_scope
             when :project
               user_project(action: :read_package)
-            when :instance
+            when :instance, :group
               # Simulate the same behavior as #user_project by re-using #find_project!
               # but take care if the project_id is nil as #find_project! is not designed
               # to handle it.
@@ -39,6 +35,8 @@ module API
             ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil)
           when :instance
             ::Packages::Npm::PackageFinder.new(package_name, namespace: top_namespace_from(package_name))
+          when :group
+            ::Packages::Npm::PackageFinder.new(package_name, namespace: group)
           end
         end
 
@@ -57,6 +55,14 @@ module API
             case endpoint_scope
             when :project
               params[:id]
+            when :group
+              finder = ::Packages::Npm::PackageFinder.new(
+                params[:package_name],
+                namespace: group,
+                last_of_each_version: false
+              )
+
+              finder.last&.project_id
             when :instance
               package_name = params[:package_name]
 
@@ -91,6 +97,13 @@ module API
 
           Namespace.top_most.by_path(namespace_path)
         end
+
+        def group
+          group = find_group(params[:id])
+          not_found!('Group') unless can?(current_user, :read_group, group)
+          group
+        end
+        strong_memoize_attr :group
       end
     end
   end

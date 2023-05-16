@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :metrics do
+RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :incident_management do
   include PrometheusHelpers
   using RSpec::Parameterized::TableSyntax
 
@@ -161,6 +161,24 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :m
           it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
         else
           raise "invalid result: #{result.inspect}"
+        end
+      end
+
+      context 'with simultaneous manual configuration' do
+        let_it_be(:integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
+        let_it_be(:old_prometheus_integration) { create(:prometheus_integration, project: project) }
+        let_it_be(:alerting_setting) { create(:project_alerting_setting, project: project, token: integration.token) }
+
+        subject { service.execute(integration.token, integration) }
+
+        it_behaves_like 'processes one firing and one resolved prometheus alerts'
+
+        context 'when HTTP integration is inactive' do
+          before do
+            integration.update!(active: false)
+          end
+
+          it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
         end
       end
     end

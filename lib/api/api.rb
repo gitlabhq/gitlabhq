@@ -256,6 +256,7 @@ module API
         mount ::API::Metrics::Dashboard::Annotations
         mount ::API::Metrics::UserStarredDashboards
         mount ::API::Namespaces
+        mount ::API::NpmGroupPackages
         mount ::API::NpmInstancePackages
         mount ::API::NpmProjectPackages
         mount ::API::NugetGroupPackages

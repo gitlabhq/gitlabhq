@@ -35,6 +35,8 @@ When you select a row in the compliance report, a drawer appears that provides:
 
 ### View the compliance violations report for a group
 
+> Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
+
 Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
@@ -49,6 +51,12 @@ You can sort the compliance report on:
 - Severity level.
 - Type of violation.
 - Merge request title.
+
+You can filter the compliance violations report on:
+
+- Project.
+- Date range of merge.
+- Target branch.
 
 Select a row to see details of the compliance violation.
 

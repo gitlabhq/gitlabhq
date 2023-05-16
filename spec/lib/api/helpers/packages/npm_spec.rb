@@ -17,20 +17,9 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
   let_it_be(:project) { create(:project, :public, namespace: namespace) }
   let_it_be(:package) { create(:npm_package, project: project) }
 
-  describe '#endpoint_scope' do
-    subject { object.endpoint_scope }
-
-    context 'when params includes an id' do
-      let(:params) { { id: 42, package_name: 'foo' } }
-
-      it { is_expected.to eq(:project) }
-    end
-
-    context 'when params does not include an id' do
-      let(:params) { { package_name: 'foo' } }
-
-      it { is_expected.to eq(:instance) }
-    end
+  before do
+    allow(object).to receive(:endpoint_scope).and_return(endpoint_scope)
+    allow(object).to receive(:current_user).and_return(user)
   end
 
   describe '#finder_for_endpoint_scope' do
@@ -40,6 +29,7 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
 
     context 'when called with project scope' do
       let(:params) { { id: project.id } }
+      let(:endpoint_scope) { :project }
 
       it 'returns a PackageFinder for project scope' do
         expect(::Packages::Npm::PackageFinder).to receive(:new).with(package_name, project: project)
@@ -50,8 +40,20 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
 
     context 'when called with instance scope' do
       let(:params) { { package_name: package_name } }
+      let(:endpoint_scope) { :instance }
 
       it 'returns a PackageFinder for namespace scope' do
+        expect(::Packages::Npm::PackageFinder).to receive(:new).with(package_name, namespace: group)
+
+        subject
+      end
+    end
+
+    context 'when called with group scope' do
+      let(:params) { { id: group.id } }
+      let(:endpoint_scope) { :group }
+
+      it 'returns a PackageFinder for group scope' do
         expect(::Packages::Npm::PackageFinder).to receive(:new).with(package_name, namespace: group)
 
         subject
@@ -64,11 +66,21 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
 
     context 'when called with project scope' do
       let(:params) { { id: project.id } }
+      let(:endpoint_scope) { :project }
 
       it { is_expected.to eq(project.id) }
     end
 
-    context 'when called with namespace scope' do
+    context 'when called with group scope' do
+      let(:params) { { id: group.id, package_name: package.name } }
+      let(:endpoint_scope) { :group }
+
+      it { is_expected.to eq(project.id) }
+    end
+
+    context 'when called with instance scope' do
+      let(:endpoint_scope) { :instance }
+
       context 'when given an unscoped name' do
         let(:params) { { package_name: 'foo' } }
 

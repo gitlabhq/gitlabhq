@@ -397,6 +397,44 @@ describe('URL utility', () => {
     });
   });
 
+  describe('visitUrl', () => {
+    let originalLocation;
+    const mockUrl = 'http://example.com/page';
+
+    beforeAll(() => {
+      originalLocation = window.location;
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: new URL(TEST_HOST),
+      });
+    });
+
+    afterAll(() => {
+      window.location = originalLocation;
+    });
+
+    it('navigates to a page', () => {
+      urlUtils.visitUrl(mockUrl);
+
+      expect(window.location.href).toBe(mockUrl);
+    });
+
+    it('navigates to a new page', () => {
+      const otherWindow = {};
+
+      Object.defineProperty(window, 'open', {
+        writable: true,
+        value: jest.fn().mockReturnValue(otherWindow),
+      });
+
+      urlUtils.visitUrl(mockUrl, true);
+
+      expect(otherWindow.opener).toBe(null);
+      expect(otherWindow.location).toBe(mockUrl);
+    });
+  });
+
   describe('updateHistory', () => {
     const state = { key: 'prop' };
     const title = 'TITLE';

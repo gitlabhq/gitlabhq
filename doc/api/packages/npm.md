@@ -124,6 +124,7 @@ different scopes:
 
 - Use the instance-level prefix to make requests in the scope of the entire instance.
 - Use the project-level prefix to make requests in a single project's scope.
+- Use the group-level prefix to make requests in a group’s scope.
 
 The examples in this document all use the project-level prefix.
 
@@ -146,6 +147,22 @@ The examples in this document all use the project-level prefix.
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
 | `id`      | string | yes      | The project ID or full project path. |
+
+### Group-level
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `npm_group_level_endpoints`.
+The feature is not ready for production use.
+
+```plaintext
+ /groups/:id/-/packages/npm`
+```
+
+| Attribute | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `id`      | string | yes      | The group ID or full group path. |
 
 ## Metadata
 

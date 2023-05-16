@@ -1,7 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
-import { generateResponse, mockPipelineResponse } from '../graph/mock_data';
+
+import { generateResponse } from '../graph/mock_data';
 
 describe('links layer component', () => {
   let wrapper;

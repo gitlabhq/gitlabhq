@@ -26475,6 +26475,9 @@ msgstr ""
 msgid "Leave zen mode"
 msgstr ""
 
+msgid "Legacy Prometheus integrations cannot currently be removed"
+msgstr ""
+
 msgid "Legacy Web IDE"
 msgstr ""
 
@@ -29161,13 +29164,13 @@ msgstr ""
 msgid "Multi-project"
 msgstr ""
 
-msgid "Multiple HTTP integrations are not supported for this project"
-msgstr ""
-
 msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
 msgstr ""
 
 msgid "Multiple Prometheus integrations are not supported"
+msgstr ""
+
+msgid "Multiple integrations of a single type are not supported for this project"
 msgstr ""
 
 msgid "Multiple signatures"

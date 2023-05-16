@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
 import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
@@ -7,11 +8,8 @@ import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines
 import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
 import { calculatePipelineLayersInfo } from '~/pipelines/components/graph/utils';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
-import {
-  generateResponse,
-  mockPipelineResponse,
-  pipelineWithUpstreamDownstream,
-} from './mock_data';
+
+import { generateResponse, pipelineWithUpstreamDownstream } from './mock_data';
 
 describe('graph component', () => {
   let wrapper;

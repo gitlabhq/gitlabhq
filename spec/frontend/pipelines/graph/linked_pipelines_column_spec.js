@@ -1,6 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
@@ -15,11 +16,8 @@ import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';
 import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
 import * as parsingUtils from '~/pipelines/components/parsing_utils';
 import { LOAD_FAILURE } from '~/pipelines/constants';
-import {
-  mockPipelineResponse,
-  pipelineWithUpstreamDownstream,
-  wrappedPipelineReturn,
-} from './mock_data';
+
+import { pipelineWithUpstreamDownstream, wrappedPipelineReturn } from './mock_data';
 
 const processedPipeline = pipelineWithUpstreamDownstream(mockPipelineResponse);
 

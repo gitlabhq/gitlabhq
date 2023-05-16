@@ -39,19 +39,20 @@ module QA
         end
 
         def network
-          shell "docker network inspect #{@network}"
-        rescue CommandError
-          'bridge'
-        else
-          @network
+          network_exists?(@network) ? @network : 'bridge'
         end
 
         def runner_network
-          shell "docker network inspect #{@runner_network}"
-        rescue CommandError
-          network
-        else
-          @runner_network
+          network_exists?(@runner_network) ? @runner_network : network
+        end
+
+        def inspect_network(name)
+          shell("docker network inspect #{name}", fail_on_exception: false, return_exit_status: true)
+        end
+
+        def network_exists?(name)
+          _, status = inspect_network(name)
+          status == 0
         end
 
         def pull

@@ -2,7 +2,9 @@
 
 module AlertManagement
   class HttpIntegrationsFinder
-    def initialize(project, params)
+    TYPE_IDENTIFIERS = ::AlertManagement::HttpIntegration.type_identifiers
+
+    def initialize(project, params = {})
       @project = project
       @params = params
     end
@@ -13,6 +15,7 @@ module AlertManagement
       filter_by_availability
       filter_by_endpoint_identifier
       filter_by_active
+      filter_by_type
 
       collection
     end
@@ -21,15 +24,13 @@ module AlertManagement
 
     attr_reader :project, :params, :collection
 
+    # Overridden in EE
     def filter_by_availability
-      return if multiple_alert_http_integrations?
-
-      first_id = project.alert_management_http_integrations
-                        .ordered_by_id
-                        .select(:id)
-                        .limit(1)
-
-      @collection = collection.id_in(first_id)
+      # Re-find by id so subsequent filters don't expose unavailable records
+      @collection = collection.id_in(collection
+        .select('DISTINCT ON (type_identifier) id')
+        .ordered_by_type_and_id
+        .limit(TYPE_IDENTIFIERS.length))
     end
 
     def filter_by_endpoint_identifier
@@ -44,9 +45,11 @@ module AlertManagement
       @collection = collection.active
     end
 
-    # Overridden in EE
-    def multiple_alert_http_integrations?
-      false
+    def filter_by_type
+      return unless params[:type_identifier]
+      return unless TYPE_IDENTIFIERS.include?(params[:type_identifier])
+
+      @collection = collection.for_type(params[:type_identifier])
     end
   end
 end

@@ -190,8 +190,7 @@ During provisioning:
 
 - Both primary and secondary emails are considered when checking whether a GitLab user account exists.
 - Duplicate usernames are handled by adding suffix `1` when creating the user. For example, if `test_user` already
-  exists, `test_user1` is used. If `test_user1` already exists, GitLab increments the suffix until an unused username
-  is found.
+  exists, `test_user1` is used. If `test_user1` already exists, GitLab increments the suffix to find an unused username. If no unused username is found after 4 tries, a random string is attached to the username.
 
 On subsequent visits, new and existing users can access groups either:
 
