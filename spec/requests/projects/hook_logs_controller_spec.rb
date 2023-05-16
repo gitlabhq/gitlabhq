@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::HookLogsController, feature_category: :integrations do
+RSpec.describe Projects::HookLogsController, feature_category: :webhooks do
   let_it_be(:user) { create(:user) }
   let_it_be_with_refind(:web_hook) { create(:project_hook) }
   let_it_be_with_refind(:web_hook_log) { create(:web_hook_log, web_hook: web_hook) }

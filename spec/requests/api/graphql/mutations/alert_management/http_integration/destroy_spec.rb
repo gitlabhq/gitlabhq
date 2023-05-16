@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Removing an HTTP Integration', feature_category: :integrations do
+RSpec.describe 'Removing an HTTP Integration', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

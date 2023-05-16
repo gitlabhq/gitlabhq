@@ -35,7 +35,7 @@ We offer GPU-enabled SaaS runners for heavy compute including ModelOps or HPC wo
 |                   | Standard                   |
 |-------------------|---------------------------|
 | Specs             | 4 vCPU, 16 GB RAM, 1 Nvidia Tesla T4 GPU (or similar) |
-| GitLab CI/CD tags | `saas-linux-medium-gpu-standard` |
+| GitLab CI/CD tags | `saas-linux-medium-amd64-gpu-standard` |
 
 ## Example of how to tag a job
 

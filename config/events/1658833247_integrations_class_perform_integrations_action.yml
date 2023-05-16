@@ -10,7 +10,6 @@ identifiers:
 product_section: dev
 product_stage: manage
 product_group: integrations
-product_category: integrations
 milestone: "15.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93468
 distributions:

@@ -884,7 +884,8 @@
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
       changes: *code-qa-patterns
-    # Rules to support .qa:rules:package-and-test-ee
+    # Rules to support .qa:rules:package-and-test
+    - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
@@ -901,8 +902,6 @@
 .build-images:rules:build-assets-image-as-if-foss:
   rules:
     - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - !reference [".build-images:rules:build-assets-image", "rules"]
 
@@ -1076,6 +1075,7 @@
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-auto-deploy-branches
     - <<: *if-ruby2-branch
+    - <<: *if-default-branch-schedule-nightly
     - <<: *if-default-refs
       changes: *ci-build-images-patterns
     - <<: *if-default-refs

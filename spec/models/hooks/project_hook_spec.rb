@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectHook, feature_category: :integrations do
+RSpec.describe ProjectHook, feature_category: :webhooks do
   include_examples 'a hook that gets automatically disabled on failure' do
     let_it_be(:project) { create(:project) }
 

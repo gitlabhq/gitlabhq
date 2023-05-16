@@ -196,6 +196,8 @@ To set all new [CI/CD variables](../../../ci/variables/index.md) as
 
 ## Maximum includes
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
+
 The maximum number of [includes](../../../ci/yaml/includes.md) per pipeline can be set at the instance level.
 The default is `150`.
 

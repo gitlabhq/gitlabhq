@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::UrlBlockers::IpAllowlistEntry, feature_category: :integrations do
+RSpec.describe Gitlab::UrlBlockers::IpAllowlistEntry, feature_category: :shared do
   let(:ipv4) { IPAddr.new('192.168.1.1') }
 
   describe '#initialize' do

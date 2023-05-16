@@ -9,7 +9,6 @@ identifiers:
 product_section: growth
 product_stage: growth
 product_group: group::activation
-product_category:
 milestone: "13.11"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56015
 distributions:

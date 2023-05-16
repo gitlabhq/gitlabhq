@@ -7,6 +7,18 @@ toc: false
 
 # Deprecations by version
 
+These GitLab features are deprecated and no longer recommended for use.
+Each deprecated feature will be removed in a future release.
+Some features cause breaking changes when they are removed.
+
+On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
+
+**{rss}** **To be notified of upcoming breaking changes**,
+add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
+
+You can also view [REST API](https://docs.gitlab.com/ee/api/rest/deprecations.html)
+and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) deprecations/removals.
+
 <!-- vale off -->
 
 <!--
@@ -30,18 +42,6 @@ For deprecation reviewers (Technical Writers only):
 -->
 
 {::options parse_block_html="true" /}
-
-These GitLab features are deprecated and no longer recommended for use.
-Each deprecated feature will be removed in a future release.
-Some features cause breaking changes when they are removed.
-
-On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
-
-**{rss}** **To be notified of upcoming breaking changes**,
-add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
-
-You can also view [REST API](https://docs.gitlab.com/ee/api/rest/deprecations.html)
-and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) deprecations/removals.
 
 <% if milestones.any? -%><div class="js-deprecation-filters"></div><%- end -%>
 <%- milestones.each do |milestone| %>

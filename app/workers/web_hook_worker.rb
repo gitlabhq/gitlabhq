@@ -5,7 +5,7 @@
 class WebHookWorker
   include ApplicationWorker
 
-  feature_category :integrations
+  feature_category :webhooks
   loggable_arguments 2, 3
   data_consistency :delayed
   sidekiq_options retry: 4, dead: false

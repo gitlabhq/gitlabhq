@@ -55,8 +55,7 @@ By default both administrators and anyone with the **Owner** role can delete a p
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 > - [Removed option to delete immediately](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
-> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) on May 08, 2023.
-> - Enabled delayed deletion by default and removed the option to delete immediately [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 Instance-level protection against accidental deletion of groups and projects.
 
@@ -72,11 +71,8 @@ then it gets automatically changed to `1` while also disabling deletion protecti
 
 ### Delayed project deletion
 
-> User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
-
-Administrators can enable [delayed project deletion](../../project/settings/index.md#delayed-project-deletion) by default for
-newly-created groups. Group owners can choose to disable this. When disabled, existing groups retain their existing setting. When enabled
-deleted groups remain restorable within a retention period.
+> - User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 To configure delayed project deletion:
 
@@ -97,7 +93,8 @@ In GitLab 15.1, and later this setting is enforced on groups when disabled and i
 
 ### Delayed group deletion
 
-> User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+> - User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+> - [Changed to default behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) on the Premium and Ultimate tier in GitLab 16.0.
 
 Groups remain restorable if the retention period is `1` or more days.
 

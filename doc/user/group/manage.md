@@ -52,6 +52,8 @@ For details about groups, watch [GitLab Namespaces (users, groups and subgroups)
 
 ## Remove a group
 
+> Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
 To remove a group and its contents:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
@@ -73,16 +75,14 @@ A group can also be removed from the groups dashboard:
 
 This action removes the group. It also adds a background job to delete all projects in the group.
 
-Specifically:
+In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
 
-- In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium or Ultimate tiers](https://about.gitlab.com/pricing/premium/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
-
-- In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
-  deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
+In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
 ## Remove a group immediately **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 If you don't want to wait, you can remove a group immediately.
 
@@ -393,48 +393,6 @@ To transfer a group:
 1. In the **Remove group** section, select **Transfer group**.
 1. Select the group name in the drop down menu.
 1. Select **Transfer group**.
-
-## Enable delayed project deletion **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
-> - [Inheritance and enforcement added](https://gitlab.com/gitlab-org/gitlab/-/issues/321724) in GitLab 13.11.
-> - [Instance setting to enable by default added](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2.
-> - [Instance setting is inherited and enforced when disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
-> - [User interface changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352961) in GitLab 15.1.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
-> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) on May 08, 2023.
-> - Enabled delayed deletion by default and removed the option to delete immediately [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-
-[Delayed project deletion](../project/settings/index.md#delayed-project-deletion) is locked and disabled unless the instance-level settings for
-[deletion protection](../admin_area/settings/visibility_and_access_controls.md#deletion-protection) are enabled for either groups only or groups and projects.
-When enabled on groups, projects in the group are deleted after a period of delay. During this period, projects are in a read-only state and can be restored.
-The default period is seven days but [is configurable at the instance level](../admin_area/settings/visibility_and_access_controls.md#retention-period).
-
-On self-managed GitLab, projects are deleted immediately by default.
-In GitLab 14.2 and later, an administrator can
-[change the default setting](../admin_area/settings/visibility_and_access_controls.md#deletion-protection)
-for projects in newly-created groups.
-
-On GitLab.com, see the [GitLab.com settings page](../gitlab_com/index.md#delayed-project-deletion) for
-the default setting.
-
-To enable delayed deletion of projects in a group:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Scroll to:
-   - (GitLab 15.1 and later) **Deletion protection** and select **Keep deleted projects**.
-   - (GitLab 15.0 and earlier) **Enable delayed project deletion** and tick the checkbox.
-1. Optional. To prevent subgroups from changing this setting, select:
-   - (GitLab 15.1 and later), **Enforce deletion protection for all subgroups**
-   - (GitLab 15.0 and earlier), **Enforce for all subgroups**.
-1. Select **Save changes**.
-
-In GitLab 13.11 and later, the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md), inheritance can be overridden unless enforced by an ancestor.
-
-In GitLab 15.11 with the `always_perform_delayed_deletion` feature flag enabled, this setting is removed
-and all projects are deleted after the [retention period defined by the admin](../admin_area/settings/visibility_and_access_controls.md#retention-period). This will be the default behavior in GitLab 16.0 and later.
 
 ## Disable email notifications
 

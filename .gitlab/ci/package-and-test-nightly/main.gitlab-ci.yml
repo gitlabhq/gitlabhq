@@ -18,10 +18,9 @@ workflow:
 # ==========================================
 # Prepare stage
 # ==========================================
-# TODO: enable once ee jobs are added
-# trigger-omnibus-env:
-#   extends:
-#     - .trigger-omnibus-env
+trigger-omnibus-env:
+  extends:
+    - .trigger-omnibus-env
 
 trigger-omnibus-env-ce:
   extends:
@@ -29,12 +28,11 @@ trigger-omnibus-env-ce:
   variables:
     FOSS_ONLY: "1"  # set FOSS_ONLY because we don't pass it via trigger job
 
-# TODO: enable once ee jobs are added
-# trigger-omnibus:
-#   extends:
-#     - .trigger-omnibus
-#   needs:
-#     - trigger-omnibus-env
+trigger-omnibus:
+  extends:
+    - .trigger-omnibus
+  needs:
+    - trigger-omnibus-env
 
 trigger-omnibus-ce:
   extends:
@@ -42,15 +40,18 @@ trigger-omnibus-ce:
   needs:
     - trigger-omnibus-env-ce
 
-# TODO: enable when first parallel job is added
-# download-knapsack-report:
-#   extends:
-#     - .download-knapsack-report
-#     - .rules:download-knapsack
+download-knapsack-report:
+  extends:
+    - .download-knapsack-report
+    - .rules:download-knapsack
 
 # ==========================================
 # Test stage
 # ==========================================
+
+# ------------------------------------------
+# Update jobs
+# ------------------------------------------
 update-ee-to-ce:
   extends:
     - .qa
@@ -61,6 +62,101 @@ update-ee-to-ce:
     UPDATE_FROM_EDITION: ee
     QA_RSPEC_TAGS: --tag smoke
 
+# ------------------------------------------
+# Network limiting jobs
+# ------------------------------------------
+airgapped:
+  extends:
+    - .qa
+    - .ee
+    - .parallel
+  variables:
+    QA_SCENARIO: "Test::Instance::Airgapped"
+    QA_RSPEC_TAGS: "--tag '~github' --tag '~skip_live_env'"
+
+instance-image-slow-network:
+  extends:
+    - .qa
+    - .ee
+    - .parallel
+  variables:
+    QA_SIMULATE_SLOW_CONNECTION: "true"
+
+# ------------------------------------------
+# N+1 jobs
+# ------------------------------------------
+nplus1-instance-image:
+  extends:
+    - .qa
+    - .ee
+    - .parallel
+  variables:
+    CACHE_NAMESPACE_NAME: "false"
+    GITLAB_QA_OPTS: "--enable-feature gitaly_enforce_requests_limits"
+
+# ------------------------------------------
+# Elasticsearch compatibility jobs
+# ------------------------------------------
+integration-elasticsearch-compatibility-version-7:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    ELASTIC_VERSION: "7.17.0"
+    QA_SCENARIO: "Test::Integration::Elasticsearch"
+
+integration-elasticsearch-compatibility-version-8:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    ELASTIC_VERSION: "8.6.2"
+    QA_SCENARIO: "Test::Integration::Elasticsearch"
+
+# ------------------------------------------
+# Opensearch compatibility jobs
+# ------------------------------------------
+integration-opensearch-compatibility-version-1:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    OPENSEARCH_VERSION: "1.3.3"
+    QA_SCENARIO: "Test::Integration::Opensearch"
+
+integration-opensearch-compatibility-version-2:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    OPENSEARCH_VERSION: "2.0.1"
+    QA_SCENARIO: "Test::Integration::Opensearch"
+
+# ------------------------------------------
+# Remote browser jobs
+# ------------------------------------------
+remote-mobile-safari:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    QA_RSPEC_TAGS: "--tag mobile"
+    QA_BROWSER: "safari"
+    QA_REMOTE_MOBILE_DEVICE_NAME: "iPhone Simulator"
+    QA_REMOTE_GRID: "ondemand.saucelabs.com:80"
+    QA_REMOTE_TUNNEL_ID: "gitlab-sl_tunnel_id"
+  before_script:
+    - !reference [.qa, before_script]
+    - docker pull saucelabs/sauce-connect
+    - docker network create test
+    - |
+      docker run --detach \
+        --network="test" \
+        -e SAUCE_USERNAME=$QA_REMOTE_GRID_USERNAME \
+        -e SAUCE_ACCESS_KEY=$QA_REMOTE_GRID_ACCESS_KEY \
+        -t saucelabs/sauce-connect \
+        -i $QA_REMOTE_TUNNEL_ID
+
 # ==========================================
 # Post test stage
 # ==========================================
@@ -68,11 +164,10 @@ e2e-test-report:
   extends:
     - .e2e-test-report
 
-# TODO: enable when first parallel job is added
-# upload-knapsack-report:
-#   extends:
-#     - .upload-knapsack-report
-#     - .rules:report:process-results
+upload-knapsack-report:
+  extends:
+    - .upload-knapsack-report
+    - .rules:report:process-results
 
 export-test-metrics:
   extends:

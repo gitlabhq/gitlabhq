@@ -246,15 +246,10 @@ After the pipeline is created, the message updates with the pipeline status.
 
 ### Merge request status messages
 
-The merge request status widget shows the **Merge** button and whether or not a merge
-request is ready to merge. If the merge request can't be merged, the reason for this
-is displayed.
+The merge request status widget shows:
 
-If the pipeline is still running, **Merge** is replaced with the
-**Merge when pipeline succeeds** button.
-
-If [**Merge Trains**](pipelines/merge_trains.md)
-are enabled, the button is either **Add to merge train** or **Add to merge train when pipeline succeeds**. **(PREMIUM)**
+- If the merge request is ready to merge. If the merge request can't be merged, the reason is displayed.
+- **Merge**, if the pipeline is complete, or **Set to auto-merge** if the pipeline is still running.
 
 #### "A CI/CD pipeline must run and be successful before merge" message
 

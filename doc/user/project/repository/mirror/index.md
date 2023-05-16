@@ -34,7 +34,7 @@ Mirror a repository when:
 
 ## Create a repository mirror
 
-Prerequisite:
+Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
@@ -59,12 +59,37 @@ Prerequisite:
 1. If you authenticate with SSH host keys, [verify the host key](#verify-a-host-key)
    to ensure it is correct.
 1. To prevent force-pushing over diverged refs, select [**Keep divergent refs**](push.md#keep-divergent-refs).
-1. Optional. Select [**Mirror only protected branches**](#mirror-only-protected-branches).
+1. Optional. To limit the number of branches mirrored, select
+   **Mirror only protected branches** or enter a regex in **Mirror specific branches**.
 1. Select **Mirror repository**.
 
 If you select `SSH public key` as your authentication method, GitLab generates a
 public key for your GitLab repository. You must provide this key to the non-GitLab server.
 For more information, see [Get your SSH public key](#get-your-ssh-public-key).
+
+### Mirror only protected branches
+
+You can choose to mirror only the
+[protected branches](../../protected_branches.md) in the mirroring project,
+either from or to your remote repository. For [pull mirroring](pull.md),
+non-protected branches in the mirroring project are not mirrored and can diverge.
+
+To use this option, select **Only mirror protected branches** when you create a repository mirror.
+
+### Mirror specific branches **(PREMIUM)**
+
+> - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
+
+FLAG:
+On self-managed GitLab, by default the field `mirror_branch_regex` is available.
+To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
+named `mirror_only_branches_match_regex`.
+On GitLab.com, this feature is available.
+
+To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
+enter a regular expression into the **Mirror specific branches** field. Branches with names that
+do not match the regular expression are not mirrored.
 
 ## Update a mirror
 
@@ -94,30 +119,6 @@ Prerequisite:
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
 1. Select **Update now** (**{retry}**):
    ![Repository mirroring force update user interface](img/repository_mirroring_force_update.png)
-
-## Mirror only protected branches
-
-You can choose to mirror only the
-[protected branches](../../protected_branches.md) in the mirroring project,
-either from or to your remote repository. For [pull mirroring](pull.md),
-non-protected branches in the mirroring project are not mirrored and can diverge.
-
-To use this option, select **Only mirror protected branches** when you create a repository mirror.
-
-## Mirror specific branches
-
-> - Mirroring branches matching a regex [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-
-FLAG:
-On self-managed GitLab, by default the field `mirror_branch_regex` is available.
-To hide the feature, ask an administrator to [disable the feature flag](../../../../administration/feature_flags.md)
-named `mirror_only_branches_match_regex`.
-On GitLab.com, this feature is available.
-
-To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
-enter a regular expression into the **Mirror specific branches** field. Branches with names that
-do not match the regular expression are not mirrored.
 
 ## Authentication methods for mirrors
 

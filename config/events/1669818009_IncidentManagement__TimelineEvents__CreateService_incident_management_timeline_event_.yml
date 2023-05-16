@@ -13,7 +13,6 @@ identifiers:
 product_section: ops
 product_stage: monitor
 product_group: respond
-product_category: incident_management
 value_type: number
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223

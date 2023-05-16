@@ -2633,7 +2633,7 @@
   :tags: []
 - :name: file_hook
   :worker_name: FileHookWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3551,7 +3551,7 @@
   :tags: []
 - :name: web_hook
   :worker_name: WebHookWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -3560,7 +3560,7 @@
   :tags: []
 - :name: web_hooks_log_destroy
   :worker_name: WebHooks::LogDestroyWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3569,7 +3569,7 @@
   :tags: []
 - :name: web_hooks_log_execution
   :worker_name: WebHooks::LogExecutionWorker
-  :feature_category: :integrations
+  :feature_category: :webhooks
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

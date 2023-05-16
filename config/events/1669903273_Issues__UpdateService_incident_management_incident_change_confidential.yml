@@ -13,7 +13,6 @@ description: "Count of unique users changing incidents to confidential. Event mi
 product_section: ops
 product_stage: monitor
 product_group: monitor
-product_category:
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223
 distributions:

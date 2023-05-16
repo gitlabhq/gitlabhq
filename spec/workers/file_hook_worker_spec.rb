@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FileHookWorker, feature_category: :integrations do
+RSpec.describe FileHookWorker, feature_category: :webhooks do
   include RepoHelpers
 
   let(:filename) { 'my_file_hook.rb' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebHook, feature_category: :integrations do
+RSpec.describe WebHook, feature_category: :webhooks do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project) }

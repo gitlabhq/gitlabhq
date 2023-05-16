@@ -6,7 +6,7 @@ module API
 
     system_hooks_tags = %w[system_hooks]
 
-    feature_category :integrations
+    feature_category :webhooks
 
     before do
       authenticate!

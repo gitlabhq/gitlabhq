@@ -6,7 +6,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 
 # Removals by version
 
-In each release, GitLab removes features that were deprecated in an earlier release.
+In each release, GitLab removes features that were [deprecated](deprecations.md) in an earlier release.
 Some features cause breaking changes when they are removed.
 
 **{rss}** **To be notified of upcoming breaking changes**,
@@ -33,19 +33,25 @@ For removal reviewers (Technical Writers only):
 - For more information about updating the removal doc, see the removal doc update guidance:
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
+
+{::options parse_block_html="true" /}
 <% if milestones.any? -%>
   <%- milestones.each do |milestone| %>
 ## Removed in <%= milestone %>
     <%- entries.select{|entry| entry["removal_milestone"] == milestone}.each do |removal| %>
 ### <%= removal["title"]%>
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone"><%= removal["announcement_milestone"]%></span>
 <% if removal["breaking_change"] -%>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+<%- end -%>
+<% if removal["issue_url"] -%>
+- To discuss this change or learn more, see the [deprecation issue](<%= removal["issue_url"]%>).
+<%- end -%>
+</div>
 
-WARNING:
-This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-Review the details carefully before upgrading.
-
-<%= removal["body"] -%><% else %>
-<%= removal["body"] -%><% end %><%- end -%><%- end -%>
+<%= removal["body"] -%><%- end -%><%- end -%>
 <%- else -%>
 Features scheduled for removal will be listed here, sorted by GitLab version.
 <% end -%>

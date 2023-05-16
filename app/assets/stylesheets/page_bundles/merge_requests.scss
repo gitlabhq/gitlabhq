@@ -550,7 +550,8 @@ $tabs-holder-z-index: 250;
     border-radius: $border-radius-default;
   }
 
-  .mr-widget-section:not(:first-child) > div {
+  .mr-widget-section:not(:first-child) > div,
+  .mr-widget-section .mr-widget-section > div {
     border-top: solid 1px var(--border-color, $border-color);
   }
 

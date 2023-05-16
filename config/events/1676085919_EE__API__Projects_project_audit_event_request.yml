@@ -13,7 +13,6 @@ identifiers:
 product_section: dev
 product_stage: manage
 product_group: compliance
-product_category: compliance_management
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107120
 distributions:

@@ -88,8 +88,10 @@ To view your personal projects:
 
 ## Delete a project
 
-After you delete a project, projects in personal namespaces are deleted immediately. To delay deletion of projects in a group
-you can [enable delayed project removal](../group/manage.md#enable-delayed-project-deletion).
+After you delete a project:
+
+- Projects in personal namespaces are deleted immediately.
+- Projects in groups are [deleted after a retention period](../project/settings/index.md#delayed-project-deletion).
 
 To delete a project:
 
@@ -106,9 +108,6 @@ To delete a project:
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
 > - [Available to all users](https://gitlab.com/gitlab-org/gitlab/-/issues/346976) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `project_owners_list_project_pending_deletion`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) in GitLab 14.9. [Feature flag `project_owners_list_project_pending_deletion`](https://gitlab.com/gitlab-org/gitlab/-/issues/351556) removed.
-
-When delayed project deletion is [enabled for a group](../group/manage.md#enable-delayed-project-deletion),
-projects within that group are not deleted immediately, but only after a delay.
 
 To view a list of all projects that are pending deletion:
 

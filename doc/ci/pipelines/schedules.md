@@ -81,6 +81,8 @@ To take ownership of a pipeline created by a different user:
 1. On the right of the list, for
    the pipeline you want to become owner of, select **Take ownership**.
 
+You need at least the Maintainer role to take ownership of a pipeline created by a different user.
+
 ## Related topics
 
 - [Pipeline schedules API](../../api/pipeline_schedules.md)

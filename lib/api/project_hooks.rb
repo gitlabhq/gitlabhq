@@ -9,7 +9,7 @@ module API
     before { authenticate! }
     before { authorize_admin_project }
 
-    feature_category :integrations
+    feature_category :webhooks
 
     helpers ::API::Helpers::WebHooksHelpers
 

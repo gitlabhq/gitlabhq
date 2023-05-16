@@ -7,7 +7,7 @@ module WebHooks
     DestroyError = Class.new(StandardError)
 
     data_consistency :always
-    feature_category :integrations
+    feature_category :webhooks
     urgency :low
 
     idempotent!

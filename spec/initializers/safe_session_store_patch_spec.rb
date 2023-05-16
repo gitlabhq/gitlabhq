@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'safe_sesion_store_patch', feature_category: :integrations do
+RSpec.describe 'safe_session_store_patch', feature_category: :shared do
   shared_examples 'safe session store' do
     it 'allows storing a String' do
       session[:good_data] = 'hello world'

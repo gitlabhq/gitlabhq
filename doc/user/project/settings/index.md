@@ -281,6 +281,11 @@ When you transfer a project from a namespace licensed for GitLab SaaS Premium or
 
 ## Delete a project
 
+> - Default deletion behavior for projects changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
+> - Default deletion behavior for projects changed to [immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+> - Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
+> - Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
 You can mark a project to be deleted.
 
 Prerequisite:
@@ -291,35 +296,32 @@ To delete a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
-1. Expand **Advanced**.
-1. In the "Delete project" section, select **Delete project**.
-1. Confirm the action when asked to.
+1. Expand the **Advanced** section.
+1. In the **Delete this project** section, select **Delete project**.
+1. In the confirmation message text field, enter the name of the project as instructed, and select **Yes, delete project**.
 
-This action deletes a project including all associated resources (such as issues and merge requests).
-
-WARNING:
-The default deletion behavior for projects was changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)
-in GitLab 12.6, and then to [immediate deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) in GitLab 13.2.
+This action deletes the project and all associated resources (such as issues and merge requests).
 
 ### Delayed project deletion **(PREMIUM)**
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-Projects in a group (not a personal namespace) can be deleted after a delay period. Multiple settings can affect whether
-delayed project deletion is enabled for a particular project:
+Projects in a group (not a personal namespace) can be deleted after a delay period.
 
-- Self-managed instance [settings](../../admin_area/settings/visibility_and_access_controls.md#delayed-project-deletion).
-  You can enable delayed project deletion as the default setting for new groups, and configure the number of days for the
-  delay. For GitLab.com, see the [GitLab.com settings](../../gitlab_com/index.md#delayed-project-deletion).
-- Group [settings](../../group/manage.md#enable-delayed-project-deletion) to enabled delayed project deletion for all
-  projects in the group.
+On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
+On SaaS, there is a non-adjustable default retention period of seven days.
 
 ### Delete a project immediately
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
+> - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-If you don't want to wait, you can delete a project immediately.
+If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
+
+In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
+If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
 
 Prerequisites:
 
@@ -330,14 +332,9 @@ To immediately delete a project marked for deletion:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > General**.
-1. Expand **Advanced**.
-1. In the "Permanently delete project" section, select **Delete project**.
-1. Confirm the action when asked to.
-
-The following are deleted:
-
-- Your project and its repository.
-- All related resources including issues and merge requests.
+1. Expand the **Advanced** section.
+1. In the **Delete this project** section, select **Delete project**.
+1. In the confirmation message text field, enter the name of the project as instructed, as select **Yes, delete project**.
 
 ## Restore a project **(PREMIUM)**
 

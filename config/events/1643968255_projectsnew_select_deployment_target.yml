@@ -7,7 +7,6 @@ property_description: selected option (string)
 product_section: ops
 product_stage: configure
 product_group: group::configure
-product_category:
 milestone: "14.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79873
 distributions:
