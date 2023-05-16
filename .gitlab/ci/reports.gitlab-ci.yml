@@ -87,7 +87,7 @@ yarn-audit-dependency_scanning:
   extends: .default-retry
   stage: test
   image:
-    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/package-hunter-cli:v1.3.3@sha256:1d3af9a61aa01549a62be17fa655fcf06271ac9e1b1e822c2a7930fa1d4a8a6b
+    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/security-products/package-hunter-cli:v2.1.0@sha256:1f1d31fdc81f6cf0ee305ff0291bfb56f22c5764fe042948ff1676f2f8c60352
     entrypoint: [""]
   variables:
     HTR_user: '$PACKAGE_HUNTER_USER'

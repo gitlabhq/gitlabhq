@@ -430,7 +430,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/cleanup/orphan_job_artifact_files.rb'
     - 'lib/gitlab/cleanup/orphan_job_artifact_files_batch.rb'
     - 'lib/gitlab/cleanup/project_upload_file_finder.rb'
-    - 'lib/gitlab/cluster/puma_worker_killer_observer.rb'
     - 'lib/gitlab/config/entry/composable_hash.rb'
     - 'lib/gitlab/config/entry/node.rb'
     - 'lib/gitlab/config/entry/validators.rb'

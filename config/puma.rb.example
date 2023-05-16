@@ -36,7 +36,6 @@ bind 'unix:///home/git/gitlab/tmp/sockets/gitlab.socket'
 workers 3
 
 require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
-require_relative "/home/git/gitlab/lib/gitlab/cluster/puma_worker_killer_initializer"
 
 on_restart do
   # Signal application hooks that we're about to restart
@@ -44,9 +43,6 @@ on_restart do
 end
 
 before_fork do
-  # Signal to the puma killer
-  Gitlab::Cluster::PumaWorkerKillerInitializer.start @config.options unless ENV['DISABLE_PUMA_WORKER_KILLER']
-
   # Signal application hooks that we're about to fork
   Gitlab::Cluster::LifecycleEvents.do_before_fork
 end

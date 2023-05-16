@@ -1,8 +1,0 @@
----
-name: packages_display_last_pipeline
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120125
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/410362
-milestone: '16.0'
-type: development
-group: group::package registry
-default_enabled: false

@@ -25,7 +25,11 @@ module Users
       preview_usage_quota_free_plan_alert: 15, # EE-only
       enforcement_at_limit_alert: 16, # EE-only
       web_hook_disabled: 17, # EE-only
-      unlimited_members_during_trial_alert: 18 # EE-only
+      unlimited_members_during_trial_alert: 18, # EE-only
+      repository_storage_limit_banner_info_threshold: 19, # EE-only
+      repository_storage_limit_banner_warning_threshold: 20, # EE-only
+      repository_storage_limit_banner_alert_threshold: 21, # EE-only
+      repository_storage_limit_banner_error_threshold: 22 # EE-only
     }
 
     validates :group, presence: true

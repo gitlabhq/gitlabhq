@@ -6033,7 +6033,6 @@
 - './spec/lib/gitlab/closing_issue_extractor_spec.rb'
 - './spec/lib/gitlab/cluster/lifecycle_events_spec.rb'
 - './spec/lib/gitlab/cluster/mixins/puma_cluster_spec.rb'
-- './spec/lib/gitlab/cluster/puma_worker_killer_observer_spec.rb'
 - './spec/lib/gitlab/cluster/rack_timeout_observer_spec.rb'
 - './spec/lib/gitlab/code_navigation_path_spec.rb'
 - './spec/lib/gitlab/color_schemes_spec.rb'

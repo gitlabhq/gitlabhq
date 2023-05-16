@@ -1,15 +1,14 @@
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
-import Vuex from 'vuex';
+import { nextTick } from 'vue';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { trimText } from 'helpers/text_helper';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
-import { createStore } from '~/mr_notes/stores';
+import store from '~/mr_notes/stores';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
-Vue.use(Vuex);
+jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 const NEXT_COMMIT_URL = `${TEST_HOST}/?commit_id=next`;
 const PREV_COMMIT_URL = `${TEST_HOST}/?commit_id=prev`;
@@ -20,8 +19,6 @@ beforeEach(() => {
 
 describe('CompareVersions', () => {
   let wrapper;
-  let store;
-  let dispatchMock;
   const targetBranchName = 'tmp-wine-dev';
   const { commit } = getDiffWithCommit;
 
@@ -30,10 +27,10 @@ describe('CompareVersions', () => {
       store.state.diffs.commit = { ...store.state.diffs.commit, ...commitArgs };
     }
 
-    dispatchMock = jest.spyOn(store, 'dispatch');
-
     wrapper = mount(CompareVersionsComponent, {
-      store,
+      mocks: {
+        $store: store,
+      },
       propsData: {
         mergeRequestDiffs: diffsMockData,
         diffFilesCountText: '1',
@@ -50,8 +47,25 @@ describe('CompareVersions', () => {
     getCommitNavButtonsElement().find('.btn-group > *:first-child');
 
   beforeEach(() => {
-    store = createStore();
+    store.reset();
+
     const mergeRequestDiff = diffsMockData[0];
+    const version = {
+      ...mergeRequestDiff,
+      href: `${TEST_HOST}/latest/version`,
+      versionName: 'latest version',
+    };
+    store.getters['diffs/diffCompareDropdownSourceVersions'] = [version];
+    store.getters['diffs/diffCompareDropdownTargetVersions'] = [
+      {
+        ...version,
+        selected: true,
+        versionName: targetBranchName,
+      },
+    ];
+    store.getters['diffs/whichCollapsedTypes'] = { any: false };
+    store.getters['diffs/isInlineView'] = false;
+    store.getters['diffs/isParallelView'] = false;
 
     store.state.diffs.addedLines = 10;
     store.state.diffs.removedLines = 20;
@@ -104,7 +118,6 @@ describe('CompareVersions', () => {
 
     it('should not render Tree List toggle button when there are no changes', () => {
       createWrapper();
-
       const treeListBtn = wrapper.find('.js-toggle-tree-list');
 
       expect(treeListBtn.exists()).toBe(false);
@@ -118,7 +131,10 @@ describe('CompareVersions', () => {
       const viewTypeBtn = wrapper.find('#inline-diff-btn');
       viewTypeBtn.trigger('click');
 
-      expect(window.location.toString()).toContain('?view=inline');
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'diffs/setInlineDiffViewType',
+        expect.any(MouseEvent),
+      );
     });
   });
 
@@ -128,13 +144,16 @@ describe('CompareVersions', () => {
       const viewTypeBtn = wrapper.find('#parallel-diff-btn');
       viewTypeBtn.trigger('click');
 
-      expect(window.location.toString()).toContain('?view=parallel');
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'diffs/setParallelDiffViewType',
+        expect.any(MouseEvent),
+      );
     });
   });
 
   describe('commit', () => {
     beforeEach(() => {
-      store.state.diffs.commit = getDiffWithCommit.commit;
+      store.state.diffs.commit = commit;
       createWrapper();
     });
 
@@ -218,7 +237,7 @@ describe('CompareVersions', () => {
 
         link.trigger('click');
         await nextTick();
-        expect(dispatchMock).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
+        expect(store.dispatch).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
           direction: 'previous',
         });
       });
@@ -248,7 +267,7 @@ describe('CompareVersions', () => {
 
         link.trigger('click');
         await nextTick();
-        expect(dispatchMock).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
+        expect(store.dispatch).toHaveBeenCalledWith('diffs/moveToNeighboringCommit', {
           direction: 'next',
         });
       });

@@ -113,7 +113,7 @@ where:
   with the linked configuration.
 
 Using `!reference` tags can cause nested configuration that display with
-multiple hyphens (`-`) in the expanded view. This behavior is expected, and the extra
+multiple hyphens (`-`) at the start of the line in the expanded view. This behavior is expected, and the extra
 hyphens do not affect the job's execution. For example, this configuration and
 fully expanded version are both valid:
 
@@ -124,11 +124,27 @@ fully expanded version are both valid:
     script:
       - pip install pyflakes
 
+  .rule-01:
+    rules:
+      - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
+        when: manual
+        allow_failure: true
+      - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+
+  .rule-02:
+    rules:
+      - if: $CI_COMMIT_BRANCH == "main"
+        when: manual
+        allow_failure: true
+
   lint-python:
     image: python:latest
     script:
       - !reference [.python-req, script]
       - pyflakes python/
+    rules:
+      - !reference [.rule-01, rules]
+      - !reference [.rule-02, rules]
   ```
 
 - Expanded configuration in **Full configuration** tab:
@@ -137,11 +153,30 @@ fully expanded version are both valid:
   ".python-req":
     script:
     - pip install pyflakes
+  ".rule-01":
+    rules:
+    - if: "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/"
+      when: manual
+      allow_failure: true
+    - if: "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+  ".rule-02":
+    rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+      allow_failure: true
   lint-python:
-    script:
-    - - pip install pyflakes  # <- The extra hyphens do not affect the job's execution.
-    - pyflakes python/
     image: python:latest
+    script:
+    - - pip install pyflakes                                     # <- The extra hyphens do not affect the job's execution.
+    - pyflakes python/
+    rules:
+    - - if: "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/" # <- The extra hyphens do not affect the job's execution.
+        when: manual
+        allow_failure: true
+      - if: "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"               # <- No extra hyphen but aligned with previous rule
+    - - if: $CI_COMMIT_BRANCH == "main"                          # <- The extra hyphens do not affect the job's execution.
+        when: manual
+        allow_failure: true
   ```
 
 ## Commit changes to CI configuration

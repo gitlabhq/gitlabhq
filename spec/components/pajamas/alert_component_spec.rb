@@ -126,25 +126,45 @@ RSpec.describe Pajamas::AlertComponent, :aggregate_failures, type: :component do
     end
 
     context 'with dismissible content' do
-      before do
-        render_inline described_class.new(
-          close_button_options: {
-            class: '_close_button_class_',
-            data: {
-              testid: '_close_button_testid_'
+      context 'with no custom options' do
+        before do
+          render_inline described_class.new
+        end
+
+        it 'does not have "not dismissible" class' do
+          expect(page).not_to have_selector('.gl-alert-not-dismissible')
+        end
+
+        it 'renders a dismiss button and data' do
+          expect(page).to have_selector('.gl-button.btn-sm.btn-icon.gl-button.gl-dismiss-btn.js-close')
+          expect(page).to have_selector("[data-testid='close-icon']")
+          expect(page).to have_selector('[aria-label="Dismiss"]')
+        end
+      end
+
+      context 'with custom options' do
+        before do
+          render_inline described_class.new(
+            close_button_options: {
+              aria: {
+                label: '_custom_aria_label_'
+              },
+              class: '_close_button_class_',
+              data: {
+                testid: '_close_button_testid_',
+                "custom-attribute": '_custom_data_'
+              }
             }
-          }
-        )
-      end
+          )
+        end
 
-      it 'does not have "not dismissible" class' do
-        expect(page).not_to have_selector('.gl-alert-not-dismissible')
-      end
-
-      it 'renders a dismiss button and data' do
-        expect(page).to have_selector('.gl-dismiss-btn.js-close._close_button_class_')
-        expect(page).to have_selector("[data-testid='close-icon']")
-        expect(page).to have_selector('[data-testid="_close_button_testid_"]')
+        it 'renders a dismiss button and data' do
+          expect(page).to have_selector('.gl-button.btn-sm.btn-icon.gl-dismiss-btn.js-close._close_button_class_')
+          expect(page).to have_selector("[data-testid='close-icon']")
+          expect(page).to have_selector('[data-testid="_close_button_testid_"]')
+          expect(page).to have_selector('[aria-label="Dismiss"]')
+          expect(page).to have_selector('[data-custom-attribute="_custom_data_"]')
+        end
       end
     end
 

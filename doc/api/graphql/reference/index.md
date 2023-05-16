@@ -19023,6 +19023,7 @@ Represents a product analytics dashboard.
 | <a id="productanalyticsdashboardpanels"></a>`panels` | [`ProductAnalyticsDashboardPanelConnection!`](#productanalyticsdashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="productanalyticsdashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
 | <a id="productanalyticsdashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
+| <a id="productanalyticsdashboarduserdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
 
 ### `ProductAnalyticsDashboardPanel`
 
@@ -25618,6 +25619,10 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumproject_quality_summary_feedback"></a>`PROJECT_QUALITY_SUMMARY_FEEDBACK` | Callout feature name for project_quality_summary_feedback. |
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
+| <a id="usercalloutfeaturenameenumrepository_storage_limit_banner_alert_threshold"></a>`REPOSITORY_STORAGE_LIMIT_BANNER_ALERT_THRESHOLD` | Callout feature name for repository_storage_limit_banner_alert_threshold. |
+| <a id="usercalloutfeaturenameenumrepository_storage_limit_banner_error_threshold"></a>`REPOSITORY_STORAGE_LIMIT_BANNER_ERROR_THRESHOLD` | Callout feature name for repository_storage_limit_banner_error_threshold. |
+| <a id="usercalloutfeaturenameenumrepository_storage_limit_banner_info_threshold"></a>`REPOSITORY_STORAGE_LIMIT_BANNER_INFO_THRESHOLD` | Callout feature name for repository_storage_limit_banner_info_threshold. |
+| <a id="usercalloutfeaturenameenumrepository_storage_limit_banner_warning_threshold"></a>`REPOSITORY_STORAGE_LIMIT_BANNER_WARNING_THRESHOLD` | Callout feature name for repository_storage_limit_banner_warning_threshold. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumsecurity_newsletter_callout"></a>`SECURITY_NEWSLETTER_CALLOUT` | Callout feature name for security_newsletter_callout. |

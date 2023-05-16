@@ -6,7 +6,7 @@ RSpec.describe 'Environment > Metrics', feature_category: :projects do
   include PrometheusHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :with_prometheus_integration, :repository) }
+  let_it_be(:project) { create(:project, :with_prometheus_integration, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:environment) { create(:environment, project: project) }

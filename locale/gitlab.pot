@@ -5076,6 +5076,9 @@ msgstr ""
 msgid "Analytics|Add to Dashboard"
 msgstr ""
 
+msgid "Analytics|Add visualizations"
+msgstr ""
+
 msgid "Analytics|An error occurred while loading data"
 msgstr ""
 
@@ -34153,6 +34156,9 @@ msgstr ""
 msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr ""
 
+msgid "ProductAnalytics|Create a visualization"
+msgstr ""
+
 msgid "ProductAnalytics|Creating your product analytics instance..."
 msgstr ""
 
@@ -39610,12 +39616,6 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} actions for the %{scopes} %{branches} %{agents} %{namespaces}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Run a %{scan} scan on runner that %{tags}"
-msgstr ""
-
-msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Run a %{scan} scan with %{dastProfiles} with tags %{tags}"
-msgstr ""
-
 msgid "ScanExecutionPolicy|A pipeline is run"
 msgstr ""
 
@@ -39626,6 +39626,12 @@ msgid "ScanExecutionPolicy|Conditions"
 msgstr ""
 
 msgid "ScanExecutionPolicy|If the field is empty, the runner will be automatically selected"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Run a %{scan} scan on runner that %{tags}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Run a %{scan} scan with %{dastProfiles} with tags %{tags}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Scanner profile"
@@ -47421,9 +47427,6 @@ msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
 msgid "Trial|Continue"
-msgstr ""
-
-msgid "Trial|Dismiss"
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."

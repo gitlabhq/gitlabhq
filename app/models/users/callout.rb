@@ -65,7 +65,11 @@ module Users
       artifacts_management_page_feedback_banner: 62,
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
       branch_rules_info_callout: 65,
-      create_runner_workflow_banner: 66
+      create_runner_workflow_banner: 66,
+      repository_storage_limit_banner_info_threshold: 67, # EE-only
+      repository_storage_limit_banner_warning_threshold: 68, # EE-only
+      repository_storage_limit_banner_alert_threshold: 69, # EE-only
+      repository_storage_limit_banner_error_threshold: 70 # EE-only
     }
 
     validates :feature_name,

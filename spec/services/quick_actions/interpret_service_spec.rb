@@ -2875,18 +2875,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         expect(explanations)
           .to contain_exactly("Converts work item to Issue. Widgets not supported in new type are removed.")
       end
-
-      context 'when feature flag work_items_mvc_2 is disabled' do
-        before do
-          stub_feature_flags(work_items_mvc_2: false)
-        end
-
-        it 'does not have the command available' do
-          _, explanations = service.explain(command, work_item)
-
-          expect(explanations).to be_empty
-        end
-      end
     end
 
     describe 'relate command' do

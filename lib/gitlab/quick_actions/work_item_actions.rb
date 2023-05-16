@@ -12,9 +12,6 @@ module Gitlab
           format(_("Converts work item to %{type}. Widgets not supported in new type are removed."), type: target_type)
         end
         types WorkItem
-        condition do
-          quick_action_target&.project&.work_items_mvc_2_feature_flag_enabled?
-        end
         params 'Task | Objective | Key Result | Issue'
         command :type do |type_name|
           work_item_type = ::WorkItems::Type.find_by_name(type_name)

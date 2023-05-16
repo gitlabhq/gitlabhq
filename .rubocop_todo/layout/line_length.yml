@@ -2729,7 +2729,6 @@ Layout/LineLength:
     - 'lib/gitlab/ci/status/build/waiting_for_approval.rb'
     - 'lib/gitlab/ci/variables/builder.rb'
     - 'lib/gitlab/cleanup/project_uploads.rb'
-    - 'lib/gitlab/cluster/puma_worker_killer_observer.rb'
     - 'lib/gitlab/composer/version_index.rb'
     - 'lib/gitlab/config/entry/configurable.rb'
     - 'lib/gitlab/config/entry/validators.rb'

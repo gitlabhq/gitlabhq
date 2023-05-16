@@ -1,29 +1,33 @@
 import { mount } from '@vue/test-utils';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
-import { createStore } from '~/batch_comments/stores';
-import diffsModule from '~/diffs/store/modules';
-import notesModule from '~/notes/stores/modules';
+import store from '~/mr_notes/stores';
 import { createDraft } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
 describe('Batch comments draft preview item component', () => {
   let wrapper;
   let draft;
 
-  function createComponent(isLast = false, extra = {}, extendStore = () => {}) {
-    const store = createStore();
-    store.registerModule('diffs', diffsModule());
-    store.registerModule('notes', notesModule());
+  beforeEach(() => {
+    store.reset();
 
-    extendStore(store);
+    store.getters.getDiscussion = jest.fn(() => null);
+  });
 
+  function createComponent(isLast = false, extra = {}) {
     draft = {
       ...createDraft(),
       ...extra,
     };
 
-    wrapper = mount(PreviewItem, { store, propsData: { draft, isLast } });
+    wrapper = mount(PreviewItem, {
+      mocks: {
+        $store: store,
+      },
+      propsData: { draft, isLast },
+    });
   }
 
   it('renders text content', () => {
@@ -87,18 +91,19 @@ describe('Batch comments draft preview item component', () => {
 
   describe('for thread', () => {
     beforeEach(() => {
-      createComponent(false, { discussion_id: '1', resolve_discussion: true }, (store) => {
-        store.state.notes.discussions.push({
-          id: '1',
-          notes: [
-            {
-              author: {
-                name: "Author 'Nick' Name",
-              },
+      store.getters.getDiscussion.mockReturnValue({
+        id: '1',
+        notes: [
+          {
+            author: {
+              name: "Author 'Nick' Name",
             },
-          ],
-        });
+          },
+        ],
       });
+      store.getters.isDiscussionResolved = jest.fn().mockReturnValue(false);
+
+      createComponent(false, { discussion_id: '1', resolve_discussion: true });
     });
 
     it('renders title', () => {
@@ -114,9 +119,7 @@ describe('Batch comments draft preview item component', () => {
 
   describe('for new comment', () => {
     it('renders title', () => {
-      createComponent(false, {}, (store) => {
-        store.state.notes.discussions.push({});
-      });
+      createComponent();
 
       expect(wrapper.find('.review-preview-item-header-text').text()).toContain('Your new comment');
     });

@@ -456,7 +456,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/cleanup/orphan_lfs_file_references_spec.rb'
     - 'spec/lib/gitlab/cleanup/project_uploads_spec.rb'
     - 'spec/lib/gitlab/cleanup/remote_uploads_spec.rb'
-    - 'spec/lib/gitlab/cluster/puma_worker_killer_observer_spec.rb'
     - 'spec/lib/gitlab/cluster/rack_timeout_observer_spec.rb'
     - 'spec/lib/gitlab/color_schemes_spec.rb'
     - 'spec/lib/gitlab/conan_token_spec.rb'

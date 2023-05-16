@@ -12826,6 +12826,13 @@ vuedraggable@^2.23.0:
   dependencies:
     sortablejs "^1.9.0"
 
+vuex-mock-store@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vuex-mock-store/-/vuex-mock-store-0.1.0.tgz#eddd85d32184e93926b3693866ab43efdba95c9d"
+  integrity sha512-NWbZcw91sxDiCsFt4v6jSF6lr7GUBaVmdLvkYOIXIKtfbEUIN3OO+LuByaAzjmrskr5Xg7QQLueteQZoFLMBoA==
+  dependencies:
+    lodash.clonedeep "^4.5.0"
+
 "vuex-vue3@npm:vuex@4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0.tgz#ac877aa76a9c45368c979471e461b520d38e6cf5"

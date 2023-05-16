@@ -1251,16 +1251,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it 'returns the last build info' do
         expect(package.original_build_info).to eq(second_build_info)
       end
-
-      context 'with packages_display_last_pipeline disabled' do
-        before do
-          stub_feature_flags(packages_display_last_pipeline: false)
-        end
-
-        it 'returns the first build info' do
-          expect(package.original_build_info).to eq(first_build_info)
-        end
-      end
     end
   end
 

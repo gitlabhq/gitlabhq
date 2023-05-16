@@ -707,6 +707,7 @@ describe('DiffsStoreActions', () => {
         [{ type: types.SET_DIFF_VIEW_TYPE, payload: INLINE_DIFF_VIEW_TYPE }],
         [],
       );
+      expect(window.location.toString()).toContain('?view=inline');
       expect(Cookies.get('diff_view')).toEqual(INLINE_DIFF_VIEW_TYPE);
     });
   });
@@ -720,6 +721,7 @@ describe('DiffsStoreActions', () => {
         [{ type: types.SET_DIFF_VIEW_TYPE, payload: PARALLEL_DIFF_VIEW_TYPE }],
         [],
       );
+      expect(window.location.toString()).toContain('?view=parallel');
       expect(Cookies.get(DIFF_VIEW_COOKIE_NAME)).toEqual(PARALLEL_DIFF_VIEW_TYPE);
     });
   });

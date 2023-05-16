@@ -1,5 +1,5 @@
 ---
-migration_job_name: CleanupPersonalAccessTokensWithInvalidExpiresAt
+migration_job_name: CleanupPersonalAccessTokensWithNilExpiresAt
 description: Updates value of expires_at column to 365 days from now when it's nil for PersonalAccessTokens
 feature_category: system_access
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120239
