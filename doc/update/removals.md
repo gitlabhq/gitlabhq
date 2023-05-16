@@ -226,6 +226,19 @@ Review the details carefully before upgrading.
 The [Jira DVCS connector](https://docs.gitlab.com/ee/integration/jira/dvcs/) for Jira Cloud was deprecated in GitLab 15.1 and has been removed in 16.0. Use the [GitLab for Jira Cloud app](https://docs.gitlab.com/ee/integration/jira/connect-app.html) instead. The Jira DVCS connector was also deprecated for Jira 8.13 and earlier. You can only use the Jira DVCS connector with Jira Data Center or Jira Server in Jira 8.14 and later. Upgrade your Jira instance to Jira 8.14 or later, and reconfigure the Jira integration in your GitLab instance.
 If you cannot upgrade your Jira instance in time and are on GitLab self-managed version, we offer a workaround until GitLab 16.6. This breaking change is deployed in GitLab 16.0 behind a feature flag named `jira_dvcs_end_of_life_amnesty`. The flag is disabled by default, but you can ask an administrator to enable the flag at any time. For questions related to this announcement, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408185).
 
+### Legacy Gitaly configuration methods with variables
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The environment variables `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` were deprecated in GitLab 14.8 and are removed
+in GitLab 16.0. These variables are replaced with standard
+[`config.toml` Gitaly configuration](https://docs.gitlab.com/ee/administration/gitaly/reference.html).
+
+GitLab instances that use `GIT_CONFIG_SYSTEM` and `GIT_CONFIG_GLOBAL` to configure Gitaly must switch to configuring
+using `config.toml`.
+
 ### License-Check and the Policies tab on the License Compliance page
 
 WARNING:

@@ -315,6 +315,44 @@ Due to low customer usage, Load Performance Testing is deprecated and will be re
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Maintainer role providing the ability to change Package settings using GraphQL API
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.8</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/370471).
+</div>
+
+The ability for users with the Maintainer role to change the **Packages and registries** settings for a group using
+the GraphQL API is deprecated in GitLab 15.8 and will be removed in GitLab 17.0. These settings include:
+
+- [Allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages).
+- [Package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central).
+- [Enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html).
+
+In GitLab 17.0 and later, you must have the Owner role for a group to change the **Packages and registries**
+settings for the group using either the GitLab UI or GraphQL API.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Package pipelines in API payload is paginated
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">14.5</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/289956).
+</div>
+
+A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
+
+In milestone 17.0, we will remove the `pipelines` attribute from the API response.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### PipelineSecurityReportFinding projectFingerprint GraphQL field
 
 <div class="deprecation-notes">
@@ -1570,28 +1608,6 @@ With external authorization enabled, personal access tokens (PATs) and deploy to
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Maintainer role providing the ability to change Package settings using GraphQL API
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">15.8</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/370471).
-</div>
-
-The ability for users with the Maintainer role to change the **Packages and registries** settings for a group using
-the GraphQL API is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. These settings include:
-
-- [Allowing or preventing duplicate package uploads](https://docs.gitlab.com/ee/user/packages/maven_repository/#do-not-allow-duplicate-maven-packages).
-- [Package request forwarding](https://docs.gitlab.com/ee/user/packages/maven_repository/#request-forwarding-to-maven-central).
-- [Enabling lifecycle rules for the Dependency Proxy](https://docs.gitlab.com/ee/user/packages/dependency_proxy/reduce_dependency_proxy_storage.html).
-
-In GitLab 16.0 and later, you must have Owner role for a group to change the **Packages and registries**
-settings for the group using either the GitLab UI or GraphQL API.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### Major bundled Helm Chart updates for the GitLab Helm Chart
 
 <div class="deprecation-notes">
@@ -1720,22 +1736,6 @@ The group and project deletion protection setting in the Admin Area had an optio
 The option will no longer appear as a group setting. Self-managed users will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still immediately delete the project from the project settings, and the group from the group settings.
 
 The option to delete groups and projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing groups and projects.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Package pipelines in API payload is paginated
-
-<div class="deprecation-notes">
-- Announced in: GitLab <span class="milestone">14.5</span>
-- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/289956).
-</div>
-
-A request to the API for `/api/v4/projects/:id/packages` returns a paginated result of packages. Each package lists all of its pipelines in this response. This is a performance concern, as it's possible for a package to have hundreds or thousands of associated pipelines.
-
-In milestone 16.0, we will remove the `pipelines` attribute from the API response.
 
 </div>
 

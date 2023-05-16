@@ -1564,7 +1564,6 @@ configuration. Some `gitaly['..']` configuration options will continue to be use
 
 - `enable`
 - `dir`
-- `log_directory`
 - `bin_path`
 - `env_directory`
 - `env`
