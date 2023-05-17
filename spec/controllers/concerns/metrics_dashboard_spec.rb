@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MetricsDashboard do
+RSpec.describe MetricsDashboard, feature_category: :metrics do
   include MetricsDashboardHelpers
 
   describe 'GET #metrics_dashboard' do
@@ -11,6 +11,7 @@ RSpec.describe MetricsDashboard do
     let_it_be(:environment) { create(:environment, project: project) }
 
     before do
+      stub_feature_flags(remove_monitor_metrics: false)
       sign_in(user)
       project.add_maintainer(user)
     end
@@ -177,6 +178,17 @@ RSpec.describe MetricsDashboard do
             end
           end
         end
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      it 'returns 404 not found' do
+        stub_feature_flags(remove_monitor_metrics: true)
+
+        routes.draw { get "metrics_dashboard" => "anonymous#metrics_dashboard" }
+        response = get :metrics_dashboard, format: :json
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

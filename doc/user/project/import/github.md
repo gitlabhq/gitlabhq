@@ -137,11 +137,12 @@ Use one of the following tabs to filter the list of repositories:
 - **Collaborated**: Filter the list to the repositories that you have contributed to.
 - **Organization**: Filter the list to the repositories that belong to an organization you are a member of.
 
-When the **Organization** tab is selected, you can further narrow down your search by selecting an available GitHub organization from a dropdown.
+When the **Organization** tab is selected, you can further narrow down your search by selecting an available GitHub organization from a dropdown list.
 
 ### Select additional items to import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
+> - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 

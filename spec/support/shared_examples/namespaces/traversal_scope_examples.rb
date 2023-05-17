@@ -139,29 +139,10 @@ RSpec.shared_examples 'namespace traversal scopes' do
   end
 
   describe '.self_and_ancestors' do
-    context "use_traversal_ids_ancestor_scopes feature flag is true" do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-        stub_feature_flags(use_traversal_ids_for_ancestor_scopes: true)
-      end
+    it_behaves_like '.self_and_ancestors'
 
-      it_behaves_like '.self_and_ancestors'
-
-      it 'not make recursive queries' do
-        expect { described_class.where(id: [nested_group_1]).self_and_ancestors.load }.not_to make_queries_matching(/WITH RECURSIVE/)
-      end
-    end
-
-    context "use_traversal_ids_ancestor_scopes feature flag is false" do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestor_scopes: false)
-      end
-
-      it_behaves_like '.self_and_ancestors'
-
-      it 'makes recursive queries' do
-        expect { described_class.where(id: [nested_group_1]).self_and_ancestors.load }.to make_queries_matching(/WITH RECURSIVE/)
-      end
+    it 'not make recursive queries' do
+      expect { described_class.where(id: [nested_group_1]).self_and_ancestors.load }.not_to make_queries_matching(/WITH RECURSIVE/)
     end
   end
 
@@ -197,29 +178,10 @@ RSpec.shared_examples 'namespace traversal scopes' do
   end
 
   describe '.self_and_ancestor_ids' do
-    context "use_traversal_ids_ancestor_scopes feature flag is true" do
-      before do
-        stub_feature_flags(use_traversal_ids: true)
-        stub_feature_flags(use_traversal_ids_for_ancestor_scopes: true)
-      end
+    it_behaves_like '.self_and_ancestor_ids'
 
-      it_behaves_like '.self_and_ancestor_ids'
-
-      it 'makes recursive queries' do
-        expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.not_to make_queries_matching(/WITH RECURSIVE/)
-      end
-    end
-
-    context "use_traversal_ids_ancestor_scopes feature flag is false" do
-      before do
-        stub_feature_flags(use_traversal_ids_for_ancestor_scopes: false)
-      end
-
-      it_behaves_like '.self_and_ancestor_ids'
-
-      it 'makes recursive queries' do
-        expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.to make_queries_matching(/WITH RECURSIVE/)
-      end
+    it 'not make recursive queries' do
+      expect { described_class.where(id: [nested_group_1]).self_and_ancestor_ids.load }.not_to make_queries_matching(/WITH RECURSIVE/)
     end
   end
 

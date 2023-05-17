@@ -118,6 +118,12 @@ RSpec.describe ProfilesHelper do
     end
   end
 
+  describe '#prevent_delete_account?' do
+    it 'returns false' do
+      expect(helper.prevent_delete_account?).to eq false
+    end
+  end
+
   def stub_auth0_omniauth_provider
     provider = OpenStruct.new(
       'name' => example_omniauth_provider,

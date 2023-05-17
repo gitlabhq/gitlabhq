@@ -76,6 +76,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['slack_app_verification_token']).to be_nil
       expect(json_response['valid_runner_registrars']).to match_array(%w(project group))
       expect(json_response['ci_max_includes']).to eq(150)
+      expect(json_response['allow_account_deletion']).to eq(true)
     end
   end
 
@@ -188,7 +189,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             slack_app_secret: 'SLACK_APP_SECRET',
             slack_app_signing_secret: 'SLACK_APP_SIGNING_SECRET',
             slack_app_verification_token: 'SLACK_APP_VERIFICATION_TOKEN',
-            valid_runner_registrars: ['group']
+            valid_runner_registrars: ['group'],
+            allow_account_deletion: false
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -265,6 +267,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['slack_app_signing_secret']).to eq('SLACK_APP_SIGNING_SECRET')
         expect(json_response['slack_app_verification_token']).to eq('SLACK_APP_VERIFICATION_TOKEN')
         expect(json_response['valid_runner_registrars']).to eq(['group'])
+        expect(json_response['allow_account_deletion']).to be(false)
       end
     end
 

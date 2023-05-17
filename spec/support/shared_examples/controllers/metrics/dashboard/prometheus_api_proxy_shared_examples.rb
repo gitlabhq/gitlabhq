@@ -21,6 +21,8 @@ RSpec.shared_examples_for 'metrics dashboard prometheus api proxy' do
   end
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
+
     allow_next_instance_of(Prometheus::ProxyService, *service_params) do |proxy_service|
       allow(proxy_service).to receive(:execute).and_return(service_result)
     end
@@ -104,6 +106,19 @@ RSpec.shared_examples_for 'metrics dashboard prometheus api proxy' do
           expect(json_response['status']).to eq('error')
           expect(json_response['message']).to eq('error message')
         end
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        get :prometheus_proxy, params: prometheus_proxy_params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response.body).to be_empty
       end
     end
   end

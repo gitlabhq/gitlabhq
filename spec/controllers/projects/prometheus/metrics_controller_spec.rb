@@ -2,13 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Prometheus::MetricsController do
+RSpec.describe Projects::Prometheus::MetricsController, feature_category: :metrics do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :with_prometheus_integration) }
 
   let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -72,6 +73,18 @@ RSpec.describe Projects::Prometheus::MetricsController do
 
     context 'when prometheus_adapter is disabled' do
       let(:project) { create(:project) }
+
+      it 'renders 404' do
+        get :active_common, params: project_params(format: :json)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
 
       it 'renders 404' do
         get :active_common, params: project_params(format: :json)

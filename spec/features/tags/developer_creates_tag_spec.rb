@@ -20,7 +20,10 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
     end
 
     it 'with an invalid name displays an error' do
-      create_tag_in_form(tag: 'v 1.0', ref: 'master')
+      fill_in 'tag_name', with: 'v 1.0'
+      select_ref(ref: 'master')
+
+      click_button 'Create tag'
 
       expect(page).to have_content 'Tag name invalid'
     end
@@ -39,13 +42,20 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
     end
 
     it 'that already exists displays an error' do
-      create_tag_in_form(tag: 'v1.1.0', ref: 'master')
+      fill_in 'tag_name', with: 'v1.1.0'
+      select_ref(ref: 'master')
+
+      click_button 'Create tag'
 
       expect(page).to have_content 'Tag v1.1.0 already exists'
     end
 
     it 'with multiline message displays the message in a <pre> block' do
-      create_tag_in_form(tag: 'v3.0', ref: 'master', message: "Awesome tag message\n\n- hello\n- world")
+      fill_in 'tag_name', with: 'v3.0'
+      select_ref(ref: 'master')
+      fill_in 'message', with: "Awesome tag message\n\n- hello\n- world"
+
+      click_button 'Create tag'
 
       expect(page).to have_current_path(
         project_tag_path(project, 'v3.0'), ignore_query: true)
@@ -65,14 +75,6 @@ RSpec.describe 'Developer creates tag', :js, feature_category: :source_code_mana
         expect(find('.gl-new-dropdown-inner')).to have_content 'spooky-stuff'
       end
     end
-  end
-
-  def create_tag_in_form(tag:, ref:, message: nil, desc: nil)
-    fill_in 'tag_name', with: tag
-    select_ref(ref: ref)
-    fill_in 'message', with: message unless message.nil?
-    fill_in 'release_description', with: desc unless desc.nil?
-    click_button 'Create tag'
   end
 
   def select_ref(ref:)

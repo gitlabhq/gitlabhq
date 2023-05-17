@@ -922,6 +922,18 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
 
         get :metrics, params: environment_params
       end
+
+      context 'when metrics dashboard feature is unavailable' do
+        before do
+          stub_feature_flags(remove_monitor_metrics: true)
+        end
+
+        it 'returns 404 not found' do
+          get :metrics_dashboard, params: environment_params(dashboard_params)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
   end
 

@@ -9,6 +9,8 @@ module Metrics::Dashboard::PrometheusApiProxy
   end
 
   def prometheus_proxy
+    return not_found if Feature.enabled?(:remove_monitor_metrics)
+
     variable_substitution_result =
       proxy_variable_substitution_service.new(proxyable, permit_params).execute
 

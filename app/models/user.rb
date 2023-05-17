@@ -91,6 +91,7 @@ class User < ApplicationRecord
 
   # Must be included after `devise`
   include EncryptedUserPassword
+  include RecoverableByAnyEmail
 
   include AdminChangedPasswordNotifier
 

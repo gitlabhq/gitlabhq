@@ -317,8 +317,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     before do
       stub_feature_flags(
         use_traversal_ids: false,
-        use_traversal_ids_for_ancestors: false,
-        use_traversal_ids_for_ancestor_scopes: false
+        use_traversal_ids_for_ancestors: false
       )
     end
 

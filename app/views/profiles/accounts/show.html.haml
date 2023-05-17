@@ -59,36 +59,45 @@
     .col-lg-12
       %hr
 
-.row.gl-mt-3.js-search-settings-section
-  .col-lg-4.profile-settings-sidebar
-    %h4.gl-mt-0.danger-title
-      = s_('Profiles|Delete account')
-  .col-lg-8
-    - if current_user.can_be_removed? && can?(current_user, :destroy_user, current_user)
-      %p
-        = s_('Profiles|Deleting an account has the following effects:')
-      = render 'users/deletion_guidance', user: current_user
-
-      -# Delete button here
-      = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'delete-account-button', disabled: true, data: { qa_selector: 'delete_account_button' }}) do
+- if prevent_delete_account?
+  .row.gl-mt-3.js-search-settings-section
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0.danger-title
         = s_('Profiles|Delete account')
+    .col-lg-8
+      %p
+        = s_('Profiles|Account deletion is not allowed by your administrator.')
+- else
+  .row.gl-mt-3.js-search-settings-section
+    .col-lg-4.profile-settings-sidebar
+      %h4.gl-mt-0.danger-title
+        = s_('Profiles|Delete account')
+    .col-lg-8
+      - if current_user.can_be_removed? && can?(current_user, :destroy_user, current_user)
+        %p
+          = s_('Profiles|Deleting an account has the following effects:')
+        = render 'users/deletion_guidance', user: current_user
 
-      #delete-account-modal{ data: { action_url: user_registration_path,
-        confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
-        username: current_user.username } }
-    - else
-      - if current_user.solo_owned_groups.present?
-        %p
-          = s_('Profiles|Your account is currently an owner in these groups:')
-          %strong= current_user.solo_owned_groups.map(&:name).join(', ')
-        %p
-          = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
-      - elsif !current_user.can_remove_self?
-        %p
-          = s_('Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account.').html_safe % { openingTag: "<a href='#{reset_profile_password_path}' rel=\"nofollow\" data-method=\"put\">".html_safe, closingTag: '</a>'.html_safe}
-        %p
-          = s_('Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process.').html_safe % { link_start: '<a href="https://support.gitlab.io/account-deletion/" rel="nofollow noreferrer noopener" target="_blank">'.html_safe, link_end: '</a>'.html_safe}
+        -# Delete button here
+        = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'delete-account-button', disabled: true, data: { qa_selector: 'delete_account_button' }}) do
+          = s_('Profiles|Delete account')
+
+        #delete-account-modal{ data: { action_url: user_registration_path,
+          confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
+          username: current_user.username } }
       - else
-        %p
-          = s_("Profiles|You don't have access to delete this user.")
+        - if current_user.solo_owned_groups.present?
+          %p
+            = s_('Profiles|Your account is currently an owner in these groups:')
+            %strong= current_user.solo_owned_groups.map(&:name).join(', ')
+          %p
+            = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
+        - elsif !current_user.can_remove_self?
+          %p
+            = s_('Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account.').html_safe % { openingTag: "<a href='#{reset_profile_password_path}' rel=\"nofollow\" data-method=\"put\">".html_safe, closingTag: '</a>'.html_safe}
+          %p
+            = s_('Profiles|If after setting a password, the option to delete your account is still not available, please %{link_start}submit a request%{link_end} to begin the account deletion process.').html_safe % { link_start: '<a href="https://support.gitlab.io/account-deletion/" rel="nofollow noreferrer noopener" target="_blank">'.html_safe, link_end: '</a>'.html_safe}
+        - else
+          %p
+            = s_("Profiles|You don't have access to delete this user.")
 .gl-mb-3

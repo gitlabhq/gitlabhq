@@ -5370,6 +5370,9 @@ msgstr ""
 msgid "ApplicationSettings|Allowed domains for sign-ups"
 msgstr ""
 
+msgid "ApplicationSettings|Allows users to delete their own accounts"
+msgstr ""
+
 msgid "ApplicationSettings|Any user that visits %{host} and creates an account must be explicitly approved by an administrator before they can sign in. Only effective if sign-ups are enabled."
 msgstr ""
 
@@ -23791,7 +23794,7 @@ msgstr ""
 msgid "Input the remote repository URL"
 msgstr ""
 
-msgid "Insert a %{rows}x%{cols} table."
+msgid "Insert a %{rows}×%{cols} table"
 msgstr ""
 
 msgid "Insert a quote"
@@ -34376,6 +34379,12 @@ msgid "Profiles|@username"
 msgstr ""
 
 msgid "Profiles|Account could not be deleted. GitLab was unable to verify your identity."
+msgstr ""
+
+msgid "Profiles|Account deletion is not allowed by your administrator."
+msgstr ""
+
+msgid "Profiles|Account deletion is not allowed."
 msgstr ""
 
 msgid "Profiles|Account scheduled for removal."

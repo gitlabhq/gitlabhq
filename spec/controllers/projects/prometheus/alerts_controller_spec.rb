@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Prometheus::AlertsController do
+RSpec.describe Projects::Prometheus::AlertsController, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
@@ -115,9 +115,13 @@ RSpec.describe Projects::Prometheus::AlertsController do
     end
   end
 
-  describe 'GET #metrics_dashboard' do
+  describe 'GET #metrics_dashboard', feature_category: :metrics do
     let!(:alert) do
       create(:prometheus_alert, project: project, environment: environment, prometheus_metric: metric)
+    end
+
+    before do
+      stub_feature_flags(remove_monitor_metrics: false)
     end
 
     it 'returns a json object with the correct keys' do
@@ -144,6 +148,14 @@ RSpec.describe Projects::Prometheus::AlertsController do
     end
 
     it 'returns 404 for non-existant alerts' do
+      get :metrics_dashboard, params: request_params(id: 0), format: :json
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns 404 when metrics dashboard feature is unavailable' do
+      stub_feature_flags(remove_monitor_metrics: true)
+
       get :metrics_dashboard, params: request_params(id: 0), format: :json
 
       expect(response).to have_gitlab_http_status(:not_found)

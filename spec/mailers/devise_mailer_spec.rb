@@ -102,9 +102,12 @@ RSpec.describe DeviseMailer do
   end
 
   describe '#reset_password_instructions' do
-    subject { described_class.reset_password_instructions(user, 'faketoken') }
-
     let_it_be(:user) { create(:user) }
+    let(:params) { {} }
+
+    subject do
+      described_class.reset_password_instructions(user, 'faketoken', params)
+    end
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
@@ -134,6 +137,15 @@ RSpec.describe DeviseMailer do
 
     it 'has the mailgun suppression bypass header' do
       is_expected.to have_header 'X-Mailgun-Suppressions-Bypass', 'true'
+    end
+
+    context 'with email in params' do
+      let(:email) { 'example@example.com' }
+      let(:params) { { to: email } }
+
+      it 'is sent to the specified email' do
+        is_expected.to deliver_to email
+      end
     end
   end
 

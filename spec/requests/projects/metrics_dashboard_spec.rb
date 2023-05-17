@@ -9,12 +9,28 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
   let_it_be(:user) { project.first_owner }
 
   before do
+    stub_feature_flags(remove_monitor_metrics: false)
     project.add_developer(user)
     login_as(user)
     stub_feature_flags(remove_monitor_metrics: false)
   end
 
+  shared_examples 'metrics dashboard is unavailable' do
+    context 'when metrics dashboard feature is unavailable' do
+      before do
+        stub_feature_flags(remove_monitor_metrics: true)
+      end
+
+      it 'returns 404 not found' do
+        send_request
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /:namespace/:project/-/metrics' do
+    include_examples 'metrics dashboard is unavailable'
+
     it "redirects to default environment's metrics dashboard" do
       send_request
       expect(response).to redirect_to(dashboard_route(environment: environment))
@@ -70,6 +86,8 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
   end
 
   describe 'GET /:namespace/:project/-/metrics?environment=:environment.id' do
+    include_examples 'metrics dashboard is unavailable'
+
     it 'returns 200' do
       send_request(environment: environment2.id)
       expect(response).to have_gitlab_http_status(:ok)
@@ -91,6 +109,8 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
   describe 'GET /:namespace/:project/-/metrics/:dashboard_path' do
     let(:dashboard_path) { '.gitlab/dashboards/dashboard_path.yml' }
 
+    include_examples 'metrics dashboard is unavailable'
+
     it 'returns 200' do
       send_request(dashboard_path: dashboard_path, environment: environment.id)
       expect(response).to have_gitlab_http_status(:ok)
@@ -104,6 +124,8 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
 
   describe 'GET :/namespace/:project/-/metrics/:dashboard_path?environment=:environment.id' do
     let(:dashboard_path) { '.gitlab/dashboards/dashboard_path.yml' }
+
+    include_examples 'metrics dashboard is unavailable'
 
     it 'returns 200' do
       send_request(dahboard_path: dashboard_path, environment: environment.id)
@@ -124,6 +146,8 @@ RSpec.describe 'Projects::MetricsDashboardController', feature_category: :metric
   end
 
   describe 'GET :/namespace/:project/-/metrics/:page' do
+    include_examples 'metrics dashboard is unavailable'
+
     it 'returns 200 with path param page' do
       send_request(page: 'panel/new', environment: environment.id)
 

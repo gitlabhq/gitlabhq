@@ -68,6 +68,11 @@ module ProfilesHelper
   def ssh_key_expiration_policy_enabled?
     false
   end
+
+  # Overridden in EE::ProfilesHelper#prevent_delete_account?
+  def prevent_delete_account?
+    false
+  end
 end
 
 ProfilesHelper.prepend_mod

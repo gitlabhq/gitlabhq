@@ -78,7 +78,6 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/projects_spec.rb'
     - 'spec/features/search/user_uses_header_search_field_spec.rb'
     - 'spec/features/snippets/explore_spec.rb'
-    - 'spec/features/tags/developer_creates_tag_spec.rb'
     - 'spec/features/usage_stats_consent_spec.rb'
     - 'spec/features/users/login_spec.rb'
     - 'spec/features/users/overview_spec.rb'

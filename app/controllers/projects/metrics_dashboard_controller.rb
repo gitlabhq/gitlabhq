@@ -17,6 +17,8 @@ module Projects
     urgency :low
 
     def show
+      return not_found if Feature.enabled?(:remove_monitor_metrics)
+
       if environment
         render 'projects/environments/metrics'
       elsif default_environment

@@ -130,19 +130,45 @@ module MigrationsHelpers
     end
   end
 
-  def schema_migrate_down!
+  # TODO: use Gitlab::Database::EachDatabase class (https://gitlab.com/gitlab-org/gitlab/-/issues/410154)
+  def migrate_databases!(only_databases: nil, version: nil)
+    only_databases ||= if Gitlab::Database.database_mode == Gitlab::Database::MODE_SINGLE_DATABASE
+                         [:main]
+                       else
+                         %i[main ci]
+                       end
+
+    # unique in the context of database, host, port
+    configurations = Gitlab::Database.database_base_models.each_with_object({}) do |(_name, model), h|
+      config = model.connection_db_config
+
+      h[config.configuration_hash.slice(:database, :host, :port)] ||= config
+    end
+
+    with_reestablished_active_record_base do
+      configurations.each_value do |configuration|
+        next unless only_databases.include? configuration.name.to_sym
+
+        ActiveRecord::Base.establish_connection(configuration) # rubocop:disable Database/EstablishConnection
+
+        migration_context.migrate(version) # rubocop:disable Database/MultipleDatabases
+      end
+    end
+  end
+
+  def schema_migrate_down!(only_databases: nil)
     disable_migrations_output do
-      migration_context.down(migration_schema_version)
+      migrate_databases!(only_databases: only_databases, version: migration_schema_version)
     end
 
     reset_column_in_all_models
   end
 
-  def schema_migrate_up!
+  def schema_migrate_up!(only_databases: nil)
     reset_column_in_all_models
 
     disable_migrations_output do
-      migration_context.up
+      migrate_databases!(only_databases: only_databases)
     end
 
     reset_column_in_all_models
