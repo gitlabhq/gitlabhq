@@ -617,6 +617,34 @@ From GitLab 15.9, all Release links are external. The `external` field of the `R
 
 From GitLab 15.9, all Release links are external. The `external` field in the Releases and Release link APIs was deprecated in 15.9, and removed in GitLab 16.0.
 
+### Secure scanning `_DISABLED` variables now require the value `"true"`
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">15.9</span>
+- This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/). Review the details carefully before upgrading.
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/391822).
+</div>
+
+In GitLab 16.0, we've changed how values for CI/CD variables like `SAST_DISABLED` and `DEPENDENCY_SCANNING_DISABLED` are handled.
+
+Now, scanning is disabled only if the value is `"true"`, for example `SAST_DISABLED: "true"`. Previously, even if the value were `"false"`, like `SAST_DISABLED: "false"`, scanning would still be disabled.
+
+This change was previously released in the Latest versions of the CI/CD templates because of the potential to disrupt customized CI/CD pipeline configurations.
+
+The following templates have been updated:
+
+- API Fuzzing: [`API-Fuzzing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
+- Container Scanning: [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
+- Coverage-Guided Fuzzing: [`Coverage-Fuzzing.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
+- DAST: [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
+- DAST API: [`DAST-API.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
+- Dependency Scanning: [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
+- IaC Scanning: [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
+- SAST: [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
+- Secret Detection: [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
+
+If you currently use the `_DISABLED` variables but set a value other than `"true"` to disable scanning, change the value to `"true"`.
+
 ### Security report schemas version 14.x.x
 
 <div class="deprecation-notes">
@@ -785,6 +813,15 @@ The predefined CI/CD variables that start with `CI_BUILD_*` were deprecated in G
 </div>
 
 The `POST ci/lint` API endpoint was deprecated in 15.7, and removed in 16.0. This endpoint did not validate the full range of CI/CD configuration options. Instead, use [`POST /projects/:id/ci/lint`](https://docs.gitlab.com/ee/api/lint.html#validate-a-ci-yaml-configuration-with-a-namespace), which properly validates CI/CD configuration.
+
+### `docker-ssh` and `docker-ssh+machine` executors are removed
+
+<div class="deprecation-notes">
+- Announced in: GitLab <span class="milestone">10.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/29406).
+</div>
+
+In GitLab 16.0 and later, the `docker-ssh` and `docker+machine-ssh` executors for GitLab Runner have been removed from the GitLab Runner [code base](https://gitlab.com/gitlab-org/gitlab-runner).
 
 ### vulnerabilityFindingDismiss GraphQL mutation
 

@@ -317,31 +317,6 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
         expect(root_storage_statistics.reload.internal_forks_storage_size).to eq(0)
       end
-
-      context 'when the feature flag is off' do
-        before do
-          stub_feature_flags(root_storage_statistics_calculate_forks: false)
-        end
-
-        it 'does not aggregate fork storage sizes' do
-          project = create_project(size_multiplier: 150)
-          create_fork(project, size_multiplier: 100)
-
-          root_storage_statistics.recalculate!
-
-          expect(root_storage_statistics.reload.private_forks_storage_size).to eq(0)
-        end
-
-        it 'aggregates fork sizes for enabled namespaces' do
-          stub_feature_flags(root_storage_statistics_calculate_forks: namespace)
-          project = create_project(size_multiplier: 150)
-          project_fork = create_fork(project, size_multiplier: 100)
-
-          root_storage_statistics.recalculate!
-
-          expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
-        end
-      end
     end
   end
 

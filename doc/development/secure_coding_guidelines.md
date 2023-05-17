@@ -344,7 +344,7 @@ Much of the impact is contingent upon the function of the application and the ca
 
 For a demonstration of the impact on GitLab with a realistic attack scenario, see [this video on the GitLab Unfiltered channel](https://www.youtube.com/watch?v=t4PzHNycoKo) (internal, it requires being logged in with the GitLab Unfiltered account).
 
-### When to consider?
+### When to consider
 
 When user submitted data is included in responses to end users, which is just about anywhere.
 
@@ -1395,3 +1395,20 @@ Additional resources:
 - <https://github.com/EthicalML/fml-security#exploring-the-owasp-top-10-for-ml>
 - <https://learn.microsoft.com/en-us/security/engineering/threat-modeling-aiml>
 - <https://learn.microsoft.com/en-us/security/engineering/failure-modes-in-machine-learning>
+
+## Local Storage
+
+### Description
+
+Local storage uses a built-in browser storage feature that caches data in read-only UTF-16 key-value pairs. Unlike `sessionStorage`, this mechanism has no built-in expiration mechanism, which can lead to large troves of potentially sensitive information being stored for indefinite periods.
+
+### Impact
+
+Local storage is subject to exfiltration during XSS attacks. These type of attacks highlight the inherent insecurity of storing sensitive information locally.
+
+### Mitigations
+
+If circumstances dictate that local storage is the only option, a couple of precautions should be taken.
+
+- Local storage should only be used for the minimal amount of data possible. Consider alternative storage formats.
+- If you have to store sensitive data using local storage, do so for the minimum time possible, calling `localStorage.removeItem` on the item as soon as we're done with it. Another alternative is to call `localStorage.clear()`.

@@ -17,14 +17,12 @@ Each time you run a job that requires tooling or dependencies not available in t
 
 ## VM types
 
-GitLab SaaS provides macOS build machines on Apple servers with Intel x86-64 processors.
-The expectation is that virtual machines running on the Apple M1 chip will be available in the second half of 2022.
-
-At this time there is only one available machine type offered, `shared-macos-amd64`.
+GitLab SaaS provides macOS build machines on Apple silicon (M1) chips.
+At this time there is only one available machine type offered, `saas-macos-medium-m1`. We deprecated Intel x86 runners in favor of Apple silicon. If you need to build for an x86 target, you can use Rosetta 2 to emulate an Intel x86 build environment.
 
 | Instance type | vCPUS | Memory (GB) |
 | --------- | --- | ------- |
-|  `shared-macos-amd64` | 4 | 10 |
+|  `saas-macos-medium-m1` | 6 | 8 |
 
 ## VM images
 
@@ -51,7 +49,6 @@ Each image is running a specific version of macOS and Xcode.
 
 | VM image                  | Status | Included software  |
 |---------------------------|--------|--------------------|
-| `macos-10.13-xcode-7`       | `frozen` | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/high-sierra.yml>  |
 | `macos-10.13-xcode-8`       | `frozen` | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/high-sierra.yml>  |
 | `macos-10.13-xcode-9`       | `frozen` | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/high-sierra.yml>  |
 | `macos-10.14-xcode-10`      | `frozen` | <https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/macstadium/orka/-/blob/main/toolchain/mojave.yml>       |

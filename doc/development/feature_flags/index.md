@@ -144,6 +144,13 @@ An `experiment` feature flag should conform to the same standards as a `developm
 although the interface has some differences. An experiment feature flag should have a rollout issue,
 created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
+### `worker` type
+
+`worker` feature flags are used for controlling Sidekiq workers behavior, such as deferring Sidekiq jobs.
+
+`worker` feature flags likely do not have any YAML definition as the name could be dynamically generated using
+the worker name itself, e.g. `defer_sidekiq_jobs:AuthorizedProjectsWorker`.
+
 ## Feature flag definition and validation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.

@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -18,7 +18,7 @@ describe('Work Item Note Actions', () => {
   const findReplyButton = () => wrapper.findComponent(ReplyButton);
   const findEditButton = () => wrapper.find('[data-testid="edit-work-item-note"]');
   const findEmojiButton = () => wrapper.find('[data-testid="note-emoji-button"]');
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteNoteButton = () => wrapper.find('[data-testid="delete-note-action"]');
   const findCopyLinkButton = () => wrapper.find('[data-testid="copy-link-action"]');
   const findAssignUnassignButton = () => wrapper.find('[data-testid="assign-note-action"]');
@@ -61,6 +61,7 @@ describe('Work Item Note Actions', () => {
       },
       apolloProvider: createMockApollo([[addAwardEmojiMutation, addEmojiMutationResolver]]),
     });
+    wrapper.vm.$refs.dropdown.close = jest.fn();
   };
 
   describe('reply button', () => {
@@ -152,7 +153,7 @@ describe('Work Item Note Actions', () => {
         showEdit: true,
       });
 
-      findDeleteNoteButton().vm.$emit('click');
+      findDeleteNoteButton().vm.$emit('action');
 
       expect(wrapper.emitted('deleteNote')).toEqual([[]]);
     });
@@ -167,7 +168,7 @@ describe('Work Item Note Actions', () => {
     });
 
     it('should emit `notifyCopyDone` event when copy link note action is clicked', () => {
-      findCopyLinkButton().vm.$emit('click');
+      findCopyLinkButton().vm.$emit('action');
 
       expect(wrapper.emitted('notifyCopyDone')).toEqual([[]]);
     });
@@ -193,7 +194,7 @@ describe('Work Item Note Actions', () => {
         showAssignUnassign: true,
       });
 
-      findAssignUnassignButton().vm.$emit('click');
+      findAssignUnassignButton().vm.$emit('action');
 
       expect(wrapper.emitted('assignUser')).toEqual([[]]);
     });
@@ -219,7 +220,7 @@ describe('Work Item Note Actions', () => {
         canReportAbuse: true,
       });
 
-      findReportAbuseToAdminButton().vm.$emit('click');
+      findReportAbuseToAdminButton().vm.$emit('action');
 
       expect(wrapper.emitted('reportAbuse')).toEqual([[]]);
     });

@@ -6594,7 +6594,7 @@ Input type: `VulnerabilityCreateInput`
 | <a id="mutationvulnerabilitycreatedetectedat"></a>`detectedAt` | [`Time`](#time) | Timestamp of when the vulnerability was first detected (defaults to creation time). |
 | <a id="mutationvulnerabilitycreatedismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to dismissed (defaults to creation time if status is `dismissed`). |
 | <a id="mutationvulnerabilitycreateidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifierInput!]!`](#vulnerabilityidentifierinput) | Array of CVE or CWE identifiers for the vulnerability. |
-| <a id="mutationvulnerabilitycreatemessage"></a>`message` | [`String`](#string) | Short text section that describes the vulnerability. This may include the finding's specific information. |
+| <a id="mutationvulnerabilitycreatemessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated:** message field has been removed from security reports schema. Deprecated in 16.1. |
 | <a id="mutationvulnerabilitycreatename"></a>`name` | [`String!`](#string) | Name of the vulnerability. |
 | <a id="mutationvulnerabilitycreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
 | <a id="mutationvulnerabilitycreateresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to resolved (defaults to creation time if status is `resolved`). |
@@ -22575,7 +22575,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
-| <a id="vulnerabilitymessage"></a>`message` | [`String`](#string) | Short text description of the vulnerability. This may include the finding's specific information. |
+| <a id="vulnerabilitymessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.1. message field has been removed from security reports schema. |
 | <a id="vulnerabilitynotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |

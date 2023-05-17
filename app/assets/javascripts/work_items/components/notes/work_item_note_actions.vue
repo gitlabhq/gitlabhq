@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlTooltipDirective,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { __, s__ } from '~/locale';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
@@ -20,9 +26,9 @@ export default {
   components: {
     GlButton,
     GlIcon,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     ReplyButton,
-    GlDropdown,
-    GlDropdownItem,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
   directives: {
@@ -75,6 +81,7 @@ export default {
         : this.$options.i18n.assignUserText;
     },
   },
+
   methods: {
     async setAwardEmoji(name) {
       try {
@@ -97,6 +104,10 @@ export default {
         this.$emit('error', s__('WorkItem|Failed to award emoji'));
         Sentry.captureException(error);
       }
+    },
+    emitEvent(eventName) {
+      this.$emit(eventName);
+      this.$refs.dropdown.close();
     },
   },
 };
@@ -135,46 +146,54 @@ export default {
       :aria-label="$options.i18n.editButtonText"
       @click="$emit('startEditing')"
     />
-    <gl-dropdown
+    <gl-disclosure-dropdown
+      ref="dropdown"
       v-gl-tooltip
       data-testid="work-item-note-actions"
       icon="ellipsis_v"
       text-sr-only
-      right
-      :text="$options.i18n.moreActionsText"
+      placement="right"
+      :toggle-text="$options.i18n.moreActionsText"
       :title="$options.i18n.moreActionsText"
       category="tertiary"
       no-caret
     >
-      <gl-dropdown-item
+      <gl-disclosure-dropdown-item
         v-if="canReportAbuse"
         data-testid="abuse-note-action"
-        @click="$emit('reportAbuse')"
+        @action="emitEvent('reportAbuse')"
       >
-        {{ $options.i18n.reportAbuseText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>
+          {{ $options.i18n.reportAbuseText }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
         data-testid="copy-link-action"
         :data-clipboard-text="noteUrl"
-        @click="$emit('notifyCopyDone')"
+        @action="emitEvent('notifyCopyDone')"
       >
-        <span>{{ $options.i18n.copyLinkText }}</span>
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>
+          {{ $options.i18n.copyLinkText , }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
         v-if="showAssignUnassign"
         data-testid="assign-note-action"
-        @click="$emit('assignUser')"
+        @action="emitEvent('assignUser')"
       >
-        {{ assignUserActionText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
+        <template #list-item>
+          {{ assignUserActionText }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item
         v-if="showEdit"
-        variant="danger"
         data-testid="delete-note-action"
-        @click="$emit('deleteNote')"
+        @action="emitEvent('deleteNote')"
       >
-        {{ $options.i18n.deleteNoteText }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+        <template #list-item>
+          <span class="gl-text-red-500">{{ $options.i18n.deleteNoteText }}</span>
+        </template>
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown>
   </div>
 </template>

@@ -60,8 +60,6 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def attributes_for_forks_statistics
-    return {} unless ::Feature.enabled?(:root_storage_statistics_calculate_forks, namespace)
-
     visibility_levels_to_storage_size_columns = {
       Gitlab::VisibilityLevel::PRIVATE => :private_forks_storage_size,
       Gitlab::VisibilityLevel::INTERNAL => :internal_forks_storage_size,

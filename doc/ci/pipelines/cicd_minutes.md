@@ -261,12 +261,13 @@ GitLab administrators can add a namespace to the reduced cost factor
 
 GitLab SaaS runners have different cost factors, depending on the runner type (Linux, Windows, macOS) and the virtual machine configuration.
 
-| GitLab SaaS runner type  | Machine Type   | CI/CD minutes cost factor  |
+| GitLab SaaS runner type | Machine Size | CI/CD minutes cost factor  |
 | :--------- | :------------------- | :--------- |
-| Linux OS | Small  |1|
-| Linux OS | Medium  |2|
-| Linux OS | Large |3|
-| Linux OS + GPU-enabled | Medium, GPU Standard |7|
+| Linux OS amd64 | small  |1|
+| Linux OS amd64 | medium  |2|
+| Linux OS amd64 | large |3|
+| Linux OS amd64 + GPU-enabled | medium, GPU standard |7|
+| macOS M1 | Medium |6|
 
 ### Monthly reset of CI/CD minutes
 

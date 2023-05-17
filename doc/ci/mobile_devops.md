@@ -41,8 +41,7 @@ test:
 
 ### iOS build environments
 
-GitLab SaaS runners on macOS are currently available in beta. Follow the [instructions to request access](../ci/runners/saas/macos_saas_runner.md#access-request-process)
-for your project.
+[GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are currently available in beta.
 
 After you are granted access to the beta macOS runners, [choose an image](../ci/runners/saas/macos/environment.md#available-images)
 and add it to your `.gitlab-ci.yml` file.
@@ -271,7 +270,7 @@ For example:
     script:
       - fastlane build
     tags:
-      - shared-macos-amd64
+      - saas-macos-medium-m1
   ```
 
 ## Distribution

@@ -12,30 +12,20 @@ SaaS runners on macOS provide an on-demand macOS build environment integrated wi
 GitLab SaaS [CI/CD](../../../ci/index.md).
 Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, tvOS). You can take advantage
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
-build environment.
+build environment. Our [Mobile DevOps solution](../../../ci/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
 Jobs handled by macOS shared runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.
 
-## Access request process
-
-While in beta, to run CI jobs on the macOS runners, you must specify the GitLab SaaS customer personal or group [namespaces](../../../user/namespace/index.md) in the macOS `allow-list`. These are the namespaces that use the macOS runners.
-
-When you specify a personal or group namespace, the top level group is not added unless you specify it.
-
-After you add your namespace, you can use the macOS runners for any projects under the namespace you included.
-
-To request access, open an [access request](https://gitlab.com/gitlab-com/runner-saas-macos-limited-availability/-/issues/new).
-The expected turnaround for activation is two business days.
-
 ## Quickstart
 
-To start using SaaS runners on macOS, you must be an active GitLab SaaS Premium or Ultimate customer. Participants in the GitLab Open Source program are also eligible to use the service.
+To start using SaaS runners on macOS, you must be an active GitLab SaaS Premium or Ultimate customer.
 
 ### Configuring your pipeline
 
 To start using the SaaS runners on macOS to run your CI jobs, you must configure your `.gitlab-ci.yml` file:
 
 1. Add a `.gitlab-ci.yml` file to your project repository.
+1. Specify the tag `saas-macos-medium-m1`.
 1. Specify the [image](macos/environment.md#vm-images) you want to use.
 1. Commit a change to your repository.
 
@@ -48,8 +38,8 @@ The following sample `.gitlab-ci.yml` file shows how to start using the SaaS run
 ```yaml
 .macos_saas_runners:
   tags:
-    - shared-macos-amd64
-  image: macos-11-xcode-12
+    - saas-macos-medium-m1
+  image: macos-12-xcode-14
 
 stages:
   - build
@@ -74,7 +64,7 @@ test:
 ```
 
 NOTE:
-You can specify a different Xcode image to run a job. To do so, replace the value for the `image` keyword with the value of the [virtual machine image name](macos/environment.md#vm-images) from the list of available images.
+You can specify a different Xcode image to run a job. To do so, replace the value for the `image` keyword with the value of the [virtual machine image name](macos/environment.md#vm-images) from the list of available images. The default value is our latest image.
 
 ## SaaS runners on macOS service level objective
 

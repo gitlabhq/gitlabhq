@@ -54,6 +54,17 @@ module Feature
         example: <<-EOS
           experiment(:my_experiment, project: project, actor: current_user) { ...variant code... }
         EOS
+      },
+      worker: {
+        description: "Feature flags for controlling Sidekiq workers behavior (e.g. deferring jobs)",
+        optional: true,
+        rollout_issue: false,
+        ee_only: false,
+        default_enabled: false,
+        example: '<<-EOS
+          Feature.enabled?(:"defer_sidekiq_jobs:AuthorizedProjectsWorker", type: :worker,
+                            default_enabled_if_undefined: false)
+        EOS'
       }
     }.freeze
 

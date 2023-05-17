@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.11.4 (2023-05-16)
+
+### Fixed (2 changes)
+
+- [Do not autofocus the description field](gitlab-org/gitlab@978ae42ee723d5bc5235115b8ebfd7c67c8d858b) ([merge request](gitlab-org/gitlab!120306))
+- [Fix group blobs search permission when migration is not complete](gitlab-org/gitlab@c718fc80bf2ae389d63760db0c4aa95ec6c67f7e) ([merge request](gitlab-org/gitlab!120159)) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Use correct migration finalisation method](gitlab-org/gitlab@db7999c368aa41a155f717206b5b8340c91927f7) ([merge request](gitlab-org/gitlab!120683))
+
 ## 15.11.3 (2023-05-10)
 
 ### Fixed (2 changes)
